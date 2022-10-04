@@ -50,8 +50,7 @@ public class BoxAPIRequest {
     private static final String ERROR_CREATING_REQUEST_BODY = "Error creating request body";
     private static final int BUFFER_SIZE = 8192;
     private static SSLSocketFactory sslSocketFactory;
-
-    protected final BoxAPIConnection api;
+    private final BoxAPIConnection api;
     private final List<RequestHeader> headers;
     private final String method;
     private URL url;
@@ -60,9 +59,10 @@ public class BoxAPIRequest {
     private int readTimeout;
     private InputStream body;
     private long bodyLength;
-    protected Map<String, List<String>> requestProperties;
-    protected boolean shouldAuthenticate;
+    private Map<String, List<String>> requestProperties;
+    private boolean shouldAuthenticate;
     private boolean followRedirects;
+    private final String mediaType;
 
     /**
      * Constructs an unauthenticated BoxAPIRequest.
@@ -84,9 +84,14 @@ public class BoxAPIRequest {
      * @param method the HTTP method of the request.
      */
     public BoxAPIRequest(BoxAPIConnection api, URL url, String method) {
+        this(api, url, method, "application/x-www-form-urlencoded");
+    }
+
+    protected BoxAPIRequest(BoxAPIConnection api, URL url, String method, String mediaType) {
         this.api = api;
         this.url = url;
         this.method = method;
+        this.mediaType = mediaType;
         this.headers = new ArrayList<>();
         if (api != null) {
             Map<String, String> customHeaders = api.getHeaders();
@@ -107,9 +112,9 @@ public class BoxAPIRequest {
             this.readTimeout = BoxGlobalSettings.getReadTimeout();
         }
 
-        this.addHeader("Accept-Encoding", "gzip");
+        //TODO: should I add this? Breaks tests as client expets to get GZIP response
+//        this.addHeader("Accept-Encoding", "gzip");
         this.addHeader("Accept-Charset", "utf-8");
-
     }
 
     /**
@@ -152,6 +157,7 @@ public class BoxAPIRequest {
         String message = apiException.getMessage();
         String errorCode = "";
 
+        //TODO: remove this empty catch and fix failing tests
         try {
             JsonObject responseBody = Json.parse(response).asObject();
             if (responseBody.get("code") != null) {
@@ -605,12 +611,18 @@ public class BoxAPIRequest {
 
         Request.Builder requestBuilder = new Request.Builder().url(getUrl());
 
+        //TODO: do we need that check?
         if (this.api != null) {
             if (this.shouldAuthenticate) {
                 requestBuilder.addHeader(HttpHeaders.AUTHORIZATION, "Bearer " + this.api.lockAccessToken());
             }
             requestBuilder.addHeader("User-Agent", this.api.getUserAgent());
             requestBuilder.addHeader("X-Box-UA", this.api.getBoxUAHeader());
+            headers.forEach(h -> {
+                requestBuilder.removeHeader(h.getKey());
+                requestBuilder.addHeader(h.getKey(), h.getValue());
+            });
+
             // TODO: proxy is set in client in OkHttp - maybe we can remove it from here and move to client
 //            if (this.api.getProxy() != null) {
 //                if (this.api.getProxyUsername() != null && this.api.getProxyPassword() != null) {
@@ -683,7 +695,11 @@ public class BoxAPIRequest {
             requestBuilder.delete();
         }
         if (method.equals("OPTIONS")) {
-            requestBuilder.method("OPTIONS", null);
+            if (body == null) {
+                requestBuilder.method("OPTIONS", null);
+            } else {
+                requestBuilder.method("OPTIONS", RequestBody.create(bodyBytes.toByteArray(), mediaType()));
+            }
         }
         if (method.equals("POST")) {
             requestBuilder.post(RequestBody.create(bodyBytes.toByteArray(), mediaType()));
@@ -746,7 +762,7 @@ public class BoxAPIRequest {
 
 
     protected MediaType mediaType() {
-        return MediaType.parse("application/x-www-form-urlencoded");
+        return MediaType.parse(mediaType);
     }
 
     private BoxAPIResponse toBoxResponse(Response response) {
@@ -775,7 +791,7 @@ public class BoxAPIRequest {
             );
         }
         if (responseBody != null && responseBody.contentType() != null) {
-            if (responseBody.contentType().toString().equals("application/json")) {
+            if (responseBody.contentType().toString().contains("application/json")) {
                 String bodyAsString = "";
                 try {
                     bodyAsString = responseBody.string();

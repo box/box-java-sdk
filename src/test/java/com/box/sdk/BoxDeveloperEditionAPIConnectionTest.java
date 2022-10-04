@@ -172,7 +172,6 @@ public class BoxDeveloperEditionAPIConnectionTest {
         BoxDeveloperEditionAPIConnection api = new BoxDeveloperEditionAPIConnection("12345",
             DeveloperEditionEntityType.USER, "foo", "bar", prefs, null);
         api.setBaseURL(baseURL + "/");
-        api.setTokenURL(baseURL + tokenPath);
         api.setMaxRetryAttempts(expectedNumRetryAttempts);
 
         return api;

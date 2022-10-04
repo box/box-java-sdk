@@ -238,7 +238,7 @@ public class BoxFile extends BoxItem {
         URL url = ADD_COMMENT_URL_TEMPLATE.build(this.getAPI().getBaseURL());
         BoxJSONRequest request = new BoxJSONRequest(this.getAPI(), url, "POST");
         request.setBody(requestJSON.toString());
-        BoxJSONResponse response = (BoxJSONResponse) request.send();
+        BoxJSONResponse response = request.send();
         JsonObject responseJSON = Json.parse(response.getJSON()).asObject();
 
         BoxComment addedComment = new BoxComment(this.getAPI(), responseJSON.get("id").asString());
@@ -292,7 +292,7 @@ public class BoxFile extends BoxItem {
         URL url = ADD_TASK_URL_TEMPLATE.build(this.getAPI().getBaseURL());
         BoxJSONRequest request = new BoxJSONRequest(this.getAPI(), url, "POST");
         request.setBody(requestJSON.toString());
-        BoxJSONResponse response = (BoxJSONResponse) request.send();
+        BoxJSONResponse response = request.send();
         JsonObject responseJSON = Json.parse(response.getJSON()).asObject();
 
         BoxTask addedTask = new BoxTask(this.getAPI(), responseJSON.get("id").asString());
@@ -427,7 +427,7 @@ public class BoxFile extends BoxItem {
 
         BoxJSONRequest request = new BoxJSONRequest(this.getAPI(), url, "POST");
         request.setBody(copyInfo.toString());
-        BoxJSONResponse response = (BoxJSONResponse) request.send();
+        BoxJSONResponse response = request.send();
         JsonObject responseJSON = Json.parse(response.getJSON()).asObject();
         BoxFile copiedFile = new BoxFile(this.getAPI(), responseJSON.get("id").asString());
         return copiedFile.new Info(responseJSON);
@@ -463,7 +463,7 @@ public class BoxFile extends BoxItem {
         }
 
         request.setBody(updateInfo.toString());
-        BoxJSONResponse response = (BoxJSONResponse) request.send();
+        BoxJSONResponse response = request.send();
         JsonObject responseJSON = Json.parse(response.getJSON()).asObject();
         BoxFile movedFile = new BoxFile(this.getAPI(), responseJSON.get("id").asString());
         return movedFile.new Info(responseJSON);
@@ -482,7 +482,7 @@ public class BoxFile extends BoxItem {
         updateInfo.add("name", newName);
 
         request.setBody(updateInfo.toString());
-        BoxJSONResponse response = (BoxJSONResponse) request.send();
+        BoxJSONResponse response = request.send();
         response.getJSON();
     }
 
@@ -651,7 +651,7 @@ public class BoxFile extends BoxItem {
         URL url = FILE_URL_TEMPLATE.build(this.getAPI().getBaseURL(), this.getID());
         BoxJSONRequest request = new BoxJSONRequest(this.getAPI(), url, "PUT");
         request.setBody(info.getPendingChanges());
-        BoxJSONResponse response = (BoxJSONResponse) request.send();
+        BoxJSONResponse response = request.send();
         JsonObject jsonObject = Json.parse(response.getJSON()).asObject();
         info.update(jsonObject);
     }
@@ -666,6 +666,7 @@ public class BoxFile extends BoxItem {
      * new BoxFile(api, file_id).getVersions("name") // will return only specified fields
      * }
      * </pre>
+     *
      * @param fields the fields to retrieve. If nothing provided default fields will be returned.
      *               You can find list of available fields at {@link BoxFile#ALL_VERSION_FIELDS}
      * @return a list of previous file versions.
@@ -719,7 +720,7 @@ public class BoxFile extends BoxItem {
         preflightInfo.add("size", fileSize);
 
         request.setBody(preflightInfo.toString());
-        BoxJSONResponse response = (BoxJSONResponse) request.send();
+        BoxJSONResponse response = request.send();
         response.getJSON();
     }
 
@@ -1347,10 +1348,9 @@ public class BoxFile extends BoxItem {
 
         URL url = METADATA_URL_TEMPLATE.buildAlpha(this.getAPI().getBaseURL(), this.getID(),
             scope, metadata.getTemplateName());
-        BoxAPIRequest request = new BoxAPIRequest(this.getAPI(), url, "PUT");
-        request.addHeader("Content-Type", "application/json-patch+json");
+        BoxJSONRequest request = new BoxJSONRequest(this.getAPI(), url, "PUT", "application/json-patch+json");
         request.setBody(metadata.getPatch());
-        BoxJSONResponse response = (BoxJSONResponse) request.send();
+        BoxJSONResponse response = request.send();
         return new Metadata(Json.parse(response.getJSON()).asObject());
     }
 
@@ -1429,7 +1429,7 @@ public class BoxFile extends BoxItem {
         URL url = FILE_URL_TEMPLATE.buildWithQuery(this.getAPI().getBaseURL(), queryString, this.getID());
         BoxJSONRequest request = new BoxJSONRequest(this.getAPI(), url, "PUT");
         request.setBody(infoJSON.toString());
-        BoxJSONResponse response = (BoxJSONResponse) request.send();
+        BoxJSONResponse response = request.send();
         JsonObject jsonObject = Json.parse(response.getJSON()).asObject();
         return new Info(jsonObject);
     }
@@ -1451,7 +1451,7 @@ public class BoxFile extends BoxItem {
         body.add("file_size", fileSize);
         request.setBody(body.toString());
 
-        BoxJSONResponse response = (BoxJSONResponse) request.send();
+        BoxJSONResponse response = request.send();
         JsonObject jsonObject = Json.parse(response.getJSON()).asObject();
 
         String sessionId = jsonObject.get("id").asString();

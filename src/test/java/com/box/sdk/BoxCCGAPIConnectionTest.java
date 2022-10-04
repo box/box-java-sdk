@@ -109,7 +109,7 @@ public class BoxCCGAPIConnectionTest {
         // given
         String accessToken = "access_token";
         BoxAPIConnection api = createDefaultApplicationConnection();
-        api.setTokenURL(format("http://localhost:%d/oauth2/token", wireMockRule.port()));
+        api.setBaseURL(format("http://localhost:%d", wireMockRule.port()));
         String scenarioName = "Retry getting token";
         String stateName = "Retry";
         stubFor(post(urlEqualTo("/oauth2/token"))

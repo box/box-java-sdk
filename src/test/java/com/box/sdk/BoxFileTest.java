@@ -404,59 +404,63 @@ public class BoxFileTest {
                 .withQueryParam("fields", WireMock.equalTo("representations"))
                 .willReturn(WireMock.aResponse()
                     .withHeader("Content-Type", "application/json")
-                    .withBody("{\n" +
-                        "  \"type\": \"file\",\n" +
-                        "  \"id\": \"12345\",\n" +
-                        "  \"etag\": \"0\",\n" +
-                        "  \"representations\": {\n" +
-                        "    \"entries\": [\n" +
-                        "      {\n" +
-                        "        \"representation\": \"jpg\",\n" +
-                        "        \"properties\": {\n" +
-                        "          \"dimensions\": \"32x32\",\n" +
-                        "          \"paged\": \"false\",\n" +
-                        "          \"thumb\": \"true\"\n" +
-                        "        },\n" +
-                        "        \"info\": {\n" +
-                        "          \"url\": \"http://localhost:" + wireMockRule.port() + "/2.0/internal_files/12345/versions/1116420931563/representations/jpg_thumb_32x32\"\n" +
-                        "        },\n" +
-                        "        \"status\": {\n" +
-                        "          \"state\": \"none\"\n" +
-                        "        },\n" +
-                        "        \"content\": {\n" +
-                        "          \"url_template\": \"http://localhost:" + wireMockRule.port() + "/2.0/internal_files/12345/versions/1116420931563/representations/jpg_thumb_32x32/content/{+asset_path}\"\n" +
-                        "        }\n" +
-                        "      }\n" +
-                        "    ]\n" +
-                        "  }\n" +
-                        "}")
+                    .withBody("{\n"
+                        + "  \"type\": \"file\",\n"
+                        + "  \"id\": \"12345\",\n"
+                        + "  \"etag\": \"0\",\n"
+                        + "  \"representations\": {\n"
+                        + "    \"entries\": [\n"
+                        + "      {\n"
+                        + "        \"representation\": \"jpg\",\n"
+                        + "        \"properties\": {\n"
+                        + "          \"dimensions\": \"32x32\",\n"
+                        + "          \"paged\": \"false\",\n"
+                        + "          \"thumb\": \"true\"\n"
+                        + "        },\n"
+                        + "        \"info\": {\n"
+                        + "          \"url\": \"http://localhost:" + wireMockRule.port() + "/2.0/internal_files/12345/versions/1116420931563/representations/jpg_thumb_32x32\"\n"
+                        + "        },\n"
+                        + "        \"status\": {\n"
+                        + "          \"state\": \"none\"\n"
+                        + "        },\n"
+                        + "        \"content\": {\n"
+                        + "          \"url_template\": \"http://localhost:" + wireMockRule.port() + "/2.0/internal_files/12345/versions/1116420931563/representations/jpg_thumb_32x32/content/{+asset_path}\"\n"
+                        + "        }\n"
+                        + "      }\n"
+                        + "    ]\n"
+                        + "  }\n"
+                        + "}")
                     .withStatus(200))
         );
         wireMockRule.stubFor(
-            WireMock.get(WireMock.urlPathEqualTo("/2.0/internal_files/12345/versions/1116420931563/representations/jpg_thumb_32x32"))
+            WireMock.get(WireMock.urlPathEqualTo(
+                "/2.0/internal_files/12345/versions/1116420931563/representations/jpg_thumb_32x32")
+                )
                 .willReturn(WireMock.aResponse()
                     .withHeader("Content-Type", "application/json")
-                    .withBody("{\n" +
-                        "  \"representation\": \"jpg\",\n" +
-                        "  \"properties\": {\n" +
-                        "    \"dimensions\": \"32x32\",\n" +
-                        "    \"paged\": \"false\",\n" +
-                        "    \"thumb\": \"true\"\n" +
-                        "  },\n" +
-                        "  \"info\": {\n" +
-                        "    \"url\": \"http://localhost:" + wireMockRule.port() + "/2.0/internal_files/1030335435441/versions/1116437417841/representations/jpg_thumb_32x32\"\n" +
-                        "  },\n" +
-                        "  \"status\": {\n" +
-                        "    \"state\": \"success\"\n" +
-                        "  },\n" +
-                        "  \"content\": {\n" +
-                        "    \"url_template\": \"http://localhost:" + wireMockRule.port() + "/2.0/internal_files/1030335435441/versions/1116437417841/representations/jpg_thumb_32x32/content/{+asset_path}\"\n" +
-                        "  }\n" +
-                        "}")
+                    .withBody("{\n"
+                        + "  \"representation\": \"jpg\",\n"
+                        + "  \"properties\": {\n"
+                        + "    \"dimensions\": \"32x32\",\n"
+                        + "    \"paged\": \"false\",\n"
+                        + "    \"thumb\": \"true\"\n"
+                        + "  },\n"
+                        + "  \"info\": {\n"
+                        + "    \"url\": \"http://localhost:" + wireMockRule.port() + "/2.0/internal_files/1030335435441/versions/1116437417841/representations/jpg_thumb_32x32\"\n"
+                        + "  },\n"
+                        + "  \"status\": {\n"
+                        + "    \"state\": \"success\"\n"
+                        + "  },\n"
+                        + "  \"content\": {\n"
+                        + "    \"url_template\": \"http://localhost:" + wireMockRule.port() + "/2.0/internal_files/1030335435441/versions/1116437417841/representations/jpg_thumb_32x32/content/{+asset_path}\"\n"
+                        + "  }\n"
+                        + "}")
                     .withStatus(200))
         );
         wireMockRule.stubFor(
-            WireMock.get(WireMock.urlPathEqualTo("/2.0/internal_files/1030335435441/versions/1116437417841/representations/jpg_thumb_32x32/content/"))
+            WireMock.get(WireMock.urlPathEqualTo(
+                "/2.0/internal_files/1030335435441/versions/1116437417841/representations/jpg_thumb_32x32/content/"
+                ))
                 .willReturn(WireMock.aResponse()
                     .withHeader("Content-Type", "image/jpg")
                     .withBody("This is a JPG")
@@ -718,8 +722,9 @@ public class BoxFileTest {
 
         wireMockRule.stubFor(WireMock.put(WireMock.urlPathEqualTo(metadataURL))
             .withRequestBody(WireMock.equalToJson(metadataArray.toString()))
+            .withHeader("Content-Type", WireMock.equalTo("application/json-patch+json"))
             .willReturn(WireMock.aResponse()
-                .withHeader("Content-Type", "application/json-patch+json")
+                .withHeader("Content-Type", "application/json")
                 .withBody(result)));
 
         BoxFile file = new BoxFile(this.api, fileID);
@@ -828,8 +833,7 @@ public class BoxFileTest {
             .add("second")
             .add("third");
         final int thirdValue = 2;
-        final float fourthValue = 1234567890f;
-        final double fifthValue = 233333333333333340.0;
+        final double fourthValue = 233333333333333340.0;
 
         JsonObject firstAttribute = new JsonObject()
             .add("op", "add")
@@ -851,17 +855,11 @@ public class BoxFileTest {
             .add("path", "/test4")
             .add("value", fourthValue);
 
-        JsonObject fifthAttribute = new JsonObject()
-            .add("op", "add")
-            .add("path", "/test5")
-            .add("value", fifthValue);
-
         JsonArray jsonArray = new JsonArray()
             .add(firstAttribute)
             .add(secondAttribute)
             .add(thirdAttribute)
-            .add(fourthAttribute)
-            .add(fifthAttribute);
+            .add(fourthAttribute);
 
         wireMockRule.stubFor(WireMock.post(WireMock.urlPathEqualTo(metadataURL))
             .willReturn(WireMock.aResponse()
@@ -870,21 +868,20 @@ public class BoxFileTest {
                 .withStatus(409)));
 
         wireMockRule.stubFor(WireMock.put(WireMock.urlPathEqualTo(metadataURL))
-            .withRequestBody(WireMock.equalToJson(jsonArray.toString()))
+            .withRequestBody(WireMock.equalToJson(jsonArray.toString(), true, true))
             .withHeader("Content-Type", WireMock.equalTo("application/json-patch+json"))
             .willReturn(WireMock.aResponse()
-                .withHeader("Content-Type", "application/json-patch+json")
+                .withHeader("Content-Type", "application/json")
                 .withBody(putResult)
                 .withStatus(200)));
 
-        BoxFile file = new BoxFile(this.api, "12345");
+        BoxFile file = new BoxFile(this.api, fileID);
 
         Metadata metadata = new Metadata()
             .add("/test1", firstValue)
             .add("/test2", secondValueArray)
             .add("/test3", thirdValue)
-            .add("/test4", fourthValue)
-            .add("/test5", fifthValue);
+            .add("/test4", fourthValue);
 
         Metadata metadataValues = file.setMetadata("testtemplate", "enterprise", metadata);
 
@@ -895,7 +892,6 @@ public class BoxFileTest {
         assertEquals(secondValueJson, metadataValues.getValue("/test2"));
         assertEquals(thirdValue, metadataValues.getDouble("/test3"), 0);
         assertEquals(fourthValue, metadataValues.getDouble("/test4"), 4);
-        assertEquals(fifthValue, metadataValues.getDouble("/test5"), 0);
     }
 
     @Test
@@ -936,6 +932,7 @@ public class BoxFileTest {
             .add("parts", parts);
 
         wireMockRule.stubFor(WireMock.options(WireMock.urlPathEqualTo(preflightURL))
+            .withHeader("Content-Type", WireMock.equalTo("application/json"))
             .withRequestBody(WireMock.equalToJson(preflightObject.toString()))
             .willReturn(WireMock.aResponse()
                 .withHeader("Content-Type", "application/json")

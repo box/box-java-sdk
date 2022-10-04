@@ -155,11 +155,11 @@ abstract class AbstractBoxMultipartRequest extends BoxAPIRequest {
                         this.inputStream, getPartContentType(filename), progressListener
                     )
                 );
-        this.fields.entrySet().forEach(entry -> bodyBuilder.addFormDataPart(entry.getKey(), entry.getValue()));
+        this.fields.forEach(bodyBuilder::addFormDataPart);
         requestBuilder.post(bodyBuilder.build());
     }
 
-    private class RequestBodyFromStream extends RequestBody {
+    private static final class RequestBodyFromStream extends RequestBody {
         private final InputStream inputStream;
         private final ProgressListener progressListener;
         private final MediaType mediaType;

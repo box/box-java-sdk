@@ -40,29 +40,17 @@ import okhttp3.Response;
  * BoxAPIConnection may be created to support multi-user login.</p>
  */
 public class BoxAPIConnection {
-    private static final BoxLogger LOGGER = BoxLogger.defaultLogger();
-    /**
-     * The default total maximum number of times an API request will be tried when error responses
-     * are received.
-     *
-     * @deprecated DEFAULT_MAX_RETRIES is preferred because it more clearly sets the number
-     * of times a request should be retried after an error response is received.
-     */
-    @Deprecated
-    public static final int DEFAULT_MAX_ATTEMPTS = 5;
-
     /**
      * The default maximum number of times an API request will be retried after an error response
      * is received.
      */
     public static final int DEFAULT_MAX_RETRIES = 5;
-
     /**
      * Default authorization URL
      */
     protected static final String DEFAULT_BASE_AUTHORIZATION_URL = "https://account.box.com/api/";
-
     static final String AS_USER_HEADER = "As-User";
+    private static final BoxLogger LOGGER = BoxLogger.defaultLogger();
 
     private static final String API_VERSION = "2.0";
     private static final String OAUTH_SUFFIX = "oauth2/authorize";
@@ -190,9 +178,10 @@ public class BoxAPIConnection {
             sc = null;
         }
         OkHttpClient.Builder httpClientBuilder = new OkHttpClient.Builder();
-        if(sc !=null) {
+        if (sc != null) {
             try {
-                TrustManagerFactory trustManagerFactory = TrustManagerFactory.getInstance(TrustManagerFactory.getDefaultAlgorithm());
+                TrustManagerFactory trustManagerFactory =
+                    TrustManagerFactory.getInstance(TrustManagerFactory.getDefaultAlgorithm());
                 trustManagerFactory.init((KeyStore) null);
                 TrustManager[] trustManagers = trustManagerFactory.getTrustManagers();
                 if (trustManagers.length != 1 || !(trustManagers[0] instanceof X509TrustManager)) {
@@ -370,17 +359,6 @@ public class BoxAPIConnection {
     }
 
     /**
-     * Sets the token URL that's used to request access tokens.  For example, the default token URL is
-     * "https://www.box.com/api/oauth2/token".
-     *
-     * @param tokenURL the token URL.
-     * @deprecated Use {@link BoxAPIConnection#setBaseURL(String)}
-     */
-    public void setTokenURL(String tokenURL) {
-        this.tokenURL = tokenURL;
-    }
-
-    /**
      * Returns the URL used for token revocation.
      * The URL is created from {@link BoxAPIConnection#baseURL} and {@link BoxAPIConnection#REVOKE_URL_SUFFIX}.
      *
@@ -392,16 +370,6 @@ public class BoxAPIConnection {
         } else {
             return this.baseURL + REVOKE_URL_SUFFIX;
         }
-    }
-
-    /**
-     * Set the URL used for token revocation.
-     *
-     * @param url The url to use.
-     * @deprecated Use {@link BoxAPIConnection#setBaseURL(String)}
-     */
-    public void setRevokeURL(String url) {
-        this.revokeURL = url;
     }
 
     /**

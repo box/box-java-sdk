@@ -23,7 +23,6 @@ import com.box.sdk.BoxAPIConnection.ResourceLinkType;
 import com.eclipsesource.json.JsonObject;
 import com.github.tomakehurst.wiremock.client.WireMock;
 import com.github.tomakehurst.wiremock.junit.WireMockRule;
-import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -180,7 +179,7 @@ public class BoxAPIConnectionTest {
         String clientSecret = "fakeSecret";
 
         BoxAPIConnection api = new BoxAPIConnection(clientID, clientSecret, accessToken, "");
-        api.setRevokeURL(format("http://localhost:%d/oauth2/revoke", wireMockRule.port()));
+        api.setBaseURL(format("http://localhost:%d", wireMockRule.port()));
 
         wireMockRule.stubFor(post(urlPathEqualTo("/oauth2/revoke"))
             .withRequestBody(WireMock.equalTo("token=fakeAccessToken&client_id=fakeID&client_secret=fakeSecret"))
@@ -499,7 +498,7 @@ public class BoxAPIConnectionTest {
     }
 
     @Test
-    public void successfullyRestoresConnectionWithDeprecatedSettings() throws IOException {
+    public void successfullyRestoresConnectionWithDeprecatedSettings() {
         String restoreState = TestUtils.getFixture("BoxAPIConnection/State");
         String restoreStateDeprecated = TestUtils.getFixture("BoxAPIConnection/StateDeprecated");
 
@@ -535,29 +534,25 @@ public class BoxAPIConnectionTest {
     }
 
     @Test
-    public void canOverrideTokenUrl() {
+    public void canOverrideTokenUrlWithBaseUrl() {
         BoxAPIConnection api = new BoxAPIConnection(
             "some_client_id", "some_client_secret", "some_access_token", "some_refresh_token"
         );
 
         api.setBaseURL("https://my-base.url");
-        String tokenURL = "https://my-token.url";
-        api.setTokenURL(tokenURL);
 
-        assertThat(api.getTokenURL(), is("https://my-token.url"));
+        assertThat(api.getTokenURL(), is("https://my-base.url/oauth2/token"));
     }
 
     @Test
-    public void canOverrideRevokeUrl() {
+    public void canOverrideRevokeUrlWithBaseUrl() {
         BoxAPIConnection api = new BoxAPIConnection(
             "some_client_id", "some_client_secret", "some_access_token", "some_refresh_token"
         );
 
         api.setBaseURL("https://my-base.url");
-        String myRevokeURL = "https://my-revoke.url";
-        api.setRevokeURL(myRevokeURL);
 
-        assertThat(api.getRevokeURL(), is("https://my-revoke.url"));
+        assertThat(api.getRevokeURL(), is("https://my-base.url/oauth2/revoke"));
     }
 
     @Test
@@ -570,8 +565,6 @@ public class BoxAPIConnectionTest {
         api.setBaseURL("https://my-base.url");
         api.setBaseUploadURL("https://my-base-upload.url");
         api.setBaseAuthorizationURL("https://my-authorization.url");
-        api.setRevokeURL("https://my-revoke.url");
-        api.setTokenURL("https://my-token.url");
         api.setRequestInterceptor(
             request -> new BoxAPIConnectionTest.AuthenticationResponse("access_token", refreshToken, "4245")
         );
@@ -612,32 +605,14 @@ public class BoxAPIConnectionTest {
     }
 
     @Test
-    public void usesCorrectTokenToAuthenticateUrlWhenTokenUrlIsSet() {
+    public void usesCorrectTokenToAuthenticateUrlWhenBaseUrlIsSet() {
         String code = "fakeCode";
         String clientID = "fakeID";
         String clientSecret = "fakeSecret";
 
         BoxAPIConnection api = new BoxAPIConnection(clientID, clientSecret);
         api.setAutoRefresh(false);
-        api.setTokenURL(format("http://localhost:%d/oauth2/token", wireMockRule.port()));
-        mockAndAssertAuthentication(clientID, clientSecret, code);
-
-        api.authenticate(code);
-
-        assertThat(api.getAccessToken(), is("access-token"));
-        assertThat(api.getRefreshToken(), is("refresh-token"));
-    }
-
-    @Test
-    public void usesTokenUrlOverBaseUrlToAuthenticate() {
-        String code = "fakeCode";
-        String clientID = "fakeID";
-        String clientSecret = "fakeSecret";
-
-        BoxAPIConnection api = new BoxAPIConnection(clientID, clientSecret);
-        api.setAutoRefresh(false);
-        api.setTokenURL(format("http://localhost:%d/oauth2/token", wireMockRule.port()));
-        api.setBaseURL("not_an_url");
+        api.setBaseURL(format("http://localhost:%d", wireMockRule.port()));
         mockAndAssertAuthentication(clientID, clientSecret, code);
 
         api.authenticate(code);
@@ -654,33 +629,6 @@ public class BoxAPIConnectionTest {
 
         BoxAPIConnection api = new BoxAPIConnection(clientID, clientSecret, token, null);
         api.setBaseURL(format("http://localhost:%d", wireMockRule.port()));
-        mockAndAssertRevoke(token, clientID, clientSecret);
-
-        api.revokeToken();
-    }
-
-    @Test
-    public void usesCorrectTokenUrlToRevokeWhenRevokeUrlIsSet() {
-        String token = "fakeToken";
-        String clientID = "fakeID";
-        String clientSecret = "fakeSecret";
-
-        BoxAPIConnection api = new BoxAPIConnection(clientID, clientSecret, token, null);
-        api.setRevokeURL(format("http://localhost:%d/oauth2/revoke", wireMockRule.port()));
-        mockAndAssertRevoke(token, clientID, clientSecret);
-
-        api.revokeToken();
-    }
-
-    @Test
-    public void usesRevokeUrlOverBaseUrlToRevoke() {
-        String token = "fakeToken";
-        String clientID = "fakeID";
-        String clientSecret = "fakeSecret";
-
-        BoxAPIConnection api = new BoxAPIConnection(clientID, clientSecret, token, null);
-        api.setRevokeURL(format("http://localhost:%d/oauth2/revoke", wireMockRule.port()));
-        api.setBaseURL("not_an_url");
         mockAndAssertRevoke(token, clientID, clientSecret);
 
         api.revokeToken();

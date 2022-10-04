@@ -197,22 +197,6 @@ public class Metadata {
      * @param path  the path that designates the key. Must be prefixed with a "/".
      * @param value the value.
      * @return this metadata object.
-     * @deprecated add(String, double) is preferred as it avoids errors when converting a
-     * float to the underlying data type used by Metadata (double)
-     */
-    @Deprecated
-    public Metadata add(String path, float value) {
-        this.values.add(this.pathToProperty(path), value);
-        this.addOp("add", path, value);
-        return this;
-    }
-
-    /**
-     * Adds a new metadata value.
-     *
-     * @param path  the path that designates the key. Must be prefixed with a "/".
-     * @param value the value.
-     * @return this metadata object.
      */
     public Metadata add(String path, double value) {
         this.values.add(this.pathToProperty(path), value);
@@ -505,24 +489,6 @@ public class Metadata {
      * @param value the value to be set.
      */
     private void addOp(String op, String path, String value) {
-        if (this.operations == null) {
-            this.operations = new JsonArray();
-        }
-
-        this.operations.add(new JsonObject()
-            .add("op", op)
-            .add("path", path)
-            .add("value", value));
-    }
-
-    /**
-     * Adds a patch operation.
-     *
-     * @param op    the operation type. Must be add, replace, remove, or test.
-     * @param path  the path that designates the key. Must be prefixed with a "/".
-     * @param value the value to be set.
-     */
-    private void addOp(String op, String path, float value) {
         if (this.operations == null) {
             this.operations = new JsonArray();
         }

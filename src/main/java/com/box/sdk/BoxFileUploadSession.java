@@ -89,8 +89,9 @@ public class BoxFileUploadSession extends BoxResource {
                                                long totalSizeOfFile) {
         URL uploadPartURL = this.sessionInfo.getSessionEndpoints().getUploadPartEndpoint();
 
-        BoxAPIRequest request = new BoxAPIRequest(this.getAPI(), uploadPartURL, HttpMethod.PUT);
-        request.addHeader(HttpHeaders.CONTENT_TYPE, ContentType.APPLICATION_OCTET_STREAM);
+        BoxAPIRequest request = new BoxAPIRequest(
+            this.getAPI(), uploadPartURL, HttpMethod.PUT.name(), ContentType.APPLICATION_OCTET_STREAM
+        );
 
         MessageDigest digestInstance;
         try {
