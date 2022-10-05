@@ -155,8 +155,9 @@ public class BoxFileIT {
         try {
             InputStream uploadStream = Files.newInputStream(Paths.get(filePath));
             ProgressListener mockUploadListener = mock(ProgressListener.class);
-            BoxFile.Info uploadedFileInfo = folder.uploadFile(uploadStream,
-                BoxFileIT.generateString(), fileSize, mockUploadListener);
+            BoxFile.Info uploadedFileInfo = folder.uploadFile(
+                uploadStream, BoxFileIT.generateString(), fileSize, mockUploadListener
+            );
             uploadedFile = uploadedFileInfo.getResource();
 
             ByteArrayOutputStream downloadStream = new ByteArrayOutputStream();

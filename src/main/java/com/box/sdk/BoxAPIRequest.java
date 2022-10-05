@@ -53,15 +53,14 @@ public class BoxAPIRequest {
     private final BoxAPIConnection api;
     private final List<RequestHeader> headers;
     private final String method;
-    private URL url;
+    private final URL url;
     private BackoffCounter backoffCounter;
     private int connectTimeout;
     private int readTimeout;
     private InputStream body;
     private long bodyLength;
-    private Map<String, List<String>> requestProperties;
     private boolean shouldAuthenticate;
-    private boolean followRedirects;
+    private boolean followRedirects = true;
     private final String mediaType;
 
     /**
@@ -517,32 +516,6 @@ public class BoxAPIRequest {
         builder.append(this.url.toString());
         builder.append(lineSeparator);
 
-        if (this.requestProperties != null) {
-
-            for (Map.Entry<String, List<String>> entry : this.requestProperties.entrySet()) {
-                List<String> nonEmptyValues = new ArrayList<>();
-                for (String value : entry.getValue()) {
-                    if (value != null && value.trim().length() != 0) {
-                        nonEmptyValues.add(value);
-                    }
-                }
-
-                if (nonEmptyValues.size() == 0) {
-                    continue;
-                }
-
-                builder.append(entry.getKey());
-                builder.append(": ");
-                for (String value : nonEmptyValues) {
-                    builder.append(value);
-                    builder.append(", ");
-                }
-
-                builder.delete(builder.length() - 2, builder.length());
-                builder.append(lineSeparator);
-            }
-        }
-
         String bodyString = this.bodyToString();
         if (bodyString != null) {
             builder.append(lineSeparator);
@@ -645,7 +618,7 @@ public class BoxAPIRequest {
                 requestBuilder.addHeader("BoxApi", boxAPIValue);
             }
         }
-            //TODO: this should not be needed anymore
+        //TODO: this should not be needed anymore
 //        this.requestProperties = connection.getRequestProperties();
 
 
@@ -653,22 +626,16 @@ public class BoxAPIRequest {
             long start = System.currentTimeMillis();
             writeMethodWithBody(requestBuilder, listener);
             Request request = requestBuilder.build();
-            Response response = api.execute(request);
+            Response response;
+            if (this.followRedirects) {
+                response = api.execute(request);
+            } else {
+                response = api.executeWithoutRedirect(request);
+            }
             logDebug(format("[trySend] connection.connect() took %dms%n", (System.currentTimeMillis() - start)));
-
-            //TODO: redirects should be handled by OkHttp?
-//        if (isResponseRedirect(responseCode)) {
-//            return this.handleRedirect(connection, listener);
-//        }
-
 
             BoxAPIResponse result = toBoxResponse(response);
             this.logRequest();
-
-            // TODO: it may not be necessary anymore
-            // We need to manually handle redirects by creating a new HttpURLConnection so that connection pooling
-            // happens correctly. There seems to be a bug in Oracle's Java implementation where automatically handled
-            // redirects will not keep the connection alive.
             long getResponseStart = System.currentTimeMillis();
             logDebug(format(
                 "[trySend] Get Response (read network) took %dms%n", System.currentTimeMillis() - getResponseStart
@@ -768,7 +735,7 @@ public class BoxAPIRequest {
     }
 
     private BoxAPIResponse toBoxResponse(Response response) {
-        if (!response.isSuccessful()) {
+        if (!response.isSuccessful() && !response.isRedirect()) {
             throw new BoxAPIResponseException(
                 "The API returned an error code",
                 response.code(),

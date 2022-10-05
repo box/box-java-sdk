@@ -311,9 +311,14 @@ public class BoxFile extends BoxItem {
         BoxAPIRequest request = new BoxAPIRequest(this.getAPI(), url, "GET");
         request.setFollowRedirects(false);
 
-        BoxRedirectResponse response = (BoxRedirectResponse) request.send();
+        BoxAPIResponse response = request.send();
+        String location = response.getHeaderField("location");
 
-        return response.getRedirectURL();
+        try {
+            return new URL(location);
+        } catch (MalformedURLException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     /**

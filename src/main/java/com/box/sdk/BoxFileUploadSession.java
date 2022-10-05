@@ -271,7 +271,7 @@ public class BoxFileUploadSession extends BoxResource {
      */
     public void abort() {
         URL abortURL = this.sessionInfo.getSessionEndpoints().getAbortEndpoint();
-        BoxJSONRequest request = new BoxJSONRequest(this.getAPI(), abortURL, HttpMethod.DELETE);
+        BoxAPIRequest request = new BoxAPIRequest(this.getAPI(), abortURL, HttpMethod.DELETE);
         request.send();
     }
 

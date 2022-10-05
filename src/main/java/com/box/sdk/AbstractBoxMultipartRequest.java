@@ -163,16 +163,22 @@ abstract class AbstractBoxMultipartRequest extends BoxAPIRequest {
         private final InputStream inputStream;
         private final ProgressListener progressListener;
         private final MediaType mediaType;
+        private final int contentLength;
 
         private RequestBodyFromStream(InputStream inputStream, MediaType mediaType, ProgressListener progressListener) {
             this.inputStream = inputStream;
             this.progressListener = progressListener;
             this.mediaType = mediaType;
+            try {
+                this.contentLength = inputStream.available();
+            } catch (IOException e) {
+                throw new RuntimeException("Cannot read input stream for upload", e);
+            }
         }
 
         @Override
-        public long contentLength() throws IOException {
-            return inputStream.available();
+        public long contentLength() {
+            return contentLength;
         }
 
         @Nullable
@@ -188,10 +194,10 @@ abstract class AbstractBoxMultipartRequest extends BoxAPIRequest {
             int totalWritten = n;
             while (n != -1) {
                 bufferedSink.write(buffer, 0, n);
-                totalWritten += n;
                 if (progressListener != null) {
                     progressListener.onProgressChanged(totalWritten, this.contentLength());
                 }
+                totalWritten += n;
                 n = this.inputStream.read(buffer);
             }
         }

@@ -102,6 +102,7 @@ public class BoxAPIConnection {
     private final Map<String, String> customHeaders;
 
     private final OkHttpClient httpClient;
+    private final OkHttpClient noRedirectsHttpClient;
 
     /**
      * Constructs a new BoxAPIConnection that authenticates with a developer or access token.
@@ -194,7 +195,14 @@ public class BoxAPIConnection {
             }
 
         }
-        this.httpClient = httpClientBuilder.build();
+        this.httpClient = httpClientBuilder
+            .followSslRedirects(true)
+            .followRedirects(true)
+            .build();
+        this.noRedirectsHttpClient = httpClientBuilder
+            .followSslRedirects(false)
+            .followRedirects(false)
+            .build();
     }
 
     /**
@@ -1178,6 +1186,16 @@ public class BoxAPIConnection {
     Response execute(Request request) {
         try {
             return httpClient
+                .newCall(request)
+                .execute();
+        } catch (IOException e) {
+            throw new BoxAPIException("Couldn't connect to the Box API due to a network error.", e);
+        }
+    }
+
+    Response executeWithoutRedirect(Request request) {
+        try {
+            return noRedirectsHttpClient
                 .newCall(request)
                 .execute();
         } catch (IOException e) {
