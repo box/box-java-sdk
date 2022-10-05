@@ -7,7 +7,6 @@ import static org.junit.Assert.assertEquals;
 import com.eclipsesource.json.JsonObject;
 import com.github.tomakehurst.wiremock.client.WireMock;
 import com.github.tomakehurst.wiremock.junit.WireMockRule;
-import java.io.IOException;
 import java.util.Iterator;
 import org.junit.Before;
 import org.junit.Rule;
@@ -26,7 +25,7 @@ public class BoxMetadataCascadePolicyTest {
     }
 
     @Test
-    public void testCreateMetadataCascadePolicySucceedsSendsCorrectJson() throws IOException {
+    public void testCreateMetadataCascadePolicySucceedsSendsCorrectJson() {
         final String cascadePolicyURL = "/2.0/metadata_cascade_policies";
         final String folderID = "22222";
         final String scope = "enterprise_11111";
@@ -53,7 +52,7 @@ public class BoxMetadataCascadePolicyTest {
     }
 
     @Test
-    public void testGetAllMetadataCascadePoliciesSucceeds() throws IOException {
+    public void testGetAllMetadataCascadePoliciesSucceeds() {
         final String folderID = "22222";
         final String cascadePolicyID = "84113349-794d-445c-b93c-d8481b223434";
         final String enterpriseID = "11111";
@@ -81,7 +80,7 @@ public class BoxMetadataCascadePolicyTest {
     }
 
     @Test
-    public void testGetAMetadataCascadePolicySucceeds() throws IOException {
+    public void testGetAMetadataCascadePolicySucceeds() {
         final String cascadePolicyID = "84113349-794d-445c-b93c-d8481b223434";
         final String enterpriseID = "11111";
         final String parentID = "22222";
@@ -117,7 +116,6 @@ public class BoxMetadataCascadePolicyTest {
         wireMockRule.stubFor(WireMock.post(WireMock.urlPathEqualTo(forceApplyURL))
             .withRequestBody(WireMock.equalToJson(policyObject.toString()))
             .willReturn(WireMock.aResponse()
-                .withHeader("Content-Type", "application/json")
                 .withStatus(202)));
 
         BoxMetadataCascadePolicy metadataCascadePolicy = new BoxMetadataCascadePolicy(this.api, cascadePolicyID);

@@ -1302,8 +1302,7 @@ public class BoxFolderTest {
             .add("second")
             .add("third");
         final int thirdValue = 2;
-        final float fourthValue = 1234567890f;
-        final double fifthValue = 233333333333333340.0;
+        final double fourthValue = 233333333333333340.0;
 
         JsonObject firstAttribute = new JsonObject()
             .add("op", "add")
@@ -1325,17 +1324,11 @@ public class BoxFolderTest {
             .add("path", "/test4")
             .add("value", fourthValue);
 
-        JsonObject fifthAttribute = new JsonObject()
-            .add("op", "add")
-            .add("path", "/test5")
-            .add("value", fifthValue);
-
         JsonArray jsonArray = new JsonArray()
             .add(firstAttribute)
             .add(secondAttribute)
             .add(thirdAttribute)
-            .add(fourthAttribute)
-            .add(fifthAttribute);
+            .add(fourthAttribute);
 
         wireMockRule.stubFor(WireMock.post(WireMock.urlPathEqualTo(metadataURL))
             .willReturn(WireMock.aResponse()
@@ -1347,7 +1340,7 @@ public class BoxFolderTest {
             .withRequestBody(WireMock.equalToJson(jsonArray.toString()))
             .withHeader("Content-Type", WireMock.equalTo("application/json-patch+json"))
             .willReturn(WireMock.aResponse()
-                .withHeader("Content-Type", "application/json-patch+json")
+                .withHeader("Content-Type", "application/json")
                 .withBody(putResult)
                 .withStatus(200)));
 
@@ -1357,8 +1350,7 @@ public class BoxFolderTest {
             .add("/test1", firstValue)
             .add("/test2", secondValueArray)
             .add("/test3", thirdValue)
-            .add("/test4", fourthValue)
-            .add("/test5", fifthValue);
+            .add("/test4", fourthValue);
 
         Metadata metadataValues = folder.setMetadata("testtemplate", "enterprise", metadata);
 
@@ -1369,7 +1361,6 @@ public class BoxFolderTest {
         assertEquals(secondValueJson, metadataValues.getValue("/test2"));
         assertEquals(thirdValue, metadataValues.getDouble("/test3"), 0);
         assertEquals(fourthValue, metadataValues.getDouble("/test4"), 4);
-        assertEquals(fifthValue, metadataValues.getDouble("/test5"), 0);
     }
 
     @Test(expected = BoxDeserializationException.class)

@@ -868,7 +868,7 @@ public class BoxFileTest {
                 .withStatus(409)));
 
         wireMockRule.stubFor(WireMock.put(WireMock.urlPathEqualTo(metadataURL))
-            .withRequestBody(WireMock.equalToJson(jsonArray.toString(), true, true))
+            .withRequestBody(WireMock.equalToJson(jsonArray.toString()))
             .withHeader("Content-Type", WireMock.equalTo("application/json-patch+json"))
             .willReturn(WireMock.aResponse()
                 .withHeader("Content-Type", "application/json")

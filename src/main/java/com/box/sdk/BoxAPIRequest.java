@@ -784,7 +784,7 @@ public class BoxAPIRequest {
         Map<String, String> respHeaders = new HashMap<>();
         response.headers().iterator().forEachRemaining(h -> respHeaders.put(h.component1(), h.component2()));
         ResponseBody responseBody = response.body();
-        if (response.code() == 204 || (response.code() == 202 && responseBody.contentType() == null)) {
+        if (responseBody.contentLength() == 0 || responseBody.contentType() == null) {
             return new BoxAPIResponse(response.code(),
                 response.request().method(),
                 response.request().url().toString(),
