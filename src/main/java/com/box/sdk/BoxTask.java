@@ -146,18 +146,6 @@ public class BoxTask extends BoxResource {
         };
     }
 
-    /**
-     * Gets information about this task.
-     *
-     * @return info about this task.
-     */
-    public Info getInfo() {
-        URL url = TASK_URL_TEMPLATE.build(this.getAPI().getBaseURL(), this.getID());
-        BoxJSONRequest request = new BoxJSONRequest(this.getAPI(), url, "GET");
-        BoxJSONResponse response = request.send();
-        JsonObject responseJSON = Json.parse(response.getJSON()).asObject();
-        return new Info(responseJSON);
-    }
 
     /**
      * Gets information about this task.
@@ -166,11 +154,11 @@ public class BoxTask extends BoxResource {
      * @return info about this task.
      */
     public Info getInfo(String... fields) {
-        QueryStringBuilder builder = new QueryStringBuilder();
+        URL url = TASK_URL_TEMPLATE.build(this.getAPI().getBaseURL(), this.getID());
         if (fields.length > 0) {
-            builder.appendParam("fields", fields);
+            QueryStringBuilder builder = new QueryStringBuilder().appendParam("fields", fields);
+            url = TASK_URL_TEMPLATE.buildWithQuery(this.getAPI().getBaseURL(), builder.toString(), this.getID());
         }
-        URL url = TASK_URL_TEMPLATE.buildWithQuery(this.getAPI().getBaseURL(), builder.toString(), this.getID());
         BoxJSONRequest request = new BoxJSONRequest(this.getAPI(), url, "GET");
         BoxJSONResponse response = request.send();
         JsonObject responseJSON = Json.parse(response.getJSON()).asObject();

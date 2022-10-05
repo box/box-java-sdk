@@ -492,17 +492,12 @@ public class BoxFile extends BoxItem {
     }
 
     @Override
-    public BoxFile.Info getInfo() {
-        URL url = FILE_URL_TEMPLATE.build(this.getAPI().getBaseURL(), this.getID());
-        BoxJSONRequest request = new BoxJSONRequest(this.getAPI(), url, "GET");
-        BoxJSONResponse response = request.send();
-        return new Info(response.getJSON());
-    }
-
-    @Override
     public BoxFile.Info getInfo(String... fields) {
-        String queryString = new QueryStringBuilder().appendParam("fields", fields).toString();
-        URL url = FILE_URL_TEMPLATE.buildWithQuery(this.getAPI().getBaseURL(), queryString, this.getID());
+        URL url = FILE_URL_TEMPLATE.build(this.getAPI().getBaseURL(), this.getID());
+        if (fields.length > 0) {
+            String queryString = new QueryStringBuilder().appendParam("fields", fields).toString();
+            url = FILE_URL_TEMPLATE.buildWithQuery(this.getAPI().getBaseURL(), queryString, this.getID());
+        }
 
         BoxJSONRequest request = new BoxJSONRequest(this.getAPI(), url, "GET");
         BoxJSONResponse response = request.send();

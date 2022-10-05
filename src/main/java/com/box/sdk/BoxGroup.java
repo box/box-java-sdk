@@ -184,28 +184,15 @@ public class BoxGroup extends BoxCollaborator {
     /**
      * Gets information about this group.
      *
-     * @return info about this group.
-     */
-    public Info getInfo() {
-        URL url = GROUP_URL_TEMPLATE.build(this.getAPI().getBaseURL(), this.getID());
-        BoxJSONRequest request = new BoxJSONRequest(this.getAPI(), url, "GET");
-        BoxJSONResponse response = request.send();
-        JsonObject responseJSON = Json.parse(response.getJSON()).asObject();
-        return new Info(responseJSON);
-    }
-
-    /**
-     * Gets information about this group.
-     *
      * @param fields the fields to retrieve.
      * @return info about this group.
      */
     public Info getInfo(String... fields) {
-        QueryStringBuilder builder = new QueryStringBuilder();
+        URL url = GROUP_URL_TEMPLATE.build(this.getAPI().getBaseURL(), this.getID());
         if (fields.length > 0) {
-            builder.appendParam("fields", fields);
+            QueryStringBuilder builder = new QueryStringBuilder().appendParam("fields", fields);
+            url = GROUP_URL_TEMPLATE.buildWithQuery(this.getAPI().getBaseURL(), builder.toString(), this.getID());
         }
-        URL url = GROUP_URL_TEMPLATE.buildWithQuery(this.getAPI().getBaseURL(), builder.toString(), this.getID());
         BoxJSONRequest request = new BoxJSONRequest(this.getAPI(), url, "GET");
         BoxJSONResponse response = request.send();
         JsonObject responseJSON = Json.parse(response.getJSON()).asObject();

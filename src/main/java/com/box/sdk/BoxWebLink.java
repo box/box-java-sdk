@@ -21,7 +21,7 @@ import java.util.Date;
 public class BoxWebLink extends BoxItem {
 
     /**
-     * An array of all possible weblink fields that can be requested when calling {@link #getInfo()}.
+     * An array of all possible weblink fields that can be requested when calling {@link #getInfo(String...)}.
      */
     public static final String[] ALL_FIELDS = {"type", "id", "sequence_id", "etag", "name", "url", "description",
         "path_collection", "created_at", "modified_at", "trashed_at", "purged_at", "created_by", "modified_by",
@@ -197,17 +197,12 @@ public class BoxWebLink extends BoxItem {
     }
 
     @Override
-    public BoxWebLink.Info getInfo() {
-        URL url = WEB_LINK_URL_TEMPLATE.build(this.getAPI().getBaseURL(), this.getID());
-        BoxJSONRequest request = new BoxJSONRequest(this.getAPI(), url, "GET");
-        BoxJSONResponse response = request.send();
-        return new Info(response.getJSON());
-    }
-
-    @Override
     public BoxWebLink.Info getInfo(String... fields) {
-        String queryString = new QueryStringBuilder().appendParam("fields", fields).toString();
-        URL url = WEB_LINK_URL_TEMPLATE.buildWithQuery(this.getAPI().getBaseURL(), queryString, this.getID());
+        URL url = WEB_LINK_URL_TEMPLATE.build(this.getAPI().getBaseURL(), this.getID());
+        if (fields.length > 0) {
+            String queryString = new QueryStringBuilder().appendParam("fields", fields).toString();
+            url = WEB_LINK_URL_TEMPLATE.buildWithQuery(this.getAPI().getBaseURL(), queryString, this.getID());
+        }
 
         BoxJSONRequest request = new BoxJSONRequest(this.getAPI(), url, "GET");
         BoxJSONResponse response = request.send();

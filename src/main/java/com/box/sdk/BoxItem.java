@@ -16,7 +16,7 @@ import java.util.Set;
  */
 public abstract class BoxItem extends BoxResource {
     /**
-     * An array of all possible file fields that can be requested when calling {@link #getInfo()}.
+     * An array of all possible file fields that can be requested when calling {@link #getInfo(String...)}.
      */
     public static final String[] ALL_FIELDS = {"type", "id", "sequence_id", "etag", "sha1", "name", "description",
         "size", "path_collection", "created_at", "modified_at", "trashed_at", "purged_at", "content_created_at",
@@ -183,14 +183,6 @@ public abstract class BoxItem extends BoxResource {
     @Deprecated
     public abstract BoxSharedLink createSharedLink(BoxSharedLink.Access access, Date unshareDate,
                                                    BoxSharedLink.Permissions permissions);
-
-    /**
-     * Gets information about this item.
-     *
-     * @return info about this item.
-     */
-    //TODO: this method is not needed as we should be able to use getInto(String... fields)
-    public abstract BoxItem.Info getInfo();
 
     /**
      * Gets information about this item that's limited to a list of specified fields.
@@ -520,7 +512,7 @@ public abstract class BoxItem extends BoxResource {
          */
         public void setCollections(Iterable<BoxCollection> collections) {
             if (this.collections == null) {
-                this.collections = new HashSet<BoxCollection.Info>();
+                this.collections = new HashSet<>();
             } else {
                 this.collections.clear();
             }

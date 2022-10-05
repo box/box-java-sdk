@@ -178,30 +178,17 @@ public class BoxCollaboration extends BoxResource {
     }
 
     /**
-     * Gets information about this collaboration.
-     *
-     * @return info about this collaboration.
-     */
-    public Info getInfo() {
-        BoxAPIConnection api = this.getAPI();
-        URL url = COLLABORATION_URL_TEMPLATE.build(api.getBaseURL(), this.getID());
-
-        BoxJSONRequest request = new BoxJSONRequest(api, url, "GET");
-        BoxJSONResponse response = request.send();
-        JsonObject jsonObject = Json.parse(response.getJSON()).asObject();
-        return new Info(jsonObject);
-    }
-
-    /**
      * Gets information about this collection with a custom set of fields.
      *
      * @param fields the fields to retrieve.
      * @return info about the collaboration.
      */
     public Info getInfo(String... fields) {
-
-        String queryString = new QueryStringBuilder().appendParam("fields", fields).toString();
-        URL url = COLLABORATION_URL_TEMPLATE.buildWithQuery(this.getAPI().getBaseURL(), queryString, this.getID());
+        URL url = COLLABORATION_URL_TEMPLATE.build(this.getAPI().getBaseURL(), this.getID());
+        if (fields.length > 0) {
+            String queryString = new QueryStringBuilder().appendParam("fields", fields).toString();
+            url = COLLABORATION_URL_TEMPLATE.buildWithQuery(this.getAPI().getBaseURL(), queryString, this.getID());
+        }
 
         BoxJSONRequest request = new BoxJSONRequest(this.getAPI(), url, "GET");
         BoxJSONResponse response = request.send();

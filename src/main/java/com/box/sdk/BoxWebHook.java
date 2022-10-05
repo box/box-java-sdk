@@ -227,25 +227,15 @@ public class BoxWebHook extends BoxResource {
     }
 
     /**
-     * @return Gets information about this {@link BoxWebHook}.
-     */
-    public BoxWebHook.Info getInfo() {
-        URL url = WEBHOOK_URL_TEMPLATE.build(this.getAPI().getBaseURL(), this.getID());
-        BoxJSONRequest request = new BoxJSONRequest(this.getAPI(), url, "GET");
-        BoxJSONResponse response = request.send();
-        return new Info(Json.parse(response.getJSON()).asObject());
-    }
-
-    /**
      * @param fields the fields to retrieve.
      * @return Gets information about this {@link BoxWebHook}.
      */
     public BoxWebHook.Info getInfo(String... fields) {
-        QueryStringBuilder builder = new QueryStringBuilder();
+        URL url = WEBHOOK_URL_TEMPLATE.build(this.getAPI().getBaseURL(), this.getID());
         if (fields.length > 0) {
-            builder.appendParam("fields", fields);
+            QueryStringBuilder builder = new QueryStringBuilder().appendParam("fields", fields);
+            url = WEBHOOK_URL_TEMPLATE.buildWithQuery(this.getAPI().getBaseURL(), builder.toString(), this.getID());
         }
-        URL url = WEBHOOK_URL_TEMPLATE.buildWithQuery(this.getAPI().getBaseURL(), builder.toString(), this.getID());
         BoxJSONRequest request = new BoxJSONRequest(this.getAPI(), url, "GET");
         BoxJSONResponse response = request.send();
         return new Info(Json.parse(response.getJSON()).asObject());

@@ -62,7 +62,7 @@ BoxFile.Info info = file.getInfo();
 ```
 
 Requesting information for only the fields you need with
-[`getInfo(String... fields)`][get-info2]
+[`getInfo(String... fields)`][get-info]
 can improve performance and reduce the size of the network request.
 
 ```java
@@ -71,8 +71,7 @@ BoxFile file = new BoxFile(api, "id");
 BoxFile.Info info = file.getInfo("size", "owned_by");
 ```
 
-[get-info]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxFile.html#getInfo--
-[get-info2]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxFile.html#getInfo-java.lang.String...-
+[get-info]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxFile.html#getInfo-java.lang.String...-
 
 Update a File's Information
 ---------------------------
