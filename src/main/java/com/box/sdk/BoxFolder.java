@@ -299,8 +299,8 @@ public class BoxFolder extends BoxItem implements Iterable<BoxItem.Info> {
         BoxAPIConnection api = this.getAPI();
         URL url = GET_COLLABORATIONS_URL.build(api.getBaseURL(), this.getID());
 
-        BoxAPIRequest request = new BoxAPIRequest(api, url, "GET");
-        BoxJSONResponse response = (BoxJSONResponse) request.send();
+        BoxJSONRequest request = new BoxJSONRequest(api, url, "GET");
+        BoxJSONResponse response = request.send();
         JsonObject responseJSON = Json.parse(response.getJSON()).asObject();
 
         int entriesCount = responseJSON.get("total_count").asInt();
@@ -315,12 +315,11 @@ public class BoxFolder extends BoxItem implements Iterable<BoxItem.Info> {
 
         return collaborations;
     }
-
     @Override
     public BoxFolder.Info getInfo() {
         URL url = FOLDER_INFO_URL_TEMPLATE.build(this.getAPI().getBaseURL(), this.getID());
-        BoxAPIRequest request = new BoxAPIRequest(this.getAPI(), url, "GET");
-        BoxJSONResponse response = (BoxJSONResponse) request.send();
+        BoxJSONRequest request = new BoxJSONRequest(this.getAPI(), url, "GET");
+        BoxJSONResponse response = request.send();
         return new Info(response.getJSON());
     }
 
@@ -329,8 +328,8 @@ public class BoxFolder extends BoxItem implements Iterable<BoxItem.Info> {
         String queryString = new QueryStringBuilder().appendParam("fields", fields).toString();
         URL url = FOLDER_INFO_URL_TEMPLATE.buildWithQuery(this.getAPI().getBaseURL(), queryString, this.getID());
 
-        BoxAPIRequest request = new BoxAPIRequest(this.getAPI(), url, "GET");
-        BoxJSONResponse response = (BoxJSONResponse) request.send();
+        BoxJSONRequest request = new BoxJSONRequest(this.getAPI(), url, "GET");
+        BoxJSONResponse response = request.send();
         return new Info(response.getJSON());
     }
 
@@ -583,8 +582,10 @@ public class BoxFolder extends BoxItem implements Iterable<BoxItem.Info> {
 
         BoxJSONResponse response;
         if (uploadParams.getProgressListener() == null) {
+            // uppload files sends multipart request but response is JSON
             response = (BoxJSONResponse) request.send();
         } else {
+            // uppload files sends multipart request but response is JSON
             response = (BoxJSONResponse) request.send(uploadParams.getProgressListener());
         }
         JsonObject collection = Json.parse(response.getJSON()).asObject();
@@ -753,8 +754,8 @@ public class BoxFolder extends BoxItem implements Iterable<BoxItem.Info> {
         }
 
         URL url = GET_ITEMS_URL.buildWithQuery(getAPI().getBaseURL(), builder.toString(), getID());
-        BoxAPIRequest request = new BoxAPIRequest(this.getAPI(), url, "GET");
-        BoxJSONResponse response = (BoxJSONResponse) request.send();
+        BoxJSONRequest request = new BoxJSONRequest(this.getAPI(), url, "GET");
+        BoxJSONResponse response = request.send();
         JsonObject responseJSON = Json.parse(response.getJSON()).asObject();
 
         String totalCountString = responseJSON.get("total_count").toString();
@@ -928,10 +929,9 @@ public class BoxFolder extends BoxItem implements Iterable<BoxItem.Info> {
      */
     public Metadata createMetadata(String templateName, String scope, Metadata metadata) {
         URL url = METADATA_URL_TEMPLATE.buildAlpha(this.getAPI().getBaseURL(), this.getID(), scope, templateName);
-        BoxAPIRequest request = new BoxAPIRequest(this.getAPI(), url, "POST");
-        request.addHeader("Content-Type", "application/json");
+        BoxJSONRequest request = new BoxJSONRequest(this.getAPI(), url, "POST");
         request.setBody(metadata.toString());
-        BoxJSONResponse response = (BoxJSONResponse) request.send();
+        BoxJSONResponse response = request.send();
         return new Metadata(Json.parse(response.getJSON()).asObject());
     }
 
@@ -1024,8 +1024,8 @@ public class BoxFolder extends BoxItem implements Iterable<BoxItem.Info> {
      */
     public Metadata getMetadata(String templateName, String scope) {
         URL url = METADATA_URL_TEMPLATE.buildAlpha(this.getAPI().getBaseURL(), this.getID(), scope, templateName);
-        BoxAPIRequest request = new BoxAPIRequest(this.getAPI(), url, "GET");
-        BoxJSONResponse response = (BoxJSONResponse) request.send();
+        BoxJSONRequest request = new BoxJSONRequest(this.getAPI(), url, "GET");
+        BoxJSONResponse response = request.send();
         return new Metadata(Json.parse(response.getJSON()).asObject());
     }
 

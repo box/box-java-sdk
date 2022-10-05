@@ -455,6 +455,7 @@ public class BoxAPIRequest {
 
         while (this.backoffCounter.getAttemptsRemaining() > 0) {
             try {
+                // upload sends binary data but response is JSON
                 BoxJSONResponse response = (BoxJSONResponse) this.trySend(null);
                 JsonObject jsonObject = Json.parse(response.getJSON()).asObject();
                 return new BoxFileUploadSessionPart((JsonObject) jsonObject.get("part"));

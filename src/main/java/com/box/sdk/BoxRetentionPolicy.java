@@ -246,7 +246,7 @@ public class BoxRetentionPolicy extends BoxResource {
             }
         }
         request.setBody(requestJSON.toString());
-        BoxJSONResponse response = (BoxJSONResponse) request.send();
+        BoxJSONResponse response = request.send();
         JsonObject responseJSON = Json.parse(response.getJSON()).asObject();
         BoxRetentionPolicy createdPolicy = new BoxRetentionPolicy(api, responseJSON.get("id").asString());
         return createdPolicy.new Info(responseJSON);
@@ -449,7 +449,7 @@ public class BoxRetentionPolicy extends BoxResource {
         URL url = POLICY_URL_TEMPLATE.build(this.getAPI().getBaseURL(), this.getID());
         BoxJSONRequest request = new BoxJSONRequest(this.getAPI(), url, "PUT");
         request.setBody(info.getPendingChanges());
-        BoxJSONResponse response = (BoxJSONResponse) request.send();
+        BoxJSONResponse response = request.send();
         JsonObject responseJSON = Json.parse(response.getJSON()).asObject();
         info.update(responseJSON);
     }
@@ -466,8 +466,8 @@ public class BoxRetentionPolicy extends BoxResource {
             builder.appendParam("fields", fields);
         }
         URL url = POLICY_URL_TEMPLATE.buildWithQuery(this.getAPI().getBaseURL(), builder.toString(), this.getID());
-        BoxAPIRequest request = new BoxAPIRequest(this.getAPI(), url, "GET");
-        BoxJSONResponse response = (BoxJSONResponse) request.send();
+        BoxJSONRequest request = new BoxJSONRequest(this.getAPI(), url, "GET");
+        BoxJSONResponse response = request.send();
         JsonObject responseJSON = Json.parse(response.getJSON()).asObject();
         return new Info(responseJSON);
     }
@@ -729,10 +729,8 @@ public class BoxRetentionPolicy extends BoxResource {
         /**
          *
          * @return retention type. It can be one of values: `modifiable` or `non-modifiable`.
-         *
          * `modifiable` means that you can modify the retention policy. For example, you can add or remove folders,
          *  shorten or lengthen the policy duration, or delete the assignment.
-         *
          * `non-modifiable` means that can modify the retention policy only in a limited way: add a folder,
          *  lengthen the duration, retire the policy, change the disposition action or notification settings.
          *  You cannot perform other actions, such as deleting the assignment or shortening the policy duration.
@@ -807,7 +805,7 @@ public class BoxRetentionPolicy extends BoxResource {
                 } else if (memberName.equals("retention_type")) {
                     this.retentionType = RetentionPolicyParams.RetentionType.fromJSONString(value.asString());
                 } else if (memberName.equals("custom_notification_recipients")) {
-                    List<BoxUser.Info> recipients = new ArrayList<BoxUser.Info>();
+                    List<BoxUser.Info> recipients = new ArrayList<>();
                     for (JsonValue userJSON : value.asArray()) {
                         String userID = userJSON.asObject().get("id").asString();
                         BoxUser user = new BoxUser(getAPI(), userID);

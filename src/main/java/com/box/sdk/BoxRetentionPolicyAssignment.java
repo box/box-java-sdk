@@ -166,7 +166,7 @@ public class BoxRetentionPolicyAssignment extends BoxResource {
         }
 
         request.setBody(requestJSON.toString());
-        BoxJSONResponse response = (BoxJSONResponse) request.send();
+        BoxJSONResponse response = request.send();
         JsonObject responseJSON = Json.parse(response.getJSON()).asObject();
         BoxRetentionPolicyAssignment createdAssignment
             = new BoxRetentionPolicyAssignment(api, responseJSON.get("id").asString());
@@ -184,8 +184,8 @@ public class BoxRetentionPolicyAssignment extends BoxResource {
         }
         URL url = RETENTION_POLICY_ASSIGNMENT_URL_TEMPLATE.buildWithQuery(
             this.getAPI().getBaseURL(), builder.toString(), this.getID());
-        BoxAPIRequest request = new BoxAPIRequest(this.getAPI(), url, "GET");
-        BoxJSONResponse response = (BoxJSONResponse) request.send();
+        BoxJSONRequest request = new BoxJSONRequest(this.getAPI(), url, "GET");
+        BoxJSONResponse response = request.send();
         JsonObject responseJSON = Json.parse(response.getJSON()).asObject();
         return new Info(responseJSON);
     }

@@ -64,8 +64,8 @@ class JsonIterator {
             throw new BoxAPIException("Couldn't append a query string to the provided URL.");
         }
 
-        BoxAPIRequest request = new BoxAPIRequest(this.api, url, "GET");
-        BoxJSONResponse response = (BoxJSONResponse) request.send();
+        BoxJSONRequest request = new BoxJSONRequest(this.api, url, "GET");
+        BoxJSONResponse response = request.send();
         String json = response.getJSON();
 
         JsonObject responseObject = Json.parse(json).asObject();

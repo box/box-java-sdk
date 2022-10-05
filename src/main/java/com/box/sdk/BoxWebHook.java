@@ -132,7 +132,7 @@ public class BoxWebHook extends BoxResource {
         BoxJSONRequest request = new BoxJSONRequest(api, url, "POST");
         request.setBody(requestJSON.toString());
 
-        BoxJSONResponse response = (BoxJSONResponse) request.send();
+        BoxJSONResponse response = request.send();
         JsonObject responseJSON = Json.parse(response.getJSON()).asObject();
 
         BoxWebHook webHook = new BoxWebHook(api, responseJSON.get(JSON_KEY_ID).asString());
@@ -231,8 +231,8 @@ public class BoxWebHook extends BoxResource {
      */
     public BoxWebHook.Info getInfo() {
         URL url = WEBHOOK_URL_TEMPLATE.build(this.getAPI().getBaseURL(), this.getID());
-        BoxAPIRequest request = new BoxAPIRequest(this.getAPI(), url, "GET");
-        BoxJSONResponse response = (BoxJSONResponse) request.send();
+        BoxJSONRequest request = new BoxJSONRequest(this.getAPI(), url, "GET");
+        BoxJSONResponse response = request.send();
         return new Info(Json.parse(response.getJSON()).asObject());
     }
 
@@ -246,8 +246,8 @@ public class BoxWebHook extends BoxResource {
             builder.appendParam("fields", fields);
         }
         URL url = WEBHOOK_URL_TEMPLATE.buildWithQuery(this.getAPI().getBaseURL(), builder.toString(), this.getID());
-        BoxAPIRequest request = new BoxAPIRequest(this.getAPI(), url, "GET");
-        BoxJSONResponse response = (BoxJSONResponse) request.send();
+        BoxJSONRequest request = new BoxJSONRequest(this.getAPI(), url, "GET");
+        BoxJSONResponse response = request.send();
         return new Info(Json.parse(response.getJSON()).asObject());
     }
 
@@ -261,7 +261,7 @@ public class BoxWebHook extends BoxResource {
         BoxJSONRequest request = new BoxJSONRequest(getAPI(), url, "PUT");
         request.setBody(info.getPendingChanges());
 
-        BoxJSONResponse response = (BoxJSONResponse) request.send();
+        BoxJSONResponse response = request.send();
         JsonObject jsonObject = Json.parse(response.getJSON()).asObject();
         info.update(jsonObject);
     }

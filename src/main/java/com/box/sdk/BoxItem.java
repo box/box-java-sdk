@@ -66,8 +66,8 @@ public abstract class BoxItem extends BoxResource {
     public static BoxItem.Info getSharedItem(BoxAPIConnection api, String sharedLink, String password) {
         BoxAPIConnection newAPI = new SharedLinkAPIConnection(api, sharedLink, password);
         URL url = SHARED_ITEM_URL_TEMPLATE.build(newAPI.getBaseURL());
-        BoxAPIRequest request = new BoxAPIRequest(newAPI, url, "GET");
-        BoxJSONResponse response = (BoxJSONResponse) request.send();
+        BoxJSONRequest request = new BoxJSONRequest(newAPI, url, "GET");
+        BoxJSONResponse response = request.send();
         JsonObject json = Json.parse(response.getJSON()).asObject();
         return (BoxItem.Info) BoxResource.parseInfo(newAPI, json);
     }
@@ -94,8 +94,8 @@ public abstract class BoxItem extends BoxResource {
             builder.appendParam("fields", fields);
         }
         URL url = WATERMARK_URL_TEMPLATE.buildWithQuery(watermarkUrl.toString(), builder.toString());
-        BoxAPIRequest request = new BoxAPIRequest(this.getAPI(), url, "GET");
-        BoxJSONResponse response = (BoxJSONResponse) request.send();
+        BoxJSONRequest request = new BoxJSONRequest(this.getAPI(), url, "GET");
+        BoxJSONResponse response = request.send();
         return new BoxWatermark(response.getJSON());
     }
 
@@ -114,7 +114,7 @@ public abstract class BoxItem extends BoxResource {
             .add(BoxWatermark.WATERMARK_JSON_KEY, new JsonObject()
                 .add(BoxWatermark.WATERMARK_IMPRINT_JSON_KEY, imprint));
         request.setBody(body.toString());
-        BoxJSONResponse response = (BoxJSONResponse) request.send();
+        BoxJSONResponse response = request.send();
         return new BoxWatermark(response.getJSON());
     }
 
@@ -189,6 +189,7 @@ public abstract class BoxItem extends BoxResource {
      *
      * @return info about this item.
      */
+    //TODO: this method is not needed as we should be able to use getInto(String... fields)
     public abstract BoxItem.Info getInfo();
 
     /**
@@ -596,7 +597,7 @@ public abstract class BoxItem extends BoxResource {
                     this.itemStatus = value.asString();
                 } else if (memberName.equals("collections")) {
                     if (this.collections == null) {
-                        this.collections = new HashSet<BoxCollection.Info>();
+                        this.collections = new HashSet<>();
                     } else {
                         this.collections.clear();
                     }
@@ -618,7 +619,7 @@ public abstract class BoxItem extends BoxResource {
 
         private List<BoxFolder.Info> parsePathCollection(JsonObject jsonObject) {
             int count = jsonObject.get("total_count").asInt();
-            List<BoxFolder.Info> pathCollection = new ArrayList<BoxFolder.Info>(count);
+            List<BoxFolder.Info> pathCollection = new ArrayList<>(count);
             JsonArray entries = jsonObject.get("entries").asArray();
             for (JsonValue value : entries) {
                 JsonObject entry = value.asObject();
@@ -637,7 +638,7 @@ public abstract class BoxItem extends BoxResource {
         }
 
         private List<String> parseTags(JsonArray jsonArray) {
-            List<String> tags = new ArrayList<String>(jsonArray.size());
+            List<String> tags = new ArrayList<>(jsonArray.size());
             for (JsonValue value : jsonArray) {
                 tags.add(value.asString());
             }

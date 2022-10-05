@@ -33,7 +33,6 @@ public final class LargeFileUpload {
     private final ThreadPoolExecutor executorService;
     private final long timeout;
     private final TimeUnit timeUnit;
-    private int connections;
 
     /**
      * Creates a LargeFileUpload object.
@@ -95,7 +94,7 @@ public final class LargeFileUpload {
         body.add("file_size", fileSize);
         request.setBody(body.toString());
 
-        BoxJSONResponse response = (BoxJSONResponse) request.send();
+        BoxJSONResponse response = request.send();
         JsonObject jsonObject = Json.parse(response.getJSON()).asObject();
 
         String sessionId = jsonObject.get("id").asString();
@@ -218,7 +217,7 @@ public final class LargeFileUpload {
         body.add("file_size", fileSize);
         request.setBody(body.toString());
 
-        BoxJSONResponse response = (BoxJSONResponse) request.send();
+        BoxJSONResponse response = request.send();
         JsonObject jsonObject = Json.parse(response.getJSON()).asObject();
 
         String sessionId = jsonObject.get("id").asString();

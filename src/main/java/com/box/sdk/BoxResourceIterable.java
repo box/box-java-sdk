@@ -196,16 +196,15 @@ public abstract class BoxResourceIterable<T> implements Iterable<T> {
                 throw new BoxAPIException("Couldn't append a query string to the provided URL.");
             }
 
-            BoxAPIRequest request;
+            BoxJSONRequest request;
             if (this.body != null) {
-                request = new BoxAPIRequest(BoxResourceIterable.this.api, url, "POST");
+                request = new BoxJSONRequest(BoxResourceIterable.this.api, url, "POST");
                 request.setBody(this.body.toString());
-                request.addHeader("Content-Type", "application/json");
             } else {
-                request = new BoxAPIRequest(BoxResourceIterable.this.api, url, "GET");
+                request = new BoxJSONRequest(BoxResourceIterable.this.api, url, "GET");
             }
 
-            BoxJSONResponse response = (BoxJSONResponse) request.send();
+            BoxJSONResponse response = request.send();
             JsonObject pageBody = Json.parse(response.getJSON()).asObject();
 
             JsonValue markerNextValue = pageBody.get(BODY_PARAMETER_MARKER_NEXT);
@@ -248,7 +247,7 @@ public abstract class BoxResourceIterable<T> implements Iterable<T> {
         }
 
         /**
-         * @throws UnsupportedOperationException
+         * @throws UnsupportedOperationException Remove is not supported
          */
         @Override
         public void remove() {

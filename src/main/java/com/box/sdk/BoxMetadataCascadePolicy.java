@@ -126,8 +126,8 @@ public class BoxMetadataCascadePolicy extends BoxResource {
         }
         URL url = METADATA_CASCADE_POLICIES_URL_TEMPLATE.buildAlphaWithQuery(this.getAPI().getBaseURL(),
             builder.toString(), this.getID());
-        BoxAPIRequest request = new BoxAPIRequest(this.getAPI(), url, "GET");
-        BoxJSONResponse response = (BoxJSONResponse) request.send();
+        BoxJSONRequest request = new BoxJSONRequest(this.getAPI(), url, "GET");
+        BoxJSONResponse response = request.send();
         JsonObject responseJSON = Json.parse(response.getJSON()).asObject();
         return new Info(responseJSON);
     }

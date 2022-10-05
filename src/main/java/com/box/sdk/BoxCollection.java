@@ -93,8 +93,8 @@ public class BoxCollection extends BoxResource implements Iterable<BoxItem.Info>
         }
 
         URL url = GET_COLLECTION_ITEMS_URL.buildWithQuery(getAPI().getBaseURL(), builder.toString(), getID());
-        BoxAPIRequest request = new BoxAPIRequest(this.getAPI(), url, "GET");
-        BoxJSONResponse response = (BoxJSONResponse) request.send();
+        BoxJSONRequest request = new BoxJSONRequest(this.getAPI(), url, "GET");
+        BoxJSONResponse response = request.send();
         JsonObject responseJSON = Json.parse(response.getJSON()).asObject();
 
         String totalCountString = responseJSON.get("total_count").toString();

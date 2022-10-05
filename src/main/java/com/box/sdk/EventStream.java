@@ -118,9 +118,10 @@ public class EventStream {
         final long initialPosition;
 
         if (this.startingPosition == STREAM_POSITION_NOW) {
-            BoxAPIRequest request = new BoxAPIRequest(this.api,
-                EVENT_URL.buildAlpha(this.api.getBaseURL(), "now"), "GET");
-            BoxJSONResponse response = (BoxJSONResponse) request.send();
+            BoxJSONRequest request = new BoxJSONRequest(this.api,
+                EVENT_URL.buildAlpha(this.api.getBaseURL(), "now"), "GET"
+            );
+            BoxJSONResponse response = request.send();
             JsonObject jsonObject = Json.parse(response.getJSON()).asObject();
             initialPosition = jsonObject.get("next_stream_position").asLong();
         } else {
@@ -131,11 +132,7 @@ public class EventStream {
         this.poller = new Poller(initialPosition);
 
         this.pollerThread = new Thread(this.poller);
-        this.pollerThread.setUncaughtExceptionHandler(new Thread.UncaughtExceptionHandler() {
-            public void uncaughtException(Thread t, Throwable e) {
-                EventStream.this.notifyException(e);
-            }
-        });
+        this.pollerThread.setUncaughtExceptionHandler((t, e) -> EventStream.this.notifyException(e));
         this.pollerThread.start();
 
         this.started = true;
@@ -214,9 +211,10 @@ public class EventStream {
                         return;
                     }
 
-                    BoxAPIRequest request = new BoxAPIRequest(EventStream.this.api,
-                        EVENT_URL.buildAlpha(EventStream.this.api.getBaseURL(), position), "GET");
-                    BoxJSONResponse response = (BoxJSONResponse) request.send();
+                    BoxJSONRequest request = new BoxJSONRequest(EventStream.this.api,
+                        EVENT_URL.buildAlpha(EventStream.this.api.getBaseURL(), position), "GET"
+                    );
+                    BoxJSONResponse response = request.send();
                     JsonObject jsonObject = Json.parse(response.getJSON()).asObject();
                     JsonArray entriesArray = jsonObject.get("entries").asArray();
                     for (JsonValue entry : entriesArray) {

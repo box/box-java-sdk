@@ -165,7 +165,7 @@ public class BoxUser extends BoxCollaborator {
         URL url = USERS_URL_TEMPLATE.build(api.getBaseURL());
         BoxJSONRequest request = new BoxJSONRequest(api, url, "POST");
         request.setBody(requestJSON.toString());
-        BoxJSONResponse response = (BoxJSONResponse) request.send();
+        BoxJSONResponse response = request.send();
         JsonObject responseJSON = Json.parse(response.getJSON()).asObject();
 
         BoxUser createdUser = new BoxUser(api, responseJSON.get("id").asString());
@@ -180,8 +180,8 @@ public class BoxUser extends BoxCollaborator {
      */
     public static BoxUser getCurrentUser(BoxAPIConnection api) {
         URL url = GET_ME_URL.build(api.getBaseURL());
-        BoxAPIRequest request = new BoxAPIRequest(api, url, "GET");
-        BoxJSONResponse response = (BoxJSONResponse) request.send();
+        BoxJSONRequest request = new BoxJSONRequest(api, url, "GET");
+        BoxJSONResponse response = request.send();
         JsonObject jsonObject = Json.parse(response.getJSON()).asObject();
         return new BoxUser(api, jsonObject.get("id").asString());
     }
@@ -448,8 +448,8 @@ public class BoxUser extends BoxCollaborator {
         } else {
             url = USER_URL_TEMPLATE.build(this.getAPI().getBaseURL(), this.getID());
         }
-        BoxAPIRequest request = new BoxAPIRequest(this.getAPI(), url, "GET");
-        BoxJSONResponse response = (BoxJSONResponse) request.send();
+        BoxJSONRequest request = new BoxJSONRequest(this.getAPI(), url, "GET");
+        BoxJSONResponse response = request.send();
         JsonObject jsonObject = Json.parse(response.getJSON()).asObject();
         return new Info(jsonObject);
     }
@@ -466,8 +466,8 @@ public class BoxUser extends BoxCollaborator {
         BoxAPIConnection api = this.getAPI();
         URL url = USER_MEMBERSHIPS_URL_TEMPLATE.build(this.getAPI().getBaseURL(), this.getID());
 
-        BoxAPIRequest request = new BoxAPIRequest(api, url, "GET");
-        BoxJSONResponse response = (BoxJSONResponse) request.send();
+        BoxJSONRequest request = new BoxJSONRequest(api, url, "GET");
+        BoxJSONResponse response = request.send();
         JsonObject responseJSON = Json.parse(response.getJSON()).asObject();
 
         int entriesCount = responseJSON.get("total_count").asInt();
@@ -531,7 +531,7 @@ public class BoxUser extends BoxCollaborator {
         }
 
         request.setBody(requestJSON.toString());
-        BoxJSONResponse response = (BoxJSONResponse) request.send();
+        BoxJSONResponse response = request.send();
         JsonObject responseJSON = Json.parse(response.getJSON()).asObject();
         return new EmailAlias(responseJSON);
     }
@@ -559,8 +559,8 @@ public class BoxUser extends BoxCollaborator {
      */
     public Collection<EmailAlias> getEmailAliases() {
         URL url = EMAIL_ALIASES_URL_TEMPLATE.build(this.getAPI().getBaseURL(), this.getID());
-        BoxAPIRequest request = new BoxAPIRequest(this.getAPI(), url, "GET");
-        BoxJSONResponse response = (BoxJSONResponse) request.send();
+        BoxJSONRequest request = new BoxJSONRequest(this.getAPI(), url, "GET");
+        BoxJSONResponse response = request.send();
         JsonObject responseJSON = Json.parse(response.getJSON()).asObject();
 
         int totalCount = responseJSON.get("total_count").asInt();
@@ -615,7 +615,7 @@ public class BoxUser extends BoxCollaborator {
         URL url = USER_URL_TEMPLATE.build(this.getAPI().getBaseURL(), this.getID());
         BoxJSONRequest request = new BoxJSONRequest(this.getAPI(), url, "PUT");
         request.setBody(info.getPendingChanges());
-        BoxJSONResponse response = (BoxJSONResponse) request.send();
+        BoxJSONResponse response = request.send();
         JsonObject jsonObject = Json.parse(response.getJSON()).asObject();
         info.update(jsonObject);
     }
@@ -642,7 +642,7 @@ public class BoxUser extends BoxCollaborator {
         JsonObject ownedBy = new JsonObject();
         ownedBy.add("owned_by", idValue);
         request.setBody(ownedBy.toString());
-        BoxJSONResponse response = (BoxJSONResponse) request.send();
+        BoxJSONResponse response = request.send();
         JsonObject responseJSON = Json.parse(response.getJSON()).asObject();
         BoxFolder movedFolder = new BoxFolder(this.getAPI(), responseJSON.get("id").asString());
 
@@ -668,7 +668,7 @@ public class BoxUser extends BoxCollaborator {
         JsonObject ownedBy = new JsonObject();
         ownedBy.add("owned_by", destinationUser);
         request.setBody(ownedBy.toString());
-        BoxJSONResponse response = (BoxJSONResponse) request.send();
+        BoxJSONResponse response = request.send();
         JsonObject responseJSON = Json.parse(response.getJSON()).asObject();
         BoxFolder movedFolder = new BoxFolder(this.getAPI(), responseJSON.get("id").asString());
 

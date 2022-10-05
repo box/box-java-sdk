@@ -145,8 +145,8 @@ public class EventLog implements Iterable<BoxEvent> {
             }
         }
 
-        BoxAPIRequest request = new BoxAPIRequest(api, url, "GET");
-        BoxJSONResponse response = (BoxJSONResponse) request.send();
+        BoxJSONRequest request = new BoxJSONRequest(api, url, "GET");
+        BoxJSONResponse response = request.send();
         JsonObject responseJSON = Json.parse(response.getJSON()).asObject();
         EventLog log = new EventLog(api, responseJSON, position, limit);
         log.setStartDate(after);
@@ -243,8 +243,8 @@ public class EventLog implements Iterable<BoxEvent> {
             throw new BoxAPIException("Couldn't append a query string to the provided URL.");
         }
 
-        BoxAPIRequest apiRequest = new BoxAPIRequest(api, url, "GET");
-        BoxJSONResponse response = (BoxJSONResponse) apiRequest.send();
+        BoxJSONRequest apiRequest = new BoxJSONRequest(api, url, "GET");
+        BoxJSONResponse response = apiRequest.send();
         JsonObject responseJSON = Json.parse(response.getJSON()).asObject();
         EventLog log = new EventLog(api, responseJSON, request.getPosition(), request.getLimit());
         log.setStartDate(request.getAfter());

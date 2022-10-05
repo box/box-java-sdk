@@ -132,7 +132,7 @@ public class BoxFileUploadSession extends BoxResource {
         URL url = template.buildWithQuery("", queryString);
 
         BoxJSONRequest request = new BoxJSONRequest(this.getAPI(), url, HttpMethod.GET);
-        BoxJSONResponse response = (BoxJSONResponse) request.send();
+        BoxJSONResponse response = request.send();
         JsonObject jsonObject = Json.parse(response.getJSON()).asObject();
 
         return new BoxFileUploadSessionPartList(jsonObject);
@@ -188,7 +188,7 @@ public class BoxFileUploadSession extends BoxResource {
         String body = this.getCommitBody(parts, attributes);
         request.setBody(body);
 
-        BoxAPIResponse response = request.send();
+        BoxJSONResponse response = request.send();
         //Retry the commit operation after the given number of seconds if the HTTP response code is 202.
         if (response.getResponseCode() == 202) {
             String retryInterval = response.getHeaderField("retry-after");
@@ -203,13 +203,8 @@ public class BoxFileUploadSession extends BoxResource {
             }
         }
 
-        if (response instanceof BoxJSONResponse) {
-            //Create the file instance from the response
-            return this.getFile((BoxJSONResponse) response);
-        } else {
-            throw new BoxAPIException("Commit response content type is not application/json. The response code : "
-                + response.getResponseCode());
-        }
+        //Create the file instance from the response
+        return this.getFile(response);
     }
 
     /*
@@ -263,7 +258,7 @@ public class BoxFileUploadSession extends BoxResource {
     public BoxFileUploadSession.Info getStatus() {
         URL statusURL = this.sessionInfo.getSessionEndpoints().getStatusEndpoint();
         BoxJSONRequest request = new BoxJSONRequest(this.getAPI(), statusURL, HttpMethod.GET);
-        BoxJSONResponse response = (BoxJSONResponse) request.send();
+        BoxJSONResponse response = request.send();
         JsonObject jsonObject = Json.parse(response.getJSON()).asObject();
 
         this.sessionInfo.update(jsonObject);

@@ -99,8 +99,8 @@ public class BoxZip {
         } finally {
             response.disconnect();
         }
-        BoxAPIRequest statusRequest = new BoxAPIRequest(this.getAPI(), zipInfo.getStatusURL(), "GET");
-        BoxJSONResponse statusResponse = (BoxJSONResponse) statusRequest.send();
+        BoxJSONRequest statusRequest = new BoxJSONRequest(this.getAPI(), zipInfo.getStatusURL(), "GET");
+        BoxJSONResponse statusResponse = statusRequest.send();
         JsonObject statusResponseJSON = Json.parse(statusResponse.getJSON()).asObject();
         return new BoxZipDownloadStatus(statusResponseJSON);
     }

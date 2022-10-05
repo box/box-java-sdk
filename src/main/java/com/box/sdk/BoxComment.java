@@ -56,8 +56,8 @@ public class BoxComment extends BoxResource {
      */
     public Info getInfo() {
         URL url = COMMENT_URL_TEMPLATE.build(this.getAPI().getBaseURL(), this.getID());
-        BoxAPIRequest request = new BoxAPIRequest(this.getAPI(), url, "GET");
-        BoxJSONResponse response = (BoxJSONResponse) request.send();
+        BoxJSONRequest request = new BoxJSONRequest(this.getAPI(), url, "GET");
+        BoxJSONResponse response = request.send();
         JsonObject jsonResponse = Json.parse(response.getJSON()).asObject();
 
         return new Info(jsonResponse);
@@ -76,7 +76,7 @@ public class BoxComment extends BoxResource {
         URL url = COMMENT_URL_TEMPLATE.build(this.getAPI().getBaseURL(), this.getID());
         BoxJSONRequest request = new BoxJSONRequest(this.getAPI(), url, "PUT");
         request.setBody(newInfo.getPendingChanges());
-        BoxJSONResponse response = (BoxJSONResponse) request.send();
+        BoxJSONResponse response = request.send();
         JsonObject jsonResponse = Json.parse(response.getJSON()).asObject();
 
         return new Info(jsonResponse);
@@ -104,7 +104,7 @@ public class BoxComment extends BoxResource {
         URL url = ADD_COMMENT_URL_TEMPLATE.build(this.getAPI().getBaseURL());
         BoxJSONRequest request = new BoxJSONRequest(this.getAPI(), url, "POST");
         request.setBody(requestJSON.toString());
-        BoxJSONResponse response = (BoxJSONResponse) request.send();
+        BoxJSONResponse response = request.send();
         JsonObject responseJSON = Json.parse(response.getJSON()).asObject();
 
         BoxComment addedComment = new BoxComment(this.getAPI(), responseJSON.get("id").asString());
@@ -321,7 +321,6 @@ public class BoxComment extends BoxResource {
         }
 
         private void updateItemAsComment(JsonObject itemJSON) {
-            String itemType = itemJSON.get("type").asString();
             String itemID = itemJSON.get("id").asString();
             if (this.item != null && this.item instanceof BoxComment.Info && this.item.getID().equals(itemID)) {
                 this.item.update(itemJSON);

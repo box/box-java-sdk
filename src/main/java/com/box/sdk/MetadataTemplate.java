@@ -199,7 +199,7 @@ public class MetadataTemplate extends BoxJSONObject {
         BoxJSONRequest request = new BoxJSONRequest(api, url, "POST");
         request.setBody(jsonObject.toString());
 
-        BoxJSONResponse response = (BoxJSONResponse) request.send();
+        BoxJSONResponse response = request.send();
         JsonObject responseJSON = Json.parse(response.getJSON()).asObject();
 
         return new MetadataTemplate(responseJSON);
@@ -265,7 +265,7 @@ public class MetadataTemplate extends BoxJSONObject {
         BoxJSONRequest request = new BoxJSONRequest(api, url, "PUT");
         request.setBody(array.toString());
 
-        BoxJSONResponse response = (BoxJSONResponse) request.send();
+        BoxJSONResponse response = request.send();
         JsonObject responseJson = Json.parse(response.getJSON()).asObject();
 
         return new MetadataTemplate(responseJson);
@@ -708,8 +708,8 @@ public class MetadataTemplate extends BoxJSONObject {
         }
         URL url = METADATA_TEMPLATE_URL_TEMPLATE.buildAlphaWithQuery(
             api.getBaseURL(), builder.toString(), scope, templateName);
-        BoxAPIRequest request = new BoxAPIRequest(api, url, "GET");
-        BoxJSONResponse response = (BoxJSONResponse) request.send();
+        BoxJSONRequest request = new BoxJSONRequest(api, url, "GET");
+        BoxJSONResponse response = request.send();
         return new MetadataTemplate(response.getJSON());
     }
 
@@ -723,8 +723,8 @@ public class MetadataTemplate extends BoxJSONObject {
     public static MetadataTemplate getMetadataTemplateByID(BoxAPIConnection api, String templateID) {
 
         URL url = METADATA_TEMPLATE_BY_ID_URL_TEMPLATE.buildAlpha(api.getBaseURL(), templateID);
-        BoxAPIRequest request = new BoxAPIRequest(api, url, "GET");
-        BoxJSONResponse response = (BoxJSONResponse) request.send();
+        BoxJSONRequest request = new BoxJSONRequest(api, url, "GET");
+        BoxJSONResponse response = request.send();
         return new MetadataTemplate(response.getJSON());
     }
 

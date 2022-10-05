@@ -489,8 +489,8 @@ public class BoxFile extends BoxItem {
     @Override
     public BoxFile.Info getInfo() {
         URL url = FILE_URL_TEMPLATE.build(this.getAPI().getBaseURL(), this.getID());
-        BoxAPIRequest request = new BoxAPIRequest(this.getAPI(), url, "GET");
-        BoxJSONResponse response = (BoxJSONResponse) request.send();
+        BoxJSONRequest request = new BoxJSONRequest(this.getAPI(), url, "GET");
+        BoxJSONResponse response = request.send();
         return new Info(response.getJSON());
     }
 
@@ -499,8 +499,8 @@ public class BoxFile extends BoxItem {
         String queryString = new QueryStringBuilder().appendParam("fields", fields).toString();
         URL url = FILE_URL_TEMPLATE.buildWithQuery(this.getAPI().getBaseURL(), queryString, this.getID());
 
-        BoxAPIRequest request = new BoxAPIRequest(this.getAPI(), url, "GET");
-        BoxJSONResponse response = (BoxJSONResponse) request.send();
+        BoxJSONRequest request = new BoxJSONRequest(this.getAPI(), url, "GET");
+        BoxJSONResponse response = request.send();
         return new Info(response.getJSON());
     }
 
@@ -521,9 +521,9 @@ public class BoxFile extends BoxItem {
                 fieldsSet.toArray(new String[0])).toString();
             URL url = FILE_URL_TEMPLATE.buildWithQuery(this.getAPI().getBaseURL(), queryString, this.getID());
 
-            BoxAPIRequest request = new BoxAPIRequest(this.getAPI(), url, "GET");
+            BoxJSONRequest request = new BoxJSONRequest(this.getAPI(), url, "GET");
             request.addHeader("X-Rep-Hints", representationHints);
-            BoxJSONResponse response = (BoxJSONResponse) request.send();
+            BoxJSONResponse response = request.send();
             return new Info(response.getJSON());
         } else {
             throw new BoxAPIException("Represention hints is not valid."
@@ -580,8 +580,8 @@ public class BoxFile extends BoxItem {
 
     private String pollRepInfo(URL infoURL) {
 
-        BoxAPIRequest infoRequest = new BoxAPIRequest(this.getAPI(), infoURL, HttpMethod.GET);
-        BoxJSONResponse infoResponse = (BoxJSONResponse) infoRequest.send();
+        BoxJSONRequest infoRequest = new BoxJSONRequest(this.getAPI(), infoURL, HttpMethod.GET);
+        BoxJSONResponse infoResponse = infoRequest.send();
         JsonObject response = infoResponse.getJsonObject();
 
         Representation rep = new Representation(response);
@@ -682,8 +682,8 @@ public class BoxFile extends BoxItem {
         } catch (MalformedURLException e) {
             throw new BoxAPIException("Couldn't append a query string to the provided URL.", e);
         }
-        BoxAPIRequest request = new BoxAPIRequest(this.getAPI(), url, "GET");
-        BoxJSONResponse response = (BoxJSONResponse) request.send();
+        BoxJSONRequest request = new BoxJSONRequest(this.getAPI(), url, "GET");
+        BoxJSONResponse response = request.send();
 
         JsonObject jsonObject = Json.parse(response.getJSON()).asObject();
         JsonArray entries = jsonObject.get("entries").asArray();
@@ -967,8 +967,10 @@ public class BoxFile extends BoxItem {
 
         BoxJSONResponse response;
         if (listener == null) {
+            // upload is multipart request but response is JSON
             response = (BoxJSONResponse) request.send();
         } else {
+            // upload is multipart request but response is JSON
             response = (BoxJSONResponse) request.send(listener);
         }
 
@@ -996,8 +998,8 @@ public class BoxFile extends BoxItem {
      */
     public List<BoxComment.Info> getComments() {
         URL url = GET_COMMENTS_URL_TEMPLATE.build(this.getAPI().getBaseURL(), this.getID());
-        BoxAPIRequest request = new BoxAPIRequest(this.getAPI(), url, "GET");
-        BoxJSONResponse response = (BoxJSONResponse) request.send();
+        BoxJSONRequest request = new BoxJSONRequest(this.getAPI(), url, "GET");
+        BoxJSONResponse response = request.send();
         JsonObject responseJSON = Json.parse(response.getJSON()).asObject();
 
         int totalCount = responseJSON.get("total_count").asInt();
@@ -1025,8 +1027,8 @@ public class BoxFile extends BoxItem {
             builder.appendParam("fields", fields);
         }
         URL url = GET_TASKS_URL_TEMPLATE.buildWithQuery(this.getAPI().getBaseURL(), builder.toString(), this.getID());
-        BoxAPIRequest request = new BoxAPIRequest(this.getAPI(), url, "GET");
-        BoxJSONResponse response = (BoxJSONResponse) request.send();
+        BoxJSONRequest request = new BoxJSONRequest(this.getAPI(), url, "GET");
+        BoxJSONResponse response = request.send();
         JsonObject responseJSON = Json.parse(response.getJSON()).asObject();
 
         int totalCount = responseJSON.get("total_count").asInt();
@@ -1074,10 +1076,9 @@ public class BoxFile extends BoxItem {
      */
     public Metadata createMetadata(String typeName, String scope, Metadata metadata) {
         URL url = METADATA_URL_TEMPLATE.buildAlpha(this.getAPI().getBaseURL(), this.getID(), scope, typeName);
-        BoxAPIRequest request = new BoxAPIRequest(this.getAPI(), url, "POST");
-        request.addHeader("Content-Type", "application/json");
+        BoxJSONRequest request = new BoxJSONRequest(this.getAPI(), url, "POST");
         request.setBody(metadata.toString());
-        BoxJSONResponse response = (BoxJSONResponse) request.send();
+        BoxJSONResponse response = request.send();
         return new Metadata(Json.parse(response.getJSON()).asObject());
     }
 
@@ -1249,7 +1250,7 @@ public class BoxFile extends BoxItem {
     public BoxLock lock(Date expiresAt, boolean isDownloadPrevented) {
         String queryString = new QueryStringBuilder().appendParam("fields", "lock").toString();
         URL url = FILE_URL_TEMPLATE.buildWithQuery(this.getAPI().getBaseURL(), queryString, this.getID());
-        BoxAPIRequest request = new BoxAPIRequest(this.getAPI(), url, "PUT");
+        BoxJSONRequest request = new BoxJSONRequest(this.getAPI(), url, "PUT");
 
         JsonObject lockConfig = new JsonObject();
         lockConfig.add("type", "lock");
@@ -1262,7 +1263,7 @@ public class BoxFile extends BoxItem {
         requestJSON.add("lock", lockConfig);
         request.setBody(requestJSON.toString());
 
-        BoxJSONResponse response = (BoxJSONResponse) request.send();
+        BoxJSONResponse response = request.send();
 
         JsonObject responseJSON = Json.parse(response.getJSON()).asObject();
         JsonValue lockValue = responseJSON.get("lock");
@@ -1325,8 +1326,8 @@ public class BoxFile extends BoxItem {
      */
     public Metadata getMetadata(String typeName, String scope) {
         URL url = METADATA_URL_TEMPLATE.buildAlpha(this.getAPI().getBaseURL(), this.getID(), scope, typeName);
-        BoxAPIRequest request = new BoxAPIRequest(this.getAPI(), url, "GET");
-        BoxJSONResponse response = (BoxJSONResponse) request.send();
+        BoxJSONRequest request = new BoxJSONRequest(this.getAPI(), url, "GET");
+        BoxJSONResponse response = request.send();
         return new Metadata(Json.parse(response.getJSON()).asObject());
     }
 

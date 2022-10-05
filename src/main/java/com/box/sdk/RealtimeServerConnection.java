@@ -17,8 +17,8 @@ class RealtimeServerConnection {
     private int retries;
 
     RealtimeServerConnection(BoxAPIConnection api) {
-        BoxAPIRequest request = new BoxAPIRequest(api, EVENT_URL.build(api.getBaseURL()), "OPTIONS");
-        BoxJSONResponse response = (BoxJSONResponse) request.send();
+        BoxJSONRequest request = new BoxJSONRequest(api, EVENT_URL.build(api.getBaseURL()), "OPTIONS");
+        BoxJSONResponse response = request.send();
         JsonObject jsonObject = Json.parse(response.getJSON()).asObject();
         JsonArray entries = jsonObject.get("entries").asArray();
         JsonObject firstEntry = entries.get(0).asObject();
@@ -48,10 +48,10 @@ class RealtimeServerConnection {
         while (this.retries > 0) {
             this.retries--;
             try {
-                BoxAPIRequest request = new BoxAPIRequest(this.api, url, "GET");
+                BoxJSONRequest request = new BoxJSONRequest(this.api, url, "GET");
                 request.setConnectTimeout(this.timeout * 1000);
                 request.setReadTimeout(this.timeout * 1000);
-                BoxJSONResponse response = (BoxJSONResponse) request.send();
+                BoxJSONResponse response = request.send();
                 JsonObject jsonObject = Json.parse(response.getJSON()).asObject();
                 String message = jsonObject.get("message").asString();
                 if (message.equals("new_change")) {

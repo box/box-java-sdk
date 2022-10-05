@@ -71,6 +71,7 @@ public class BoxTransactionalAPIConnection extends BoxAPIConnection {
             );
         }
 
+        // authentication uses form url encoded params but response is JSON
         BoxAPIRequest request = new BoxAPIRequest(apiConnection, url, "POST");
         request.shouldAuthenticate(false);
         request.setBody(urlParameters);

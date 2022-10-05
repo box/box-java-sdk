@@ -297,6 +297,7 @@ public class BoxAPIConnection {
         request.shouldAuthenticate(false);
         request.setBody(urlParameters);
 
+        // authentication uses form url encoded but response is JSON
         BoxJSONResponse response = (BoxJSONResponse) request.send();
         String json = response.getJSON();
 

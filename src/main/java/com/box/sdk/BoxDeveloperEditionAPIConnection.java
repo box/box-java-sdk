@@ -80,29 +80,6 @@ public class BoxDeveloperEditionAPIConnection extends BoxAPIConnection {
     }
 
     /**
-     * Disabling an invalid constructor for Box Developer Edition.
-     *
-     * @param clientID     the client ID to use when exchanging the auth code for an access token.
-     * @param clientSecret the client secret to use when exchanging the auth code for an access token.
-     * @param authCode     an auth code obtained from the first half of the OAuth process.
-     */
-    private BoxDeveloperEditionAPIConnection(String clientID, String clientSecret, String authCode) {
-        super(clientID, clientSecret, authCode);
-        throw new BoxAPIException("This constructor is not available for BoxDeveloperEditionAPIConnection.");
-    }
-
-    /**
-     * Disabling an invalid constructor for Box Developer Edition.
-     *
-     * @param clientID     the client ID to use when requesting an access token.
-     * @param clientSecret the client secret to use when requesting an access token.
-     */
-    private BoxDeveloperEditionAPIConnection(String clientID, String clientSecret) {
-        super(clientID, clientSecret);
-        throw new BoxAPIException("This constructor is not available for BoxDeveloperEditionAPIConnection.");
-    }
-
-    /**
      * Constructs a new BoxDeveloperEditionAPIConnection.
      *
      * @param entityId       enterprise ID or a user ID.
@@ -436,6 +413,7 @@ public class BoxDeveloperEditionAPIConnection extends BoxAPIConnection {
             request.setBody(urlParameters);
 
             try {
+                // authentication uses form url encoded but response is JSON
                 BoxJSONResponse response = (BoxJSONResponse) request.sendWithoutRetry();
                 json = response.getJSON();
                 break;
@@ -577,10 +555,6 @@ public class BoxDeveloperEditionAPIConnection extends BoxAPIConnection {
                 this.setExpires(json.get("expires").asLong());
             }
         }
-    }
-
-    private String constructJWTAssertion() {
-        return this.constructJWTAssertion(null);
     }
 
     private String constructJWTAssertion(NumericDate now) {
