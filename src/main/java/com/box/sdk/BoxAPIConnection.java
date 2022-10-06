@@ -1,5 +1,6 @@
 package com.box.sdk;
 
+import static java.lang.String.format;
 import static java.lang.String.join;
 
 import com.eclipsesource.json.Json;
@@ -298,7 +299,7 @@ public class BoxAPIConnection {
             throw new RuntimeException("An invalid token URL indicates a bug in the SDK.", e);
         }
 
-        String urlParameters = String.format("grant_type=authorization_code&code=%s&client_id=%s&client_secret=%s",
+        String urlParameters = format("grant_type=authorization_code&code=%s&client_id=%s&client_secret=%s",
             authCode, this.clientID, this.clientSecret);
 
         BoxAPIRequest request = new BoxAPIRequest(this, url, "POST");
@@ -924,7 +925,7 @@ public class BoxAPIConnection {
 
         StringBuilder spaceSeparatedScopes = this.buildScopesForTokenDownscoping(scopes);
 
-        String urlParameters = String.format("grant_type=urn:ietf:params:oauth:grant-type:token-exchange"
+        String urlParameters = format("grant_type=urn:ietf:params:oauth:grant-type:token-exchange"
                 + "&subject_token_type=urn:ietf:params:oauth:token-type:access_token&subject_token=%s"
                 + "&scope=%s",
             this.getAccessToken(), spaceSeparatedScopes);
@@ -934,16 +935,16 @@ public class BoxAPIConnection {
             ResourceLinkType resourceType = this.determineResourceLinkType(resource);
 
             if (resourceType == ResourceLinkType.APIEndpoint) {
-                urlParameters = String.format(urlParameters + "&resource=%s", resource);
+                urlParameters = format(urlParameters + "&resource=%s", resource);
             } else if (resourceType == ResourceLinkType.SharedLink) {
-                urlParameters = String.format(urlParameters + "&box_shared_link=%s", resource);
+                urlParameters = format(urlParameters + "&box_shared_link=%s", resource);
             } else if (resourceType == ResourceLinkType.Unknown) {
-                String argExceptionMessage = String.format("Unable to determine resource type: %s", resource);
+                String argExceptionMessage = format("Unable to determine resource type: %s", resource);
                 BoxAPIException e = new BoxAPIException(argExceptionMessage);
                 this.notifyError(e);
                 throw e;
             } else {
-                String argExceptionMessage = String.format("Unhandled resource type: %s", resource);
+                String argExceptionMessage = format("Unhandled resource type: %s", resource);
                 BoxAPIException e = new BoxAPIException(argExceptionMessage);
                 this.notifyError(e);
                 throw e;
@@ -1033,7 +1034,7 @@ public class BoxAPIConnection {
             throw new RuntimeException("An invalid refresh URL indicates a bug in the SDK.", e);
         }
 
-        String urlParameters = String.format("token=%s&client_id=%s&client_secret=%s",
+        String urlParameters = format("token=%s&client_id=%s&client_secret=%s",
             this.accessToken, this.clientID, this.clientSecret);
 
         BoxAPIRequest request = new BoxAPIRequest(this, url, "POST");
@@ -1170,7 +1171,7 @@ public class BoxAPIConnection {
     }
 
     protected BoxAPIRequest createTokenRequest(URL url) {
-        String urlParameters = String.format("grant_type=refresh_token&refresh_token=%s&client_id=%s&client_secret=%s",
+        String urlParameters = format("grant_type=refresh_token&refresh_token=%s&client_id=%s&client_secret=%s",
             this.refreshToken, this.clientID, this.clientSecret);
 
         BoxAPIRequest request = new BoxAPIRequest(this, url, "POST");
@@ -1189,7 +1190,9 @@ public class BoxAPIConnection {
                 .newCall(request)
                 .execute();
         } catch (IOException e) {
-            throw new BoxAPIException("Couldn't connect to the Box API due to a network error.", e);
+            throw new BoxAPIException(
+                format("Couldn't connect to the Box API due to a network error URL[%s]", request.url()), e
+            );
         }
     }
 

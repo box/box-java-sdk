@@ -32,52 +32,6 @@ public class MetadataIT {
     }
 
     @Test
-    public void testMetadataPrecisionFloat() {
-        final float expectedValueFloat = 1234567890f;
-        BoxAPIConnection api = jwtApiForServiceAccount();
-
-        long timestamp = Calendar.getInstance().getTimeInMillis();
-        String scope = "enterprise";
-        String templateKey = "precision" + timestamp;
-        String fieldKey = "testPrecision";
-
-        List<MetadataTemplate.Field> fields = new ArrayList<>();
-        MetadataTemplate.Field valueField = new MetadataTemplate.Field();
-        valueField.setKey(fieldKey);
-        valueField.setType("float");
-        valueField.setDisplayName("Value Field");
-        fields.add(valueField);
-
-
-        MetadataTemplate template = MetadataTemplate.createMetadataTemplate(
-            api, scope, templateKey, "Precision " + timestamp, false, fields
-        );
-        try {
-            assertEquals("float", template.getFields().get(0).getType());
-
-            // Add template to item
-            Metadata mdValues = new Metadata();
-            mdValues.add("/" + fieldKey, expectedValueFloat);
-            BoxFolder rootFolder = getUniqueFolder(api);
-            BoxFolder.Info folder = rootFolder.createFolder("Metadata Precision Test " + timestamp);
-            Metadata actualMD = folder.getResource().createMetadata(templateKey, mdValues);
-
-            assertEquals(templateKey, actualMD.getTemplateName());
-
-            final double actualValueDouble = actualMD.getDouble("/" + fieldKey);
-
-            // Instead of "hard-coding" the delta to 4.0, let's calculate it and then validate it
-            final double delta = actualValueDouble - (double) expectedValueFloat;
-            assertEquals(4.0, delta, 0);
-
-            // Now that we know delta is 4.0, when can use it for this validation
-            assertEquals(expectedValueFloat, actualValueDouble, delta);
-        } finally {
-            this.deleteMetadata(api, template);
-        }
-    }
-
-    @Test
     public void testMetadataPrecisionDouble() {
         final double valueDouble = 233333333333333340.0;
         BoxAPIConnection api = jwtApiForServiceAccount();
