@@ -2,7 +2,6 @@ package com.box.sdk;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.OutputStream;
 import java.net.URL;
 import java.util.Date;
 import java.util.HashMap;
@@ -23,16 +22,13 @@ import org.jetbrains.annotations.Nullable;
  */
 abstract class AbstractBoxMultipartRequest extends BoxAPIRequest {
     protected static final String BOUNDARY = "da39a3ee5e6b4b0d3255bfef95601890afd80709";
-    private static final BoxLogger LOGGER = BoxLogger.defaultLogger();
     private static final int BUFFER_SIZE = 8192;
     private final StringBuilder loggedRequest = new StringBuilder();
     private final Map<String, String> fields = new HashMap<>();
     private InputStream inputStream;
     private String filename;
     private long fileSize;
-    private OutputStream outputStream;
     private UploadFileCallback callback;
-    private boolean firstBoundary = true;
 
     AbstractBoxMultipartRequest(BoxAPIConnection api, URL url) {
         super(api, url, "POST");
@@ -133,7 +129,6 @@ abstract class AbstractBoxMultipartRequest extends BoxAPIRequest {
 
     @Override
     protected void resetBody() throws IOException {
-        this.firstBoundary = true;
         this.inputStream.reset();
         this.loggedRequest.setLength(0);
     }
@@ -151,12 +146,19 @@ abstract class AbstractBoxMultipartRequest extends BoxAPIRequest {
                 .addFormDataPart(
                     getPartName(),
                     filename,
-                    new RequestBodyFromStream(
-                        this.inputStream, getPartContentType(filename), progressListener
-                    )
+                    getBody(progressListener)
                 );
         this.fields.forEach(bodyBuilder::addFormDataPart);
         requestBuilder.post(bodyBuilder.build());
+    }
+
+    @NotNull
+    private RequestBody getBody(ProgressListener progressListener) {
+        if (this.callback == null) {
+            return new RequestBodyFromStream(this.inputStream, getPartContentType(filename), progressListener);
+        } else {
+            return new RequestBodyFromCallback(this.callback, getPartContentType(filename));
+        }
     }
 
     private static final class RequestBodyFromStream extends RequestBody {
@@ -200,6 +202,28 @@ abstract class AbstractBoxMultipartRequest extends BoxAPIRequest {
                 totalWritten += n;
                 n = this.inputStream.read(buffer);
             }
+        }
+    }
+
+    private static final class RequestBodyFromCallback extends RequestBody {
+
+        private final UploadFileCallback callback;
+        private final MediaType mediaType;
+
+        private RequestBodyFromCallback(UploadFileCallback callback, MediaType mediaType) {
+            this.callback = callback;
+            this.mediaType = mediaType;
+        }
+
+        @Nullable
+        @Override
+        public MediaType contentType() {
+            return mediaType;
+        }
+
+        @Override
+        public void writeTo(@NotNull BufferedSink bufferedSink) throws IOException {
+            callback.writeToStream(bufferedSink.outputStream());
         }
     }
 }
