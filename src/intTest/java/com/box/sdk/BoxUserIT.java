@@ -157,6 +157,8 @@ public class BoxUserIT {
                     size += readBytes;
                     readBytes = uploadedAvatar.read(buffer);
                 }
+                // we have to close the stream because we do not want to leak connections
+                uploadedAvatar.close();
                 assertTrue("Could not read avatar binary data", size > 0);
             } catch (IOException e) {
                 throw new RuntimeException(e);

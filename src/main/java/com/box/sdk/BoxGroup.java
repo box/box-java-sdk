@@ -27,7 +27,7 @@ public class BoxGroup extends BoxCollaborator {
     public static final URLTemplate GROUPS_URL_TEMPLATE = new URLTemplate("groups");
 
     /**
-     * @see #getInfo()
+     * @see #getInfo(String...) 
      */
     public static final URLTemplate GROUP_URL_TEMPLATE = new URLTemplate("groups/%s");
 
@@ -359,7 +359,6 @@ public class BoxGroup extends BoxCollaborator {
      *
      * @return a collection of information about the collaborations for this group.
      */
-    //TODO: this method is not needed as we should use getCollaborations(String... fields)
     public Collection<BoxCollaboration.Info> getCollaborations() {
         BoxAPIConnection api = this.getAPI();
         URL url = COLLABORATIONS_URL_TEMPLATE.build(api.getBaseURL(), this.getID());

@@ -780,6 +780,8 @@ public class BoxAPIRequest {
         return new BoxAPIResponse(response.code(),
             response.request().method(),
             response.request().url().toString(),
+            // TODO: because we are not closing the stream we can potentialy leak connections
+            //  (users have to close stream to free connection) - maybe we can fix that
             respHeaders, responseBody.byteStream(),
             responseBody.contentType().toString(),
             responseBody.contentLength()

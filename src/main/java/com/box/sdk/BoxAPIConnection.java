@@ -15,6 +15,7 @@ import java.security.KeyManagementException;
 import java.security.KeyStore;
 import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -75,6 +76,7 @@ public class BoxAPIConnection {
     private final String clientID;
     private final String clientSecret;
     private final ReadWriteLock refreshLock;
+    private SSLContext sslContext;
 
     // These volatile fields are used when determining if the access token needs to be refreshed. Since they are used in
     // the double-checked lock in getAccessToken(), they must be atomic.
@@ -102,8 +104,8 @@ public class BoxAPIConnection {
     private RequestInterceptor interceptor;
     private final Map<String, String> customHeaders;
 
-    private final OkHttpClient httpClient;
-    private final OkHttpClient noRedirectsHttpClient;
+    private OkHttpClient httpClient;
+    private OkHttpClient noRedirectsHttpClient;
 
     /**
      * Constructs a new BoxAPIConnection that authenticates with a developer or access token.
@@ -144,10 +146,9 @@ public class BoxAPIConnection {
         // This is necessary because Java 7 uses TLSv1.0 by default, but the Box API will need
         // to deprecate this protocol in the future.  To prevent clients from breaking, we must
         // ensure that they are using TLSv1.1 or greater!
-        SSLContext sc = null;
         try {
-            sc = SSLContext.getDefault();
-            SSLParameters params = sc.getDefaultSSLParameters();
+            sslContext = SSLContext.getDefault();
+            SSLParameters params = sslContext.getDefaultSSLParameters();
             boolean supportsNewTLS = false;
             for (String protocol : params.getProtocols()) {
                 if (protocol.compareTo("TLSv1") > 0) {
@@ -157,18 +158,18 @@ public class BoxAPIConnection {
             }
             if (!supportsNewTLS) {
                 // Try to upgrade to a higher TLS version
-                sc = null;
-                sc = SSLContext.getInstance("TLSv1.1");
-                sc.init(null, null, new java.security.SecureRandom());
-                sc = SSLContext.getInstance("TLSv1.2");
-                sc.init(null, null, new java.security.SecureRandom());
+                sslContext = null;
+                sslContext = SSLContext.getInstance("TLSv1.1");
+                sslContext.init(null, null, new java.security.SecureRandom());
+                sslContext = SSLContext.getInstance("TLSv1.2");
+                sslContext.init(null, null, new java.security.SecureRandom());
             }
         } catch (NoSuchAlgorithmException ex) {
-            if (sc == null) {
+            if (sslContext == null) {
                 LOGGER.error("Unable to set up SSL context for HTTPS! "
                     + "This may result in the inability  to connect to the Box API.");
             }
-            if (sc != null && sc.getProtocol().equals("TLSv1")) {
+            if (sslContext != null && sslContext.getProtocol().equals("TLSv1")) {
                 // Could not find a good version of TLS
                 LOGGER.error("Using deprecated TLSv1 protocol, which will be deprecated by the Box API! "
                     + "Upgrade to a newer version of Java as soon as possible.");
@@ -177,33 +178,8 @@ public class BoxAPIConnection {
             LOGGER.error(
                 "Exception when initializing SSL Context!  This may result in the inabilty to connect to the Box API"
             );
-            sc = null;
         }
-        OkHttpClient.Builder httpClientBuilder = new OkHttpClient.Builder();
-        if (sc != null) {
-            try {
-                TrustManagerFactory trustManagerFactory =
-                    TrustManagerFactory.getInstance(TrustManagerFactory.getDefaultAlgorithm());
-                trustManagerFactory.init((KeyStore) null);
-                TrustManager[] trustManagers = trustManagerFactory.getTrustManagers();
-                if (trustManagers.length != 1 || !(trustManagers[0] instanceof X509TrustManager)) {
-                    throw new IllegalStateException("Unexpected default trust managers:"
-                        + Arrays.toString(trustManagers));
-                }
-                httpClientBuilder.sslSocketFactory(sc.getSocketFactory(), (X509TrustManager) trustManagers[0]);
-            } catch (NoSuchAlgorithmException | KeyStoreException e) {
-                throw new RuntimeException(e);
-            }
-
-        }
-        this.httpClient = httpClientBuilder
-            .followSslRedirects(true)
-            .followRedirects(true)
-            .build();
-        this.noRedirectsHttpClient = httpClientBuilder
-            .followSslRedirects(false)
-            .followRedirects(false)
-            .build();
+        buildHttpClients();
     }
 
     /**
@@ -235,6 +211,38 @@ public class BoxAPIConnection {
      */
     public BoxAPIConnection(BoxConfig boxConfig) {
         this(boxConfig.getClientId(), boxConfig.getClientSecret(), null, null);
+    }
+
+    private void buildHttpClients() {
+        OkHttpClient.Builder httpClientBuilder = new OkHttpClient.Builder();
+        if (sslContext != null) {
+            try {
+                TrustManagerFactory trustManagerFactory =
+                    TrustManagerFactory.getInstance(TrustManagerFactory.getDefaultAlgorithm());
+                trustManagerFactory.init((KeyStore) null);
+                TrustManager[] trustManagers = trustManagerFactory.getTrustManagers();
+                if (trustManagers.length != 1 || !(trustManagers[0] instanceof X509TrustManager)) {
+                    throw new IllegalStateException("Unexpected default trust managers:"
+                        + Arrays.toString(trustManagers));
+                }
+                httpClientBuilder.sslSocketFactory(sslContext.getSocketFactory(), (X509TrustManager) trustManagers[0]);
+            } catch (NoSuchAlgorithmException | KeyStoreException e) {
+                throw new RuntimeException(e);
+            }
+
+        }
+        this.httpClient = httpClientBuilder
+            .followSslRedirects(true)
+            .followRedirects(true)
+            .connectTimeout(Duration.ofMillis(connectTimeout))
+            .readTimeout(Duration.ofMillis(readTimeout))
+            .build();
+        this.noRedirectsHttpClient = httpClientBuilder
+            .followSslRedirects(false)
+            .followRedirects(false)
+            .connectTimeout(Duration.ofMillis(connectTimeout))
+            .readTimeout(Duration.ofMillis(readTimeout))
+            .build();
     }
 
     /**
@@ -643,6 +651,7 @@ public class BoxAPIConnection {
      */
     public void setConnectTimeout(int connectTimeout) {
         this.connectTimeout = connectTimeout;
+        buildHttpClients();
     }
 
     /**
@@ -661,6 +670,7 @@ public class BoxAPIConnection {
      */
     public void setReadTimeout(int readTimeout) {
         this.readTimeout = readTimeout;
+        buildHttpClients();
     }
 
     /**
