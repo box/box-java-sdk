@@ -540,14 +540,13 @@ public class BoxAPIRequest {
 
     private void writeWithBuffer(OutputStream output, ProgressListener listener) {
         try {
-            OutputStream finalOutput = output;
             if (listener != null) {
-                finalOutput = new ProgressOutputStream(output, listener, this.bodyLength);
+                output = new ProgressOutputStream(output, listener, this.bodyLength);
             }
             byte[] buffer = new byte[BUFFER_SIZE];
             int b = this.body.read(buffer);
             while (b != -1) {
-                finalOutput.write(buffer, 0, b);
+                output.write(buffer, 0, b);
                 b = this.body.read(buffer);
             }
         } catch (IOException e) {
