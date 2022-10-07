@@ -1195,22 +1195,16 @@ public class BoxAPIConnection {
     }
 
     Response execute(Request request) {
-        try {
-            return httpClient
-                .newCall(request)
-                .execute();
-        } catch (IOException e) {
-            throw new BoxAPIException(
-                format("Couldn't connect to the Box API due to a network error URL[%s]", request.url()), e
-            );
-        }
+        return executeOnClient(httpClient, request);
     }
 
     Response executeWithoutRedirect(Request request) {
+        return executeOnClient(noRedirectsHttpClient, request);
+    }
+
+    private Response executeOnClient(OkHttpClient httpClient, Request request) {
         try {
-            return noRedirectsHttpClient
-                .newCall(request)
-                .execute();
+            return httpClient.newCall(request).execute();
         } catch (IOException e) {
             throw new BoxAPIException("Couldn't connect to the Box API due to a network error.", e);
         }
