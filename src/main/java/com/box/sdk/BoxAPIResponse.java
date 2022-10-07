@@ -1,13 +1,20 @@
 package com.box.sdk;
 
+import static java.lang.String.format;
+
+import com.eclipsesource.json.Json;
+import com.eclipsesource.json.ParseException;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.zip.GZIPInputStream;
+import okhttp3.Response;
+import okhttp3.ResponseBody;
 
 /**
  * Used to read HTTP responses from the Box API.
@@ -26,7 +33,7 @@ import java.util.zip.GZIPInputStream;
 public class BoxAPIResponse {
     private static final BoxLogger LOGGER = BoxLogger.defaultLogger();
     private static final int BUFFER_SIZE = 8192;
-    private final Map<String, String> headers;
+    private final Map<String, List<String>> headers;
     private final long contentLength;
     private final String contentType;
     private final String requestMethod;
@@ -64,20 +71,14 @@ public class BoxAPIResponse {
      * @param responseCode http response code
      * @param headers      map of headers
      */
-    public BoxAPIResponse(int responseCode, String requestMethod, String requestUrl, Map<String, String> headers) {
-        this.responseCode = responseCode;
-        this.requestMethod = requestMethod;
-        this.requestUrl = requestUrl;
-        this.headers = headers;
-        this.contentLength = 0;
-        this.contentType = null;
-        this.logResponse();
+    public BoxAPIResponse(int responseCode, String requestMethod, String requestUrl, Map<String, List<String>> headers) {
+        this(responseCode, requestMethod, requestUrl, headers, null, null, 0);
     }
 
     public BoxAPIResponse(int code,
                           String requestMethod,
                           String requestUrl,
-                          Map<String, String> headers,
+                          Map<String, List<String>> headers,
                           InputStream body,
                           String contentType,
                           long contentLength
@@ -89,35 +90,70 @@ public class BoxAPIResponse {
         this.rawInputStream = body;
         this.contentType = contentType;
         this.contentLength = contentLength;
-        this.logResponse();
+        if (isSuccess(responseCode)) {
+            this.logResponse();
+        } else {
+            this.logErrorResponse(this.responseCode);
+            //TODO: log body when error occurs
+            throw new BoxAPIResponseException("The API returned an error code", responseCode, null, headers);
+        }
     }
 
     private static boolean isSuccess(int responseCode) {
         return responseCode >= 200 && responseCode < 300;
     }
 
-    private static String readErrorStream(InputStream stream) {
-        if (stream == null) {
-            return null;
+    static BoxAPIResponse toBoxResponse(Response response) {
+        if (!response.isSuccessful() && !response.isRedirect()) {
+            throw new BoxAPIResponseException(
+                "The API returned an error code",
+                response.code(),
+                Optional.ofNullable(response.body()).map(body -> {
+                    try {
+                        return body.string();
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
+                    }
+                }).orElse("Body was null"),
+                response.headers().toMultimap()
+            );
         }
-
-        InputStreamReader reader = new InputStreamReader(stream, StandardCharsets.UTF_8);
-        StringBuilder builder = new StringBuilder();
-        char[] buffer = new char[BUFFER_SIZE];
-
-        try {
-            int read = reader.read(buffer, 0, BUFFER_SIZE);
-            while (read != -1) {
-                builder.append(buffer, 0, read);
-                read = reader.read(buffer, 0, BUFFER_SIZE);
+        ResponseBody responseBody = response.body();
+        if (responseBody.contentLength() == 0 || responseBody.contentType() == null) {
+            return new BoxAPIResponse(response.code(),
+                response.request().method(),
+                response.request().url().toString(),
+                response.headers().toMultimap()
+            );
+        }
+        if (responseBody != null && responseBody.contentType() != null) {
+            if (responseBody.contentType().toString().contains("application/json")) {
+                String bodyAsString = "";
+                try {
+                    bodyAsString = responseBody.string();
+                    return new BoxJSONResponse(response.code(),
+                        response.request().method(),
+                        response.request().url().toString(),
+                        response.headers().toMultimap(),
+                        Json.parse(bodyAsString).asObject()
+                    );
+                } catch (ParseException e) {
+                    throw new BoxAPIException(format("Error parsing JSON:\n%s", bodyAsString), e);
+                } catch (IOException e) {
+                    throw new RuntimeException("Error getting response to string", e);
+                }
             }
-
-            reader.close();
-        } catch (IOException e) {
-            return null;
         }
-
-        return builder.toString();
+        return new BoxAPIResponse(response.code(),
+            response.request().method(),
+            response.request().url().toString(),
+            response.headers().toMultimap(),
+            // TODO: because we are not closing the stream we can potentialy leak connections
+            //  (users have to close stream to free connection) - maybe we can fix that
+            responseBody.byteStream(),
+            responseBody.contentType().toString(),
+            responseBody.contentLength()
+        );
     }
 
     /**
@@ -145,7 +181,7 @@ public class BoxAPIResponse {
      * @return value of the header.
      */
     public String getHeaderField(String fieldName) {
-        return this.headers.get(fieldName);
+        return Optional.ofNullable(this.headers.get(fieldName)).map((l) -> l.get(0)).orElse("");
     }
 
     /**
@@ -186,7 +222,7 @@ public class BoxAPIResponse {
     }
 
     private String getContentEncoding() {
-        return this.headers.get("content-encoding");
+        return getHeaderField("content-encoding");
     }
 
     /**
@@ -195,20 +231,9 @@ public class BoxAPIResponse {
      */
     public void disconnect() {
         try {
-            if (this.rawInputStream == null) {
-                return;
+            if (this.inputStream == null && this.rawInputStream != null) {
+                this.rawInputStream.close();
             }
-
-            // We need to manually read from the raw input stream in case there are any remaining bytes. There's a bug
-            // where a wrapping GZIPInputStream may not read to the end of a chunked response, causing Java to not
-            // return the connection to the connection pool.
-            byte[] buffer = new byte[BUFFER_SIZE];
-            int n = this.rawInputStream.read(buffer);
-            while (n != -1) {
-                n = this.rawInputStream.read(buffer);
-            }
-            this.rawInputStream.close();
-
             if (this.inputStream != null) {
                 this.inputStream.close();
             }
@@ -221,7 +246,7 @@ public class BoxAPIResponse {
     /**
      * @return A Map containg headers on this Box API Response.
      */
-    public Map<String, String> getHeaders() {
+    public Map<String, List<String>> getHeaders() {
         return this.headers;
     }
 
@@ -238,9 +263,10 @@ public class BoxAPIResponse {
         Optional.ofNullable(headers).orElse(new HashMap<>())
             .entrySet()
             .stream()
-            .filter(e -> Optional.ofNullable(e.getValue()).orElse("").trim().length() > 0)
-            .forEach(e -> builder.append(String.format("%s: %s%s", e.getKey(), e.getValue(), lineSeparator)));
+            .filter(Objects::nonNull)
+            .forEach(e -> builder.append(format("%s: [%s]%s", e.getKey().toLowerCase(), e.getValue(), lineSeparator)));
 
+        //TODO: log body
 //        String bodyString = this.bodyToString();
 //        if (bodyString != null && !bodyString.equals("")) {
 //            builder.append(lineSeparator);
@@ -258,34 +284,7 @@ public class BoxAPIResponse {
      * @return a string representation of this response's body.
      */
     protected String bodyToString() {
-        if (this.bodyString == null && !isSuccess(this.responseCode)) {
-            this.bodyString = readErrorStream(this.getErrorStream());
-        }
-
         return this.bodyString;
-    }
-
-    /**
-     * Returns the response error stream, handling the case when it contains gzipped data.
-     *
-     * @return gzip decoded (if needed) error stream or null
-     */
-    private InputStream getErrorStream() {
-        //TODO: OkHttp does not have error stream
-//        InputStream errorStream = this.connection.getErrorStream();
-//        if (errorStream != null) {
-//            final String contentEncoding = this.connection.getContentEncoding();
-//            if (contentEncoding != null && contentEncoding.equalsIgnoreCase("gzip")) {
-//                try {
-//                    errorStream = new GZIPInputStream(errorStream);
-//                } catch (IOException e) {
-//                    // just return the error stream as is
-//                }
-//            }
-//        }
-//
-//        return errorStream;
-        return null;
     }
 
     private void logResponse() {

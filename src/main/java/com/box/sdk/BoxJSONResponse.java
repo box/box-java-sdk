@@ -5,6 +5,7 @@ import com.eclipsesource.json.JsonObject;
 import com.eclipsesource.json.ParseException;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -34,7 +35,7 @@ public class BoxJSONResponse extends BoxAPIResponse {
     public BoxJSONResponse(int responseCode,
                            String requestMethod,
                            String requestUrl,
-                           Map<String, String> headers,
+                           Map<String, List<String>> headers,
                            JsonObject body
     ) {
         super(responseCode, requestMethod, requestUrl, headers);

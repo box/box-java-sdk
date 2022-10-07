@@ -2,11 +2,11 @@ package com.box.sdk;
 
 import static java.lang.String.format;
 
+import com.box.sdk.http.ContentType;
 import com.box.sdk.http.HttpHeaders;
 import com.box.sdk.http.HttpMethod;
 import com.eclipsesource.json.Json;
 import com.eclipsesource.json.JsonObject;
-import com.eclipsesource.json.ParseException;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -15,17 +15,13 @@ import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.Optional;
-import javax.net.ssl.SSLSocketFactory;
 import okhttp3.MediaType;
 import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
-import okhttp3.ResponseBody;
 
 
 /**
@@ -49,7 +45,6 @@ public class BoxAPIRequest {
     private static final int MAX_REDIRECTS = 3;
     private static final String ERROR_CREATING_REQUEST_BODY = "Error creating request body";
     private static final int BUFFER_SIZE = 8192;
-    private static SSLSocketFactory sslSocketFactory;
     private final BoxAPIConnection api;
     private final List<RequestHeader> headers;
     private final String method;
@@ -83,7 +78,7 @@ public class BoxAPIRequest {
      * @param method the HTTP method of the request.
      */
     public BoxAPIRequest(BoxAPIConnection api, URL url, String method) {
-        this(api, url, method, "application/x-www-form-urlencoded");
+        this(api, url, method, ContentType.APPLICATION_FORM_URLENCODED);
     }
 
     protected BoxAPIRequest(BoxAPIConnection api, URL url, String method, String mediaType) {
@@ -540,13 +535,14 @@ public class BoxAPIRequest {
 
     private void writeWithBuffer(OutputStream output, ProgressListener listener) {
         try {
+            OutputStream finalOutput = output;
             if (listener != null) {
-                output = new ProgressOutputStream(output, listener, this.bodyLength);
+                finalOutput = new ProgressOutputStream(output, listener, this.bodyLength);
             }
             byte[] buffer = new byte[BUFFER_SIZE];
             int b = this.body.read(buffer);
             while (b != -1) {
-                output.write(buffer, 0, b);
+                finalOutput.write(buffer, 0, b);
                 b = this.body.read(buffer);
             }
         } catch (IOException e) {
@@ -617,9 +613,6 @@ public class BoxAPIRequest {
                 requestBuilder.addHeader("BoxApi", boxAPIValue);
             }
         }
-        //TODO: this should not be needed anymore
-//        this.requestProperties = connection.getRequestProperties();
-
 
         try {
             long start = System.currentTimeMillis();
@@ -633,7 +626,7 @@ public class BoxAPIRequest {
             }
             logDebug(format("[trySend] connection.connect() took %dms%n", (System.currentTimeMillis() - start)));
 
-            BoxAPIResponse result = toBoxResponse(response);
+            BoxAPIResponse result = BoxAPIResponse.toBoxResponse(response);
             this.logRequest();
             long getResponseStart = System.currentTimeMillis();
             logDebug(format(
@@ -642,6 +635,7 @@ public class BoxAPIRequest {
             return result;
 
         } finally {
+            //TODO: API should not be null
             if (this.api != null && this.shouldAuthenticate) {
                 this.api.unlockAccessToken();
             }
@@ -728,62 +722,7 @@ public class BoxAPIRequest {
         }
     }
 
-
     protected MediaType mediaType() {
         return MediaType.parse(mediaType);
-    }
-
-    private BoxAPIResponse toBoxResponse(Response response) {
-        if (!response.isSuccessful() && !response.isRedirect()) {
-            throw new BoxAPIResponseException(
-                "The API returned an error code",
-                response.code(),
-                Optional.ofNullable(response.body()).map(body -> {
-                    try {
-                        return body.string();
-                    } catch (IOException e) {
-                        throw new RuntimeException(e);
-                    }
-                }).orElse("Body was null"),
-                response.headers().toMultimap()
-            );
-        }
-        Map<String, String> respHeaders = new HashMap<>();
-        response.headers().iterator().forEachRemaining(h -> respHeaders.put(h.component1(), h.component2()));
-        ResponseBody responseBody = response.body();
-        if (responseBody.contentLength() == 0 || responseBody.contentType() == null) {
-            return new BoxAPIResponse(response.code(),
-                response.request().method(),
-                response.request().url().toString(),
-                respHeaders
-            );
-        }
-        if (responseBody != null && responseBody.contentType() != null) {
-            if (responseBody.contentType().toString().contains("application/json")) {
-                String bodyAsString = "";
-                try {
-                    bodyAsString = responseBody.string();
-                    return new BoxJSONResponse(response.code(),
-                        response.request().method(),
-                        response.request().url().toString(),
-                        respHeaders,
-                        Json.parse(bodyAsString).asObject()
-                    );
-                } catch (ParseException e) {
-                    throw new BoxAPIException(format("Error parsing JSON:\n%s", bodyAsString), e);
-                } catch (IOException e) {
-                    throw new RuntimeException("Error getting response to string", e);
-                }
-            }
-        }
-        return new BoxAPIResponse(response.code(),
-            response.request().method(),
-            response.request().url().toString(),
-            // TODO: because we are not closing the stream we can potentialy leak connections
-            //  (users have to close stream to free connection) - maybe we can fix that
-            respHeaders, responseBody.byteStream(),
-            responseBody.contentType().toString(),
-            responseBody.contentLength()
-        );
     }
 }
