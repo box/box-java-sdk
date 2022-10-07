@@ -494,15 +494,18 @@ public class BoxWebHook extends BoxResource {
         /**
          * Triggered when {@link BoxSignRequest} is completed.
          */
-        SIGN_REQUEST_COMPLETED("SIGN_REQUEST.COMPLETED", BoxResource.getResourceType(BoxFile.class)),
+        SIGN_REQUEST_COMPLETED("SIGN_REQUEST.COMPLETED",
+            BoxResource.getResourceType(BoxFolder.class), BoxResource.getResourceType(BoxFile.class)),
         /**
          * Triggered when {@link BoxFile} is declined.
          */
-        SIGN_REQUEST_DECLINED("SIGN_REQUEST.DECLINED", BoxResource.getResourceType(BoxFile.class)),
+        SIGN_REQUEST_DECLINED("SIGN_REQUEST.DECLINED",
+            BoxResource.getResourceType(BoxFolder.class), BoxResource.getResourceType(BoxFile.class)),
         /**
          * Triggered when {@link BoxFile} is expired.
          */
-        SIGN_REQUEST_EXPIRED("SIGN_REQUEST.EXPIRED", BoxResource.getResourceType(BoxFile.class));
+        SIGN_REQUEST_EXPIRED("SIGN_REQUEST.EXPIRED",
+            BoxResource.getResourceType(BoxFolder.class), BoxResource.getResourceType(BoxFile.class));
 
         /**
          * @see #getValue()

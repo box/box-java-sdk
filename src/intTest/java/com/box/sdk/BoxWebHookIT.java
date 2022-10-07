@@ -9,6 +9,7 @@ import static com.box.sdk.BoxWebHook.Trigger.SIGN_REQUEST_EXPIRED;
 import static com.box.sdk.CleanupTools.deleteFile;
 import static com.box.sdk.CleanupTools.deleteFolder;
 import static com.box.sdk.UniqueTestFolder.getUniqueFolder;
+import static com.box.sdk.UniqueTestFolder.randomizeName;
 import static com.box.sdk.UniqueTestFolder.removeUniqueFolder;
 import static com.box.sdk.UniqueTestFolder.setupUniqeFolder;
 import static com.box.sdk.UniqueTestFolder.uploadFileToUniqueFolderWithSomeContent;
@@ -156,7 +157,7 @@ public class BoxWebHookIT {
     }
 
     @Test
-    public void createWebHookSignRequestSucceeds() throws IOException {
+    public void createWebHookSignRequestOnFileSucceeds() throws IOException {
         BoxAPIConnection api = jwtApiForServiceAccount();
         String fileName = "file_to_sign.pdf";
 
@@ -177,6 +178,32 @@ public class BoxWebHookIT {
                 new BoxWebHook.Trigger[]{SIGN_REQUEST_DECLINED, SIGN_REQUEST_EXPIRED, SIGN_REQUEST_COMPLETED}))));
         } finally {
             deleteFile(file);
+        }
+    }
+
+    @Test
+    public void createWebHookSignRequestOnFolderSucceeds() throws IOException {
+        BoxAPIConnection api = jwtApiForServiceAccount();
+
+        BoxFolder folder = null;
+        try {
+            folder = getUniqueFolder(api)
+                .createFolder(randomizeName("createWebHookSignRequestOnFolderSucceeds"))
+                .getResource();
+            URL address = new URL("https://www.google.com");
+
+            BoxWebHook.Info webHookInfo = BoxWebHook.create(
+                folder, address, SIGN_REQUEST_DECLINED, SIGN_REQUEST_EXPIRED, SIGN_REQUEST_COMPLETED
+            );
+
+            assertThat(webHookInfo.getID(), is(notNullValue()));
+            assertThat(webHookInfo.getAddress(), is(equalTo(address)));
+            assertThat(webHookInfo.getTarget().getType(), is(equalTo(BoxResource.getResourceType(BoxFolder.class))));
+            assertThat(webHookInfo.getTarget().getId(), is(equalTo(folder.getID())));
+            assertThat(webHookInfo.getTriggers(), is(equalTo(this.toSet(
+                new BoxWebHook.Trigger[]{SIGN_REQUEST_DECLINED, SIGN_REQUEST_EXPIRED, SIGN_REQUEST_COMPLETED}))));
+        } finally {
+            deleteFolder(folder);
         }
     }
 
