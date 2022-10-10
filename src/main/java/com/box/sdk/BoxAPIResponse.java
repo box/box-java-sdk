@@ -14,7 +14,6 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.TreeMap;
-import java.util.zip.GZIPInputStream;
 import okhttp3.MediaType;
 import okhttp3.Response;
 import okhttp3.ResponseBody;
@@ -206,28 +205,13 @@ public class BoxAPIResponse {
      */
     public InputStream getBody(ProgressListener listener) {
         if (this.inputStream == null) {
-            String contentEncoding = this.getContentEncoding();
-            try {
-                if (listener == null) {
-                    this.inputStream = this.rawInputStream;
-                } else {
-                    this.inputStream = new ProgressInputStream(this.rawInputStream, listener,
-                        this.getContentLength());
-                }
-
-                if (contentEncoding != null && contentEncoding.equalsIgnoreCase("gzip")) {
-                    this.inputStream = new GZIPInputStream(this.inputStream);
-                }
-            } catch (IOException e) {
-                throw new BoxAPIException("Couldn't connect to the Box API due to a network error.", e);
+            if (listener == null) {
+                this.inputStream = this.rawInputStream;
+            } else {
+                this.inputStream = new ProgressInputStream(this.rawInputStream, listener, this.getContentLength());
             }
         }
-
         return this.inputStream;
-    }
-
-    private String getContentEncoding() {
-        return getHeaderField("content-encoding");
     }
 
     /**

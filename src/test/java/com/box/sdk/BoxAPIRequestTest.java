@@ -20,9 +20,11 @@ import static org.mockito.Mockito.mock;
 import com.eclipsesource.json.ParseException;
 import com.github.tomakehurst.wiremock.junit.WireMockRule;
 import com.github.tomakehurst.wiremock.matching.RequestPatternBuilder;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.zip.GZIPOutputStream;
 import org.junit.Rule;
 import org.junit.Test;
 
@@ -31,7 +33,7 @@ public class BoxAPIRequestTest {
     public WireMockRule wireMockRule = new WireMockRule(wireMockConfig().dynamicPort());
 
     @Test
-    public void requestRetriesTheDefaultNumberOfTimesWhenServerReturns500() throws MalformedURLException {
+    public void requestRetriesTheDefaultNumberOfTimesWhenServerReturns500() {
         stubFor(get(urlEqualTo("/")).willReturn(aResponse().withStatus(500)));
         Time mockTime = mock(Time.class);
         BackoffCounter backoffCounter = new BackoffCounter(mockTime);
@@ -47,7 +49,7 @@ public class BoxAPIRequestTest {
     }
 
     @Test
-    public void requestRetriesTheDefaultNumberOfTimesWhenServerReturns429() throws MalformedURLException {
+    public void requestRetriesTheDefaultNumberOfTimesWhenServerReturns429() {
         stubFor(get(urlEqualTo("/")).willReturn(aResponse().withStatus(429)));
         Time mockTime = mock(Time.class);
         BackoffCounter backoffCounter = new BackoffCounter(mockTime);
@@ -63,8 +65,7 @@ public class BoxAPIRequestTest {
     }
 
     @Test
-    public void requestRetriesTheDefaultNumberOfTimesWhenServerReturnsInvalidGrantInErrorField()
-        throws MalformedURLException {
+    public void requestRetriesTheDefaultNumberOfTimesWhenServerReturnsInvalidGrantInErrorField() {
         String body = "{\"error\":\"invalid_grant\",\"error_description\":\"Current date"
             + "\\/time MUST be before the expiration date\\/time listed in the 'exp' claim\"}";
         stubFor(get(urlEqualTo("/")).willReturn(aResponse()
@@ -84,7 +85,7 @@ public class BoxAPIRequestTest {
     }
 
     @Test
-    public void requestRetriesTheNumberOfTimesConfiguredInTheAPIConnection() throws MalformedURLException {
+    public void requestRetriesTheNumberOfTimesConfiguredInTheAPIConnection() {
         final int expectedNumRetryAttempts = 1;
         stubFor(get(urlEqualTo("/")).willReturn(aResponse().withStatus(500)));
         Time mockTime = mock(Time.class);
@@ -104,7 +105,7 @@ public class BoxAPIRequestTest {
     }
 
     @Test
-    public void requestSendsXBoxUAHeader() throws MalformedURLException {
+    public void requestSendsXBoxUAHeader() {
 
         stubFor(get(urlEqualTo("/")).willReturn(aResponse()
             .withStatus(202)
@@ -122,7 +123,7 @@ public class BoxAPIRequestTest {
     }
 
     @Test
-    public void requestDoesNotAllowModifyingBoxUAHeader() throws MalformedURLException {
+    public void requestDoesNotAllowModifyingBoxUAHeader() {
 
         BoxAPIConnection api = new BoxAPIConnection("");
 
@@ -137,7 +138,7 @@ public class BoxAPIRequestTest {
     }
 
     @Test
-    public void requestDoesNotAllowDuplicateAsUserHeader() throws MalformedURLException {
+    public void requestDoesNotAllowDuplicateAsUserHeader() {
 
         BoxAPIRequest request = new BoxAPIRequest(new BoxAPIConnection(""), boxMockUrl(), "GET");
 
@@ -162,7 +163,7 @@ public class BoxAPIRequestTest {
     }
 
     @Test
-    public void whenJsonCannotBeParseExceptionIsThrown() throws IOException {
+    public void whenJsonCannotBeParseExceptionIsThrown() {
         BoxAPIRequest request = new BoxAPIRequest(new BoxAPIConnection(""), boxMockUrl(), "GET");
         stubFor(get(urlEqualTo("/")).willReturn(
             aResponse()
@@ -178,7 +179,39 @@ public class BoxAPIRequestTest {
         }
     }
 
-    private URL boxMockUrl() throws MalformedURLException {
-        return new URL(format("http://localhost:%d/", wireMockRule.port()));
+    @Test
+    public void handlesGZIPResponse() {
+        BoxAPIRequest request = new BoxAPIRequest(new BoxAPIConnection(""), boxMockUrl(), "GET");
+        String jsonString = "{\"foo\":\"bar\"}";
+        stubFor(get(urlEqualTo("/")).willReturn(
+            aResponse()
+                .withStatus(200)
+                .withHeader("content-type", APPLICATION_JSON)
+                .withHeader("content-encoding", "GZIP")
+                .withBody(gzipped(jsonString))
+        ));
+        BoxAPIResponse response = request.send();
+        assertThat(response.bodyToString(), is(jsonString));
+    }
+
+    private byte[] gzipped(String str) {
+        try {
+            ByteArrayOutputStream obj = new ByteArrayOutputStream();
+            GZIPOutputStream gzip = new GZIPOutputStream(obj);
+            gzip.write(str.getBytes(UTF_8));
+            gzip.close();
+            return obj.toByteArray();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
+    }
+
+    private URL boxMockUrl() {
+        try {
+            return new URL(format("http://localhost:%d/", wireMockRule.port()));
+        } catch (MalformedURLException e) {
+            throw new RuntimeException(e);
+        }
     }
 }

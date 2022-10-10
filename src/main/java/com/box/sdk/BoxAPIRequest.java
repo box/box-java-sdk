@@ -42,7 +42,6 @@ import okhttp3.Response;
  */
 public class BoxAPIRequest {
     private static final BoxLogger LOGGER = BoxLogger.defaultLogger();
-    private static final int MAX_REDIRECTS = 3;
     private static final String ERROR_CREATING_REQUEST_BODY = "Error creating request body";
     private static final int BUFFER_SIZE = 8192;
     private final BoxAPIConnection api;
