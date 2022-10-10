@@ -13,7 +13,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.TreeMap;
 import java.util.zip.GZIPInputStream;
+import okhttp3.MediaType;
 import okhttp3.Response;
 import okhttp3.ResponseBody;
 
@@ -33,7 +35,7 @@ import okhttp3.ResponseBody;
  */
 public class BoxAPIResponse {
     private static final BoxLogger LOGGER = BoxLogger.defaultLogger();
-    private final Map<String, List<String>> headers;
+    private final Map<String, List<String>> headers = new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
     private final long contentLength;
     private final String contentType;
     private final String requestMethod;
@@ -58,7 +60,6 @@ public class BoxAPIResponse {
      * Constructs an empty BoxAPIResponse without an associated HttpURLConnection.
      */
     public BoxAPIResponse() {
-        this.headers = null;
         this.contentLength = 0;
         this.contentType = null;
         this.requestMethod = null;
@@ -88,7 +89,9 @@ public class BoxAPIResponse {
         this.responseCode = code;
         this.requestMethod = requestMethod;
         this.requestUrl = requestUrl;
-        this.headers = headers;
+        if (headers != null) {
+            this.headers.putAll(headers);
+        }
         this.rawInputStream = body;
         this.contentType = contentType;
         this.contentLength = contentLength;
@@ -153,7 +156,7 @@ public class BoxAPIResponse {
             // TODO: because we are not closing the stream we can potentialy leak connections
             //  (users have to close stream to free connection) - maybe we can fix that
             responseBody.byteStream(),
-            responseBody.contentType().toString(),
+            Optional.ofNullable(responseBody.contentType()).map(MediaType::toString).orElse(null),
             responseBody.contentLength()
         );
     }
