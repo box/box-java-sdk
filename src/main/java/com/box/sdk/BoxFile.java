@@ -1,5 +1,6 @@
 package com.box.sdk;
 
+import static com.box.sdk.BinaryBody.writeStream;
 import static com.box.sdk.http.ContentType.APPLICATION_JSON;
 import static com.box.sdk.http.ContentType.APPLICATION_JSON_PATCH;
 import static com.eclipsesource.json.Json.NULL;
@@ -95,39 +96,13 @@ public class BoxFile extends BoxItem {
      */
     public static final URLTemplate GET_TASKS_URL_TEMPLATE = new URLTemplate("files/%s/tasks");
     /**
-     * Get Thumbnail PNG Template.
-     */
-    public static final URLTemplate GET_THUMBNAIL_PNG_TEMPLATE = new URLTemplate("files/%s/thumbnail.png");
-    /**
-     * Get Thumbnail JPG Template.
-     */
-    public static final URLTemplate GET_THUMBNAIL_JPG_TEMPLATE = new URLTemplate("files/%s/thumbnail.jpg");
-    /**
      * Upload Session URL Template.
      */
     public static final URLTemplate UPLOAD_SESSION_URL_TEMPLATE = new URLTemplate("files/%s/upload_sessions");
     /**
-     * Upload Session Status URL Template.
-     */
-    public static final URLTemplate UPLOAD_SESSION_STATUS_URL_TEMPLATE = new URLTemplate(
-        "files/upload_sessions/%s/status");
-    /**
-     * Abort Upload Session URL Template.
-     */
-    public static final URLTemplate ABORT_UPLOAD_SESSION_URL_TEMPLATE = new URLTemplate("files/upload_sessions/%s");
-    /**
-     * Add Collaborations URL Template.
-     */
-    public static final URLTemplate ADD_COLLABORATION_URL = new URLTemplate("collaborations");
-    /**
-     * Get All File Collaborations URL Template.
-     */
-    public static final URLTemplate GET_ALL_FILE_COLLABORATIONS_URL = new URLTemplate("files/%s/collaborations");
-    /**
      * Describes file item type.
      */
     static final String TYPE = "file";
-    private static final int BUFFER_SIZE = 8192;
     private static final int GET_COLLABORATORS_PAGE_SIZE = 1000;
 
     /**
@@ -342,20 +317,7 @@ public class BoxFile extends BoxItem {
         URL url = CONTENT_URL_TEMPLATE.build(this.getAPI().getBaseURL(), this.getID());
         BoxAPIRequest request = new BoxAPIRequest(this.getAPI(), url, "GET");
         BoxAPIResponse response = request.send();
-        InputStream input = response.getBody(listener);
-
-        byte[] buffer = new byte[BUFFER_SIZE];
-        try {
-            int n = input.read(buffer);
-            while (n != -1) {
-                output.write(buffer, 0, n);
-                n = input.read(buffer);
-            }
-        } catch (IOException e) {
-            throw new BoxAPIException("Couldn't connect to the Box API due to a network error.", e);
-        } finally {
-            response.disconnect();
-        }
+        writeStream(response, output, listener);
     }
 
     /**
@@ -396,22 +358,7 @@ public class BoxFile extends BoxItem {
         } else {
             request.addHeader("Range", String.format("bytes=%s-", rangeStart));
         }
-
-        BoxAPIResponse response = request.send();
-        InputStream input = response.getBody(listener);
-
-        byte[] buffer = new byte[BUFFER_SIZE];
-        try {
-            int n = input.read(buffer);
-            while (n != -1) {
-                output.write(buffer, 0, n);
-                n = input.read(buffer);
-            }
-        } catch (IOException e) {
-            throw new BoxAPIException("Couldn't connect to the Box API due to a network error.", e);
-        } finally {
-            response.disconnect();
-        }
+        writeStream(request.send(), output, listener);
     }
 
     @Override
@@ -606,30 +553,14 @@ public class BoxFile extends BoxItem {
         }
     }
 
-    private void makeRepresentationContentRequest(String representationURLTemplate, String assetPath,
-                                                  OutputStream output) {
-
+    private void makeRepresentationContentRequest(
+        String representationURLTemplate, String assetPath, OutputStream output
+    ) {
         try {
-
             URL repURL = new URL(representationURLTemplate.replace("{+asset_path}", assetPath));
             BoxAPIRequest repContentReq = new BoxAPIRequest(this.getAPI(), repURL, HttpMethod.GET);
-
-            BoxAPIResponse contentResponse = repContentReq.send();
-
-            InputStream input = contentResponse.getBody();
-
-            byte[] buffer = new byte[BUFFER_SIZE];
-            try {
-                int n = input.read(buffer);
-                while (n != -1) {
-                    output.write(buffer, 0, n);
-                    n = input.read(buffer);
-                }
-            } catch (IOException e) {
-                throw new BoxAPIException("Couldn't connect to the Box API due to a network error.", e);
-            } finally {
-                contentResponse.disconnect();
-            }
+            BoxAPIResponse response = repContentReq.send();
+            writeStream(response, output);
         } catch (MalformedURLException ex) {
 
             throw new BoxAPIException("Could not generate representation content URL");

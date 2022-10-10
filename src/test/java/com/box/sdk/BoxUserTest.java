@@ -20,7 +20,6 @@ import com.github.tomakehurst.wiremock.stubbing.Scenario;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.URL;
 import java.net.URLDecoder;
@@ -64,20 +63,8 @@ public class BoxUserTest {
                 .withBody(fileByteArray)));
 
         BoxUser user = new BoxUser(this.api, "12345");
-        InputStream avatarStream = user.getAvatar();
-
         ByteArrayOutputStream output = new ByteArrayOutputStream();
-        byte[] buffer = new byte[10000];
-        try {
-            int n = avatarStream.read(buffer);
-            while (n != -1) {
-                output.write(buffer, 0, n);
-                n = avatarStream.read(buffer);
-            }
-        } catch (IOException e) {
-            throw new BoxAPIException("Couldn't connect to the Box API due to a network error.", e);
-        }
-
+        user.downloadAvatar(output);
         assertArrayEquals(fileByteArray, output.toByteArray());
     }
 

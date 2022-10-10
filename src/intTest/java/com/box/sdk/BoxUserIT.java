@@ -15,9 +15,9 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.URL;
 import java.net.URLDecoder;
@@ -148,18 +148,9 @@ public class BoxUserIT {
         assertThat(response.getPreview(), not(emptyOrNullString()));
 
         retry(() -> {
-            InputStream uploadedAvatar = user.getAvatar();
-            try {
-                long size = 0;
-                byte[] buffer = new byte[2000];
-                int readBytes = uploadedAvatar.read(buffer);
-                while (readBytes > 0) {
-                    size += readBytes;
-                    readBytes = uploadedAvatar.read(buffer);
-                }
-                // we have to close the stream because we do not want to leak connections
-                uploadedAvatar.close();
-                assertTrue("Could not read avatar binary data", size > 0);
+            try (ByteArrayOutputStream outputStream = new ByteArrayOutputStream()) {
+                user.downloadAvatar(outputStream);
+                assertTrue("Could not read avatar binary data", outputStream.size() > 0);
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
@@ -170,7 +161,7 @@ public class BoxUserIT {
 
         // then
         try {
-            user.getAvatar();
+            user.downloadAvatar(new ByteArrayOutputStream());
         } catch (BoxAPIException e) {
             assertThat(e.getResponseCode(), is(404));
         }

@@ -1,5 +1,6 @@
 package com.box.sdk;
 
+import static com.box.sdk.BinaryBody.writeStream;
 import static com.box.sdk.http.HttpMethod.DELETE;
 import static com.box.sdk.internal.utils.JsonUtils.addIfNotNull;
 
@@ -11,6 +12,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -680,12 +682,10 @@ public class BoxUser extends BoxCollaborator {
      *
      * @return InputStream representing the user avater.
      */
-    public InputStream getAvatar() {
+    public void downloadAvatar(OutputStream outputStream) {
         URL url = USER_AVATAR_TEMPLATE.build(this.getAPI().getBaseURL(), this.getID());
         BoxAPIRequest request = new BoxAPIRequest(this.getAPI(), url, "GET");
-        BoxAPIResponse response = request.send();
-
-        return response.getBody();
+        writeStream(request.send(), outputStream);
     }
 
     /**
