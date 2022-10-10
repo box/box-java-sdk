@@ -1,0 +1,26 @@
+{
+  "type": "file",
+  "id": "12345",
+  "etag": "0",
+  "representations": {
+    "entries": [
+      {
+        "representation": "jpg",
+        "properties": {
+          "dimensions": "32x32",
+          "paged": false,
+          "thumb": true
+        },
+        "info": {
+          "url": "http://localhost:53621/2.0/internal_files/12345/versions/1116420931563/representations/jpg_thumb_32x32"
+        },
+        "status": {
+          "state": "none"
+        },
+        "content": {
+          "url_template": "http://localhost:53621/2.0/internal_files/12345/versions/1116420931563/representations/jpg_thumb_32x32/content/{+asset_path}"
+        }
+      }
+    ]
+  }
+}

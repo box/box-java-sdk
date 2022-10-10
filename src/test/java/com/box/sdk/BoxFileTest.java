@@ -1,6 +1,7 @@
 package com.box.sdk;
 
 import static com.box.sdk.BoxSharedLink.Access.OPEN;
+import static com.box.sdk.TestUtils.getFixture;
 import static com.box.sdk.http.ContentType.APPLICATION_JSON;
 import static com.box.sdk.http.ContentType.APPLICATION_JSON_PATCH;
 import static com.box.sdk.http.ContentType.APPLICATION_OCTET_STREAM;
@@ -147,7 +148,7 @@ public class BoxFileTest {
         List<String> roles = new ArrayList<>();
         roles.add("open");
 
-        String result = TestUtils.getFixture("BoxFile/GetFileInfo200");
+        String result = getFixture("BoxFile/GetFileInfo200");
 
         wireMockRule.stubFor(WireMock.get(WireMock.urlPathEqualTo(fileURL))
             .willReturn(WireMock.aResponse()
@@ -180,7 +181,7 @@ public class BoxFileTest {
         final String fileID = "12345";
         final String filesURL = "/2.0/files/" + fileID;
 
-        String result = TestUtils.getFixture("BoxFile/GetFileInfoCausesDeserializationException");
+        String result = getFixture("BoxFile/GetFileInfoCausesDeserializationException");
 
         wireMockRule.stubFor(WireMock.get(WireMock.urlPathEqualTo(filesURL))
             .willReturn(WireMock.aResponse()
@@ -198,7 +199,7 @@ public class BoxFileTest {
         JsonObject jsonObject = new JsonObject()
             .add("shared_link", (String) null);
 
-        String putResult = TestUtils.getFixture("BoxFile/GetFileInfo200");
+        String putResult = getFixture("BoxFile/GetFileInfo200");
 
         wireMockRule.stubFor(WireMock.put(WireMock.urlPathEqualTo(fileURL))
             .withRequestBody(WireMock.containing(jsonObject.toString()))
@@ -219,7 +220,7 @@ public class BoxFileTest {
         final String fileID = "12345";
         final String tasksURL = "/2.0/files/" + fileID + "/tasks";
 
-        String result = TestUtils.getFixture("BoxFile/GetFileTasksInfoWithFields200");
+        String result = getFixture("BoxFile/GetFileTasksInfoWithFields200");
 
         wireMockRule.stubFor(WireMock.get(WireMock.urlPathEqualTo(tasksURL))
             .willReturn(WireMock.aResponse()
@@ -241,7 +242,7 @@ public class BoxFileTest {
         JsonObject updateObject = new JsonObject()
             .add("name", newFileName);
 
-        String result = TestUtils.getFixture("BoxFile/UpdateFileInfo200");
+        String result = getFixture("BoxFile/UpdateFileInfo200");
 
         wireMockRule.stubFor(WireMock.put(WireMock.urlPathEqualTo(fileURL))
             .withRequestBody(WireMock.equalToJson(updateObject.toString()))
@@ -268,7 +269,7 @@ public class BoxFileTest {
         JsonObject parentObject = new JsonObject()
             .add("parent", innerObject);
 
-        String result = TestUtils.getFixture("BoxFile/CopyFile200");
+        String result = getFixture("BoxFile/CopyFile200");
 
         wireMockRule.stubFor(WireMock.post(WireMock.urlPathEqualTo(fileURL))
             .withRequestBody(WireMock.equalToJson(parentObject.toString()))
@@ -295,7 +296,7 @@ public class BoxFileTest {
         JsonObject parentObject = new JsonObject()
             .add("parent", moveObject);
 
-        String result = TestUtils.getFixture("BoxFile/MoveFile200");
+        String result = getFixture("BoxFile/MoveFile200");
 
         wireMockRule.stubFor(WireMock.put(WireMock.urlPathEqualTo(fileURL))
             .withRequestBody(WireMock.equalToJson(parentObject.toString()))
@@ -340,7 +341,7 @@ public class BoxFileTest {
 
         new JsonObject().add("lock", innerObject);
 
-        String result = TestUtils.getFixture("BoxFile/LockFile200");
+        String result = getFixture("BoxFile/LockFile200");
 
         wireMockRule.stubFor(WireMock.put(WireMock.urlPathEqualTo(fileURL))
             .withQueryParam("fields", WireMock.containing("lock"))
@@ -362,9 +363,9 @@ public class BoxFileTest {
         final String fileURL = "/2.0/files/" + fileID;
         JsonObject unlockObject = new JsonObject().add("lock", Json.NULL);
 
-        String fileResult = TestUtils.getFixture("BoxFile/GetFileInfo200");
+        String fileResult = getFixture("BoxFile/GetFileInfo200");
 
-        String result = TestUtils.getFixture("BoxFile/UnlockFile200");
+        String result = getFixture("BoxFile/UnlockFile200");
 
         wireMockRule.stubFor(WireMock.get(WireMock.urlPathEqualTo(fileURL))
             .willReturn(WireMock.aResponse()
@@ -407,32 +408,7 @@ public class BoxFileTest {
                 .withQueryParam("fields", WireMock.equalTo("representations"))
                 .willReturn(WireMock.aResponse()
                     .withHeader("Content-Type", APPLICATION_JSON)
-                    .withBody("{\n"
-                        + "  \"type\": \"file\",\n"
-                        + "  \"id\": \"12345\",\n"
-                        + "  \"etag\": \"0\",\n"
-                        + "  \"representations\": {\n"
-                        + "    \"entries\": [\n"
-                        + "      {\n"
-                        + "        \"representation\": \"jpg\",\n"
-                        + "        \"properties\": {\n"
-                        + "          \"dimensions\": \"32x32\",\n"
-                        + "          \"paged\": \"false\",\n"
-                        + "          \"thumb\": \"true\"\n"
-                        + "        },\n"
-                        + "        \"info\": {\n"
-                        + "          \"url\": \"http://localhost:" + wireMockRule.port() + "/2.0/internal_files/12345/versions/1116420931563/representations/jpg_thumb_32x32\"\n"
-                        + "        },\n"
-                        + "        \"status\": {\n"
-                        + "          \"state\": \"none\"\n"
-                        + "        },\n"
-                        + "        \"content\": {\n"
-                        + "          \"url_template\": \"http://localhost:" + wireMockRule.port() + "/2.0/internal_files/12345/versions/1116420931563/representations/jpg_thumb_32x32/content/{+asset_path}\"\n"
-                        + "        }\n"
-                        + "      }\n"
-                        + "    ]\n"
-                        + "  }\n"
-                        + "}")
+                    .withBody(getFixture("BoxFile/GetFileRepresentations200", wireMockRule.port()))
                     .withStatus(200))
         );
         wireMockRule.stubFor(
@@ -441,23 +417,7 @@ public class BoxFileTest {
                 )
                 .willReturn(WireMock.aResponse()
                     .withHeader("Content-Type", APPLICATION_JSON)
-                    .withBody("{\n"
-                        + "  \"representation\": \"jpg\",\n"
-                        + "  \"properties\": {\n"
-                        + "    \"dimensions\": \"32x32\",\n"
-                        + "    \"paged\": \"false\",\n"
-                        + "    \"thumb\": \"true\"\n"
-                        + "  },\n"
-                        + "  \"info\": {\n"
-                        + "    \"url\": \"http://localhost:" + wireMockRule.port() + "/2.0/internal_files/1030335435441/versions/1116437417841/representations/jpg_thumb_32x32\"\n"
-                        + "  },\n"
-                        + "  \"status\": {\n"
-                        + "    \"state\": \"success\"\n"
-                        + "  },\n"
-                        + "  \"content\": {\n"
-                        + "    \"url_template\": \"http://localhost:" + wireMockRule.port() + "/2.0/internal_files/1030335435441/versions/1116437417841/representations/jpg_thumb_32x32/content/{+asset_path}\"\n"
-                        + "  }\n"
-                        + "}")
+                    .withBody(getFixture("BoxFile/GetFileRepresentation200", wireMockRule.port()))
                     .withStatus(200))
         );
         wireMockRule.stubFor(
@@ -483,9 +443,9 @@ public class BoxFileTest {
         final String fileURL = "/2.0/files/" + fileID + "/versions";
         final String versionURL = "/2.0/files/" + fileID + "/versions/" + versionID;
 
-        String result = TestUtils.getFixture("BoxFile/GetFileInfo200");
+        String result = getFixture("BoxFile/GetFileInfo200");
 
-        String versionResult = TestUtils.getFixture("BoxFile/GetAllFileVersions200");
+        String versionResult = getFixture("BoxFile/GetAllFileVersions200");
 
         wireMockRule.stubFor(WireMock.get(WireMock.urlPathEqualTo(fileURL))
             .willReturn(WireMock.aResponse()
@@ -517,7 +477,7 @@ public class BoxFileTest {
         JsonObject metadataObject = new JsonObject()
             .add("foo", "bar");
 
-        String result = TestUtils.getFixture("BoxFile/CreateMetadataOnFile201");
+        String result = getFixture("BoxFile/CreateMetadataOnFile201");
 
         wireMockRule.stubFor(WireMock.post(WireMock.urlPathEqualTo(metadataURL))
             .withRequestBody(WireMock.equalToJson(metadataObject.toString()))
@@ -541,7 +501,7 @@ public class BoxFileTest {
         final String scope = "global";
         final String metadataURL = "/2.0/files/" + fileID + "/metadata/global/properties";
 
-        String result = TestUtils.getFixture("BoxFile/GetMetadataOnFile200");
+        String result = getFixture("BoxFile/GetMetadataOnFile200");
 
         wireMockRule.stubFor(WireMock.get(WireMock.urlPathEqualTo(metadataURL))
             .willReturn(WireMock.aResponse()
@@ -564,7 +524,7 @@ public class BoxFileTest {
         byte[] bytes = new byte[]{1, 2, 3};
         InputStream fileContents = new ByteArrayInputStream(bytes);
 
-        String result = TestUtils.getFixture("BoxFile/UploadNewVersion201");
+        String result = getFixture("BoxFile/UploadNewVersion201");
 
         wireMockRule.stubFor(WireMock.post(WireMock.urlPathEqualTo("/2.0/files/" + fileID + "/content"))
             .willReturn(WireMock.aResponse()
@@ -597,7 +557,7 @@ public class BoxFileTest {
         JsonObject sharedLinkObject = new JsonObject()
             .add("shared_link", innerObject);
 
-        String result = TestUtils.getFixture("BoxSharedLink/CreateSharedLink201");
+        String result = getFixture("BoxSharedLink/CreateSharedLink201");
 
         wireMockRule.stubFor(WireMock.put(WireMock.urlPathEqualTo("/2.0/files/" + fileID))
             .withRequestBody(WireMock.equalToJson(sharedLinkObject.toString()))
@@ -636,7 +596,7 @@ public class BoxFileTest {
         JsonObject sharedLinkObject = new JsonObject()
             .add("shared_link", innerObject);
 
-        String result = TestUtils.getFixture("BoxSharedLink/CreateEditableSharedLink201");
+        String result = getFixture("BoxSharedLink/CreateEditableSharedLink201");
 
         wireMockRule.stubFor(WireMock.put(WireMock.urlPathEqualTo("/2.0/files/" + fileID))
             .withRequestBody(WireMock.equalToJson(sharedLinkObject.toString()))
@@ -663,7 +623,7 @@ public class BoxFileTest {
         JsonObject metadataObject = new JsonObject()
             .add("Box__Security__Classification__Key", classificationType);
 
-        String result = TestUtils.getFixture("BoxFile/CreateClassificationOnFile201");
+        String result = getFixture("BoxFile/CreateClassificationOnFile201");
 
         wireMockRule.stubFor(WireMock.post(WireMock.urlPathEqualTo(metadataURL))
             .withRequestBody(WireMock.equalToJson(metadataObject.toString()))
@@ -690,7 +650,7 @@ public class BoxFileTest {
         JsonArray metadataArray = new JsonArray()
             .add(metadataObject);
 
-        String result = TestUtils.getFixture("BoxFile/UpdateClassificationOnFile200");
+        String result = getFixture("BoxFile/UpdateClassificationOnFile200");
 
         wireMockRule.stubFor(WireMock.put(WireMock.urlPathEqualTo(metadataURL))
             .withRequestBody(WireMock.equalToJson(metadataArray.toString()))
@@ -717,7 +677,7 @@ public class BoxFileTest {
         JsonArray metadataArray = new JsonArray()
             .add(metadataObject);
 
-        String result = TestUtils.getFixture("BoxFile/UpdateClassificationOnFile200");
+        String result = getFixture("BoxFile/UpdateClassificationOnFile200");
 
         wireMockRule.stubFor(WireMock.post(WireMock.urlPathEqualTo(metadataURL))
             .willReturn(WireMock.aResponse()
@@ -755,7 +715,7 @@ public class BoxFileTest {
         final String fileID = "12345";
         final String metadataURL = "/2.0/files/" + fileID + "/metadata/enterprise/securityClassification-6VMVochwUWo";
 
-        String result = TestUtils.getFixture("BoxFile/CreateClassificationOnFile201");
+        String result = getFixture("BoxFile/CreateClassificationOnFile201");
 
         wireMockRule.stubFor(WireMock.get(WireMock.urlPathEqualTo(metadataURL))
             .willReturn(WireMock.aResponse()
@@ -773,7 +733,7 @@ public class BoxFileTest {
         final String fileID = "12345";
         final String metadataURL = "/2.0/files/" + fileID + "/metadata/enterprise/securityClassification-6VMVochwUWo";
 
-        String getResult = TestUtils.getFixture("BoxException/BoxResponseException404");
+        String getResult = getFixture("BoxException/BoxResponseException404");
 
         wireMockRule.stubFor(WireMock.get(WireMock.urlPathEqualTo(metadataURL))
             .willReturn(WireMock.aResponse()
@@ -792,7 +752,7 @@ public class BoxFileTest {
         final String fileID = "12345";
         final String metadataURL = "/2.0/files/" + fileID + "/metadata/enterprise/securityClassification-6VMVochwUWo";
 
-        String getResult = TestUtils.getFixture("BoxException/BoxResponseException403");
+        String getResult = getFixture("BoxException/BoxResponseException403");
 
         wireMockRule.stubFor(WireMock.get(WireMock.urlPathEqualTo(metadataURL))
             .willReturn(WireMock.aResponse()
@@ -827,8 +787,8 @@ public class BoxFileTest {
         secondValueArray.add("second");
         secondValueArray.add("third");
 
-        String postResult = TestUtils.getFixture("/BoxException/BoxResponseException409");
-        String putResult = TestUtils.getFixture("/BoxFile/UpdateMetadataOnFile200");
+        String postResult = getFixture("/BoxException/BoxResponseException409");
+        String putResult = getFixture("/BoxFile/UpdateMetadataOnFile200");
 
         final String firstValue = "text";
         JsonArray secondValueJson = new JsonArray()
@@ -905,10 +865,10 @@ public class BoxFileTest {
         final String commitURL = "/2.0/files/upload_sessions/D5E3F8ADA11A38F0A66AD0B64AACA658/commit";
         FakeStream stream = new FakeStream("aaaaa");
 
-        String sessionResult = TestUtils.getFixture("BoxFile/CreateUploadSession201", wireMockRule.port());
-        String uploadResult = TestUtils.getFixture("BoxFile/UploadPartOne200");
-        String commitResult = TestUtils.getFixture("BoxFile/CommitUpload201");
-        String canUploadResult = TestUtils.getFixture("BoxFile/CanUploadFile200");
+        String sessionResult = getFixture("BoxFile/CreateUploadSession201", wireMockRule.port());
+        String uploadResult = getFixture("BoxFile/UploadPartOne200");
+        String commitResult = getFixture("BoxFile/CommitUpload201");
+        String canUploadResult = getFixture("BoxFile/CanUploadFile200");
 
         JsonObject idObject = new JsonObject()
             .add("id", "12345");
@@ -981,9 +941,9 @@ public class BoxFileTest {
         final String commitURL = "/2.0/files/upload_sessions/D5E3F8ADA11A38F0A66AD0B64AACA658/commit";
         FakeStream stream = new FakeStream("aaaaa");
 
-        String sessionResult = TestUtils.getFixture("BoxFile/CreateUploadSession201", wireMockRule.port());
-        String uploadResult = TestUtils.getFixture("BoxFile/UploadPartOne200");
-        String commitResult = TestUtils.getFixture("BoxFile/CommitUploadWithAttributes201");
+        String sessionResult = getFixture("BoxFile/CreateUploadSession201", wireMockRule.port());
+        String uploadResult = getFixture("BoxFile/UploadPartOne200");
+        String commitResult = getFixture("BoxFile/CommitUploadWithAttributes201");
 
         JsonObject sessionObject = new JsonObject()
             .add("file_size", 5);
@@ -1134,7 +1094,7 @@ public class BoxFileTest {
         String fileId = "12345";
         final String fileURL = "/2.0/files/" + fileId;
         String dispositionAtString = "2012-12-12T18:53:43Z";
-        String result = TestUtils.getFixture("BoxFile/GetFileInfo200");
+        String result = getFixture("BoxFile/GetFileInfo200");
 
         wireMockRule.stubFor(WireMock.get(WireMock.urlPathEqualTo(fileURL))
             .willReturn(WireMock.aResponse()
@@ -1195,7 +1155,7 @@ public class BoxFileTest {
     public void renameFile() {
         final String fileID = "12345";
         final String metadataURL = "/2.0/files/" + fileID;
-        String result = TestUtils.getFixture("BoxFile/GetFileInfo200");
+        String result = getFixture("BoxFile/GetFileInfo200");
 
         wireMockRule.stubFor(WireMock.put(WireMock.urlPathEqualTo(metadataURL))
             .withRequestBody(new EqualToJsonPattern("{\"name\": \"New Name\"}", false, false))
