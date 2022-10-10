@@ -104,7 +104,7 @@ public class BoxSignRequestIT {
             assertEquals(signRequestIdCreate, signRequestInfoGetByID.getID());
 
             // Resend sign request
-            signRequestGetByID.resend();
+            retry(signRequestGetByID::resend, 5, 500);
 
             // Do Get All
             Iterable<BoxSignRequest.Info> signRequestsGetAll = BoxSignRequest.getAll(api);

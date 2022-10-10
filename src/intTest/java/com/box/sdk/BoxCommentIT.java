@@ -2,6 +2,7 @@ package com.box.sdk;
 
 import static com.box.sdk.BoxApiProvider.jwtApiForServiceAccount;
 import static com.box.sdk.CleanupTools.deleteFile;
+import static com.box.sdk.UniqueTestFolder.randomizeName;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
@@ -60,7 +61,7 @@ public class BoxCommentIT {
     public void changeCommentMessageSucceeds() {
         BoxAPIConnection api = jwtApiForServiceAccount();
         BoxFolder rootFolder = BoxFolder.getRootFolder(api);
-        String fileName = "[changeCommentMessageSucceeds] Test File.txt";
+        String fileName = randomizeName("[changeCommentMessageSucceeds] Test File.txt");
         byte[] fileBytes = "Non-empty string".getBytes(StandardCharsets.UTF_8);
         String originalMessage = "Original message";
         String changedMessage = "Changed message";
