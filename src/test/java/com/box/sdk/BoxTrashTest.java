@@ -1,5 +1,6 @@
 package com.box.sdk;
 
+import static com.box.sdk.http.ContentType.APPLICATION_JSON;
 import static com.github.tomakehurst.wiremock.core.WireMockConfiguration.wireMockConfig;
 import static java.lang.String.format;
 import static org.junit.Assert.assertEquals;
@@ -7,7 +8,6 @@ import static org.junit.Assert.assertThrows;
 
 import com.github.tomakehurst.wiremock.client.WireMock;
 import com.github.tomakehurst.wiremock.junit.WireMockRule;
-import java.io.IOException;
 import java.util.Iterator;
 import org.junit.Before;
 import org.junit.Rule;
@@ -26,7 +26,7 @@ public class BoxTrashTest {
     }
 
     @Test
-    public void testGetAllTrashedItemsSucceeds() throws IOException {
+    public void testGetAllTrashedItemsSucceeds() {
         final String trashURL = "/2.0/folders/trash/items/";
         final String firstTrashID = "12345";
         final String firstTrashName = "Test Folder";
@@ -39,7 +39,7 @@ public class BoxTrashTest {
             .withQueryParam("limit", WireMock.containing("1000"))
             .withQueryParam("usemarker", WireMock.containing("true"))
             .willReturn(WireMock.aResponse()
-                .withHeader("Content-Type", "application/json")
+                .withHeader("Content-Type", APPLICATION_JSON)
                 .withBody(result)));
 
         BoxTrash trash = new BoxTrash(this.api);
@@ -56,7 +56,7 @@ public class BoxTrashTest {
     }
 
     @Test
-    public void testRestoreFolderFromTrashSucceeds() throws IOException {
+    public void testRestoreFolderFromTrashSucceeds() {
         final String folderID = "12345";
         final String restoreFolderURL = "/2.0/folders/" + folderID;
         final String folderName = "Test Folder";
@@ -67,7 +67,7 @@ public class BoxTrashTest {
 
         wireMockRule.stubFor(WireMock.post(WireMock.urlPathEqualTo(restoreFolderURL))
             .willReturn(WireMock.aResponse()
-                .withHeader("Content-Type", "application/json")
+                .withHeader("Content-Type", APPLICATION_JSON)
                 .withBody(result)));
 
         BoxTrash trash = new BoxTrash(this.api);
@@ -80,7 +80,7 @@ public class BoxTrashTest {
     }
 
     @Test
-    public void testRestoreFileFromTrashSucceeds() throws IOException {
+    public void testRestoreFileFromTrashSucceeds() {
         final String fileID = "12345";
         final String restoreFileURL = "/2.0/files/" + fileID;
         final String fileName = "File.pdf";
@@ -92,7 +92,7 @@ public class BoxTrashTest {
 
         wireMockRule.stubFor(WireMock.post(WireMock.urlPathEqualTo(restoreFileURL))
             .willReturn(WireMock.aResponse()
-                .withHeader("Content-Type", "application/json")
+                .withHeader("Content-Type", APPLICATION_JSON)
                 .withBody(result)));
 
         BoxTrash trash = new BoxTrash(this.api);
@@ -106,7 +106,7 @@ public class BoxTrashTest {
     }
 
     @Test
-    public void testGetTrashedFolderItemInfoSucceeds() throws IOException {
+    public void testGetTrashedFolderItemInfoSucceeds() {
         final String folderID = "12345";
         final String trashURL = "/2.0/folders/" + folderID + "/trash";
         final String folderName = "Another retention test";
@@ -118,7 +118,7 @@ public class BoxTrashTest {
 
         wireMockRule.stubFor(WireMock.get(WireMock.urlPathEqualTo(trashURL))
             .willReturn(WireMock.aResponse()
-                .withHeader("Content-Type", "application/json")
+                .withHeader("Content-Type", APPLICATION_JSON)
                 .withBody(result)));
 
         BoxTrash trash = new BoxTrash(this.api);
@@ -131,7 +131,7 @@ public class BoxTrashTest {
     }
 
     @Test
-    public void testGetTrashedFileItemInfoSucceeds() throws IOException {
+    public void testGetTrashedFileItemInfoSucceeds() {
         final String fileID = "12345";
         final String trashURL = "/2.0/files/" + fileID + "/trash";
         final String folderName = "File.pdf";
@@ -143,7 +143,7 @@ public class BoxTrashTest {
 
         wireMockRule.stubFor(WireMock.get(WireMock.urlPathEqualTo(trashURL))
             .willReturn(WireMock.aResponse()
-                .withHeader("Content-Type", "application/json")
+                .withHeader("Content-Type", APPLICATION_JSON)
                 .withBody(result)));
 
         BoxTrash trash = new BoxTrash(this.api);
@@ -162,7 +162,7 @@ public class BoxTrashTest {
 
         wireMockRule.stubFor(WireMock.delete(WireMock.urlPathEqualTo(deleteFolderURL))
             .willReturn(WireMock.aResponse()
-                .withHeader("Content-Type", "application/json")
+                .withHeader("Content-Type", APPLICATION_JSON)
                 .withStatus(204)));
 
         BoxTrash trash = new BoxTrash(this.api);
@@ -176,7 +176,7 @@ public class BoxTrashTest {
 
         wireMockRule.stubFor(WireMock.delete(WireMock.urlPathEqualTo(deleteFileURL))
             .willReturn(WireMock.aResponse()
-                .withHeader("Content-Type", "application/json")
+                .withHeader("Content-Type", APPLICATION_JSON)
                 .withStatus(204)));
 
         BoxTrash trash = new BoxTrash(this.api);
@@ -184,7 +184,7 @@ public class BoxTrashTest {
     }
 
     @Test
-    public void testGetAllTrashedItemsWithOrderAndOffsetAndLimit() throws IOException {
+    public void testGetAllTrashedItemsWithOrderAndOffsetAndLimit() {
         final String trashURL = "/2.0/folders/trash/items/";
         final String firstTrashID = "12345";
         final String firstTrashName = "Test Folder";
@@ -199,7 +199,7 @@ public class BoxTrashTest {
             .withQueryParam("sort", WireMock.containing("name"))
             .withQueryParam("direction", WireMock.containing("DESC"))
             .willReturn(WireMock.aResponse()
-                .withHeader("Content-Type", "application/json")
+                .withHeader("Content-Type", APPLICATION_JSON)
                 .withBody(result)));
 
         BoxTrash trash = new BoxTrash(this.api);
@@ -220,7 +220,7 @@ public class BoxTrashTest {
     }
 
     @Test
-    public void testGetAllTrashedItemsWithStreamPositionAndLimit() throws IOException {
+    public void testGetAllTrashedItemsWithStreamPositionAndLimit() {
         final String trashURL = "/2.0/folders/trash/items/";
         final String firstTrashID = "12345";
         final String firstTrashName = "Test Folder";
@@ -233,7 +233,7 @@ public class BoxTrashTest {
             .withQueryParam("limit", WireMock.equalTo("500"))
             .withQueryParam("usemarker", WireMock.equalTo("true"))
             .willReturn(WireMock.aResponse()
-                .withHeader("Content-Type", "application/json")
+                .withHeader("Content-Type", APPLICATION_JSON)
                 .withBody(result)));
 
         BoxTrash trash = new BoxTrash(this.api);

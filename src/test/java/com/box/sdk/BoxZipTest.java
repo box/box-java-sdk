@@ -1,6 +1,7 @@
 package com.box.sdk;
 
 
+import static com.box.sdk.http.ContentType.APPLICATION_JSON;
 import static com.github.tomakehurst.wiremock.core.WireMockConfiguration.wireMockConfig;
 import static java.lang.String.format;
 import static org.junit.Assert.assertEquals;
@@ -9,7 +10,6 @@ import com.eclipsesource.json.JsonArray;
 import com.eclipsesource.json.JsonObject;
 import com.github.tomakehurst.wiremock.client.WireMock;
 import com.github.tomakehurst.wiremock.junit.WireMockRule;
-import java.io.IOException;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Date;
@@ -33,7 +33,7 @@ public class BoxZipTest {
     }
 
     @Test
-    public void createZipSucceeds() throws IOException, ParseException {
+    public void createZipSucceeds() throws ParseException {
         final String fileID = "466239504569";
         final String folderID = "466239504580";
         final String downloadFileName = "test";
@@ -59,7 +59,7 @@ public class BoxZipTest {
         wireMockRule.stubFor(WireMock.post(WireMock.urlPathEqualTo("/2.0/zip_downloads"))
             .withRequestBody(WireMock.equalToJson(body.toString()))
             .willReturn(WireMock.aResponse()
-                .withHeader("Content-Type", "application/json")
+                .withHeader("Content-Type", APPLICATION_JSON)
                 .withBody(result)));
 
         BoxZip zip = new BoxZip(this.api);

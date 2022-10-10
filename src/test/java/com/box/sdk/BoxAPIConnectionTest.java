@@ -1,5 +1,6 @@
 package com.box.sdk;
 
+import static com.box.sdk.http.ContentType.APPLICATION_JSON;
 import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
 import static com.github.tomakehurst.wiremock.client.WireMock.post;
 import static com.github.tomakehurst.wiremock.client.WireMock.urlPathEqualTo;
@@ -184,7 +185,7 @@ public class BoxAPIConnectionTest {
         wireMockRule.stubFor(post(urlPathEqualTo("/oauth2/revoke"))
             .withRequestBody(WireMock.equalTo("token=fakeAccessToken&client_id=fakeID&client_secret=fakeSecret"))
             .willReturn(aResponse()
-                .withHeader("Content-Type", "application/json")
+                .withHeader("Content-Type", APPLICATION_JSON)
                 .withBody("{}")));
 
         api.revokeToken();
@@ -642,7 +643,7 @@ public class BoxAPIConnectionTest {
                 )
             ))
             .willReturn(aResponse()
-                .withHeader("Content-Type", "application/json")
+                .withHeader("Content-Type", APPLICATION_JSON)
                 .withBody(
                     "{\"refresh_token\":\"refresh-token\", \"access_token\":\"access-token\", \"expires_in\": 1}"
                 )));
@@ -656,7 +657,7 @@ public class BoxAPIConnectionTest {
                 )
             ))
             .willReturn(aResponse()
-                .withHeader("Content-Type", "application/json")
+                .withHeader("Content-Type", APPLICATION_JSON)
                 .withBody(
                     "{\"refresh_token\":\"refresh-token\", \"access_token\":\"access-token\", \"expires_in\": 1}"
                 )));

@@ -1,12 +1,12 @@
 package com.box.sdk;
 
+import static com.box.sdk.http.ContentType.APPLICATION_JSON;
 import static com.github.tomakehurst.wiremock.core.WireMockConfiguration.wireMockConfig;
 import static java.lang.String.format;
 
 import com.eclipsesource.json.JsonObject;
 import com.github.tomakehurst.wiremock.client.WireMock;
 import com.github.tomakehurst.wiremock.junit.WireMockRule;
-import java.io.IOException;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Rule;
@@ -28,7 +28,7 @@ public class BoxWatermarkTest {
     }
 
     @Test
-    public void testCreateWatermarkOnFolderSucceedsSendsCorrectJson() throws IOException {
+    public void testCreateWatermarkOnFolderSucceedsSendsCorrectJson() {
         final String folderID = "12345";
         final String watermarkURL = "/2.0/folders/" + folderID + "/watermark";
         JsonObject innerObject = new JsonObject()
@@ -41,7 +41,7 @@ public class BoxWatermarkTest {
         wireMockRule.stubFor(WireMock.put(WireMock.urlPathEqualTo(watermarkURL))
             .withRequestBody(WireMock.equalToJson(watermarkObject.toString()))
             .willReturn(WireMock.aResponse()
-                .withHeader("Content-Type", "application/json")
+                .withHeader("Content-Type", APPLICATION_JSON)
                 .withBody(result)));
 
         BoxFolder folder = new BoxFolder(this.api, folderID);
@@ -53,7 +53,7 @@ public class BoxWatermarkTest {
     }
 
     @Test
-    public void testGetWatermarkOnFolderSucceeds() throws IOException {
+    public void testGetWatermarkOnFolderSucceeds() {
         final String folderID = "12345";
         final String watermarkURL = "/2.0/folders/" + folderID + "/watermark";
 
@@ -61,7 +61,7 @@ public class BoxWatermarkTest {
 
         wireMockRule.stubFor(WireMock.get(WireMock.urlPathEqualTo(watermarkURL))
             .willReturn(WireMock.aResponse()
-                .withHeader("Content-Type", "application/json")
+                .withHeader("Content-Type", APPLICATION_JSON)
                 .withBody(result)));
 
         BoxFolder folder = new BoxFolder(this.api, folderID);
@@ -79,7 +79,7 @@ public class BoxWatermarkTest {
 
         wireMockRule.stubFor(WireMock.delete(WireMock.urlPathEqualTo(deleteWatermarkURL))
             .willReturn(WireMock.aResponse()
-                .withHeader("Content-Type", "application/json")
+                .withHeader("Content-Type", APPLICATION_JSON)
                 .withStatus(204)));
 
         BoxFolder folder = new BoxFolder(this.api, folderID);
@@ -87,7 +87,7 @@ public class BoxWatermarkTest {
     }
 
     @Test
-    public void testCreateWatermarkOnFileSucceedsAndSendsCorrectJson() throws IOException {
+    public void testCreateWatermarkOnFileSucceedsAndSendsCorrectJson() {
         final String fileID = "12345";
         final String fileWatermarkURL = "/2.0/files/" + fileID + "/watermark";
         JsonObject innerObject = new JsonObject()
@@ -100,7 +100,7 @@ public class BoxWatermarkTest {
         wireMockRule.stubFor(WireMock.put(WireMock.urlPathEqualTo(fileWatermarkURL))
             .withRequestBody(WireMock.equalToJson(watermarkObject.toString()))
             .willReturn(WireMock.aResponse()
-                .withHeader("Content-Type", "application/json")
+                .withHeader("Content-Type", APPLICATION_JSON)
                 .withBody(result)));
 
         BoxFile file = new BoxFile(this.api, fileID);
@@ -112,7 +112,7 @@ public class BoxWatermarkTest {
     }
 
     @Test
-    public void testGetWatermarkOnFileSucceeds() throws IOException {
+    public void testGetWatermarkOnFileSucceeds() {
         final String fileID = "12345";
         final String watermarkURL = "/2.0/files/" + fileID + "/watermark";
 
@@ -120,7 +120,7 @@ public class BoxWatermarkTest {
 
         wireMockRule.stubFor(WireMock.get(WireMock.urlPathEqualTo(watermarkURL))
             .willReturn(WireMock.aResponse()
-                .withHeader("Content-Type", "application/json")
+                .withHeader("Content-Type", APPLICATION_JSON)
                 .withBody(result)));
 
         BoxFile file = new BoxFile(this.api, fileID);
@@ -138,7 +138,7 @@ public class BoxWatermarkTest {
 
         wireMockRule.stubFor(WireMock.delete(WireMock.urlPathEqualTo(deleteWatermarkURL))
             .willReturn(WireMock.aResponse()
-                .withHeader("Content-Type", "application/json")
+                .withHeader("Content-Type", APPLICATION_JSON)
                 .withStatus(204)));
 
         BoxFile file = new BoxFile(this.api, fileID);

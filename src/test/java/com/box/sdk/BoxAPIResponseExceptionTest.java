@@ -1,5 +1,6 @@
 package com.box.sdk;
 
+import static com.box.sdk.http.ContentType.APPLICATION_JSON;
 import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
 import static com.github.tomakehurst.wiremock.client.WireMock.post;
 import static com.github.tomakehurst.wiremock.client.WireMock.stubFor;
@@ -17,7 +18,6 @@ import com.eclipsesource.json.Json;
 import com.eclipsesource.json.JsonObject;
 import com.github.tomakehurst.wiremock.client.WireMock;
 import com.github.tomakehurst.wiremock.junit.WireMockRule;
-import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.HashMap;
@@ -72,7 +72,7 @@ public class BoxAPIResponseExceptionTest {
         stubFor(post(urlEqualTo("/folders"))
             .willReturn(aResponse()
                 .withStatus(409)
-                .withHeader("Content-Type", "application/json")
+                .withHeader("Content-Type", APPLICATION_JSON)
                 .withBody(fakeJSONResponse.toString())));
 
         BoxAPIRequest request = new BoxAPIRequest(api, foldersUrl(), "POST");
@@ -112,7 +112,7 @@ public class BoxAPIResponseExceptionTest {
         stubFor(post(urlEqualTo("/folders"))
             .willReturn(aResponse()
                 .withStatus(409)
-                .withHeader("Content-Type", "application/json")
+                .withHeader("Content-Type", APPLICATION_JSON)
                 .withBody(fakeJSONResponse.toString())));
 
         BoxAPIRequest request = new BoxAPIRequest(api, foldersUrl(), "POST");
@@ -190,7 +190,7 @@ public class BoxAPIResponseExceptionTest {
     }
 
     @Test
-    public void testGetResponseHeadersWithNoRequestID() throws IOException {
+    public void testGetResponseHeadersWithNoRequestID() {
         final String userURL = "/2.0/users/12345";
 
         String result = TestUtils.getFixture("BoxException/BoxResponseException403");
@@ -211,7 +211,7 @@ public class BoxAPIResponseExceptionTest {
 
 
     @Test
-    public void testGetResponseExceptionCorrectlyWithAllID() throws IOException {
+    public void testGetResponseExceptionCorrectlyWithAllID() {
         final String userURL = "/2.0/users/12345";
 
         String result = TestUtils.getFixture("BoxException/BoxResponseException403WithRequestID");
@@ -231,7 +231,7 @@ public class BoxAPIResponseExceptionTest {
     }
 
     @Test
-    public void testGetResponseExceptionErrorAndErrorDescription() throws IOException {
+    public void testGetResponseExceptionErrorAndErrorDescription() {
         final String userURL = "/2.0/users/12345";
 
         String result = TestUtils.getFixture("BoxException/BoxResponseException400WithErrorAndErrorDescription");

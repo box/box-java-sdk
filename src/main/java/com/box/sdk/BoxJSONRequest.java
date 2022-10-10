@@ -1,5 +1,7 @@
 package com.box.sdk;
 
+import static com.box.sdk.http.ContentType.APPLICATION_JSON;
+
 import com.box.sdk.http.HttpMethod;
 import com.eclipsesource.json.Json;
 import com.eclipsesource.json.JsonObject;
@@ -27,7 +29,7 @@ public class BoxJSONRequest extends BoxAPIRequest {
      * @param method the HTTP method of the request.
      */
     public BoxJSONRequest(BoxAPIConnection api, URL url, String method) {
-        this(api, url, method, "application/json");
+        this(api, url, method, APPLICATION_JSON);
     }
 
     /**

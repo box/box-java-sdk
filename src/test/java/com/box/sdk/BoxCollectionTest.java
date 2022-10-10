@@ -1,5 +1,6 @@
 package com.box.sdk;
 
+import static com.box.sdk.http.ContentType.APPLICATION_JSON;
 import static com.github.tomakehurst.wiremock.core.WireMockConfiguration.wireMockConfig;
 import static java.lang.String.format;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -10,7 +11,6 @@ import static org.junit.Assert.assertNull;
 
 import com.github.tomakehurst.wiremock.client.WireMock;
 import com.github.tomakehurst.wiremock.junit.WireMockRule;
-import java.io.IOException;
 import java.util.Iterator;
 import org.junit.Before;
 import org.junit.Rule;
@@ -35,7 +35,7 @@ public class BoxCollectionTest {
             .withQueryParam("fields", WireMock.containing("name"))
             .withQueryParam("fields", WireMock.containing("description"))
             .willReturn(WireMock.aResponse()
-                .withHeader("Content-Type", "application/json")
+                .withHeader("Content-Type", APPLICATION_JSON)
                 .withBody("{}")));
 
         BoxCollection collection = new BoxCollection(api, "0");
@@ -51,7 +51,7 @@ public class BoxCollectionTest {
             .withQueryParam("fields", WireMock.containing("name"))
             .withQueryParam("fields", WireMock.containing("description"))
             .willReturn(WireMock.aResponse()
-                .withHeader("Content-Type", "application/json")
+                .withHeader("Content-Type", APPLICATION_JSON)
                 .withBody("{\"total_count\": 3, \"entries\":[]}")));
 
         BoxCollection collection = new BoxCollection(this.api, "0");
@@ -62,7 +62,7 @@ public class BoxCollectionTest {
     }
 
     @Test
-    public void addItemToCollectionSucceeds() throws IOException {
+    public void addItemToCollectionSucceeds() {
         final String folderId = "12345";
         final String addItemURL = "/2.0/folders/" + folderId + "?([a-z]*)";
         final String collectionURL = "/2.0/collections/?limit=100&offset=0";
@@ -72,14 +72,14 @@ public class BoxCollectionTest {
 
         wireMockRule.stubFor(WireMock.get(WireMock.urlEqualTo(collectionURL))
             .willReturn(WireMock.aResponse()
-                .withHeader("Content-Type", "application/json")
+                .withHeader("Content-Type", APPLICATION_JSON)
                 .withBody(collectionsResults)));
 
         String result = TestUtils.getFixture("BoxCollection/AddItemToCollection200");
 
         wireMockRule.stubFor(WireMock.put(WireMock.urlPathMatching(addItemURL))
             .willReturn(WireMock.aResponse()
-                .withHeader("Content-Type", "application/json")
+                .withHeader("Content-Type", APPLICATION_JSON)
                 .withBody(result)));
 
         Iterable<BoxCollection.Info> collections = BoxCollection.getAllCollections(this.api);
@@ -98,14 +98,14 @@ public class BoxCollectionTest {
     }
 
     @Test
-    public void getCollectionSucceeds() throws IOException {
+    public void getCollectionSucceeds() {
         final String collectionURL = "/2.0/collections/?limit=100&offset=0";
 
         String result = TestUtils.getFixture("BoxCollection/GetCollections200");
 
         wireMockRule.stubFor(WireMock.get(WireMock.urlEqualTo(collectionURL))
             .willReturn(WireMock.aResponse()
-                .withHeader("Content-Type", "application/json")
+                .withHeader("Content-Type", APPLICATION_JSON)
                 .withBody(result)));
 
         Iterable<BoxCollection.Info> collections = BoxCollection.getAllCollections(this.api);
@@ -122,7 +122,7 @@ public class BoxCollectionTest {
     }
 
     @Test
-    public void testGetItemsParsesFieldsCorrectly() throws IOException {
+    public void testGetItemsParsesFieldsCorrectly() {
         final String collectionID = "12345";
         final String collectionID2 = "123456";
         final String collectionItemsURL = "/2.0/collections/12345/items/";
@@ -133,7 +133,7 @@ public class BoxCollectionTest {
 
         wireMockRule.stubFor(WireMock.get(WireMock.urlPathEqualTo(collectionItemsURL))
             .willReturn(WireMock.aResponse()
-                .withHeader("Content-Type", "application/json")
+                .withHeader("Content-Type", APPLICATION_JSON)
                 .withBody(result)));
 
         BoxCollection collection = new BoxCollection(this.api, collectionID);

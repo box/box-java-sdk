@@ -1,5 +1,7 @@
 package com.box.sdk;
 
+import static com.box.sdk.http.ContentType.APPLICATION_JSON;
+import static com.box.sdk.http.ContentType.APPLICATION_JSON_PATCH;
 import static com.eclipsesource.json.Json.NULL;
 
 import com.box.sdk.http.HttpMethod;
@@ -1349,7 +1351,7 @@ public class BoxFile extends BoxItem {
 
         URL url = METADATA_URL_TEMPLATE.buildAlpha(this.getAPI().getBaseURL(), this.getID(),
             scope, metadata.getTemplateName());
-        BoxJSONRequest request = new BoxJSONRequest(this.getAPI(), url, "PUT", "application/json-patch+json");
+        BoxJSONRequest request = new BoxJSONRequest(this.getAPI(), url, "PUT", APPLICATION_JSON_PATCH);
         request.setBody(metadata.getPatch());
         BoxJSONResponse response = request.send();
         return new Metadata(Json.parse(response.getJSON()).asObject());
@@ -1446,7 +1448,7 @@ public class BoxFile extends BoxItem {
         URL url = UPLOAD_SESSION_URL_TEMPLATE.build(this.getAPI().getBaseUploadURL(), this.getID());
 
         BoxJSONRequest request = new BoxJSONRequest(this.getAPI(), url, "POST");
-        request.addHeader("Content-Type", "application/json");
+        request.addHeader("Content-Type", APPLICATION_JSON);
 
         JsonObject body = new JsonObject();
         body.add("file_size", fileSize);

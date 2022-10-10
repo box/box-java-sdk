@@ -1,12 +1,12 @@
 package com.box.sdk;
 
+import static com.box.sdk.http.ContentType.APPLICATION_JSON;
 import static com.github.tomakehurst.wiremock.core.WireMockConfiguration.wireMockConfig;
 import static java.lang.String.format;
 
 import com.eclipsesource.json.JsonObject;
 import com.github.tomakehurst.wiremock.client.WireMock;
 import com.github.tomakehurst.wiremock.junit.WireMockRule;
-import java.io.IOException;
 import java.util.Iterator;
 import org.junit.Assert;
 import org.junit.Before;
@@ -26,7 +26,7 @@ public class BoxCollaborationAllowlistExemptTargetTest {
     }
 
     @Test
-    public void testCreateAllowlistForAUserSucceedsAndSendsCorrectJson() throws IOException {
+    public void testCreateAllowlistForAUserSucceedsAndSendsCorrectJson() {
         final String allowlistURL = "/2.0/collaboration_whitelist_exempt_targets";
         final String userToAllowlistID = "1111";
         final String userToAllowlistLogin = "test@user.com";
@@ -46,7 +46,7 @@ public class BoxCollaborationAllowlistExemptTargetTest {
         wireMockRule.stubFor(WireMock.post(WireMock.urlPathEqualTo(allowlistURL))
             .withRequestBody(WireMock.equalToJson(userOuterObject.toString()))
             .willReturn(WireMock.aResponse()
-                .withHeader("Content-Type", "application/json")
+                .withHeader("Content-Type", APPLICATION_JSON)
                 .withBody(result)));
 
         BoxCollaborationAllowlistExemptTarget.Info userAllowlistInfo =
@@ -60,7 +60,7 @@ public class BoxCollaborationAllowlistExemptTargetTest {
     }
 
     @Test
-    public void testGetAllowlistInfoForAUser() throws IOException {
+    public void testGetAllowlistInfoForAUser() {
         final String allowlistID = "12345";
         final String allowlistURL = "/2.0/collaboration_whitelist_exempt_targets/" + allowlistID;
         final String allowlistedUserID = "1111";
@@ -72,7 +72,7 @@ public class BoxCollaborationAllowlistExemptTargetTest {
 
         wireMockRule.stubFor(WireMock.get(WireMock.urlPathEqualTo(allowlistURL))
             .willReturn(WireMock.aResponse()
-                .withHeader("Content-Type", "application/json")
+                .withHeader("Content-Type", APPLICATION_JSON)
                 .withBody(result)));
 
         BoxCollaborationAllowlistExemptTarget.Info userAllowlistInfo = new
@@ -86,7 +86,7 @@ public class BoxCollaborationAllowlistExemptTargetTest {
     }
 
     @Test
-    public void testGetAllowlistInfoForAllUsers() throws IOException {
+    public void testGetAllowlistInfoForAllUsers() {
         final String allowlistExemptUserURL = "/2.0/collaboration_whitelist_exempt_targets";
         final String firstAllowlistType = "collaboration_whitelist_exempt_target";
         final String firstAllowlistID = "1234";
@@ -95,7 +95,7 @@ public class BoxCollaborationAllowlistExemptTargetTest {
 
         wireMockRule.stubFor(WireMock.get(WireMock.urlPathEqualTo(allowlistExemptUserURL))
             .willReturn(WireMock.aResponse()
-                .withHeader("Content-Type", "application/json")
+                .withHeader("Content-Type", APPLICATION_JSON)
                 .withBody(result)));
 
         Iterator<BoxCollaborationAllowlistExemptTarget.Info> allowlistInfo =
@@ -114,7 +114,7 @@ public class BoxCollaborationAllowlistExemptTargetTest {
 
         wireMockRule.stubFor(WireMock.delete(WireMock.urlPathEqualTo(deleteAllowlistURL))
             .willReturn(WireMock.aResponse()
-                .withHeader("Content-Type", "application/json")
+                .withHeader("Content-Type", APPLICATION_JSON)
                 .withStatus(204)));
 
         new BoxCollaborationAllowlistExemptTarget(this.api, allowlistID).delete();

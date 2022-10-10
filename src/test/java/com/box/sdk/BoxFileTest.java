@@ -1,6 +1,9 @@
 package com.box.sdk;
 
 import static com.box.sdk.BoxSharedLink.Access.OPEN;
+import static com.box.sdk.http.ContentType.APPLICATION_JSON;
+import static com.box.sdk.http.ContentType.APPLICATION_JSON_PATCH;
+import static com.box.sdk.http.ContentType.APPLICATION_OCTET_STREAM;
 import static com.github.tomakehurst.wiremock.core.WireMockConfiguration.wireMockConfig;
 import static java.lang.String.format;
 import static java.nio.charset.StandardCharsets.UTF_8;
@@ -148,7 +151,7 @@ public class BoxFileTest {
 
         wireMockRule.stubFor(WireMock.get(WireMock.urlPathEqualTo(fileURL))
             .willReturn(WireMock.aResponse()
-                .withHeader("Content-Type", "application/json")
+                .withHeader("Content-Type", APPLICATION_JSON)
                 .withBody(result)));
 
         BoxFile file = new BoxFile(this.api, fileID);
@@ -181,7 +184,7 @@ public class BoxFileTest {
 
         wireMockRule.stubFor(WireMock.get(WireMock.urlPathEqualTo(filesURL))
             .willReturn(WireMock.aResponse()
-                .withHeader("Content-Type", "application/json")
+                .withHeader("Content-Type", APPLICATION_JSON)
                 .withBody(result)));
 
         BoxFile.Info fileInfo = new BoxFile(this.api, fileID).getInfo();
@@ -200,7 +203,7 @@ public class BoxFileTest {
         wireMockRule.stubFor(WireMock.put(WireMock.urlPathEqualTo(fileURL))
             .withRequestBody(WireMock.containing(jsonObject.toString()))
             .willReturn(WireMock.aResponse()
-                .withHeader("Content-Type", "application/json")
+                .withHeader("Content-Type", APPLICATION_JSON)
                 .withBody(putResult)));
 
         BoxFile file = new BoxFile(this.api, fileID);
@@ -220,7 +223,7 @@ public class BoxFileTest {
 
         wireMockRule.stubFor(WireMock.get(WireMock.urlPathEqualTo(tasksURL))
             .willReturn(WireMock.aResponse()
-                .withHeader("Content-Type", "application/json")
+                .withHeader("Content-Type", APPLICATION_JSON)
                 .withBody(result)));
 
         BoxFile file = new BoxFile(this.api, fileID);
@@ -243,7 +246,7 @@ public class BoxFileTest {
         wireMockRule.stubFor(WireMock.put(WireMock.urlPathEqualTo(fileURL))
             .withRequestBody(WireMock.equalToJson(updateObject.toString()))
             .willReturn(WireMock.aResponse()
-                .withHeader("Content-Type", "application/json")
+                .withHeader("Content-Type", APPLICATION_JSON)
                 .withBody(result)));
 
         BoxFile file = new BoxFile(this.api, fileID);
@@ -270,7 +273,7 @@ public class BoxFileTest {
         wireMockRule.stubFor(WireMock.post(WireMock.urlPathEqualTo(fileURL))
             .withRequestBody(WireMock.equalToJson(parentObject.toString()))
             .willReturn(WireMock.aResponse()
-                .withHeader("Content-Type", "application/json")
+                .withHeader("Content-Type", APPLICATION_JSON)
                 .withBody(result)));
 
         BoxFolder rootFolder = BoxFolder.getRootFolder(this.api);
@@ -297,7 +300,7 @@ public class BoxFileTest {
         wireMockRule.stubFor(WireMock.put(WireMock.urlPathEqualTo(fileURL))
             .withRequestBody(WireMock.equalToJson(parentObject.toString()))
             .willReturn(WireMock.aResponse()
-                .withHeader("Content-Type", "application/json")
+                .withHeader("Content-Type", APPLICATION_JSON)
                 .withBody(result)));
 
         BoxFile file = new BoxFile(this.api, fileID);
@@ -316,7 +319,7 @@ public class BoxFileTest {
 
         wireMockRule.stubFor(WireMock.delete(WireMock.urlPathEqualTo(deleteFileURL))
             .willReturn(WireMock.aResponse()
-                .withHeader("Content-Type", "application/json")
+                .withHeader("Content-Type", APPLICATION_JSON)
                 .withStatus(204)));
 
         BoxFile file = new BoxFile(this.api, fileID);
@@ -342,7 +345,7 @@ public class BoxFileTest {
         wireMockRule.stubFor(WireMock.put(WireMock.urlPathEqualTo(fileURL))
             .withQueryParam("fields", WireMock.containing("lock"))
             .willReturn(WireMock.aResponse()
-                .withHeader("Content-Type", "application/json")
+                .withHeader("Content-Type", APPLICATION_JSON)
                 .withBody(result)));
 
         BoxFile file = new BoxFile(this.api, fileID);
@@ -365,14 +368,14 @@ public class BoxFileTest {
 
         wireMockRule.stubFor(WireMock.get(WireMock.urlPathEqualTo(fileURL))
             .willReturn(WireMock.aResponse()
-                .withHeader("Content-Type", "application/json")
+                .withHeader("Content-Type", APPLICATION_JSON)
                 .withBody(fileResult)));
 
         wireMockRule.stubFor(WireMock.put(WireMock.urlPathEqualTo(fileURL))
             .withQueryParam("fields", WireMock.containing("lock"))
             .withRequestBody(WireMock.equalToJson(unlockObject.toString()))
             .willReturn(WireMock.aResponse()
-                .withHeader("Content-Type", "application/json")
+                .withHeader("Content-Type", APPLICATION_JSON)
                 .withBody(result)));
 
         BoxFile file = new BoxFile(this.api, fileID);
@@ -389,7 +392,7 @@ public class BoxFileTest {
 
         wireMockRule.stubFor(WireMock.delete(WireMock.urlPathEqualTo(metadataURL))
             .willReturn(WireMock.aResponse()
-                .withHeader("Content-Type", "application/json")
+                .withHeader("Content-Type", APPLICATION_JSON)
                 .withStatus(204)));
 
         BoxFile file = new BoxFile(this.api, fileID);
@@ -403,7 +406,7 @@ public class BoxFileTest {
             WireMock.get(WireMock.urlPathEqualTo("/2.0/files/" + fileID))
                 .withQueryParam("fields", WireMock.equalTo("representations"))
                 .willReturn(WireMock.aResponse()
-                    .withHeader("Content-Type", "application/json")
+                    .withHeader("Content-Type", APPLICATION_JSON)
                     .withBody("{\n"
                         + "  \"type\": \"file\",\n"
                         + "  \"id\": \"12345\",\n"
@@ -437,7 +440,7 @@ public class BoxFileTest {
                 "/2.0/internal_files/12345/versions/1116420931563/representations/jpg_thumb_32x32")
                 )
                 .willReturn(WireMock.aResponse()
-                    .withHeader("Content-Type", "application/json")
+                    .withHeader("Content-Type", APPLICATION_JSON)
                     .withBody("{\n"
                         + "  \"representation\": \"jpg\",\n"
                         + "  \"properties\": {\n"
@@ -486,17 +489,17 @@ public class BoxFileTest {
 
         wireMockRule.stubFor(WireMock.get(WireMock.urlPathEqualTo(fileURL))
             .willReturn(WireMock.aResponse()
-                .withHeader("Content-Type", "application/json")
+                .withHeader("Content-Type", APPLICATION_JSON)
                 .withBody(result)));
 
         wireMockRule.stubFor(WireMock.get(WireMock.urlPathEqualTo(fileURL))
             .willReturn(WireMock.aResponse()
-                .withHeader("Content-Type", "application/json")
+                .withHeader("Content-Type", APPLICATION_JSON)
                 .withBody(versionResult)));
 
         wireMockRule.stubFor(WireMock.delete(WireMock.urlPathEqualTo(versionURL))
             .willReturn(WireMock.aResponse()
-                .withHeader("Content-Type", "application/json")
+                .withHeader("Content-Type", APPLICATION_JSON)
                 .withStatus(204)));
 
         BoxFile file = new BoxFile(this.api, fileID);
@@ -519,7 +522,7 @@ public class BoxFileTest {
         wireMockRule.stubFor(WireMock.post(WireMock.urlPathEqualTo(metadataURL))
             .withRequestBody(WireMock.equalToJson(metadataObject.toString()))
             .willReturn(WireMock.aResponse()
-                .withHeader("Content-Type", "application/json")
+                .withHeader("Content-Type", APPLICATION_JSON)
                 .withBody(result)));
 
         BoxFile file = new BoxFile(this.api, fileID);
@@ -542,7 +545,7 @@ public class BoxFileTest {
 
         wireMockRule.stubFor(WireMock.get(WireMock.urlPathEqualTo(metadataURL))
             .willReturn(WireMock.aResponse()
-                .withHeader("Content-Type", "application/json")
+                .withHeader("Content-Type", APPLICATION_JSON)
                 .withBody(result)));
 
         BoxFile file = new BoxFile(this.api, fileID);
@@ -565,7 +568,7 @@ public class BoxFileTest {
 
         wireMockRule.stubFor(WireMock.post(WireMock.urlPathEqualTo("/2.0/files/" + fileID + "/content"))
             .willReturn(WireMock.aResponse()
-                .withHeader("Content-Type", "application/json")
+                .withHeader("Content-Type", APPLICATION_JSON)
                 .withBody(result)));
 
         BoxFile file = new BoxFile(this.api, fileID);
@@ -599,7 +602,7 @@ public class BoxFileTest {
         wireMockRule.stubFor(WireMock.put(WireMock.urlPathEqualTo("/2.0/files/" + fileID))
             .withRequestBody(WireMock.equalToJson(sharedLinkObject.toString()))
             .willReturn(WireMock.aResponse()
-                .withHeader("Content-Type", "application/json")
+                .withHeader("Content-Type", APPLICATION_JSON)
                 .withBody(result)));
 
         BoxFile file = new BoxFile(this.api, fileID);
@@ -638,7 +641,7 @@ public class BoxFileTest {
         wireMockRule.stubFor(WireMock.put(WireMock.urlPathEqualTo("/2.0/files/" + fileID))
             .withRequestBody(WireMock.equalToJson(sharedLinkObject.toString()))
             .willReturn(WireMock.aResponse()
-                .withHeader("Content-Type", "application/json")
+                .withHeader("Content-Type", APPLICATION_JSON)
                 .withBody(result)));
 
         BoxFile file = new BoxFile(this.api, fileID);
@@ -665,7 +668,7 @@ public class BoxFileTest {
         wireMockRule.stubFor(WireMock.post(WireMock.urlPathEqualTo(metadataURL))
             .withRequestBody(WireMock.equalToJson(metadataObject.toString()))
             .willReturn(WireMock.aResponse()
-                .withHeader("Content-Type", "application/json")
+                .withHeader("Content-Type", APPLICATION_JSON)
                 .withBody(result)));
 
         BoxFile file = new BoxFile(this.api, fileID);
@@ -692,7 +695,7 @@ public class BoxFileTest {
         wireMockRule.stubFor(WireMock.put(WireMock.urlPathEqualTo(metadataURL))
             .withRequestBody(WireMock.equalToJson(metadataArray.toString()))
             .willReturn(WireMock.aResponse()
-                .withHeader("Content-Type", "application/json-patch+json")
+                .withHeader("Content-Type", APPLICATION_JSON_PATCH)
                 .withBody(result)));
 
         BoxFile file = new BoxFile(this.api, fileID);
@@ -722,9 +725,9 @@ public class BoxFileTest {
 
         wireMockRule.stubFor(WireMock.put(WireMock.urlPathEqualTo(metadataURL))
             .withRequestBody(WireMock.equalToJson(metadataArray.toString()))
-            .withHeader("Content-Type", WireMock.equalTo("application/json-patch+json"))
+            .withHeader("Content-Type", WireMock.equalTo(APPLICATION_JSON_PATCH))
             .willReturn(WireMock.aResponse()
-                .withHeader("Content-Type", "application/json")
+                .withHeader("Content-Type", APPLICATION_JSON)
                 .withBody(result)));
 
         BoxFile file = new BoxFile(this.api, fileID);
@@ -756,7 +759,7 @@ public class BoxFileTest {
 
         wireMockRule.stubFor(WireMock.get(WireMock.urlPathEqualTo(metadataURL))
             .willReturn(WireMock.aResponse()
-                .withHeader("Content-Type", "application/json")
+                .withHeader("Content-Type", APPLICATION_JSON)
                 .withBody(result)));
 
         BoxFile file = new BoxFile(this.api, fileID);
@@ -774,7 +777,7 @@ public class BoxFileTest {
 
         wireMockRule.stubFor(WireMock.get(WireMock.urlPathEqualTo(metadataURL))
             .willReturn(WireMock.aResponse()
-                .withHeader("Content-Type", "application/json")
+                .withHeader("Content-Type", APPLICATION_JSON)
                 .withBody(getResult)
                 .withStatus(404)));
 
@@ -793,7 +796,7 @@ public class BoxFileTest {
 
         wireMockRule.stubFor(WireMock.get(WireMock.urlPathEqualTo(metadataURL))
             .willReturn(WireMock.aResponse()
-                .withHeader("Content-Type", "application/json")
+                .withHeader("Content-Type", APPLICATION_JSON)
                 .withBody(getResult)
                 .withStatus(403)));
 
@@ -808,7 +811,7 @@ public class BoxFileTest {
 
         wireMockRule.stubFor(WireMock.delete(WireMock.urlPathEqualTo(metadataURL))
             .willReturn(WireMock.aResponse()
-                .withHeader("Content-Type", "application/json-patch+json")
+                .withHeader("Content-Type", APPLICATION_JSON_PATCH)
                 .withStatus(204)));
 
         BoxFile file = new BoxFile(this.api, fileID);
@@ -863,15 +866,15 @@ public class BoxFileTest {
 
         wireMockRule.stubFor(WireMock.post(WireMock.urlPathEqualTo(metadataURL))
             .willReturn(WireMock.aResponse()
-                .withHeader("Content-Type", "application/json")
+                .withHeader("Content-Type", APPLICATION_JSON)
                 .withBody(postResult)
                 .withStatus(409)));
 
         wireMockRule.stubFor(WireMock.put(WireMock.urlPathEqualTo(metadataURL))
             .withRequestBody(WireMock.equalToJson(jsonArray.toString()))
-            .withHeader("Content-Type", WireMock.equalTo("application/json-patch+json"))
+            .withHeader("Content-Type", WireMock.equalTo(APPLICATION_JSON_PATCH))
             .willReturn(WireMock.aResponse()
-                .withHeader("Content-Type", "application/json")
+                .withHeader("Content-Type", APPLICATION_JSON)
                 .withBody(putResult)
                 .withStatus(200)));
 
@@ -932,33 +935,33 @@ public class BoxFileTest {
             .add("parts", parts);
 
         wireMockRule.stubFor(WireMock.options(WireMock.urlPathEqualTo(preflightURL))
-            .withHeader("Content-Type", WireMock.equalTo("application/json"))
+            .withHeader("Content-Type", WireMock.equalTo(APPLICATION_JSON))
             .withRequestBody(WireMock.equalToJson(preflightObject.toString()))
             .willReturn(WireMock.aResponse()
-                .withHeader("Content-Type", "application/json")
+                .withHeader("Content-Type", APPLICATION_JSON)
                 .withStatus(200)
                 .withBody(canUploadResult)));
 
         wireMockRule.stubFor(WireMock.post(WireMock.urlPathEqualTo(sessionURL))
             .withRequestBody(WireMock.equalToJson(sessionObject.toString()))
             .willReturn(WireMock.aResponse()
-                .withHeader("Content-Type", "application/json")
+                .withHeader("Content-Type", APPLICATION_JSON)
                 .withBody(sessionResult)));
 
         wireMockRule.stubFor(WireMock.put(WireMock.urlPathEqualTo(uploadURL))
             .withHeader("Digest", WireMock.containing("sha=31HjfCaaqU04+T5Te/biAgshQGw="))
-            .withHeader("Content-Type", WireMock.containing("application/octet-stream"))
+            .withHeader("Content-Type", WireMock.containing(APPLICATION_OCTET_STREAM))
             .withHeader("Content-Range", WireMock.containing("bytes 0-4/5"))
             .withRequestBody(WireMock.equalTo("aaaaa"))
             .willReturn(WireMock.aResponse()
-                .withHeader("Content-Type", "application/json")
+                .withHeader("Content-Type", APPLICATION_JSON)
                 .withBody(uploadResult)));
 
         wireMockRule.stubFor(WireMock.post(WireMock.urlPathEqualTo(commitURL))
-            .withHeader("Content-Type", WireMock.equalTo("application/json"))
+            .withHeader("Content-Type", WireMock.equalTo(APPLICATION_JSON))
             .withRequestBody(WireMock.containing(commitObject.toString()))
             .willReturn(WireMock.aResponse()
-                .withHeader("Content-Type", "application/json")
+                .withHeader("Content-Type", APPLICATION_JSON)
                 .withBody(commitResult)));
 
         BoxFolder folder = new BoxFolder(this.api, "12345");
@@ -1008,23 +1011,23 @@ public class BoxFileTest {
         wireMockRule.stubFor(WireMock.post(WireMock.urlPathEqualTo(sessionURL))
             .withRequestBody(WireMock.equalToJson(sessionObject.toString()))
             .willReturn(WireMock.aResponse()
-                .withHeader("Content-Type", "application/json")
+                .withHeader("Content-Type", APPLICATION_JSON)
                 .withBody(sessionResult)));
 
         wireMockRule.stubFor(WireMock.put(WireMock.urlPathEqualTo(uploadURL))
             .withHeader("Digest", WireMock.containing("sha=31HjfCaaqU04+T5Te/biAgshQGw="))
-            .withHeader("Content-Type", WireMock.containing("application/octet-stream"))
+            .withHeader("Content-Type", WireMock.containing(APPLICATION_OCTET_STREAM))
             .withHeader("Content-Range", WireMock.containing("bytes 0-4/5"))
             .withRequestBody(WireMock.equalTo("aaaaa"))
             .willReturn(WireMock.aResponse()
-                .withHeader("Content-Type", "application/json")
+                .withHeader("Content-Type", APPLICATION_JSON)
                 .withBody(uploadResult)));
 
         wireMockRule.stubFor(WireMock.post(WireMock.urlPathEqualTo(commitURL))
-            .withHeader("Content-Type", WireMock.equalTo("application/json"))
+            .withHeader("Content-Type", WireMock.equalTo(APPLICATION_JSON))
             .withRequestBody(WireMock.containing(commitObject.toString()))
             .willReturn(WireMock.aResponse()
-                .withHeader("Content-Type", "application/json")
+                .withHeader("Content-Type", APPLICATION_JSON)
                 .withBody(commitResult)));
 
         BoxFile file = new BoxFile(this.api, "1111111");
@@ -1135,7 +1138,7 @@ public class BoxFileTest {
 
         wireMockRule.stubFor(WireMock.get(WireMock.urlPathEqualTo(fileURL))
             .willReturn(WireMock.aResponse()
-                .withHeader("Content-Type", "application/json")
+                .withHeader("Content-Type", APPLICATION_JSON)
                 .withBody(result)));
         api.setRequestInterceptor(
             request -> {
@@ -1197,7 +1200,7 @@ public class BoxFileTest {
         wireMockRule.stubFor(WireMock.put(WireMock.urlPathEqualTo(metadataURL))
             .withRequestBody(new EqualToJsonPattern("{\"name\": \"New Name\"}", false, false))
             .willReturn(WireMock.aResponse()
-                .withHeader("Content-Type", "application/json")
+                .withHeader("Content-Type", APPLICATION_JSON)
                 .withBody(result)
                 .withStatus(200)));
 

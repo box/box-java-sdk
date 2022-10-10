@@ -1,6 +1,7 @@
 package com.box.sdk;
 
 import static com.box.sdk.BoxSharedLink.Access.OPEN;
+import static com.box.sdk.http.ContentType.APPLICATION_JSON;
 import static com.github.tomakehurst.wiremock.core.WireMockConfiguration.wireMockConfig;
 import static java.lang.String.format;
 import static java.util.Calendar.OCTOBER;
@@ -50,7 +51,7 @@ public class BoxWebLinkTest {
 
         wireMockRule.stubFor(WireMock.post(WireMock.urlPathEqualTo(webLinkURL))
             .willReturn(WireMock.aResponse()
-                .withHeader("Content-Type", "application/json")
+                .withHeader("Content-Type", APPLICATION_JSON)
                 .withBody(result)));
 
         BoxFolder folder = new BoxFolder(this.api, folderID);
@@ -77,7 +78,7 @@ public class BoxWebLinkTest {
 
         wireMockRule.stubFor(WireMock.get(WireMock.urlPathEqualTo(webLinkURL))
             .willReturn(WireMock.aResponse()
-                .withHeader("Content-Type", "application/json")
+                .withHeader("Content-Type", APPLICATION_JSON)
                 .withBody(result)));
 
         BoxWebLink webLink = new BoxWebLink(this.api, webLinkID);
@@ -107,7 +108,7 @@ public class BoxWebLinkTest {
         wireMockRule.stubFor(WireMock.put(WireMock.urlPathEqualTo(webLinkURL))
             .withRequestBody(WireMock.containing(updatedObject.toString()))
             .willReturn(WireMock.aResponse()
-                .withHeader("Content-Type", "application/json")
+                .withHeader("Content-Type", APPLICATION_JSON)
                 .withBody(result)));
 
         BoxWebLink webLink = new BoxWebLink(this.api, webLinkID);

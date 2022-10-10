@@ -1,5 +1,6 @@
 package com.box.sdk;
 
+import static com.box.sdk.http.ContentType.APPLICATION_JSON;
 import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
 import static com.github.tomakehurst.wiremock.client.WireMock.delete;
 import static com.github.tomakehurst.wiremock.client.WireMock.deleteRequestedFor;
@@ -20,7 +21,6 @@ import static org.junit.Assert.assertEquals;
 import com.eclipsesource.json.JsonObject;
 import com.github.tomakehurst.wiremock.client.WireMock;
 import com.github.tomakehurst.wiremock.junit.WireMockRule;
-import java.io.IOException;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -65,7 +65,7 @@ public class BoxStoragePolicyAssignmentTest {
 
         wireMockRule.stubFor(post(urlEqualTo("/2.0/storage_policy_assignments"))
             .willReturn(aResponse()
-                .withHeader("Content-Type", "application/json")
+                .withHeader("Content-Type", APPLICATION_JSON)
                 .withBody(mockJSON.toString())));
 
         BoxStoragePolicyAssignment.Info assignmentInfo =
@@ -78,7 +78,7 @@ public class BoxStoragePolicyAssignmentTest {
     }
 
     @Test
-    public void testGetStorageAssignmentInfoParseAllFieldsCorrectly() throws IOException {
+    public void testGetStorageAssignmentInfoParseAllFieldsCorrectly() {
         final String assignmentID = "12345";
         final String storagePolicyType = "storage_policy";
         final String storagePolicyID = "11";
@@ -91,7 +91,7 @@ public class BoxStoragePolicyAssignmentTest {
             .withQueryParam("resolved_for_id", WireMock.equalTo(assignedToID))
             .withQueryParam("resolved_for_type", WireMock.equalTo(assignedToType))
             .willReturn(aResponse()
-                .withHeader("Content-Type", "application/json")
+                .withHeader("Content-Type", APPLICATION_JSON)
                 .withBody(result)));
 
         BoxStoragePolicyAssignment.Info info = BoxStoragePolicyAssignment.getAssignmentForTarget(this.api,
@@ -129,7 +129,7 @@ public class BoxStoragePolicyAssignmentTest {
 
         wireMockRule.stubFor(get(urlEqualTo("/2.0/storage_policy_assignments/" + assignmentID))
             .willReturn(aResponse()
-                .withHeader("Content-Type", "application/json")
+                .withHeader("Content-Type", APPLICATION_JSON)
                 .withBody(mockJSON.toString())));
 
         BoxStoragePolicyAssignment assignment = new BoxStoragePolicyAssignment(this.api, assignmentID);
@@ -180,7 +180,7 @@ public class BoxStoragePolicyAssignmentTest {
 
         wireMockRule.stubFor(put(urlEqualTo("/2.0/storage_policy_assignments/" + assignmentID))
             .willReturn(aResponse()
-                .withHeader("Content-Type", "application/json")
+                .withHeader("Content-Type", APPLICATION_JSON)
                 .withBody(mockJSON.toString())));
 
         BoxStoragePolicyAssignment storagePolicyAssignment = new BoxStoragePolicyAssignment(this.api, assignmentID);
@@ -194,7 +194,7 @@ public class BoxStoragePolicyAssignmentTest {
     }
 
     @Test
-    public void testAssignStorageAssignmentInfoParseAllFieldsCorrectly() throws IOException {
+    public void testAssignStorageAssignmentInfoParseAllFieldsCorrectly() {
         final String assignedToType = "user";
         final String assignedToID = "22";
         final String storagePolicyID = "11";
@@ -205,7 +205,7 @@ public class BoxStoragePolicyAssignmentTest {
             .withQueryParam("resolved_for_id", WireMock.equalTo(assignedToID))
             .withQueryParam("resolved_for_type", WireMock.equalTo(assignedToType))
             .willReturn(aResponse()
-                .withHeader("Content-Type", "application/json")
+                .withHeader("Content-Type", APPLICATION_JSON)
                 .withBody(result)));
 
         BoxStoragePolicyAssignment.Info assignmentInfo =
@@ -215,7 +215,7 @@ public class BoxStoragePolicyAssignmentTest {
     }
 
     @Test
-    public void testAssignStorageAssignmentInfoIsEnterpriseParseAllFieldsCorrectly() throws IOException {
+    public void testAssignStorageAssignmentInfoIsEnterpriseParseAllFieldsCorrectly() {
         final String assignedToType = "enterprise";
         final String assignedToID = "22";
         final String storagePolicyID = "11";
@@ -226,14 +226,14 @@ public class BoxStoragePolicyAssignmentTest {
             .withQueryParam("resolved_for_id", WireMock.equalTo(assignedToID))
             .withQueryParam("resolved_for_type", WireMock.equalTo("user"))
             .willReturn(aResponse()
-                .withHeader("Content-Type", "application/json")
+                .withHeader("Content-Type", APPLICATION_JSON)
                 .withBody(policyResult)));
 
         String assignResult = TestUtils.getFixture("BoxStoragePolicy/Get_Storage_Policy_Assignments_200");
 
         wireMockRule.stubFor(post(urlPathEqualTo("/2.0/storage_policy_assignments"))
             .willReturn(aResponse()
-                .withHeader("Content-Type", "application/json")
+                .withHeader("Content-Type", APPLICATION_JSON)
                 .withBody(assignResult)));
 
         BoxStoragePolicyAssignment.Info assignmentInfo =

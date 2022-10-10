@@ -1,5 +1,6 @@
 package com.box.sdk;
 
+import static com.box.sdk.http.ContentType.APPLICATION_JSON;
 import static com.github.tomakehurst.wiremock.core.WireMockConfiguration.wireMockConfig;
 import static java.lang.String.format;
 import static org.junit.Assert.assertEquals;
@@ -7,7 +8,6 @@ import static org.junit.Assert.assertEquals;
 import com.eclipsesource.json.JsonObject;
 import com.github.tomakehurst.wiremock.client.WireMock;
 import com.github.tomakehurst.wiremock.junit.WireMockRule;
-import java.io.IOException;
 import java.util.Collection;
 import java.util.Iterator;
 import org.junit.Assert;
@@ -31,7 +31,7 @@ public class BoxGroupTest {
     }
 
     @Test
-    public void testGetAllGroupsByNameSucceeds() throws IOException {
+    public void testGetAllGroupsByNameSucceeds() {
         final String getGroupsByNameURL = "/2.0/groups";
         final String groupsID = "12345";
         final String groupsName = "[getCollaborationsSucceedsAndHandlesResponseCorrectly] Test Group";
@@ -43,7 +43,7 @@ public class BoxGroupTest {
             .withQueryParam("limit", WireMock.containing("1000"))
             .withQueryParam("offset", WireMock.containing("0"))
             .willReturn(WireMock.aResponse()
-                .withHeader("Content-Type", "application/json")
+                .withHeader("Content-Type", APPLICATION_JSON)
                 .withBody(result)));
 
         Iterator<BoxGroup.Info> iterator = BoxGroup.getAllGroupsByName(this.api, "Test").iterator();
@@ -54,7 +54,7 @@ public class BoxGroupTest {
     }
 
     @Test
-    public void testGetAllGroupsByNameWithFieldsOptionSucceeds() throws IOException {
+    public void testGetAllGroupsByNameWithFieldsOptionSucceeds() {
         final String getGroupsByNameURL = "/2.0/groups";
         final String groupsID = "12345";
         final String groupsDescription = "This is Test Group";
@@ -67,7 +67,7 @@ public class BoxGroupTest {
             .withQueryParam("limit", WireMock.containing("1000"))
             .withQueryParam("offset", WireMock.containing("0"))
             .willReturn(WireMock.aResponse()
-                .withHeader("Content-Type", "application/json")
+                .withHeader("Content-Type", APPLICATION_JSON)
                 .withBody(result)));
 
         Iterator<BoxGroup.Info> iterator = BoxGroup.getAllGroupsByName(this.api, "Test", "description").iterator();
@@ -79,7 +79,7 @@ public class BoxGroupTest {
     }
 
     @Test
-    public void testGetMembershipForAUserSucceeds() throws IOException {
+    public void testGetMembershipForAUserSucceeds() {
         final String userID = "1111";
         final String getMembershipForUserURL = "/2.0/users/" + userID + "/memberships";
         final String firstGroupMembershipID = "12345";
@@ -93,7 +93,7 @@ public class BoxGroupTest {
 
         wireMockRule.stubFor(WireMock.get(WireMock.urlPathEqualTo(getMembershipForUserURL))
             .willReturn(WireMock.aResponse()
-                .withHeader("Content-Type", "application/json")
+                .withHeader("Content-Type", APPLICATION_JSON)
                 .withBody(result)));
 
         BoxUser user = new BoxUser(this.api, userID);
@@ -113,7 +113,7 @@ public class BoxGroupTest {
     }
 
     @Test
-    public void testGetMembershipForAGroupSucceeds() throws IOException {
+    public void testGetMembershipForAGroupSucceeds() {
         final String groupMembershipID = "12345";
         final String groupID = "1111";
         final String getGroupMembershipURL = "/2.0/groups/" + groupID + "/memberships";
@@ -123,7 +123,7 @@ public class BoxGroupTest {
 
         wireMockRule.stubFor(WireMock.get(WireMock.urlPathEqualTo(getGroupMembershipURL))
             .willReturn(WireMock.aResponse()
-                .withHeader("Content-Type", "application/json")
+                .withHeader("Content-Type", APPLICATION_JSON)
                 .withBody(result)));
 
         BoxGroup group = new BoxGroup(this.api, groupID);
@@ -142,7 +142,7 @@ public class BoxGroupTest {
 
         wireMockRule.stubFor(WireMock.delete(WireMock.urlPathEqualTo(deleteGroupMembershipURL))
             .willReturn(WireMock.aResponse()
-                .withHeader("Content-Type", "application/json")
+                .withHeader("Content-Type", APPLICATION_JSON)
                 .withStatus(204)));
 
         BoxGroupMembership membership = new BoxGroupMembership(this.api, groupMembershipID);
@@ -150,7 +150,7 @@ public class BoxGroupTest {
     }
 
     @Test
-    public void testUpdateGroupMembershipSucceeds() throws IOException {
+    public void testUpdateGroupMembershipSucceeds() {
         final String groupMembershipID = "12345";
         final String groupMembershipURL = "/2.0/group_memberships/" + groupMembershipID;
         final String groupName = "Example Group";
@@ -164,7 +164,7 @@ public class BoxGroupTest {
         wireMockRule.stubFor(WireMock.put(WireMock.urlPathEqualTo(groupMembershipURL))
             .withRequestBody(WireMock.equalToJson(membershipObject.toString()))
             .willReturn(WireMock.aResponse()
-                .withHeader("Content-Type", "application/json")
+                .withHeader("Content-Type", APPLICATION_JSON)
                 .withBody(result)));
 
         BoxGroupMembership membership = new BoxGroupMembership(this.api, groupMembershipID);
@@ -178,7 +178,7 @@ public class BoxGroupTest {
     }
 
     @Test
-    public void testCreateGroupMembershipSucceedsAndSendsCorrectJson() throws IOException {
+    public void testCreateGroupMembershipSucceedsAndSendsCorrectJson() {
         final String groupID = "2222";
         final String userID = "1111";
         final String groupCollaborationURL = "/2.0/group_memberships";
@@ -186,19 +186,11 @@ public class BoxGroupTest {
         final BoxGroupMembership.Role groupRole = BoxGroupMembership.Role.MEMBER;
         final BoxGroupMembership.GroupRole groupMembershipRole = BoxGroupMembership.GroupRole.MEMBER;
 
-        JsonObject userObject = new JsonObject()
-            .add("id", userID);
-        JsonObject groupObject = new JsonObject()
-            .add("id", groupID);
-        JsonObject groupMembershipObject = new JsonObject()
-            .add("user", userObject)
-            .add("group", groupObject);
-
         String result = TestUtils.getFixture("BoxGroup/CreateGroupMembership201");
 
         wireMockRule.stubFor(WireMock.post(WireMock.urlPathEqualTo(groupCollaborationURL))
             .willReturn(WireMock.aResponse()
-                .withHeader("Content-Type", "application/json")
+                .withHeader("Content-Type", APPLICATION_JSON)
                 .withBody(result)));
 
         BoxGroup group = new BoxGroup(this.api, groupID);
@@ -213,7 +205,7 @@ public class BoxGroupTest {
     }
 
     @Test
-    public void testGetGroupsCollaborationsSucceeds() throws IOException {
+    public void testGetGroupsCollaborationsSucceeds() {
         final String groupID = "12345";
         final String groupCollaborationURL = "/2.0/groups/" + groupID + "/collaborations";
         final String accessibleByName = "New Group Name";
@@ -226,7 +218,7 @@ public class BoxGroupTest {
 
         wireMockRule.stubFor(WireMock.get(WireMock.urlPathEqualTo(groupCollaborationURL))
             .willReturn(WireMock.aResponse()
-                .withHeader("Content-Type", "application/json")
+                .withHeader("Content-Type", APPLICATION_JSON)
                 .withBody(result)));
 
         BoxGroup group = new BoxGroup(this.api, groupID);
@@ -241,7 +233,7 @@ public class BoxGroupTest {
     }
 
     @Test
-    public void testGetAllGroupsCollaborationsSucceeds() throws IOException {
+    public void testGetAllGroupsCollaborationsSucceeds() {
         final String groupID = "12345";
         final String groupCollaborationURL = "/2.0/groups/" + groupID + "/collaborations";
         String result1 = TestUtils.getFixture("BoxGroup/GetAGroupsCollaborations1stPage200");
@@ -252,7 +244,7 @@ public class BoxGroupTest {
             .withQueryParam("offset", WireMock.containing("0"))
             .withQueryParam("limit", WireMock.containing("100"))
             .willReturn(WireMock.aResponse()
-                .withHeader("Content-Type", "application/json")
+                .withHeader("Content-Type", APPLICATION_JSON)
                 .withBody(result1)));
 
         // Second request will return a page of results with remaining one item
@@ -260,7 +252,7 @@ public class BoxGroupTest {
             .withQueryParam("offset", WireMock.containing("1"))
             .withQueryParam("limit", WireMock.containing("100"))
             .willReturn(WireMock.aResponse()
-                .withHeader("Content-Type", "application/json")
+                .withHeader("Content-Type", APPLICATION_JSON)
                 .withBody(result2)));
 
         BoxGroup group = new BoxGroup(this.api, groupID);
@@ -288,7 +280,7 @@ public class BoxGroupTest {
 
         wireMockRule.stubFor(WireMock.delete(WireMock.urlPathEqualTo(deleteGroupURL))
             .willReturn(WireMock.aResponse()
-                .withHeader("Content-Type", "application/json")
+                .withHeader("Content-Type", APPLICATION_JSON)
                 .withStatus(204)));
 
         BoxGroup group = new BoxGroup(this.api, groupID);
@@ -297,7 +289,7 @@ public class BoxGroupTest {
 
 
     @Test
-    public void testUpdateAGroupInfoSendsCorrectJson() throws IOException {
+    public void testUpdateAGroupInfoSendsCorrectJson() {
         final String groupID = "12345";
         final String groupURL = "/2.0/groups/" + groupID;
         final String groupName = "New Group Name";
@@ -310,13 +302,13 @@ public class BoxGroupTest {
 
         wireMockRule.stubFor(WireMock.get(WireMock.urlPathEqualTo(groupURL))
             .willReturn(WireMock.aResponse()
-                .withHeader("Content-Type", "application/json")
+                .withHeader("Content-Type", APPLICATION_JSON)
                 .withBody(getGroupResult)));
 
         wireMockRule.stubFor(WireMock.put(WireMock.urlPathEqualTo(groupURL))
             .withRequestBody(WireMock.equalToJson(groupObject.toString()))
             .willReturn(WireMock.aResponse()
-                .withHeader("Content-Type", "application/json")
+                .withHeader("Content-Type", APPLICATION_JSON)
                 .withBody(updateGroupResult)));
 
         BoxGroup group = new BoxGroup(this.api, groupID);
@@ -326,7 +318,7 @@ public class BoxGroupTest {
     }
 
     @Test
-    public void testGetAGroupInfoSucceeds() throws IOException {
+    public void testGetAGroupInfoSucceeds() {
         final String groupID = "12345";
         final String groupURL = "/2.0/groups/" + groupID;
         final String groupName = "Test Group";
@@ -335,7 +327,7 @@ public class BoxGroupTest {
 
         wireMockRule.stubFor(WireMock.get(WireMock.urlPathEqualTo(groupURL))
             .willReturn(WireMock.aResponse()
-                .withHeader("Content-Type", "application/json")
+                .withHeader("Content-Type", APPLICATION_JSON)
                 .withBody(result)));
 
         BoxGroup.Info groupInfo = new BoxGroup(this.api, groupID).getInfo();
@@ -345,7 +337,7 @@ public class BoxGroupTest {
     }
 
     @Test
-    public void testCreateGroupSucceedsAndSendsCorrectJson() throws IOException {
+    public void testCreateGroupSucceedsAndSendsCorrectJson() {
         final String createGroupsURL = "/2.0/groups";
         final String groupID = "12345";
         final String groupName = "Test Group";
@@ -358,7 +350,7 @@ public class BoxGroupTest {
         wireMockRule.stubFor(WireMock.post(WireMock.urlPathEqualTo(createGroupsURL))
             .withRequestBody(WireMock.equalToJson(groupObject.toString()))
             .willReturn(WireMock.aResponse()
-                .withHeader("Content-Type", "application/json")
+                .withHeader("Content-Type", APPLICATION_JSON)
                 .withBody(result)));
 
         BoxGroup.Info groupInfo = BoxGroup.createGroup(this.api, groupName);
@@ -368,7 +360,7 @@ public class BoxGroupTest {
     }
 
     @Test
-    public void testGetAllEnterpriseGroupsSucceeds() throws IOException {
+    public void testGetAllEnterpriseGroupsSucceeds() {
         final String getAllGroupsURL = "/2.0/groups";
         final String firstGroupID = "12345";
         final String firstGroupName = "Test Group 1";
@@ -379,7 +371,7 @@ public class BoxGroupTest {
 
         wireMockRule.stubFor(WireMock.get(WireMock.urlPathEqualTo(getAllGroupsURL))
             .willReturn(WireMock.aResponse()
-                .withHeader("Content-Type", "application/json")
+                .withHeader("Content-Type", APPLICATION_JSON)
                 .withBody(result)));
 
         Iterator<BoxGroup.Info> groups = BoxGroup.getAllGroups(this.api).iterator();
@@ -392,17 +384,5 @@ public class BoxGroupTest {
 
         assertEquals(secondGroupName, secondGroupInfo.getName());
         assertEquals(secondGroupID, secondGroupInfo.getID());
-    }
-
-    private void deleteGroup(BoxGroup createdGroup) {
-        if (createdGroup != null) {
-            createdGroup.delete();
-        }
-    }
-
-    private void deleteFolder(BoxFolder folder) {
-        if (folder != null) {
-            folder.delete(true);
-        }
     }
 }

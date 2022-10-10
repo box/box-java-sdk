@@ -1,5 +1,6 @@
 package com.box.sdk;
 
+import static com.box.sdk.http.ContentType.APPLICATION_JSON;
 import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
 import static com.github.tomakehurst.wiremock.client.WireMock.get;
 import static com.github.tomakehurst.wiremock.client.WireMock.getRequestedFor;
@@ -107,7 +108,7 @@ public class BoxAPIRequestTest {
 
         stubFor(get(urlEqualTo("/")).willReturn(aResponse()
             .withStatus(202)
-            .withHeader("Content-Type", "application/json")
+            .withHeader("Content-Type", APPLICATION_JSON)
             .withBody("{}")));
 
         BoxAPIRequest request = new BoxAPIRequest(new BoxAPIConnection(""), boxMockUrl(), "GET");
@@ -166,7 +167,7 @@ public class BoxAPIRequestTest {
         stubFor(get(urlEqualTo("/")).willReturn(
             aResponse()
                 .withStatus(200)
-                .withHeader("content-type", "application/json")
+                .withHeader("content-type", APPLICATION_JSON)
                 .withBody("Not a Json".getBytes(UTF_8))
         ));
         try {

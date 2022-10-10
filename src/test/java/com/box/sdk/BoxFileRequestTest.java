@@ -1,6 +1,7 @@
 package com.box.sdk;
 
 
+import static com.box.sdk.http.ContentType.APPLICATION_JSON;
 import static com.github.tomakehurst.wiremock.core.WireMockConfiguration.wireMockConfig;
 import static java.lang.String.format;
 import static org.junit.Assert.assertEquals;
@@ -8,7 +9,6 @@ import static org.junit.Assert.assertEquals;
 import com.eclipsesource.json.JsonObject;
 import com.github.tomakehurst.wiremock.client.WireMock;
 import com.github.tomakehurst.wiremock.junit.WireMockRule;
-import java.io.IOException;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -28,7 +28,7 @@ public class BoxFileRequestTest {
     }
 
     @Test
-    public void getFileRequestSucceeds() throws IOException {
+    public void getFileRequestSucceeds() {
         final String fileRequestID = "42037322";
         final String fileRequestURL = "/2.0/file_requests/" + fileRequestID;
 
@@ -36,7 +36,7 @@ public class BoxFileRequestTest {
 
         wireMockRule.stubFor(WireMock.get(WireMock.urlPathEqualTo(fileRequestURL))
             .willReturn(WireMock.aResponse()
-                .withHeader("Content-Type", "application/json")
+                .withHeader("Content-Type", APPLICATION_JSON)
                 .withBody(result)));
 
         BoxFileRequest fileRequest = new BoxFileRequest(this.api, fileRequestID);
@@ -55,7 +55,7 @@ public class BoxFileRequestTest {
 
         wireMockRule.stubFor(WireMock.delete(WireMock.urlPathEqualTo(fileRequestURL))
             .willReturn(WireMock.aResponse()
-                .withHeader("Content-Type", "application/json")
+                .withHeader("Content-Type", APPLICATION_JSON)
                 .withStatus(204)));
 
         BoxFileRequest fileRequest = new BoxFileRequest(this.api, fileRequestID);
@@ -63,7 +63,7 @@ public class BoxFileRequestTest {
     }
 
     @Test
-    public void copyFileRequestSucceeds() throws IOException {
+    public void copyFileRequestSucceeds() {
         final String fileRequestID = "42037322";
         final String folderID = "12345";
         final String description = "Following documents are requested for your process";
@@ -86,7 +86,7 @@ public class BoxFileRequestTest {
         wireMockRule.stubFor(WireMock.post(WireMock.urlPathEqualTo(fileRequestURL))
             .withRequestBody(WireMock.equalToJson(body.toString()))
             .willReturn(WireMock.aResponse()
-                .withHeader("Content-Type", "application/json")
+                .withHeader("Content-Type", APPLICATION_JSON)
                 .withBody(result)));
 
         BoxFileRequest fileRequest = new BoxFileRequest(this.api, fileRequestID);
@@ -102,7 +102,7 @@ public class BoxFileRequestTest {
     }
 
     @Test
-    public void updateFileRequestSucceeds() throws IOException {
+    public void updateFileRequestSucceeds() {
         final String fileRequestID = "42037322";
         final String description = "Following documents are requested for your process";
         final Boolean isDescriptionRequired = true;
@@ -119,7 +119,7 @@ public class BoxFileRequestTest {
         wireMockRule.stubFor(WireMock.put(WireMock.urlPathEqualTo(fileRequestURL))
             .withRequestBody(WireMock.equalToJson(body.toString()))
             .willReturn(WireMock.aResponse()
-                .withHeader("Content-Type", "application/json")
+                .withHeader("Content-Type", APPLICATION_JSON)
                 .withBody(result)));
 
         BoxFileRequest fileRequest = new BoxFileRequest(this.api, fileRequestID);

@@ -1,6 +1,7 @@
 package com.box.sdk;
 
 
+import static com.box.sdk.http.ContentType.APPLICATION_JSON;
 import static com.github.tomakehurst.wiremock.core.WireMockConfiguration.wireMockConfig;
 import static java.lang.String.format;
 import static org.junit.Assert.assertEquals;
@@ -37,7 +38,7 @@ public class BoxCollaborationTest {
         wireMockRule.stubFor(WireMock.post(WireMock.urlPathEqualTo(collaborationURL))
             .withQueryParam("notify", WireMock.containing("false"))
             .willReturn(WireMock.aResponse()
-                .withHeader("Content-Type", "application/json")
+                .withHeader("Content-Type", APPLICATION_JSON)
                 .withBody(result)));
 
         BoxUser collaborator = new BoxUser(this.api, "1111");
@@ -68,13 +69,13 @@ public class BoxCollaborationTest {
         wireMockRule.stubFor(WireMock.get(WireMock.urlPathEqualTo(collaborationURL))
             .withQueryParam("status", WireMock.containing("pending"))
             .willReturn(WireMock.aResponse()
-                .withHeader("Content-Type", "application/json")
+                .withHeader("Content-Type", APPLICATION_JSON)
                 .withBody(result)));
 
         wireMockRule.stubFor(WireMock.put(WireMock.urlPathEqualTo(acceptCollaborationURL))
             .withRequestBody(WireMock.equalToJson(acceptInvite.toString()))
             .willReturn(WireMock.aResponse()
-                .withHeader("Content-Type", "application/json")
+                .withHeader("Content-Type", APPLICATION_JSON)
                 .withBody(updatedResult)));
 
         Collection<BoxCollaboration.Info> pendingCollaborations = BoxCollaboration.getPendingCollaborations(this.api);
@@ -93,7 +94,7 @@ public class BoxCollaborationTest {
         wireMockRule.stubFor(WireMock.get(WireMock.urlPathEqualTo(collaborationURL))
             .withQueryParam("status", WireMock.containing("pending"))
             .willReturn(WireMock.aResponse()
-                .withHeader("Content-Type", "application/json")
+                .withHeader("Content-Type", APPLICATION_JSON)
                 .withBody(result)));
 
         Collection<BoxCollaboration.Info> pendingCollaborations = BoxCollaboration.getPendingCollaborations(this.api);
@@ -113,7 +114,7 @@ public class BoxCollaborationTest {
 
         wireMockRule.stubFor(WireMock.get(WireMock.urlPathEqualTo(getFolderCollaborationURL))
             .willReturn(WireMock.aResponse()
-                .withHeader("Content-Type", "application/json")
+                .withHeader("Content-Type", APPLICATION_JSON)
                 .withBody(result)));
 
         BoxFolder folder = new BoxFolder(this.api, folderID);
@@ -135,7 +136,7 @@ public class BoxCollaborationTest {
 
         wireMockRule.stubFor(WireMock.delete(WireMock.urlPathEqualTo(deleteCollaborationURL))
             .willReturn(WireMock.aResponse()
-                .withHeader("Content-Type", "application/json")
+                .withHeader("Content-Type", APPLICATION_JSON)
                 .withStatus(204)));
 
         BoxCollaboration collaboration = new BoxCollaboration(this.api, collaborationID);
@@ -175,18 +176,18 @@ public class BoxCollaborationTest {
         wireMockRule.stubFor(WireMock.post(WireMock.urlPathEqualTo(createCollaborationURL))
             .withRequestBody(WireMock.equalToJson(createBody.toString()))
             .willReturn(WireMock.aResponse()
-                .withHeader("Content-Type", "application/json")
+                .withHeader("Content-Type", APPLICATION_JSON)
                 .withBody(result)));
 
         wireMockRule.stubFor(WireMock.put(WireMock.urlPathEqualTo(editCollaborationURL))
             .withRequestBody(WireMock.equalToJson(updateBody.toString()))
             .willReturn(WireMock.aResponse()
-                .withHeader("Content-Type", "application/json")
+                .withHeader("Content-Type", APPLICATION_JSON)
                 .withBody(editResult)));
 
         wireMockRule.stubFor(WireMock.get(WireMock.urlPathEqualTo(editCollaborationURL))
             .willReturn(WireMock.aResponse()
-                .withHeader("Content-Type", "application/json")
+                .withHeader("Content-Type", APPLICATION_JSON)
                 .withBody(editResult)));
 
         BoxCollaboration.Info collabInfo = BoxCollaboration.create(this.api, user, folder, BoxCollaboration.Role.EDITOR,
@@ -221,7 +222,7 @@ public class BoxCollaborationTest {
 
         wireMockRule.stubFor(WireMock.get(WireMock.urlPathEqualTo(getCollaborationURL))
             .willReturn(WireMock.aResponse()
-                .withHeader("Content-Type", "application/json")
+                .withHeader("Content-Type", APPLICATION_JSON)
                 .withBody(result)));
 
         BoxCollaboration.Info collabInfo = new BoxCollaboration(this.api, collabID).getInfo();
@@ -250,7 +251,7 @@ public class BoxCollaborationTest {
         wireMockRule.stubFor(WireMock.put(WireMock.urlPathEqualTo(collaborationURL))
             .withRequestBody(WireMock.equalToJson(jsonObject.toString()))
             .willReturn(WireMock.aResponse()
-                .withHeader("Content-Type", "application/json")
+                .withHeader("Content-Type", APPLICATION_JSON)
                 .withBody(result)));
 
         BoxCollaboration collaboration = new BoxCollaboration(this.api, collabID);
@@ -270,7 +271,7 @@ public class BoxCollaborationTest {
 
         wireMockRule.stubFor(WireMock.get(WireMock.urlPathEqualTo(getCollaborationURL))
             .willReturn(WireMock.aResponse()
-                .withHeader("Content-Type", "application/json")
+                .withHeader("Content-Type", APPLICATION_JSON)
                 .withBody(result)));
 
         BoxCollaboration.Info collabInfo = new BoxCollaboration(this.api, collabID).getInfo();
@@ -288,7 +289,7 @@ public class BoxCollaborationTest {
 
         wireMockRule.stubFor(WireMock.get(WireMock.urlPathEqualTo(getCollaborationURL))
             .willReturn(WireMock.aResponse()
-                .withHeader("Content-Type", "application/json")
+                .withHeader("Content-Type", APPLICATION_JSON)
                 .withBody(result)));
 
         BoxCollaboration.Info collabInfo = new BoxCollaboration(this.api, collabID).getInfo("invite_email");

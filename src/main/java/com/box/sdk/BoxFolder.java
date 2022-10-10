@@ -3,6 +3,7 @@ package com.box.sdk;
 import static com.box.sdk.PagingParameters.DEFAULT_LIMIT;
 import static com.box.sdk.PagingParameters.marker;
 import static com.box.sdk.PagingParameters.offset;
+import static com.box.sdk.http.ContentType.APPLICATION_JSON_PATCH;
 
 import com.box.sdk.internal.utils.Parsers;
 import com.box.sdk.sharedlink.BoxSharedLinkRequest;
@@ -578,10 +579,10 @@ public class BoxFolder extends BoxItem implements Iterable<BoxItem.Info> {
 
         BoxJSONResponse response;
         if (uploadParams.getProgressListener() == null) {
-            // uppload files sends multipart request but response is JSON
+            // upload files sends multipart request but response is JSON
             response = (BoxJSONResponse) request.send();
         } else {
-            // uppload files sends multipart request but response is JSON
+            // upload files sends multipart request but response is JSON
             response = (BoxJSONResponse) request.send(uploadParams.getProgressListener());
         }
         JsonObject collection = Json.parse(response.getJSON()).asObject();
@@ -1034,7 +1035,7 @@ public class BoxFolder extends BoxItem implements Iterable<BoxItem.Info> {
     public Metadata updateMetadata(Metadata metadata) {
         URL url = METADATA_URL_TEMPLATE.buildAlpha(this.getAPI().getBaseURL(), this.getID(), metadata.getScope(),
             metadata.getTemplateName());
-        BoxJSONRequest request = new BoxJSONRequest(this.getAPI(), url, "PUT", "application/json-patch+json");
+        BoxJSONRequest request = new BoxJSONRequest(this.getAPI(), url, "PUT", APPLICATION_JSON_PATCH);
         request.setBody(metadata.getPatch());
         BoxJSONResponse response = request.send();
         return new Metadata(Json.parse(response.getJSON()).asObject());

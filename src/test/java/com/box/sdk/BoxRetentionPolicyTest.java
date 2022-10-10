@@ -1,5 +1,6 @@
 package com.box.sdk;
 
+import static com.box.sdk.http.ContentType.APPLICATION_JSON;
 import static com.github.tomakehurst.wiremock.core.WireMockConfiguration.wireMockConfig;
 import static java.lang.String.format;
 import static org.junit.Assert.assertEquals;
@@ -8,7 +9,6 @@ import static org.junit.Assert.assertTrue;
 import com.eclipsesource.json.JsonObject;
 import com.github.tomakehurst.wiremock.client.WireMock;
 import com.github.tomakehurst.wiremock.junit.WireMockRule;
-import java.io.IOException;
 import java.util.Iterator;
 import org.junit.Before;
 import org.junit.Rule;
@@ -30,7 +30,7 @@ public class BoxRetentionPolicyTest {
     }
 
     @Test
-    public void testGetAllRetentionPoliciesSucceeds() throws IOException {
+    public void testGetAllRetentionPoliciesSucceeds() {
         final String getAllRetentionPoliciesURL = "/2.0/retention_policies";
         final String firstRetentionPolicyID = "12345";
         final String firstRetentionPolicyName = "A Retention Policy";
@@ -43,7 +43,7 @@ public class BoxRetentionPolicyTest {
 
         wireMockRule.stubFor(WireMock.get(WireMock.urlPathEqualTo(getAllRetentionPoliciesURL))
             .willReturn(WireMock.aResponse()
-                .withHeader("Content-Type", "application/json")
+                .withHeader("Content-Type", APPLICATION_JSON)
                 .withBody(result)));
 
         Iterator<BoxRetentionPolicy.Info> policies = BoxRetentionPolicy.getAll(this.api).iterator();
@@ -61,7 +61,7 @@ public class BoxRetentionPolicyTest {
     }
 
     @Test
-    public void testGetRetentionPolicyInfoSucceeds() throws IOException {
+    public void testGetRetentionPolicyInfoSucceeds() {
         final String policyName = "A Retention Policy";
         final String policyStatus = "active";
         final String dispositionAction = "remove_retention";
@@ -74,7 +74,7 @@ public class BoxRetentionPolicyTest {
 
         wireMockRule.stubFor(WireMock.get(WireMock.urlPathEqualTo(getRetentionPolicyInfoURL))
             .willReturn(WireMock.aResponse()
-                .withHeader("Content-Type", "application/json")
+                .withHeader("Content-Type", APPLICATION_JSON)
                 .withBody(result)));
 
         BoxRetentionPolicy policy = new BoxRetentionPolicy(this.api, retentionPolicyID);
@@ -91,7 +91,7 @@ public class BoxRetentionPolicyTest {
     }
 
     @Test
-    public void testCreateRetentionPolicySucceeds() throws IOException {
+    public void testCreateRetentionPolicySucceeds() {
         final String policyID = "12345";
         final String policyName = "Test Retention Policy";
         final String policyType = "indefinite";
@@ -106,7 +106,7 @@ public class BoxRetentionPolicyTest {
 
         wireMockRule.stubFor(WireMock.post(WireMock.urlPathEqualTo(createRetentionPolicyURL))
             .willReturn(WireMock.aResponse()
-                .withHeader("Content-Type", "application/json")
+                .withHeader("Content-Type", APPLICATION_JSON)
                 .withBody(result)));
 
         RetentionPolicyParams optionalParams = new RetentionPolicyParams();
@@ -127,7 +127,7 @@ public class BoxRetentionPolicyTest {
     }
 
     @Test
-    public void testUpdateRetentionPolicyInfoSendsCorrectJson() throws IOException {
+    public void testUpdateRetentionPolicyInfoSendsCorrectJson() {
         final String policyID = "12345";
         final String updateRetentionPolicyURL = "/2.0/retention_policies/" + policyID;
         final String updatedPolicyName = "New Policy Name";
@@ -149,7 +149,7 @@ public class BoxRetentionPolicyTest {
         wireMockRule.stubFor(WireMock.put(WireMock.urlPathEqualTo(updateRetentionPolicyURL))
             .withRequestBody(WireMock.equalToJson(retentionPolicyObject.toString()))
             .willReturn(WireMock.aResponse()
-                .withHeader("Content-Type", "application/json")
+                .withHeader("Content-Type", APPLICATION_JSON)
                 .withBody(result)));
 
         BoxRetentionPolicy policy = new BoxRetentionPolicy(this.api, policyID);

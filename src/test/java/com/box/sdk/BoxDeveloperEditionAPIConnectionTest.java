@@ -1,5 +1,6 @@
 package com.box.sdk;
 
+import static com.box.sdk.http.ContentType.APPLICATION_JSON;
 import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
 import static com.github.tomakehurst.wiremock.client.WireMock.post;
 import static com.github.tomakehurst.wiremock.client.WireMock.postRequestedFor;
@@ -34,7 +35,7 @@ public class BoxDeveloperEditionAPIConnectionTest {
     @Test
     public void retriesWithNewJWTAssertionOnErrorResponseAndFails() {
         final String tokenPath = "/oauth2/token";
-        BoxDeveloperEditionAPIConnection api = this.getBoxDeveloperEditionAPIConnection(tokenPath);
+        BoxDeveloperEditionAPIConnection api = this.getBoxDeveloperEditionAPIConnection();
 
         this.mockFirstResponse(tokenPath);
 
@@ -61,7 +62,7 @@ public class BoxDeveloperEditionAPIConnectionTest {
     public void retriesWithNewJWTAssertionOnErrorResponseAndSucceeds() {
         final String tokenPath = "/oauth2/token";
         final String accessToken = "mNr1FrCvOeWiGnwLL0OcTL0Lux5jbyBa";
-        BoxDeveloperEditionAPIConnection api = this.getBoxDeveloperEditionAPIConnection(tokenPath);
+        BoxDeveloperEditionAPIConnection api = this.getBoxDeveloperEditionAPIConnection();
 
         this.mockFirstResponse(tokenPath);
 
@@ -71,7 +72,7 @@ public class BoxDeveloperEditionAPIConnectionTest {
             .whenScenarioStateIs("429 sent")
             .willReturn(aResponse()
                 .withStatus(200)
-                .withHeader("Content-Type", "application/json")
+                .withHeader("Content-Type", APPLICATION_JSON)
                 .withBody("{\n"
                     + "   \"access_token\": \"" + accessToken + "\",\n"
                     + "   \"expires_in\": 4169,\n"
@@ -91,7 +92,7 @@ public class BoxDeveloperEditionAPIConnectionTest {
     public void retriesWithNewJWTAssertionOnClockSkewErrorResponseAndSucceeds() {
         final String tokenPath = "/oauth2/token";
         final String accessToken = "some_token";
-        BoxDeveloperEditionAPIConnection api = this.getBoxDeveloperEditionAPIConnection(tokenPath);
+        BoxDeveloperEditionAPIConnection api = this.getBoxDeveloperEditionAPIConnection();
 
         this.wireMockRule.stubFor(post(urlPathMatching(tokenPath))
             .atPriority(1)
@@ -116,7 +117,7 @@ public class BoxDeveloperEditionAPIConnectionTest {
             .whenScenarioStateIs("400 sent")
             .willReturn(aResponse()
                 .withStatus(200)
-                .withHeader("Content-Type", "application/json")
+                .withHeader("Content-Type", APPLICATION_JSON)
                 .withBody("{\n"
                     + "   \"access_token\": \"" + accessToken + "\",\n"
                     + "   \"expires_in\": 4169,\n"
@@ -132,7 +133,7 @@ public class BoxDeveloperEditionAPIConnectionTest {
         Assert.assertEquals(accessToken, api.getAccessToken());
     }
 
-    private BoxDeveloperEditionAPIConnection getBoxDeveloperEditionAPIConnection(final String tokenPath) {
+    private BoxDeveloperEditionAPIConnection getBoxDeveloperEditionAPIConnection() {
         final String baseURL = "http://localhost:" + wireMockRule.port();
         final int expectedNumRetryAttempts = 2;
 

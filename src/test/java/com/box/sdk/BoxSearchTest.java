@@ -1,5 +1,6 @@
 package com.box.sdk;
 
+import static com.box.sdk.http.ContentType.APPLICATION_JSON;
 import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
 import static com.github.tomakehurst.wiremock.client.WireMock.get;
 import static com.github.tomakehurst.wiremock.client.WireMock.stubFor;
@@ -11,7 +12,6 @@ import static org.hamcrest.Matchers.is;
 
 import com.github.tomakehurst.wiremock.client.WireMock;
 import com.github.tomakehurst.wiremock.junit.WireMockRule;
-import java.io.IOException;
 import java.util.Iterator;
 import org.junit.Before;
 import org.junit.Rule;
@@ -37,7 +37,7 @@ public class BoxSearchTest {
             .withQueryParam("limit", WireMock.equalTo("10"))
             .withQueryParam("offset", WireMock.equalTo("10"))
             .willReturn(aResponse()
-                .withHeader("Content-Type", "application/json")
+                .withHeader("Content-Type", APPLICATION_JSON)
                 .withBody("{\"total_count\": 1, \"offset\": 10, \"limit\": 10, \"entries\":"
                     + "[{\"type\": \"file\", \"id\": \"0\"}]}")));
 
@@ -63,7 +63,7 @@ public class BoxSearchTest {
             .withQueryParam("limit", WireMock.equalTo("10"))
             .withQueryParam("offset", WireMock.equalTo("10"))
             .willReturn(aResponse()
-                .withHeader("Content-Type", "application/json")
+                .withHeader("Content-Type", APPLICATION_JSON)
                 .withBody("{\"total_count\": 1, \"offset\": 10, \"limit\": 10, \"entries\":"
                     + "[{\"type\": \"file\", \"id\": \"0\"}]}")));
 
@@ -85,7 +85,7 @@ public class BoxSearchTest {
     }
 
     @Test
-    public void searchIncludeSharedLinksRequestsCorrectFields() throws IOException {
+    public void searchIncludeSharedLinksRequestsCorrectFields() {
         String query = "A query";
 
         String result = TestUtils.getFixture("BoxSearch/GetSearchItemsIncludingSharedLinks200");
@@ -96,7 +96,7 @@ public class BoxSearchTest {
             .withQueryParam("limit", WireMock.equalTo("10"))
             .withQueryParam("offset", WireMock.equalTo("10"))
             .willReturn(aResponse()
-                .withHeader("Content-Type", "application/json")
+                .withHeader("Content-Type", APPLICATION_JSON)
                 .withBody(result)));
 
         BoxSearch boxSearch = new BoxSearch(api);

@@ -1,5 +1,6 @@
 package com.box.sdk;
 
+import static com.box.sdk.http.ContentType.APPLICATION_JSON;
 import static java.lang.String.format;
 
 import com.eclipsesource.json.Json;
@@ -32,7 +33,6 @@ import okhttp3.ResponseBody;
  */
 public class BoxAPIResponse {
     private static final BoxLogger LOGGER = BoxLogger.defaultLogger();
-    private static final int BUFFER_SIZE = 8192;
     private final Map<String, List<String>> headers;
     private final long contentLength;
     private final String contentType;
@@ -71,7 +71,9 @@ public class BoxAPIResponse {
      * @param responseCode http response code
      * @param headers      map of headers
      */
-    public BoxAPIResponse(int responseCode, String requestMethod, String requestUrl, Map<String, List<String>> headers) {
+    public BoxAPIResponse(
+        int responseCode, String requestMethod, String requestUrl, Map<String, List<String>> headers
+    ) {
         this(responseCode, requestMethod, requestUrl, headers, null, null, 0);
     }
 
@@ -127,7 +129,7 @@ public class BoxAPIResponse {
             );
         }
         if (responseBody != null && responseBody.contentType() != null) {
-            if (responseBody.contentType().toString().contains("application/json")) {
+            if (responseBody.contentType().toString().contains(APPLICATION_JSON)) {
                 String bodyAsString = "";
                 try {
                     bodyAsString = responseBody.string();
