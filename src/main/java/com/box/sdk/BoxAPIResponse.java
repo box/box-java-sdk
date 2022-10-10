@@ -1,14 +1,16 @@
 package com.box.sdk;
 
+import static com.box.sdk.StandardCharsets.UTF_8;
 import static com.box.sdk.http.ContentType.APPLICATION_JSON;
 import static java.lang.String.format;
 
 import com.eclipsesource.json.Json;
 import com.eclipsesource.json.ParseException;
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -33,6 +35,7 @@ import okhttp3.ResponseBody;
  * </p>
  */
 public class BoxAPIResponse {
+    private static final int BUFFER_SIZE = 8192;
     private static final BoxLogger LOGGER = BoxLogger.defaultLogger();
     private final Map<String, List<String>> headers = new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
     private final long contentLength;
@@ -94,6 +97,7 @@ public class BoxAPIResponse {
         this.rawInputStream = body;
         this.contentType = contentType;
         this.contentLength = contentLength;
+        storeBodyResponse(body);
         if (isSuccess(responseCode)) {
             this.logResponse();
         } else {
@@ -103,8 +107,30 @@ public class BoxAPIResponse {
         }
     }
 
+    private void storeBodyResponse(InputStream body) {
+        try {
+            if (contentType != null && body != null && contentType.contains(APPLICATION_JSON) && body.available() > 0) {
+                InputStreamReader reader = new InputStreamReader(this.getBody(), UTF_8);
+                StringBuilder builder = new StringBuilder();
+                char[] buffer = new char[BUFFER_SIZE];
+
+                int read = reader.read(buffer, 0, BUFFER_SIZE);
+                while (read != -1) {
+                    builder.append(buffer, 0, read);
+                    read = reader.read(buffer, 0, BUFFER_SIZE);
+                }
+                reader.close();
+                this.disconnect();
+                bodyString = builder.toString();
+                rawInputStream = new ByteArrayInputStream(bodyString.getBytes(UTF_8));
+            }
+        } catch (IOException e) {
+            throw new RuntimeException("Cannot read body stream", e);
+        }
+    }
+
     private static boolean isSuccess(int responseCode) {
-        return responseCode >= 200 && responseCode < 300;
+        return responseCode >= 200 && responseCode < 400;
     }
 
     static BoxAPIResponse toBoxResponse(Response response) {
@@ -243,24 +269,21 @@ public class BoxAPIResponse {
     public String toString() {
         String lineSeparator = System.getProperty("line.separator");
         StringBuilder builder = new StringBuilder();
-        builder.append("Response");
-        builder.append(lineSeparator);
-        builder.append(this.requestMethod);
-        builder.append(' ');
-        builder.append(this.requestUrl);
-        builder.append(lineSeparator);
-        Optional.ofNullable(headers).orElse(new HashMap<>())
-            .entrySet()
+        builder.append("Response")
+            .append(lineSeparator)
+            .append(this.requestMethod).append(' ').append(this.requestUrl)
+            .append(lineSeparator)
+            .append(contentType != null ? "Content-Type: " + contentType + lineSeparator : "")
+            .append(headers.isEmpty() ? "" : "Headers:" + lineSeparator);
+        headers.entrySet()
             .stream()
             .filter(Objects::nonNull)
             .forEach(e -> builder.append(format("%s: [%s]%s", e.getKey().toLowerCase(), e.getValue(), lineSeparator)));
 
-        //TODO: log body
-//        String bodyString = this.bodyToString();
-//        if (bodyString != null && !bodyString.equals("")) {
-//            builder.append(lineSeparator);
-//            builder.append(bodyString);
-//        }
+        String bodyString = this.bodyToString();
+        if (bodyString != null && !bodyString.equals("")) {
+            builder.append("Body:").append(lineSeparator).append(bodyString);
+        }
 
         return builder.toString().trim();
     }

@@ -27,7 +27,7 @@ public class BoxGroup extends BoxCollaborator {
     public static final URLTemplate GROUPS_URL_TEMPLATE = new URLTemplate("groups");
 
     /**
-     * @see #getInfo(String...) 
+     * @see #getInfo(String...)
      */
     public static final URLTemplate GROUP_URL_TEMPLATE = new URLTemplate("groups/%s");
 
@@ -145,26 +145,15 @@ public class BoxGroup extends BoxCollaborator {
     /**
      * Gets an iterable of all the groups in the enterprise that are starting with the given name string.
      *
-     * @param api  the API connection to be used when retrieving the groups.
-     * @param name the name prefix of the groups. If the groups need to searched by full name that has spaces,
-     *             then the parameter string should have been wrapped with "".
-     * @return an iterable containing info about all the groups.
-     */
-    public static Iterable<BoxGroup.Info> getAllGroupsByName(final BoxAPIConnection api, String name) {
-        return getAllGroupsByName(api, name, null);
-    }
-
-    /**
-     * Gets an iterable of all the groups in the enterprise that are starting with the given name string.
-     *
      * @param api    the API connection to be used when retrieving the groups.
      * @param name   the name prefix of the groups. If the groups need to searched by full name that has spaces,
      *               then the parameter string should have been wrapped with "".
      * @param fields the fields to retrieve.
      * @return an iterable containing info about all the groups.
      */
-    public static Iterable<BoxGroup.Info> getAllGroupsByName(final BoxAPIConnection api, String name,
-                                                             String... fields) {
+    public static Iterable<BoxGroup.Info> getAllGroupsByName(
+        final BoxAPIConnection api, String name, String... fields
+    ) {
         final QueryStringBuilder builder = new QueryStringBuilder();
         if (name == null || name.trim().isEmpty()) {
             throw new BoxAPIException("Searching groups by name requires a non NULL or non empty name");
