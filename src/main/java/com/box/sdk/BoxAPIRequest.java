@@ -105,8 +105,6 @@ public class BoxAPIRequest {
             this.readTimeout = BoxGlobalSettings.getReadTimeout();
         }
 
-        //TODO: should I add this? Breaks tests as client expets to get GZIP response
-//        this.addHeader("Accept-Encoding", "gzip");
         this.addHeader("Accept-Charset", "utf-8");
     }
 

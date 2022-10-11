@@ -102,7 +102,6 @@ public class BoxAPIResponse {
             this.logResponse();
         } else {
             this.logErrorResponse(this.responseCode);
-            //TODO: log body when error occurs
             throw new BoxAPIResponseException("The API returned an error code", responseCode, null, headers);
         }
     }
