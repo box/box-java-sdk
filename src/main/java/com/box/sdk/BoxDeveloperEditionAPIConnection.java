@@ -443,8 +443,7 @@ public class BoxDeveloperEditionAPIConnection extends BoxAPIConnection {
                 long responseReceivedTime = System.currentTimeMillis();
 
                 if (!this.backoffCounter.decrement()
-                    || (!BoxAPIRequest.isRequestRetryable(apiException)
-                    && !BoxAPIRequest.isResponseRetryable(apiException.getResponseCode(), apiException))) {
+                    || (!BoxAPIRequest.isRequestRetryable(apiException) && !isResponseRetryable(apiException))) {
                     throw apiException;
                 }
 
@@ -500,6 +499,16 @@ public class BoxDeveloperEditionAPIConnection extends BoxAPIConnection {
 
             this.accessTokenCache.put(key, accessTokenCacheInfo.toString());
         }
+    }
+
+    private boolean isResponseRetryable(BoxAPIException apiException) {
+        return BoxAPIRequest.isResponseRetryable(apiException.getResponseCode(), apiException)
+            || isJtiNonUniqueError(apiException);
+    }
+
+    private boolean isJtiNonUniqueError(BoxAPIException apiException) {
+        return apiException.getResponseCode() == 400
+            && apiException.getResponse().contains("A unique 'jti' value is required");
     }
 
     private NumericDate getDateForJWTConstruction(BoxAPIException apiException, long secondsSinceResponseDateReceived) {
@@ -577,10 +586,6 @@ public class BoxDeveloperEditionAPIConnection extends BoxAPIConnection {
                 this.setExpires(json.get("expires").asLong());
             }
         }
-    }
-
-    private String constructJWTAssertion() {
-        return this.constructJWTAssertion(null);
     }
 
     private String constructJWTAssertion(NumericDate now) {
