@@ -1,5 +1,6 @@
 package com.box.sdk;
 
+import static com.box.sdk.http.ContentType.APPLICATION_JSON;
 import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
 import static com.github.tomakehurst.wiremock.client.WireMock.post;
 import static com.github.tomakehurst.wiremock.client.WireMock.postRequestedFor;
@@ -9,6 +10,8 @@ import static com.github.tomakehurst.wiremock.client.WireMock.urlPathMatching;
 import static com.github.tomakehurst.wiremock.client.WireMock.verify;
 import static com.github.tomakehurst.wiremock.core.WireMockConfiguration.wireMockConfig;
 import static com.github.tomakehurst.wiremock.stubbing.Scenario.STARTED;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.is;
 
 import com.github.tomakehurst.wiremock.extension.Parameters;
 import com.github.tomakehurst.wiremock.http.Request;
@@ -53,7 +56,7 @@ public class BoxDeveloperEditionAPIConnectionTest {
             api.authenticate();
         } catch (BoxAPIException e) {
             verify(3, postRequestedFor(urlPathEqualTo("/oauth2/token")));
-            Assert.assertEquals(429, e.getResponseCode());
+            assertThat(e.getResponseCode(), is(429));
         }
     }
 
@@ -71,20 +74,15 @@ public class BoxDeveloperEditionAPIConnectionTest {
             .whenScenarioStateIs("429 sent")
             .willReturn(aResponse()
                 .withStatus(200)
-                .withHeader("Content-Type", "application/json")
-                .withBody("{\n"
-                    + "   \"access_token\": \"" + accessToken + "\",\n"
-                    + "   \"expires_in\": 4169,\n"
-                    + "   \"restricted_to\": [],\n"
-                    + "   \"token_type\": \"bearer\"\n"
-                    + "}")));
+                .withHeader("Content-Type", APPLICATION_JSON)
+                .withBody(responseWithToken(accessToken))));
 
         this.mockListener();
 
         api.authenticate();
 
         verify(2, postRequestedFor(urlPathEqualTo("/oauth2/token")));
-        Assert.assertEquals(accessToken, api.getAccessToken());
+        assertThat(api.getAccessToken(), is(accessToken));
     }
 
     @Test
@@ -101,6 +99,7 @@ public class BoxDeveloperEditionAPIConnectionTest {
                 .withStatus(400)
                 .withHeader("Retry-After", "1")
                 .withHeader("Date", "Sat, 18 Nov 2017 11:18:00 GMT")
+                .withHeader("Content-Type", APPLICATION_JSON)
                 .withBody("{\n"
                     + "   \"type\": \"error\",\n"
                     + "   \"status\": 400,\n"
@@ -116,20 +115,57 @@ public class BoxDeveloperEditionAPIConnectionTest {
             .whenScenarioStateIs("400 sent")
             .willReturn(aResponse()
                 .withStatus(200)
-                .withHeader("Content-Type", "application/json")
-                .withBody("{\n"
-                    + "   \"access_token\": \"" + accessToken + "\",\n"
-                    + "   \"expires_in\": 4169,\n"
-                    + "   \"restricted_to\": [],\n"
-                    + "   \"token_type\": \"bearer\"\n"
-                    + "}")));
+                .withHeader("Content-Type", APPLICATION_JSON)
+                .withBody(responseWithToken(accessToken))));
 
         this.mockListener();
 
         api.authenticate();
 
         verify(2, postRequestedFor(urlPathEqualTo("/oauth2/token")));
-        Assert.assertEquals(accessToken, api.getAccessToken());
+        assertThat(api.getAccessToken(), is(accessToken));
+    }
+
+    @Test
+    public void retriesWithWhenJtiClaimIsDuplicated() {
+        final String tokenPath = "/oauth2/token";
+        final String accessToken = "some_token";
+        BoxDeveloperEditionAPIConnection api = this.getBoxDeveloperEditionAPIConnection(tokenPath);
+
+        this.wireMockRule.stubFor(post(urlPathMatching(tokenPath))
+            .inScenario("Retry when JTI fails")
+            .whenScenarioStateIs(STARTED)
+            .willReturn(aResponse()
+                .withStatus(400)
+                .withHeader("Content-Type", APPLICATION_JSON)
+                .withBody("{"
+                    + "\"error\":\"invalid_grant\","
+                    + "\"error_description\":\"Please check the 'jti' claim. A unique 'jti' value is required.\""
+                    + "}"
+                ))
+            .willSetStateTo("400 error recieved"));
+
+        this.wireMockRule.stubFor(post(urlPathMatching(tokenPath))
+            .inScenario("Retry when JTI fails")
+            .whenScenarioStateIs("400 error recieved")
+            .willReturn(aResponse()
+                .withStatus(200)
+                .withHeader("Content-Type", APPLICATION_JSON)
+                .withBody(responseWithToken(accessToken)
+                )));
+
+        api.authenticate();
+        verify(2, postRequestedFor(urlPathEqualTo("/oauth2/token")));
+        assertThat(api.getAccessToken(), is(accessToken));
+    }
+
+    private static String responseWithToken(String accessToken) {
+        return "{\n"
+            + "   \"access_token\": \"" + accessToken + "\",\n"
+            + "   \"expires_in\": 4169,\n"
+            + "   \"restricted_to\": [],\n"
+            + "   \"token_type\": \"bearer\"\n"
+            + "}";
     }
 
     private BoxDeveloperEditionAPIConnection getBoxDeveloperEditionAPIConnection(final String tokenPath) {
