@@ -117,16 +117,6 @@ task integrationTest(type: Test) {
     classpath = sourceSets.intTest.runtimeClasspath
 }
 
-//TODO: enable JWT tests
-//task integrationTestJWT(type: Test) {
-//    description "Runs the JWT based integration tests."
-//    group "Verification"
-//    testLogging.showStandardStreams = true
-//    useJUnit {
-//        includeCategories "com.box.sdk.IntegrationTestJWT"
-//    }
-//}
-
 jacoco {
     reportsDirectory = file("$buildDir/reports/jacoco")
 }

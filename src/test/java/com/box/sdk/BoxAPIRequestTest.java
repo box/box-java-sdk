@@ -34,7 +34,7 @@ public class BoxAPIRequestTest {
 
     @Test
     public void requestRetriesTheDefaultNumberOfTimesWhenServerReturns500() {
-        stubFor(get(urlEqualTo("/")).willReturn(aResponse().withStatus(500)));
+        stubFor(get(urlEqualTo("/")).willReturn(aResponse().withStatus(500).withBody("{}")));
         Time mockTime = mock(Time.class);
         BackoffCounter backoffCounter = new BackoffCounter(mockTime);
 
@@ -50,7 +50,7 @@ public class BoxAPIRequestTest {
 
     @Test
     public void requestRetriesTheDefaultNumberOfTimesWhenServerReturns429() {
-        stubFor(get(urlEqualTo("/")).willReturn(aResponse().withStatus(429)));
+        stubFor(get(urlEqualTo("/")).willReturn(aResponse().withStatus(429).withBody("{}")));
         Time mockTime = mock(Time.class);
         BackoffCounter backoffCounter = new BackoffCounter(mockTime);
 
@@ -87,7 +87,7 @@ public class BoxAPIRequestTest {
     @Test
     public void requestRetriesTheNumberOfTimesConfiguredInTheAPIConnection() {
         final int expectedNumRetryAttempts = 1;
-        stubFor(get(urlEqualTo("/")).willReturn(aResponse().withStatus(500)));
+        stubFor(get(urlEqualTo("/")).willReturn(aResponse().withStatus(500).withBody("{}")));
         Time mockTime = mock(Time.class);
         BackoffCounter backoffCounter = new BackoffCounter(mockTime);
 

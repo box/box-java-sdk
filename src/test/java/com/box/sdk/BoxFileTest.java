@@ -681,6 +681,7 @@ public class BoxFileTest {
 
         wireMockRule.stubFor(WireMock.post(WireMock.urlPathEqualTo(metadataURL))
             .willReturn(WireMock.aResponse()
+                .withBody("{}")
                 .withStatus(409)));
 
         wireMockRule.stubFor(WireMock.put(WireMock.urlPathEqualTo(metadataURL))
@@ -704,6 +705,7 @@ public class BoxFileTest {
 
         wireMockRule.stubFor(WireMock.post(WireMock.urlPathEqualTo(metadataURL))
             .willReturn(WireMock.aResponse()
+                .withBody("{}")
                 .withStatus(403)));
 
         BoxFile file = new BoxFile(this.api, fileID);
@@ -1038,7 +1040,7 @@ public class BoxFileTest {
             request -> {
                 if (request.getMethod().equals("POST")) {
                     postCounter.incrementAndGet();
-                    throw new BoxAPIException("Conflict", 409, "Conflict");
+                    throw new BoxAPIException("Conflict", 409, "{}");
                 }
                 if (request.getMethod().equals("GET")) {
                     getCounter.incrementAndGet();
