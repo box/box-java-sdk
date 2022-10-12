@@ -270,7 +270,9 @@ public class BoxAPIResponse {
         StringBuilder builder = new StringBuilder();
         builder.append("Response")
             .append(lineSeparator)
-            .append(this.requestMethod).append(' ').append(this.requestUrl)
+            .append(this.requestMethod)
+            .append(' ')
+            .append(this.requestUrl)
             .append(lineSeparator)
             .append(contentType != null ? "Content-Type: " + contentType + lineSeparator : "")
             .append(headers.isEmpty() ? "" : "Headers:" + lineSeparator);
