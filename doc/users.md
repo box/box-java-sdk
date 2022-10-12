@@ -63,7 +63,7 @@ String userID = "33333";
 // some stream do download avatar
 try (ByteArrayOutputStream outputStream = new ByteArrayOutputStream()){
   BoxUser user=new BoxUser(api,userID);
-  BoxAPIResponse response=user.downloadAvatar(outputStream);
+  user.downloadAvatar(outputStream);
 } catch (IOException e) {
   throw new RuntimeException(e);
 }
