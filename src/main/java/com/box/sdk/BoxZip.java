@@ -1,6 +1,6 @@
 package com.box.sdk;
 
-import static com.box.sdk.BinaryBody.writeStream;
+import static com.box.sdk.BinaryBodyUtils.writeStream;
 
 import com.eclipsesource.json.Json;
 import com.eclipsesource.json.JsonArray;

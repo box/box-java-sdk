@@ -7,10 +7,10 @@ import java.io.OutputStream;
 /**
  * Utility class to help writing binary data to output stream.
  */
-final class BinaryBody {
+final class BinaryBodyUtils {
     private static final int BUFFER_SIZE = 8192;
 
-    private BinaryBody() {
+    private BinaryBodyUtils() {
         // utility class has no public constructor
     }
 

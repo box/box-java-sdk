@@ -1,6 +1,6 @@
 package com.box.sdk;
 
-import static com.box.sdk.BinaryBody.writeStream;
+import static com.box.sdk.BinaryBodyUtils.writeStream;
 import static com.box.sdk.http.HttpMethod.DELETE;
 import static com.box.sdk.internal.utils.JsonUtils.addIfNotNull;
 
