@@ -96,9 +96,34 @@ public class BoxFile extends BoxItem {
      */
     public static final URLTemplate GET_TASKS_URL_TEMPLATE = new URLTemplate("files/%s/tasks");
     /**
+     * Get Thumbnail PNG Template.
+     */
+    public static final URLTemplate GET_THUMBNAIL_PNG_TEMPLATE = new URLTemplate("files/%s/thumbnail.png");
+    /**
+     * Get Thumbnail JPG Template.
+     */
+    public static final URLTemplate GET_THUMBNAIL_JPG_TEMPLATE = new URLTemplate("files/%s/thumbnail.jpg");
+    /**
      * Upload Session URL Template.
      */
     public static final URLTemplate UPLOAD_SESSION_URL_TEMPLATE = new URLTemplate("files/%s/upload_sessions");
+    /**
+     * Upload Session Status URL Template.
+     */
+    public static final URLTemplate UPLOAD_SESSION_STATUS_URL_TEMPLATE = new URLTemplate(
+        "files/upload_sessions/%s/status");
+    /**
+     * Abort Upload Session URL Template.
+     */
+    public static final URLTemplate ABORT_UPLOAD_SESSION_URL_TEMPLATE = new URLTemplate("files/upload_sessions/%s");
+    /**
+     * Add Collaborations URL Template.
+     */
+    public static final URLTemplate ADD_COLLABORATION_URL = new URLTemplate("collaborations");
+    /**
+     * Get All File Collaborations URL Template.
+     */
+    public static final URLTemplate GET_ALL_FILE_COLLABORATIONS_URL = new URLTemplate("files/%s/collaborations");
     /**
      * Describes file item type.
      */
