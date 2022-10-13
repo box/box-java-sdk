@@ -26,6 +26,14 @@ final class BinaryBodyUtils {
             } else {
                 input = response.getBody();
             }
+            writeStreamTo(input, output);
+        } finally {
+            response.disconnect();
+        }
+    }
+
+    static void writeStreamTo(InputStream input, OutputStream output) {
+        try {
             byte[] buffer = new byte[BUFFER_SIZE];
             int n = input.read(buffer);
             while (n != -1) {
@@ -33,9 +41,7 @@ final class BinaryBodyUtils {
                 n = input.read(buffer);
             }
         } catch (IOException e) {
-            throw new BoxAPIException("Couldn't connect to the Box API due to a network error.", e);
-        } finally {
-            response.disconnect();
+            throw new RuntimeException(e);
         }
     }
 }

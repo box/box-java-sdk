@@ -1,6 +1,7 @@
 package com.box.sdk;
 
 import static com.box.sdk.BinaryBodyUtils.writeStream;
+import static com.box.sdk.BinaryBodyUtils.writeStreamTo;
 import static com.box.sdk.http.HttpMethod.DELETE;
 import static com.box.sdk.internal.utils.JsonUtils.addIfNotNull;
 
@@ -8,9 +9,12 @@ import com.eclipsesource.json.Json;
 import com.eclipsesource.json.JsonArray;
 import com.eclipsesource.json.JsonObject;
 import com.eclipsesource.json.JsonValue;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.URL;
@@ -678,14 +682,36 @@ public class BoxUser extends BoxCollaborator {
     }
 
     /**
-     * Retrieves the avatar of a user as an InputStream.
+     * Writes avatar into specified {@link OutputStream}
      *
-     * @return InputStream representing the user avater.
+     * @param outputStream Stream where to write avatar.
      */
     public void downloadAvatar(OutputStream outputStream) {
         URL url = USER_AVATAR_TEMPLATE.build(this.getAPI().getBaseURL(), this.getID());
         BoxAPIRequest request = new BoxAPIRequest(this.getAPI(), url, "GET");
         writeStream(request.send(), outputStream);
+    }
+
+    /**
+     * Retrieves the avatar of a user as an InputStream.
+     *
+     * @return InputStream representing the user avater.
+     * @deprecated This method loads whole avatar image to memory.
+     * Use {@link BoxUser#downloadAvatar(OutputStream)} to store avatar in file or memory.
+     * That method uses very small buffer to store bytes in memory.
+     */
+    public InputStream getAvatar() {
+        URL url = USER_AVATAR_TEMPLATE.build(this.getAPI().getBaseURL(), this.getID());
+        BoxAPIRequest request = new BoxAPIRequest(this.getAPI(), url, "GET");
+        BoxAPIResponse response = request.send();
+        try (ByteArrayOutputStream outputStream = new ByteArrayOutputStream()) {
+            writeStreamTo(response.getBody(), outputStream);
+            return new ByteArrayInputStream(outputStream.toByteArray());
+        } catch (IOException e) {
+            throw new RuntimeException("Error while closing stream", e);
+        } finally {
+            response.disconnect();
+        }
     }
 
     /**

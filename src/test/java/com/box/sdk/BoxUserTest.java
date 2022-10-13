@@ -1,5 +1,6 @@
 package com.box.sdk;
 
+import static com.box.sdk.BinaryBodyUtils.writeStreamTo;
 import static com.box.sdk.http.ContentType.APPLICATION_JSON;
 import static com.github.tomakehurst.wiremock.core.WireMockConfiguration.wireMockConfig;
 import static java.lang.String.format;
@@ -20,6 +21,7 @@ import com.github.tomakehurst.wiremock.stubbing.Scenario;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.URL;
 import java.net.URLDecoder;
@@ -52,6 +54,25 @@ public class BoxUserTest {
 
     @Test
     public void testGetAvatar() throws IOException {
+        final String expectedURL = "/2.0/users/12345/avatar";
+        File file = new File("src/test/Fixtures/BoxUser/small_avatar.png");
+        byte[] fileByteArray = Files.readAllBytes(file.toPath());
+
+        wireMockRule.stubFor(WireMock.get(WireMock.urlPathEqualTo(expectedURL))
+            .willReturn(WireMock.aResponse()
+                .withStatus(200)
+                .withHeader("Content-Type", "image/png")
+                .withBody(fileByteArray)));
+
+        BoxUser user = new BoxUser(this.api, "12345");
+        ByteArrayOutputStream output = new ByteArrayOutputStream();
+        InputStream avatarStream = user.getAvatar();
+        writeStreamTo(avatarStream, output);
+        assertArrayEquals(fileByteArray, output.toByteArray());
+    }
+
+    @Test
+    public void downloadAvatar() throws IOException {
         final String expectedURL = "/2.0/users/12345/avatar";
         File file = new File("src/test/Fixtures/BoxUser/small_avatar.png");
         byte[] fileByteArray = Files.readAllBytes(file.toPath());
