@@ -194,6 +194,24 @@ public class BoxAPIRequestTest {
         assertThat(response.bodyToString(), is(jsonString));
     }
 
+    @Test
+    public void willNotRetry400Error() {
+        stubFor(get(urlEqualTo("/")).willReturn(aResponse().withStatus(400).withBody("Not a JSON")));
+
+        BoxAPIConnection api = new BoxAPIConnection("");
+
+        BoxAPIRequest request = new BoxAPIRequest(api, boxMockUrl(), "GET");
+
+        try {
+            request.send();
+        } catch (BoxAPIException e) {
+            verify(1, getRequestedFor(urlEqualTo("/")));
+            assertThat(e.getMessage(), is("Could not parse error as JSON\nNot a JSON"));
+            assertThat(e.getResponse(), is("Not a JSON"));
+            assertThat(e.getResponseCode(), is(400));
+        }
+    }
+
     private byte[] gzipped(String str) {
         try {
             ByteArrayOutputStream obj = new ByteArrayOutputStream();

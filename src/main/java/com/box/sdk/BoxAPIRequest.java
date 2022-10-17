@@ -7,6 +7,7 @@ import com.box.sdk.http.HttpHeaders;
 import com.box.sdk.http.HttpMethod;
 import com.eclipsesource.json.Json;
 import com.eclipsesource.json.JsonObject;
+import com.eclipsesource.json.ParseException;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -158,16 +159,19 @@ public class BoxAPIRequest {
         String message = apiException.getMessage();
         String errorCode = "";
 
-        JsonObject responseBody = Json.parse(response).asObject();
-        if (responseBody.get("code") != null) {
-            errorCode = responseBody.get("code").toString();
-        } else if (responseBody.get("error") != null) {
-            errorCode = responseBody.get("error").toString();
-        }
+        try {
+            JsonObject responseBody = Json.parse(response).asObject();
+            if (responseBody.get("code") != null) {
+                errorCode = responseBody.get("code").toString();
+            } else if (responseBody.get("error") != null) {
+                errorCode = responseBody.get("error").toString();
+            }
 
-        return responseCode == 400
-            && errorCode.contains("invalid_grant")
-            && message.contains("exp");
+            return responseCode == 400 && errorCode.contains("invalid_grant") && message.contains("exp");
+        } catch (ParseException e) {
+            // 400 error which is not a JSON will not trigger a retry
+            throw new BoxAPIException(format("Could not parse error as JSON"), responseCode, response);
+        }
     }
 
     private static boolean isResponseRedirect(int responseCode) {
@@ -581,18 +585,17 @@ public class BoxAPIRequest {
         Request.Builder requestBuilder = new Request.Builder().url(getUrl());
 
         //TODO: do we need that check?
-        if (this.api != null) {
-            if (this.shouldAuthenticate) {
-                requestBuilder.addHeader(HttpHeaders.AUTHORIZATION, "Bearer " + this.api.lockAccessToken());
-            }
-            requestBuilder.addHeader("User-Agent", this.api.getUserAgent());
-            requestBuilder.addHeader("X-Box-UA", this.api.getBoxUAHeader());
-            headers.forEach(h -> {
-                requestBuilder.removeHeader(h.getKey());
-                requestBuilder.addHeader(h.getKey(), h.getValue());
-            });
+        if (this.shouldAuthenticate) {
+            requestBuilder.addHeader(HttpHeaders.AUTHORIZATION, "Bearer " + this.api.lockAccessToken());
+        }
+        requestBuilder.addHeader("User-Agent", this.api.getUserAgent());
+        requestBuilder.addHeader("X-Box-UA", this.api.getBoxUAHeader());
+        headers.forEach(h -> {
+            requestBuilder.removeHeader(h.getKey());
+            requestBuilder.addHeader(h.getKey(), h.getValue());
+        });
 
-            // TODO: proxy is set in client in OkHttp - maybe we can remove it from here and move to client
+        // TODO: proxy is set in client in OkHttp - maybe we can remove it from here and move to client
 //            if (this.api.getProxy() != null) {
 //                if (this.api.getProxyUsername() != null && this.api.getProxyPassword() != null) {
 //                    String usernameAndPassword = this.api.getProxyUsername() + ":" + this.api.getProxyPassword();
@@ -601,16 +604,15 @@ public class BoxAPIRequest {
 //                }
 //            }
 
-            if (this.api instanceof SharedLinkAPIConnection) {
-                SharedLinkAPIConnection sharedItemAPI = (SharedLinkAPIConnection) this.api;
-                String sharedLink = sharedItemAPI.getSharedLink();
-                String boxAPIValue = "shared_link=" + sharedLink;
-                String sharedLinkPassword = sharedItemAPI.getSharedLinkPassword();
-                if (sharedLinkPassword != null) {
-                    boxAPIValue += "&shared_link_password=" + sharedLinkPassword;
-                }
-                requestBuilder.addHeader("BoxApi", boxAPIValue);
+        if (this.api instanceof SharedLinkAPIConnection) {
+            SharedLinkAPIConnection sharedItemAPI = (SharedLinkAPIConnection) this.api;
+            String sharedLink = sharedItemAPI.getSharedLink();
+            String boxAPIValue = "shared_link=" + sharedLink;
+            String sharedLinkPassword = sharedItemAPI.getSharedLinkPassword();
+            if (sharedLinkPassword != null) {
+                boxAPIValue += "&shared_link_password=" + sharedLinkPassword;
             }
+            requestBuilder.addHeader("BoxApi", boxAPIValue);
         }
 
         try {
@@ -634,8 +636,7 @@ public class BoxAPIRequest {
             return result;
 
         } finally {
-            //TODO: API should not be null
-            if (this.api != null && this.shouldAuthenticate) {
+            if (this.shouldAuthenticate) {
                 this.api.unlockAccessToken();
             }
         }
