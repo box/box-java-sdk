@@ -466,17 +466,19 @@ public class BoxFolderTest {
         final String modifiedByLogin = "test@user.com";
         final String modifiedByName = "Test User";
 
-        String result = TestUtils.getFixture("BoxFolder/GetAllRootFolderItems200");
+        String items = TestUtils.getFixture("BoxFolder/GetAllRootFolderItems200");
+        String info = TestUtils.getFixture("BoxFolder/GetFolderInfo200");
 
         wireMockRule.stubFor(WireMock.get(WireMock.urlPathEqualTo(rootFolderItemsURL))
             .willReturn(WireMock.aResponse()
                 .withHeader("Content-Type", APPLICATION_JSON)
-                .withStatus(200)));
+                .withStatus(200).withBody(items)));
 
         wireMockRule.stubFor(WireMock.get(WireMock.urlPathEqualTo(folderURL))
             .willReturn(WireMock.aResponse()
                 .withHeader("Content-Type", APPLICATION_JSON)
-                .withBody(result)));
+                .withBody(info)
+                .withStatus(200)));
 
         BoxFolder rootFolder = BoxFolder.getRootFolder(this.api);
         BoxFolder.Info rootFolderInfo = rootFolder.getInfo();
@@ -1133,6 +1135,7 @@ public class BoxFolderTest {
 
         wireMockRule.stubFor(WireMock.post(WireMock.urlPathEqualTo(metadataURL))
             .willReturn(WireMock.aResponse()
+                .withBody("{}")
                 .withStatus(409)));
 
         wireMockRule.stubFor(WireMock.put(WireMock.urlPathEqualTo(metadataURL))
@@ -1156,6 +1159,7 @@ public class BoxFolderTest {
 
         wireMockRule.stubFor(WireMock.post(WireMock.urlPathEqualTo(metadataURL))
             .willReturn(WireMock.aResponse()
+                .withBody("{}")
                 .withStatus(403)));
 
         BoxFolder folder = new BoxFolder(this.api, folderID);
@@ -1524,7 +1528,7 @@ public class BoxFolderTest {
             request -> {
                 if (request.getMethod().equals("POST")) {
                     postCounter.incrementAndGet();
-                    throw new BoxAPIException("Conflict", 409, "Conflict");
+                    throw new BoxAPIException("Conflict", 409, "{}");
                 }
                 if (request.getMethod().equals("GET")) {
                     getCounter.incrementAndGet();
