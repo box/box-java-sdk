@@ -178,7 +178,7 @@ public final class LargeFileUpload {
     public BoxFile.Info upload(BoxAPIConnection boxApi, InputStream stream, URL url, long fileSize,
                                Map<String, String> fileAttributes)
         throws InterruptedException, IOException {
-        //creates a upload session
+        //creates an upload session
         BoxFileUploadSession.Info session = this.createUploadSession(boxApi, url, fileSize);
         return this.uploadHelper(session, stream, fileSize, fileAttributes);
     }
