@@ -121,9 +121,10 @@ public class EventStream {
             BoxJSONRequest request = new BoxJSONRequest(this.api,
                 EVENT_URL.buildAlpha(this.api.getBaseURL(), "now"), "GET"
             );
-            BoxJSONResponse response = request.send();
-            JsonObject jsonObject = Json.parse(response.getJSON()).asObject();
-            initialPosition = jsonObject.get("next_stream_position").asLong();
+            try (BoxJSONResponse response = request.send()) {
+                JsonObject jsonObject = Json.parse(response.getJSON()).asObject();
+                initialPosition = jsonObject.get("next_stream_position").asLong();
+            }
         } else {
             assert this.startingPosition >= 0 : "Starting position must be non-negative";
             initialPosition = this.startingPosition;
@@ -214,24 +215,25 @@ public class EventStream {
                     BoxJSONRequest request = new BoxJSONRequest(EventStream.this.api,
                         EVENT_URL.buildAlpha(EventStream.this.api.getBaseURL(), position), "GET"
                     );
-                    BoxJSONResponse response = request.send();
-                    JsonObject jsonObject = Json.parse(response.getJSON()).asObject();
-                    JsonArray entriesArray = jsonObject.get("entries").asArray();
-                    for (JsonValue entry : entriesArray) {
-                        BoxEvent event = new BoxEvent(EventStream.this.api, entry.asObject());
-                        EventStream.this.notifyEvent(event);
-                    }
-                    position = jsonObject.get("next_stream_position").asLong();
-                    EventStream.this.notifyNextPosition(position);
-                    try {
-                        // Delay re-polling to avoid making too many API calls
-                        // Since duplicate events may appear in the stream, without any delay added
-                        // the stream can make 3-5 requests per second and not produce any new
-                        // events.  A short delay between calls balances latency for new events
-                        // and the risk of hitting rate limits.
-                        Thread.sleep(EventStream.this.pollingDelay);
-                    } catch (InterruptedException ex) {
-                        return;
+                    try (BoxJSONResponse response = request.send()) {
+                        JsonObject jsonObject = Json.parse(response.getJSON()).asObject();
+                        JsonArray entriesArray = jsonObject.get("entries").asArray();
+                        for (JsonValue entry : entriesArray) {
+                            BoxEvent event = new BoxEvent(EventStream.this.api, entry.asObject());
+                            EventStream.this.notifyEvent(event);
+                        }
+                        position = jsonObject.get("next_stream_position").asLong();
+                        EventStream.this.notifyNextPosition(position);
+                        try {
+                            // Delay re-polling to avoid making too many API calls
+                            // Since duplicate events may appear in the stream, without any delay added
+                            // the stream can make 3-5 requests per second and not produce any new
+                            // events.  A short delay between calls balances latency for new events
+                            // and the risk of hitting rate limits.
+                            Thread.sleep(EventStream.this.pollingDelay);
+                        } catch (InterruptedException ex) {
+                            return;
+                        }
                     }
                 }
             }

@@ -65,19 +65,20 @@ class JsonIterator {
         }
 
         BoxJSONRequest request = new BoxJSONRequest(this.api, url, "GET");
-        BoxJSONResponse response = request.send();
-        String json = response.getJSON();
+        try (BoxJSONResponse response = request.send()) {
+            String json = response.getJSON();
 
-        JsonObject responseObject = Json.parse(json).asObject();
+            JsonObject responseObject = Json.parse(json).asObject();
 
-        if (pagingParameters.isMarkerBasedPaging()) {
-            continueAsMarkerBasedPaging(responseObject);
-        } else {
-            continueAsOffsetBasedPaging(responseObject);
+            if (pagingParameters.isMarkerBasedPaging()) {
+                continueAsMarkerBasedPaging(responseObject);
+            } else {
+                continueAsOffsetBasedPaging(responseObject);
+            }
+
+            JsonArray jsonArray = responseObject.get("entries").asArray();
+            this.currentPage = jsonArray.iterator();
         }
-
-        JsonArray jsonArray = responseObject.get("entries").asArray();
-        this.currentPage = jsonArray.iterator();
     }
 
     private void continueAsOffsetBasedPaging(JsonObject response) {

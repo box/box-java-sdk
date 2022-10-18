@@ -146,12 +146,13 @@ public class EventLog implements Iterable<BoxEvent> {
         }
 
         BoxJSONRequest request = new BoxJSONRequest(api, url, "GET");
-        BoxJSONResponse response = request.send();
-        JsonObject responseJSON = Json.parse(response.getJSON()).asObject();
-        EventLog log = new EventLog(api, responseJSON, position, limit);
-        log.setStartDate(after);
-        log.setEndDate(before);
-        return log;
+        try (BoxJSONResponse response = request.send()) {
+            JsonObject responseJSON = Json.parse(response.getJSON()).asObject();
+            EventLog log = new EventLog(api, responseJSON, position, limit);
+            log.setStartDate(after);
+            log.setEndDate(before);
+            return log;
+        }
     }
 
     /**
@@ -244,12 +245,13 @@ public class EventLog implements Iterable<BoxEvent> {
         }
 
         BoxJSONRequest apiRequest = new BoxJSONRequest(api, url, "GET");
-        BoxJSONResponse response = apiRequest.send();
-        JsonObject responseJSON = Json.parse(response.getJSON()).asObject();
-        EventLog log = new EventLog(api, responseJSON, request.getPosition(), request.getLimit());
-        log.setStartDate(request.getAfter());
-        log.setEndDate(request.getBefore());
-        return log;
+        try (BoxJSONResponse response = apiRequest.send()) {
+            JsonObject responseJSON = Json.parse(response.getJSON()).asObject();
+            EventLog log = new EventLog(api, responseJSON, request.getPosition(), request.getLimit());
+            log.setStartDate(request.getAfter());
+            log.setEndDate(request.getBefore());
+            return log;
+        }
     }
 
     private static void addParamsToQuery(EventLogRequest request, QueryStringBuilder queryBuilder) {

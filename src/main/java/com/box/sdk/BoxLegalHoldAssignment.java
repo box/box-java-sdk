@@ -80,10 +80,12 @@ public class BoxLegalHoldAssignment extends BoxResource {
                 .add("type", resourceType)
                 .add("id", resourceID));
         request.setBody(requestJSON.toString());
-        BoxJSONResponse response = request.send();
-        JsonObject responseJSON = Json.parse(response.getJSON()).asObject();
-        BoxLegalHoldAssignment createdAssignment = new BoxLegalHoldAssignment(api, responseJSON.get("id").asString());
-        return createdAssignment.new Info(responseJSON);
+        try (BoxJSONResponse response = request.send()) {
+            JsonObject responseJSON = Json.parse(response.getJSON()).asObject();
+            BoxLegalHoldAssignment createdAssignment =
+                new BoxLegalHoldAssignment(api, responseJSON.get("id").asString());
+            return createdAssignment.new Info(responseJSON);
+        }
     }
 
     /**
@@ -92,8 +94,7 @@ public class BoxLegalHoldAssignment extends BoxResource {
     public void delete() {
         URL url = LEGAL_HOLD_ASSIGNMENT_URL_TEMPLATE.build(this.getAPI().getBaseURL(), this.getID());
         BoxAPIRequest request = new BoxAPIRequest(this.getAPI(), url, "DELETE");
-        BoxAPIResponse response = request.send();
-        response.disconnect();
+        request.send().close();
     }
 
     /**
@@ -108,9 +109,10 @@ public class BoxLegalHoldAssignment extends BoxResource {
         URL url = LEGAL_HOLD_ASSIGNMENT_URL_TEMPLATE.buildWithQuery(
             this.getAPI().getBaseURL(), builder.toString(), this.getID());
         BoxJSONRequest request = new BoxJSONRequest(this.getAPI(), url, "GET");
-        BoxJSONResponse response = request.send();
-        JsonObject responseJSON = Json.parse(response.getJSON()).asObject();
-        return new Info(responseJSON);
+        try (BoxJSONResponse response = request.send()) {
+            JsonObject responseJSON = Json.parse(response.getJSON()).asObject();
+            return new Info(responseJSON);
+        }
     }
 
     /**

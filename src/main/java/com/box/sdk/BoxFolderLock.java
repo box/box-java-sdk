@@ -37,8 +37,7 @@ public class BoxFolderLock extends BoxResource {
     public void delete() {
         URL url = DELETE_FOLDER_LOCK_URL_TEMPLATE.build(this.getAPI().getBaseURL(), this.getID());
         BoxAPIRequest request = new BoxAPIRequest(this.getAPI(), url, "DELETE");
-        BoxAPIResponse response = request.send();
-        response.disconnect();
+        request.send().close();
     }
 
     /**
@@ -159,7 +158,7 @@ public class BoxFolderLock extends BoxResource {
 
                 } else if (memberName.equals("locked_operations")) {
                     JsonObject lockedOperationsJSON = value.asObject();
-                    Map<String, Boolean> operationsMap = new HashMap<String, Boolean>();
+                    Map<String, Boolean> operationsMap = new HashMap<>();
                     for (JsonObject.Member operationMember : lockedOperationsJSON) {
                         String operation = operationMember.getName();
                         Boolean operationBoolean = operationMember.getValue().asBoolean();

@@ -48,10 +48,10 @@ public class BoxZip {
         URL url = ZIP_URL_TEMPLATE.build(this.getAPI().getBaseURL());
         BoxJSONRequest request = new BoxJSONRequest(this.getAPI(), url, "POST");
         request.setBody(requestJSON.toString());
-        BoxJSONResponse response = request.send();
-        JsonObject responseJSON = Json.parse(response.getJSON()).asObject();
-
-        return new BoxZipInfo(responseJSON);
+        try (BoxJSONResponse response = request.send()) {
+            JsonObject responseJSON = Json.parse(response.getJSON()).asObject();
+            return new BoxZipInfo(responseJSON);
+        }
     }
 
     /**
@@ -83,9 +83,10 @@ public class BoxZip {
         BoxAPIResponse response = request.send();
         writeStream(response, output, listener);
         BoxJSONRequest statusRequest = new BoxJSONRequest(this.getAPI(), zipInfo.getStatusURL(), "GET");
-        BoxJSONResponse statusResponse = statusRequest.send();
-        JsonObject statusResponseJSON = Json.parse(statusResponse.getJSON()).asObject();
-        return new BoxZipDownloadStatus(statusResponseJSON);
+        try (BoxJSONResponse statusResponse = statusRequest.send()) {
+            JsonObject statusResponseJSON = Json.parse(statusResponse.getJSON()).asObject();
+            return new BoxZipDownloadStatus(statusResponseJSON);
+        }
     }
 
     /**

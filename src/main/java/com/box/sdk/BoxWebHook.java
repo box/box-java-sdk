@@ -132,11 +132,12 @@ public class BoxWebHook extends BoxResource {
         BoxJSONRequest request = new BoxJSONRequest(api, url, "POST");
         request.setBody(requestJSON.toString());
 
-        BoxJSONResponse response = request.send();
-        JsonObject responseJSON = Json.parse(response.getJSON()).asObject();
+        try (BoxJSONResponse response = request.send()) {
+            JsonObject responseJSON = Json.parse(response.getJSON()).asObject();
 
-        BoxWebHook webHook = new BoxWebHook(api, responseJSON.get(JSON_KEY_ID).asString());
-        return webHook.new Info(responseJSON);
+            BoxWebHook webHook = new BoxWebHook(api, responseJSON.get(JSON_KEY_ID).asString());
+            return webHook.new Info(responseJSON);
+        }
     }
 
     /**
@@ -237,8 +238,9 @@ public class BoxWebHook extends BoxResource {
             url = WEBHOOK_URL_TEMPLATE.buildWithQuery(this.getAPI().getBaseURL(), builder.toString(), this.getID());
         }
         BoxJSONRequest request = new BoxJSONRequest(this.getAPI(), url, "GET");
-        BoxJSONResponse response = request.send();
-        return new Info(Json.parse(response.getJSON()).asObject());
+        try (BoxJSONResponse response = request.send()) {
+            return new Info(Json.parse(response.getJSON()).asObject());
+        }
     }
 
     /**
@@ -251,9 +253,10 @@ public class BoxWebHook extends BoxResource {
         BoxJSONRequest request = new BoxJSONRequest(getAPI(), url, "PUT");
         request.setBody(info.getPendingChanges());
 
-        BoxJSONResponse response = request.send();
-        JsonObject jsonObject = Json.parse(response.getJSON()).asObject();
-        info.update(jsonObject);
+        try (BoxJSONResponse response = request.send()) {
+            JsonObject jsonObject = Json.parse(response.getJSON()).asObject();
+            info.update(jsonObject);
+        }
     }
 
     /**
@@ -262,8 +265,7 @@ public class BoxWebHook extends BoxResource {
     public void delete() {
         URL url = WEBHOOK_URL_TEMPLATE.build(getAPI().getBaseURL(), this.getID());
         BoxAPIRequest request = new BoxAPIRequest(getAPI(), url, "DELETE");
-        BoxAPIResponse response = request.send();
-        response.disconnect();
+        request.send().close();
     }
 
     /**

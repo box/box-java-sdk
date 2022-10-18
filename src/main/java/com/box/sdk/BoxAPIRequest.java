@@ -170,7 +170,7 @@ public class BoxAPIRequest {
             return responseCode == 400 && errorCode.contains("invalid_grant") && message.contains("exp");
         } catch (ParseException e) {
             // 400 error which is not a JSON will not trigger a retry
-            throw new BoxAPIException(format("Could not parse error as JSON"), responseCode, response);
+            throw new BoxAPIException(format("API returned an error"), responseCode, response);
         }
     }
 
@@ -584,7 +584,6 @@ public class BoxAPIRequest {
 
         Request.Builder requestBuilder = new Request.Builder().url(getUrl());
 
-        //TODO: do we need that check?
         if (this.shouldAuthenticate) {
             requestBuilder.addHeader(HttpHeaders.AUTHORIZATION, "Bearer " + this.api.lockAccessToken());
         }

@@ -94,9 +94,10 @@ public class BoxAPIConnectionTest {
         api.setRequestInterceptor(mockInterceptor);
 
         BoxAPIRequest request = new BoxAPIRequest(api, new URL("http://anyurl.com"), "GET");
-        BoxAPIResponse response = request.send();
 
-        assertThat(response, is(equalTo(fakeResponse)));
+        try (BoxAPIResponse response = request.send()) {
+            assertThat(response, is(equalTo(fakeResponse)));
+        }
     }
 
     @Test

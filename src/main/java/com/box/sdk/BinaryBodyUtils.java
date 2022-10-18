@@ -14,9 +14,21 @@ final class BinaryBodyUtils {
         // utility class has no public constructor
     }
 
+    /**
+     * Writes response body bytes to output stream. After all closes the input stream.
+     * @param response Response that is going to be written.
+     * @param output Output stream.
+     */
     static void writeStream(BoxAPIResponse response, OutputStream output) {
         writeStream(response, output, null);
     }
+
+    /**
+     * Writes response body bytes to output stream. After all closes the input stream.
+     * @param response Response that is going to be written.
+     * @param output Output stream.
+     * @param listener Listener that will be notified on writing response. Can be null.
+     */
 
     static void writeStream(BoxAPIResponse response, OutputStream output, ProgressListener listener) {
         try {
@@ -28,10 +40,15 @@ final class BinaryBodyUtils {
             }
             writeStreamTo(input, output);
         } finally {
-            response.disconnect();
+            response.close();
         }
     }
 
+    /**
+     * Writes content of input stream to provided output. Method is NOT closing input stream.
+     * @param input Input that will be read.
+     * @param output Output stream.
+     */
     static void writeStreamTo(InputStream input, OutputStream output) {
         try {
             byte[] buffer = new byte[BUFFER_SIZE];

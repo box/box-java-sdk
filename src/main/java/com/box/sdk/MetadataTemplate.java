@@ -199,10 +199,11 @@ public class MetadataTemplate extends BoxJSONObject {
         BoxJSONRequest request = new BoxJSONRequest(api, url, "POST");
         request.setBody(jsonObject.toString());
 
-        BoxJSONResponse response = request.send();
-        JsonObject responseJSON = Json.parse(response.getJSON()).asObject();
+        try (BoxJSONResponse response = request.send()) {
+            JsonObject responseJSON = Json.parse(response.getJSON()).asObject();
 
-        return new MetadataTemplate(responseJSON);
+            return new MetadataTemplate(responseJSON);
+        }
     }
 
     /**
@@ -265,10 +266,11 @@ public class MetadataTemplate extends BoxJSONObject {
         BoxJSONRequest request = new BoxJSONRequest(api, url, "PUT");
         request.setBody(array.toString());
 
-        BoxJSONResponse response = request.send();
-        JsonObject responseJson = Json.parse(response.getJSON()).asObject();
+        try (BoxJSONResponse response = request.send()) {
+            JsonObject responseJson = Json.parse(response.getJSON()).asObject();
 
-        return new MetadataTemplate(responseJson);
+            return new MetadataTemplate(responseJson);
+        }
     }
 
     /**
@@ -281,7 +283,7 @@ public class MetadataTemplate extends BoxJSONObject {
     public static void deleteMetadataTemplate(BoxAPIConnection api, String scope, String template) {
         URL url = METADATA_TEMPLATE_URL_TEMPLATE.buildAlpha(api.getBaseURL(), scope, template);
         BoxAPIRequest request = new BoxAPIRequest(api, url, "DELETE");
-        request.send();
+        request.send().close();
     }
 
     /**
@@ -707,8 +709,9 @@ public class MetadataTemplate extends BoxJSONObject {
         URL url = METADATA_TEMPLATE_URL_TEMPLATE.buildAlphaWithQuery(
             api.getBaseURL(), builder.toString(), scope, templateName);
         BoxJSONRequest request = new BoxJSONRequest(api, url, "GET");
-        BoxJSONResponse response = request.send();
-        return new MetadataTemplate(response.getJSON());
+        try (BoxJSONResponse response = request.send()) {
+            return new MetadataTemplate(response.getJSON());
+        }
     }
 
     /**
@@ -722,8 +725,9 @@ public class MetadataTemplate extends BoxJSONObject {
 
         URL url = METADATA_TEMPLATE_BY_ID_URL_TEMPLATE.buildAlpha(api.getBaseURL(), templateID);
         BoxJSONRequest request = new BoxJSONRequest(api, url, "GET");
-        BoxJSONResponse response = request.send();
-        return new MetadataTemplate(response.getJSON());
+        try (BoxJSONResponse response = request.send()) {
+            return new MetadataTemplate(response.getJSON());
+        }
     }
 
     /**

@@ -57,10 +57,11 @@ public class BoxComment extends BoxResource {
     public Info getInfo() {
         URL url = COMMENT_URL_TEMPLATE.build(this.getAPI().getBaseURL(), this.getID());
         BoxJSONRequest request = new BoxJSONRequest(this.getAPI(), url, "GET");
-        BoxJSONResponse response = request.send();
-        JsonObject jsonResponse = Json.parse(response.getJSON()).asObject();
+        try (BoxJSONResponse response = request.send()) {
+            JsonObject jsonResponse = Json.parse(response.getJSON()).asObject();
 
-        return new Info(jsonResponse);
+            return new Info(jsonResponse);
+        }
     }
 
     /**
@@ -76,10 +77,11 @@ public class BoxComment extends BoxResource {
         URL url = COMMENT_URL_TEMPLATE.build(this.getAPI().getBaseURL(), this.getID());
         BoxJSONRequest request = new BoxJSONRequest(this.getAPI(), url, "PUT");
         request.setBody(newInfo.getPendingChanges());
-        BoxJSONResponse response = request.send();
-        JsonObject jsonResponse = Json.parse(response.getJSON()).asObject();
+        try (BoxJSONResponse response = request.send()) {
+            JsonObject jsonResponse = Json.parse(response.getJSON()).asObject();
 
-        return new Info(jsonResponse);
+            return new Info(jsonResponse);
+        }
     }
 
     /**
@@ -104,11 +106,12 @@ public class BoxComment extends BoxResource {
         URL url = ADD_COMMENT_URL_TEMPLATE.build(this.getAPI().getBaseURL());
         BoxJSONRequest request = new BoxJSONRequest(this.getAPI(), url, "POST");
         request.setBody(requestJSON.toString());
-        BoxJSONResponse response = request.send();
-        JsonObject responseJSON = Json.parse(response.getJSON()).asObject();
+        try (BoxJSONResponse response = request.send()) {
+            JsonObject responseJSON = Json.parse(response.getJSON()).asObject();
 
-        BoxComment addedComment = new BoxComment(this.getAPI(), responseJSON.get("id").asString());
-        return addedComment.new Info(responseJSON);
+            BoxComment addedComment = new BoxComment(this.getAPI(), responseJSON.get("id").asString());
+            return addedComment.new Info(responseJSON);
+        }
     }
 
     /**
@@ -117,8 +120,7 @@ public class BoxComment extends BoxResource {
     public void delete() {
         URL url = COMMENT_URL_TEMPLATE.build(this.getAPI().getBaseURL(), this.getID());
         BoxAPIRequest request = new BoxAPIRequest(this.getAPI(), url, "DELETE");
-        BoxAPIResponse response = request.send();
-        response.disconnect();
+        request.send().close();
     }
 
     /**

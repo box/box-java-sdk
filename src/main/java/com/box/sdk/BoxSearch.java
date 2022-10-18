@@ -45,20 +45,21 @@ public class BoxSearch {
             .appendParam("offset", offset);
         URL url = SEARCH_URL_TEMPLATE.buildWithQuery(this.getAPI().getBaseURL(), builder.toString());
         BoxJSONRequest request = new BoxJSONRequest(this.getAPI(), url, "GET");
-        BoxJSONResponse response = request.send();
-        JsonObject responseJSON = Json.parse(response.getJSON()).asObject();
-        String totalCountString = responseJSON.get("total_count").toString();
-        long fullSize = Double.valueOf(totalCountString).longValue();
-        PartialCollection<BoxItem.Info> results = new PartialCollection<>(offset, limit, fullSize);
-        JsonArray jsonArray = responseJSON.get("entries").asArray();
-        for (JsonValue value : jsonArray) {
-            JsonObject jsonObject = value.asObject();
-            BoxItem.Info parsedItemInfo = (BoxItem.Info) BoxResource.parseInfo(this.getAPI(), jsonObject);
-            if (parsedItemInfo != null) {
-                results.add(parsedItemInfo);
+        try (BoxJSONResponse response = request.send()) {
+            JsonObject responseJSON = Json.parse(response.getJSON()).asObject();
+            String totalCountString = responseJSON.get("total_count").toString();
+            long fullSize = Double.valueOf(totalCountString).longValue();
+            PartialCollection<BoxItem.Info> results = new PartialCollection<>(offset, limit, fullSize);
+            JsonArray jsonArray = responseJSON.get("entries").asArray();
+            for (JsonValue value : jsonArray) {
+                JsonObject jsonObject = value.asObject();
+                BoxItem.Info parsedItemInfo = (BoxItem.Info) BoxResource.parseInfo(this.getAPI(), jsonObject);
+                if (parsedItemInfo != null) {
+                    results.add(parsedItemInfo);
+                }
             }
+            return results;
         }
-        return results;
     }
 
     /**
@@ -77,19 +78,20 @@ public class BoxSearch {
             .appendParam("offset", offset);
         URL url = SEARCH_URL_TEMPLATE.buildWithQuery(this.getAPI().getBaseURL(), builder.toString());
         BoxJSONRequest request = new BoxJSONRequest(this.getAPI(), url, "GET");
-        BoxJSONResponse response = request.send();
-        JsonObject responseJSON = Json.parse(response.getJSON()).asObject();
-        String totalCountString = responseJSON.get("total_count").toString();
-        long fullSize = Double.valueOf(totalCountString).longValue();
-        PartialCollection<BoxSearchSharedLink> results = new PartialCollection<>(offset,
-            limit, fullSize);
-        JsonArray jsonArray = responseJSON.get("entries").asArray();
-        for (JsonValue value : jsonArray) {
-            JsonObject jsonObject = value.asObject();
-            BoxSearchSharedLink parsedItem = new BoxSearchSharedLink(jsonObject, this.getAPI());
-            results.add(parsedItem);
+        try (BoxJSONResponse response = request.send()) {
+            JsonObject responseJSON = Json.parse(response.getJSON()).asObject();
+            String totalCountString = responseJSON.get("total_count").toString();
+            long fullSize = Double.valueOf(totalCountString).longValue();
+            PartialCollection<BoxSearchSharedLink> results = new PartialCollection<>(offset,
+                limit, fullSize);
+            JsonArray jsonArray = responseJSON.get("entries").asArray();
+            for (JsonValue value : jsonArray) {
+                JsonObject jsonObject = value.asObject();
+                BoxSearchSharedLink parsedItem = new BoxSearchSharedLink(jsonObject, this.getAPI());
+                results.add(parsedItem);
+            }
+            return results;
         }
-        return results;
     }
 
     /**

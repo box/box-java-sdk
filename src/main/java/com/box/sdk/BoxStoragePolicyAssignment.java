@@ -54,13 +54,14 @@ public class BoxStoragePolicyAssignment extends BoxResource {
                 .add("id", userID));
 
         request.setBody(requestJSON.toString());
-        BoxJSONResponse response = request.send();
-        JsonObject responseJSON = Json.parse(response.getJSON()).asObject();
+        try (BoxJSONResponse response = request.send()) {
+            JsonObject responseJSON = Json.parse(response.getJSON()).asObject();
 
-        BoxStoragePolicyAssignment storagePolicyAssignment = new BoxStoragePolicyAssignment(api,
-            responseJSON.get("id").asString());
+            BoxStoragePolicyAssignment storagePolicyAssignment = new BoxStoragePolicyAssignment(api,
+                responseJSON.get("id").asString());
 
-        return storagePolicyAssignment.new Info(responseJSON);
+            return storagePolicyAssignment.new Info(responseJSON);
+        }
     }
 
     /**
@@ -78,13 +79,14 @@ public class BoxStoragePolicyAssignment extends BoxResource {
             .appendParam("resolved_for_id", resolvedForID);
         URL url = STORAGE_POLICY_ASSIGNMENT_URL_TEMPLATE.buildWithQuery(api.getBaseURL(), builder.toString());
         BoxJSONRequest request = new BoxJSONRequest(api, url, HttpMethod.GET);
-        BoxJSONResponse response = request.send();
+        try (BoxJSONResponse response = request.send()) {
 
-        BoxStoragePolicyAssignment storagePolicyAssignment = new BoxStoragePolicyAssignment(api,
-            response.getJsonObject().get("entries").asArray().get(0).asObject().get("id").asString());
+            BoxStoragePolicyAssignment storagePolicyAssignment = new BoxStoragePolicyAssignment(api,
+                response.getJsonObject().get("entries").asArray().get(0).asObject().get("id").asString());
 
-        return storagePolicyAssignment
-            .new Info(response.getJsonObject().get("entries").asArray().get(0).asObject());
+            return storagePolicyAssignment
+                .new Info(response.getJsonObject().get("entries").asArray().get(0).asObject());
+        }
     }
 
     /**
@@ -124,9 +126,10 @@ public class BoxStoragePolicyAssignment extends BoxResource {
         BoxJSONRequest request = new BoxJSONRequest(this.getAPI(), url, "PUT");
         request.setBody(info.getPendingChanges());
 
-        BoxJSONResponse response = request.send();
-        JsonObject responseJSON = Json.parse(response.getJSON()).asObject();
-        info.update(responseJSON);
+        try (BoxJSONResponse response = request.send()) {
+            JsonObject responseJSON = Json.parse(response.getJSON()).asObject();
+            info.update(responseJSON);
+        }
     }
 
     /**
@@ -135,9 +138,9 @@ public class BoxStoragePolicyAssignment extends BoxResource {
     public BoxStoragePolicyAssignment.Info getInfo() {
         URL url = STORAGE_POLICY_ASSIGNMENT_WITH_ID_URL_TEMPLATE.buildAlpha(this.getAPI().getBaseURL(), this.getID());
         BoxJSONRequest request = new BoxJSONRequest(this.getAPI(), url, HttpMethod.GET);
-        BoxJSONResponse response = request.send();
-
-        return new Info(Json.parse(response.getJSON()).asObject());
+        try (BoxJSONResponse response = request.send()) {
+            return new Info(Json.parse(response.getJSON()).asObject());
+        }
     }
 
     /**
@@ -146,8 +149,7 @@ public class BoxStoragePolicyAssignment extends BoxResource {
     public void delete() {
         URL url = STORAGE_POLICY_ASSIGNMENT_WITH_ID_URL_TEMPLATE.buildAlpha(this.getAPI().getBaseURL(), this.getID());
         BoxAPIRequest request = new BoxAPIRequest(this.getAPI(), url, HttpMethod.DELETE);
-
-        request.send();
+        request.send().close();
     }
 
     /**

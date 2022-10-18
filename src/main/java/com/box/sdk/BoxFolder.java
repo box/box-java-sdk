@@ -21,6 +21,7 @@ import java.util.EnumSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -301,20 +302,21 @@ public class BoxFolder extends BoxItem implements Iterable<BoxItem.Info> {
         URL url = GET_COLLABORATIONS_URL.build(api.getBaseURL(), this.getID());
 
         BoxJSONRequest request = new BoxJSONRequest(api, url, "GET");
-        BoxJSONResponse response = request.send();
-        JsonObject responseJSON = Json.parse(response.getJSON()).asObject();
+        try (BoxJSONResponse response = request.send()) {
+            JsonObject responseJSON = Json.parse(response.getJSON()).asObject();
 
-        int entriesCount = responseJSON.get("total_count").asInt();
-        Collection<BoxCollaboration.Info> collaborations = new ArrayList<>(entriesCount);
-        JsonArray entries = responseJSON.get("entries").asArray();
-        for (JsonValue entry : entries) {
-            JsonObject entryObject = entry.asObject();
-            BoxCollaboration collaboration = new BoxCollaboration(api, entryObject.get("id").asString());
-            BoxCollaboration.Info info = collaboration.new Info(entryObject);
-            collaborations.add(info);
+            int entriesCount = responseJSON.get("total_count").asInt();
+            Collection<BoxCollaboration.Info> collaborations = new ArrayList<>(entriesCount);
+            JsonArray entries = responseJSON.get("entries").asArray();
+            for (JsonValue entry : entries) {
+                JsonObject entryObject = entry.asObject();
+                BoxCollaboration collaboration = new BoxCollaboration(api, entryObject.get("id").asString());
+                BoxCollaboration.Info info = collaboration.new Info(entryObject);
+                collaborations.add(info);
+            }
+
+            return collaborations;
         }
-
-        return collaborations;
     }
 
     @Override
@@ -326,8 +328,9 @@ public class BoxFolder extends BoxItem implements Iterable<BoxItem.Info> {
         }
 
         BoxJSONRequest request = new BoxJSONRequest(this.getAPI(), url, "GET");
-        BoxJSONResponse response = request.send();
-        return new Info(response.getJSON());
+        try (BoxJSONResponse response = request.send()) {
+            return new Info(response.getJSON());
+        }
     }
 
     /**
@@ -339,9 +342,10 @@ public class BoxFolder extends BoxItem implements Iterable<BoxItem.Info> {
         URL url = FOLDER_INFO_URL_TEMPLATE.build(this.getAPI().getBaseURL(), this.getID());
         BoxJSONRequest request = new BoxJSONRequest(this.getAPI(), url, "PUT");
         request.setBody(info.getPendingChanges());
-        BoxJSONResponse response = request.send();
-        JsonObject jsonObject = Json.parse(response.getJSON()).asObject();
-        info.update(jsonObject);
+        try (BoxJSONResponse response = request.send()) {
+            JsonObject jsonObject = Json.parse(response.getJSON()).asObject();
+            info.update(jsonObject);
+        }
     }
 
     @Override
@@ -364,10 +368,11 @@ public class BoxFolder extends BoxItem implements Iterable<BoxItem.Info> {
         }
 
         request.setBody(copyInfo.toString());
-        BoxJSONResponse response = request.send();
-        JsonObject responseJSON = Json.parse(response.getJSON()).asObject();
-        BoxFolder copiedFolder = new BoxFolder(this.getAPI(), responseJSON.get("id").asString());
-        return copiedFolder.new Info(responseJSON);
+        try (BoxJSONResponse response = request.send()) {
+            JsonObject responseJSON = Json.parse(response.getJSON()).asObject();
+            BoxFolder copiedFolder = new BoxFolder(this.getAPI(), responseJSON.get("id").asString());
+            return copiedFolder.new Info(responseJSON);
+        }
     }
 
     /**
@@ -387,11 +392,12 @@ public class BoxFolder extends BoxItem implements Iterable<BoxItem.Info> {
         BoxJSONRequest request = new BoxJSONRequest(this.getAPI(), CREATE_FOLDER_URL.build(this.getAPI().getBaseURL()),
             "POST");
         request.setBody(newFolder.toString());
-        BoxJSONResponse response = request.send();
-        JsonObject responseJSON = Json.parse(response.getJSON()).asObject();
+        try (BoxJSONResponse response = request.send()) {
+            JsonObject responseJSON = Json.parse(response.getJSON()).asObject();
 
-        BoxFolder createdFolder = new BoxFolder(this.getAPI(), responseJSON.get("id").asString());
-        return createdFolder.new Info(responseJSON);
+            BoxFolder createdFolder = new BoxFolder(this.getAPI(), responseJSON.get("id").asString());
+            return createdFolder.new Info(responseJSON);
+        }
     }
 
     /**
@@ -402,8 +408,7 @@ public class BoxFolder extends BoxItem implements Iterable<BoxItem.Info> {
     public void delete(boolean recursive) {
         URL url = DELETE_FOLDER_URL.buildAlpha(this.getAPI().getBaseURL(), this.getID(), recursive);
         BoxAPIRequest request = new BoxAPIRequest(this.getAPI(), url, "DELETE");
-        BoxAPIResponse response = request.send();
-        response.disconnect();
+        request.send().close();
     }
 
     @Override
@@ -426,10 +431,11 @@ public class BoxFolder extends BoxItem implements Iterable<BoxItem.Info> {
         }
 
         request.setBody(updateInfo.toString());
-        BoxJSONResponse response = request.send();
-        JsonObject responseJSON = Json.parse(response.getJSON()).asObject();
-        BoxFolder movedFolder = new BoxFolder(this.getAPI(), responseJSON.get("id").asString());
-        return movedFolder.new Info(responseJSON);
+        try (BoxJSONResponse response = request.send()) {
+            JsonObject responseJSON = Json.parse(response.getJSON()).asObject();
+            BoxFolder movedFolder = new BoxFolder(this.getAPI(), responseJSON.get("id").asString());
+            return movedFolder.new Info(responseJSON);
+        }
     }
 
     /**
@@ -445,8 +451,9 @@ public class BoxFolder extends BoxItem implements Iterable<BoxItem.Info> {
         updateInfo.add("name", newName);
 
         request.setBody(updateInfo.toString());
-        BoxJSONResponse response = request.send();
-        response.getJSON();
+        try (BoxJSONResponse response = request.send()) {
+            response.getJSON();
+        }
     }
 
     /**
@@ -469,8 +476,9 @@ public class BoxFolder extends BoxItem implements Iterable<BoxItem.Info> {
         preflightInfo.add("size", fileSize);
 
         request.setBody(preflightInfo.toString());
-        BoxJSONResponse response = request.send();
-        response.getJSON();
+        try (BoxJSONResponse response = request.send()) {
+            response.getJSON();
+        }
     }
 
     /**
@@ -577,21 +585,25 @@ public class BoxFolder extends BoxItem implements Iterable<BoxItem.Info> {
             request.setUploadFileCallback(uploadParams.getUploadFileCallback(), uploadParams.getName());
         }
 
-        BoxJSONResponse response;
-        if (uploadParams.getProgressListener() == null) {
-            // upload files sends multipart request but response is JSON
-            response = (BoxJSONResponse) request.send();
-        } else {
-            // upload files sends multipart request but response is JSON
-            response = (BoxJSONResponse) request.send(uploadParams.getProgressListener());
-        }
-        JsonObject collection = Json.parse(response.getJSON()).asObject();
-        JsonArray entries = collection.get("entries").asArray();
-        JsonObject fileInfoJSON = entries.get(0).asObject();
-        String uploadedFileID = fileInfoJSON.get("id").asString();
+        BoxJSONResponse response = null;
+        try {
+            if (uploadParams.getProgressListener() == null) {
+                // upload files sends multipart request but response is JSON
+                response = (BoxJSONResponse) request.send();
+            } else {
+                // upload files sends multipart request but response is JSON
+                response = (BoxJSONResponse) request.send(uploadParams.getProgressListener());
+            }
+            JsonObject collection = Json.parse(response.getJSON()).asObject();
+            JsonArray entries = collection.get("entries").asArray();
+            JsonObject fileInfoJSON = entries.get(0).asObject();
+            String uploadedFileID = fileInfoJSON.get("id").asString();
 
-        BoxFile uploadedFile = new BoxFile(getAPI(), uploadedFileID);
-        return uploadedFile.new Info(fileInfoJSON);
+            BoxFile uploadedFile = new BoxFile(getAPI(), uploadedFileID);
+            return uploadedFile.new Info(fileInfoJSON);
+        } finally {
+            Optional.ofNullable(response).ifPresent(BoxAPIResponse::close);
+        }
     }
 
     /**
@@ -652,11 +664,12 @@ public class BoxFolder extends BoxItem implements Iterable<BoxItem.Info> {
         BoxJSONRequest request = new BoxJSONRequest(this.getAPI(),
             CREATE_WEB_LINK_URL.build(this.getAPI().getBaseURL()), "POST");
         request.setBody(newWebLink.toString());
-        BoxJSONResponse response = request.send();
-        JsonObject responseJSON = Json.parse(response.getJSON()).asObject();
+        try (BoxJSONResponse response = request.send()) {
+            JsonObject responseJSON = Json.parse(response.getJSON()).asObject();
 
-        BoxWebLink createdWebLink = new BoxWebLink(this.getAPI(), responseJSON.get("id").asString());
-        return createdWebLink.new Info(responseJSON);
+            BoxWebLink createdWebLink = new BoxWebLink(this.getAPI(), responseJSON.get("id").asString());
+            return createdWebLink.new Info(responseJSON);
+        }
     }
 
     /**
@@ -752,21 +765,22 @@ public class BoxFolder extends BoxItem implements Iterable<BoxItem.Info> {
 
         URL url = GET_ITEMS_URL.buildWithQuery(getAPI().getBaseURL(), builder.toString(), getID());
         BoxJSONRequest request = new BoxJSONRequest(this.getAPI(), url, "GET");
-        BoxJSONResponse response = request.send();
-        JsonObject responseJSON = Json.parse(response.getJSON()).asObject();
+        try (BoxJSONResponse response = request.send()) {
+            JsonObject responseJSON = Json.parse(response.getJSON()).asObject();
 
-        String totalCountString = responseJSON.get("total_count").toString();
-        long fullSize = Double.valueOf(totalCountString).longValue();
-        PartialCollection<BoxItem.Info> children = new PartialCollection<>(offset, limit, fullSize);
-        JsonArray jsonArray = responseJSON.get("entries").asArray();
-        for (JsonValue value : jsonArray) {
-            JsonObject jsonObject = value.asObject();
-            BoxItem.Info parsedItemInfo = (BoxItem.Info) BoxResource.parseInfo(this.getAPI(), jsonObject);
-            if (parsedItemInfo != null) {
-                children.add(parsedItemInfo);
+            String totalCountString = responseJSON.get("total_count").toString();
+            long fullSize = Double.valueOf(totalCountString).longValue();
+            PartialCollection<BoxItem.Info> children = new PartialCollection<>(offset, limit, fullSize);
+            JsonArray jsonArray = responseJSON.get("entries").asArray();
+            for (JsonValue value : jsonArray) {
+                JsonObject jsonObject = value.asObject();
+                BoxItem.Info parsedItemInfo = (BoxItem.Info) BoxResource.parseInfo(this.getAPI(), jsonObject);
+                if (parsedItemInfo != null) {
+                    children.add(parsedItemInfo);
+                }
             }
+            return children;
         }
-        return children;
     }
 
     /**
@@ -889,9 +903,10 @@ public class BoxFolder extends BoxItem implements Iterable<BoxItem.Info> {
         URL url = FOLDER_INFO_URL_TEMPLATE.buildWithQuery(this.getAPI().getBaseURL(), queryString, this.getID());
         BoxJSONRequest request = new BoxJSONRequest(this.getAPI(), url, "PUT");
         request.setBody(infoJSON.toString());
-        BoxJSONResponse response = request.send();
-        JsonObject jsonObject = Json.parse(response.getJSON()).asObject();
-        return new Info(jsonObject);
+        try (BoxJSONResponse response = request.send()) {
+            JsonObject jsonObject = Json.parse(response.getJSON()).asObject();
+            return new Info(jsonObject);
+        }
     }
 
     /**
@@ -928,8 +943,9 @@ public class BoxFolder extends BoxItem implements Iterable<BoxItem.Info> {
         URL url = METADATA_URL_TEMPLATE.buildAlpha(this.getAPI().getBaseURL(), this.getID(), scope, templateName);
         BoxJSONRequest request = new BoxJSONRequest(this.getAPI(), url, "POST");
         request.setBody(metadata.toString());
-        BoxJSONResponse response = request.send();
-        return new Metadata(Json.parse(response.getJSON()).asObject());
+        try (BoxJSONResponse response = request.send()) {
+            return new Metadata(Json.parse(response.getJSON()).asObject());
+        }
     }
 
     /**
@@ -1022,8 +1038,9 @@ public class BoxFolder extends BoxItem implements Iterable<BoxItem.Info> {
     public Metadata getMetadata(String templateName, String scope) {
         URL url = METADATA_URL_TEMPLATE.buildAlpha(this.getAPI().getBaseURL(), this.getID(), scope, templateName);
         BoxJSONRequest request = new BoxJSONRequest(this.getAPI(), url, "GET");
-        BoxJSONResponse response = request.send();
-        return new Metadata(Json.parse(response.getJSON()).asObject());
+        try (BoxJSONResponse response = request.send()) {
+            return new Metadata(Json.parse(response.getJSON()).asObject());
+        }
     }
 
     /**
@@ -1037,8 +1054,9 @@ public class BoxFolder extends BoxItem implements Iterable<BoxItem.Info> {
             metadata.getTemplateName());
         BoxJSONRequest request = new BoxJSONRequest(this.getAPI(), url, "PUT", APPLICATION_JSON_PATCH);
         request.setBody(metadata.getPatch());
-        BoxJSONResponse response = request.send();
-        return new Metadata(Json.parse(response.getJSON()).asObject());
+        try (BoxJSONResponse response = request.send()) {
+            return new Metadata(Json.parse(response.getJSON()).asObject());
+        }
     }
 
     /**
@@ -1067,8 +1085,7 @@ public class BoxFolder extends BoxItem implements Iterable<BoxItem.Info> {
     public void deleteMetadata(String templateName, String scope) {
         URL url = METADATA_URL_TEMPLATE.buildAlpha(this.getAPI().getBaseURL(), this.getID(), scope, templateName);
         BoxAPIRequest request = new BoxAPIRequest(this.getAPI(), url, "DELETE");
-        BoxAPIResponse response = request.send();
-        response.disconnect();
+        request.send().close();
     }
 
     /**
@@ -1160,13 +1177,14 @@ public class BoxFolder extends BoxItem implements Iterable<BoxItem.Info> {
         body.add("file_size", fileSize);
         request.setBody(body.toString());
 
-        BoxJSONResponse response = request.send();
-        JsonObject jsonObject = Json.parse(response.getJSON()).asObject();
+        try (BoxJSONResponse response = request.send()) {
+            JsonObject jsonObject = Json.parse(response.getJSON()).asObject();
 
-        String sessionId = jsonObject.get("id").asString();
-        BoxFileUploadSession session = new BoxFileUploadSession(this.getAPI(), sessionId);
+            String sessionId = jsonObject.get("id").asString();
+            BoxFileUploadSession session = new BoxFileUploadSession(this.getAPI(), sessionId);
 
-        return session.new Info(jsonObject);
+            return session.new Info(jsonObject);
+        }
     }
 
     /**
@@ -1312,11 +1330,12 @@ public class BoxFolder extends BoxItem implements Iterable<BoxItem.Info> {
             new BoxJSONRequest(this.getAPI(), FOLDER_LOCK_URL_TEMPLATE.build(this.getAPI().getBaseURL()),
                 "POST");
         request.setBody(body.toString());
-        BoxJSONResponse response = request.send();
-        JsonObject responseJSON = Json.parse(response.getJSON()).asObject();
+        try (BoxJSONResponse response = request.send()) {
+            JsonObject responseJSON = Json.parse(response.getJSON()).asObject();
 
-        BoxFolderLock createdFolderLock = new BoxFolderLock(this.getAPI(), responseJSON.get("id").asString());
-        return createdFolderLock.new Info(responseJSON);
+            BoxFolderLock createdFolderLock = new BoxFolderLock(this.getAPI(), responseJSON.get("id").asString());
+            return createdFolderLock.new Info(responseJSON);
+        }
     }
 
     /**
