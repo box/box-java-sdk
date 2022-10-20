@@ -14,6 +14,7 @@ import static java.nio.charset.StandardCharsets.UTF_8;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.fail;
 import static org.mockito.Mockito.mock;
 
@@ -114,12 +115,13 @@ public class BoxAPIRequestTest {
 
         BoxAPIRequest request = new BoxAPIRequest(new BoxAPIConnection(""), boxMockUrl(), "GET");
 
-        request.send();
-
-        String headerRegex = "agent=box-java-sdk/\\d\\.\\d+\\.\\d+(-[a-zA-Z]+)?; env=Java/\\d+\\.\\d+\\.\\d+.*";
-        RequestPatternBuilder requestPatternBuilder = RequestPatternBuilder.newRequestPattern()
-            .withHeader("X-Box-UA", matching(headerRegex));
-        verify(requestPatternBuilder);
+        try (BoxAPIResponse response = request.send()) {
+            assertNotNull(response);
+            String headerRegex = "agent=box-java-sdk/\\d\\.\\d+\\.\\d+(-[a-zA-Z]+)?; env=Java/\\d+\\.\\d+\\.\\d+.*";
+            RequestPatternBuilder requestPatternBuilder = RequestPatternBuilder.newRequestPattern()
+                .withHeader("X-Box-UA", matching(headerRegex));
+            verify(requestPatternBuilder);
+        }
     }
 
     @Test
@@ -190,8 +192,46 @@ public class BoxAPIRequestTest {
                 .withHeader("content-encoding", "GZIP")
                 .withBody(gzipped(jsonString))
         ));
-        BoxAPIResponse response = request.send();
-        assertThat(response.bodyToString(), is(jsonString));
+
+        try (BoxAPIResponse response = request.send()) {
+            assertThat(response.bodyToString(), is(jsonString));
+        }
+    }
+
+    @Test
+    public void willNotRetry400ErrorWithPlainTextResponse() {
+        stubFor(get(urlEqualTo("/")).willReturn(aResponse().withStatus(400).withBody("Not a JSON")));
+
+        BoxAPIConnection api = new BoxAPIConnection("");
+
+        BoxAPIRequest request = new BoxAPIRequest(api, boxMockUrl(), "GET");
+
+        try {
+            request.send();
+        } catch (BoxAPIException e) {
+            verify(1, getRequestedFor(urlEqualTo("/")));
+            assertThat(e.getMessage(), is("API returned an error\nNot a JSON"));
+            assertThat(e.getResponse(), is("Not a JSON"));
+            assertThat(e.getResponseCode(), is(400));
+        }
+    }
+
+    @Test
+    public void willNotRetry400ErrorWithJsonResponse() {
+        stubFor(get(urlEqualTo("/")).willReturn(aResponse().withStatus(400).withBody("{\"foo\":\"bar\"}")));
+
+        BoxAPIConnection api = new BoxAPIConnection("");
+
+        BoxAPIRequest request = new BoxAPIRequest(api, boxMockUrl(), "GET");
+
+        try {
+            request.send();
+        } catch (BoxAPIException e) {
+            verify(1, getRequestedFor(urlEqualTo("/")));
+            assertThat(e.getMessage(), is("The API returned an error code [400]"));
+            assertThat(e.getResponse(), is("{\"foo\":\"bar\"}"));
+            assertThat(e.getResponseCode(), is(400));
+        }
     }
 
     private byte[] gzipped(String str) {

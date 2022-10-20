@@ -106,11 +106,12 @@ public class BoxMetadataCascadePolicy extends BoxResource {
             .add("scope", scope)
             .add("templateKey", templateKey);
         request.setBody(requestJSON.toString());
-        BoxJSONResponse response = request.send();
-        JsonObject responseJSON = Json.parse(response.getJSON()).asObject();
-        BoxMetadataCascadePolicy createdMetadataCascadePolicy = new BoxMetadataCascadePolicy(api,
-            responseJSON.get("id").asString());
-        return createdMetadataCascadePolicy.new Info(responseJSON);
+        try (BoxJSONResponse response = request.send()) {
+            JsonObject responseJSON = Json.parse(response.getJSON()).asObject();
+            BoxMetadataCascadePolicy createdMetadataCascadePolicy = new BoxMetadataCascadePolicy(api,
+                responseJSON.get("id").asString());
+            return createdMetadataCascadePolicy.new Info(responseJSON);
+        }
     }
 
     /**
@@ -127,9 +128,10 @@ public class BoxMetadataCascadePolicy extends BoxResource {
         URL url = METADATA_CASCADE_POLICIES_URL_TEMPLATE.buildAlphaWithQuery(this.getAPI().getBaseURL(),
             builder.toString(), this.getID());
         BoxJSONRequest request = new BoxJSONRequest(this.getAPI(), url, "GET");
-        BoxJSONResponse response = request.send();
-        JsonObject responseJSON = Json.parse(response.getJSON()).asObject();
-        return new Info(responseJSON);
+        try (BoxJSONResponse response = request.send()) {
+            JsonObject responseJSON = Json.parse(response.getJSON()).asObject();
+            return new Info(responseJSON);
+        }
     }
 
     /**
@@ -145,7 +147,7 @@ public class BoxMetadataCascadePolicy extends BoxResource {
         JsonObject requestJSON = new JsonObject()
             .add("conflict_resolution", conflictResolution);
         request.setBody(requestJSON.toString());
-        request.send();
+        request.send().close();
     }
 
     /**
@@ -154,7 +156,7 @@ public class BoxMetadataCascadePolicy extends BoxResource {
     public void delete() {
         URL url = METADATA_CASCADE_POLICIES_URL_TEMPLATE.buildAlpha(this.getAPI().getBaseURL(), this.getID());
         BoxAPIRequest request = new BoxAPIRequest(this.getAPI(), url, "DELETE");
-        request.send();
+        request.send().close();
     }
 
     /**

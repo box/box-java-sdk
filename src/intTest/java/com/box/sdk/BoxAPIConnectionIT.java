@@ -27,9 +27,9 @@ public class BoxAPIConnectionIT {
         api.setRequestInterceptor(request -> null);
 
         BoxAPIRequest request = new BoxAPIRequest(api, new URL("https://box.com"), "GET");
-        BoxAPIResponse response = request.send();
-
-        assertThat(response.getResponseCode(), is(200));
+        try (BoxAPIResponse response = request.send()) {
+            assertThat(response.getResponseCode(), is(200));
+        }
     }
 
     @Test

@@ -8,6 +8,7 @@ import com.eclipsesource.json.Json;
 import com.eclipsesource.json.JsonObject;
 import java.net.URL;
 import java.util.Iterator;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * Provides methods for deleting, recovering, and viewing a user's trashed files and folders.
@@ -58,8 +59,7 @@ public class BoxTrash implements Iterable<BoxItem.Info> {
     public void deleteFolder(String folderID) {
         URL url = FOLDER_INFO_URL_TEMPLATE.build(this.api.getBaseURL(), folderID);
         BoxAPIRequest request = new BoxAPIRequest(this.api, url, "DELETE");
-        BoxAPIResponse response = request.send();
-        response.disconnect();
+        request.send().close();
     }
 
     /**
@@ -71,11 +71,12 @@ public class BoxTrash implements Iterable<BoxItem.Info> {
     public BoxFolder.Info getFolderInfo(String folderID) {
         URL url = FOLDER_INFO_URL_TEMPLATE.build(this.api.getBaseURL(), folderID);
         BoxJSONRequest request = new BoxJSONRequest(this.api, url, "GET");
-        BoxJSONResponse response = request.send();
-        JsonObject jsonObject = Json.parse(response.getJSON()).asObject();
+        try (BoxJSONResponse response = request.send()) {
+            JsonObject jsonObject = Json.parse(response.getJSON()).asObject();
 
-        BoxFolder folder = new BoxFolder(this.api, jsonObject.get("id").asString());
-        return folder.new Info(response.getJSON());
+            BoxFolder folder = new BoxFolder(this.api, jsonObject.get("id").asString());
+            return folder.new Info(response.getJSON());
+        }
     }
 
     /**
@@ -89,11 +90,12 @@ public class BoxTrash implements Iterable<BoxItem.Info> {
         String queryString = new QueryStringBuilder().appendParam("fields", fields).toString();
         URL url = FOLDER_INFO_URL_TEMPLATE.buildWithQuery(this.api.getBaseURL(), queryString, folderID);
         BoxJSONRequest request = new BoxJSONRequest(this.api, url, "GET");
-        BoxJSONResponse response = request.send();
-        JsonObject jsonObject = Json.parse(response.getJSON()).asObject();
+        try (BoxJSONResponse response = request.send()) {
+            JsonObject jsonObject = Json.parse(response.getJSON()).asObject();
 
-        BoxFolder folder = new BoxFolder(this.api, jsonObject.get("id").asString());
-        return folder.new Info(response.getJSON());
+            BoxFolder folder = new BoxFolder(this.api, jsonObject.get("id").asString());
+            return folder.new Info(response.getJSON());
+        }
     }
 
     /**
@@ -108,11 +110,12 @@ public class BoxTrash implements Iterable<BoxItem.Info> {
         JsonObject requestJSON = new JsonObject()
             .add("", "");
         request.setBody(requestJSON.toString());
-        BoxJSONResponse response = request.send();
-        JsonObject responseJSON = Json.parse(response.getJSON()).asObject();
+        try (BoxJSONResponse response = request.send()) {
+            JsonObject responseJSON = Json.parse(response.getJSON()).asObject();
 
-        BoxFolder restoredFolder = new BoxFolder(this.api, responseJSON.get("id").asString());
-        return restoredFolder.new Info(responseJSON);
+            BoxFolder restoredFolder = new BoxFolder(this.api, responseJSON.get("id").asString());
+            return restoredFolder.new Info(responseJSON);
+        }
     }
 
     /**
@@ -140,11 +143,12 @@ public class BoxTrash implements Iterable<BoxItem.Info> {
         URL url = RESTORE_FOLDER_URL_TEMPLATE.build(this.api.getBaseURL(), folderID);
         BoxJSONRequest request = new BoxJSONRequest(this.api, url, "POST");
         request.setBody(requestJSON.toString());
-        BoxJSONResponse response = request.send();
-        JsonObject responseJSON = Json.parse(response.getJSON()).asObject();
+        try (BoxJSONResponse response = request.send()) {
+            JsonObject responseJSON = Json.parse(response.getJSON()).asObject();
 
-        BoxFolder restoredFolder = new BoxFolder(this.api, responseJSON.get("id").asString());
-        return restoredFolder.new Info(responseJSON);
+            BoxFolder restoredFolder = new BoxFolder(this.api, responseJSON.get("id").asString());
+            return restoredFolder.new Info(responseJSON);
+        }
     }
 
     /**
@@ -155,8 +159,7 @@ public class BoxTrash implements Iterable<BoxItem.Info> {
     public void deleteFile(String fileID) {
         URL url = FILE_INFO_URL_TEMPLATE.build(this.api.getBaseURL(), fileID);
         BoxAPIRequest request = new BoxAPIRequest(this.api, url, "DELETE");
-        BoxAPIResponse response = request.send();
-        response.disconnect();
+        request.send().close();
     }
 
     /**
@@ -168,11 +171,12 @@ public class BoxTrash implements Iterable<BoxItem.Info> {
     public BoxFile.Info getFileInfo(String fileID) {
         URL url = FILE_INFO_URL_TEMPLATE.build(this.api.getBaseURL(), fileID);
         BoxJSONRequest request = new BoxJSONRequest(this.api, url, "GET");
-        BoxJSONResponse response = request.send();
-        JsonObject jsonObject = Json.parse(response.getJSON()).asObject();
+        try (BoxJSONResponse response = request.send()) {
+            JsonObject jsonObject = Json.parse(response.getJSON()).asObject();
 
-        BoxFile file = new BoxFile(this.api, jsonObject.get("id").asString());
-        return file.new Info(response.getJSON());
+            BoxFile file = new BoxFile(this.api, jsonObject.get("id").asString());
+            return file.new Info(response.getJSON());
+        }
     }
 
     /**
@@ -186,11 +190,12 @@ public class BoxTrash implements Iterable<BoxItem.Info> {
         String queryString = new QueryStringBuilder().appendParam("fields", fields).toString();
         URL url = FILE_INFO_URL_TEMPLATE.buildWithQuery(this.api.getBaseURL(), queryString, fileID);
         BoxJSONRequest request = new BoxJSONRequest(this.api, url, "GET");
-        BoxJSONResponse response = request.send();
-        JsonObject jsonObject = Json.parse(response.getJSON()).asObject();
+        try (BoxJSONResponse response = request.send()) {
+            JsonObject jsonObject = Json.parse(response.getJSON()).asObject();
 
-        BoxFile file = new BoxFile(this.api, jsonObject.get("id").asString());
-        return file.new Info(response.getJSON());
+            BoxFile file = new BoxFile(this.api, jsonObject.get("id").asString());
+            return file.new Info(response.getJSON());
+        }
     }
 
     /**
@@ -204,12 +209,7 @@ public class BoxTrash implements Iterable<BoxItem.Info> {
         BoxJSONRequest request = new BoxJSONRequest(this.api, url, "POST");
         JsonObject requestJSON = new JsonObject()
             .add("", "");
-        request.setBody(requestJSON.toString());
-        BoxJSONResponse response = request.send();
-        JsonObject responseJSON = Json.parse(response.getJSON()).asObject();
-
-        BoxFile restoredFile = new BoxFile(this.api, responseJSON.get("id").asString());
-        return restoredFile.new Info(responseJSON);
+        return getInfo(requestJSON, request);
     }
 
     /**
@@ -236,12 +236,7 @@ public class BoxTrash implements Iterable<BoxItem.Info> {
 
         URL url = RESTORE_FILE_URL_TEMPLATE.build(this.api.getBaseURL(), fileID);
         BoxJSONRequest request = new BoxJSONRequest(this.api, url, "POST");
-        request.setBody(requestJSON.toString());
-        BoxJSONResponse response = request.send();
-        JsonObject responseJSON = Json.parse(response.getJSON()).asObject();
-
-        BoxFile restoredFile = new BoxFile(this.api, responseJSON.get("id").asString());
-        return restoredFile.new Info(responseJSON);
+        return getInfo(requestJSON, request);
     }
 
     /**
@@ -284,6 +279,17 @@ public class BoxTrash implements Iterable<BoxItem.Info> {
                 return new BoxItemIterator(this.api, url, pagingParameters);
             }
         };
+    }
+
+    @NotNull
+    private BoxFile.Info getInfo(JsonObject requestJSON, BoxJSONRequest request) {
+        request.setBody(requestJSON.toString());
+        try (BoxJSONResponse response = request.send()) {
+            JsonObject responseJSON = Json.parse(response.getJSON()).asObject();
+
+            BoxFile restoredFile = new BoxFile(this.api, responseJSON.get("id").asString());
+            return restoredFile.new Info(responseJSON);
+        }
     }
 
     /**

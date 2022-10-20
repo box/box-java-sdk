@@ -315,14 +315,15 @@ public class BoxAPIConnection {
         request.setBody(urlParameters);
 
         // authentication uses form url encoded but response is JSON
-        BoxJSONResponse response = (BoxJSONResponse) request.send();
-        String json = response.getJSON();
+        try (BoxJSONResponse response = (BoxJSONResponse) request.send()) {
+            String json = response.getJSON();
 
-        JsonObject jsonObject = Json.parse(json).asObject();
-        this.accessToken = jsonObject.get("access_token").asString();
-        this.refreshToken = jsonObject.get("refresh_token").asString();
-        this.lastRefresh = System.currentTimeMillis();
-        this.expires = jsonObject.get("expires_in").asLong() * 1000;
+            JsonObject jsonObject = Json.parse(json).asObject();
+            this.accessToken = jsonObject.get("access_token").asString();
+            this.refreshToken = jsonObject.get("refresh_token").asString();
+            this.lastRefresh = System.currentTimeMillis();
+            this.expires = jsonObject.get("expires_in").asLong() * 1000;
+        }
     }
 
     /**
@@ -780,8 +781,7 @@ public class BoxAPIConnection {
         BoxAPIRequest request = createTokenRequest(url);
 
         String json;
-        try {
-            BoxAPIResponse boxAPIResponse = request.send();
+        try (BoxAPIResponse boxAPIResponse = request.send()) {
             BoxJSONResponse response = (BoxJSONResponse) boxAPIResponse;
             json = response.getJSON();
         } catch (BoxAPIException e) {
@@ -966,8 +966,7 @@ public class BoxAPIConnection {
         request.setBody(urlParameters);
 
         String jsonResponse;
-        try {
-            BoxJSONResponse response = (BoxJSONResponse) request.send();
+        try (BoxJSONResponse response = (BoxJSONResponse) request.send()) {
             jsonResponse = response.getJSON();
         } catch (BoxAPIException e) {
             this.notifyError(e);
@@ -1051,7 +1050,7 @@ public class BoxAPIConnection {
         request.shouldAuthenticate(false);
         request.setBody(urlParameters);
 
-        request.send();
+        request.send().close();
     }
 
     /**

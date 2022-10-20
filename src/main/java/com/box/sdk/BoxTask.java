@@ -44,8 +44,7 @@ public class BoxTask extends BoxResource {
     public void delete() {
         URL url = TASK_URL_TEMPLATE.build(this.getAPI().getBaseURL(), this.getID());
         BoxAPIRequest request = new BoxAPIRequest(this.getAPI(), url, "DELETE");
-        BoxAPIResponse response = request.send();
-        response.disconnect();
+        request.send().close();
     }
 
     /**
@@ -69,11 +68,12 @@ public class BoxTask extends BoxResource {
         URL url = ADD_TASK_ASSIGNMENT_URL_TEMPLATE.build(this.getAPI().getBaseURL());
         BoxJSONRequest request = new BoxJSONRequest(this.getAPI(), url, "POST");
         request.setBody(requestJSON.toString());
-        BoxJSONResponse response = request.send();
-        JsonObject responseJSON = Json.parse(response.getJSON()).asObject();
+        try (BoxJSONResponse response = request.send()) {
+            JsonObject responseJSON = Json.parse(response.getJSON()).asObject();
 
-        BoxTaskAssignment addedAssignment = new BoxTaskAssignment(this.getAPI(), responseJSON.get("id").asString());
-        return addedAssignment.new Info(responseJSON);
+            BoxTaskAssignment addedAssignment = new BoxTaskAssignment(this.getAPI(), responseJSON.get("id").asString());
+            return addedAssignment.new Info(responseJSON);
+        }
     }
 
     /**
@@ -97,11 +97,12 @@ public class BoxTask extends BoxResource {
         URL url = ADD_TASK_ASSIGNMENT_URL_TEMPLATE.build(this.getAPI().getBaseURL());
         BoxJSONRequest request = new BoxJSONRequest(this.getAPI(), url, "POST");
         request.setBody(requestJSON.toString());
-        BoxJSONResponse response = request.send();
-        JsonObject responseJSON = Json.parse(response.getJSON()).asObject();
+        try (BoxJSONResponse response = request.send()) {
+            JsonObject responseJSON = Json.parse(response.getJSON()).asObject();
 
-        BoxTaskAssignment addedAssignment = new BoxTaskAssignment(this.getAPI(), responseJSON.get("id").asString());
-        return addedAssignment.new Info(responseJSON);
+            BoxTaskAssignment addedAssignment = new BoxTaskAssignment(this.getAPI(), responseJSON.get("id").asString());
+            return addedAssignment.new Info(responseJSON);
+        }
     }
 
     /**
@@ -112,20 +113,22 @@ public class BoxTask extends BoxResource {
     public List<BoxTaskAssignment.Info> getAssignments() {
         URL url = GET_ASSIGNMENTS_URL_TEMPLATE.build(this.getAPI().getBaseURL(), this.getID());
         BoxJSONRequest request = new BoxJSONRequest(this.getAPI(), url, "GET");
-        BoxJSONResponse response = request.send();
-        JsonObject responseJSON = Json.parse(response.getJSON()).asObject();
+        try (BoxJSONResponse response = request.send()) {
+            JsonObject responseJSON = Json.parse(response.getJSON()).asObject();
 
-        int totalCount = responseJSON.get("total_count").asInt();
-        List<BoxTaskAssignment.Info> assignments = new ArrayList<>(totalCount);
-        JsonArray entries = responseJSON.get("entries").asArray();
-        for (JsonValue value : entries) {
-            JsonObject assignmentJSON = value.asObject();
-            BoxTaskAssignment assignment = new BoxTaskAssignment(this.getAPI(), assignmentJSON.get("id").asString());
-            BoxTaskAssignment.Info info = assignment.new Info(assignmentJSON);
-            assignments.add(info);
+            int totalCount = responseJSON.get("total_count").asInt();
+            List<BoxTaskAssignment.Info> assignments = new ArrayList<>(totalCount);
+            JsonArray entries = responseJSON.get("entries").asArray();
+            for (JsonValue value : entries) {
+                JsonObject assignmentJSON = value.asObject();
+                BoxTaskAssignment assignment =
+                    new BoxTaskAssignment(this.getAPI(), assignmentJSON.get("id").asString());
+                BoxTaskAssignment.Info info = assignment.new Info(assignmentJSON);
+                assignments.add(info);
+            }
+
+            return assignments;
         }
-
-        return assignments;
     }
 
     /**
@@ -160,9 +163,10 @@ public class BoxTask extends BoxResource {
             url = TASK_URL_TEMPLATE.buildWithQuery(this.getAPI().getBaseURL(), builder.toString(), this.getID());
         }
         BoxJSONRequest request = new BoxJSONRequest(this.getAPI(), url, "GET");
-        BoxJSONResponse response = request.send();
-        JsonObject responseJSON = Json.parse(response.getJSON()).asObject();
-        return new Info(responseJSON);
+        try (BoxJSONResponse response = request.send()) {
+            JsonObject responseJSON = Json.parse(response.getJSON()).asObject();
+            return new Info(responseJSON);
+        }
     }
 
     /**
@@ -182,9 +186,10 @@ public class BoxTask extends BoxResource {
         URL url = TASK_URL_TEMPLATE.build(this.getAPI().getBaseURL(), this.getID());
         BoxJSONRequest request = new BoxJSONRequest(this.getAPI(), url, "PUT");
         request.setBody(info.getPendingChanges());
-        BoxJSONResponse response = request.send();
-        JsonObject jsonObject = Json.parse(response.getJSON()).asObject();
-        info.update(jsonObject);
+        try (BoxJSONResponse response = request.send()) {
+            JsonObject jsonObject = Json.parse(response.getJSON()).asObject();
+            info.update(jsonObject);
+        }
     }
 
     /**

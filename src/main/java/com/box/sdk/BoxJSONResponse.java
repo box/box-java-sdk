@@ -76,7 +76,7 @@ public class BoxJSONResponse extends BoxAPIResponse {
                     read = reader.read(buffer, 0, BUFFER_SIZE);
                 }
 
-                this.disconnect();
+                this.close();
                 reader.close();
             } catch (IOException e) {
                 throw new BoxAPIException("Couldn't connect to the Box API due to a network error.", e);

@@ -67,9 +67,10 @@ public abstract class BoxItem extends BoxResource {
         BoxAPIConnection newAPI = new SharedLinkAPIConnection(api, sharedLink, password);
         URL url = SHARED_ITEM_URL_TEMPLATE.build(newAPI.getBaseURL());
         BoxJSONRequest request = new BoxJSONRequest(newAPI, url, "GET");
-        BoxJSONResponse response = request.send();
-        JsonObject json = Json.parse(response.getJSON()).asObject();
-        return (BoxItem.Info) BoxResource.parseInfo(newAPI, json);
+        try (BoxJSONResponse response = request.send()) {
+            JsonObject json = Json.parse(response.getJSON()).asObject();
+            return (BoxItem.Info) BoxResource.parseInfo(newAPI, json);
+        }
     }
 
     /**
@@ -95,8 +96,9 @@ public abstract class BoxItem extends BoxResource {
         }
         URL url = WATERMARK_URL_TEMPLATE.buildWithQuery(watermarkUrl.toString(), builder.toString());
         BoxJSONRequest request = new BoxJSONRequest(this.getAPI(), url, "GET");
-        BoxJSONResponse response = request.send();
-        return new BoxWatermark(response.getJSON());
+        try (BoxJSONResponse response = request.send()) {
+            return new BoxWatermark(response.getJSON());
+        }
     }
 
     /**
@@ -114,8 +116,9 @@ public abstract class BoxItem extends BoxResource {
             .add(BoxWatermark.WATERMARK_JSON_KEY, new JsonObject()
                 .add(BoxWatermark.WATERMARK_IMPRINT_JSON_KEY, imprint));
         request.setBody(body.toString());
-        BoxJSONResponse response = request.send();
-        return new BoxWatermark(response.getJSON());
+        try (BoxJSONResponse response = request.send()) {
+            return new BoxWatermark(response.getJSON());
+        }
     }
 
     /**
@@ -128,8 +131,7 @@ public abstract class BoxItem extends BoxResource {
         URL watermarkUrl = itemUrl.build(this.getAPI().getBaseURL(), this.getID());
         URL url = WATERMARK_URL_TEMPLATE.build(watermarkUrl.toString());
         BoxAPIRequest request = new BoxAPIRequest(this.getAPI(), url, "DELETE");
-        BoxAPIResponse response = request.send();
-        response.disconnect();
+        request.send().close();
     }
 
     /**

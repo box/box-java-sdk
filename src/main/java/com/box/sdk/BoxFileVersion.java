@@ -1,10 +1,10 @@
 package com.box.sdk;
 
+import static com.box.sdk.BinaryBodyUtils.writeStream;
+
 import com.eclipsesource.json.Json;
 import com.eclipsesource.json.JsonObject;
 import com.eclipsesource.json.JsonValue;
-import java.io.IOException;
-import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.URL;
 import java.text.ParseException;
@@ -23,7 +23,6 @@ public class BoxFileVersion extends BoxResource {
      * Version URL Template.
      */
     public static final URLTemplate VERSION_URL_TEMPLATE = new URLTemplate("files/%s/versions/%s");
-    private static final int BUFFER_SIZE = 8192;
 
     private String fileID;
 
@@ -266,8 +265,7 @@ public class BoxFileVersion extends BoxResource {
     public void delete() {
         URL url = VERSION_URL_TEMPLATE.build(this.getAPI().getBaseURL(), this.fileID, this.getID());
         BoxAPIRequest request = new BoxAPIRequest(this.getAPI(), url, "DELETE");
-        BoxAPIResponse response = request.send();
-        response.disconnect();
+        request.send().close();
     }
 
     /**
@@ -288,21 +286,7 @@ public class BoxFileVersion extends BoxResource {
     public void download(OutputStream output, ProgressListener listener) {
         URL url = CONTENT_URL_TEMPLATE.build(this.getAPI().getBaseURL(), this.fileID, this.getID());
         BoxAPIRequest request = new BoxAPIRequest(this.getAPI(), url, "GET");
-        BoxAPIResponse response = request.send();
-        InputStream input = response.getBody(listener);
-
-        byte[] buffer = new byte[BUFFER_SIZE];
-        try {
-            int n = input.read(buffer);
-            while (n != -1) {
-                output.write(buffer, 0, n);
-                n = input.read(buffer);
-            }
-        } catch (IOException e) {
-            throw new BoxAPIException("Couldn't connect to the Box API due to a network error.", e);
-        }
-
-        response.disconnect();
+        writeStream(request.send(), output, listener);
     }
 
     /**
@@ -317,7 +301,8 @@ public class BoxFileVersion extends BoxResource {
 
         BoxJSONRequest request = new BoxJSONRequest(this.getAPI(), url, "POST");
         request.setBody(jsonObject.toString());
-        BoxJSONResponse response = request.send();
-        this.parseJSON(Json.parse(response.getJSON()).asObject());
+        try (BoxJSONResponse response = request.send()) {
+            this.parseJSON(Json.parse(response.getJSON()).asObject());
+        }
     }
 }

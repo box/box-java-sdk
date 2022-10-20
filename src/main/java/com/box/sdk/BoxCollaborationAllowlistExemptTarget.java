@@ -62,12 +62,13 @@ public class BoxCollaborationAllowlistExemptTarget extends BoxResource {
                 .add("id", userID));
 
         request.setBody(requestJSON.toString());
-        BoxJSONResponse response = request.send();
-        JsonObject responseJSON = Json.parse(response.getJSON()).asObject();
-        BoxCollaborationAllowlistExemptTarget userAllowlist = new BoxCollaborationAllowlistExemptTarget(api,
-            responseJSON.get("id").asString());
+        try (BoxJSONResponse response = request.send()) {
+            JsonObject responseJSON = Json.parse(response.getJSON()).asObject();
+            BoxCollaborationAllowlistExemptTarget userAllowlist = new BoxCollaborationAllowlistExemptTarget(api,
+                responseJSON.get("id").asString());
 
-        return userAllowlist.new Info(responseJSON);
+            return userAllowlist.new Info(responseJSON);
+        }
     }
 
     /**
@@ -120,9 +121,9 @@ public class BoxCollaborationAllowlistExemptTarget extends BoxResource {
         URL url = COLLABORATION_ALLOWLIST_EXEMPT_TARGET_ENTRY_URL_TEMPLATE.build(this.getAPI().getBaseURL(),
             this.getID());
         BoxJSONRequest request = new BoxJSONRequest(this.getAPI(), url, HttpMethod.GET);
-        BoxJSONResponse response = request.send();
-
-        return new Info(Json.parse(response.getJSON()).asObject());
+        try (BoxJSONResponse response = request.send()) {
+            return new Info(Json.parse(response.getJSON()).asObject());
+        }
     }
 
     /**
@@ -134,8 +135,7 @@ public class BoxCollaborationAllowlistExemptTarget extends BoxResource {
             this.getID());
 
         BoxAPIRequest request = new BoxAPIRequest(api, url, HttpMethod.DELETE);
-        BoxAPIResponse response = request.send();
-        response.disconnect();
+        request.send().close();
     }
 
     /**

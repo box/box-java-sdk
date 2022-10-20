@@ -7,6 +7,7 @@ import static java.lang.String.format;
 import com.eclipsesource.json.Json;
 import com.eclipsesource.json.ParseException;
 import java.io.ByteArrayInputStream;
+import java.io.Closeable;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -34,7 +35,7 @@ import okhttp3.ResponseBody;
  * This class usually isn't instantiated directly, but is instead returned after calling {@link BoxAPIRequest#send}.
  * </p>
  */
-public class BoxAPIResponse {
+public class BoxAPIResponse implements Closeable {
     private static final int BUFFER_SIZE = 8192;
     private static final BoxLogger LOGGER = BoxLogger.defaultLogger();
     private final Map<String, List<String>> headers = new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
@@ -244,17 +245,7 @@ public class BoxAPIResponse {
      * longer be read after it has been disconnected.
      */
     public void disconnect() {
-        try {
-            if (this.inputStream == null && this.rawInputStream != null) {
-                this.rawInputStream.close();
-            }
-            if (this.inputStream != null) {
-                this.inputStream.close();
-            }
-        } catch (IOException e) {
-            throw new BoxAPIException("Couldn't finish closing the connection to the Box API due to a network error or "
-                + "because the stream was already closed.", e);
-        }
+        this.close();
     }
 
     /**
@@ -287,6 +278,23 @@ public class BoxAPIResponse {
         }
 
         return builder.toString().trim();
+    }
+
+    @Override
+    public void close() {
+        try {
+            if (this.inputStream == null && this.rawInputStream != null) {
+                this.rawInputStream.close();
+            }
+            if (this.inputStream != null) {
+                this.inputStream.close();
+            }
+        } catch (IOException e) {
+            throw new BoxAPIException(
+                "Couldn't finish closing the connection to the Box API due to a network error or "
+                    + "because the stream was already closed.", e
+            );
+        }
     }
 
     /**

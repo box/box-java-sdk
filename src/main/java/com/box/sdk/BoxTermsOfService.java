@@ -53,11 +53,12 @@ public class BoxTermsOfService extends BoxResource {
             .add("text", text);
 
         request.setBody(requestJSON.toString());
-        BoxJSONResponse response = request.send();
-        JsonObject responseJSON = Json.parse(response.getJSON()).asObject();
-        BoxTermsOfService createdTermsOfServices = new BoxTermsOfService(api, responseJSON.get("id").asString());
+        try (BoxJSONResponse response = request.send()) {
+            JsonObject responseJSON = Json.parse(response.getJSON()).asObject();
+            BoxTermsOfService createdTermsOfServices = new BoxTermsOfService(api, responseJSON.get("id").asString());
 
-        return createdTermsOfServices.new Info(responseJSON);
+            return createdTermsOfServices.new Info(responseJSON);
+        }
     }
 
     /**
@@ -87,20 +88,21 @@ public class BoxTermsOfService extends BoxResource {
 
         URL url = ALL_TERMS_OF_SERVICES_URL_TEMPLATE.buildWithQuery(api.getBaseURL(), builder.toString());
         BoxJSONRequest request = new BoxJSONRequest(api, url, "GET");
-        BoxJSONResponse response = request.send();
-        JsonObject responseJSON = Json.parse(response.getJSON()).asObject();
+        try (BoxJSONResponse response = request.send()) {
+            JsonObject responseJSON = Json.parse(response.getJSON()).asObject();
 
-        int totalCount = responseJSON.get("total_count").asInt();
-        List<BoxTermsOfService.Info> termsOfServices = new ArrayList<>(totalCount);
-        JsonArray entries = responseJSON.get("entries").asArray();
-        for (JsonValue value : entries) {
-            JsonObject termsOfServiceJSON = value.asObject();
-            BoxTermsOfService termsOfService = new BoxTermsOfService(api, termsOfServiceJSON.get("id").asString());
-            BoxTermsOfService.Info info = termsOfService.new Info(termsOfServiceJSON);
-            termsOfServices.add(info);
+            int totalCount = responseJSON.get("total_count").asInt();
+            List<BoxTermsOfService.Info> termsOfServices = new ArrayList<>(totalCount);
+            JsonArray entries = responseJSON.get("entries").asArray();
+            for (JsonValue value : entries) {
+                JsonObject termsOfServiceJSON = value.asObject();
+                BoxTermsOfService termsOfService = new BoxTermsOfService(api, termsOfServiceJSON.get("id").asString());
+                BoxTermsOfService.Info info = termsOfService.new Info(termsOfServiceJSON);
+                termsOfServices.add(info);
+            }
+
+            return termsOfServices;
         }
-
-        return termsOfServices;
     }
 
     /**
@@ -113,9 +115,10 @@ public class BoxTermsOfService extends BoxResource {
         URL url = TERMS_OF_SERVICE_URL_TEMPLATE.build(this.getAPI().getBaseURL(), this.getID());
         BoxJSONRequest request = new BoxJSONRequest(this.getAPI(), url, "PUT");
         request.setBody(info.getPendingChanges());
-        BoxJSONResponse response = request.send();
-        JsonObject responseJSON = Json.parse(response.getJSON()).asObject();
-        info.update(responseJSON);
+        try (BoxJSONResponse response = request.send()) {
+            JsonObject responseJSON = Json.parse(response.getJSON()).asObject();
+            info.update(responseJSON);
+        }
     }
 
     /**
@@ -124,9 +127,9 @@ public class BoxTermsOfService extends BoxResource {
     public BoxTermsOfService.Info getInfo() {
         URL url = TERMS_OF_SERVICE_URL_TEMPLATE.build(this.getAPI().getBaseURL(), this.getID());
         BoxJSONRequest request = new BoxJSONRequest(this.getAPI(), url, "GET");
-        BoxJSONResponse response = request.send();
-
-        return new Info(Json.parse(response.getJSON()).asObject());
+        try (BoxJSONResponse response = request.send()) {
+            return new Info(Json.parse(response.getJSON()).asObject());
+        }
     }
 
     /**

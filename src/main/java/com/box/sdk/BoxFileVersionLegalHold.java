@@ -45,9 +45,10 @@ public class BoxFileVersionLegalHold extends BoxResource {
         URL url = FILE_VERSION_HOLD_URL_TEMPLATE.buildWithQuery(
             this.getAPI().getBaseURL(), builder.toString(), this.getID());
         BoxJSONRequest request = new BoxJSONRequest(this.getAPI(), url, "GET");
-        BoxJSONResponse response = request.send();
-        JsonObject responseJSON = Json.parse(response.getJSON()).asObject();
-        return new Info(responseJSON);
+        try (BoxJSONResponse response = request.send()) {
+            JsonObject responseJSON = Json.parse(response.getJSON()).asObject();
+            return new Info(responseJSON);
+        }
     }
 
     /**

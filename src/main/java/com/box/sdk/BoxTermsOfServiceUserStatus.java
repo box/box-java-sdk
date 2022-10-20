@@ -74,12 +74,13 @@ public class BoxTermsOfServiceUserStatus extends BoxResource {
         }
 
         request.setBody(requestJSON.toString());
-        BoxJSONResponse response = request.send();
-        JsonObject responseJSON = Json.parse(response.getJSON()).asObject();
-        BoxTermsOfServiceUserStatus termsOfServiceUserStatus = new BoxTermsOfServiceUserStatus(api,
-            responseJSON.get("id").asString());
+        try (BoxJSONResponse response = request.send()) {
+            JsonObject responseJSON = Json.parse(response.getJSON()).asObject();
+            BoxTermsOfServiceUserStatus termsOfServiceUserStatus = new BoxTermsOfServiceUserStatus(api,
+                responseJSON.get("id").asString());
 
-        return termsOfServiceUserStatus.new Info(responseJSON);
+            return termsOfServiceUserStatus.new Info(responseJSON);
+        }
     }
 
     /**
@@ -111,22 +112,23 @@ public class BoxTermsOfServiceUserStatus extends BoxResource {
 
         URL url = ALL_TERMS_OF_SERVICE_USER_STATUSES_TEMPLATE.buildWithQuery(api.getBaseURL(), builder.toString());
         BoxJSONRequest request = new BoxJSONRequest(api, url, "GET");
-        BoxJSONResponse response = request.send();
-        JsonObject responseJSON = Json.parse(response.getJSON()).asObject();
+        try (BoxJSONResponse response = request.send()) {
+            JsonObject responseJSON = Json.parse(response.getJSON()).asObject();
 
-        int totalCount = responseJSON.get("total_count").asInt();
-        List<BoxTermsOfServiceUserStatus.Info> termsOfServiceUserStatuses = new
-            ArrayList<>(totalCount);
-        JsonArray entries = responseJSON.get("entries").asArray();
-        for (JsonValue value : entries) {
-            JsonObject termsOfServiceUserStatusJSON = value.asObject();
-            BoxTermsOfServiceUserStatus termsOfServiceUserStatus = new
-                BoxTermsOfServiceUserStatus(api, termsOfServiceUserStatusJSON.get("id").asString());
-            BoxTermsOfServiceUserStatus.Info info = termsOfServiceUserStatus.new Info(termsOfServiceUserStatusJSON);
-            termsOfServiceUserStatuses.add(info);
+            int totalCount = responseJSON.get("total_count").asInt();
+            List<BoxTermsOfServiceUserStatus.Info> termsOfServiceUserStatuses = new
+                ArrayList<>(totalCount);
+            JsonArray entries = responseJSON.get("entries").asArray();
+            for (JsonValue value : entries) {
+                JsonObject termsOfServiceUserStatusJSON = value.asObject();
+                BoxTermsOfServiceUserStatus termsOfServiceUserStatus = new
+                    BoxTermsOfServiceUserStatus(api, termsOfServiceUserStatusJSON.get("id").asString());
+                BoxTermsOfServiceUserStatus.Info info = termsOfServiceUserStatus.new Info(termsOfServiceUserStatusJSON);
+                termsOfServiceUserStatuses.add(info);
+            }
+
+            return termsOfServiceUserStatuses;
         }
-
-        return termsOfServiceUserStatuses;
     }
 
     /**
@@ -140,9 +142,10 @@ public class BoxTermsOfServiceUserStatus extends BoxResource {
         BoxJSONRequest request = new BoxJSONRequest(this.getAPI(), url, "PUT");
         request.setBody(info.getPendingChanges());
 
-        BoxJSONResponse response = request.send();
-        JsonObject responseJSON = Json.parse(response.getJSON()).asObject();
-        info.update(responseJSON);
+        try (BoxJSONResponse response = request.send()) {
+            JsonObject responseJSON = Json.parse(response.getJSON()).asObject();
+            info.update(responseJSON);
+        }
     }
 
     /**

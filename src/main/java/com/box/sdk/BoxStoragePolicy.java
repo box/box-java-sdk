@@ -89,8 +89,9 @@ public class BoxStoragePolicy extends BoxResource {
             this.getID());
 
         BoxJSONRequest request = new BoxJSONRequest(this.getAPI(), url, "GET");
-        BoxJSONResponse response = request.send();
-        return new Info(response.getJSON());
+        try (BoxJSONResponse response = request.send()) {
+            return new Info(response.getJSON());
+        }
     }
 
     /**
