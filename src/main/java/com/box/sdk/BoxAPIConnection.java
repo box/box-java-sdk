@@ -590,31 +590,6 @@ public class BoxAPIConnection {
         this.autoRefresh = autoRefresh;
     }
 
-    /**
-     * Sets the total maximum number of times an API request will be tried when error responses
-     * are received.
-     *
-     * @return the maximum number of request attempts.
-     * @deprecated getMaxRetryAttempts is preferred because it more clearly gets the number
-     * of times a request should be retried after an error response is received.
-     */
-    @Deprecated
-    public int getMaxRequestAttempts() {
-        return this.maxRetryAttempts + 1;
-    }
-
-    /**
-     * Sets the total maximum number of times an API request will be tried when error responses
-     * are received.
-     *
-     * @param attempts the maximum number of request attempts.
-     * @deprecated setMaxRetryAttempts is preferred because it more clearly sets the number
-     * of times a request should be retried after an error response is received.
-     */
-    @Deprecated
-    public void setMaxRequestAttempts(int attempts) {
-        this.maxRetryAttempts = attempts - 1;
-    }
 
     /**
      * Gets the maximum number of times an API request will be retried after an error response
