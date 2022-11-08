@@ -30,6 +30,8 @@ import javax.net.ssl.SSLParameters;
 import javax.net.ssl.TrustManager;
 import javax.net.ssl.TrustManagerFactory;
 import javax.net.ssl.X509TrustManager;
+import okhttp3.Authenticator;
+import okhttp3.Credentials;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
@@ -106,6 +108,7 @@ public class BoxAPIConnection {
 
     private OkHttpClient httpClient;
     private OkHttpClient noRedirectsHttpClient;
+    private Authenticator authenticator;
 
     /**
      * Constructs a new BoxAPIConnection that authenticates with a developer or access token.
@@ -231,18 +234,45 @@ public class BoxAPIConnection {
             }
 
         }
-        this.httpClient = httpClientBuilder
+        OkHttpClient.Builder builder = httpClientBuilder
             .followSslRedirects(true)
             .followRedirects(true)
             .connectTimeout(Duration.ofMillis(connectTimeout))
-            .readTimeout(Duration.ofMillis(readTimeout))
-            .build();
-        this.noRedirectsHttpClient = httpClientBuilder
+            .readTimeout(Duration.ofMillis(readTimeout));
+
+        if (proxy != null) {
+            builder.proxy(proxy);
+            if (proxyUsername != null && proxyPassword != null) {
+                builder.proxyAuthenticator((route, response) -> {
+                    String credential = Credentials.basic(proxyUsername, proxyPassword);
+                    return response.request().newBuilder()
+                        .header("Proxy-Authorization", credential)
+                        .build();
+                });
+            }
+            if (this.authenticator != null) {
+                builder.proxyAuthenticator(authenticator);
+            }
+        }
+        this.httpClient = builder.build();
+        this.noRedirectsHttpClient = new OkHttpClient.Builder(httpClient)
             .followSslRedirects(false)
             .followRedirects(false)
-            .connectTimeout(Duration.ofMillis(connectTimeout))
-            .readTimeout(Duration.ofMillis(readTimeout))
             .build();
+    }
+
+    /**
+     * Sets a proxy authenticator that will be used when proxy requires authentication.
+     * If you use {@link BoxAPIConnection#setProxyBasicAuthentication(String, String)} it adds an authenticator
+     * that performs Basic authorization. By calling this method you can override this behaviour.
+     * You do not need to call {@link BoxAPIConnection#setProxyBasicAuthentication(String, String)}
+     * in order to set custom authenticator.
+     *
+     * @param authenticator Custom authenticator that will be called when proxy asks for authorization.
+     */
+    public void setProxyAuthenticator(Authenticator authenticator) {
+        this.authenticator = authenticator;
+        buildHttpClients();
     }
 
     /**
@@ -665,6 +695,7 @@ public class BoxAPIConnection {
      */
     public void setProxy(Proxy proxy) {
         this.proxy = proxy;
+        buildHttpClients();
     }
 
     /**
@@ -680,9 +711,11 @@ public class BoxAPIConnection {
      * Sets the username to use for a proxy that requires basic auth.
      *
      * @param proxyUsername the username to use for a proxy that requires basic auth.
+     * @deprecated Use {@link BoxAPIConnection#setProxyBasicAuthentication(String, String)}
      */
     public void setProxyUsername(String proxyUsername) {
         this.proxyUsername = proxyUsername;
+        buildHttpClients();
     }
 
     /**
@@ -695,12 +728,26 @@ public class BoxAPIConnection {
     }
 
     /**
+     * Sets the proxy user and password used in basic authentication
+     *
+     * @param proxyUsername Username to use for a proxy that requires basic auth.
+     * @param proxyPassword Password to use for a proxy that requires basic auth.
+     */
+    public void setProxyBasicAuthentication(String proxyUsername, String proxyPassword) {
+        this.proxyUsername = proxyUsername;
+        this.proxyPassword = proxyPassword;
+        buildHttpClients();
+    }
+
+    /**
      * Sets the password to use for a proxy that requires basic auth.
      *
      * @param proxyPassword the password to use for a proxy that requires basic auth.
+     * @deprecated Use {@link BoxAPIConnection#setProxyBasicAuthentication(String, String)}
      */
     public void setProxyPassword(String proxyPassword) {
         this.proxyPassword = proxyPassword;
+        buildHttpClients();
     }
 
     /**
