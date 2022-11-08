@@ -1,7 +1,8 @@
 # Configuration
 
 - [Proxy configuration](#proxy-configuration)
-    - [Custom proxy authenticator](#) 
+    - [Custom proxy authenticator](#custom-proxy-authenticator)
+        - [Example: NTLM authenticator](#example-ntlm-authenticator) 
 - [Configure retries of calls and timeouts](#configure-retries-of-calls-and-timeouts)
     - [Maximum retries](#maximum-retries)
     - [Connection timeout](#connection-timeout)
