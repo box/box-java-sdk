@@ -24,7 +24,7 @@ to set username and password required by proxy:
 
 ```java
 BoxAPIConnection api=new BoxAPIConnection("access_token");
-Proxy proxy=new Proxy(Proxy.Type.HTTP,new InetSocketAddress("proxy_url",8888));
+Proxy proxy = new Proxy(Proxy.Type.HTTP,new InetSocketAddress("proxy_url",8888));
 // You can use any subclass of BoxAPIConnection
 api.setProxy(proxy);
 api.setProxyBasicAuthentication("proxyUsername", "proxyPassword");
@@ -50,7 +50,7 @@ Now you can add an authenticator. by calling
 
 ```java
 BoxAPIConnection api = new BoxAPIConnection("access_token");
-Proxy proxy=new Proxy(Proxy.Type.HTTP,new InetSocketAddress("proxy_url",8888));
+Proxy proxy = new Proxy(Proxy.Type.HTTP,new InetSocketAddress("proxy_url",8888));
 api.setProxy(proxy);
 api.setProxyAuthenticator((route, response) -> response
   .request()
@@ -119,64 +119,13 @@ The `NTLMEngineImpl` could be created by using Apache implementation that can be
 You can add a dependency to `org.apache.httpcomponents.client5:httpclient5:5.1.3`. 
 Copy the `NTLMEngineImpl` class and add it to your source.
 
-Now you can create custom NTML Authenticator:
-```java
-import okhttp3.Authenticator;
-import okhttp3.Request;
-import okhttp3.Response;
-import okhttp3.Route;
-import org.apache.hc.client5.http.impl.auth.NTLMEngineException;
-
-public class NTLMAuthenticator implements Authenticator {
-    final NTLMEngineImpl engine = new NTLMEngineImpl();
-    private final String domain;
-    private final String username;
-    private final String password;
-    private final String ntlmMsg1;
-
-    public NTLMAuthenticator(String username, String password, String domain) {
-        this.domain = domain;
-        this.username = username;
-        this.password = password;
-        String localNtlmMsg1 = null;
-        try {
-            localNtlmMsg1 = engine.generateType1Msg(null, null);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        ntlmMsg1 = localNtlmMsg1;
-    }
-
-    @Override
-    public Request authenticate(Route route, Response response) {
-        if(response.code() == 407 && "Proxy authorization required".equals(response.message())) {
-            String ntlmChallenge = response.headers("Proxy-Authenticate")
-                    .stream()
-                    .filter(h -> h.startsWith("NTLM "))
-                    .findFirst().orElse("");
-            if(ntlmChallenge.length() > 5) {
-                try {
-                    String ntlmMsg3 = engine.generateType3Msg(username, password.toCharArray(), domain, "ok-http-example-ntlm", ntlmChallenge.substring(5));
-                    return response.request().newBuilder().header("Proxy-Authorization", "NTLM " + ntlmMsg3).build();
-                } catch (NTLMEngineException e) {
-                    throw new RuntimeException(e);
-                }
-            }
-            return response.request().newBuilder().header("Proxy-Authorization", "NTLM " + ntlmMsg1).build();
-        }
-        return response.request();
-    }
-}
-```
-
-and add it to your `BoxAPIConnection`:
+Now you can use custom NTML Authenticator in your `BoxAPIConnection`:
 ```java
 BoxAPIConnection api = new BoxAPIConnection("access_token");
-Proxy proxy=new Proxy(Proxy.Type.HTTP,new InetSocketAddress("proxy_url",8888));
+Proxy proxy = new Proxy(Proxy.Type.HTTP,new InetSocketAddress("proxy_url",8888));
 api.setProxy(proxy);
-api.setProxyAuthenticator(new NTLMAuthenticator("some proxy username", "some proxy password" ,"proxy workgroup"));
+api.setProxyAuthenticator(new NTLMAuthenticator("some proxy username", "some proxy password", "proxy workgroup"));
 ```
-
 
 [set-basic-proxy-auth]: https://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxAPIConnection.html#setProxyBasicAuthentication-java.lang.String-java.lang.String-
 [set-proxy-authenticator]: https://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxAPIConnection.html#setProxyAuthenticator-okhttp3.Authenticator-
