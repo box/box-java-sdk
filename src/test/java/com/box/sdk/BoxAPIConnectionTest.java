@@ -2,6 +2,7 @@ package com.box.sdk;
 
 import static com.box.sdk.http.ContentType.APPLICATION_JSON;
 import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
+import static com.github.tomakehurst.wiremock.client.WireMock.equalTo;
 import static com.github.tomakehurst.wiremock.client.WireMock.matching;
 import static com.github.tomakehurst.wiremock.client.WireMock.post;
 import static com.github.tomakehurst.wiremock.client.WireMock.urlPathEqualTo;
@@ -25,7 +26,6 @@ import static org.mockito.Mockito.when;
 import com.box.sdk.BoxAPIConnection.ResourceLinkType;
 import com.eclipsesource.json.JsonObject;
 import com.github.tomakehurst.wiremock.WireMockServer;
-import com.github.tomakehurst.wiremock.client.WireMock;
 import com.github.tomakehurst.wiremock.junit.WireMockRule;
 import java.net.InetSocketAddress;
 import java.net.MalformedURLException;
@@ -191,7 +191,7 @@ public class BoxAPIConnectionTest {
 
         wireMockRule.stubFor(post(urlPathEqualTo("/oauth2/revoke"))
             .withRequestBody(
-                WireMock.equalTo(String.format("token=%s&client_id=fakeID&client_secret=fakeSecret", accessToken))
+                equalTo(String.format("token=%s&client_id=fakeID&client_secret=fakeSecret", accessToken))
             )
             .willReturn(aResponse()
                 .withHeader("Content-Type", APPLICATION_JSON)
@@ -619,18 +619,20 @@ public class BoxAPIConnectionTest {
     @Test
     public void checkThatTheProxyIsUsed() {
         // given and then
+        wireMockRule.stubFor(post(urlPathEqualTo("/oauth2/token"))
+            .willReturn(aResponse()
+            .withHeader("Content-Type", APPLICATION_JSON)
+            .withBody(
+                "{\"refresh_token\":\"refresh-token\", \"access_token\":\"access-token\", \"expires_in\": 1}"
+            )));
         BoxAPIConnection api = new BoxAPIConnection(clientId, clientSecret, accessToken, refreshToken);
-        api.setBaseURL(format("http://localhost:%d", wireMockRule.port()));
+        String serverLocation = format("http://localhost:%d", wireMockRule.port());
+        api.setBaseURL(serverLocation);
         WireMockServer proxyWireMockServer = new WireMockServer(wireMockConfig().dynamicPort());
         proxyWireMockServer.start();
         proxyWireMockServer.stubFor(post(urlPathEqualTo("/oauth2/token"))
-            // host must direct to actual server that should respond
-            .withHeader("Host", WireMock.equalTo("localhost:" + wireMockRule.port()))
-            .willReturn(aResponse()
-                .withHeader("Content-Type", APPLICATION_JSON)
-                .withBody(
-                    "{\"refresh_token\":\"refresh-token\", \"access_token\":\"access-token\", \"expires_in\": 1}"
-                )));
+            .withHeader("Host", equalTo("localhost:" + wireMockRule.port()))
+            .willReturn(aResponse().proxiedFrom(serverLocation)));
 
         try {
             // when
@@ -645,8 +647,15 @@ public class BoxAPIConnectionTest {
     @Test
     public void shouldAddProxyAuthentication() {
         // given and then
+        wireMockRule.stubFor(post(urlPathEqualTo("/oauth2/token"))
+            .willReturn(aResponse()
+                .withHeader("Content-Type", APPLICATION_JSON)
+                .withBody(
+                    "{\"refresh_token\":\"refresh-token\", \"access_token\":\"access-token\", \"expires_in\": 1}"
+                )));
         BoxAPIConnection api = new BoxAPIConnection(clientId, clientSecret, accessToken, refreshToken);
-        api.setBaseURL(format("http://localhost:%d", wireMockRule.port()));
+        String serverLocation = format("http://localhost:%d", wireMockRule.port());
+        api.setBaseURL(serverLocation);
         WireMockServer proxyWireMockServer = new WireMockServer(wireMockConfig().dynamicPort());
         proxyWireMockServer.start();
         proxyWireMockServer.stubFor(post(urlPathEqualTo("/oauth2/token"))
@@ -660,11 +669,7 @@ public class BoxAPIConnectionTest {
             .inScenario("Proxy Authorization")
             .whenScenarioStateIs("AUTHORIZATION REQUESTED")
                 .withHeader("Proxy-Authorization", matching("Basic .+"))
-            .willReturn(aResponse()
-                .withHeader("Content-Type", APPLICATION_JSON)
-                .withBody(
-                    "{\"refresh_token\":\"refresh-token\", \"access_token\":\"access-token\", \"expires_in\": 1}"
-                )));
+                .willReturn(aResponse().proxiedFrom(serverLocation)));
 
         try {
             // when
@@ -680,8 +685,15 @@ public class BoxAPIConnectionTest {
     @Test
     public void shouldUseProvidedAuthenticator() {
         // given and then
+        wireMockRule.stubFor(post(urlPathEqualTo("/oauth2/token"))
+            .willReturn(aResponse()
+                .withHeader("Content-Type", APPLICATION_JSON)
+                .withBody(
+                    "{\"refresh_token\":\"refresh-token\", \"access_token\":\"access-token\", \"expires_in\": 1}"
+                )));
         BoxAPIConnection api = new BoxAPIConnection(clientId, clientSecret, accessToken, refreshToken);
-        api.setBaseURL(format("http://localhost:%d", wireMockRule.port()));
+        String serverLocation = format("http://localhost:%d", wireMockRule.port());
+        api.setBaseURL(serverLocation);
         WireMockServer proxyWireMockServer = new WireMockServer(wireMockConfig().dynamicPort());
         proxyWireMockServer.start();
         proxyWireMockServer.stubFor(post(urlPathEqualTo("/oauth2/token"))
@@ -694,12 +706,8 @@ public class BoxAPIConnectionTest {
         proxyWireMockServer.stubFor(post(urlPathEqualTo("/oauth2/token"))
             .inScenario("Proxy Authorization")
             .whenScenarioStateIs("AUTHORIZATION REQUESTED")
-            .withHeader("Proxy-Authorization", WireMock.equalTo("My custom authenticator"))
-            .willReturn(aResponse()
-                .withHeader("Content-Type", APPLICATION_JSON)
-                .withBody(
-                    "{\"refresh_token\":\"refresh-token\", \"access_token\":\"access-token\", \"expires_in\": 1}"
-                )));
+            .withHeader("Proxy-Authorization", equalTo("My custom authenticator"))
+            .willReturn(aResponse().proxiedFrom(serverLocation)));
 
         try {
             // when
@@ -718,7 +726,7 @@ public class BoxAPIConnectionTest {
 
     private void mockAndAssertRevoke(String token, String clientId, String clientSecret) {
         wireMockRule.stubFor(post(urlPathEqualTo("/oauth2/revoke"))
-            .withRequestBody(WireMock.equalTo(
+            .withRequestBody(equalTo(
                 format(
                     "token=%s&client_id=%s&client_secret=%s", token, clientId, clientSecret
                 )
@@ -732,7 +740,7 @@ public class BoxAPIConnectionTest {
 
     private void mockAndAssertAuthentication(String clientId, String clientSecret, String code) {
         wireMockRule.stubFor(post(urlPathEqualTo("/oauth2/token"))
-            .withRequestBody(WireMock.equalTo(
+            .withRequestBody(equalTo(
                 format(
                     "grant_type=authorization_code&code=%s&client_id=%s&client_secret=%s", code, clientId, clientSecret
                 )
