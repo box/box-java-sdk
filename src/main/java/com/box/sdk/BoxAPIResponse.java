@@ -178,8 +178,6 @@ public class BoxAPIResponse implements Closeable {
             response.request().method(),
             response.request().url().toString(),
             response.headers().toMultimap(),
-            // TODO: because we are not closing the stream we can potentialy leak connections
-            //  (users have to close stream to free connection) - maybe we can fix that
             responseBody.byteStream(),
             Optional.ofNullable(responseBody.contentType()).map(MediaType::toString).orElse(null),
             responseBody.contentLength()

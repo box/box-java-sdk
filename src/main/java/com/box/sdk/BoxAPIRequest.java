@@ -170,7 +170,7 @@ public class BoxAPIRequest {
             return responseCode == 400 && errorCode.contains("invalid_grant") && message.contains("exp");
         } catch (ParseException e) {
             // 400 error which is not a JSON will not trigger a retry
-            throw new BoxAPIException(format("API returned an error"), responseCode, response);
+            throw new BoxAPIException("API returned an error", responseCode, response);
         }
     }
 
@@ -593,15 +593,6 @@ public class BoxAPIRequest {
             requestBuilder.removeHeader(h.getKey());
             requestBuilder.addHeader(h.getKey(), h.getValue());
         });
-
-        // TODO: proxy is set in client in OkHttp - maybe we can remove it from here and move to client
-//            if (this.api.getProxy() != null) {
-//                if (this.api.getProxyUsername() != null && this.api.getProxyPassword() != null) {
-//                    String usernameAndPassword = this.api.getProxyUsername() + ":" + this.api.getProxyPassword();
-//                    String encoded = Base64.encode(usernameAndPassword.getBytes());
-//                    connection.addRequestProperty("Proxy-Authorization", "Basic " + encoded);
-//                }
-//            }
 
         if (this.api instanceof SharedLinkAPIConnection) {
             SharedLinkAPIConnection sharedItemAPI = (SharedLinkAPIConnection) this.api;
