@@ -12,6 +12,7 @@ import com.box.sdk.BoxSignRequestSigner.BoxSignerInput;
 import com.github.tomakehurst.wiremock.client.WireMock;
 import com.github.tomakehurst.wiremock.junit.WireMockRule;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import org.junit.Before;
@@ -64,8 +65,11 @@ public class BoxSignRequestTest {
         signers.add(newSigner);
 
         String parentFolderId = "55555";
+
+        BoxSignRequestCreateParams params = new BoxSignRequestCreateParams();
+        params.setPrefillTags(Collections.singletonList(new BoxSignRequestPrefillTag("id", "text")));
         BoxSignRequest.Info signRequestInfo = BoxSignRequest.createSignRequest(this.api, files,
-            signers, parentFolderId);
+            signers, parentFolderId, params);
 
         BoxFile.Info fileInfo = signRequestInfo.getSourceFiles().get(0);
         BoxSignRequestSigner signer = signRequestInfo.getSigners().get(0);
