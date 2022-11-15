@@ -116,7 +116,9 @@ public class BoxSignRequestPrefillTag extends BoxJSONObject {
         JsonUtils.addIfNotNull(prefillTagObj, "document_tag_id", this.documentTagId);
         JsonUtils.addIfNotNull(prefillTagObj, "text_value", this.textValue);
         JsonUtils.addIfNotNull(prefillTagObj, "checkbox_value", this.checkboxValue);
-        JsonUtils.addIfNotNull(prefillTagObj, "date_value", formatAsDateOnly(this.dateValue));
+        if (this.dateValue != null) {
+            prefillTagObj.add("date_value", formatAsDateOnly(this.dateValue));
+        }
 
         return prefillTagObj;
     }
