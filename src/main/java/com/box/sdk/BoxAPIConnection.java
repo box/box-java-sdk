@@ -830,7 +830,9 @@ public class BoxAPIConnection {
     public void restore(String state) {
         JsonObject json = Json.parse(state).asObject();
         String accessToken = json.get("accessToken").asString();
-        String refreshToken = json.get("refreshToken").asString();
+        String refreshToken = Optional.ofNullable(json.get("refreshToken"))
+            .map(v -> v.isNull() ? null : v.asString())
+            .orElse(null);
         long lastRefresh = json.get("lastRefresh").asLong();
         long expires = json.get("expires").asLong();
         String userAgent = json.get("userAgent").asString();

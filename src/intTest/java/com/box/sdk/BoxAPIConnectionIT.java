@@ -33,78 +33,49 @@ public class BoxAPIConnectionIT {
     }
 
     @Test
-    @Ignore("Need to configure access and refresh token")
     public void refreshSucceeds() {
-        final String originalAccessToken = TestConfig.getAccessToken();
-        final String originalRefreshToken = TestConfig.getRefreshToken();
-        BoxAPIConnection api = new BoxAPIConnection(TestConfig.getClientID(), TestConfig.getClientSecret(),
-            originalAccessToken, originalRefreshToken);
+        BoxAPIConnection api = jwtApiForServiceAccount();
+        String originalAccessToken = api.getAccessToken();
 
         api.refresh();
 
         String actualAccessToken = api.getAccessToken();
-        String actualRefreshToken = api.getRefreshToken();
 
-        assertThat(originalRefreshToken, not(equalTo(actualRefreshToken)));
         assertThat(originalAccessToken, not(equalTo(actualAccessToken)));
-
-        TestConfig.setAccessToken(actualAccessToken);
-        TestConfig.setRefreshToken(actualRefreshToken);
     }
 
     @Test
-    @Ignore("Need to configure access and refresh token")
     public void refreshesWhenGetAccessTokenIsCalledAndTokenHasExpired() {
-        final String originalAccessToken = TestConfig.getAccessToken();
-        final String originalRefreshToken = TestConfig.getRefreshToken();
-        BoxAPIConnection api = new BoxAPIConnection(TestConfig.getClientID(), TestConfig.getClientSecret(),
-            originalAccessToken, originalRefreshToken);
+        BoxAPIConnection api = jwtApiForServiceAccount();
+        String originalAccessToken = api.getAccessToken();
         api.setExpires(-1);
 
         String actualAccessToken = api.getAccessToken();
-        String actualRefreshToken = api.getRefreshToken();
 
-        assertThat(originalRefreshToken, not(equalTo(actualRefreshToken)));
         assertThat(originalAccessToken, not(equalTo(actualAccessToken)));
-
-        TestConfig.setAccessToken(actualAccessToken);
-        TestConfig.setRefreshToken(actualRefreshToken);
     }
 
     @Test
-    @Ignore("Need to configure access and refresh token")
     public void doesNotRefreshWhenGetAccessTokenIsCalledAndTokenHasNotExpired() {
-        final String originalAccessToken = TestConfig.getAccessToken();
-        final String originalRefreshToken = TestConfig.getRefreshToken();
-        BoxAPIConnection api = new BoxAPIConnection(TestConfig.getClientID(), TestConfig.getClientSecret(),
-            originalAccessToken, originalRefreshToken);
+        BoxAPIConnection api = jwtApiForServiceAccount();
+        String originalAccessToken = api.getAccessToken();
         api.setExpires(Long.MAX_VALUE);
 
         String actualAccessToken = api.getAccessToken();
-        String actualRefreshToken = api.getRefreshToken();
 
-        assertThat(originalRefreshToken, equalTo(actualRefreshToken));
         assertThat(originalAccessToken, equalTo(actualAccessToken));
-
-        TestConfig.setAccessToken(actualAccessToken);
-        TestConfig.setRefreshToken(actualRefreshToken);
     }
 
     @Test
-    @Ignore("Need to configure access and refresh token")
     public void successfullySavesAndRestoresConnection() {
-        final String originalAccessToken = TestConfig.getAccessToken();
-        final String originalRefreshToken = TestConfig.getRefreshToken();
-        BoxAPIConnection api = new BoxAPIConnection(TestConfig.getClientID(), TestConfig.getClientSecret(),
-            originalAccessToken, originalRefreshToken);
+        BoxAPIConnection api = jwtApiForServiceAccount();
         String state = api.save();
+        BoxConfig boxConfig = jwtBoxConfig();
 
-        BoxAPIConnection restoredAPI = BoxAPIConnection.restore(TestConfig.getClientID(), TestConfig.getClientSecret(),
-            state);
-        BoxFolder.getRootFolder(restoredAPI).getInfo();
-
-        TestConfig.setAccessToken(restoredAPI.getAccessToken());
-        TestConfig.setRefreshToken(restoredAPI.getRefreshToken());
+        BoxAPIConnection restoredAPI = BoxAPIConnection.restore(
+            boxConfig.getClientId(), boxConfig.getClientSecret(), state
+        );
+        assertThat(BoxFolder.getRootFolder(restoredAPI).getInfo().getID(), is("0"));
     }
 
     @Test

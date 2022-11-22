@@ -2,6 +2,7 @@ package com.box.sdk;
 
 import static com.box.sdk.http.ContentType.APPLICATION_JSON;
 import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
+import static com.github.tomakehurst.wiremock.client.WireMock.equalTo;
 import static com.github.tomakehurst.wiremock.client.WireMock.get;
 import static com.github.tomakehurst.wiremock.client.WireMock.getRequestedFor;
 import static com.github.tomakehurst.wiremock.client.WireMock.matching;
@@ -232,6 +233,23 @@ public class BoxAPIRequestTest {
             assertThat(e.getResponse(), is("{\"foo\":\"bar\"}"));
             assertThat(e.getResponseCode(), is(400));
         }
+    }
+
+    @Test
+    public void interceptorCanModifyRequest() {
+        String headerName = "XX-My-Custom-Header";
+        String headerValue = "some value";
+        stubFor(get(urlEqualTo("/")).withHeader(headerName, equalTo(headerValue))
+            .willReturn(aResponse().withStatus(200).withBody("{\"foo\":\"bar\"}")));
+
+        BoxAPIConnection api = new BoxAPIConnection("");
+        api.setRequestInterceptor(request -> {
+            request.addHeader(headerName, headerValue);
+            return null;
+        });
+
+        new BoxAPIRequest(api, boxMockUrl(), "GET").send();
+        verify(1, getRequestedFor(urlEqualTo("/")));
     }
 
     private byte[] gzipped(String str) {
