@@ -50,6 +50,10 @@ you can do this in your aplication initialization.
 
 To disable logging use `BoxLogger.defaultLogger().turnLoggingOff()`.
 
+### Reset to default logging level
+
+To reset to default logging level use `BoxLogger.defaultLogger().resetToDefaultLevel()`.
+
 
 ## Putting SDK logs into application logs
 

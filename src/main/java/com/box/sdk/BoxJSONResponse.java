@@ -64,6 +64,8 @@ public class BoxJSONResponse extends BoxAPIResponse {
     public String getJSON() {
         if (this.jsonObject != null) {
             return this.jsonObject.toString();
+        } else if (this.getBody() == null) {
+            return null;
         } else {
             InputStreamReader reader = new InputStreamReader(this.getBody(), StandardCharsets.UTF_8);
             StringBuilder builder = new StringBuilder();
