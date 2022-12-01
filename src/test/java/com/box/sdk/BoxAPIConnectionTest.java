@@ -1,5 +1,6 @@
 package com.box.sdk;
 
+import static com.box.sdk.BoxAPIConnection.DEFAULT_HOSTNAME_VERIFIER;
 import static com.box.sdk.http.ContentType.APPLICATION_JSON;
 import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
 import static com.github.tomakehurst.wiremock.client.WireMock.equalTo;
@@ -35,16 +36,18 @@ import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
+import javax.net.ssl.SSLHandshakeException;
+import javax.net.ssl.SSLPeerUnverifiedException;
+import javax.net.ssl.X509TrustManager;
 import org.junit.Assert;
 import org.junit.Rule;
 import org.junit.Test;
 
 public class BoxAPIConnectionTest {
-    /**
-     * Wiremock
-     */
     @Rule
     public WireMockRule wireMockRule = new WireMockRule(wireMockConfig().dynamicPort());
+    @Rule
+    public WireMockRule wireMockHttpsRule = new WireMockRule(wireMockConfig().dynamicHttpsPort().httpDisabled(true));
 
     private final String accessToken = "fakeToken";
     private final String refreshToken = "fake refresh token";
@@ -188,6 +191,9 @@ public class BoxAPIConnectionTest {
     public void revokeTokenCallsCorrectEndpoint() {
         BoxAPIConnection api = new BoxAPIConnection(clientId, clientSecret, accessToken, refreshToken);
         api.setBaseURL(format("http://localhost:%d", wireMockRule.port()));
+        api.setBaseUploadURL(format("http://localhost:%d", wireMockRule.port()));
+        api.setBaseAuthorizationURL(format("http://localhost:%d", wireMockRule.port()));
+        //TODO: if any base URL requires HTTPS it should be enabled.
 
         wireMockRule.stubFor(post(urlPathEqualTo("/oauth2/revoke"))
             .withRequestBody(
@@ -621,10 +627,10 @@ public class BoxAPIConnectionTest {
         // given and then
         wireMockRule.stubFor(post(urlPathEqualTo("/oauth2/token"))
             .willReturn(aResponse()
-            .withHeader("Content-Type", APPLICATION_JSON)
-            .withBody(
-                "{\"refresh_token\":\"refresh-token\", \"access_token\":\"access-token\", \"expires_in\": 1}"
-            )));
+                .withHeader("Content-Type", APPLICATION_JSON)
+                .withBody(
+                    "{\"refresh_token\":\"refresh-token\", \"access_token\":\"access-token\", \"expires_in\": 1}"
+                )));
         BoxAPIConnection api = new BoxAPIConnection(clientId, clientSecret, accessToken, refreshToken);
         String serverLocation = format("http://localhost:%d", wireMockRule.port());
         api.setBaseURL(serverLocation);
@@ -668,8 +674,8 @@ public class BoxAPIConnectionTest {
         proxyWireMockServer.stubFor(post(urlPathEqualTo("/oauth2/token"))
             .inScenario("Proxy Authorization")
             .whenScenarioStateIs("AUTHORIZATION REQUESTED")
-                .withHeader("Proxy-Authorization", matching("Basic .+"))
-                .willReturn(aResponse().proxiedFrom(serverLocation)));
+            .withHeader("Proxy-Authorization", matching("Basic .+"))
+            .willReturn(aResponse().proxiedFrom(serverLocation)));
 
         try {
             // when
@@ -724,6 +730,61 @@ public class BoxAPIConnectionTest {
         }
     }
 
+    @Test
+    public void failsByDefaultWhenUsingSelfSignedCertificates() {
+        BoxAPIConnection api = new BoxAPIConnection("");
+        String serverLocation = format("https://localhost:%d", wireMockHttpsRule.httpsPort());
+        api.setBaseURL(serverLocation);
+
+        try {
+            api.authenticate("fake code");
+        } catch (Exception e) {
+            Throwable cause = e.getCause();
+            assertThat(cause.getClass(), is(SSLHandshakeException.class));
+            assertThat(cause.getMessage(),
+                containsString("unable to find valid certification path to requested target"));
+        }
+    }
+
+    @Test
+    public void failsByDefaultWhenUsingSelfSignedCertificatesThatPointToLocalhost() {
+        BoxAPIConnection api = new BoxAPIConnection("");
+        String serverLocation = format("https://localhost:%d", wireMockHttpsRule.httpsPort());
+        api.setBaseURL(serverLocation);
+        api.configureSslCertificatesValidation(new AllAllowingTrustManager(), DEFAULT_HOSTNAME_VERIFIER);
+
+        try {
+            api.authenticate("fake code");
+        } catch (Exception e) {
+            Throwable cause = e.getCause();
+            assertThat(cause.getClass(), is(SSLPeerUnverifiedException.class));
+            assertThat(cause.getMessage(),
+                containsString("Hostname localhost not verified"));
+        }
+    }
+
+    @Test
+    public void canBeConfiguredToUseSelfSignedCertificates() {
+        // given and then
+        wireMockHttpsRule.stubFor(post(urlPathEqualTo("/oauth2/token"))
+            .willReturn(aResponse()
+                .withHeader("Content-Type", APPLICATION_JSON)
+                .withBody(
+                    "{\"refresh_token\":\"refresh-token\","
+                        + " \"access_token\":\"access-token-from-mock\","
+                        + " \"expires_in\": 1}"
+                )));
+
+        BoxAPIConnection api = new BoxAPIConnection("");
+        String serverLocation = format("https://localhost:%d", wireMockHttpsRule.httpsPort());
+        api.setBaseURL(serverLocation);
+
+        api.configureSslCertificatesValidation(new AllAllowingTrustManager(), (hostname, session) -> true);
+
+        api.authenticate("fake code");
+        assertThat(api.getAccessToken(), is("access-token-from-mock"));
+    }
+
     private void mockAndAssertRevoke(String token, String clientId, String clientSecret) {
         wireMockRule.stubFor(post(urlPathEqualTo("/oauth2/revoke"))
             .withRequestBody(equalTo(
@@ -773,6 +834,21 @@ public class BoxAPIConnectionTest {
                 + "    \"restricted_to\": [],\n"
                 + "    \"token_type\": \"bearer\"\n"
                 + "}";
+        }
+    }
+
+    private static class AllAllowingTrustManager implements X509TrustManager {
+        @Override
+        public void checkClientTrusted(java.security.cert.X509Certificate[] chain, String authType) {
+        }
+
+        @Override
+        public void checkServerTrusted(java.security.cert.X509Certificate[] chain, String authType) {
+        }
+
+        @Override
+        public java.security.cert.X509Certificate[] getAcceptedIssuers() {
+            return new java.security.cert.X509Certificate[]{};
         }
     }
 }

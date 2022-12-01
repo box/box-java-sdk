@@ -1,5 +1,6 @@
 package com.box.sdk;
 
+import static com.box.sdk.TestUtils.createConnectionWith;
 import static com.box.sdk.http.ContentType.APPLICATION_JSON;
 import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
 import static com.github.tomakehurst.wiremock.client.WireMock.post;
@@ -47,7 +48,7 @@ public class BoxAPIResponseExceptionTest {
 
     @Test
     public void testAPIResponseExceptionReturnsCorrectErrorMessage() throws MalformedURLException {
-        BoxAPIConnection api = new BoxAPIConnection("");
+        BoxAPIConnection api = createConnectionWith(format("http://localhost:%d", wireMockRule.port()));
 
         final JsonObject fakeJSONResponse = Json.parse("{\n"
             + "            \"type\": \"error\",\n"
@@ -91,7 +92,7 @@ public class BoxAPIResponseExceptionTest {
 
     @Test
     public void testAPIResponseExceptionMissingFieldsReturnsCorrectErrorMessage() throws MalformedURLException {
-        BoxAPIConnection api = new BoxAPIConnection("");
+        BoxAPIConnection api = createConnectionWith(format("http://localhost:%d", wireMockRule.port()));
         final JsonObject fakeJSONResponse = Json.parse("{\n"
             + "            \"type\": \"error\",\n"
             + "            \"status\": \"409\",\n"
@@ -130,7 +131,7 @@ public class BoxAPIResponseExceptionTest {
 
     @Test
     public void testAPIResponseExceptionMissingBodyReturnsCorrectErrorMessage() throws MalformedURLException {
-        BoxAPIConnection api = new BoxAPIConnection("");
+        BoxAPIConnection api = createConnectionWith(format("http://localhost:%d", wireMockRule.port()));
 
         stubFor(post(urlEqualTo("/folders"))
             .willReturn(aResponse()
@@ -155,7 +156,7 @@ public class BoxAPIResponseExceptionTest {
 
         String body = "<html><body><h1>500 Server Error</h1></body></html>";
 
-        BoxAPIConnection api = new BoxAPIConnection("");
+        BoxAPIConnection api = createConnectionWith(format("http://localhost:%d", wireMockRule.port()));
         api.setMaxRetryAttempts(1);
 
         stubFor(post(urlEqualTo("/folders"))

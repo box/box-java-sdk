@@ -41,4 +41,10 @@ final class TestUtils {
         String fixture = getFixture(fixtureName);
         return fixture.replaceAll(":53621", ":" + portNumber);
     }
+
+    public static BoxAPIConnection createConnectionWith(String baseUrl) {
+        BoxAPIConnection connection = new BoxAPIConnection("");
+        connection.setBaseURL(baseUrl);
+        return connection;
+    }
 }
