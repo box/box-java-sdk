@@ -192,6 +192,14 @@ information. Then run:
 $ ./gradlew integrationTest
 ```
 
+## Supported targets
+
+Box Java SDK supports various targets, such as JVM and Android.
+
+For more information, see the specific target guide.
+
+* [Android](doc/android.md)
+
 ## Documentation
 
 You can find guides and tutorials in the `doc` directory.
