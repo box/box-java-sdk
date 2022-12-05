@@ -49,7 +49,7 @@ and paste them into your file. The IDE should ask you to convert the pasted Java
 
 Note that the current Java SDK does not support Kotlin coroutines. By default, you cannot run network calls on the main thread 
 in an Android application. There are various ways to overcome this. For example, if you are in a viewModel context, you can run the SDK method as a 
-courutine using viewModelScope 
+coroutine using viewModelScope.
 
 ```kotlin
 viewModelScope.launch {
