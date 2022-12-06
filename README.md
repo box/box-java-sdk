@@ -34,10 +34,13 @@ A current release is on the leading edge of our SDK development, and is intended
 Getting Started Docs: https://developer.box.com/guides/tooling/sdks/java/
 API Reference: https://developer.box.com/reference/
 
-## Quickstart
+## JVM
+
 The SDK can be obtained by adding it as a [maven dependency](http://opensource.box.com/box-java-sdk/),
 cloning the source into your project, or by downloading one of the precompiled JARs from the
 [releases page on GitHub](https://github.com/box/box-java-sdk/releases).
+
+If you are developing application for Android visit our [Android guide](doc/android.md)
 
 **IF YOU USE THE JAR, you'll also need to include several dependencies:**
 
@@ -55,7 +58,10 @@ cloning the source into your project, or by downloading one of the precompiled J
    [Java Cryptography Extension for IBM JDK](https://www14.software.ibm.com/webapp/iwm/web/preLogin.do?source=jcesdk)
 
 An app has to be authorized by the admin of the enterprise before these tests. It's always good to begin with the
-[Getting Started Section](https://developer.box.com/docs/setting-up-a-jwt-app) at Box's developer website
+[Getting Started Section](https://developer.box.com/docs/setting-up-a-jwt-app) at Box's developer website.
+
+## Android
+If you are developing application for Android visit our [Android guide](doc/android.md).
 
 ## Quick Test
 
