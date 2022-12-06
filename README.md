@@ -39,6 +39,8 @@ The SDK can be obtained by adding it as a [maven dependency](http://opensource.b
 cloning the source into your project, or by downloading one of the precompiled JARs from the
 [releases page on GitHub](https://github.com/box/box-java-sdk/releases).
 
+If you are developing application for Android visit our [Android guide](doc/android.md)
+
 **IF YOU USE THE JAR, you'll also need to include several dependencies:**
 
 1. [minimal-json v0.9.5](https://github.com/ralfstx/minimal-json)
@@ -191,14 +193,6 @@ information. Then run:
 ```bash
 $ ./gradlew integrationTest
 ```
-
-## Supported targets
-
-Box Java SDK supports various targets, such as JVM and Android.
-
-For more information, see the specific target guide.
-
-* [Android](doc/android.md)
 
 ## Documentation
 
