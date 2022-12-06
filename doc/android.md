@@ -44,7 +44,7 @@ val user = BoxUser(api, userID)
 val userInfo = user.getInfo()
 ```
 
-If you are using an IntelliJ-based IDE, you can copy our samples located in the [docs](/doc/Readme.md) directory 
+If you are using an IntelliJ-based IDE, you can copy our samples located in the [docs](/doc/) directory 
 and paste them into your file. The IDE should ask you to convert the pasted Java sample to Kotlin. Most samples still work after conversion using this approach.
 
 Note that the current Java SDK does not support Kotlin coroutines. By default, you cannot run network calls on the main thread 
