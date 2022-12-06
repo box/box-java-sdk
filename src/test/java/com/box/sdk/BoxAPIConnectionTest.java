@@ -38,7 +38,6 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.net.ssl.SSLHandshakeException;
 import javax.net.ssl.SSLPeerUnverifiedException;
-import javax.net.ssl.X509TrustManager;
 import org.junit.Assert;
 import org.junit.Rule;
 import org.junit.Test;
@@ -190,12 +189,12 @@ public class BoxAPIConnectionTest {
     @Test
     public void revokeTokenCallsCorrectEndpoint() {
         BoxAPIConnection api = new BoxAPIConnection(clientId, clientSecret, accessToken, refreshToken);
-        api.setBaseURL(format("http://localhost:%d", wireMockRule.port()));
-        api.setBaseUploadURL(format("http://localhost:%d", wireMockRule.port()));
-        api.setBaseAuthorizationURL(format("http://localhost:%d", wireMockRule.port()));
-        //TODO: if any base URL requires HTTPS it should be enabled.
+        api.configureSslCertificatesValidation(new TrustAllTrustManager(), new AcceptAllHostsVerifier());
+        api.setBaseURL(baseHttpsUrl());
+        api.setBaseUploadURL(baseHttpsUrl());
+        api.setBaseAuthorizationURL(baseHttpsUrl());
 
-        wireMockRule.stubFor(post(urlPathEqualTo("/oauth2/revoke"))
+        wireMockHttpsRule.stubFor(post(urlPathEqualTo("/oauth2/revoke"))
             .withRequestBody(
                 equalTo(String.format("token=%s&client_id=fakeID&client_secret=fakeSecret", accessToken))
             )
@@ -587,8 +586,9 @@ public class BoxAPIConnectionTest {
         String code = "fakeCode";
 
         BoxAPIConnection api = new BoxAPIConnection(clientId, clientSecret);
+        api.configureSslCertificatesValidation(new TrustAllTrustManager(), new AcceptAllHostsVerifier());
         api.setAutoRefresh(false);
-        api.setBaseURL(format("http://localhost:%d", wireMockRule.port()));
+        api.setBaseURL(baseHttpsUrl());
         mockAndAssertAuthentication(clientId, clientSecret, code);
 
         api.authenticate(code);
@@ -602,8 +602,9 @@ public class BoxAPIConnectionTest {
         String code = "fakeCode";
 
         BoxAPIConnection api = new BoxAPIConnection(clientId, clientSecret);
+        api.configureSslCertificatesValidation(new TrustAllTrustManager(), new AcceptAllHostsVerifier());
         api.setAutoRefresh(false);
-        api.setBaseURL(format("http://localhost:%d", wireMockRule.port()));
+        api.setBaseURL(baseHttpsUrl());
         mockAndAssertAuthentication(clientId, clientSecret, code);
 
         api.authenticate(code);
@@ -615,7 +616,8 @@ public class BoxAPIConnectionTest {
     @Test
     public void usesCorrectTokenUrlToRevokeWhenBaseUrlIsSet() {
         BoxAPIConnection api = new BoxAPIConnection(clientId, clientSecret, accessToken, refreshToken);
-        api.setBaseURL(format("http://localhost:%d", wireMockRule.port()));
+        api.configureSslCertificatesValidation(new TrustAllTrustManager(), new AcceptAllHostsVerifier());
+        api.setBaseURL(baseHttpsUrl());
 
         mockAndAssertRevoke(accessToken, clientId, clientSecret);
 
@@ -632,7 +634,8 @@ public class BoxAPIConnectionTest {
                     "{\"refresh_token\":\"refresh-token\", \"access_token\":\"access-token\", \"expires_in\": 1}"
                 )));
         BoxAPIConnection api = new BoxAPIConnection(clientId, clientSecret, accessToken, refreshToken);
-        String serverLocation = format("http://localhost:%d", wireMockRule.port());
+        api.allowCleartextCommunication(); //wiremock has troubles proxying HTTPS traffic
+        String serverLocation = baseHttpUrl();
         api.setBaseURL(serverLocation);
         WireMockServer proxyWireMockServer = new WireMockServer(wireMockConfig().dynamicPort());
         proxyWireMockServer.start();
@@ -659,8 +662,9 @@ public class BoxAPIConnectionTest {
                 .withBody(
                     "{\"refresh_token\":\"refresh-token\", \"access_token\":\"access-token\", \"expires_in\": 1}"
                 )));
+        String serverLocation = baseHttpUrl();
         BoxAPIConnection api = new BoxAPIConnection(clientId, clientSecret, accessToken, refreshToken);
-        String serverLocation = format("http://localhost:%d", wireMockRule.port());
+        api.allowCleartextCommunication(); //wiremock has troubles proxying HTTPS traffic
         api.setBaseURL(serverLocation);
         WireMockServer proxyWireMockServer = new WireMockServer(wireMockConfig().dynamicPort());
         proxyWireMockServer.start();
@@ -697,8 +701,9 @@ public class BoxAPIConnectionTest {
                 .withBody(
                     "{\"refresh_token\":\"refresh-token\", \"access_token\":\"access-token\", \"expires_in\": 1}"
                 )));
+        String serverLocation = baseHttpUrl();
         BoxAPIConnection api = new BoxAPIConnection(clientId, clientSecret, accessToken, refreshToken);
-        String serverLocation = format("http://localhost:%d", wireMockRule.port());
+        api.allowCleartextCommunication();
         api.setBaseURL(serverLocation);
         WireMockServer proxyWireMockServer = new WireMockServer(wireMockConfig().dynamicPort());
         proxyWireMockServer.start();
@@ -733,8 +738,7 @@ public class BoxAPIConnectionTest {
     @Test
     public void failsByDefaultWhenUsingSelfSignedCertificates() {
         BoxAPIConnection api = new BoxAPIConnection("");
-        String serverLocation = format("https://localhost:%d", wireMockHttpsRule.httpsPort());
-        api.setBaseURL(serverLocation);
+        api.setBaseURL(baseHttpsUrl());
 
         try {
             api.authenticate("fake code");
@@ -749,9 +753,8 @@ public class BoxAPIConnectionTest {
     @Test
     public void failsByDefaultWhenUsingSelfSignedCertificatesThatPointToLocalhost() {
         BoxAPIConnection api = new BoxAPIConnection("");
-        String serverLocation = format("https://localhost:%d", wireMockHttpsRule.httpsPort());
-        api.setBaseURL(serverLocation);
-        api.configureSslCertificatesValidation(new AllAllowingTrustManager(), DEFAULT_HOSTNAME_VERIFIER);
+        api.setBaseURL(baseHttpsUrl());
+        api.configureSslCertificatesValidation(new TrustAllTrustManager(), DEFAULT_HOSTNAME_VERIFIER);
 
         try {
             api.authenticate("fake code");
@@ -775,18 +778,26 @@ public class BoxAPIConnectionTest {
                         + " \"expires_in\": 1}"
                 )));
 
+        String serverLocation = baseHttpsUrl();
         BoxAPIConnection api = new BoxAPIConnection("");
-        String serverLocation = format("https://localhost:%d", wireMockHttpsRule.httpsPort());
         api.setBaseURL(serverLocation);
 
-        api.configureSslCertificatesValidation(new AllAllowingTrustManager(), (hostname, session) -> true);
+        api.configureSslCertificatesValidation(new TrustAllTrustManager(), new AcceptAllHostsVerifier());
 
         api.authenticate("fake code");
         assertThat(api.getAccessToken(), is("access-token-from-mock"));
     }
 
+    private String baseHttpsUrl() {
+        return format("https://localhost:%d", wireMockHttpsRule.httpsPort());
+    }
+
+    private String baseHttpUrl() {
+        return format("http://localhost:%d", wireMockRule.port());
+    }
+
     private void mockAndAssertRevoke(String token, String clientId, String clientSecret) {
-        wireMockRule.stubFor(post(urlPathEqualTo("/oauth2/revoke"))
+        wireMockHttpsRule.stubFor(post(urlPathEqualTo("/oauth2/revoke"))
             .withRequestBody(equalTo(
                 format(
                     "token=%s&client_id=%s&client_secret=%s", token, clientId, clientSecret
@@ -800,7 +811,7 @@ public class BoxAPIConnectionTest {
     }
 
     private void mockAndAssertAuthentication(String clientId, String clientSecret, String code) {
-        wireMockRule.stubFor(post(urlPathEqualTo("/oauth2/token"))
+        wireMockHttpsRule.stubFor(post(urlPathEqualTo("/oauth2/token"))
             .withRequestBody(equalTo(
                 format(
                     "grant_type=authorization_code&code=%s&client_id=%s&client_secret=%s", code, clientId, clientSecret
@@ -834,21 +845,6 @@ public class BoxAPIConnectionTest {
                 + "    \"restricted_to\": [],\n"
                 + "    \"token_type\": \"bearer\"\n"
                 + "}";
-        }
-    }
-
-    private static class AllAllowingTrustManager implements X509TrustManager {
-        @Override
-        public void checkClientTrusted(java.security.cert.X509Certificate[] chain, String authType) {
-        }
-
-        @Override
-        public void checkServerTrusted(java.security.cert.X509Certificate[] chain, String authType) {
-        }
-
-        @Override
-        public java.security.cert.X509Certificate[] getAcceptedIssuers() {
-            return new java.security.cert.X509Certificate[]{};
         }
     }
 }

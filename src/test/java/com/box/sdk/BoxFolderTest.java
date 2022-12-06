@@ -47,14 +47,14 @@ import org.junit.Test;
 public class BoxFolderTest {
 
     @Rule
-    public WireMockRule wireMockRule = new WireMockRule(wireMockConfig().dynamicPort());
+    public WireMockRule wireMockRule = new WireMockRule(wireMockConfig().dynamicHttpsPort().httpDisabled(true));
     private final BoxAPIConnection api = TestUtils.getAPIConnection();
 
     @Before
     public void setUpBaseUrl() {
         api.setMaxRetryAttempts(1);
-        api.setBaseURL(format("http://localhost:%d", wireMockRule.port()));
-        api.setBaseUploadURL(format("http://localhost:%d", wireMockRule.port()));
+        api.setBaseURL(format("https://localhost:%d", wireMockRule.httpsPort()));
+        api.setBaseUploadURL(format("https://localhost:%d", wireMockRule.httpsPort()));
     }
 
     @Test
@@ -100,7 +100,7 @@ public class BoxFolderTest {
         final String commitURL = "/2.0/files/upload_sessions/D5E3F8ADA11A38F0A66AD0B64AACA658/commit";
         BoxFileTest.FakeStream stream = new BoxFileTest.FakeStream("aaaaa");
 
-        String sessionResult = TestUtils.getFixture("BoxFile/CreateUploadSession201", wireMockRule.port());
+        String sessionResult = TestUtils.getFixture("BoxFile/CreateUploadSession201", wireMockRule.httpsPort());
         String uploadResult = TestUtils.getFixture("BoxFile/UploadPartOne200");
         String commitResult = TestUtils.getFixture("BoxFile/CommitUploadWithAttributes201");
         String canUploadResult = TestUtils.getFixture("BoxFile/CanUploadFile200");
@@ -188,7 +188,7 @@ public class BoxFolderTest {
         final String commitURL = "/2.0/files/upload_sessions/D5E3F8ADA11A38F0A66AD0B64AACA658/commit";
         BoxFileTest.FakeStream stream = new BoxFileTest.FakeStream("aaaaa");
 
-        String sessionResult = TestUtils.getFixture("BoxFile/CreateUploadSession201", wireMockRule.port());
+        String sessionResult = TestUtils.getFixture("BoxFile/CreateUploadSession201", wireMockRule.httpsPort());
         String uploadResult = TestUtils.getFixture("BoxFile/UploadPartOne200");
         String commitResult = TestUtils.getFixture("BoxFile/CommitUploadWithAttributes201");
         String canUploadResult = TestUtils.getFixture("BoxFile/CanUploadFile200");
@@ -280,7 +280,7 @@ public class BoxFolderTest {
 
         BoxFileTest.FakeStream stream = new BoxFileTest.FakeStream("aaaaa");
 
-        String sessionResult = TestUtils.getFixture("BoxFile/CreateUploadSession201", wireMockRule.port());
+        String sessionResult = TestUtils.getFixture("BoxFile/CreateUploadSession201", wireMockRule.httpsPort());
         String partsResult = TestUtils.getFixture("BoxFile/ListUploadedPart200");
         String commitResult = TestUtils.getFixture("BoxFile/CommitUpload201");
         String canUploadResult = TestUtils.getFixture("BoxFile/CanUploadFile200");
@@ -370,7 +370,7 @@ public class BoxFolderTest {
 
         BoxFileTest.FakeStream stream = new BoxFileTest.FakeStream("aaaaa");
 
-        String sessionResult = TestUtils.getFixture("BoxFile/CreateUploadSession201", wireMockRule.port());
+        String sessionResult = TestUtils.getFixture("BoxFile/CreateUploadSession201", wireMockRule.httpsPort());
         String uploadResult = TestUtils.getFixture("BoxFile/UploadPartOne200");
         String wrongPartsResult = TestUtils.getFixture("BoxFile/ListUploadedParts200");
         String commitResult = TestUtils.getFixture("BoxFile/CommitUpload201");

@@ -18,7 +18,7 @@ import org.junit.Test;
 public class BoxWatermarkTest {
 
     @Rule
-    public WireMockRule wireMockRule = new WireMockRule(wireMockConfig().dynamicPort());
+    public WireMockRule wireMockRule = new WireMockRule(wireMockConfig().dynamicHttpsPort().httpDisabled(true));
     private final BoxAPIConnection api = TestUtils.getAPIConnection();
 
     @Before
@@ -146,6 +146,6 @@ public class BoxWatermarkTest {
     }
 
     private String baseUrl() {
-        return format("http://localhost:%d", wireMockRule.port());
+        return format("https://localhost:%d", wireMockRule.httpsPort());
     }
 }

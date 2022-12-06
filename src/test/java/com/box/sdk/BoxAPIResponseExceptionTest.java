@@ -36,7 +36,7 @@ import org.junit.Test;
 public class BoxAPIResponseExceptionTest {
 
     @Rule
-    public WireMockRule wireMockRule = new WireMockRule(wireMockConfig().dynamicPort());
+    public WireMockRule wireMockRule = new WireMockRule(wireMockConfig().dynamicHttpsPort().httpDisabled(true));
 
     private final BoxAPIConnection api = TestUtils.getAPIConnection();
 
@@ -48,7 +48,7 @@ public class BoxAPIResponseExceptionTest {
 
     @Test
     public void testAPIResponseExceptionReturnsCorrectErrorMessage() throws MalformedURLException {
-        BoxAPIConnection api = createConnectionWith(format("http://localhost:%d", wireMockRule.port()));
+        BoxAPIConnection api = createConnectionWith(baseUrl());
 
         final JsonObject fakeJSONResponse = Json.parse("{\n"
             + "            \"type\": \"error\",\n"
@@ -92,7 +92,7 @@ public class BoxAPIResponseExceptionTest {
 
     @Test
     public void testAPIResponseExceptionMissingFieldsReturnsCorrectErrorMessage() throws MalformedURLException {
-        BoxAPIConnection api = createConnectionWith(format("http://localhost:%d", wireMockRule.port()));
+        BoxAPIConnection api = createConnectionWith(baseUrl());
         final JsonObject fakeJSONResponse = Json.parse("{\n"
             + "            \"type\": \"error\",\n"
             + "            \"status\": \"409\",\n"
@@ -131,7 +131,7 @@ public class BoxAPIResponseExceptionTest {
 
     @Test
     public void testAPIResponseExceptionMissingBodyReturnsCorrectErrorMessage() throws MalformedURLException {
-        BoxAPIConnection api = createConnectionWith(format("http://localhost:%d", wireMockRule.port()));
+        BoxAPIConnection api = createConnectionWith(baseUrl());
 
         stubFor(post(urlEqualTo("/folders"))
             .willReturn(aResponse()
@@ -156,7 +156,7 @@ public class BoxAPIResponseExceptionTest {
 
         String body = "<html><body><h1>500 Server Error</h1></body></html>";
 
-        BoxAPIConnection api = createConnectionWith(format("http://localhost:%d", wireMockRule.port()));
+        BoxAPIConnection api = createConnectionWith(baseUrl());
         api.setMaxRetryAttempts(1);
 
         stubFor(post(urlEqualTo("/folders"))
@@ -308,6 +308,6 @@ public class BoxAPIResponseExceptionTest {
     }
 
     private String baseUrl() {
-        return format("http://localhost:%d", wireMockRule.port());
+        return format("https://localhost:%d", wireMockRule.httpsPort());
     }
 }

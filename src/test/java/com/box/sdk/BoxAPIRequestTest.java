@@ -33,7 +33,7 @@ import org.junit.Test;
 
 public class BoxAPIRequestTest {
     @Rule
-    public WireMockRule wireMockRule = new WireMockRule(wireMockConfig().dynamicPort());
+    public WireMockRule wireMockRule = new WireMockRule(wireMockConfig().dynamicHttpsPort().httpDisabled(true));
 
     @Test
     public void requestRetriesTheDefaultNumberOfTimesWhenServerReturns500() {
@@ -274,7 +274,7 @@ public class BoxAPIRequestTest {
 
     private URL boxMockUrl() {
         try {
-            return new URL(format("http://localhost:%d/", wireMockRule.port()));
+            return new URL(format("https://localhost:%d/", wireMockRule.httpsPort()));
         } catch (MalformedURLException e) {
             throw new RuntimeException(e);
         }

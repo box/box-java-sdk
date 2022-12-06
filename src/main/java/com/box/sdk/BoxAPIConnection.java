@@ -49,7 +49,8 @@ public class BoxAPIConnection {
      * Used as a marker to setup connection to use default HostnameVerifier
      * Example:<pre>{@code
      * BoxApiConnection api = new BoxApiConnection(...);
-     * api.configureSslCertificatesValidation(myTrustManager, DEFAULT_HOSTNAME_VERIFIER);
+     * HostnameVerifier myHostnameVerifier = ...
+     * api.configureSslCertificatesValidation(DEFAULT_TRUST_MANAGER, myHostnameVerifier);
      * }</pre>
      */
     public static final X509TrustManager DEFAULT_TRUST_MANAGER = null;
@@ -57,6 +58,7 @@ public class BoxAPIConnection {
      * Used as a marker to setup connection to use default HostnameVerifier
      * Example:<pre>{@code
      * BoxApiConnection api = new BoxApiConnection(...);
+     * X509TrustManager myTrustManager = ...
      * api.configureSslCertificatesValidation(myTrustManager, DEFAULT_HOSTNAME_VERIFIER);
      * }</pre>
      */
@@ -127,6 +129,7 @@ public class BoxAPIConnection {
     private OkHttpClient httpClient;
     private OkHttpClient noRedirectsHttpClient;
     private Authenticator authenticator;
+    private boolean allowCleartextCommunication;
 
     /**
      * Constructs a new BoxAPIConnection that authenticates with a developer or access token.
@@ -215,9 +218,7 @@ public class BoxAPIConnection {
             .connectTimeout(Duration.ofMillis(connectTimeout))
             .readTimeout(Duration.ofMillis(readTimeout));
 
-        if (baseURL.startsWith("http:")
-            || baseUploadURL.startsWith("http:")
-            || baseAuthorizationURL.startsWith("http:")) {
+        if (allowCleartextCommunication) {
             builder.connectionSpecs(Arrays.asList(MODERN_TLS, CLEARTEXT));
         } else {
             builder.connectionSpecs(singletonList(MODERN_TLS));
@@ -428,7 +429,6 @@ public class BoxAPIConnection {
      */
     public void setBaseURL(String baseURL) {
         this.baseURL = fixBaseUrl(baseURL);
-        buildHttpClients();
     }
 
     /**
@@ -448,7 +448,6 @@ public class BoxAPIConnection {
      */
     public void setBaseUploadURL(String baseUploadURL) {
         this.baseUploadURL = fixBaseUrl(baseUploadURL);
-        buildHttpClients();
     }
 
     /**
@@ -475,7 +474,6 @@ public class BoxAPIConnection {
      */
     public void setBaseAuthorizationURL(String baseAuthorizationURL) {
         this.baseAuthorizationURL = fixBaseUrl(baseAuthorizationURL);
-        buildHttpClients();
     }
 
     /**
@@ -503,7 +501,6 @@ public class BoxAPIConnection {
      */
     public String getBaseAppUrl() {
         return this.baseAppURL;
-        // we do not rebuild clients as this URL is not used to do any requests
     }
 
     /**
@@ -1187,12 +1184,18 @@ public class BoxAPIConnection {
      * Used to override default SSL certification handling. For example, you can provide your own
      * trust manager or hostname verifier to allow self-signed certificates.
      * You can check examples <a href="https://github.com/box/box-java-sdk/blob/main/doc/configuration.md#ssl-configuration">here</a>.
-     * @param trustManager TrustManager that verifies certificates are valid.
+     *
+     * @param trustManager     TrustManager that verifies certificates are valid.
      * @param hostnameVerifier HostnameVerifier that allows you to specify what hostnames are allowed.
      */
     public void configureSslCertificatesValidation(X509TrustManager trustManager, HostnameVerifier hostnameVerifier) {
         this.trustManager = trustManager;
         this.hostnameVerifier = hostnameVerifier;
+        buildHttpClients();
+    }
+
+    void allowCleartextCommunication() {
+        this.allowCleartextCommunication = true;
         buildHttpClients();
     }
 
@@ -1233,7 +1236,7 @@ public class BoxAPIConnection {
         try {
             return httpClient.newCall(request).execute();
         } catch (IOException e) {
-            throw new BoxAPIException("Couldn't connect to the Box API due to a network error.", e);
+            throw new BoxAPIException("Couldn't connect to the Box API due to a network error. Request\n" + request, e);
         }
     }
 

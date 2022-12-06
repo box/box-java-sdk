@@ -11,7 +11,9 @@ final class TestUtils {
     }
 
     public static BoxAPIConnection getAPIConnection() {
-        return new BoxAPIConnection("");
+        BoxAPIConnection api = new BoxAPIConnection("");
+        api.configureSslCertificatesValidation(new TrustAllTrustManager(), new AcceptAllHostsVerifier());
+        return api;
     }
 
     /**
@@ -43,7 +45,7 @@ final class TestUtils {
     }
 
     public static BoxAPIConnection createConnectionWith(String baseUrl) {
-        BoxAPIConnection connection = new BoxAPIConnection("");
+        BoxAPIConnection connection = TestUtils.getAPIConnection();
         connection.setBaseURL(baseUrl);
         return connection;
     }
