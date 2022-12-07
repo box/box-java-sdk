@@ -243,6 +243,12 @@ public class BoxAPIConnection {
             .build();
     }
 
+    /**
+     * Can be used to modify OkHttp.Builder used to create connection. This method is called after all modifications
+     * were done, thus allowing others to create their own connections and further customize builder.
+     * @param httpClientBuilder Builder that will be used to create http connection.
+     * @return Modified builder.
+     */
     protected OkHttpClient.Builder modifyHttpClientBuilder(OkHttpClient.Builder httpClientBuilder) {
         return httpClientBuilder;
     }
