@@ -45,6 +45,7 @@ import org.junit.Test;
 
 public class BoxAPIConnectionTest {
     @Rule
+    // we do not use HTTPS mock as wiremock ha trouble proxying HTTPS traffic
     public WireMockRule wireMockRule = new WireMockRule(wireMockConfig().dynamicPort());
     @Rule
     public WireMockRule wireMockHttpsRule = new WireMockRule(wireMockConfig().dynamicHttpsPort().httpDisabled(true));
@@ -629,6 +630,7 @@ public class BoxAPIConnectionTest {
     @Test
     public void checkThatTheProxyIsUsed() {
         // given and then
+        // we do not use HTTPS mock as wiremock ha trouble proxying HTTPS traffic
         wireMockRule.stubFor(post(urlPathEqualTo("/oauth2/token"))
             .willReturn(aResponse()
                 .withHeader("Content-Type", APPLICATION_JSON)
@@ -657,6 +659,7 @@ public class BoxAPIConnectionTest {
     @Test
     public void shouldAddProxyAuthentication() {
         // given and then
+        // we do not use HTTPS mock as wiremock ha trouble proxying HTTPS traffic
         wireMockRule.stubFor(post(urlPathEqualTo("/oauth2/token"))
             .willReturn(aResponse()
                 .withHeader("Content-Type", APPLICATION_JSON)
