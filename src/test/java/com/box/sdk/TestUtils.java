@@ -11,7 +11,7 @@ final class TestUtils {
     }
 
     public static BoxAPIConnection getAPIConnection() {
-        return new BoxAPIConnection("");
+        return new BoxAPIConnectionForTests("");
     }
 
     /**
@@ -40,5 +40,11 @@ final class TestUtils {
     public static String getFixture(String fixtureName, int portNumber) {
         String fixture = getFixture(fixtureName);
         return fixture.replaceAll(":53621", ":" + portNumber);
+    }
+
+    public static BoxAPIConnection createConnectionWith(String baseUrl) {
+        BoxAPIConnection connection = TestUtils.getAPIConnection();
+        connection.setBaseURL(baseUrl);
+        return connection;
     }
 }

@@ -13,6 +13,7 @@
     - [Base App URL](#base-app-url)
     - [Token URL](#token-url-deprecated)
     - [Revoke URL](#revoke-url-deprecated)
+- [SSL configuration](#ssl-configuration)
 
 # Proxy configuration
 
@@ -251,3 +252,41 @@ api.setRevokeURL("https://example.com/revoke");
 ```
 
 If you use `setRevokeUrl` this URL will be used over the one coming from`setBaseUrl` when doing authentication.
+
+# SSL configuration
+You can override default settings used to verify SSL certificates. 
+This can be used to allow using self-signed certificates. For example:
+```java
+BoxAPIConnection api = new BoxAPIConnection(...);
+
+// to allow self-signed certificates
+X509TrustManager trustManager = new X509TrustManager() {
+    @Override
+    public void checkClientTrusted(java.security.cert.X509Certificate[] chain, String authType) {
+    }
+
+    @Override
+    public void checkServerTrusted(java.security.cert.X509Certificate[] chain, String authType) {
+    }
+
+    @Override
+    public java.security.cert.X509Certificate[] getAcceptedIssuers() {
+        return new java.security.cert.X509Certificate[]{};
+    }
+};
+
+// to allow self-signed certificates created for localhost
+HostnameVerifier hostnameVerifier = (hostname, session) -> true;
+
+api.configureSslCertificatesValidation(trustManager, hostnameVerifier);
+```
+
+If you just need to provide trust manager use `BoxAPIConnection.DEFAULT_HOSTNAME_VERIFIER` as a hostname verifier. 
+The same goes for hostname verifier. If you need just to provide it use 
+`BoxAPIConnection.DEFAULT_TRUST_MANAGER` as a trust manager.
+Example:
+```java
+BoxAPIConnection api = new BoxAPIConnection(...);
+X509TrustManager trustManager = ...
+api.configureSslCertificatesValidation(trustManager, BoxAPIConnection.DEFAULT_HOSTNAME_VERIFIER);
+```

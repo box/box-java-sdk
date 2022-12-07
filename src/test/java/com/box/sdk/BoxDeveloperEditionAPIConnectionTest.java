@@ -30,7 +30,7 @@ import org.junit.Test;
 public class BoxDeveloperEditionAPIConnectionTest {
 
     @Rule
-    public WireMockRule wireMockRule = new WireMockRule(wireMockConfig().dynamicPort());
+    public WireMockRule wireMockRule = new WireMockRule(wireMockConfig().dynamicHttpsPort().httpDisabled(true));
 
     private String jtiClaim = null;
 
@@ -169,7 +169,7 @@ public class BoxDeveloperEditionAPIConnectionTest {
     }
 
     private BoxDeveloperEditionAPIConnection getBoxDeveloperEditionAPIConnection() {
-        final String baseURL = "http://localhost:" + wireMockRule.port();
+        final String baseURL = "https://localhost:" + wireMockRule.httpsPort();
         final int expectedNumRetryAttempts = 2;
 
         JWTEncryptionPreferences prefs = new JWTEncryptionPreferences();
@@ -207,6 +207,7 @@ public class BoxDeveloperEditionAPIConnectionTest {
 
         BoxDeveloperEditionAPIConnection api = new BoxDeveloperEditionAPIConnection("12345",
             DeveloperEditionEntityType.USER, "foo", "bar", prefs, null);
+        api.configureSslCertificatesValidation(new TrustAllTrustManager(), new AcceptAllHostsVerifier());
         api.setBaseURL(baseURL + "/");
         api.setMaxRetryAttempts(expectedNumRetryAttempts);
 

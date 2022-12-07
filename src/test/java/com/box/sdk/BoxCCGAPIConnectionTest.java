@@ -38,7 +38,7 @@ import org.junit.Test;
 public class BoxCCGAPIConnectionTest {
 
     @Rule
-    public WireMockRule wireMockRule = new WireMockRule(wireMockConfig().dynamicPort());
+    public WireMockRule wireMockRule = new WireMockRule(wireMockConfig().dynamicHttpsPort().httpDisabled(true));
 
     @Test
     public void createsServiceAccountConnection() {
@@ -109,7 +109,7 @@ public class BoxCCGAPIConnectionTest {
         // given
         String accessToken = "access_token";
         BoxAPIConnection api = createDefaultApplicationConnection();
-        api.setBaseURL(format("http://localhost:%d", wireMockRule.port()));
+        api.setBaseURL(format("https://localhost:%d", wireMockRule.httpsPort()));
         String scenarioName = "Retry getting token";
         String stateName = "Retry";
         stubFor(post(urlEqualTo("/oauth2/token"))
@@ -293,14 +293,11 @@ public class BoxCCGAPIConnectionTest {
         assertThat(wasTokenRevoked.get(), is(true));
     }
 
-    private BoxAPIConnection createDefaultUserConnection() {
-        return BoxCCGAPIConnection
-            .userConnection("some_client_id", "some_client_secret", "some_user_id");
-    }
-
     private BoxAPIConnection createDefaultApplicationConnection() {
-        return BoxCCGAPIConnection
+        BoxCCGAPIConnection api = BoxCCGAPIConnection
             .applicationServiceAccountConnection("some_client_id", "some_client_secret", "some_enterprise_id");
+        api.configureSslCertificatesValidation(new TrustAllTrustManager(), new AcceptAllHostsVerifier());
+        return api;
     }
 
     private void assertRequestTokenBody(

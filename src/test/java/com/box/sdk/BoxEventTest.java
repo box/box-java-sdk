@@ -21,7 +21,7 @@ import org.junit.Test;
 public class BoxEventTest {
 
     @Rule
-    public WireMockRule wireMockRule = new WireMockRule(wireMockConfig().dynamicPort());
+    public WireMockRule wireMockRule = new WireMockRule(wireMockConfig().dynamicHttpsPort().httpDisabled(true));
     private final BoxAPIConnection api = TestUtils.getAPIConnection();
 
     @Before
@@ -160,6 +160,6 @@ public class BoxEventTest {
     }
 
     private String baseUrl() {
-        return format("http://localhost:%d", wireMockRule.port());
+        return format("https://localhost:%d", wireMockRule.httpsPort());
     }
 }

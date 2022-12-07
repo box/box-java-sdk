@@ -19,19 +19,16 @@ public class BoxFileVersionLegalHoldTest {
      */
     @Test
     public void testGetInfoSendsCorrectRequest() {
-        BoxAPIConnection api = new BoxAPIConnection("");
-        api.setRequestInterceptor(new RequestInterceptor() {
-            @Override
-            public BoxAPIResponse onRequest(BoxAPIRequest request) {
-                assertEquals("https://api.box.com/2.0/file_version_legal_holds/0?fields=file",
-                    request.getUrl().toString());
-                return new BoxJSONResponse() {
-                    @Override
-                    public String getJSON() {
-                        return "{\"id\": \"0\"}";
-                    }
-                };
-            }
+        BoxAPIConnection api = new BoxAPIConnectionForTests("");
+        api.setRequestInterceptor(request -> {
+            assertEquals("https://api.box.com/2.0/file_version_legal_holds/0?fields=file",
+                request.getUrl().toString());
+            return new BoxJSONResponse() {
+                @Override
+                public String getJSON() {
+                    return "{\"id\": \"0\"}";
+                }
+            };
         });
 
         BoxFileVersionLegalHold hold = new BoxFileVersionLegalHold(api, "0");
@@ -75,7 +72,7 @@ public class BoxFileVersionLegalHoldTest {
             + "  \"deleted_at\": null\n"
             + "}").asObject();
 
-        BoxAPIConnection api = new BoxAPIConnection("");
+        BoxAPIConnection api = new BoxAPIConnectionForTests("");
         api.setRequestInterceptor(JSONRequestInterceptor.respondWith(fakeJSONResponse));
 
         BoxFileVersionLegalHold hold = new BoxFileVersionLegalHold(api, id);

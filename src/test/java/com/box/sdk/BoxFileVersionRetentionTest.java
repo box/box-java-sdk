@@ -22,19 +22,16 @@ public class BoxFileVersionRetentionTest {
      */
     @Test
     public void testGetInfoSendsCorrectRequest() {
-        BoxAPIConnection api = new BoxAPIConnection("");
-        api.setRequestInterceptor(new RequestInterceptor() {
-            @Override
-            public BoxAPIResponse onRequest(BoxAPIRequest request) {
-                assertEquals("https://api.box.com/2.0/file_version_retentions/0?fields=file%2Capplied_at",
-                    request.getUrl().toString());
-                return new BoxJSONResponse() {
-                    @Override
-                    public String getJSON() {
-                        return "{\"id\": \"0\"}";
-                    }
-                };
-            }
+        BoxAPIConnection api = new BoxAPIConnectionForTests("");
+        api.setRequestInterceptor(request -> {
+            assertEquals("https://api.box.com/2.0/file_version_retentions/0?fields=file%2Capplied_at",
+                request.getUrl().toString());
+            return new BoxJSONResponse() {
+                @Override
+                public String getJSON() {
+                    return "{\"id\": \"0\"}";
+                }
+            };
         });
 
         BoxFileVersionRetention retention = new BoxFileVersionRetention(api, "0");
@@ -78,7 +75,7 @@ public class BoxFileVersionRetentionTest {
             + "    }\n"
             + "}").asObject();
 
-        BoxAPIConnection api = new BoxAPIConnection("");
+        BoxAPIConnection api = new BoxAPIConnectionForTests("");
         api.setRequestInterceptor(JSONRequestInterceptor.respondWith(fakeJSONResponse));
 
         BoxFileVersionRetention retention = new BoxFileVersionRetention(api, id);
@@ -98,19 +95,16 @@ public class BoxFileVersionRetentionTest {
      */
     @Test
     public void testGetAllSendsCorrectRequest() {
-        BoxAPIConnection api = new BoxAPIConnection("");
-        api.setRequestInterceptor(new RequestInterceptor() {
-            @Override
-            public BoxAPIResponse onRequest(BoxAPIRequest request) {
-                assertEquals("https://api.box.com/2.0/file_version_retentions?limit=100",
-                    request.getUrl().toString());
-                return new BoxJSONResponse() {
-                    @Override
-                    public String getJSON() {
-                        return "{\"entries\": []}";
-                    }
-                };
-            }
+        BoxAPIConnection api = new BoxAPIConnectionForTests("");
+        api.setRequestInterceptor(request -> {
+            assertEquals("https://api.box.com/2.0/file_version_retentions?limit=100",
+                request.getUrl().toString());
+            return new BoxJSONResponse() {
+                @Override
+                public String getJSON() {
+                    return "{\"entries\": []}";
+                }
+            };
         });
 
         BoxFileVersionRetention.getAll(api);
@@ -130,22 +124,19 @@ public class BoxFileVersionRetentionTest {
             + "&fields=file%2Capplied_at"
             + "&limit=100";
 
-        BoxAPIConnection api = new BoxAPIConnection("");
-        api.setRequestInterceptor(new RequestInterceptor() {
-            @Override
-            public BoxAPIResponse onRequest(BoxAPIRequest request) {
-                try {
-                    assertEquals(new URL(urlString), request.getUrl());
-                } catch (MalformedURLException e) {
-                    assert false;
-                }
-                return new BoxJSONResponse() {
-                    @Override
-                    public String getJSON() {
-                        return "{\"entries\": []}";
-                    }
-                };
+        BoxAPIConnection api = new BoxAPIConnectionForTests("");
+        api.setRequestInterceptor(request -> {
+            try {
+                assertEquals(new URL(urlString), request.getUrl());
+            } catch (MalformedURLException e) {
+                assert false;
             }
+            return new BoxJSONResponse() {
+                @Override
+                public String getJSON() {
+                    return "{\"entries\": []}";
+                }
+            };
         });
 
         BoxFileVersionRetention.QueryFilter filter = new BoxFileVersionRetention.QueryFilter()
@@ -189,7 +180,7 @@ public class BoxFileVersionRetentionTest {
             + "        ]\n"
             + "}").asObject();
 
-        BoxAPIConnection api = new BoxAPIConnection("");
+        BoxAPIConnection api = new BoxAPIConnectionForTests("");
         api.setRequestInterceptor(JSONRequestInterceptor.respondWith(fakeJSONResponse));
 
         Iterator<BoxFileVersionRetention.Info> iterator = BoxFileVersionRetention.getAll(api).iterator();

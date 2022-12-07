@@ -2,6 +2,8 @@ package com.box.sdk;
 
 import static java.lang.String.format;
 import static java.lang.String.join;
+import static java.util.Collections.singletonList;
+import static okhttp3.ConnectionSpec.MODERN_TLS;
 
 import com.eclipsesource.json.Json;
 import com.eclipsesource.json.JsonObject;
@@ -12,12 +14,9 @@ import java.net.Proxy;
 import java.net.URI;
 import java.net.URL;
 import java.security.KeyManagementException;
-import java.security.KeyStore;
-import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
 import java.time.Duration;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -25,10 +24,9 @@ import java.util.Optional;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 import java.util.regex.Pattern;
+import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.SSLContext;
-import javax.net.ssl.SSLParameters;
 import javax.net.ssl.TrustManager;
-import javax.net.ssl.TrustManagerFactory;
 import javax.net.ssl.X509TrustManager;
 import okhttp3.Authenticator;
 import okhttp3.Credentials;
@@ -44,6 +42,26 @@ import okhttp3.Response;
  * BoxAPIConnection may be created to support multi-user login.</p>
  */
 public class BoxAPIConnection {
+
+    /**
+     * Used as a marker to setup connection to use default HostnameVerifier
+     * Example:<pre>{@code
+     * BoxApiConnection api = new BoxApiConnection(...);
+     * HostnameVerifier myHostnameVerifier = ...
+     * api.configureSslCertificatesValidation(DEFAULT_TRUST_MANAGER, myHostnameVerifier);
+     * }</pre>
+     */
+    public static final X509TrustManager DEFAULT_TRUST_MANAGER = null;
+    /**
+     * Used as a marker to setup connection to use default HostnameVerifier
+     * Example:<pre>{@code
+     * BoxApiConnection api = new BoxApiConnection(...);
+     * X509TrustManager myTrustManager = ...
+     * api.configureSslCertificatesValidation(myTrustManager, DEFAULT_HOSTNAME_VERIFIER);
+     * }</pre>
+     */
+    public static final HostnameVerifier DEFAULT_HOSTNAME_VERIFIER = null;
+
     /**
      * The default maximum number of times an API request will be retried after an error response
      * is received.
@@ -54,7 +72,6 @@ public class BoxAPIConnection {
      */
     protected static final String DEFAULT_BASE_AUTHORIZATION_URL = "https://account.box.com/api/";
     static final String AS_USER_HEADER = "As-User";
-    private static final BoxLogger LOGGER = BoxLogger.defaultLogger();
 
     private static final String API_VERSION = "2.0";
     private static final String OAUTH_SUFFIX = "oauth2/authorize";
@@ -78,7 +95,8 @@ public class BoxAPIConnection {
     private final String clientID;
     private final String clientSecret;
     private final ReadWriteLock refreshLock;
-    private SSLContext sslContext;
+    private X509TrustManager trustManager;
+    private HostnameVerifier hostnameVerifier;
 
     // These volatile fields are used when determining if the access token needs to be refreshed. Since they are used in
     // the double-checked lock in getAccessToken(), they must be atomic.
@@ -145,43 +163,6 @@ public class BoxAPIConnection {
         this.listeners = new ArrayList<>();
         this.customHeaders = new HashMap<>();
 
-        // Setup the SSL context manually to force newer TLS version on legacy Java environments
-        // This is necessary because Java 7 uses TLSv1.0 by default, but the Box API will need
-        // to deprecate this protocol in the future.  To prevent clients from breaking, we must
-        // ensure that they are using TLSv1.1 or greater!
-        try {
-            sslContext = SSLContext.getDefault();
-            SSLParameters params = sslContext.getDefaultSSLParameters();
-            boolean supportsNewTLS = false;
-            for (String protocol : params.getProtocols()) {
-                if (protocol.compareTo("TLSv1") > 0) {
-                    supportsNewTLS = true;
-                    break;
-                }
-            }
-            if (!supportsNewTLS) {
-                // Try to upgrade to a higher TLS version
-                sslContext = null;
-                sslContext = SSLContext.getInstance("TLSv1.1");
-                sslContext.init(null, null, new java.security.SecureRandom());
-                sslContext = SSLContext.getInstance("TLSv1.2");
-                sslContext.init(null, null, new java.security.SecureRandom());
-            }
-        } catch (NoSuchAlgorithmException ex) {
-            if (sslContext == null) {
-                LOGGER.error("Unable to set up SSL context for HTTPS! "
-                    + "This may result in the inability  to connect to the Box API.");
-            }
-            if (sslContext != null && sslContext.getProtocol().equals("TLSv1")) {
-                // Could not find a good version of TLS
-                LOGGER.error("Using deprecated TLSv1 protocol, which will be deprecated by the Box API! "
-                    + "Upgrade to a newer version of Java as soon as possible.");
-            }
-        } catch (KeyManagementException ex) {
-            LOGGER.error(
-                "Exception when initializing SSL Context!  This may result in the inabilty to connect to the Box API"
-            );
-        }
         buildHttpClients();
     }
 
@@ -218,27 +199,26 @@ public class BoxAPIConnection {
 
     private void buildHttpClients() {
         OkHttpClient.Builder httpClientBuilder = new OkHttpClient.Builder();
-        if (sslContext != null) {
+        if (trustManager != null) {
             try {
-                TrustManagerFactory trustManagerFactory =
-                    TrustManagerFactory.getInstance(TrustManagerFactory.getDefaultAlgorithm());
-                trustManagerFactory.init((KeyStore) null);
-                TrustManager[] trustManagers = trustManagerFactory.getTrustManagers();
-                if (trustManagers.length != 1 || !(trustManagers[0] instanceof X509TrustManager)) {
-                    throw new IllegalStateException("Unexpected default trust managers:"
-                        + Arrays.toString(trustManagers));
-                }
-                httpClientBuilder.sslSocketFactory(sslContext.getSocketFactory(), (X509TrustManager) trustManagers[0]);
-            } catch (NoSuchAlgorithmException | KeyStoreException e) {
+                SSLContext sslContext = SSLContext.getInstance("SSL");
+                sslContext.init(null, new TrustManager[]{trustManager}, new java.security.SecureRandom());
+                httpClientBuilder.sslSocketFactory(sslContext.getSocketFactory(), trustManager);
+            } catch (NoSuchAlgorithmException | KeyManagementException e) {
                 throw new RuntimeException(e);
             }
-
         }
+
         OkHttpClient.Builder builder = httpClientBuilder
             .followSslRedirects(true)
             .followRedirects(true)
             .connectTimeout(Duration.ofMillis(connectTimeout))
-            .readTimeout(Duration.ofMillis(readTimeout));
+            .readTimeout(Duration.ofMillis(readTimeout))
+            .connectionSpecs(singletonList(MODERN_TLS));
+
+        if (hostnameVerifier != null) {
+            httpClientBuilder.hostnameVerifier(hostnameVerifier);
+        }
 
         if (proxy != null) {
             builder.proxy(proxy);
@@ -254,11 +234,23 @@ public class BoxAPIConnection {
                 builder.proxyAuthenticator(authenticator);
             }
         }
+        builder = modifyHttpClientBuilder(builder);
+
         this.httpClient = builder.build();
         this.noRedirectsHttpClient = new OkHttpClient.Builder(httpClient)
             .followSslRedirects(false)
             .followRedirects(false)
             .build();
+    }
+
+    /**
+     * Can be used to modify OkHttp.Builder used to create connection. This method is called after all modifications
+     * were done, thus allowing others to create their own connections and further customize builder.
+     * @param httpClientBuilder Builder that will be used to create http connection.
+     * @return Modified builder.
+     */
+    protected OkHttpClient.Builder modifyHttpClientBuilder(OkHttpClient.Builder httpClientBuilder) {
+        return httpClientBuilder;
     }
 
     /**
@@ -1192,6 +1184,20 @@ public class BoxAPIConnection {
         this.removeCustomHeader(AS_USER_HEADER);
     }
 
+    /**
+     * Used to override default SSL certification handling. For example, you can provide your own
+     * trust manager or hostname verifier to allow self-signed certificates.
+     * You can check examples <a href="https://github.com/box/box-java-sdk/blob/main/doc/configuration.md#ssl-configuration">here</a>.
+     *
+     * @param trustManager     TrustManager that verifies certificates are valid.
+     * @param hostnameVerifier HostnameVerifier that allows you to specify what hostnames are allowed.
+     */
+    public void configureSslCertificatesValidation(X509TrustManager trustManager, HostnameVerifier hostnameVerifier) {
+        this.trustManager = trustManager;
+        this.hostnameVerifier = hostnameVerifier;
+        buildHttpClients();
+    }
+
     Map<String, String> getHeaders() {
         return this.customHeaders;
     }
@@ -1229,7 +1235,7 @@ public class BoxAPIConnection {
         try {
             return httpClient.newCall(request).execute();
         } catch (IOException e) {
-            throw new BoxAPIException("Couldn't connect to the Box API due to a network error.", e);
+            throw new BoxAPIException("Couldn't connect to the Box API due to a network error. Request\n" + request, e);
         }
     }
 

@@ -1,5 +1,6 @@
 package com.box.sdk;
 
+import static com.box.sdk.TestUtils.createConnectionWith;
 import static com.box.sdk.http.ContentType.APPLICATION_JSON;
 import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
 import static com.github.tomakehurst.wiremock.client.WireMock.equalTo;
@@ -32,7 +33,7 @@ import org.junit.Test;
 
 public class BoxAPIRequestTest {
     @Rule
-    public WireMockRule wireMockRule = new WireMockRule(wireMockConfig().dynamicPort());
+    public WireMockRule wireMockRule = new WireMockRule(wireMockConfig().dynamicHttpsPort().httpDisabled(true));
 
     @Test
     public void requestRetriesTheDefaultNumberOfTimesWhenServerReturns500() {
@@ -40,7 +41,8 @@ public class BoxAPIRequestTest {
         Time mockTime = mock(Time.class);
         BackoffCounter backoffCounter = new BackoffCounter(mockTime);
 
-        BoxAPIRequest request = new BoxAPIRequest(new BoxAPIConnection(""), boxMockUrl(), "GET");
+        BoxAPIConnection api = createConnectionWith(boxMockUrl().toString());
+        BoxAPIRequest request = new BoxAPIRequest(api, boxMockUrl(), "GET");
         request.setBackoffCounter(backoffCounter);
 
         try {
@@ -56,7 +58,8 @@ public class BoxAPIRequestTest {
         Time mockTime = mock(Time.class);
         BackoffCounter backoffCounter = new BackoffCounter(mockTime);
 
-        BoxAPIRequest request = new BoxAPIRequest(new BoxAPIConnection(""), boxMockUrl(), "GET");
+        BoxAPIConnection api = createConnectionWith(boxMockUrl().toString());
+        BoxAPIRequest request = new BoxAPIRequest(api, boxMockUrl(), "GET");
         request.setBackoffCounter(backoffCounter);
 
         try {
@@ -76,7 +79,8 @@ public class BoxAPIRequestTest {
         Time mockTime = mock(Time.class);
         BackoffCounter backoffCounter = new BackoffCounter(mockTime);
 
-        BoxAPIRequest request = new BoxAPIRequest(new BoxAPIConnection(""), boxMockUrl(), "GET");
+        BoxAPIConnection api = createConnectionWith(boxMockUrl().toString());
+        BoxAPIRequest request = new BoxAPIRequest(api, boxMockUrl(), "GET");
         request.setBackoffCounter(backoffCounter);
 
         try {
@@ -93,7 +97,7 @@ public class BoxAPIRequestTest {
         Time mockTime = mock(Time.class);
         BackoffCounter backoffCounter = new BackoffCounter(mockTime);
 
-        BoxAPIConnection api = new BoxAPIConnection("");
+        BoxAPIConnection api = createConnectionWith(boxMockUrl().toString());
         api.setMaxRetryAttempts(expectedNumRetryAttempts);
 
         BoxAPIRequest request = new BoxAPIRequest(api, boxMockUrl(), "GET");
@@ -114,7 +118,8 @@ public class BoxAPIRequestTest {
             .withHeader("Content-Type", APPLICATION_JSON)
             .withBody("{}")));
 
-        BoxAPIRequest request = new BoxAPIRequest(new BoxAPIConnection(""), boxMockUrl(), "GET");
+        BoxAPIConnection api = createConnectionWith(boxMockUrl().toString());
+        BoxAPIRequest request = new BoxAPIRequest(api, boxMockUrl(), "GET");
 
         try (BoxAPIResponse response = request.send()) {
             assertNotNull(response);
@@ -128,7 +133,7 @@ public class BoxAPIRequestTest {
     @Test
     public void requestDoesNotAllowModifyingBoxUAHeader() {
 
-        BoxAPIConnection api = new BoxAPIConnection("");
+        BoxAPIConnection api = new BoxAPIConnectionForTests("");
 
         BoxAPIRequest request = new BoxAPIRequest(api, boxMockUrl(), "GET");
 
@@ -143,7 +148,7 @@ public class BoxAPIRequestTest {
     @Test
     public void requestDoesNotAllowDuplicateAsUserHeader() {
 
-        BoxAPIRequest request = new BoxAPIRequest(new BoxAPIConnection(""), boxMockUrl(), "GET");
+        BoxAPIRequest request = new BoxAPIRequest(new BoxAPIConnectionForTests(""), boxMockUrl(), "GET");
 
         request.addHeader("As-User", "12345");
         request.addHeader("As-User", "67890");
@@ -167,7 +172,8 @@ public class BoxAPIRequestTest {
 
     @Test
     public void whenJsonCannotBeParseExceptionIsThrown() {
-        BoxAPIRequest request = new BoxAPIRequest(new BoxAPIConnection(""), boxMockUrl(), "GET");
+        BoxAPIConnection api = createConnectionWith(boxMockUrl().toString());
+        BoxAPIRequest request = new BoxAPIRequest(api, boxMockUrl(), "GET");
         stubFor(get(urlEqualTo("/")).willReturn(
             aResponse()
                 .withStatus(200)
@@ -184,7 +190,8 @@ public class BoxAPIRequestTest {
 
     @Test
     public void handlesGZIPResponse() {
-        BoxAPIRequest request = new BoxAPIRequest(new BoxAPIConnection(""), boxMockUrl(), "GET");
+        BoxAPIConnection api = createConnectionWith(boxMockUrl().toString());
+        BoxAPIRequest request = new BoxAPIRequest(api, boxMockUrl(), "GET");
         String jsonString = "{\"foo\":\"bar\"}";
         stubFor(get(urlEqualTo("/")).willReturn(
             aResponse()
@@ -203,7 +210,7 @@ public class BoxAPIRequestTest {
     public void willNotRetry400ErrorWithPlainTextResponse() {
         stubFor(get(urlEqualTo("/")).willReturn(aResponse().withStatus(400).withBody("Not a JSON")));
 
-        BoxAPIConnection api = new BoxAPIConnection("");
+        BoxAPIConnection api = createConnectionWith(boxMockUrl().toString());
 
         BoxAPIRequest request = new BoxAPIRequest(api, boxMockUrl(), "GET");
 
@@ -221,7 +228,7 @@ public class BoxAPIRequestTest {
     public void willNotRetry400ErrorWithJsonResponse() {
         stubFor(get(urlEqualTo("/")).willReturn(aResponse().withStatus(400).withBody("{\"foo\":\"bar\"}")));
 
-        BoxAPIConnection api = new BoxAPIConnection("");
+        BoxAPIConnection api = createConnectionWith(boxMockUrl().toString());
 
         BoxAPIRequest request = new BoxAPIRequest(api, boxMockUrl(), "GET");
 
@@ -242,7 +249,7 @@ public class BoxAPIRequestTest {
         stubFor(get(urlEqualTo("/")).withHeader(headerName, equalTo(headerValue))
             .willReturn(aResponse().withStatus(200).withBody("{\"foo\":\"bar\"}")));
 
-        BoxAPIConnection api = new BoxAPIConnection("");
+        BoxAPIConnection api = createConnectionWith(boxMockUrl().toString());
         api.setRequestInterceptor(request -> {
             request.addHeader(headerName, headerValue);
             return null;
@@ -267,7 +274,7 @@ public class BoxAPIRequestTest {
 
     private URL boxMockUrl() {
         try {
-            return new URL(format("http://localhost:%d/", wireMockRule.port()));
+            return new URL(format("https://localhost:%d/", wireMockRule.httpsPort()));
         } catch (MalformedURLException e) {
             throw new RuntimeException(e);
         }

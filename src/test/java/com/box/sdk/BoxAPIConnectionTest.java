@@ -1,5 +1,7 @@
 package com.box.sdk;
 
+import static com.box.sdk.BoxAPIConnection.DEFAULT_HOSTNAME_VERIFIER;
+import static com.box.sdk.BoxAPIConnection.DEFAULT_TRUST_MANAGER;
 import static com.box.sdk.http.ContentType.APPLICATION_JSON;
 import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
 import static com.github.tomakehurst.wiremock.client.WireMock.equalTo;
@@ -35,16 +37,18 @@ import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
+import javax.net.ssl.SSLHandshakeException;
+import javax.net.ssl.SSLPeerUnverifiedException;
 import org.junit.Assert;
 import org.junit.Rule;
 import org.junit.Test;
 
 public class BoxAPIConnectionTest {
-    /**
-     * Wiremock
-     */
     @Rule
+    // we do not use HTTPS mock as wiremock ha trouble proxying HTTPS traffic
     public WireMockRule wireMockRule = new WireMockRule(wireMockConfig().dynamicPort());
+    @Rule
+    public WireMockRule wireMockHttpsRule = new WireMockRule(wireMockConfig().dynamicHttpsPort().httpDisabled(true));
 
     private final String accessToken = "fakeToken";
     private final String refreshToken = "fake refresh token";
@@ -59,7 +63,8 @@ public class BoxAPIConnectionTest {
         final String anyAccessToken = "";
         final String anyRefreshToken = "";
 
-        BoxAPIConnection api = new BoxAPIConnection(anyClientID, anyClientSecret, anyAccessToken, anyRefreshToken);
+        BoxAPIConnection api =
+            new BoxAPIConnectionForTests(anyClientID, anyClientSecret, anyAccessToken, anyRefreshToken);
 
         assertThat(api.canRefresh(), is(true));
     }
@@ -68,7 +73,7 @@ public class BoxAPIConnectionTest {
     public void needsRefreshWhenTokenHasExpired() {
         final String anyAccessToken = "";
 
-        BoxAPIConnection api = new BoxAPIConnection(anyAccessToken);
+        BoxAPIConnection api = new BoxAPIConnectionForTests(anyAccessToken);
         api.setExpires(-1);
 
         assertThat(api.needsRefresh(), is(true));
@@ -78,7 +83,7 @@ public class BoxAPIConnectionTest {
     public void doesNotNeedRefreshWhenTokenHasNotExpired() {
         final String anyAccessToken = "";
 
-        BoxAPIConnection api = new BoxAPIConnection(anyAccessToken);
+        BoxAPIConnection api = new BoxAPIConnectionForTests(anyAccessToken);
         api.setExpires(Long.MAX_VALUE);
 
         assertThat(api.needsRefresh(), is(not(true)));
@@ -88,7 +93,7 @@ public class BoxAPIConnectionTest {
     public void needsRefreshWhenExpiresIsZero() {
         final String anyAccessToken = "";
 
-        BoxAPIConnection api = new BoxAPIConnection(anyAccessToken);
+        BoxAPIConnection api = new BoxAPIConnectionForTests(anyAccessToken);
         api.setExpires(0);
 
         assertThat(api.needsRefresh(), is(true));
@@ -96,7 +101,7 @@ public class BoxAPIConnectionTest {
 
     @Test
     public void interceptorReceivesSentRequest() throws MalformedURLException {
-        BoxAPIConnection api = new BoxAPIConnection("");
+        BoxAPIConnection api = new BoxAPIConnectionForTests("");
 
         BoxAPIResponse fakeResponse = new BoxAPIResponse();
 
@@ -113,7 +118,7 @@ public class BoxAPIConnectionTest {
 
     @Test
     public void restoreConnectionThatDoesNotNeedRefresh() {
-        BoxAPIConnection api = new BoxAPIConnection(accessToken, clientSecret, accessToken, refreshToken);
+        BoxAPIConnection api = new BoxAPIConnectionForTests(accessToken, clientSecret, accessToken, refreshToken);
         api.setExpires(3600000L);
         api.setLastRefresh(System.currentTimeMillis());
         String state = api.save();
@@ -169,7 +174,7 @@ public class BoxAPIConnectionTest {
         scopes.add("root_readwrite");
         scopes.add("manage_groups");
 
-        BoxAPIConnection api = new BoxAPIConnection(clientId, clientSecret);
+        BoxAPIConnection api = new BoxAPIConnectionForTests(clientId, clientSecret);
         api.setBaseAuthorizationURL("https://account.my-box.com/api");
 
         URL authURL = api.getAuthorizationURL(new URI("http://localhost:3000"), "test", scopes);
@@ -186,10 +191,13 @@ public class BoxAPIConnectionTest {
 
     @Test
     public void revokeTokenCallsCorrectEndpoint() {
-        BoxAPIConnection api = new BoxAPIConnection(clientId, clientSecret, accessToken, refreshToken);
-        api.setBaseURL(format("http://localhost:%d", wireMockRule.port()));
+        BoxAPIConnection api = new BoxAPIConnectionForTests(clientId, clientSecret, accessToken, refreshToken);
+        api.configureSslCertificatesValidation(new TrustAllTrustManager(), new AcceptAllHostsVerifier());
+        api.setBaseURL(baseHttpsUrl());
+        api.setBaseUploadURL(baseHttpsUrl());
+        api.setBaseAuthorizationURL(baseHttpsUrl());
 
-        wireMockRule.stubFor(post(urlPathEqualTo("/oauth2/revoke"))
+        wireMockHttpsRule.stubFor(post(urlPathEqualTo("/oauth2/revoke"))
             .withRequestBody(
                 equalTo(String.format("token=%s&client_id=fakeID&client_secret=fakeSecret", accessToken))
             )
@@ -247,7 +255,7 @@ public class BoxAPIConnectionTest {
         final String targetHeader = "As-User";
         final String targetHeaderValue = "12345";
 
-        BoxAPIConnection api = new BoxAPIConnection("");
+        BoxAPIConnection api = new BoxAPIConnectionForTests("");
         api.setCustomHeader(targetHeader, targetHeaderValue);
 
         api.setRequestInterceptor(request -> {
@@ -279,7 +287,7 @@ public class BoxAPIConnectionTest {
         final String targetHeader = "As-User";
         final String targetHeaderValue = "12345";
 
-        BoxAPIConnection api = new BoxAPIConnection("");
+        BoxAPIConnection api = new BoxAPIConnectionForTests("");
         api.setCustomHeader(targetHeader, targetHeaderValue);
         api.removeCustomHeader(targetHeader);
 
@@ -309,7 +317,7 @@ public class BoxAPIConnectionTest {
     public void asUserAddsAsUserHeader() {
         final String userID = "12345";
 
-        BoxAPIConnection api = new BoxAPIConnection("");
+        BoxAPIConnection api = new BoxAPIConnectionForTests("");
         api.asUser(userID);
 
         api.setRequestInterceptor(request -> {
@@ -338,7 +346,7 @@ public class BoxAPIConnectionTest {
     public void asSelfRemovesAsUserHeader() {
         final String userID = "12345";
 
-        BoxAPIConnection api = new BoxAPIConnection("");
+        BoxAPIConnection api = new BoxAPIConnectionForTests("");
         api.asUser(userID);
         api.asSelf();
 
@@ -366,7 +374,7 @@ public class BoxAPIConnectionTest {
 
     @Test
     public void suppressNotificationsAddsBoxNotificationsHeader() {
-        BoxAPIConnection api = new BoxAPIConnection("");
+        BoxAPIConnection api = new BoxAPIConnectionForTests("");
         api.suppressNotifications();
 
         api.setRequestInterceptor(request -> {
@@ -393,7 +401,7 @@ public class BoxAPIConnectionTest {
 
     @Test
     public void enableNotificationsRemovesBoxNotificationsHeader() {
-        BoxAPIConnection api = new BoxAPIConnection("");
+        BoxAPIConnection api = new BoxAPIConnectionForTests("");
         api.suppressNotifications();
         api.enableNotifications();
 
@@ -421,7 +429,7 @@ public class BoxAPIConnectionTest {
 
     @Test
     public void requestToStringWorksInsideRequestInterceptor() {
-        BoxAPIConnection api = new BoxAPIConnection("");
+        BoxAPIConnection api = new BoxAPIConnectionForTests("");
         api.setRequestInterceptor(request -> {
             String reqString = request.toString();
             Assert.assertTrue(reqString.length() > 0);
@@ -442,7 +450,7 @@ public class BoxAPIConnectionTest {
         int newMaxRetries = defaultMaxRetries + 5;
         BoxGlobalSettings.setMaxRetryAttempts(newMaxRetries);
 
-        BoxAPIConnection api = new BoxAPIConnection("");
+        BoxAPIConnection api = new BoxAPIConnectionForTests("");
         assertEquals(newMaxRetries, api.getMaxRetryAttempts());
 
         // Set back the original number to not interfere with other test cases
@@ -454,7 +462,7 @@ public class BoxAPIConnectionTest {
         int instanceConnectTimeout = BoxGlobalSettings.getConnectTimeout() + 1000;
         int instanceReadTimeout = BoxGlobalSettings.getReadTimeout() + 1000;
 
-        BoxAPIConnection api = new BoxAPIConnection("");
+        BoxAPIConnection api = new BoxAPIConnectionForTests("");
 
         api.setConnectTimeout(instanceConnectTimeout);
         api.setReadTimeout(instanceReadTimeout);
@@ -468,7 +476,7 @@ public class BoxAPIConnectionTest {
     @Test
     public void allowsToSaveAndRestoreApplicationConnection() throws URISyntaxException {
         // given
-        BoxAPIConnection api = new BoxAPIConnection(clientId, clientSecret, accessToken, refreshToken);
+        BoxAPIConnection api = new BoxAPIConnectionForTests(clientId, clientSecret, accessToken, refreshToken);
         api.setRequestInterceptor(
             request -> new BoxAPIConnectionTest.AuthenticationResponse(accessToken, refreshToken, "4245")
         );
@@ -515,7 +523,7 @@ public class BoxAPIConnectionTest {
 
     @Test
     public void setBaseUrls() {
-        BoxAPIConnection api = new BoxAPIConnection(clientId, clientSecret, accessToken, refreshToken);
+        BoxAPIConnection api = new BoxAPIConnectionForTests(clientId, clientSecret, accessToken, refreshToken);
         String baseURL = "https://my-base.url";
         String baseUploadURL = "https://my-base-upload.url";
         String baseAppURL = "https://my-base-app.url";
@@ -532,7 +540,7 @@ public class BoxAPIConnectionTest {
 
     @Test
     public void canOverrideTokenUrlWithBaseUrl() {
-        BoxAPIConnection api = new BoxAPIConnection(clientId, clientSecret, accessToken, refreshToken);
+        BoxAPIConnection api = new BoxAPIConnectionForTests(clientId, clientSecret, accessToken, refreshToken);
 
         api.setBaseURL("https://my-base.url");
 
@@ -541,7 +549,7 @@ public class BoxAPIConnectionTest {
 
     @Test
     public void canOverrideRevokeUrlWithBaseUrl() {
-        BoxAPIConnection api = new BoxAPIConnection(clientId, clientSecret, accessToken, refreshToken);
+        BoxAPIConnection api = new BoxAPIConnectionForTests(clientId, clientSecret, accessToken, refreshToken);
 
         api.setBaseURL("https://my-base.url");
 
@@ -551,7 +559,7 @@ public class BoxAPIConnectionTest {
     @Test
     public void allowsToSaveAndRestoreApplicationConnectionWithBaseUrlSet() throws URISyntaxException {
         // given
-        BoxAPIConnection api = new BoxAPIConnection(clientId, clientSecret, accessToken, refreshToken);
+        BoxAPIConnection api = new BoxAPIConnectionForTests(clientId, clientSecret, accessToken, refreshToken);
         api.setBaseURL("https://my-base.url");
         api.setBaseUploadURL("https://my-base-upload.url");
         api.setBaseAuthorizationURL("https://my-authorization.url");
@@ -580,9 +588,10 @@ public class BoxAPIConnectionTest {
     public void usesCorrectTokenUrlToAuthenticateWhenBaseUrlIsSet() {
         String code = "fakeCode";
 
-        BoxAPIConnection api = new BoxAPIConnection(clientId, clientSecret);
+        BoxAPIConnection api = new BoxAPIConnectionForTests(clientId, clientSecret);
+        api.configureSslCertificatesValidation(new TrustAllTrustManager(), new AcceptAllHostsVerifier());
         api.setAutoRefresh(false);
-        api.setBaseURL(format("http://localhost:%d", wireMockRule.port()));
+        api.setBaseURL(baseHttpsUrl());
         mockAndAssertAuthentication(clientId, clientSecret, code);
 
         api.authenticate(code);
@@ -595,9 +604,10 @@ public class BoxAPIConnectionTest {
     public void usesCorrectTokenToAuthenticateUrlWhenBaseUrlIsSet() {
         String code = "fakeCode";
 
-        BoxAPIConnection api = new BoxAPIConnection(clientId, clientSecret);
+        BoxAPIConnection api = new BoxAPIConnectionForTests(clientId, clientSecret);
+        api.configureSslCertificatesValidation(new TrustAllTrustManager(), new AcceptAllHostsVerifier());
         api.setAutoRefresh(false);
-        api.setBaseURL(format("http://localhost:%d", wireMockRule.port()));
+        api.setBaseURL(baseHttpsUrl());
         mockAndAssertAuthentication(clientId, clientSecret, code);
 
         api.authenticate(code);
@@ -608,8 +618,9 @@ public class BoxAPIConnectionTest {
 
     @Test
     public void usesCorrectTokenUrlToRevokeWhenBaseUrlIsSet() {
-        BoxAPIConnection api = new BoxAPIConnection(clientId, clientSecret, accessToken, refreshToken);
-        api.setBaseURL(format("http://localhost:%d", wireMockRule.port()));
+        BoxAPIConnection api = new BoxAPIConnectionForTests(clientId, clientSecret, accessToken, refreshToken);
+        api.configureSslCertificatesValidation(new TrustAllTrustManager(), new AcceptAllHostsVerifier());
+        api.setBaseURL(baseHttpsUrl());
 
         mockAndAssertRevoke(accessToken, clientId, clientSecret);
 
@@ -619,14 +630,15 @@ public class BoxAPIConnectionTest {
     @Test
     public void checkThatTheProxyIsUsed() {
         // given and then
+        // we do not use HTTPS mock as wiremock ha trouble proxying HTTPS traffic
         wireMockRule.stubFor(post(urlPathEqualTo("/oauth2/token"))
             .willReturn(aResponse()
-            .withHeader("Content-Type", APPLICATION_JSON)
-            .withBody(
-                "{\"refresh_token\":\"refresh-token\", \"access_token\":\"access-token\", \"expires_in\": 1}"
-            )));
-        BoxAPIConnection api = new BoxAPIConnection(clientId, clientSecret, accessToken, refreshToken);
-        String serverLocation = format("http://localhost:%d", wireMockRule.port());
+                .withHeader("Content-Type", APPLICATION_JSON)
+                .withBody(
+                    "{\"refresh_token\":\"refresh-token\", \"access_token\":\"access-token\", \"expires_in\": 1}"
+                )));
+        BoxAPIConnection api = new BoxAPIConnectionForTests(clientId, clientSecret, accessToken, refreshToken);
+        String serverLocation = baseHttpUrl();
         api.setBaseURL(serverLocation);
         WireMockServer proxyWireMockServer = new WireMockServer(wireMockConfig().dynamicPort());
         proxyWireMockServer.start();
@@ -647,14 +659,15 @@ public class BoxAPIConnectionTest {
     @Test
     public void shouldAddProxyAuthentication() {
         // given and then
+        // we do not use HTTPS mock as wiremock ha trouble proxying HTTPS traffic
         wireMockRule.stubFor(post(urlPathEqualTo("/oauth2/token"))
             .willReturn(aResponse()
                 .withHeader("Content-Type", APPLICATION_JSON)
                 .withBody(
                     "{\"refresh_token\":\"refresh-token\", \"access_token\":\"access-token\", \"expires_in\": 1}"
                 )));
-        BoxAPIConnection api = new BoxAPIConnection(clientId, clientSecret, accessToken, refreshToken);
-        String serverLocation = format("http://localhost:%d", wireMockRule.port());
+        String serverLocation = baseHttpUrl();
+        BoxAPIConnection api = new BoxAPIConnectionForTests(clientId, clientSecret, accessToken, refreshToken);
         api.setBaseURL(serverLocation);
         WireMockServer proxyWireMockServer = new WireMockServer(wireMockConfig().dynamicPort());
         proxyWireMockServer.start();
@@ -668,8 +681,8 @@ public class BoxAPIConnectionTest {
         proxyWireMockServer.stubFor(post(urlPathEqualTo("/oauth2/token"))
             .inScenario("Proxy Authorization")
             .whenScenarioStateIs("AUTHORIZATION REQUESTED")
-                .withHeader("Proxy-Authorization", matching("Basic .+"))
-                .willReturn(aResponse().proxiedFrom(serverLocation)));
+            .withHeader("Proxy-Authorization", matching("Basic .+"))
+            .willReturn(aResponse().proxiedFrom(serverLocation)));
 
         try {
             // when
@@ -691,8 +704,8 @@ public class BoxAPIConnectionTest {
                 .withBody(
                     "{\"refresh_token\":\"refresh-token\", \"access_token\":\"access-token\", \"expires_in\": 1}"
                 )));
-        BoxAPIConnection api = new BoxAPIConnection(clientId, clientSecret, accessToken, refreshToken);
-        String serverLocation = format("http://localhost:%d", wireMockRule.port());
+        String serverLocation = baseHttpUrl();
+        BoxAPIConnection api = new BoxAPIConnectionForTests(clientId, clientSecret, accessToken, refreshToken);
         api.setBaseURL(serverLocation);
         WireMockServer proxyWireMockServer = new WireMockServer(wireMockConfig().dynamicPort());
         proxyWireMockServer.start();
@@ -724,8 +737,70 @@ public class BoxAPIConnectionTest {
         }
     }
 
+    @Test
+    public void failsByDefaultWhenUsingSelfSignedCertificates() {
+        BoxAPIConnection api = new BoxAPIConnectionForTests("");
+        api.configureSslCertificatesValidation(DEFAULT_TRUST_MANAGER, DEFAULT_HOSTNAME_VERIFIER);
+        api.setBaseURL(baseHttpsUrl());
+
+        try {
+            api.authenticate("fake code");
+        } catch (Exception e) {
+            Throwable cause = e.getCause();
+            assertThat(cause.getClass(), is(SSLHandshakeException.class));
+            assertThat(cause.getMessage(),
+                containsString("unable to find valid certification path to requested target"));
+        }
+    }
+
+    @Test
+    public void failsByDefaultWhenUsingSelfSignedCertificatesThatPointToLocalhost() {
+        BoxAPIConnection api = new BoxAPIConnectionForTests("");
+        api.setBaseURL(baseHttpsUrl());
+        api.configureSslCertificatesValidation(new TrustAllTrustManager(), DEFAULT_HOSTNAME_VERIFIER);
+
+        try {
+            api.authenticate("fake code");
+        } catch (Exception e) {
+            Throwable cause = e.getCause();
+            assertThat(cause.getClass(), is(SSLPeerUnverifiedException.class));
+            assertThat(cause.getMessage(),
+                containsString("Hostname localhost not verified"));
+        }
+    }
+
+    @Test
+    public void canBeConfiguredToUseSelfSignedCertificates() {
+        // given and then
+        wireMockHttpsRule.stubFor(post(urlPathEqualTo("/oauth2/token"))
+            .willReturn(aResponse()
+                .withHeader("Content-Type", APPLICATION_JSON)
+                .withBody(
+                    "{\"refresh_token\":\"refresh-token\","
+                        + " \"access_token\":\"access-token-from-mock\","
+                        + " \"expires_in\": 1}"
+                )));
+
+        String serverLocation = baseHttpsUrl();
+        BoxAPIConnection api = new BoxAPIConnectionForTests("");
+        api.setBaseURL(serverLocation);
+
+        api.configureSslCertificatesValidation(new TrustAllTrustManager(), new AcceptAllHostsVerifier());
+
+        api.authenticate("fake code");
+        assertThat(api.getAccessToken(), is("access-token-from-mock"));
+    }
+
+    private String baseHttpsUrl() {
+        return format("https://localhost:%d", wireMockHttpsRule.httpsPort());
+    }
+
+    private String baseHttpUrl() {
+        return format("http://localhost:%d", wireMockRule.port());
+    }
+
     private void mockAndAssertRevoke(String token, String clientId, String clientSecret) {
-        wireMockRule.stubFor(post(urlPathEqualTo("/oauth2/revoke"))
+        wireMockHttpsRule.stubFor(post(urlPathEqualTo("/oauth2/revoke"))
             .withRequestBody(equalTo(
                 format(
                     "token=%s&client_id=%s&client_secret=%s", token, clientId, clientSecret
@@ -739,7 +814,7 @@ public class BoxAPIConnectionTest {
     }
 
     private void mockAndAssertAuthentication(String clientId, String clientSecret, String code) {
-        wireMockRule.stubFor(post(urlPathEqualTo("/oauth2/token"))
+        wireMockHttpsRule.stubFor(post(urlPathEqualTo("/oauth2/token"))
             .withRequestBody(equalTo(
                 format(
                     "grant_type=authorization_code&code=%s&client_id=%s&client_secret=%s", code, clientId, clientSecret

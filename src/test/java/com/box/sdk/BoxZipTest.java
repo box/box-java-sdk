@@ -23,13 +23,13 @@ import org.junit.Test;
  */
 public class BoxZipTest {
     @Rule
-    public WireMockRule wireMockRule = new WireMockRule(wireMockConfig().dynamicPort());
+    public WireMockRule wireMockRule = new WireMockRule(wireMockConfig().dynamicHttpsPort().httpDisabled(true));
     private final BoxAPIConnection api = TestUtils.getAPIConnection();
 
     @Before
     public void setUpBaseUrl() {
         api.setMaxRetryAttempts(1);
-        api.setBaseURL(format("http://localhost:%d", wireMockRule.port()));
+        api.setBaseURL(format("https://localhost:%d", wireMockRule.httpsPort()));
     }
 
     @Test

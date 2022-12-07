@@ -47,14 +47,14 @@ import org.junit.Test;
 public class BoxFileTest {
 
     @Rule
-    public WireMockRule wireMockRule = new WireMockRule(wireMockConfig().dynamicPort());
+    public WireMockRule wireMockRule = new WireMockRule(wireMockConfig().dynamicHttpsPort().httpDisabled(true));
     private final BoxAPIConnection api = TestUtils.getAPIConnection();
 
     @Before
     public void setUpBaseUrl() {
         api.setMaxRetryAttempts(1);
-        api.setBaseURL(format("http://localhost:%d", wireMockRule.port()));
-        api.setBaseUploadURL(format("http://localhost:%d", wireMockRule.port()));
+        api.setBaseURL(format("https://localhost:%d", wireMockRule.httpsPort()));
+        api.setBaseUploadURL(format("https://localhost:%d", wireMockRule.httpsPort()));
     }
 
     @Test
@@ -67,7 +67,7 @@ public class BoxFileTest {
         tagsJSON.add("bar");
         fakeResponse.add("tags", tagsJSON);
 
-        BoxAPIConnection api = new BoxAPIConnection("");
+        BoxAPIConnection api = new BoxAPIConnectionForTests("");
         api.setRequestInterceptor(JSONRequestInterceptor.respondWith(fakeResponse));
 
         BoxFile file = new BoxFile(api, "1234");
@@ -104,7 +104,7 @@ public class BoxFileTest {
         final String collaboratorLogin = "boxer@example.com";
         final BoxCollaboration.Role collaboratorRole = BoxCollaboration.Role.VIEWER;
 
-        BoxAPIConnection api = new BoxAPIConnection("");
+        BoxAPIConnection api = new BoxAPIConnectionForTests("");
         api.setRequestInterceptor(new JSONRequestInterceptor() {
             @Override
             public BoxJSONResponse onJSONRequest(BoxJSONRequest request, JsonObject body) {
@@ -408,7 +408,7 @@ public class BoxFileTest {
                 .withQueryParam("fields", WireMock.equalTo("representations"))
                 .willReturn(WireMock.aResponse()
                     .withHeader("Content-Type", APPLICATION_JSON)
-                    .withBody(getFixture("BoxFile/GetFileRepresentations200", wireMockRule.port()))
+                    .withBody(getFixture("BoxFile/GetFileRepresentations200", wireMockRule.httpsPort()))
                     .withStatus(200))
         );
         wireMockRule.stubFor(
@@ -417,7 +417,7 @@ public class BoxFileTest {
                 )
                 .willReturn(WireMock.aResponse()
                     .withHeader("Content-Type", APPLICATION_JSON)
-                    .withBody(getFixture("BoxFile/GetFileRepresentation200", wireMockRule.port()))
+                    .withBody(getFixture("BoxFile/GetFileRepresentation200", wireMockRule.httpsPort()))
                     .withStatus(200))
         );
         wireMockRule.stubFor(
@@ -867,7 +867,7 @@ public class BoxFileTest {
         final String commitURL = "/2.0/files/upload_sessions/D5E3F8ADA11A38F0A66AD0B64AACA658/commit";
         FakeStream stream = new FakeStream("aaaaa");
 
-        String sessionResult = getFixture("BoxFile/CreateUploadSession201", wireMockRule.port());
+        String sessionResult = getFixture("BoxFile/CreateUploadSession201", wireMockRule.httpsPort());
         String uploadResult = getFixture("BoxFile/UploadPartOne200");
         String commitResult = getFixture("BoxFile/CommitUpload201");
         String canUploadResult = getFixture("BoxFile/CanUploadFile200");
@@ -943,7 +943,7 @@ public class BoxFileTest {
         final String commitURL = "/2.0/files/upload_sessions/D5E3F8ADA11A38F0A66AD0B64AACA658/commit";
         FakeStream stream = new FakeStream("aaaaa");
 
-        String sessionResult = getFixture("BoxFile/CreateUploadSession201", wireMockRule.port());
+        String sessionResult = getFixture("BoxFile/CreateUploadSession201", wireMockRule.httpsPort());
         String uploadResult = getFixture("BoxFile/UploadPartOne200");
         String commitResult = getFixture("BoxFile/CommitUploadWithAttributes201");
 
@@ -1006,7 +1006,7 @@ public class BoxFileTest {
     @Test
     public void setsVanityUrlOnASharedLink() {
         //given
-        BoxAPIConnection api = new BoxAPIConnection("");
+        BoxAPIConnection api = new BoxAPIConnectionForTests("");
         api.setRequestInterceptor(
             request -> {
                 //then
@@ -1032,7 +1032,7 @@ public class BoxFileTest {
     @Test
     public void setMetadataWorksWhenNoChangesSubmittedAndConflictOccured() {
         // given
-        BoxAPIConnection api = new BoxAPIConnection("");
+        BoxAPIConnection api = new BoxAPIConnectionForTests("");
         BoxFile file = new BoxFile(api, "someFile");
         final AtomicInteger postCounter = new AtomicInteger(0);
         final AtomicInteger getCounter = new AtomicInteger(0);
@@ -1065,7 +1065,7 @@ public class BoxFileTest {
     @Test
     public void getVersionsWithSpecificFields() {
         // given
-        BoxAPIConnection api = new BoxAPIConnection("");
+        BoxAPIConnection api = new BoxAPIConnectionForTests("");
         BoxFile file = new BoxFile(api, "6543");
 
         // then

@@ -27,13 +27,13 @@ import org.junit.Test;
 
 public class EventStreamTest {
     @Rule
-    public WireMockRule wireMockRule = new WireMockRule(wireMockConfig().dynamicPort());
-    private final BoxAPIConnection api = new BoxAPIConnection("");
+    public WireMockRule wireMockRule = new WireMockRule(wireMockConfig().dynamicHttpsPort().httpDisabled(true));
+    private final BoxAPIConnection api = TestUtils.getAPIConnection();
 
     @Before
     public void setUpBaseUrl() {
         api.setMaxRetryAttempts(1);
-        api.setBaseURL(format("http://localhost:%d", wireMockRule.port()));
+        api.setBaseURL(format("https://localhost:%d", wireMockRule.httpsPort()));
     }
 
     @Test
@@ -45,7 +45,7 @@ public class EventStreamTest {
         stubFor(options(urlEqualTo(eventsURL))
             .willReturn(aResponse()
                 .withHeader("Content-Type", APPLICATION_JSON)
-                .withBody("{ \"entries\": [ { \"url\": \"http://localhost:" + wireMockRule.port()
+                .withBody("{ \"entries\": [ { \"url\": \"https://localhost:" + wireMockRule.httpsPort()
                     + realtimeServerURL + "\", \"max_retries\": \"3\", \"retry_timeout\": 60000 } ] }")));
 
         stubFor(get(urlPathMatching(eventsURL))
@@ -90,7 +90,7 @@ public class EventStreamTest {
         stubFor(options(urlEqualTo(eventsURL))
             .willReturn(aResponse()
                 .withHeader("Content-Type", APPLICATION_JSON)
-                .withBody("{ \"entries\": [ { \"url\": \"http://localhost:" + wireMockRule.port()
+                .withBody("{ \"entries\": [ { \"url\": \"https://localhost:" + wireMockRule.httpsPort()
                     + realtimeServerURL + "\", \"max_retries\": \"3\", \"retry_timeout\": 60000 } ] }")));
 
         stubFor(get(urlMatching("/2.0/events\\?.*stream_position=now.*"))
@@ -152,7 +152,7 @@ public class EventStreamTest {
         stubFor(options(urlEqualTo("/2.0/events"))
             .willReturn(aResponse()
                 .withHeader("Content-Type", APPLICATION_JSON)
-                .withBody("{ \"entries\": [ { \"url\": \"http://localhost:" + wireMockRule.port()
+                .withBody("{ \"entries\": [ { \"url\": \"https://localhost:" + wireMockRule.httpsPort()
                     + realtimeServerURL + "\", \"max_retries\": \"3\", \"retry_timeout\": 60000 } ] }")));
 
         stubFor(get(urlMatching("/2.0/events\\?.*stream_position=now.*"))
