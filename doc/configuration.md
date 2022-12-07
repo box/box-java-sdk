@@ -287,6 +287,6 @@ The same goes for hostname verifier. If you need just to provide it use
 Example:
 ```java
 BoxAPIConnection api = new BoxAPIConnection(...);
-X509TrustManager trustManager = your own trust manager;
+X509TrustManager trustManager = ...
 api.configureSslCertificatesValidation(trustManager, BoxAPIConnection.DEFAULT_HOSTNAME_VERIFIER);
 ```
