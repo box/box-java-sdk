@@ -67,7 +67,7 @@ public class BoxFileTest {
         tagsJSON.add("bar");
         fakeResponse.add("tags", tagsJSON);
 
-        BoxAPIConnection api = new BoxAPIConnection("");
+        BoxAPIConnection api = new BoxAPIConnectionForTests("");
         api.setRequestInterceptor(JSONRequestInterceptor.respondWith(fakeResponse));
 
         BoxFile file = new BoxFile(api, "1234");
@@ -104,7 +104,7 @@ public class BoxFileTest {
         final String collaboratorLogin = "boxer@example.com";
         final BoxCollaboration.Role collaboratorRole = BoxCollaboration.Role.VIEWER;
 
-        BoxAPIConnection api = new BoxAPIConnection("");
+        BoxAPIConnection api = new BoxAPIConnectionForTests("");
         api.setRequestInterceptor(new JSONRequestInterceptor() {
             @Override
             public BoxJSONResponse onJSONRequest(BoxJSONRequest request, JsonObject body) {
@@ -1006,7 +1006,7 @@ public class BoxFileTest {
     @Test
     public void setsVanityUrlOnASharedLink() {
         //given
-        BoxAPIConnection api = new BoxAPIConnection("");
+        BoxAPIConnection api = new BoxAPIConnectionForTests("");
         api.setRequestInterceptor(
             request -> {
                 //then
@@ -1032,7 +1032,7 @@ public class BoxFileTest {
     @Test
     public void setMetadataWorksWhenNoChangesSubmittedAndConflictOccured() {
         // given
-        BoxAPIConnection api = new BoxAPIConnection("");
+        BoxAPIConnection api = new BoxAPIConnectionForTests("");
         BoxFile file = new BoxFile(api, "someFile");
         final AtomicInteger postCounter = new AtomicInteger(0);
         final AtomicInteger getCounter = new AtomicInteger(0);
@@ -1065,7 +1065,7 @@ public class BoxFileTest {
     @Test
     public void getVersionsWithSpecificFields() {
         // given
-        BoxAPIConnection api = new BoxAPIConnection("");
+        BoxAPIConnection api = new BoxAPIConnectionForTests("");
         BoxFile file = new BoxFile(api, "6543");
 
         // then

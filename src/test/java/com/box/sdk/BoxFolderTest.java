@@ -1460,7 +1460,7 @@ public class BoxFolderTest {
     @Test
     public void setsVanityUrlOnASharedLink() {
         //given
-        BoxAPIConnection api = new BoxAPIConnection("");
+        BoxAPIConnection api = new BoxAPIConnectionForTests("");
         api.setRequestInterceptor(
             request -> {
                 //then
@@ -1520,7 +1520,7 @@ public class BoxFolderTest {
     @Test
     public void setMetadataWorksWhenNoChangesSubmittedAndConflictOccured() {
         // given
-        BoxAPIConnection api = new BoxAPIConnection("");
+        BoxAPIConnection api = new BoxAPIConnectionForTests("");
         BoxFolder folder = new BoxFolder(api, "someFolder");
         final AtomicInteger postCounter = new AtomicInteger(0);
         final AtomicInteger getCounter = new AtomicInteger(0);

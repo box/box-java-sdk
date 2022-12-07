@@ -22,7 +22,7 @@ public class BoxGroupMembershipTest {
         final Role role = Role.SUBMASTER;
         final BoxGroupMembership.GroupRole groupRole = BoxGroupMembership.GroupRole.COADMIN;
 
-        BoxAPIConnection api = new BoxAPIConnection("");
+        BoxAPIConnection api = new BoxAPIConnectionForTests("");
         api.setRequestInterceptor(new JSONRequestInterceptor() {
             @Override
             protected BoxAPIResponse onJSONRequest(BoxJSONRequest request, JsonObject json) {
@@ -79,7 +79,7 @@ public class BoxGroupMembershipTest {
             + "    \"modified_at\": \"2013-05-16T15:27:57-07:00\"\n"
             + "}").asObject();
 
-        BoxAPIConnection api = new BoxAPIConnection("");
+        BoxAPIConnection api = new BoxAPIConnectionForTests("");
         api.setRequestInterceptor(JSONRequestInterceptor.respondWith(fakeJSONResponse));
         BoxGroupMembership membership = new BoxGroupMembership(api, id);
         BoxGroupMembership.Info info = membership.new Info();

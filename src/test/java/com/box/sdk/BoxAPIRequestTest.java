@@ -133,7 +133,7 @@ public class BoxAPIRequestTest {
     @Test
     public void requestDoesNotAllowModifyingBoxUAHeader() {
 
-        BoxAPIConnection api = new BoxAPIConnection("");
+        BoxAPIConnection api = new BoxAPIConnectionForTests("");
 
         BoxAPIRequest request = new BoxAPIRequest(api, boxMockUrl(), "GET");
 
@@ -148,7 +148,7 @@ public class BoxAPIRequestTest {
     @Test
     public void requestDoesNotAllowDuplicateAsUserHeader() {
 
-        BoxAPIRequest request = new BoxAPIRequest(new BoxAPIConnection(""), boxMockUrl(), "GET");
+        BoxAPIRequest request = new BoxAPIRequest(new BoxAPIConnectionForTests(""), boxMockUrl(), "GET");
 
         request.addHeader("As-User", "12345");
         request.addHeader("As-User", "67890");

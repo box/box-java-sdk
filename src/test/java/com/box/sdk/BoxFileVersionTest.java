@@ -17,19 +17,16 @@ public class BoxFileVersionTest {
      */
     @Test
     public void testDeleteSendsCorrectRequest() {
-        BoxAPIConnection api = new BoxAPIConnection("");
-        api.setRequestInterceptor(new RequestInterceptor() {
-            @Override
-            public BoxAPIResponse onRequest(BoxAPIRequest request) {
-                Assert.assertEquals("https://api.box.com/2.0/files/0/versions/1",
-                    request.getUrl().toString());
-                return new BoxJSONResponse() {
-                    @Override
-                    public String getJSON() {
-                        return "{\"id\": \"0\"}";
-                    }
-                };
-            }
+        BoxAPIConnection api = new BoxAPIConnectionForTests("");
+        api.setRequestInterceptor(request -> {
+            Assert.assertEquals("https://api.box.com/2.0/files/0/versions/1",
+                request.getUrl().toString());
+            return new BoxJSONResponse() {
+                @Override
+                public String getJSON() {
+                    return "{\"id\": \"0\"}";
+                }
+            };
         });
 
         BoxFile file = new BoxFile(api, "0");
@@ -45,7 +42,7 @@ public class BoxFileVersionTest {
         final String type = "file_version";
         final String id = "1";
 
-        BoxAPIConnection api = new BoxAPIConnection("");
+        BoxAPIConnection api = new BoxAPIConnectionForTests("");
         api.setRequestInterceptor(new JSONRequestInterceptor() {
             @Override
             protected BoxAPIResponse onJSONRequest(BoxJSONRequest request, JsonObject json) {
@@ -98,7 +95,7 @@ public class BoxFileVersionTest {
             + "    }\n"
             + "}").asObject();
 
-        BoxAPIConnection api = new BoxAPIConnection("");
+        BoxAPIConnection api = new BoxAPIConnectionForTests("");
         api.setRequestInterceptor(JSONRequestInterceptor.respondWith(fakeJSONResponse));
 
         BoxFileVersion version = new BoxFileVersion(api, new JsonObject().add("id", id), "0");

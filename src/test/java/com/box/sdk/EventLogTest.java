@@ -29,7 +29,7 @@ public class EventLogTest {
         final int limit = 500;
         final String position = "1152923110369165138";
         BoxEvent.EventType[] eventTypes = {LOGIN, FAILED_LOGIN};
-        BoxAPIConnection api = new BoxAPIConnection("");
+        BoxAPIConnection api = new BoxAPIConnectionForTests("");
         api.setRequestInterceptor(request -> {
             try {
                 String query = URLDecoder.decode(request.getUrl().getQuery(), "UTF-8");
@@ -56,7 +56,7 @@ public class EventLogTest {
 
     @Test
     public void getEnterpriseEventsWithoutAnyParams() {
-        BoxAPIConnection api = new BoxAPIConnection("");
+        BoxAPIConnection api = new BoxAPIConnectionForTests("");
         api.setRequestInterceptor(request -> {
             try {
                 String query = URLDecoder.decode(request.getUrl().getQuery(), "UTF-8");
@@ -73,7 +73,7 @@ public class EventLogTest {
     @Test
     public void getEnterpriseEventsAddsLimitOnlyIfDifferentThanDefault() {
         final int limit = 100;
-        BoxAPIConnection api = new BoxAPIConnection("");
+        BoxAPIConnection api = new BoxAPIConnectionForTests("");
         api.setRequestInterceptor(request -> {
             try {
                 String query = URLDecoder.decode(request.getUrl().getQuery(), "UTF-8");
@@ -92,7 +92,7 @@ public class EventLogTest {
         final int limit = 100;
         final String position = "1152923110369165138";
         BoxEvent.EventType[] eventTypes = {LOGIN, FAILED_LOGIN};
-        BoxAPIConnection api = new BoxAPIConnection("");
+        BoxAPIConnection api = new BoxAPIConnectionForTests("");
         api.setRequestInterceptor(request -> {
             try {
                 String query = URLDecoder.decode(request.getUrl().getQuery(), "UTF-8");
@@ -117,7 +117,7 @@ public class EventLogTest {
 
     @Test
     public void getEnterpriseEventsStreamWithoutAnyParams() {
-        BoxAPIConnection api = new BoxAPIConnection("");
+        BoxAPIConnection api = new BoxAPIConnectionForTests("");
         api.setRequestInterceptor(request -> {
             try {
                 String query = URLDecoder.decode(request.getUrl().getQuery(), "UTF-8");
@@ -133,7 +133,7 @@ public class EventLogTest {
 
     @Test
     public void createEventLogWhenNextPositionIsNotInteger() {
-        BoxAPIConnection api = new BoxAPIConnection("");
+        BoxAPIConnection api = new BoxAPIConnectionForTests("");
         JsonObject json = Json.parse(
             "{\"next_stream_position\": \"1152923112788365709\", \"chunk_size\": 12, \"entries\": []}"
         ).asObject();
@@ -144,7 +144,7 @@ public class EventLogTest {
 
     @Test
     public void createEventLogWhenNextPositionIsInteger() {
-        BoxAPIConnection api = new BoxAPIConnection("");
+        BoxAPIConnection api = new BoxAPIConnectionForTests("");
         JsonObject json = Json.parse(
             "{\"next_stream_position\": 1152923112788365709, \"chunk_size\": 12, \"entries\": []}"
         ).asObject();
@@ -159,7 +159,7 @@ public class EventLogTest {
         final Date before = new Date(System.currentTimeMillis());
         final int limit = 500;
         final String position = "1152923110369165138";
-        BoxAPIConnection api = new BoxAPIConnection("");
+        BoxAPIConnection api = new BoxAPIConnectionForTests("");
         api.setRequestInterceptor(request -> {
             try {
                 String query = URLDecoder.decode(request.getUrl().getQuery(), "UTF-8");
@@ -188,7 +188,7 @@ public class EventLogTest {
     public void getEnterpriseEventsStreamWithTypesAsString() {
         final int limit = 100;
         final String position = "1152923110369165138";
-        BoxAPIConnection api = new BoxAPIConnection("");
+        BoxAPIConnection api = new BoxAPIConnectionForTests("");
         api.setRequestInterceptor(request -> {
             try {
                 String query = URLDecoder.decode(request.getUrl().getQuery(), "UTF-8");

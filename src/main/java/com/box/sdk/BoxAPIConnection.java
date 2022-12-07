@@ -3,7 +3,6 @@ package com.box.sdk;
 import static java.lang.String.format;
 import static java.lang.String.join;
 import static java.util.Collections.singletonList;
-import static okhttp3.ConnectionSpec.CLEARTEXT;
 import static okhttp3.ConnectionSpec.MODERN_TLS;
 
 import com.eclipsesource.json.Json;
@@ -18,7 +17,6 @@ import java.security.KeyManagementException;
 import java.security.NoSuchAlgorithmException;
 import java.time.Duration;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -129,7 +127,6 @@ public class BoxAPIConnection {
     private OkHttpClient httpClient;
     private OkHttpClient noRedirectsHttpClient;
     private Authenticator authenticator;
-    private boolean allowCleartextCommunication;
 
     /**
      * Constructs a new BoxAPIConnection that authenticates with a developer or access token.
@@ -216,13 +213,8 @@ public class BoxAPIConnection {
             .followSslRedirects(true)
             .followRedirects(true)
             .connectTimeout(Duration.ofMillis(connectTimeout))
-            .readTimeout(Duration.ofMillis(readTimeout));
-
-        if (allowCleartextCommunication) {
-            builder.connectionSpecs(Arrays.asList(MODERN_TLS, CLEARTEXT));
-        } else {
-            builder.connectionSpecs(singletonList(MODERN_TLS));
-        }
+            .readTimeout(Duration.ofMillis(readTimeout))
+            .connectionSpecs(singletonList(MODERN_TLS));
 
         if (hostnameVerifier != null) {
             httpClientBuilder.hostnameVerifier(hostnameVerifier);
@@ -242,11 +234,17 @@ public class BoxAPIConnection {
                 builder.proxyAuthenticator(authenticator);
             }
         }
+        builder = modifyHttpClientBuilder(builder);
+
         this.httpClient = builder.build();
         this.noRedirectsHttpClient = new OkHttpClient.Builder(httpClient)
             .followSslRedirects(false)
             .followRedirects(false)
             .build();
+    }
+
+    protected OkHttpClient.Builder modifyHttpClientBuilder(OkHttpClient.Builder httpClientBuilder) {
+        return httpClientBuilder;
     }
 
     /**
@@ -1191,11 +1189,6 @@ public class BoxAPIConnection {
     public void configureSslCertificatesValidation(X509TrustManager trustManager, HostnameVerifier hostnameVerifier) {
         this.trustManager = trustManager;
         this.hostnameVerifier = hostnameVerifier;
-        buildHttpClients();
-    }
-
-    void allowCleartextCommunication() {
-        this.allowCleartextCommunication = true;
         buildHttpClients();
     }
 

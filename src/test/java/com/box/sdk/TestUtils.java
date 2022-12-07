@@ -11,9 +11,7 @@ final class TestUtils {
     }
 
     public static BoxAPIConnection getAPIConnection() {
-        BoxAPIConnection api = new BoxAPIConnection("");
-        api.configureSslCertificatesValidation(new TrustAllTrustManager(), new AcceptAllHostsVerifier());
-        return api;
+        return new BoxAPIConnectionForTests("");
     }
 
     /**
