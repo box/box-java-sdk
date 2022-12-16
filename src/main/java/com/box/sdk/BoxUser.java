@@ -632,37 +632,7 @@ public class BoxUser extends BoxCollaborator {
     }
 
     /**
-     * @param sourceUserID the user id of the user whose files will be the source for this operation
-     * @return info for the newly created folder
-     * @deprecated As of release 2.22.0, replaced by {@link #transferContent(String)} ()}
-     * <p>
-     * Moves all of the owned content from within one user’s folder into a new folder in another user's account.
-     * You can move folders across users as long as the you have administrative permissions and the 'source'
-     * user owns the folders. Per the documentation at the link below, this will move everything from the root
-     * folder, as this is currently the only mode of operation supported.
-     * <p>
-     * See also <a href="https://developer.box.com/en/reference/put-users-id-folders-id/">https://developer.box.com/en/reference/put-users-id-folders-id/</a>
-     */
-    @Deprecated
-    public BoxFolder.Info moveFolderToUser(String sourceUserID) {
-        // Currently the API only supports moving of the root folder (0), hence the hard coded "0"
-        URL url = MOVE_FOLDER_TO_USER_TEMPLATE.build(this.getAPI().getBaseURL(), sourceUserID, "0");
-        BoxJSONRequest request = new BoxJSONRequest(this.getAPI(), url, "PUT");
-        JsonObject idValue = new JsonObject();
-        idValue.add("id", this.getID());
-        JsonObject ownedBy = new JsonObject();
-        ownedBy.add("owned_by", idValue);
-        request.setBody(ownedBy.toString());
-        try (BoxJSONResponse response = request.send()) {
-            JsonObject responseJSON = Json.parse(response.getJSON()).asObject();
-            BoxFolder movedFolder = new BoxFolder(this.getAPI(), responseJSON.get("id").asString());
-
-            return movedFolder.new Info(responseJSON);
-        }
-    }
-
-    /**
-     * Moves all of the owned content from within one user’s folder into a new folder in another user's account.
+     * Moves all the owned content from within one user’s folder into a new folder in another user's account.
      * You can move folders across users as long as the you have administrative permissions and the 'source'
      * user owns the folders. Per the documentation at the link below, this will move everything from the root
      * folder, as this is currently the only mode of operation supported.

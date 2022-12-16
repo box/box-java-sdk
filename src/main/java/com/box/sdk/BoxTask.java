@@ -326,17 +326,6 @@ public class BoxTask extends BoxResource {
         }
 
         /**
-         * @return the action the task assignee will be prompted to do.
-         * @deprecated Please use getTaskType()
-         * <p>
-         * Gets the action the task assignee will be prompted to do.
-         */
-        @Deprecated
-        public Action getAction() {
-            return Action.REVIEW;
-        }
-
-        /**
          * Gets the action the task assignee will be prompted to do.
          *
          * @return the action the task assignee will be prompted to do.
@@ -426,30 +415,42 @@ public class BoxTask extends BoxResource {
             String memberName = member.getName();
             JsonValue value = member.getValue();
             try {
-                if (memberName.equals("item")) {
-                    JsonObject itemJSON = value.asObject();
-                    String itemID = itemJSON.get("id").asString();
-                    BoxFile file = new BoxFile(getAPI(), itemID);
-                    this.item = file.new Info(itemJSON);
-                } else if (memberName.equals("due_at")) {
-                    this.dueAt = BoxDateFormat.parse(value.asString());
-                } else if (memberName.equals("action")) {
-                    this.action = value.asString();
-                } else if (memberName.equals("completion_rule")) {
-                    this.completionRule = value.asString();
-                } else if (memberName.equals("message")) {
-                    this.message = value.asString();
-                } else if (memberName.equals("task_assignment_collection")) {
-                    this.taskAssignments = this.parseTaskAssignmentCollection(value.asObject());
-                } else if (memberName.equals("is_completed")) {
-                    this.completed = value.asBoolean();
-                } else if (memberName.equals("created_by")) {
-                    JsonObject userJSON = value.asObject();
-                    String userID = userJSON.get("id").asString();
-                    BoxUser user = new BoxUser(getAPI(), userID);
-                    this.createdBy = user.new Info(userJSON);
-                } else if (memberName.equals("created_at")) {
-                    this.createdAt = BoxDateFormat.parse(value.asString());
+                switch (memberName) {
+                    case "item":
+                        JsonObject itemJSON = value.asObject();
+                        String itemID = itemJSON.get("id").asString();
+                        BoxFile file = new BoxFile(getAPI(), itemID);
+                        this.item = file.new Info(itemJSON);
+                        break;
+                    case "due_at":
+                        this.dueAt = BoxDateFormat.parse(value.asString());
+                        break;
+                    case "action":
+                        this.action = value.asString();
+                        break;
+                    case "completion_rule":
+                        this.completionRule = value.asString();
+                        break;
+                    case "message":
+                        this.message = value.asString();
+                        break;
+                    case "task_assignment_collection":
+                        this.taskAssignments = this.parseTaskAssignmentCollection(value.asObject());
+                        break;
+                    case "is_completed":
+                        this.completed = value.asBoolean();
+                        break;
+                    case "created_by":
+                        JsonObject userJSON = value.asObject();
+                        String userID = userJSON.get("id").asString();
+                        BoxUser user = new BoxUser(getAPI(), userID);
+                        this.createdBy = user.new Info(userJSON);
+                        break;
+                    case "created_at":
+                        this.createdAt = BoxDateFormat.parse(value.asString());
+                        break;
+                    default:
+                        break;
                 }
 
             } catch (Exception e) {
