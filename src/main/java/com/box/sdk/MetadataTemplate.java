@@ -289,7 +289,7 @@ public class MetadataTemplate extends BoxJSONObject {
     /**
      * Executes a metadata query.
      *
-     * @param api The API connection to be used
+     * @param api       The API connection to be used
      * @param queryBody The query
      * @return An iterable of BoxItem.Info search results
      */
@@ -1271,6 +1271,11 @@ public class MetadataTemplate extends BoxJSONObject {
             this.multiSelectOptionKeys = keys;
         }
 
+        @Override
+        public void clearPendingChanges() {
+            super.clearPendingChanges();
+        }
+
         /**
          * {@inheritDoc}
          */
@@ -1288,32 +1293,27 @@ public class MetadataTemplate extends BoxJSONObject {
                 case "fieldKey":
                     this.fieldKey = value.asString();
                     break;
-                case "fieldKeys": {
+                case "fieldKeys":
                     if (this.fieldKeys == null) {
                         this.fieldKeys = new ArrayList<>();
                     } else {
                         this.fieldKeys.clear();
                     }
-
-                    JsonArray array = value.asArray();
-                    for (JsonValue jsonValue : array) {
+                    for (JsonValue jsonValue : value.asArray()) {
                         this.fieldKeys.add(jsonValue.asString());
                     }
                     break;
-                }
-                case "enumOptionKeys": {
+                case "enumOptionKeys":
                     if (this.enumOptionKeys == null) {
                         this.enumOptionKeys = new ArrayList<>();
                     } else {
                         this.enumOptionKeys.clear();
                     }
 
-                    JsonArray array = value.asArray();
-                    for (JsonValue jsonValue : array) {
+                    for (JsonValue jsonValue : value.asArray()) {
                         this.enumOptionKeys.add(jsonValue.asString());
                     }
                     break;
-                }
                 case "enumOptionKey":
                     this.enumOptionKey = value.asString();
                     break;
