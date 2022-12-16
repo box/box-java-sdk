@@ -170,23 +170,6 @@ public abstract class BoxItem extends BoxResource {
     public abstract BoxItem.Info move(BoxFolder destination, String newName);
 
     /**
-     * Creates a new shared link for this item.
-     *
-     * <p>This method is a convenience method for manually creating a new shared link and applying it to this item with
-     * {@link Info#setSharedLink}. You may want to create the shared link manually so that it can be updated along with
-     * other changes to the item's info in a single network request, giving a boost to performance.</p>
-     *
-     * @param access      the access level of the shared link.
-     * @param unshareDate the date and time at which the link will expire. Can be null to create a non-expiring link.
-     * @param permissions the permissions of the shared link. Can be null to use the default permissions.
-     * @return the created shared link.
-     * @deprecated Use dedicated <code>createSharedLink(BoxSharedLinkRequest)</code> methods on subclasses to create BoxSharedLink
-     */
-    @Deprecated
-    public abstract BoxSharedLink createSharedLink(BoxSharedLink.Access access, Date unshareDate,
-                                                   BoxSharedLink.Permissions permissions);
-
-    /**
      * Gets information about this item that's limited to a list of specified fields.
      *
      * @param fields the fields to retrieve.
@@ -536,75 +519,100 @@ public abstract class BoxItem extends BoxResource {
             String memberName = member.getName();
 
             try {
-                if (memberName.equals("sequence_id")) {
-                    this.sequenceID = value.asString();
-                } else if (memberName.equals("type")) {
-                    this.type = value.asString();
-                } else if (memberName.equals("etag")) {
-                    this.etag = value.asString();
-                } else if (memberName.equals("name")) {
-                    this.name = value.asString();
-                } else if (memberName.equals("created_at")) {
-                    this.createdAt = BoxDateFormat.parse(value.asString());
-                } else if (memberName.equals("modified_at")) {
-                    this.modifiedAt = BoxDateFormat.parse(value.asString());
-                } else if (memberName.equals("description")) {
-                    this.description = value.asString();
-                } else if (memberName.equals("size")) {
-                    this.size = Double.valueOf(value.toString()).longValue();
-                } else if (memberName.equals("trashed_at")) {
-                    this.trashedAt = BoxDateFormat.parse(value.asString());
-                } else if (memberName.equals("purged_at")) {
-                    this.purgedAt = BoxDateFormat.parse(value.asString());
-                } else if (memberName.equals("content_created_at")) {
-                    this.contentCreatedAt = BoxDateFormat.parse(value.asString());
-                } else if (memberName.equals("content_modified_at")) {
-                    this.contentModifiedAt = BoxDateFormat.parse(value.asString());
-                } else if (memberName.equals("expires_at")) {
-                    this.expiresAt = BoxDateFormat.parse(value.asString());
-                } else if (memberName.equals("path_collection")) {
-                    this.pathCollection = this.parsePathCollection(value.asObject());
-                } else if (memberName.equals("created_by")) {
-                    this.createdBy = this.parseUserInfo(value.asObject());
-                } else if (memberName.equals("modified_by")) {
-                    this.modifiedBy = this.parseUserInfo(value.asObject());
-                } else if (memberName.equals("owned_by")) {
-                    this.ownedBy = this.parseUserInfo(value.asObject());
-                } else if (memberName.equals("shared_link")) {
-                    if (this.sharedLink == null) {
-                        this.setSharedLink(new BoxSharedLink(value.asObject()));
-                    } else {
-                        this.sharedLink.update(value.asObject());
-                    }
-                } else if (memberName.equals("tags")) {
-                    this.tags = this.parseTags(value.asArray());
-                } else if (memberName.equals("parent")) {
-                    JsonObject jsonObject = value.asObject();
-                    if (this.parent == null) {
-                        String id = jsonObject.get("id").asString();
-                        BoxFolder parentFolder = new BoxFolder(getAPI(), id);
-                        this.parent = parentFolder.new Info(jsonObject);
-                    } else {
-                        this.parent.update(jsonObject);
-                    }
-                } else if (memberName.equals("item_status")) {
-                    this.itemStatus = value.asString();
-                } else if (memberName.equals("collections")) {
-                    if (this.collections == null) {
-                        this.collections = new HashSet<>();
-                    } else {
-                        this.collections.clear();
-                    }
+                switch (memberName) {
+                    case "sequence_id":
+                        this.sequenceID = value.asString();
+                        break;
+                    case "type":
+                        this.type = value.asString();
+                        break;
+                    case "etag":
+                        this.etag = value.asString();
+                        break;
+                    case "name":
+                        this.name = value.asString();
+                        break;
+                    case "created_at":
+                        this.createdAt = BoxDateFormat.parse(value.asString());
+                        break;
+                    case "modified_at":
+                        this.modifiedAt = BoxDateFormat.parse(value.asString());
+                        break;
+                    case "description":
+                        this.description = value.asString();
+                        break;
+                    case "size":
+                        this.size = Double.valueOf(value.toString()).longValue();
+                        break;
+                    case "trashed_at":
+                        this.trashedAt = BoxDateFormat.parse(value.asString());
+                        break;
+                    case "purged_at":
+                        this.purgedAt = BoxDateFormat.parse(value.asString());
+                        break;
+                    case "content_created_at":
+                        this.contentCreatedAt = BoxDateFormat.parse(value.asString());
+                        break;
+                    case "content_modified_at":
+                        this.contentModifiedAt = BoxDateFormat.parse(value.asString());
+                        break;
+                    case "expires_at":
+                        this.expiresAt = BoxDateFormat.parse(value.asString());
+                        break;
+                    case "path_collection":
+                        this.pathCollection = this.parsePathCollection(value.asObject());
+                        break;
+                    case "created_by":
+                        this.createdBy = this.parseUserInfo(value.asObject());
+                        break;
+                    case "modified_by":
+                        this.modifiedBy = this.parseUserInfo(value.asObject());
+                        break;
+                    case "owned_by":
+                        this.ownedBy = this.parseUserInfo(value.asObject());
+                        break;
+                    case "shared_link":
+                        if (this.sharedLink == null) {
+                            this.setSharedLink(new BoxSharedLink(value.asObject()));
+                        } else {
+                            this.sharedLink.update(value.asObject());
+                        }
+                        break;
+                    case "tags":
+                        this.tags = this.parseTags(value.asArray());
+                        break;
+                    case "parent":
+                        JsonObject parentObject = value.asObject();
+                        if (this.parent == null) {
+                            String id = parentObject.get("id").asString();
+                            BoxFolder parentFolder = new BoxFolder(getAPI(), id);
+                            this.parent = parentFolder.new Info(parentObject);
+                        } else {
+                            this.parent.update(parentObject);
+                        }
+                        break;
+                    case "item_status":
+                        this.itemStatus = value.asString();
+                        break;
+                    case "collections":
+                        if (this.collections == null) {
+                            this.collections = new HashSet<>();
+                        } else {
+                            this.collections.clear();
+                        }
 
-                    BoxAPIConnection api = getAPI();
-                    JsonArray jsonArray = value.asArray();
-                    for (JsonValue arrayValue : jsonArray) {
-                        JsonObject jsonObject = arrayValue.asObject();
-                        String id = jsonObject.get("id").asString();
-                        BoxCollection collection = new BoxCollection(api, id);
-                        BoxCollection.Info collectionInfo = collection.new Info(jsonObject);
-                        this.collections.add(collectionInfo);
-                    }
+                        BoxAPIConnection api = getAPI();
+                        JsonArray jsonArray = value.asArray();
+                        for (JsonValue arrayValue : jsonArray) {
+                            JsonObject jsonObject = arrayValue.asObject();
+                            String id = jsonObject.get("id").asString();
+                            BoxCollection collection = new BoxCollection(api, id);
+                            BoxCollection.Info collectionInfo = collection.new Info(jsonObject);
+                            this.collections.add(collectionInfo);
+                        }
+                        break;
+                    default:
+                        break;
                 }
             } catch (Exception e) {
                 throw new BoxDeserializationException(memberName, value.toString(), e);

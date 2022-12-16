@@ -16,7 +16,6 @@ import java.io.InputStream;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Date;
 import java.util.EnumSet;
 import java.util.Iterator;
 import java.util.List;
@@ -224,44 +223,6 @@ public class BoxFolder extends BoxItem implements Iterable<BoxItem.Info> {
         itemField.add("type", "folder");
 
         return BoxCollaboration.create(this.getAPI(), accessibleByField, itemField, role, notify, canViewPath);
-    }
-
-    /**
-     * Creates a new shared link for this item.
-     *
-     * <p>This method is a convenience method for manually creating a new shared link and applying it to this item with
-     * {@link BoxItem.Info#setSharedLink}. You may want to create the shared link manually so that it can be updated along with
-     * other changes to the item's info in a single network request, giving a boost to performance.</p>
-     *
-     * @param access      the access level of the shared link.
-     * @param unshareDate the date and time at which the link will expire. Can be null to create a non-expiring link.
-     * @param permissions the permissions of the shared link. Can be null to use the default permissions.
-     * @return the created shared link.
-     * @deprecated use {@link BoxFolder#createSharedLink(BoxSharedLinkRequest)}
-     */
-    @Override
-    @Deprecated
-    public BoxSharedLink createSharedLink(BoxSharedLink.Access access, Date unshareDate,
-                                          BoxSharedLink.Permissions permissions) {
-
-        return this.createSharedLink(new BoxSharedLink(access, unshareDate, permissions));
-    }
-
-    /**
-     * Creates new SharedLink for a BoxFolder with a password.
-     *
-     * @param access      The access level of the shared link.
-     * @param unshareDate A specified date to unshare the Box folder.
-     * @param permissions The permissions to set on the shared link for the Box folder.
-     * @param password    Password set on the shared link to give access to the Box folder.
-     * @return information about the newly created shared link.
-     * @deprecated Use {@link BoxFolder#createSharedLink(BoxSharedLinkRequest)}
-     */
-    @Deprecated
-    public BoxSharedLink createSharedLink(BoxSharedLink.Access access, Date unshareDate,
-                                          BoxSharedLink.Permissions permissions, String password) {
-
-        return this.createSharedLink(new BoxSharedLink(access, unshareDate, permissions, password));
     }
 
     /**
@@ -867,25 +828,6 @@ public class BoxFolder extends BoxItem implements Iterable<BoxItem.Info> {
      */
     public Iterable<Metadata> getAllMetadata(String... fields) {
         return Metadata.getAllMetadata(this, fields);
-    }
-
-    /**
-     * This method is deprecated, please use the {@link BoxSearch} class instead.
-     * Searches this folder and all descendant folders using a given queryPlease use BoxSearch Instead.
-     *
-     * @param query the search query.
-     * @return an Iterable containing the search results.
-     */
-    @Deprecated
-    public Iterable<BoxItem.Info> search(final String query) {
-        return () -> {
-            QueryStringBuilder builder = new QueryStringBuilder();
-            builder.appendParam("query", query);
-            builder.appendParam("ancestor_folder_ids", getID());
-
-            URL url = SEARCH_URL_TEMPLATE.buildWithQuery(getAPI().getBaseURL(), builder.toString());
-            return new BoxItemIterator(getAPI(), url);
-        };
     }
 
     @Override
