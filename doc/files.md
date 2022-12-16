@@ -507,7 +507,7 @@ Upload a New Version of a File
 ------------------------------
 
 New versions of a file can be uploaded with the
-[`uploadVersion(InputStream fileContents)`][upload-version]
+[`uploadNewVersion(InputStream fileContents)`][upload-new-version]
 method.
 
 <!-- sample post_files_id_content -->
@@ -517,7 +517,7 @@ FileInputStream stream = new FileInputStream("My File.txt");
 file.uploadVersion(stream);
 ```
 
-[upload-version]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxFile.html#uploadVersion-java.io.InputStream-
+[upload-new-version]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxFile.html#uploadNewVersion-java.io.InputStream-
 
 Download a Previous Version of a File
 -------------------------------------
