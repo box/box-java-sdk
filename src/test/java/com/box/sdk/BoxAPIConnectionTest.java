@@ -23,7 +23,6 @@ import com.box.sdk.BoxAPIConnection.ResourceLinkType;
 import com.eclipsesource.json.JsonObject;
 import com.github.tomakehurst.wiremock.client.WireMock;
 import com.github.tomakehurst.wiremock.junit.WireMockRule;
-import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -499,7 +498,101 @@ public class BoxAPIConnectionTest {
     }
 
     @Test
-    public void successfullyRestoresConnectionWithDeprecatedSettings() throws IOException {
+    public void restoresProperUrlsFromOldVersions() {
+        // given
+        String accessToken = "access_token";
+        String clientId = "some_client_id";
+        String clientSecret = "some_client_secret";
+        String refreshToken = "some_refresh_token";
+        BoxAPIConnection api = new BoxAPIConnection(clientId, clientSecret, accessToken, refreshToken);
+        api.setBaseURL("https://api.box.com/2.0/");
+        api.setBaseUploadURL("https://api.box.com/2.0/");
+        String savedConnection = api.save();
+
+        // when
+        BoxAPIConnection restoredApi = BoxAPIConnection.restore(clientId, clientSecret, savedConnection);
+
+        // then
+        assertThat("https://api.box.com/2.0/", is(restoredApi.getBaseURL()));
+        assertThat("https://api.box.com/2.0/", is(restoredApi.getBaseUploadURL()));
+    }
+
+    @Test
+    public void restoresProperUrlsWhenNotSet() {
+        // given
+        String accessToken = "access_token";
+        String clientId = "some_client_id";
+        String clientSecret = "some_client_secret";
+        String refreshToken = "some_refresh_token";
+        BoxAPIConnection api = new BoxAPIConnection(clientId, clientSecret, accessToken, refreshToken);
+        api.setBaseURL("https://api.box.com/2.0/");
+        String savedConnection = api.save();
+
+        // when
+        BoxAPIConnection restoredApi = BoxAPIConnection.restore(clientId, clientSecret, savedConnection);
+
+        // then
+        assertThat("https://api.box.com/2.0/", is(restoredApi.getBaseURL()));
+        assertThat("https://upload.box.com/api/2.0/", is(restoredApi.getBaseUploadURL()));
+    }
+
+    @Test
+    public void restoresProperUrlsWhenDeprecatedUrlsAreSet() {
+        // given
+        String accessToken = "access_token";
+        String clientId = "some_client_id";
+        String clientSecret = "some_client_secret";
+        String refreshToken = "some_refresh_token";
+
+        String savedConnection = "{"
+            + "\"accessToken\":\"access_token\","
+            + "\"refreshToken\":\"some_refresh_token\","
+            + "\"lastRefresh\":0,"
+            + "\"expires\":0,"
+            + "\"userAgent\":\"Box Java SDK v3.8.0 (Java 1.8.0_345)\","
+            + "\"tokenURL\":\"https://api.box.com/token\","
+            + "\"revokeURL\":\"https://api.box.com/revoke\","
+            + "\"baseURL\":\"https://api.box.com/\","
+            + "\"baseUploadURL\":\"https://upload.box.com/api/\","
+            + "\"authorizationURL\":\"https://account.box.com/api/\","
+            + "\"autoRefresh\":true,\"maxRetryAttempts\":5"
+            + "}";
+        // when
+        BoxAPIConnection restoredApi = BoxAPIConnection.restore(clientId, clientSecret, savedConnection);
+
+        // then
+        assertThat("https://api.box.com/token", is(restoredApi.getTokenURL()));
+        assertThat("https://api.box.com/revoke", is(restoredApi.getRevokeURL()));
+    }
+
+    @Test
+    public void restoresProperUrlsWhenSomeAreMissing() {
+        // given
+        String accessToken = "access_token";
+        String clientId = "some_client_id";
+        String clientSecret = "some_client_secret";
+        String refreshToken = "some_refresh_token";
+
+        String savedConnection = "{"
+            + "\"accessToken\":\"access_token\","
+            + "\"refreshToken\":\"some_refresh_token\","
+            + "\"lastRefresh\":0,"
+            + "\"expires\":0,"
+            + "\"userAgent\":\"Box Java SDK v3.8.0 (Java 1.8.0_345)\","
+            + "\"baseURL\":\"https://api.box.com/\","
+            + "\"authorizationURL\":\"https://account.box.com/api/\","
+            + "\"autoRefresh\":true,\"maxRetryAttempts\":5"
+            + "}";
+        // when
+        BoxAPIConnection restoredApi = BoxAPIConnection.restore(clientId, clientSecret, savedConnection);
+
+        // then
+        assertThat("https://api.box.com/2.0/", is(restoredApi.getBaseURL()));
+        assertThat("https://upload.box.com/api/2.0/", is(restoredApi.getBaseUploadURL()));
+    }
+
+    @Test
+    public void successfullyRestoresConnectionWithDeprecatedSettings() {
         String restoreState = TestUtils.getFixture("BoxAPIConnection/State");
         String restoreStateDeprecated = TestUtils.getFixture("BoxAPIConnection/StateDeprecated");
 

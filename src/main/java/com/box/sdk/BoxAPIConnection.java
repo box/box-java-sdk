@@ -752,8 +752,9 @@ public class BoxAPIConnection {
         String userAgent = json.get("userAgent").asString();
         String tokenURL = getKeyValueOrDefault(json, "tokenURL", null);
         String revokeURL = getKeyValueOrDefault(json, "revokeURL", null);
-        String baseURL = json.get("baseURL").asString();
-        String baseUploadURL = json.get("baseUploadURL").asString();
+        String baseURL = fixWhenLoadingFromOldVersion(getKeyValueOrDefault(json, "baseURL", DEFAULT_BASE_URL));
+        String baseUploadURL =
+            fixWhenLoadingFromOldVersion(getKeyValueOrDefault(json, "baseUploadURL", DEFAULT_BASE_UPLOAD_URL));
         String authorizationURL = getKeyValueOrDefault(json, "authorizationURL", DEFAULT_BASE_AUTHORIZATION_URL);
         boolean autoRefresh = json.get("autoRefresh").asBoolean();
 
@@ -787,6 +788,16 @@ public class BoxAPIConnection {
             this.maxRetryAttempts = maxRetryAttempts;
         }
 
+    }
+
+    private String fixWhenLoadingFromOldVersion(String url) {
+        if (url == null) {
+            return url;
+        }
+        String urlEndingWithSlash = fixBaseUrl(url);
+        return urlEndingWithSlash.endsWith("/2.0/")
+            ? urlEndingWithSlash.substring(0, urlEndingWithSlash.length() - 4)
+            : urlEndingWithSlash;
     }
 
     protected String getKeyValueOrDefault(JsonObject json, String key, String defaultValue) {
