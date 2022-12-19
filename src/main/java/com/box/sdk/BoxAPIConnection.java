@@ -752,8 +752,10 @@ public class BoxAPIConnection {
         String userAgent = json.get("userAgent").asString();
         String tokenURL = getKeyValueOrDefault(json, "tokenURL", null);
         String revokeURL = getKeyValueOrDefault(json, "revokeURL", null);
-        String baseURL = json.get("baseURL").asString();
-        String baseUploadURL = json.get("baseUploadURL").asString();
+        String baseURL = adoptBaseUrlWhenLoadingFromOldVersion(getKeyValueOrDefault(json, "baseURL", DEFAULT_BASE_URL));
+        String baseUploadURL = adoptUploadBaseUrlWhenLoadingFromOldVersion(
+            getKeyValueOrDefault(json, "baseUploadURL", DEFAULT_BASE_UPLOAD_URL)
+        );
         String authorizationURL = getKeyValueOrDefault(json, "authorizationURL", DEFAULT_BASE_AUTHORIZATION_URL);
         boolean autoRefresh = json.get("autoRefresh").asBoolean();
 
@@ -787,6 +789,26 @@ public class BoxAPIConnection {
             this.maxRetryAttempts = maxRetryAttempts;
         }
 
+    }
+
+    private String adoptBaseUrlWhenLoadingFromOldVersion(String url) {
+        if (url == null) {
+            return null;
+        }
+        String urlEndingWithSlash = fixBaseUrl(url);
+        return urlEndingWithSlash.equals("https://api.box.com/2.0/")
+            ? DEFAULT_BASE_URL
+            : urlEndingWithSlash;
+    }
+
+    private String adoptUploadBaseUrlWhenLoadingFromOldVersion(String url) {
+        if (url == null) {
+            return null;
+        }
+        String urlEndingWithSlash = fixBaseUrl(url);
+        return urlEndingWithSlash.equals("https://upload.box.com/api/2.0/")
+            ? DEFAULT_BASE_UPLOAD_URL
+            : urlEndingWithSlash;
     }
 
     protected String getKeyValueOrDefault(JsonObject json, String key, String defaultValue) {
