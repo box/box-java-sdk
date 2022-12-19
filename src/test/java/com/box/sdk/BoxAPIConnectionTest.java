@@ -506,7 +506,7 @@ public class BoxAPIConnectionTest {
         String refreshToken = "some_refresh_token";
         BoxAPIConnection api = new BoxAPIConnection(clientId, clientSecret, accessToken, refreshToken);
         api.setBaseURL("https://api.box.com/2.0/");
-        api.setBaseUploadURL("https://api.box.com/2.0/");
+        api.setBaseUploadURL("https://upload.box.com/api/2.0/");
         String savedConnection = api.save();
 
         // when
@@ -514,7 +514,7 @@ public class BoxAPIConnectionTest {
 
         // then
         assertThat("https://api.box.com/2.0/", is(restoredApi.getBaseURL()));
-        assertThat("https://api.box.com/2.0/", is(restoredApi.getBaseUploadURL()));
+        assertThat("https://upload.box.com/api/2.0/", is(restoredApi.getBaseUploadURL()));
     }
 
     @Test
@@ -539,10 +539,8 @@ public class BoxAPIConnectionTest {
     @Test
     public void restoresProperUrlsWhenDeprecatedUrlsAreSet() {
         // given
-        String accessToken = "access_token";
         String clientId = "some_client_id";
         String clientSecret = "some_client_secret";
-        String refreshToken = "some_refresh_token";
 
         String savedConnection = "{"
             + "\"accessToken\":\"access_token\","
