@@ -257,7 +257,7 @@ To get an iterable with all files under retention for assignment
 policy, call the [`getFilesUnderRetention(BoxAPIConnection api, int limit, String... fields)`][get-files-under-retention-for-assignment]
 method. This will return an interable with [`BoxFile.Info`][file] objects containing information about the files.
 
-<!-- sample get_files_under_retention_for_assignment -->
+<!-- sample get_retention_policy_assignments_id_files_under_retention -->
 ```java
 BoxRetentionPolicyAssignment policyAssignment = new BoxRetentionPolicyAssignment(api, id);
 Iterable<BoxFile.Info> filesUnderRetention = policyAssignment.getFilesUnderRetention();
@@ -277,7 +277,7 @@ policy, call the [`getFileVersionsUnderRetention(BoxAPIConnection api, int limit
 method. This will return an interable with [`BoxFile.Info`][file] objects containing information about the file.
 You can get version by calling [`BoxFile.Info#getVersion()`][file-version].
 
-<!-- sample get_file_versions_under_retention_for_assignment -->
+<!-- sample get_retention_policy_assignments_id_file_versions_under_retention -->
 ```java
 BoxRetentionPolicyAssignment policyAssignment = new BoxRetentionPolicyAssignment(api, id);
 Iterable<BoxFile.Info> fileVersionsUnderRetention = policyAssignment.getFileVersionsUnderRetention();
