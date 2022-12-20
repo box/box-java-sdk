@@ -158,16 +158,21 @@ To run the project, follow below steps
 
 3. Provide the Id of the admin user (or any enterprise user) in `src/example/java/com/box/sdk/example/BoxDeveloperEditionAPIConnectionAsEnterpriseUser.java`.
 
-```java
+```java 
 public final class BoxDeveloperEditionAPIConnectionAsEnterpriseUser {
 
    private static final String USER_ID = "";
    // ...
    Reader reader = new FileReader("src/example/config/config.json");
    BoxConfig boxConfig = BoxConfig.readFrom(reader);
+   IAccessTokenCache accessTokenCache = new InMemoryLRUAccessTokenCache(10);
 
-   BoxDeveloperEditionAPIConnection api = 
-           new BoxDeveloperEditionAPIConnection(USER_ID, DeveloperEditionEntityType.USER, boxConfig, accessTokenCache);
+   BoxDeveloperEditionAPIConnection api = new BoxDeveloperEditionAPIConnection(
+           USER_ID,
+           DeveloperEditionEntityType.USER,
+           boxConfig,
+           accessTokenCache
+   );
 }
 ```
 
