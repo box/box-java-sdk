@@ -150,44 +150,6 @@ public class BoxFile extends BoxItem {
     }
 
     /**
-     * Creates a new shared link for this item.
-     *
-     * <p>This method is a convenience method for manually creating a new shared link and applying it to this item with
-     * {@link BoxItem.Info#setSharedLink}. You may want to create the shared link manually so that it can be updated along with
-     * other changes to the item's info in a single network request, giving a boost to performance.</p>
-     *
-     * @param access      the access level of the shared link.
-     * @param unshareDate the date and time at which the link will expire. Can be null to create a non-expiring link.
-     * @param permissions the permissions of the shared link. Can be null to use the default permissions.
-     * @return the created shared link.
-     * @deprecated use {@link BoxFile#createSharedLink(BoxSharedLinkRequest)}
-     */
-    @Override
-    @Deprecated
-    public BoxSharedLink createSharedLink(BoxSharedLink.Access access, Date unshareDate,
-                                          BoxSharedLink.Permissions permissions) {
-
-        return createSharedLink(new BoxSharedLink(access, unshareDate, permissions));
-    }
-
-    /**
-     * Creates new SharedLink for a BoxFile with a password.
-     *
-     * @param access      The access level of the shared link.
-     * @param unshareDate A specified date to unshare the Box file.
-     * @param permissions The permissions to set on the shared link for the Box file.
-     * @param password    Password set on the shared link to give access to the Box file.
-     * @return information about the newly created shared link.
-     * @deprecated Use {@link BoxFile#createSharedLink(BoxSharedLinkRequest)}
-     */
-    @Deprecated
-    public BoxSharedLink createSharedLink(BoxSharedLink.Access access, Date unshareDate,
-                                          BoxSharedLink.Permissions permissions, String password) {
-
-        return createSharedLink(new BoxSharedLink(access, unshareDate, permissions, password));
-    }
-
-    /**
      * Creates a shared link.
      *
      * @param sharedLinkRequest Shared link to create
@@ -543,20 +505,25 @@ public class BoxFile extends BoxItem {
         Representation representation = reps.get(0);
         String repState = representation.getStatus().getState();
 
-        if (repState.equals("viewable") || repState.equals("success")) {
-            this.makeRepresentationContentRequest(representation.getContent().getUrlTemplate(), assetPath, output);
-        } else if (repState.equals("pending") || repState.equals("none")) {
+        switch (repState) {
+            case "viewable":
+            case "success":
+                this.makeRepresentationContentRequest(representation.getContent().getUrlTemplate(), assetPath, output);
+                break;
+            case "pending":
+            case "none":
 
-            String repContentURLString = null;
-            while (repContentURLString == null) {
-                repContentURLString = this.pollRepInfo(representation.getInfo().getUrl());
-            }
+                String repContentURLString = null;
+                while (repContentURLString == null) {
+                    repContentURLString = this.pollRepInfo(representation.getInfo().getUrl());
+                }
 
-            this.makeRepresentationContentRequest(repContentURLString, assetPath, output);
-        } else if (repState.equals("error")) {
-            throw new BoxAPIException("Representation had error status");
-        } else {
-            throw new BoxAPIException("Representation had unknown status");
+                this.makeRepresentationContentRequest(repContentURLString, assetPath, output);
+                break;
+            case "error":
+                throw new BoxAPIException("Representation had error status");
+            default:
+                throw new BoxAPIException("Representation had unknown status");
         }
 
     }
@@ -704,79 +671,6 @@ public class BoxFile extends BoxItem {
                 throw ex;
             }
         }
-    }
-
-    /**
-     * Uploads a new version of this file, replacing the current version. Note that only users with premium accounts
-     * will be able to view and recover previous versions of the file.
-     *
-     * @param fileContent a stream containing the new file contents.
-     * @deprecated use uploadNewVersion() instead.
-     */
-    @Deprecated
-    public void uploadVersion(InputStream fileContent) {
-        this.uploadVersion(fileContent, null);
-    }
-
-    /**
-     * Uploads a new version of this file, replacing the current version. Note that only users with premium accounts
-     * will be able to view and recover previous versions of the file.
-     *
-     * @param fileContent     a stream containing the new file contents.
-     * @param fileContentSHA1 a string containing the SHA1 hash of the new file contents.
-     * @deprecated use uploadNewVersion() instead.
-     */
-    @Deprecated
-    public void uploadVersion(InputStream fileContent, String fileContentSHA1) {
-        this.uploadVersion(fileContent, fileContentSHA1, null);
-    }
-
-    /**
-     * Uploads a new version of this file, replacing the current version. Note that only users with premium accounts
-     * will be able to view and recover previous versions of the file.
-     *
-     * @param fileContent     a stream containing the new file contents.
-     * @param fileContentSHA1 a string containing the SHA1 hash of the new file contents.
-     * @param modified        the date that the new version was modified.
-     * @deprecated use uploadNewVersion() instead.
-     */
-    @Deprecated
-    public void uploadVersion(InputStream fileContent, String fileContentSHA1, Date modified) {
-        this.uploadVersion(fileContent, fileContentSHA1, modified, 0, null);
-    }
-
-    /**
-     * Uploads a new version of this file, replacing the current version, while reporting the progress to a
-     * ProgressListener. Note that only users with premium accounts will be able to view and recover previous versions
-     * of the file.
-     *
-     * @param fileContent a stream containing the new file contents.
-     * @param modified    the date that the new version was modified.
-     * @param fileSize    the size of the file used for determining the progress of the upload.
-     * @param listener    a listener for monitoring the upload's progress.
-     * @deprecated use uploadNewVersion() instead.
-     */
-    @Deprecated
-    public void uploadVersion(InputStream fileContent, Date modified, long fileSize, ProgressListener listener) {
-        this.uploadVersion(fileContent, null, modified, fileSize, listener);
-    }
-
-    /**
-     * Uploads a new version of this file, replacing the current version, while reporting the progress to a
-     * ProgressListener. Note that only users with premium accounts will be able to view and recover previous versions
-     * of the file.
-     *
-     * @param fileContent     a stream containing the new file contents.
-     * @param fileContentSHA1 the SHA1 hash of the file contents. will be sent along in the Content-MD5 header
-     * @param modified        the date that the new version was modified.
-     * @param fileSize        the size of the file used for determining the progress of the upload.
-     * @param listener        a listener for monitoring the upload's progress.
-     * @deprecated use uploadNewVersion() instead.
-     */
-    @Deprecated
-    public void uploadVersion(InputStream fileContent, String fileContentSHA1, Date modified, long fileSize,
-                              ProgressListener listener) {
-        this.uploadNewVersion(fileContent, fileContentSHA1, modified, fileSize, listener);
     }
 
     /**

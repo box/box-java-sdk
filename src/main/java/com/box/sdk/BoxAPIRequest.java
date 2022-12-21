@@ -59,18 +59,6 @@ public class BoxAPIRequest {
     private final String mediaType;
 
     /**
-     * Constructs an unauthenticated BoxAPIRequest.
-     *
-     * @param url    the URL of the request.
-     * @param method the HTTP method of the request.
-     */
-    @Deprecated
-    //API is null this request cannot be send
-    public BoxAPIRequest(URL url, String method) {
-        this(null, url, method);
-    }
-
-    /**
      * Constructs an authenticated BoxAPIRequest using a provided BoxAPIConnection.
      *
      * @param api    an API connection for authenticating the request.
@@ -127,7 +115,7 @@ public class BoxAPIRequest {
      * @param method the HTTP method of the request.
      */
     public BoxAPIRequest(URL url, HttpMethod method) {
-        this(url, method.name());
+        this(null, url, method.name());
     }
 
     /**
@@ -451,9 +439,8 @@ public class BoxAPIRequest {
         }
 
         while (this.backoffCounter.getAttemptsRemaining() > 0) {
-            try {
+            try (BoxJSONResponse response = (BoxJSONResponse) this.trySend(null)) {
                 // upload sends binary data but response is JSON
-                BoxJSONResponse response = (BoxJSONResponse) this.trySend(null);
                 JsonObject jsonObject = Json.parse(response.getJSON()).asObject();
                 return new BoxFileUploadSessionPart((JsonObject) jsonObject.get("part"));
             } catch (BoxAPIException apiException) {

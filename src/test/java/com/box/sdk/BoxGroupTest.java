@@ -183,7 +183,6 @@ public class BoxGroupTest {
         final String userID = "1111";
         final String groupCollaborationURL = "/2.0/group_memberships";
         final String groupMembershipID = "12345";
-        final BoxGroupMembership.Role groupRole = BoxGroupMembership.Role.MEMBER;
         final BoxGroupMembership.GroupRole groupMembershipRole = BoxGroupMembership.GroupRole.MEMBER;
 
         String result = TestUtils.getFixture("BoxGroup/CreateGroupMembership201");
@@ -198,7 +197,6 @@ public class BoxGroupTest {
         BoxGroupMembership.Info groupMembershipInfo = group.addMembership(user);
 
         assertEquals(groupMembershipID, groupMembershipInfo.getID());
-        assertEquals(groupRole, groupMembershipInfo.getRole());
         assertEquals(groupMembershipRole, groupMembershipInfo.getGroupRole());
         assertEquals(groupID, groupMembershipInfo.getGroup().getID());
         assertEquals(userID, groupMembershipInfo.getUser().getID());

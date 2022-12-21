@@ -49,7 +49,9 @@ public class BoxEventTest {
 
         Date startDate = new SimpleDateFormat("yyyy-MM-dd'T'hh:mm:ssX").parse(startTime);
         Date endDate = new SimpleDateFormat("yyyy-MM-dd'T'hh:mm:ssX").parse(endTime);
-        EventLog eventLog = EventLog.getEnterpriseEvents(this.api, startDate, endDate);
+        EventLog eventLog = EventLog.getEnterpriseEvents(
+            this.api, new EnterpriseEventsRequest().after(startDate).before(endDate)
+        );
         assertEquals(1, eventLog.getSize());
     }
 
@@ -72,12 +74,13 @@ public class BoxEventTest {
 
         Date startDate = new SimpleDateFormat("yyyy-MM-dd'T'hh:mm:ssX").parse(startTime);
         Date endDate = new SimpleDateFormat("yyyy-MM-dd'T'hh:mm:ssX").parse(endTime);
-        EventLog eventLog = EventLog.getEnterpriseEvents(this.api, startDate, endDate);
+        EventLog eventLog = EventLog.getEnterpriseEvents(
+            this.api, new EnterpriseEventsRequest().after(startDate).before(endDate)
+        );
         BoxEvent event = eventLog.iterator().next();
         assertEquals("54321", event.getActionBy().getID());
         assertEquals("12345", event.getSourceInfo().getID());
         assertEquals("Example User", event.getCreatedBy().getName());
-        assertEquals(BoxEvent.Type.ADD_LOGIN_ACTIVITY_DEVICE, event.getType());
         assertEquals(BoxEvent.EventType.ADD_LOGIN_ACTIVITY_DEVICE, event.getEventType());
         assertEquals("ADD_LOGIN_ACTIVITY_DEVICE", event.getTypeName());
     }
@@ -88,7 +91,6 @@ public class BoxEventTest {
             + "\"event_type\": \"UNKNOWN_EVENT_TYPE\" }";
         BoxEvent event = new BoxEvent(null, eventJSON);
 
-        assertThat(event.getType(), is(BoxEvent.Type.UNKNOWN));
         assertThat(event.getEventType(), is(BoxEvent.EventType.UNKNOWN));
     }
 

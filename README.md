@@ -11,6 +11,9 @@ The Box Java SDK for interacting with the
 ## Latest Release
 Latest release can be found [here](https://github.com/box/box-java-sdk/tree/v3.8.0).
 
+## Upgrades
+You can read about how to migrate to the new version [here](https://github.com/box/box-java-sdk/tree/v3.8.0/doc/upgrades).
+
 ## Versions
 We use a modified version of [Semantic Versioning](https://semver.org/) for all changes. See [version strategy](VERSIONS.md) for details which is effective from 30 July 2022.
 
@@ -155,16 +158,21 @@ To run the project, follow below steps
 
 3. Provide the Id of the admin user (or any enterprise user) in `src/example/java/com/box/sdk/example/BoxDeveloperEditionAPIConnectionAsEnterpriseUser.java`.
 
-```java
+```java 
 public final class BoxDeveloperEditionAPIConnectionAsEnterpriseUser {
 
    private static final String USER_ID = "";
    // ...
    Reader reader = new FileReader("src/example/config/config.json");
    BoxConfig boxConfig = BoxConfig.readFrom(reader);
+   IAccessTokenCache accessTokenCache = new InMemoryLRUAccessTokenCache(10);
 
-   BoxDeveloperEditionAPIConnection api = 
-           new BoxDeveloperEditionAPIConnection(USER_ID, DeveloperEditionEntityType.USER, boxConfig, accessTokenCache);
+   BoxDeveloperEditionAPIConnection api = new BoxDeveloperEditionAPIConnection(
+           USER_ID,
+           DeveloperEditionEntityType.USER,
+           boxConfig,
+           accessTokenCache
+   );
 }
 ```
 

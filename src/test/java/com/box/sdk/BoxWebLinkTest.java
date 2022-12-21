@@ -16,10 +16,8 @@ import com.github.tomakehurst.wiremock.client.WireMock;
 import com.github.tomakehurst.wiremock.junit.WireMockRule;
 import java.io.IOException;
 import java.net.URL;
-import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.TimeZone;
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -152,29 +150,5 @@ public class BoxWebLinkTest {
             .unsharedDate(unsharedDate.getTime())
             .vanityName("myCustomName");
         webLink.createSharedLink(sharedLinkRequest);
-    }
-
-    @Test
-    public void cannotCreateShareLinkWithPermissions() {
-        final BoxWebLink webLink = new BoxWebLink(this.api, "12345");
-
-        Assert.assertThrows(
-            "Cannot set permissions on a shared link to web link.",
-            IllegalArgumentException.class,
-            () -> webLink.createSharedLink(OPEN, new Date(), new BoxSharedLink.Permissions())
-        );
-    }
-
-    @Test
-    public void cannotCreateShareLinkWithPermissionsWhenSettingPassword() {
-        final BoxWebLink webLink = new BoxWebLink(this.api, "12345");
-
-        Assert.assertThrows(
-            "Cannot set permissions on a shared link to web link.",
-            IllegalArgumentException.class,
-            () -> webLink.createSharedLink(
-                OPEN, new Date(), new BoxSharedLink.Permissions(), "my-very-secret-password"
-            )
-        );
     }
 }

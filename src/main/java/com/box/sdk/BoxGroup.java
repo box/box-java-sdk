@@ -1,7 +1,6 @@
 package com.box.sdk;
 
 import com.box.sdk.BoxGroupMembership.Permission;
-import com.box.sdk.BoxGroupMembership.Role;
 import com.eclipsesource.json.Json;
 import com.eclipsesource.json.JsonArray;
 import com.eclipsesource.json.JsonObject;
@@ -239,20 +238,7 @@ public class BoxGroup extends BoxCollaborator {
      * @return info about the new group membership.
      */
     public BoxGroupMembership.Info addMembership(BoxUser user) {
-        return this.addMembership(user, (Role) null, null);
-    }
-
-    /**
-     * Adds a member to this group with the specified role.
-     *
-     * @param user the member to be added to this group.
-     * @param role the role of the user in this group. Can be null to assign the default role.
-     * @return info about the new group membership.
-     * @deprecated use addMembership(BoxUser user, BoxGroupMembership.GroupRole role) instead.
-     */
-    @Deprecated
-    public BoxGroupMembership.Info addMembership(BoxUser user, Role role) {
-        return this.addMembership(user, role, null);
+        return this.addMembership(user, null, null);
     }
 
     /**
@@ -264,48 +250,6 @@ public class BoxGroup extends BoxCollaborator {
      */
     public BoxGroupMembership.Info addMembership(BoxUser user, BoxGroupMembership.GroupRole role) {
         return this.addMembership(user, role, null);
-    }
-
-    /**
-     * Adds a member to this group with the specified role.
-     *
-     * @param user                    the member to be added to this group.
-     * @param role                    the role of the user in this group. Can be null to assign the default role.
-     * @param configurablePermissions the configurable permission of the user as a group admin.
-     *                                Can be null to give all group admin permissions.
-     * @return info about the new group membership.
-     * @deprecated use {@code addMembership(BoxUser user, GroupRole role,
-     * Map<BoxGroupMembership.Permission, Boolean> configurablePermissions)} instead.
-     */
-    @Deprecated
-    public BoxGroupMembership.Info addMembership(BoxUser user, Role role,
-                                                 Map<BoxGroupMembership.Permission, Boolean> configurablePermissions) {
-        BoxAPIConnection api = this.getAPI();
-
-        JsonObject requestJSON = new JsonObject();
-        requestJSON.add("user", new JsonObject().add("id", user.getID()));
-        requestJSON.add("group", new JsonObject().add("id", this.getID()));
-        if (role != null) {
-            requestJSON.add("role", role.toJSONString());
-        }
-
-        if (configurablePermissions != null) {
-            JsonObject configurablePermissionJson = new JsonObject();
-            for (Permission attrKey : configurablePermissions.keySet()) {
-                configurablePermissionJson.set(attrKey.toJSONValue(), configurablePermissions.get(attrKey));
-            }
-            requestJSON.add("configurable_permissions", configurablePermissionJson);
-        }
-
-        URL url = ADD_MEMBERSHIP_URL_TEMPLATE.build(api.getBaseURL());
-        BoxJSONRequest request = new BoxJSONRequest(api, url, "POST");
-        request.setBody(requestJSON.toString());
-        try (BoxJSONResponse response = request.send()) {
-            JsonObject responseJSON = Json.parse(response.getJSON()).asObject();
-
-            BoxGroupMembership membership = new BoxGroupMembership(api, responseJSON.get("id").asString());
-            return membership.new Info(responseJSON);
-        }
     }
 
     /**
@@ -490,16 +434,24 @@ public class BoxGroup extends BoxCollaborator {
             String memberName = member.getName();
             JsonValue value = member.getValue();
             try {
-                if (memberName.equals("description")) {
-                    this.description = value.asString();
-                } else if (memberName.equals("external_sync_identifier")) {
-                    this.externalSyncIdentifier = value.asString();
-                } else if (memberName.equals("invitability_level")) {
-                    this.invitabilityLevel = value.asString();
-                } else if (memberName.equals("member_viewability_level")) {
-                    this.memberViewabilityLevel = value.asString();
-                } else if (memberName.equals("provenance")) {
-                    this.provenance = value.asString();
+                switch (memberName) {
+                    case "description":
+                        this.description = value.asString();
+                        break;
+                    case "external_sync_identifier":
+                        this.externalSyncIdentifier = value.asString();
+                        break;
+                    case "invitability_level":
+                        this.invitabilityLevel = value.asString();
+                        break;
+                    case "member_viewability_level":
+                        this.memberViewabilityLevel = value.asString();
+                        break;
+                    case "provenance":
+                        this.provenance = value.asString();
+                        break;
+                    default:
+                        break;
                 }
             } catch (Exception e) {
                 throw new BoxDeserializationException(memberName, value.toString(), e);

@@ -109,56 +109,12 @@ public class BoxRetentionPolicy extends BoxResource {
      * @param length the duration in days that the retention policy will be active for after being assigned to content.
      * @param action the disposition action can be "permanently_delete" or "remove_retention".
      * @return the created retention policy's info.
-     * @deprecated Use {@link BoxRetentionPolicy#createFinitePolicy(BoxAPIConnection, String, int, BoxRetentionPolicyAction)}
-     */
-    @Deprecated
-    public static BoxRetentionPolicy.Info createFinitePolicy(BoxAPIConnection api,
-                                                             String name,
-                                                             int length,
-                                                             String action) {
-        return createRetentionPolicy(
-            api, name, BoxRetentionPolicyType.Finite, length, BoxRetentionPolicyAction.valueOf(action)
-        );
-    }
-
-    /**
-     * Used to create a new finite retention policy.
-     *
-     * @param api    the API connection to be used by the created user.
-     * @param name   the name of the retention policy.
-     * @param length the duration in days that the retention policy will be active for after being assigned to content.
-     * @param action the disposition action can be "permanently_delete" or "remove_retention".
-     * @return the created retention policy's info.
      */
     public static BoxRetentionPolicy.Info createFinitePolicy(BoxAPIConnection api,
                                                              String name,
                                                              int length,
                                                              BoxRetentionPolicyAction action) {
         return createRetentionPolicy(api, name, BoxRetentionPolicyType.Finite, length, action);
-    }
-
-    /**
-     * Used to create a new finite retention policy with optional parameters.
-     *
-     * @param api            the API connection to be used by the created user.
-     * @param name           the name of the retention policy.
-     * @param length         the duration in days that the retention policy will be active for after being assigned to content.
-     * @param action         the disposition action can be "permanently_delete" or "remove_retention".
-     * @param optionalParams the optional parameters.
-     * @return the created retention policy's info.
-     * @deprecated Use {@link BoxRetentionPolicy#createFinitePolicy(BoxAPIConnection, String, int, BoxRetentionPolicyAction, RetentionPolicyParams)}
-     */
-    @Deprecated
-    public static BoxRetentionPolicy.Info createFinitePolicy(
-        BoxAPIConnection api,
-        String name,
-        int length,
-        String action,
-        RetentionPolicyParams optionalParams
-    ) {
-        return createRetentionPolicy(
-            api, name, BoxRetentionPolicyType.Finite, length, BoxRetentionPolicyAction.valueOf(action), optionalParams
-        );
     }
 
     /**
@@ -769,52 +725,67 @@ public class BoxRetentionPolicy extends BoxResource {
             String memberName = member.getName();
             JsonValue value = member.getValue();
             try {
-                if (memberName.equals("policy_name")) {
-                    this.policyName = value.asString();
-                } else if (memberName.equals("policy_type")) {
-                    this.policyType = value.asString();
-                } else if (memberName.equals("retention_length")) {
-                    int intVal;
-                    if (value.asString().equals(BoxRetentionPolicyType.Indefinite.value)) {
-                        intVal = -1;
-                    } else {
-                        intVal = Integer.parseInt(value.asString());
-                    }
-
-                    this.retentionLength = intVal;
-                } else if (memberName.equals("disposition_action")) {
-                    this.dispositionAction = value.asString();
-                } else if (memberName.equals("status")) {
-                    this.status = value.asString();
-                } else if (memberName.equals("created_by")) {
-                    JsonObject userJSON = value.asObject();
-                    if (this.createdBy == null) {
-                        String userID = userJSON.get("id").asString();
-                        BoxUser user = new BoxUser(getAPI(), userID);
-                        this.createdBy = user.new Info(userJSON);
-                    } else {
-                        this.createdBy.update(userJSON);
-                    }
-                } else if (memberName.equals("created_at")) {
-                    this.createdAt = BoxDateFormat.parse(value.asString());
-                } else if (memberName.equals("modified_at")) {
-                    this.modifiedAt = BoxDateFormat.parse(value.asString());
-                } else if (memberName.equals("can_owner_extend_retention")) {
-                    this.canOwnerExtendRetention = value.asBoolean();
-                } else if (memberName.equals("are_owners_notified")) {
-                    this.areOwnersNotified = value.asBoolean();
-                } else if (memberName.equals("description")) {
-                    this.description = value.asString();
-                } else if (memberName.equals("retention_type")) {
-                    this.retentionType = RetentionPolicyParams.RetentionType.fromJSONString(value.asString());
-                } else if (memberName.equals("custom_notification_recipients")) {
-                    List<BoxUser.Info> recipients = new ArrayList<>();
-                    for (JsonValue userJSON : value.asArray()) {
-                        String userID = userJSON.asObject().get("id").asString();
-                        BoxUser user = new BoxUser(getAPI(), userID);
-                        recipients.add(user.new Info(userJSON.asObject()));
-                    }
-                    this.customNotificationRecipients = recipients;
+                switch (memberName) {
+                    case "policy_name":
+                        this.policyName = value.asString();
+                        break;
+                    case "policy_type":
+                        this.policyType = value.asString();
+                        break;
+                    case "retention_length":
+                        int intVal;
+                        if (value.asString().equals(BoxRetentionPolicyType.Indefinite.value)) {
+                            intVal = -1;
+                        } else {
+                            intVal = Integer.parseInt(value.asString());
+                        }
+                        this.retentionLength = intVal;
+                        break;
+                    case "disposition_action":
+                        this.dispositionAction = value.asString();
+                        break;
+                    case "status":
+                        this.status = value.asString();
+                        break;
+                    case "created_by":
+                        JsonObject userJSON = value.asObject();
+                        if (this.createdBy == null) {
+                            String userID = userJSON.get("id").asString();
+                            BoxUser user = new BoxUser(getAPI(), userID);
+                            this.createdBy = user.new Info(userJSON);
+                        } else {
+                            this.createdBy.update(userJSON);
+                        }
+                        break;
+                    case "created_at":
+                        this.createdAt = BoxDateFormat.parse(value.asString());
+                        break;
+                    case "modified_at":
+                        this.modifiedAt = BoxDateFormat.parse(value.asString());
+                        break;
+                    case "can_owner_extend_retention":
+                        this.canOwnerExtendRetention = value.asBoolean();
+                        break;
+                    case "are_owners_notified":
+                        this.areOwnersNotified = value.asBoolean();
+                        break;
+                    case "description":
+                        this.description = value.asString();
+                        break;
+                    case "retention_type":
+                        this.retentionType = RetentionPolicyParams.RetentionType.fromJSONString(value.asString());
+                        break;
+                    case "custom_notification_recipients":
+                        List<BoxUser.Info> recipients = new ArrayList<>();
+                        for (JsonValue recipientJSON : value.asArray()) {
+                            String userID = recipientJSON.asObject().get("id").asString();
+                            BoxUser user = new BoxUser(getAPI(), userID);
+                            recipients.add(user.new Info(recipientJSON.asObject()));
+                        }
+                        this.customNotificationRecipients = recipients;
+                        break;
+                    default:
+                        break;
                 }
             } catch (Exception e) {
                 throw new BoxDeserializationException(memberName, value.toString(), e);
