@@ -16,6 +16,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
+import java.util.function.Function;
 import java.util.regex.Pattern;
 
 /**
@@ -746,17 +747,20 @@ public class BoxAPIConnection {
     public void restore(String state) {
         JsonObject json = Json.parse(state).asObject();
         String accessToken = json.get("accessToken").asString();
-        String refreshToken = json.get("refreshToken").asString();
+        String refreshToken = getKeyValueOrDefault(json, "refreshToken", JsonValue::asString, null);
         long lastRefresh = json.get("lastRefresh").asLong();
         long expires = json.get("expires").asLong();
         String userAgent = json.get("userAgent").asString();
-        String tokenURL = getKeyValueOrDefault(json, "tokenURL", null);
-        String revokeURL = getKeyValueOrDefault(json, "revokeURL", null);
-        String baseURL = adoptBaseUrlWhenLoadingFromOldVersion(getKeyValueOrDefault(json, "baseURL", DEFAULT_BASE_URL));
-        String baseUploadURL = adoptUploadBaseUrlWhenLoadingFromOldVersion(
-            getKeyValueOrDefault(json, "baseUploadURL", DEFAULT_BASE_UPLOAD_URL)
+        String tokenURL = getKeyValueOrDefault(json, "tokenURL", JsonValue::asString, null);
+        String revokeURL = getKeyValueOrDefault(json, "revokeURL", JsonValue::asString, null);
+        String baseURL = adoptBaseUrlWhenLoadingFromOldVersion(
+            getKeyValueOrDefault(json, "baseURL", JsonValue::asString, DEFAULT_BASE_URL)
         );
-        String authorizationURL = getKeyValueOrDefault(json, "authorizationURL", DEFAULT_BASE_AUTHORIZATION_URL);
+        String baseUploadURL = adoptUploadBaseUrlWhenLoadingFromOldVersion(
+            getKeyValueOrDefault(json, "baseUploadURL", JsonValue::asString, DEFAULT_BASE_UPLOAD_URL)
+        );
+        String authorizationURL =
+            getKeyValueOrDefault(json, "authorizationURL", JsonValue::asString, DEFAULT_BASE_AUTHORIZATION_URL);
         boolean autoRefresh = json.get("autoRefresh").asBoolean();
 
         // Try to read deprecated value
@@ -811,10 +815,10 @@ public class BoxAPIConnection {
             : urlEndingWithSlash;
     }
 
-    protected String getKeyValueOrDefault(JsonObject json, String key, String defaultValue) {
+    protected <T> T getKeyValueOrDefault(JsonObject json, String key, Function<JsonValue, T> mapper, T defaultValue) {
         return Optional.ofNullable(json.get(key))
             .filter(js -> !js.isNull())
-            .map(JsonValue::asString)
+            .map(o -> mapper.apply(o))
             .orElse(defaultValue);
     }
 
