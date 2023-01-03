@@ -746,17 +746,20 @@ public class BoxAPIConnection {
     public void restore(String state) {
         JsonObject json = Json.parse(state).asObject();
         String accessToken = json.get("accessToken").asString();
-        String refreshToken = json.get("refreshToken").asString();
+        String refreshToken = getKeyValueOrDefault(json, "refreshToken", null);
         long lastRefresh = json.get("lastRefresh").asLong();
         long expires = json.get("expires").asLong();
         String userAgent = json.get("userAgent").asString();
         String tokenURL = getKeyValueOrDefault(json, "tokenURL", null);
         String revokeURL = getKeyValueOrDefault(json, "revokeURL", null);
-        String baseURL = adoptBaseUrlWhenLoadingFromOldVersion(getKeyValueOrDefault(json, "baseURL", DEFAULT_BASE_URL));
+        String baseURL = adoptBaseUrlWhenLoadingFromOldVersion(
+            getKeyValueOrDefault(json, "baseURL", DEFAULT_BASE_URL)
+        );
         String baseUploadURL = adoptUploadBaseUrlWhenLoadingFromOldVersion(
             getKeyValueOrDefault(json, "baseUploadURL", DEFAULT_BASE_UPLOAD_URL)
         );
-        String authorizationURL = getKeyValueOrDefault(json, "authorizationURL", DEFAULT_BASE_AUTHORIZATION_URL);
+        String authorizationURL =
+            getKeyValueOrDefault(json, "authorizationURL", DEFAULT_BASE_AUTHORIZATION_URL);
         boolean autoRefresh = json.get("autoRefresh").asBoolean();
 
         // Try to read deprecated value

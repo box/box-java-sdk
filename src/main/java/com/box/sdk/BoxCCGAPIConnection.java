@@ -126,38 +126,10 @@ public final class BoxCCGAPIConnection extends BoxAPIConnection {
 
     @Override
     public void restore(String state) {
+        super.restore(state);
+
         JsonObject json = Json.parse(state).asObject();
-        String accessToken = json.get("accessToken").asString();
-        long lastRefresh = json.get("lastRefresh").asLong();
-        long expires = json.get("expires").asLong();
-        String userAgent = json.get("userAgent").asString();
-        String revokeURL = getKeyValueOrDefault(json, "revokeURL", null);
-        String tokenURL = getKeyValueOrDefault(json, "tokenURL", null);
-        String authorizationURL = getKeyValueOrDefault(json, "authorizationURL", DEFAULT_BASE_AUTHORIZATION_URL);
-        String baseURL = json.get("baseURL").asString();
-        String baseUploadURL = json.get("baseUploadURL").asString();
-        boolean autoRefresh = json.get("autoRefresh").asBoolean();
-        String subjectType = json.get("subjectType").asString();
-        String subjectId = json.get("subjectId").asString();
-
-        int maxRetryAttempts = -1;
-        if (json.names().contains("maxRetryAttempts")) {
-            maxRetryAttempts = json.get("maxRetryAttempts").asInt();
-        }
-
-        setAccessToken(accessToken);
-        setLastRefresh(lastRefresh);
-        setExpires(expires);
-        setUserAgent(userAgent);
-        setTokenURL(tokenURL);
-        setRevokeURL(revokeURL);
-        setBaseAuthorizationURL(authorizationURL);
-        setBaseURL(baseURL);
-        setBaseUploadURL(baseUploadURL);
-        setAutoRefresh(autoRefresh);
-        setMaxRetryAttempts(maxRetryAttempts);
-        this.subjectType = subjectType;
-        this.subjectId = subjectId;
-
+        this.subjectType = json.get("subjectType").asString();
+        this.subjectId = json.get("subjectId").asString();
     }
 }

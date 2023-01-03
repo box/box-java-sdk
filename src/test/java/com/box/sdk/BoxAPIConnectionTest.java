@@ -13,6 +13,7 @@ import static org.hamcrest.Matchers.not;
 import static org.hamcrest.Matchers.startsWith;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.fail;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
@@ -532,6 +533,34 @@ public class BoxAPIConnectionTest {
         BoxAPIConnection restoredApi = BoxAPIConnection.restore(clientId, clientSecret, savedConnection);
 
         // then
+        assertThat("https://api.box.com/2.0/", is(restoredApi.getBaseURL()));
+        assertThat("https://upload.box.com/api/2.0/", is(restoredApi.getBaseUploadURL()));
+    }
+
+    @Test
+    public void restoresWithEmptyRefreshToken() {
+        // given
+        String clientId = "some_client_id";
+        String clientSecret = "some_client_secret";
+        String state = "{\"accessToken\":\"some-access-token\","
+            + "\"refreshToken\":null,"
+            + "\"lastRefresh\":1672759898468,"
+            + "\"expires\":3829000,"
+            + "\"userAgent\":\"Box Java SDK v3.8.1 (Java 17.0.4)\","
+            + "\"tokenURL\":null,"
+            + "\"revokeURL\":null,"
+            + "\"baseURL\":\"https://api.box.com/\","
+            + "\"baseUploadURL\":\"https://upload.box.com/api/\","
+            + "\"authorizationURL\":\"https://account.box.com/api/\","
+            + "\"autoRefresh\":true,"
+            + "\"maxRetryAttempts\":5}";
+
+        // when
+        BoxAPIConnection restoredApi = BoxAPIConnection.restore(clientId, clientSecret, state);
+
+        // then
+        assertThat("some-access-token", is(restoredApi.getAccessToken()));
+        assertNull(restoredApi.getRefreshToken());
         assertThat("https://api.box.com/2.0/", is(restoredApi.getBaseURL()));
         assertThat("https://upload.box.com/api/2.0/", is(restoredApi.getBaseUploadURL()));
     }
