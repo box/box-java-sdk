@@ -1501,7 +1501,7 @@ public&nbsp;void&nbsp;<a href="../../../src-html/com/box/sdk/BoxAPIConnection.ht
 <ul class="blockList">
 <li class="blockList">
 <h4>getKeyValueOrDefault</h4>
-<pre>protected&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxAPIConnection.html#line.814">getKeyValueOrDefault</a>(JsonObject&nbsp;json,
+<pre>protected&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxAPIConnection.html#line.817">getKeyValueOrDefault</a>(JsonObject&nbsp;json,
                                       <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;key,
                                       <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;defaultValue)</pre>
 </li>
@@ -1512,7 +1512,7 @@ public&nbsp;void&nbsp;<a href="../../../src-html/com/box/sdk/BoxAPIConnection.ht
 <ul class="blockList">
 <li class="blockList">
 <h4>notifyRefresh</h4>
-<pre>protected&nbsp;void&nbsp;<a href="../../../src-html/com/box/sdk/BoxAPIConnection.html#line.824">notifyRefresh</a>()</pre>
+<pre>protected&nbsp;void&nbsp;<a href="../../../src-html/com/box/sdk/BoxAPIConnection.html#line.827">notifyRefresh</a>()</pre>
 <div class="block">Notifies a refresh event to all the listeners.</div>
 </li>
 </ul>
@@ -1522,7 +1522,7 @@ public&nbsp;void&nbsp;<a href="../../../src-html/com/box/sdk/BoxAPIConnection.ht
 <ul class="blockList">
 <li class="blockList">
 <h4>notifyError</h4>
-<pre>protected&nbsp;void&nbsp;<a href="../../../src-html/com/box/sdk/BoxAPIConnection.html#line.835">notifyError</a>(<a href="../../../com/box/sdk/BoxAPIException.html" title="class in com.box.sdk">BoxAPIException</a>&nbsp;error)</pre>
+<pre>protected&nbsp;void&nbsp;<a href="../../../src-html/com/box/sdk/BoxAPIConnection.html#line.838">notifyError</a>(<a href="../../../com/box/sdk/BoxAPIException.html" title="class in com.box.sdk">BoxAPIException</a>&nbsp;error)</pre>
 <div class="block">Notifies an error event to all the listeners.</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
@@ -1536,7 +1536,7 @@ public&nbsp;void&nbsp;<a href="../../../src-html/com/box/sdk/BoxAPIConnection.ht
 <ul class="blockList">
 <li class="blockList">
 <h4>addListener</h4>
-<pre>public&nbsp;void&nbsp;<a href="../../../src-html/com/box/sdk/BoxAPIConnection.html#line.846">addListener</a>(<a href="../../../com/box/sdk/BoxAPIConnectionListener.html" title="interface in com.box.sdk">BoxAPIConnectionListener</a>&nbsp;listener)</pre>
+<pre>public&nbsp;void&nbsp;<a href="../../../src-html/com/box/sdk/BoxAPIConnection.html#line.849">addListener</a>(<a href="../../../com/box/sdk/BoxAPIConnectionListener.html" title="interface in com.box.sdk">BoxAPIConnectionListener</a>&nbsp;listener)</pre>
 <div class="block">Add a listener to listen to Box API connection events.</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
@@ -1550,7 +1550,7 @@ public&nbsp;void&nbsp;<a href="../../../src-html/com/box/sdk/BoxAPIConnection.ht
 <ul class="blockList">
 <li class="blockList">
 <h4>removeListener</h4>
-<pre>public&nbsp;void&nbsp;<a href="../../../src-html/com/box/sdk/BoxAPIConnection.html#line.855">removeListener</a>(<a href="../../../com/box/sdk/BoxAPIConnectionListener.html" title="interface in com.box.sdk">BoxAPIConnectionListener</a>&nbsp;listener)</pre>
+<pre>public&nbsp;void&nbsp;<a href="../../../src-html/com/box/sdk/BoxAPIConnection.html#line.858">removeListener</a>(<a href="../../../com/box/sdk/BoxAPIConnectionListener.html" title="interface in com.box.sdk">BoxAPIConnectionListener</a>&nbsp;listener)</pre>
 <div class="block">Remove a listener listening to Box API connection events.</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
@@ -1564,7 +1564,7 @@ public&nbsp;void&nbsp;<a href="../../../src-html/com/box/sdk/BoxAPIConnection.ht
 <ul class="blockList">
 <li class="blockList">
 <h4>getRequestInterceptor</h4>
-<pre>public&nbsp;<a href="../../../com/box/sdk/RequestInterceptor.html" title="interface in com.box.sdk">RequestInterceptor</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxAPIConnection.html#line.864">getRequestInterceptor</a>()</pre>
+<pre>public&nbsp;<a href="../../../com/box/sdk/RequestInterceptor.html" title="interface in com.box.sdk">RequestInterceptor</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxAPIConnection.html#line.867">getRequestInterceptor</a>()</pre>
 <div class="block">Gets the RequestInterceptor associated with this API connection.</div>
 <dl>
 <dt><span class="returnLabel">Returns:</span></dt>
@@ -1578,7 +1578,7 @@ public&nbsp;void&nbsp;<a href="../../../src-html/com/box/sdk/BoxAPIConnection.ht
 <ul class="blockList">
 <li class="blockList">
 <h4>setRequestInterceptor</h4>
-<pre>public&nbsp;void&nbsp;<a href="../../../src-html/com/box/sdk/BoxAPIConnection.html#line.873">setRequestInterceptor</a>(<a href="../../../com/box/sdk/RequestInterceptor.html" title="interface in com.box.sdk">RequestInterceptor</a>&nbsp;interceptor)</pre>
+<pre>public&nbsp;void&nbsp;<a href="../../../src-html/com/box/sdk/BoxAPIConnection.html#line.876">setRequestInterceptor</a>(<a href="../../../com/box/sdk/RequestInterceptor.html" title="interface in com.box.sdk">RequestInterceptor</a>&nbsp;interceptor)</pre>
 <div class="block">Sets a RequestInterceptor that can intercept requests and manipulate them before they're sent to the Box API.</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
@@ -1592,7 +1592,7 @@ public&nbsp;void&nbsp;<a href="../../../src-html/com/box/sdk/BoxAPIConnection.ht
 <ul class="blockList">
 <li class="blockList">
 <h4>getLowerScopedToken</h4>
-<pre>public&nbsp;<a href="../../../com/box/sdk/ScopedToken.html" title="class in com.box.sdk">ScopedToken</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxAPIConnection.html#line.885">getLowerScopedToken</a>(<a href="https://docs.oracle.com/javase/8/docs/api/java/util/List.html?is-external=true" title="class or interface in java.util">List</a>&lt;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&gt;&nbsp;scopes,
+<pre>public&nbsp;<a href="../../../com/box/sdk/ScopedToken.html" title="class in com.box.sdk">ScopedToken</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxAPIConnection.html#line.888">getLowerScopedToken</a>(<a href="https://docs.oracle.com/javase/8/docs/api/java/util/List.html?is-external=true" title="class or interface in java.util">List</a>&lt;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&gt;&nbsp;scopes,
                                        <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;resource)</pre>
 <div class="block">Get a lower-scoped token restricted to a resource for the list of scopes that are passed.</div>
 <dl>
@@ -1612,7 +1612,7 @@ public&nbsp;void&nbsp;<a href="../../../src-html/com/box/sdk/BoxAPIConnection.ht
 <ul class="blockList">
 <li class="blockList">
 <h4>determineResourceLinkType</h4>
-<pre>protected&nbsp;<a href="../../../com/box/sdk/BoxAPIConnection.ResourceLinkType.html" title="enum in com.box.sdk">BoxAPIConnection.ResourceLinkType</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxAPIConnection.html#line.969">determineResourceLinkType</a>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;resourceLink)</pre>
+<pre>protected&nbsp;<a href="../../../com/box/sdk/BoxAPIConnection.ResourceLinkType.html" title="enum in com.box.sdk">BoxAPIConnection.ResourceLinkType</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxAPIConnection.html#line.972">determineResourceLinkType</a>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;resourceLink)</pre>
 <div class="block">Determines the type of resource, given a link to a Box resource.</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
@@ -1628,7 +1628,7 @@ public&nbsp;void&nbsp;<a href="../../../src-html/com/box/sdk/BoxAPIConnection.ht
 <ul class="blockList">
 <li class="blockList">
 <h4>revokeToken</h4>
-<pre>public&nbsp;void&nbsp;<a href="../../../src-html/com/box/sdk/BoxAPIConnection.html#line.997">revokeToken</a>()</pre>
+<pre>public&nbsp;void&nbsp;<a href="../../../src-html/com/box/sdk/BoxAPIConnection.html#line.1000">revokeToken</a>()</pre>
 <div class="block">Revokes the tokens associated with this API connection.  This results in the connection no
  longer being able to make API calls until a fresh authorization is made by calling authenticate()</div>
 </li>
@@ -1639,7 +1639,7 @@ public&nbsp;void&nbsp;<a href="../../../src-html/com/box/sdk/BoxAPIConnection.ht
 <ul class="blockList">
 <li class="blockList">
 <h4>save</h4>
-<pre>public&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxAPIConnection.html#line.1027">save</a>()</pre>
+<pre>public&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxAPIConnection.html#line.1030">save</a>()</pre>
 <div class="block">Saves the state of this connection to a string so that it can be persisted and restored at a later time.
 
  <p>Note that proxy settings aren't automatically saved or restored. This is mainly due to security concerns
@@ -1659,7 +1659,7 @@ public&nbsp;void&nbsp;<a href="../../../src-html/com/box/sdk/BoxAPIConnection.ht
 <ul class="blockList">
 <li class="blockList">
 <h4>setCustomHeader</h4>
-<pre>public&nbsp;void&nbsp;<a href="../../../src-html/com/box/sdk/BoxAPIConnection.html#line.1082">setCustomHeader</a>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;header,
+<pre>public&nbsp;void&nbsp;<a href="../../../src-html/com/box/sdk/BoxAPIConnection.html#line.1085">setCustomHeader</a>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;header,
                             <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;value)</pre>
 <div class="block">Sets a custom header to be sent on all requests through this API connection.</div>
 <dl>
@@ -1675,7 +1675,7 @@ public&nbsp;void&nbsp;<a href="../../../src-html/com/box/sdk/BoxAPIConnection.ht
 <ul class="blockList">
 <li class="blockList">
 <h4>removeCustomHeader</h4>
-<pre>public&nbsp;void&nbsp;<a href="../../../src-html/com/box/sdk/BoxAPIConnection.html#line.1091">removeCustomHeader</a>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;header)</pre>
+<pre>public&nbsp;void&nbsp;<a href="../../../src-html/com/box/sdk/BoxAPIConnection.html#line.1094">removeCustomHeader</a>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;header)</pre>
 <div class="block">Removes a custom header, so it will no longer be sent on requests through this API connection.</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
@@ -1689,7 +1689,7 @@ public&nbsp;void&nbsp;<a href="../../../src-html/com/box/sdk/BoxAPIConnection.ht
 <ul class="blockList">
 <li class="blockList">
 <h4>suppressNotifications</h4>
-<pre>public&nbsp;void&nbsp;<a href="../../../src-html/com/box/sdk/BoxAPIConnection.html#line.1099">suppressNotifications</a>()</pre>
+<pre>public&nbsp;void&nbsp;<a href="../../../src-html/com/box/sdk/BoxAPIConnection.html#line.1102">suppressNotifications</a>()</pre>
 <div class="block">Suppresses email notifications from API actions.  This is typically used by security or admin applications
  to prevent spamming end users when doing automated processing on their content.</div>
 </li>
@@ -1700,7 +1700,7 @@ public&nbsp;void&nbsp;<a href="../../../src-html/com/box/sdk/BoxAPIConnection.ht
 <ul class="blockList">
 <li class="blockList">
 <h4>enableNotifications</h4>
-<pre>public&nbsp;void&nbsp;<a href="../../../src-html/com/box/sdk/BoxAPIConnection.html#line.1108">enableNotifications</a>()</pre>
+<pre>public&nbsp;void&nbsp;<a href="../../../src-html/com/box/sdk/BoxAPIConnection.html#line.1111">enableNotifications</a>()</pre>
 <div class="block">Re-enable email notifications from API actions if they have been suppressed.</div>
 <dl>
 <dt><span class="seeLabel">See Also:</span></dt>
@@ -1714,7 +1714,7 @@ public&nbsp;void&nbsp;<a href="../../../src-html/com/box/sdk/BoxAPIConnection.ht
 <ul class="blockList">
 <li class="blockList">
 <h4>asUser</h4>
-<pre>public&nbsp;void&nbsp;<a href="../../../src-html/com/box/sdk/BoxAPIConnection.html#line.1118">asUser</a>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;userID)</pre>
+<pre>public&nbsp;void&nbsp;<a href="../../../src-html/com/box/sdk/BoxAPIConnection.html#line.1121">asUser</a>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;userID)</pre>
 <div class="block">Set this API connection to make API calls on behalf of another users, impersonating them.  This
  functionality can only be used by admins and service accounts.</div>
 <dl>
@@ -1729,7 +1729,7 @@ public&nbsp;void&nbsp;<a href="../../../src-html/com/box/sdk/BoxAPIConnection.ht
 <ul class="blockList">
 <li class="blockList">
 <h4>asSelf</h4>
-<pre>public&nbsp;void&nbsp;<a href="../../../src-html/com/box/sdk/BoxAPIConnection.html#line.1128">asSelf</a>()</pre>
+<pre>public&nbsp;void&nbsp;<a href="../../../src-html/com/box/sdk/BoxAPIConnection.html#line.1131">asSelf</a>()</pre>
 <div class="block">Sets this API connection to make API calls on behalf of the user with whom the access token is associated.
  This undoes any previous calls to asUser().</div>
 <dl>
@@ -1744,7 +1744,7 @@ public&nbsp;void&nbsp;<a href="../../../src-html/com/box/sdk/BoxAPIConnection.ht
 <ul class="blockList">
 <li class="blockList">
 <h4>extractTokens</h4>
-<pre>protected&nbsp;void&nbsp;<a href="../../../src-html/com/box/sdk/BoxAPIConnection.html#line.1136">extractTokens</a>(JsonObject&nbsp;jsonObject)</pre>
+<pre>protected&nbsp;void&nbsp;<a href="../../../src-html/com/box/sdk/BoxAPIConnection.html#line.1139">extractTokens</a>(JsonObject&nbsp;jsonObject)</pre>
 </li>
 </ul>
 <a name="createTokenRequest-java.net.URL-">
@@ -1753,7 +1753,7 @@ public&nbsp;void&nbsp;<a href="../../../src-html/com/box/sdk/BoxAPIConnection.ht
 <ul class="blockListLast">
 <li class="blockList">
 <h4>createTokenRequest</h4>
-<pre>protected&nbsp;<a href="../../../com/box/sdk/BoxAPIRequest.html" title="class in com.box.sdk">BoxAPIRequest</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxAPIConnection.html#line.1143">createTokenRequest</a>(<a href="https://docs.oracle.com/javase/8/docs/api/java/net/URL.html?is-external=true" title="class or interface in java.net">URL</a>&nbsp;url)</pre>
+<pre>protected&nbsp;<a href="../../../com/box/sdk/BoxAPIRequest.html" title="class in com.box.sdk">BoxAPIRequest</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxAPIConnection.html#line.1146">createTokenRequest</a>(<a href="https://docs.oracle.com/javase/8/docs/api/java/net/URL.html?is-external=true" title="class or interface in java.net">URL</a>&nbsp;url)</pre>
 </li>
 </ul>
 </li>
