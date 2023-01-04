@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [3.8.2](https://github.com/box/box-java-sdk/compare/v3.8.1...v3.8.2) (2023-01-04)
+
+
+### Bug Fixes:
+
+* Fixed restoring state without refresh token. ([#1139](https://github.com/box/box-java-sdk/issues/1139)) ([3544709](https://github.com/box/box-java-sdk/commit/3544709480eb03e5bd50f5dc99be7409569304c4))
+
 ### [3.8.1](https://github.com/box/box-java-sdk/compare/v3.8.0...v3.8.1) (2022-12-19)
 
 
