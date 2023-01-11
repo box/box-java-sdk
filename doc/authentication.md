@@ -60,18 +60,18 @@ object has been created you can use that to create an API connection.
 ```java
 Reader reader = new FileReader("src/example/config/config.json");
 BoxConfig boxConfig = BoxConfig.readFrom(reader);
-
-BoxDeveloperEditionAPIConnection api = BoxDeveloperEditionAPIConnection.getAppEnterpriseConnection(boxConfig);
+IAccessTokenCache tokenCache = new InMemoryLRUAccessTokenCache(100);
+BoxDeveloperEditionAPIConnection api = BoxDeveloperEditionAPIConnection.getAppEnterpriseConnection(boxConfig, tokenCache);
 ```
 
-It is also possible to get an API connection for an app user or managed user by doing something like this:
+It is also possible to get an API connection for an app user or managed user:
 
 <!-- sample x_auth init_with_jwt_with_user_id -->
 ```java
 Reader reader = new FileReader("src/example/config/config.json");
 BoxConfig boxConfig = BoxConfig.readFrom(reader);
 
-InMemoryLRUAccessTokenCache accessTokenCache = new InMemoryLRUAccessTokenCache(100);
+IAccessTokenCache accessTokenCache = new InMemoryLRUAccessTokenCache(100);
 BoxDeveloperEditionAPIConnection api = BoxDeveloperEditionAPIConnection.getUserConnection(userId, boxConfig, accessTokenCache);
 ```
 
@@ -85,7 +85,7 @@ jwtPreferences.setPrivateKeyPassword("PRIVATE-KEY-PASSWORD");
 jwtPreferences.setPrivateKey("PRIVATE-KEY");
 jwtPreferences.setEncryptionAlgorithm(EncryptionAlgorithm.RSA_SHA_256);
 
-InMemoryLRUAccessTokenCache accessTokenCache = new InMemoryLRUAccessTokenCache(100);
+IAccessTokenCache accessTokenCache = new InMemoryLRUAccessTokenCache(100);
 BoxDeveloperEditionAPIConnection api = BoxDeveloperEditionAPIConnection
     .getUserConnection("USER-ID", "CLIENT-ID","CLIENT-SECRET", jwtPreferences, accessTokenCache);
 
@@ -108,8 +108,9 @@ jwtPreferences.setPrivateKey("PRIVATE-KEY");
 jwtPreferences.setEncryptionAlgorithm(EncryptionAlgorithm.RSA_SHA_256);
 
 BoxConfig boxConfig = new BoxConfig("YOUR-CLIENT-ID", "YOUR-CLIENT-SECRET", "ENTERPRISE-ID", jwtPreferences);
-
-BoxDeveloperEditionAPIConnection api = BoxDeveloperEditionAPIConnection.getAppEnterpriseConnection(boxConfig);
+IAccessTokenCache tokenCache = new InMemoryLRUAccessTokenCache(10);
+        
+BoxDeveloperEditionAPIConnection api = BoxDeveloperEditionAPIConnection.getAppEnterpriseConnection(boxConfig, tokenCache);
 ```
 
 ### Standard 3-Legged Oauth 2.0

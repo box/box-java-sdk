@@ -1,6 +1,7 @@
 package com.box.sdk;
 
 import static com.box.sdk.BoxApiProvider.jwtApiForServiceAccount;
+import static com.box.sdk.UniqueTestFolder.randomizeName;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
@@ -34,8 +35,9 @@ public class EventStreamIT {
         stream.start();
 
         BoxFolder rootFolder = BoxFolder.getRootFolder(api);
-        BoxFolder childFolder = rootFolder.createFolder("[receiveEventsForFolderCreateAndFolderDelete] Child Folder")
-            .getResource();
+        BoxFolder childFolder = rootFolder.createFolder(
+            randomizeName("[receiveEventsForFolderCreateAndFolderDelete] Child Folder")
+        ).getResource();
         String expectedID = childFolder.getID();
         childFolder.delete(false);
 
