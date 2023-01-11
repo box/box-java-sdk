@@ -37,7 +37,7 @@ public class EventStreamIT {
         BoxFolder rootFolder = BoxFolder.getRootFolder(api);
         BoxFolder childFolder = rootFolder.createFolder(
             randomizeName("[receiveEventsForFolderCreateAndFolderDelete] Child Folder")
-            ).getResource();
+        ).getResource();
         String expectedID = childFolder.getID();
         childFolder.delete(false);
 
