@@ -161,10 +161,6 @@ public class Metadata {
         return getStringOrNull("/$parent");
     }
 
-    private String getStringOrNull(String path) {
-        return Optional.ofNullable(this.getValue(path)).map(JsonValue::asString).orElse(null);
-    }
-
     /**
      * Returns the scope.
      * Can throw {@link NullPointerException} is value if not present.
@@ -512,5 +508,9 @@ public class Metadata {
             .add("op", op)
             .add("path", path)
             .add("value", values));
+    }
+
+    private String getStringOrNull(String path) {
+        return Optional.ofNullable(this.getValue(path)).map(JsonValue::asString).orElse(null);
     }
 }
