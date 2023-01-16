@@ -8,7 +8,6 @@ import com.eclipsesource.json.Json;
 import com.eclipsesource.json.JsonObject;
 import java.net.URL;
 import java.util.Iterator;
-import org.jetbrains.annotations.NotNull;
 
 /**
  * Provides methods for deleting, recovering, and viewing a user's trashed files and folders.
@@ -281,7 +280,6 @@ public class BoxTrash implements Iterable<BoxItem.Info> {
         };
     }
 
-    @NotNull
     private BoxFile.Info getInfo(JsonObject requestJSON, BoxJSONRequest request) {
         request.setBody(requestJSON.toString());
         try (BoxJSONResponse response = request.send()) {
