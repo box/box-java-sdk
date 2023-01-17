@@ -101,6 +101,13 @@ public final class BoxLogger {
     }
 
     /**
+     *  Reset logging level to default.
+     */
+    public void resetToDefaultLevel() {
+        this.logger.setLevel(null);
+    }
+
+    /**
      * Set logging level to INFO {@link Level#INFO}
      */
     public void setLevelToInfo() {

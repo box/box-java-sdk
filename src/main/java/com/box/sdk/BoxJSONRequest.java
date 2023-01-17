@@ -1,5 +1,7 @@
 package com.box.sdk;
 
+import static com.box.sdk.http.ContentType.APPLICATION_JSON;
+
 import com.box.sdk.http.HttpMethod;
 import com.eclipsesource.json.Json;
 import com.eclipsesource.json.JsonObject;
@@ -15,6 +17,10 @@ import java.net.URL;
 public class BoxJSONRequest extends BoxAPIRequest {
     private JsonValue jsonValue;
 
+    protected BoxJSONRequest(BoxAPIConnection api, URL url, String method, String mediaType) {
+        super(api, url, method, mediaType);
+    }
+
     /**
      * Constructs an authenticated BoxJSONRequest using a provided BoxAPIConnection.
      *
@@ -23,8 +29,7 @@ public class BoxJSONRequest extends BoxAPIRequest {
      * @param method the HTTP method of the request.
      */
     public BoxJSONRequest(BoxAPIConnection api, URL url, String method) {
-        super(api, url, method);
-        this.addHeader("Content-Type", "application/json");
+        this(api, url, method, APPLICATION_JSON);
     }
 
     /**
@@ -35,8 +40,7 @@ public class BoxJSONRequest extends BoxAPIRequest {
      * @param method the HTTP method of the request.
      */
     public BoxJSONRequest(BoxAPIConnection api, URL url, HttpMethod method) {
-        super(api, url, method);
-        this.addHeader("Content-Type", "application/json");
+        this(api, url, method.name());
     }
 
     /**
@@ -46,8 +50,7 @@ public class BoxJSONRequest extends BoxAPIRequest {
      * @param method the HTTP method of the request.
      */
     public BoxJSONRequest(URL url, HttpMethod method) {
-        super(url, method);
-        this.addHeader("Content-Type", "application/json");
+        this(null, url, method);
     }
 
     /**
@@ -91,6 +94,16 @@ public class BoxJSONRequest extends BoxAPIRequest {
      */
     public JsonValue getBodyAsJsonValue() {
         return this.jsonValue;
+    }
+
+    @Override
+    public BoxJSONResponse send() {
+        return (BoxJSONResponse) super.send();
+    }
+
+    @Override
+    public BoxJSONResponse send(ProgressListener listener) {
+        return (BoxJSONResponse) super.send(listener);
     }
 
     @Override

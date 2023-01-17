@@ -1,6 +1,8 @@
 # Configuration
 
 - [Proxy configuration](#proxy-configuration)
+    - [Custom proxy authenticator](#custom-proxy-authenticator)
+        - [Example: NTLM authenticator](#example-ntlm-authenticator) 
 - [Configure retries of calls and timeouts](#configure-retries-of-calls-and-timeouts)
     - [Maximum retries](#maximum-retries)
     - [Connection timeout](#connection-timeout)
@@ -11,24 +13,123 @@
     - [Base App URL](#base-app-url)
     - [Token URL](#token-url-deprecated)
     - [Revoke URL](#revoke-url-deprecated)
+- [SSL configuration](#ssl-configuration)
 
 # Proxy configuration
 
 To set up proxy
 use [BoxApiConnection.setProxy](https://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxAPIConnection.html#setProxy-java.net.Proxy-)
 to set proxy address
-and [BoxApiConnection.setProxyUsername](https://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxAPIConnection.html#setProxyUsername-java.lang.String-) /
-[BoxApiConnection.setProxyPassword](https://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxAPIConnection.html#setProxyPassword-java.lang.String-)
+and [BoxApiConnection.setProxyBasicAuthentication][set-basic-proxy-auth]
 to set username and password required by proxy:
 
 ```java
 BoxAPIConnection api=new BoxAPIConnection("access_token");
-Proxy proxy=new Proxy(Proxy.Type.HTTP,new InetSocketAddress("proxy_url",8888));
+Proxy proxy = new Proxy(Proxy.Type.HTTP,new InetSocketAddress("proxy_url",8888));
 // You can use any subclass of BoxAPIConnection
 api.setProxy(proxy);
-api.setProxyUsername("proxyUsername");
-api.setProxyPassword("proxyPassword");
+api.setProxyBasicAuthentication("proxyUsername", "proxyPassword");
 ```
+Proxy username and password will be used only if provided `SocketAddress` is an instance of 
+`InetSocketAddress`. If you would like to use a custom  `SocketAddress` you can provide your own
+`okhttp3.Authenticator` using [BoxApiConnection.setProxyAuthenticator(Authenticator)][set-proxy-authenticator]
+
+
+## Custom proxy authenticator
+By using [BoxApiConnection.setProxyBasicAuthentication][set-basic-proxy-auth] you can enable default 
+proxy authenticator that handles only Basic authentication. But you can provide your own authenticator by using
+[BoxApiConnection.setProxyAuthenticator(Authenticator)][set-proxy-authenticator].
+
+To do that you will need to add a dependency to your project:
+```
+"com.squareup.okhttp3:okhttp:XXX"
+```
+Please match the version with what SDK is using by checking `build.gradle` 
+and looking for entry `implementation "com.squareup.okhttp3:okhttp:"`.
+
+Now you can add an authenticator. by calling
+
+```java
+BoxAPIConnection api = new BoxAPIConnection("access_token");
+Proxy proxy = new Proxy(Proxy.Type.HTTP,new InetSocketAddress("proxy_url",8888));
+api.setProxy(proxy);
+api.setProxyAuthenticator((route, response) -> response
+  .request()
+  .newBuilder()
+  .addHeader("Proxy-Authorization", "My custom authenticator")
+  .build()
+);
+```
+
+### Example: NTLM authenticator
+
+For example, you can add NTLM authorization. This is example NTLM authenticator that
+is using parts from Apache Http Client 5.
+
+```java
+import okhttp3.Authenticator;
+import okhttp3.Request;
+import okhttp3.Response;
+import okhttp3.Route;
+import org.apache.hc.client5.http.impl.auth.NTLMEngineException;
+
+public class NTLMAuthenticator implements Authenticator {
+    final NTLMEngineImpl engine = new NTLMEngineImpl();
+    private final String domain;
+    private final String username;
+    private final String password;
+    private final String ntlmMsg1;
+
+    public NTLMAuthenticator(String username, String password, String domain) {
+        this.domain = domain;
+        this.username = username;
+        this.password = password;
+        String localNtlmMsg1 = null;
+        try {
+            localNtlmMsg1 = engine.generateType1Msg(null, null);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        ntlmMsg1 = localNtlmMsg1;
+    }
+
+    @Override
+    public Request authenticate(Route route, Response response) {
+        if(response.code() == 407 && "Proxy authorization required".equals(response.message())) {
+            String ntlmChallenge = response.headers("Proxy-Authenticate")
+                    .stream()
+                    .filter(h -> h.startsWith("NTLM "))
+                    .findFirst().orElse("");
+            if(ntlmChallenge.length() > 5) {
+                try {
+                    String ntlmMsg3 = engine.generateType3Msg(username, password.toCharArray(), domain, "ok-http-example-ntlm", ntlmChallenge.substring(5));
+                    return response.request().newBuilder().header("proxy-Authorization", "NTLM " + ntlmMsg3).build();
+                } catch (NTLMEngineException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+            return response.request().newBuilder().header("proxy-Authorization", "NTLM " + ntlmMsg1).build();
+        }
+        return response.request();
+    }
+}
+```
+
+The `NTLMEngineImpl` could be created by using Apache implementation that can be found 
+[here](https://github.com/apache/httpcomponents-client/blob/master/httpclient5/src/main/java/org/apache/hc/client5/http/impl/auth/NTLMEngineImpl.java).
+You can add a dependency to `org.apache.httpcomponents.client5:httpclient5:5.1.3`. 
+Copy the `NTLMEngineImpl` class and add it to your source.
+
+Now you can use custom NTML Authenticator in your `BoxAPIConnection`:
+```java
+BoxAPIConnection api = new BoxAPIConnection("access_token");
+Proxy proxy = new Proxy(Proxy.Type.HTTP,new InetSocketAddress("proxy_url",8888));
+api.setProxy(proxy);
+api.setProxyAuthenticator(new NTLMAuthenticator("some proxy username", "some proxy password", "proxy workgroup"));
+```
+
+[set-basic-proxy-auth]: https://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxAPIConnection.html#setProxyBasicAuthentication-java.lang.String-java.lang.String-
+[set-proxy-authenticator]: https://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxAPIConnection.html#setProxyAuthenticator-okhttp3.Authenticator-
 
 # Configure retries of calls and timeouts
 SDK can retry failed calls when:
@@ -151,3 +252,41 @@ api.setRevokeURL("https://example.com/revoke");
 ```
 
 If you use `setRevokeUrl` this URL will be used over the one coming from`setBaseUrl` when doing authentication.
+
+# SSL configuration
+You can override default settings used to verify SSL certificates. 
+This can be used to allow using self-signed certificates. For example:
+```java
+BoxAPIConnection api = new BoxAPIConnection(...);
+
+// to allow self-signed certificates
+X509TrustManager trustManager = new X509TrustManager() {
+    @Override
+    public void checkClientTrusted(java.security.cert.X509Certificate[] chain, String authType) {
+    }
+
+    @Override
+    public void checkServerTrusted(java.security.cert.X509Certificate[] chain, String authType) {
+    }
+
+    @Override
+    public java.security.cert.X509Certificate[] getAcceptedIssuers() {
+        return new java.security.cert.X509Certificate[]{};
+    }
+};
+
+// to allow self-signed certificates created for localhost
+HostnameVerifier hostnameVerifier = (hostname, session) -> true;
+
+api.configureSslCertificatesValidation(trustManager, hostnameVerifier);
+```
+
+If you just need to provide trust manager use `BoxAPIConnection.DEFAULT_HOSTNAME_VERIFIER` as a hostname verifier. 
+The same goes for hostname verifier. If you need just to provide it use 
+`BoxAPIConnection.DEFAULT_TRUST_MANAGER` as a trust manager.
+Example:
+```java
+BoxAPIConnection api = new BoxAPIConnection(...);
+X509TrustManager trustManager = ...
+api.configureSslCertificatesValidation(trustManager, BoxAPIConnection.DEFAULT_HOSTNAME_VERIFIER);
+```

@@ -161,7 +161,7 @@ BoxFolder.Info info = folder.getInfo();
 ```
 
 Requesting information for only the fields you need can improve performance and
-reduce the size of the network request. The [`getInfo(String... fields)`][get-info2]
+reduce the size of the network request. The [`getInfo(String... fields)`][get-info]
 method lets you specify which fields are retrieved.
 
 ```java
@@ -170,8 +170,7 @@ BoxFolder folder = new BoxFolder(api, "id");
 BoxFolder.Info info = folder.getInfo("size", "owned_by");
 ```
 
-[get-info]: https://box.github.io/box-java-sdk/javadoc/com/box/sdk/BoxFolder.html#getInfo--
-[get-info2]: https://box.github.io/box-java-sdk/javadoc/com/box/sdk/BoxFolder.html#getInfo-java.lang.String...-
+[get-info]: https://box.github.io/box-java-sdk/javadoc/com/box/sdk/BoxFolder.html#getInfo-java.lang.String...-
 
 Update a Folder's Information
 -----------------------------

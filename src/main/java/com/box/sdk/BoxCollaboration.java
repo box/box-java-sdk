@@ -117,11 +117,11 @@ public class BoxCollaboration extends BoxResource {
         BoxJSONRequest request = new BoxJSONRequest(api, url, "POST");
 
         request.setBody(requestJSON.toString());
-        BoxJSONResponse response = (BoxJSONResponse) request.send();
-        JsonObject responseJSON = Json.parse(response.getJSON()).asObject();
-
-        BoxCollaboration newCollaboration = new BoxCollaboration(api, responseJSON.get("id").asString());
-        return newCollaboration.new Info(responseJSON);
+        try (BoxJSONResponse response = request.send()) {
+            JsonObject responseJSON = Json.parse(response.getJSON()).asObject();
+            BoxCollaboration newCollaboration = new BoxCollaboration(api, responseJSON.get("id").asString());
+            return newCollaboration.new Info(responseJSON);
+        }
     }
 
     /**
@@ -133,21 +133,22 @@ public class BoxCollaboration extends BoxResource {
     public static Collection<Info> getPendingCollaborations(BoxAPIConnection api) {
         URL url = PENDING_COLLABORATIONS_URL.build(api.getBaseURL());
 
-        BoxAPIRequest request = new BoxAPIRequest(api, url, "GET");
-        BoxJSONResponse response = (BoxJSONResponse) request.send();
-        JsonObject responseJSON = Json.parse(response.getJSON()).asObject();
+        BoxJSONRequest request = new BoxJSONRequest(api, url, "GET");
+        try (BoxJSONResponse response = request.send()) {
+            JsonObject responseJSON = Json.parse(response.getJSON()).asObject();
 
-        int entriesCount = responseJSON.get("total_count").asInt();
-        Collection<BoxCollaboration.Info> collaborations = new ArrayList<>(entriesCount);
-        JsonArray entries = responseJSON.get("entries").asArray();
-        for (JsonValue entry : entries) {
-            JsonObject entryObject = entry.asObject();
-            BoxCollaboration collaboration = new BoxCollaboration(api, entryObject.get("id").asString());
-            BoxCollaboration.Info info = collaboration.new Info(entryObject);
-            collaborations.add(info);
+            int entriesCount = responseJSON.get("total_count").asInt();
+            Collection<BoxCollaboration.Info> collaborations = new ArrayList<>(entriesCount);
+            JsonArray entries = responseJSON.get("entries").asArray();
+            for (JsonValue entry : entries) {
+                JsonObject entryObject = entry.asObject();
+                BoxCollaboration collaboration = new BoxCollaboration(api, entryObject.get("id").asString());
+                BoxCollaboration.Info info = collaboration.new Info(entryObject);
+                collaborations.add(info);
+            }
+
+            return collaborations;
         }
-
-        return collaborations;
     }
 
     /**
@@ -178,34 +179,22 @@ public class BoxCollaboration extends BoxResource {
     }
 
     /**
-     * Gets information about this collaboration.
-     *
-     * @return info about this collaboration.
-     */
-    public Info getInfo() {
-        BoxAPIConnection api = this.getAPI();
-        URL url = COLLABORATION_URL_TEMPLATE.build(api.getBaseURL(), this.getID());
-
-        BoxAPIRequest request = new BoxAPIRequest(api, url, "GET");
-        BoxJSONResponse response = (BoxJSONResponse) request.send();
-        JsonObject jsonObject = Json.parse(response.getJSON()).asObject();
-        return new Info(jsonObject);
-    }
-
-    /**
      * Gets information about this collection with a custom set of fields.
      *
      * @param fields the fields to retrieve.
      * @return info about the collaboration.
      */
     public Info getInfo(String... fields) {
+        URL url = COLLABORATION_URL_TEMPLATE.build(this.getAPI().getBaseURL(), this.getID());
+        if (fields.length > 0) {
+            String queryString = new QueryStringBuilder().appendParam("fields", fields).toString();
+            url = COLLABORATION_URL_TEMPLATE.buildWithQuery(this.getAPI().getBaseURL(), queryString, this.getID());
+        }
 
-        String queryString = new QueryStringBuilder().appendParam("fields", fields).toString();
-        URL url = COLLABORATION_URL_TEMPLATE.buildWithQuery(this.getAPI().getBaseURL(), queryString, this.getID());
-
-        BoxAPIRequest request = new BoxAPIRequest(this.getAPI(), url, "GET");
-        BoxJSONResponse response = (BoxJSONResponse) request.send();
-        return new Info(response.getJSON());
+        BoxJSONRequest request = new BoxJSONRequest(this.getAPI(), url, "GET");
+        try (BoxJSONResponse response = request.send()) {
+            return new Info(response.getJSON());
+        }
     }
 
     /**
@@ -219,10 +208,7 @@ public class BoxCollaboration extends BoxResource {
 
         BoxJSONRequest request = new BoxJSONRequest(api, url, "PUT");
         request.setBody(info.getPendingChanges());
-        BoxAPIResponse boxAPIResponse = request.send();
-
-        if (boxAPIResponse instanceof BoxJSONResponse) {
-            BoxJSONResponse response = (BoxJSONResponse) boxAPIResponse;
+        try (BoxJSONResponse response = request.send()) {
             JsonObject jsonObject = Json.parse(response.getJSON()).asObject();
             info.update(jsonObject);
         }
@@ -236,8 +222,7 @@ public class BoxCollaboration extends BoxResource {
         URL url = COLLABORATION_URL_TEMPLATE.build(api.getBaseURL(), this.getID());
 
         BoxAPIRequest request = new BoxAPIRequest(api, url, "DELETE");
-        BoxAPIResponse response = request.send();
-        response.disconnect();
+        request.send().close();
     }
 
     /**
@@ -361,7 +346,7 @@ public class BoxCollaboration extends BoxResource {
     /**
      * Contains information about a BoxCollaboration.
      */
-    public class  Info extends BoxResource.Info {
+    public class Info extends BoxResource.Info {
         private BoxUser.Info createdBy;
         private Date createdAt;
         private Date modifiedAt;

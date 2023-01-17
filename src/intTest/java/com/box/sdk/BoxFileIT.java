@@ -29,7 +29,6 @@ import static org.hamcrest.Matchers.not;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.hamcrest.Matchers.nullValue;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
@@ -156,8 +155,9 @@ public class BoxFileIT {
         try {
             InputStream uploadStream = Files.newInputStream(Paths.get(filePath));
             ProgressListener mockUploadListener = mock(ProgressListener.class);
-            BoxFile.Info uploadedFileInfo = folder.uploadFile(uploadStream,
-                BoxFileIT.generateString(), fileSize, mockUploadListener);
+            BoxFile.Info uploadedFileInfo = folder.uploadFile(
+                uploadStream, BoxFileIT.generateString(), fileSize, mockUploadListener
+            );
             uploadedFile = uploadedFileInfo.getResource();
 
             ByteArrayOutputStream downloadStream = new ByteArrayOutputStream();
@@ -788,22 +788,6 @@ public class BoxFileIT {
 
             assertThat(uploadedFileDownloadURL, is(notNullValue()));
             assertThat(uploadedFileDownloadURL.toString(), not(is(emptyOrNullString())));
-        } finally {
-            deleteFile(uploadedFile);
-        }
-    }
-
-    @Test
-    public void getThumbnail() {
-        BoxAPIConnection api = jwtApiForServiceAccount();
-        String fileName = "[getPreviewLink] Test File.txt";
-        BoxFile uploadedFile = null;
-        try {
-            uploadedFile = uploadFileToUniqueFolder(api, fileName, "Test file");
-            byte[] thumbnail = uploadedFile.getThumbnail(BoxFile.ThumbnailFileType.PNG, 256, 256, 256, 256);
-
-            assertThat(thumbnail, is(notNullValue()));
-            assertNotEquals(thumbnail.length, 0);
         } finally {
             deleteFile(uploadedFile);
         }

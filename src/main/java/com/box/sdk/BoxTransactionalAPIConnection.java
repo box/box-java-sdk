@@ -71,18 +71,20 @@ public class BoxTransactionalAPIConnection extends BoxAPIConnection {
             );
         }
 
+        // authentication uses form url encoded params but response is JSON
         BoxAPIRequest request = new BoxAPIRequest(apiConnection, url, "POST");
         request.shouldAuthenticate(false);
         request.setBody(urlParameters);
 
-        BoxJSONResponse response = (BoxJSONResponse) request.send();
-        JsonObject responseJSON = Json.parse(response.getJSON()).asObject();
+        try (BoxJSONResponse response = (BoxJSONResponse) request.send()) {
+            JsonObject responseJSON = Json.parse(response.getJSON()).asObject();
 
-        final String fileToken = responseJSON.get("access_token").asString();
-        BoxTransactionalAPIConnection transactionConnection = new BoxTransactionalAPIConnection(fileToken);
-        transactionConnection.setExpires(responseJSON.get("expires_in").asLong() * 1000);
+            final String fileToken = responseJSON.get("access_token").asString();
+            BoxTransactionalAPIConnection transactionConnection = new BoxTransactionalAPIConnection(fileToken);
+            transactionConnection.setExpires(responseJSON.get("expires_in").asLong() * 1000);
 
-        return transactionConnection;
+            return transactionConnection;
+        }
     }
 
     /**

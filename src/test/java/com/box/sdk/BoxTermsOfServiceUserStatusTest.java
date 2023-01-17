@@ -1,11 +1,11 @@
 package com.box.sdk;
 
+import static com.box.sdk.http.ContentType.APPLICATION_JSON;
 import static com.github.tomakehurst.wiremock.core.WireMockConfiguration.wireMockConfig;
 import static java.lang.String.format;
 
 import com.github.tomakehurst.wiremock.client.WireMock;
 import com.github.tomakehurst.wiremock.junit.WireMockRule;
-import java.io.IOException;
 import java.util.List;
 import org.junit.Assert;
 import org.junit.Before;
@@ -15,17 +15,17 @@ import org.junit.Test;
 public class BoxTermsOfServiceUserStatusTest {
 
     @Rule
-    public WireMockRule wireMockRule = new WireMockRule(wireMockConfig().dynamicPort());
+    public WireMockRule wireMockRule = new WireMockRule(wireMockConfig().dynamicHttpsPort().httpDisabled(true));
     private final BoxAPIConnection api = TestUtils.getAPIConnection();
 
     @Before
     public void setUpBaseUrl() {
         api.setMaxRetryAttempts(1);
-        api.setBaseURL(format("http://localhost:%d", wireMockRule.port()));
+        api.setBaseURL(format("https://localhost:%d", wireMockRule.httpsPort()));
     }
 
     @Test
-    public void testGetUserStatusInfoOnTermsOfServiceSucceeds() throws IOException {
+    public void testGetUserStatusInfoOnTermsOfServiceSucceeds() {
         final String statusID = "5678";
         final String tosID = "1234";
         final String userID = "7777";
@@ -37,7 +37,7 @@ public class BoxTermsOfServiceUserStatusTest {
         wireMockRule.stubFor(WireMock.get(WireMock.urlPathEqualTo(statusURL))
             .withQueryParam("tos_id", WireMock.containing(tosID))
             .willReturn(WireMock.aResponse()
-                .withHeader("Content-Type", "application/json")
+                .withHeader("Content-Type", APPLICATION_JSON)
                 .withBody(result)));
 
         List<BoxTermsOfServiceUserStatus.Info> tosUserStatusInfo =

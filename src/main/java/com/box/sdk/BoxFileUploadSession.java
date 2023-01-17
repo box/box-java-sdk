@@ -89,8 +89,9 @@ public class BoxFileUploadSession extends BoxResource {
                                                long totalSizeOfFile) {
         URL uploadPartURL = this.sessionInfo.getSessionEndpoints().getUploadPartEndpoint();
 
-        BoxAPIRequest request = new BoxAPIRequest(this.getAPI(), uploadPartURL, HttpMethod.PUT);
-        request.addHeader(HttpHeaders.CONTENT_TYPE, ContentType.APPLICATION_OCTET_STREAM);
+        BoxAPIRequest request = new BoxAPIRequest(
+            this.getAPI(), uploadPartURL, HttpMethod.PUT.name(), ContentType.APPLICATION_OCTET_STREAM
+        );
 
         MessageDigest digestInstance;
         try {
@@ -131,10 +132,11 @@ public class BoxFileUploadSession extends BoxResource {
         URL url = template.buildWithQuery("", queryString);
 
         BoxJSONRequest request = new BoxJSONRequest(this.getAPI(), url, HttpMethod.GET);
-        BoxJSONResponse response = (BoxJSONResponse) request.send();
-        JsonObject jsonObject = Json.parse(response.getJSON()).asObject();
+        try (BoxJSONResponse response = request.send()) {
+            JsonObject jsonObject = Json.parse(response.getJSON()).asObject();
 
-        return new BoxFileUploadSessionPartList(jsonObject);
+            return new BoxFileUploadSessionPartList(jsonObject);
+        }
     }
 
     /**
@@ -187,27 +189,23 @@ public class BoxFileUploadSession extends BoxResource {
         String body = this.getCommitBody(parts, attributes);
         request.setBody(body);
 
-        BoxAPIResponse response = request.send();
-        //Retry the commit operation after the given number of seconds if the HTTP response code is 202.
-        if (response.getResponseCode() == 202) {
-            String retryInterval = response.getHeaderField("retry-after");
-            if (retryInterval != null) {
-                try {
-                    Thread.sleep(new Integer(retryInterval) * 1000);
-                } catch (InterruptedException ie) {
-                    throw new BoxAPIException("Commit retry failed. ", ie);
+        try (BoxJSONResponse response = request.send()) {
+            //Retry the commit operation after the given number of seconds if the HTTP response code is 202.
+            if (response.getResponseCode() == 202) {
+                String retryInterval = response.getHeaderField("retry-after");
+                if (retryInterval != null) {
+                    try {
+                        Thread.sleep(new Integer(retryInterval) * 1000);
+                    } catch (InterruptedException ie) {
+                        throw new BoxAPIException("Commit retry failed. ", ie);
+                    }
+
+                    return this.commit(digest, parts, attributes, ifMatch, ifNoneMatch);
                 }
-
-                return this.commit(digest, parts, attributes, ifMatch, ifNoneMatch);
             }
-        }
 
-        if (response instanceof BoxJSONResponse) {
             //Create the file instance from the response
-            return this.getFile((BoxJSONResponse) response);
-        } else {
-            throw new BoxAPIException("Commit response content type is not application/json. The response code : "
-                + response.getResponseCode());
+            return this.getFile(response);
         }
     }
 
@@ -262,12 +260,13 @@ public class BoxFileUploadSession extends BoxResource {
     public BoxFileUploadSession.Info getStatus() {
         URL statusURL = this.sessionInfo.getSessionEndpoints().getStatusEndpoint();
         BoxJSONRequest request = new BoxJSONRequest(this.getAPI(), statusURL, HttpMethod.GET);
-        BoxJSONResponse response = (BoxJSONResponse) request.send();
-        JsonObject jsonObject = Json.parse(response.getJSON()).asObject();
+        try (BoxJSONResponse response = request.send()) {
+            JsonObject jsonObject = Json.parse(response.getJSON()).asObject();
 
-        this.sessionInfo.update(jsonObject);
+            this.sessionInfo.update(jsonObject);
 
-        return this.sessionInfo;
+            return this.sessionInfo;
+        }
     }
 
     /**
@@ -275,8 +274,8 @@ public class BoxFileUploadSession extends BoxResource {
      */
     public void abort() {
         URL abortURL = this.sessionInfo.getSessionEndpoints().getAbortEndpoint();
-        BoxJSONRequest request = new BoxJSONRequest(this.getAPI(), abortURL, HttpMethod.DELETE);
-        request.send();
+        BoxAPIRequest request = new BoxAPIRequest(this.getAPI(), abortURL, HttpMethod.DELETE);
+        request.send().close();
     }
 
     /**

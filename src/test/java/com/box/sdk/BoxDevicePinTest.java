@@ -1,5 +1,6 @@
 package com.box.sdk;
 
+import static com.box.sdk.http.ContentType.APPLICATION_JSON;
 import static com.github.tomakehurst.wiremock.client.WireMock.delete;
 import static com.github.tomakehurst.wiremock.client.WireMock.get;
 import static com.github.tomakehurst.wiremock.core.WireMockConfiguration.wireMockConfig;
@@ -8,7 +9,6 @@ import static org.junit.Assert.assertEquals;
 
 import com.github.tomakehurst.wiremock.client.WireMock;
 import com.github.tomakehurst.wiremock.junit.WireMockRule;
-import java.io.IOException;
 import java.util.Iterator;
 import org.junit.Before;
 import org.junit.Rule;
@@ -20,13 +20,13 @@ import org.junit.Test;
 public class BoxDevicePinTest {
 
     @Rule
-    public WireMockRule wireMockRule = new WireMockRule(wireMockConfig().dynamicPort());
+    public WireMockRule wireMockRule = new WireMockRule(wireMockConfig().dynamicHttpsPort().httpDisabled(true));
     private final BoxAPIConnection api = TestUtils.getAPIConnection();
 
     @Before
     public void setUpBaseUrl() {
         api.setMaxRetryAttempts(1);
-        api.setBaseURL(format("http://localhost:%d", wireMockRule.port()));
+        api.setBaseURL(format("https://localhost:%d", wireMockRule.httpsPort()));
     }
 
     @Test
@@ -36,7 +36,7 @@ public class BoxDevicePinTest {
 
         wireMockRule.stubFor(delete(WireMock.urlPathEqualTo(deleteDevicePinURL))
             .willReturn(WireMock.aResponse()
-                .withHeader("Content-Type", "application/json")
+                .withHeader("Content-Type", APPLICATION_JSON)
                 .withStatus(204)));
 
         BoxDevicePin devicePin = new BoxDevicePin(this.api, devicePinID);
@@ -44,7 +44,7 @@ public class BoxDevicePinTest {
     }
 
     @Test
-    public void testGetDevicePinInfoSucceeds() throws IOException {
+    public void testGetDevicePinInfoSucceeds() {
         final String devicePinID = "12345";
         final String devicePinURL = "/2.0/device_pinners/" + devicePinID;
         final String ownedByUserName = "Test User";
@@ -55,7 +55,7 @@ public class BoxDevicePinTest {
 
         wireMockRule.stubFor(get(WireMock.urlPathEqualTo(devicePinURL))
             .willReturn(WireMock.aResponse()
-                .withHeader("Content-Type", "application/json")
+                .withHeader("Content-Type", APPLICATION_JSON)
                 .withBody(result)));
 
         BoxDevicePin devicePin = new BoxDevicePin(this.api, devicePinID);
@@ -68,7 +68,7 @@ public class BoxDevicePinTest {
     }
 
     @Test
-    public void testGetAllEnterpriseDevicePinsSucceeds() throws IOException {
+    public void testGetAllEnterpriseDevicePinsSucceeds() {
         final String enterpriseID = "1111";
         final String getAllDevicePinsURL = "/2.0/enterprises/" + enterpriseID + "/device_pinners";
         final String firstDevicePinID = "12345";
@@ -79,7 +79,7 @@ public class BoxDevicePinTest {
 
         wireMockRule.stubFor(get(WireMock.urlPathEqualTo(getAllDevicePinsURL))
             .willReturn(WireMock.aResponse()
-                .withHeader("Content-Type", "application/json")
+                .withHeader("Content-Type", APPLICATION_JSON)
                 .withBody(result)));
 
         Iterator<BoxDevicePin.Info> iterator = BoxDevicePin.getEnterpriceDevicePins(this.api, enterpriseID).iterator();

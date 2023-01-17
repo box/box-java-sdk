@@ -1,6 +1,7 @@
 package com.box.sdk;
 
 import java.net.URL;
+import okhttp3.MediaType;
 
 /**
  * <p>Used to make HTTP multipart requests to the Box API.</p>
@@ -27,7 +28,7 @@ public class BoxMultipartRequest extends AbstractBoxMultipartRequest {
     }
 
     @Override
-    protected String getPartContentType(String filename) {
-        return "application/octet-stream";
+    protected MediaType getPartContentType(String filename) {
+        return MediaType.parse("application/octet-stream");
     }
 }

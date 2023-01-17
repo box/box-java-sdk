@@ -166,11 +166,12 @@ public class BoxRetentionPolicyAssignment extends BoxResource {
         }
 
         request.setBody(requestJSON.toString());
-        BoxJSONResponse response = (BoxJSONResponse) request.send();
-        JsonObject responseJSON = Json.parse(response.getJSON()).asObject();
-        BoxRetentionPolicyAssignment createdAssignment
-            = new BoxRetentionPolicyAssignment(api, responseJSON.get("id").asString());
-        return createdAssignment.new Info(responseJSON);
+        try (BoxJSONResponse response = request.send()) {
+            JsonObject responseJSON = Json.parse(response.getJSON()).asObject();
+            BoxRetentionPolicyAssignment createdAssignment
+                = new BoxRetentionPolicyAssignment(api, responseJSON.get("id").asString());
+            return createdAssignment.new Info(responseJSON);
+        }
     }
 
     /**
@@ -184,10 +185,11 @@ public class BoxRetentionPolicyAssignment extends BoxResource {
         }
         URL url = RETENTION_POLICY_ASSIGNMENT_URL_TEMPLATE.buildWithQuery(
             this.getAPI().getBaseURL(), builder.toString(), this.getID());
-        BoxAPIRequest request = new BoxAPIRequest(this.getAPI(), url, "GET");
-        BoxJSONResponse response = (BoxJSONResponse) request.send();
-        JsonObject responseJSON = Json.parse(response.getJSON()).asObject();
-        return new Info(responseJSON);
+        BoxJSONRequest request = new BoxJSONRequest(this.getAPI(), url, "GET");
+        try (BoxJSONResponse response = request.send()) {
+            JsonObject responseJSON = Json.parse(response.getJSON()).asObject();
+            return new Info(responseJSON);
+        }
     }
 
     /**
@@ -262,7 +264,7 @@ public class BoxRetentionPolicyAssignment extends BoxResource {
     public void delete() {
         URL url = RETENTION_POLICY_ASSIGNMENT_URL_TEMPLATE.build(this.getAPI().getBaseURL(), this.getID());
         BoxAPIRequest request = new BoxAPIRequest(this.getAPI(), url, "DELETE");
-        request.send();
+        request.send().close();
     }
 
     /**

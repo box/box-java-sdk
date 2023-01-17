@@ -47,31 +47,6 @@ public final class BoxGlobalSettings {
         BoxGlobalSettings.readTimeout = readTimeout;
     }
 
-    /**
-     * Returns the global total maximum number of times an API request will be tried when error responses
-     * are received.
-     *
-     * @return max number of request attempts
-     * @deprecated getMaxRetryAttempts is preferred because it more clearly gets the number
-     * of times a request should be retried after an error response is received.
-     */
-    @Deprecated
-    public static int getMaxRequestAttempts() {
-        return maxRetryAttempts + 1;
-    }
-
-    /**
-     * Sets the global total maximum number of times an API request will be tried when error responses
-     * are received.
-     *
-     * @param attempts maximum number of request attempts
-     * @deprecated setMaxRetryAttempts is preferred because it more clearly sets the number
-     * of times a request should be retried after an error response is received.
-     */
-    @Deprecated
-    public static void setMaxRequestAttempts(int attempts) {
-        BoxGlobalSettings.maxRetryAttempts = attempts - 1;
-    }
 
     /**
      * Returns the global maximum number of times an API request will be retried after an error response

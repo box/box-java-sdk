@@ -1,5 +1,6 @@
 package com.box.sdk;
 
+import static com.box.sdk.http.ContentType.APPLICATION_JSON;
 import static com.github.tomakehurst.wiremock.core.WireMockConfiguration.wireMockConfig;
 import static java.lang.String.format;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -10,7 +11,6 @@ import static org.junit.Assert.assertTrue;
 import com.eclipsesource.json.JsonObject;
 import com.github.tomakehurst.wiremock.client.WireMock;
 import com.github.tomakehurst.wiremock.junit.WireMockRule;
-import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -21,7 +21,7 @@ import org.junit.Test;
 public class BoxEventTest {
 
     @Rule
-    public WireMockRule wireMockRule = new WireMockRule(wireMockConfig().dynamicPort());
+    public WireMockRule wireMockRule = new WireMockRule(wireMockConfig().dynamicHttpsPort().httpDisabled(true));
     private final BoxAPIConnection api = TestUtils.getAPIConnection();
 
     @Before
@@ -31,7 +31,7 @@ public class BoxEventTest {
     }
 
     @Test
-    public void testIsEventLogUnique() throws IOException, ParseException {
+    public void testIsEventLogUnique() throws ParseException {
         final String eventURL = "/2.0/events";
         String startTime = "2019-02-02T21:48:38Z";
         String endTime = "2019-02-02T23:48:40Z";
@@ -44,17 +44,19 @@ public class BoxEventTest {
             .withQueryParam("created_after", WireMock.equalTo("2019-02-02T21:48:38Z"))
             .withQueryParam("created_before", WireMock.equalTo("2019-02-02T23:48:40Z"))
             .willReturn(WireMock.aResponse()
-                .withHeader("Content-Type", "application/json")
+                .withHeader("Content-Type", APPLICATION_JSON)
                 .withBody(getResult)));
 
         Date startDate = new SimpleDateFormat("yyyy-MM-dd'T'hh:mm:ssX").parse(startTime);
         Date endDate = new SimpleDateFormat("yyyy-MM-dd'T'hh:mm:ssX").parse(endTime);
-        EventLog eventLog = EventLog.getEnterpriseEvents(this.api, startDate, endDate);
+        EventLog eventLog = EventLog.getEnterpriseEvents(
+            this.api, new EnterpriseEventsRequest().after(startDate).before(endDate)
+        );
         assertEquals(1, eventLog.getSize());
     }
 
     @Test
-    public void testEventLog() throws IOException, ParseException {
+    public void testEventLog() throws ParseException {
         final String eventURL = "/2.0/events";
         String startTime = "2019-02-02T21:48:38Z";
         String endTime = "2019-02-02T23:48:40Z";
@@ -67,17 +69,18 @@ public class BoxEventTest {
             .withQueryParam("created_after", WireMock.equalTo("2019-02-02T21:48:38Z"))
             .withQueryParam("created_before", WireMock.equalTo("2019-02-02T23:48:40Z"))
             .willReturn(WireMock.aResponse()
-                .withHeader("Content-Type", "application/json")
+                .withHeader("Content-Type", APPLICATION_JSON)
                 .withBody(getResult)));
 
         Date startDate = new SimpleDateFormat("yyyy-MM-dd'T'hh:mm:ssX").parse(startTime);
         Date endDate = new SimpleDateFormat("yyyy-MM-dd'T'hh:mm:ssX").parse(endTime);
-        EventLog eventLog = EventLog.getEnterpriseEvents(this.api, startDate, endDate);
+        EventLog eventLog = EventLog.getEnterpriseEvents(
+            this.api, new EnterpriseEventsRequest().after(startDate).before(endDate)
+        );
         BoxEvent event = eventLog.iterator().next();
         assertEquals("54321", event.getActionBy().getID());
         assertEquals("12345", event.getSourceInfo().getID());
         assertEquals("Example User", event.getCreatedBy().getName());
-        assertEquals(BoxEvent.Type.ADD_LOGIN_ACTIVITY_DEVICE, event.getType());
         assertEquals(BoxEvent.EventType.ADD_LOGIN_ACTIVITY_DEVICE, event.getEventType());
         assertEquals("ADD_LOGIN_ACTIVITY_DEVICE", event.getTypeName());
     }
@@ -88,7 +91,6 @@ public class BoxEventTest {
             + "\"event_type\": \"UNKNOWN_EVENT_TYPE\" }";
         BoxEvent event = new BoxEvent(null, eventJSON);
 
-        assertThat(event.getType(), is(BoxEvent.Type.UNKNOWN));
         assertThat(event.getEventType(), is(BoxEvent.EventType.UNKNOWN));
     }
 
@@ -160,6 +162,6 @@ public class BoxEventTest {
     }
 
     private String baseUrl() {
-        return format("http://localhost:%d", wireMockRule.port());
+        return format("https://localhost:%d", wireMockRule.httpsPort());
     }
 }

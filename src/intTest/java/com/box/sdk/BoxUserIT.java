@@ -6,7 +6,6 @@ import static com.box.sdk.internal.utils.CollectionUtils.createListFrom;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.emptyOrNullString;
 import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.greaterThan;
 import static org.hamcrest.Matchers.greaterThanOrEqualTo;
 import static org.hamcrest.Matchers.hasItem;
 import static org.hamcrest.Matchers.hasSize;
@@ -14,15 +13,19 @@ import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.not;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.URL;
 import java.net.URLDecoder;
 import java.util.Calendar;
 import java.util.Collection;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import okhttp3.OkHttpClient;
 import org.hamcrest.Matchers;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -41,6 +44,7 @@ public class BoxUserIT {
         for (BoxUser.Info user : BoxUser.getAllEnterpriseUsers(api, NEW_USER_LOGIN)) {
             user.getResource().delete(false, false);
         }
+        Logger.getLogger(OkHttpClient.class.getName()).setLevel(Level.FINE);
     }
 
     @Test(timeout = 10000)
@@ -144,9 +148,9 @@ public class BoxUserIT {
         assertThat(response.getPreview(), not(emptyOrNullString()));
 
         retry(() -> {
-            InputStream uploadedAvatar = user.getAvatar();
-            try {
-                assertThat(uploadedAvatar.available(), greaterThan(0));
+            try (ByteArrayOutputStream outputStream = new ByteArrayOutputStream()) {
+                user.downloadAvatar(outputStream);
+                assertTrue("Could not read avatar binary data", outputStream.size() > 0);
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
@@ -157,7 +161,7 @@ public class BoxUserIT {
 
         // then
         try {
-            user.getAvatar();
+            user.downloadAvatar(new ByteArrayOutputStream());
         } catch (BoxAPIException e) {
             assertThat(e.getResponseCode(), is(404));
         }

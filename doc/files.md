@@ -35,7 +35,6 @@ file's contents, upload new versions, and perform other common file operations
 - [Remove a Shared Link](#remove-a-shared-link)
 - [Add a Collaborator](#add-a-collaborator)
 - [Get an Embed Link](#get-an-embed-link)
-- [Get Thumbnail (Deprecated)](#get-thumbnail-deprecated)
 - [Create Metadata](#create-metadata)
 - [Set Metadata](#set-metadata)
 - [Get Metadata](#get-metadata)
@@ -62,7 +61,7 @@ BoxFile.Info info = file.getInfo();
 ```
 
 Requesting information for only the fields you need with
-[`getInfo(String... fields)`][get-info2]
+[`getInfo(String... fields)`][get-info]
 can improve performance and reduce the size of the network request.
 
 ```java
@@ -71,8 +70,7 @@ BoxFile file = new BoxFile(api, "id");
 BoxFile.Info info = file.getInfo("size", "owned_by");
 ```
 
-[get-info]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxFile.html#getInfo--
-[get-info2]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxFile.html#getInfo-java.lang.String...-
+[get-info]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxFile.html#getInfo-java.lang.String...-
 
 Update a File's Information
 ---------------------------
@@ -508,17 +506,17 @@ Upload a New Version of a File
 ------------------------------
 
 New versions of a file can be uploaded with the
-[`uploadVersion(InputStream fileContents)`][upload-version]
+[`uploadNewVersion(InputStream fileContents)`][upload-new-version]
 method.
 
 <!-- sample post_files_id_content -->
 ```java
 BoxFile file = new BoxFile(api, "id");
 FileInputStream stream = new FileInputStream("My File.txt");
-file.uploadVersion(stream);
+file.uploadNewVersion(stream);
 ```
 
-[upload-version]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxFile.html#uploadVersion-java.io.InputStream-
+[upload-new-version]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxFile.html#uploadNewVersion-java.io.InputStream-
 
 Download a Previous Version of a File
 -------------------------------------
@@ -530,7 +528,7 @@ by calling [`download(OutputStream output)`][download-version].
 ```java
 BoxFile file = new BoxFile(api, "id");
 Collection<BoxFileVersion> versions = file.getVersions();
-BoxFileVersion firstVersion = versions..iterator().next();
+BoxFileVersion firstVersion = versions.iterator().next();
 
 FileOutputStream stream = new FileOutputStream(firstVersion.getName());
 firstVersion.download(stream);
@@ -775,23 +773,6 @@ URL embedLink = file.getPreviewLink();
 ```
 
 [get-preview-link]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxFile.html#getPreviewLink--
-
-Get Thumbnail (Deprecated)
--------------
-
-This method has been deprecated. Use [Get Representation Content](#get-representation-content) instead.
-
-A thumbnail for a file can be retrieved by calling
-[`getThumbnail(BoxFile.ThumbnailFileType thumbnailtype, int minWidth, int minHeight, int maxWidth, int maxHeight)`][get-thumbnail].
-
-<!-- sample get_files_id_thumbnail_id -->
-```java
-// Get a thumbnail with size exactly 256x256
-BoxFile file = new BoxFile(api, "id");
-byte[] thumbnail = file.getThumbnail(BoxFile.ThumbnailFileType.PNG, 256, 256, 256, 256)
-```
-
-[get-thumbnail]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxFile.html#getThumbnail-com.box.sdk.BoxFile.ThumbnailFileType-int-int-int-int-
 
 Create Metadata
 ---------------

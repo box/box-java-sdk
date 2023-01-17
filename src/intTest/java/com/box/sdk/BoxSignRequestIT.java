@@ -103,11 +103,15 @@ public class BoxSignRequestIT {
             assertEquals(signerEmail, signer.getEmail());
             assertEquals(signRequestIdCreate, signRequestInfoGetByID.getID());
 
+            // Resend sign request
+            retry(signRequestGetByID::resend, 5, 500);
+
             // Do Get All
             Iterable<BoxSignRequest.Info> signRequestsGetAll = BoxSignRequest.getAll(api);
 
             // Test Get All
             assertTrue(signRequestsGetAll.iterator().hasNext());
+
 
             // Do Cancel
             // Cancel will fail if it's too soon after creation

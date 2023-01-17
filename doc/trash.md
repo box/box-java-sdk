@@ -79,7 +79,7 @@ String fileID = "9873459";
 BoxTrash trash = new BoxTrash(api);
 BoxFile.Info fileInfo = trash.getFileInfo(fileID);
 ```
-
+[file-get-info]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxFile.html#getInfo-java.lang.String...-
 [get-trashed-file]: https://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxTrash.html#getFileInfo-java.lang.String-
 [get-trashed-file-fields]: https://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxTrash.html#getFileInfo-java.lang.String-java.lang.String...-
 
@@ -99,7 +99,7 @@ String folderID = "2345343";
 BoxTrash trash = new BoxTrash(api);
 BoxFolder.Info folderInfo = trash.getFolderInfo(folderInfo);
 ```
-
+[folders-get-info]: https://box.github.io/box-java-sdk/javadoc/com/box/sdk/BoxFolder.html#getInfo-java.lang.String...-
 [get-trashed-folder]: https://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxTrash.html#getFolderInfo-java.lang.String-
 [get-trashed-folder-fields]: https://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxTrash.html#getFolderInfo-java.lang.String-java.lang.String...-
 

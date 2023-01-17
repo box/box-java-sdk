@@ -1,5 +1,6 @@
 package com.box.sdk;
 
+import static com.box.sdk.http.ContentType.APPLICATION_JSON;
 import static com.github.tomakehurst.wiremock.client.WireMock.postRequestedFor;
 import static com.github.tomakehurst.wiremock.client.WireMock.urlPathEqualTo;
 import static com.github.tomakehurst.wiremock.core.WireMockConfiguration.wireMockConfig;
@@ -10,7 +11,6 @@ import com.box.sdk.BoxSignRequestSigner.BoxSignRequestInputContentType;
 import com.box.sdk.BoxSignRequestSigner.BoxSignerInput;
 import com.github.tomakehurst.wiremock.client.WireMock;
 import com.github.tomakehurst.wiremock.junit.WireMockRule;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
@@ -25,17 +25,17 @@ import org.junit.Test;
 public class BoxSignRequestTest {
 
     @Rule
-    public WireMockRule wireMockRule = new WireMockRule(wireMockConfig().dynamicPort());
+    public WireMockRule wireMockRule = new WireMockRule(wireMockConfig().dynamicHttpsPort().httpDisabled(true));
     private final BoxAPIConnection api = TestUtils.getAPIConnection();
 
     @Before
     public void setUpBaseUrl() {
         api.setMaxRetryAttempts(1);
-        api.setBaseURL(format("http://localhost:%d", wireMockRule.port()));
+        api.setBaseURL(format("https://localhost:%d", wireMockRule.httpsPort()));
     }
 
     @Test
-    public void createSignRequestSucceeds() throws IOException {
+    public void createSignRequestSucceeds() {
         final String fileId = "12345";
         final String fileName = "Contract.pdf";
         final String signerEmail = "example@gmail.com";
@@ -53,7 +53,7 @@ public class BoxSignRequestTest {
 
         wireMockRule.stubFor(WireMock.post(WireMock.urlPathEqualTo("/2.0/sign_requests"))
             .willReturn(WireMock.aResponse()
-                .withHeader("Content-Type", "application/json")
+                .withHeader("Content-Type", APPLICATION_JSON)
                 .withBody(result)));
 
         List<BoxSignRequestFile> files = new ArrayList<>();
@@ -88,7 +88,7 @@ public class BoxSignRequestTest {
     }
 
     @Test
-    public void getSignRequestInfoSucceeds() throws IOException {
+    public void getSignRequestInfoSucceeds() {
         final String fileId = "12345";
         final String fileName = "Contract.pdf";
         final String signerEmail = "example@gmail.com";
@@ -108,7 +108,7 @@ public class BoxSignRequestTest {
 
         wireMockRule.stubFor(WireMock.get(WireMock.urlPathEqualTo(requestUrl))
             .willReturn(WireMock.aResponse()
-                .withHeader("Content-Type", "application/json")
+                .withHeader("Content-Type", APPLICATION_JSON)
                 .withBody(result)));
 
         BoxSignRequest signRequest = new BoxSignRequest(this.api, signRequestId);
@@ -131,7 +131,7 @@ public class BoxSignRequestTest {
     }
 
     @Test
-    public void getAllSignRequestsSucceeds() throws IOException {
+    public void getAllSignRequestsSucceeds() {
         final String fileId = "12345";
         final String fileName = "Contract.pdf";
         final String signerEmail = "example@gmail.com";
@@ -151,7 +151,7 @@ public class BoxSignRequestTest {
 
         wireMockRule.stubFor(WireMock.get(WireMock.urlPathEqualTo(requestUrl))
             .willReturn(WireMock.aResponse()
-                .withHeader("Content-Type", "application/json")
+                .withHeader("Content-Type", APPLICATION_JSON)
                 .withBody(result)));
 
         Iterator<BoxSignRequest.Info> signRequests = BoxSignRequest.getAll(this.api).iterator();
@@ -174,7 +174,7 @@ public class BoxSignRequestTest {
     }
 
     @Test
-    public void cancelSignRequestSucceeds() throws IOException {
+    public void cancelSignRequestSucceeds() {
         final String signRequestId = "12345";
 
         final String requestUrl = "/2.0/sign_requests/" + signRequestId + "/cancel";
@@ -183,7 +183,7 @@ public class BoxSignRequestTest {
 
         wireMockRule.stubFor(WireMock.post(WireMock.urlPathEqualTo(requestUrl))
             .willReturn(WireMock.aResponse()
-                .withHeader("Content-Type", "application/json")
+                .withHeader("Content-Type", APPLICATION_JSON)
                 .withBody(result)));
 
         BoxSignRequest signRequest = new BoxSignRequest(this.api, signRequestId);

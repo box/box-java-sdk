@@ -48,33 +48,30 @@ public class BoxInviteTest {
             + "    \"modified_at\": \"2014-12-23T12:55:53-08:00\"\n"
             + "}").asObject();
 
-        BoxAPIConnection api = new BoxAPIConnection("");
-        api.setRequestInterceptor(new RequestInterceptor() {
-            @Override
-            public BoxAPIResponse onRequest(BoxAPIRequest request) {
-                final String url = request.getUrl().toString();
-                if (url.equals("https://api.box.com/2.0/users/" + userID + "?fields=login")) {
+        BoxAPIConnection api = new BoxAPIConnectionForTests("");
+        api.setRequestInterceptor(request -> {
+            final String url = request.getUrl().toString();
+            if (url.equals("https://api.box.com/2.0/users/" + userID + "?fields=login")) {
 
-                    return new BoxJSONResponse() {
-                        @Override
-                        public String getJSON() {
-                            return "{\"type\":\"user\",\"id\":\"" + userID + "\",\"login\":\"" + userLogin + "\"}";
-                        }
-                    };
-                } else if (url.equals("https://api.box.com/2.0/invites")) {
+                return new BoxJSONResponse() {
+                    @Override
+                    public String getJSON() {
+                        return "{\"type\":\"user\",\"id\":\"" + userID + "\",\"login\":\"" + userLogin + "\"}";
+                    }
+                };
+            } else if (url.equals("https://api.box.com/2.0/invites")) {
 
-                    return new BoxJSONResponse() {
-                        @Override
-                        public String getJSON() {
-                            return fakeJSONResponse.toString();
-                        }
-                    };
-                } else {
-                    fail("Unexpcted API request " + request.getUrl());
-                }
-
-                return null;
+                return new BoxJSONResponse() {
+                    @Override
+                    public String getJSON() {
+                        return fakeJSONResponse.toString();
+                    }
+                };
+            } else {
+                fail("Unexpcted API request " + request.getUrl());
             }
+
+            return null;
         });
         BoxInvite.Info info = BoxInvite.inviteUserToEnterprise(api, userLogin, enterpriseID);
 
@@ -102,19 +99,16 @@ public class BoxInviteTest {
 
         final String id = "783645";
 
-        BoxAPIConnection api = new BoxAPIConnection("");
-        api.setRequestInterceptor(new RequestInterceptor() {
-            @Override
-            public BoxAPIResponse onRequest(BoxAPIRequest request) {
-                assertEquals("https://api.box.com/2.0/invites/" + id,
-                    request.getUrl().toString());
-                return new BoxJSONResponse() {
-                    @Override
-                    public String getJSON() {
-                        return "{\"type\":\"invite\",\"id\":\"" + id + "\"}";
-                    }
-                };
-            }
+        BoxAPIConnection api = new BoxAPIConnectionForTests("");
+        api.setRequestInterceptor(request -> {
+            assertEquals("https://api.box.com/2.0/invites/" + id,
+                request.getUrl().toString());
+            return new BoxJSONResponse() {
+                @Override
+                public String getJSON() {
+                    return "{\"type\":\"invite\",\"id\":\"" + id + "\"}";
+                }
+            };
         });
 
         BoxInvite invite = new BoxInvite(api, id);

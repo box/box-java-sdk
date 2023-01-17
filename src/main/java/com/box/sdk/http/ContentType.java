@@ -20,6 +20,11 @@ public final class ContentType {
      */
     public static final String APPLICATION_FORM_URLENCODED = "application/x-www-form-urlencoded";
 
+    /**
+     * It is used when the HTTP request content type is application/json-patch+json.
+     */
+    public static final String APPLICATION_JSON_PATCH = "application/json-patch+json";
+
     //Prevents instantiation
     private ContentType() {
     }

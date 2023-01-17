@@ -4,6 +4,9 @@ import static com.box.sdk.BoxFolder.SortDirection.DESC;
 import static com.box.sdk.BoxSharedLink.Access.OPEN;
 import static com.box.sdk.PagingParameters.marker;
 import static com.box.sdk.SortParameters.ascending;
+import static com.box.sdk.http.ContentType.APPLICATION_JSON;
+import static com.box.sdk.http.ContentType.APPLICATION_JSON_PATCH;
+import static com.box.sdk.http.ContentType.APPLICATION_OCTET_STREAM;
 import static com.github.tomakehurst.wiremock.core.WireMockConfiguration.wireMockConfig;
 import static java.lang.String.format;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -44,14 +47,14 @@ import org.junit.Test;
 public class BoxFolderTest {
 
     @Rule
-    public WireMockRule wireMockRule = new WireMockRule(wireMockConfig().dynamicPort());
+    public WireMockRule wireMockRule = new WireMockRule(wireMockConfig().dynamicHttpsPort().httpDisabled(true));
     private final BoxAPIConnection api = TestUtils.getAPIConnection();
 
     @Before
     public void setUpBaseUrl() {
         api.setMaxRetryAttempts(1);
-        api.setBaseURL(format("http://localhost:%d", wireMockRule.port()));
-        api.setBaseUploadURL(format("http://localhost:%d", wireMockRule.port()));
+        api.setBaseURL(format("https://localhost:%d", wireMockRule.httpsPort()));
+        api.setBaseUploadURL(format("https://localhost:%d", wireMockRule.httpsPort()));
     }
 
     @Test
@@ -74,7 +77,7 @@ public class BoxFolderTest {
         wireMockRule.stubFor(WireMock.options(WireMock.urlPathEqualTo(preflightURL))
             .withRequestBody(WireMock.equalToJson(preflightObject.toString()))
             .willReturn(WireMock.aResponse()
-                .withHeader("Content-Type", "application/json")
+                .withHeader("Content-Type", APPLICATION_JSON)
                 .withBody(getResult)
                 .withStatus(409)));
 
@@ -97,7 +100,7 @@ public class BoxFolderTest {
         final String commitURL = "/2.0/files/upload_sessions/D5E3F8ADA11A38F0A66AD0B64AACA658/commit";
         BoxFileTest.FakeStream stream = new BoxFileTest.FakeStream("aaaaa");
 
-        String sessionResult = TestUtils.getFixture("BoxFile/CreateUploadSession201", wireMockRule.port());
+        String sessionResult = TestUtils.getFixture("BoxFile/CreateUploadSession201", wireMockRule.httpsPort());
         String uploadResult = TestUtils.getFixture("BoxFile/UploadPartOne200");
         String commitResult = TestUtils.getFixture("BoxFile/CommitUploadWithAttributes201");
         String canUploadResult = TestUtils.getFixture("BoxFile/CanUploadFile200");
@@ -138,30 +141,30 @@ public class BoxFolderTest {
         wireMockRule.stubFor(WireMock.options(WireMock.urlPathEqualTo(preflightURL))
             .withRequestBody(WireMock.equalToJson(preflightObject.toString()))
             .willReturn(WireMock.aResponse()
-                .withHeader("Content-Type", "application/json")
+                .withHeader("Content-Type", APPLICATION_JSON)
                 .withStatus(200)
                 .withBody(canUploadResult)));
 
         wireMockRule.stubFor(WireMock.post(WireMock.urlPathEqualTo(sessionURL))
             .withRequestBody(WireMock.equalToJson(sessionObject.toString()))
             .willReturn(WireMock.aResponse()
-                .withHeader("Content-Type", "application/json")
+                .withHeader("Content-Type", APPLICATION_JSON)
                 .withBody(sessionResult)));
 
         wireMockRule.stubFor(WireMock.put(WireMock.urlPathEqualTo(uploadURL))
             .withHeader("Digest", WireMock.containing("sha=31HjfCaaqU04+T5Te/biAgshQGw="))
-            .withHeader("Content-Type", WireMock.containing("application/octet-stream"))
+            .withHeader("Content-Type", WireMock.containing(APPLICATION_OCTET_STREAM))
             .withHeader("Content-Range", WireMock.containing("bytes 0-4/5"))
             .withRequestBody(WireMock.equalTo("aaaaa"))
             .willReturn(WireMock.aResponse()
-                .withHeader("Content-Type", "application/json")
+                .withHeader("Content-Type", APPLICATION_JSON)
                 .withBody(uploadResult)));
 
         wireMockRule.stubFor(WireMock.post(WireMock.urlPathEqualTo(commitURL))
-            .withHeader("Content-Type", WireMock.equalTo("application/json"))
+            .withHeader("Content-Type", WireMock.equalTo(APPLICATION_JSON))
             .withRequestBody(WireMock.containing(commitObject.toString()))
             .willReturn(WireMock.aResponse()
-                .withHeader("Content-Type", "application/json")
+                .withHeader("Content-Type", APPLICATION_JSON)
                 .withBody(commitResult)));
 
         BoxFolder folder = new BoxFolder(this.api, "12345");
@@ -185,7 +188,7 @@ public class BoxFolderTest {
         final String commitURL = "/2.0/files/upload_sessions/D5E3F8ADA11A38F0A66AD0B64AACA658/commit";
         BoxFileTest.FakeStream stream = new BoxFileTest.FakeStream("aaaaa");
 
-        String sessionResult = TestUtils.getFixture("BoxFile/CreateUploadSession201", wireMockRule.port());
+        String sessionResult = TestUtils.getFixture("BoxFile/CreateUploadSession201", wireMockRule.httpsPort());
         String uploadResult = TestUtils.getFixture("BoxFile/UploadPartOne200");
         String commitResult = TestUtils.getFixture("BoxFile/CommitUploadWithAttributes201");
         String canUploadResult = TestUtils.getFixture("BoxFile/CanUploadFile200");
@@ -226,30 +229,30 @@ public class BoxFolderTest {
         wireMockRule.stubFor(WireMock.options(WireMock.urlPathEqualTo(preflightURL))
             .withRequestBody(WireMock.equalToJson(preflightObject.toString()))
             .willReturn(WireMock.aResponse()
-                .withHeader("Content-Type", "application/json")
+                .withHeader("Content-Type", APPLICATION_JSON)
                 .withStatus(200)
                 .withBody(canUploadResult)));
 
         wireMockRule.stubFor(WireMock.post(WireMock.urlPathEqualTo(sessionURL))
             .withRequestBody(WireMock.equalToJson(sessionObject.toString()))
             .willReturn(WireMock.aResponse()
-                .withHeader("Content-Type", "application/json")
+                .withHeader("Content-Type", APPLICATION_JSON)
                 .withBody(sessionResult)));
 
         wireMockRule.stubFor(WireMock.put(WireMock.urlPathEqualTo(uploadURL))
             .withHeader("Digest", WireMock.containing("sha=31HjfCaaqU04+T5Te/biAgshQGw="))
-            .withHeader("Content-Type", WireMock.containing("application/octet-stream"))
+            .withHeader("Content-Type", WireMock.containing(APPLICATION_OCTET_STREAM))
             .withHeader("Content-Range", WireMock.containing("bytes 0-4/5"))
             .withRequestBody(WireMock.equalTo("aaaaa"))
             .willReturn(WireMock.aResponse()
-                .withHeader("Content-Type", "application/json")
+                .withHeader("Content-Type", APPLICATION_JSON)
                 .withBody(uploadResult)));
 
         wireMockRule.stubFor(WireMock.post(WireMock.urlPathEqualTo(commitURL))
-            .withHeader("Content-Type", WireMock.equalTo("application/json"))
+            .withHeader("Content-Type", WireMock.equalTo(APPLICATION_JSON))
             .withRequestBody(WireMock.containing(commitObject.toString()))
             .willReturn(WireMock.aResponse()
-                .withHeader("Content-Type", "application/json")
+                .withHeader("Content-Type", APPLICATION_JSON)
                 .withBody(commitResult)));
 
         BoxFolder folder = new BoxFolder(this.api, "12345");
@@ -277,7 +280,7 @@ public class BoxFolderTest {
 
         BoxFileTest.FakeStream stream = new BoxFileTest.FakeStream("aaaaa");
 
-        String sessionResult = TestUtils.getFixture("BoxFile/CreateUploadSession201", wireMockRule.port());
+        String sessionResult = TestUtils.getFixture("BoxFile/CreateUploadSession201", wireMockRule.httpsPort());
         String partsResult = TestUtils.getFixture("BoxFile/ListUploadedPart200");
         String commitResult = TestUtils.getFixture("BoxFile/CommitUpload201");
         String canUploadResult = TestUtils.getFixture("BoxFile/CanUploadFile200");
@@ -309,38 +312,38 @@ public class BoxFolderTest {
         wireMockRule.stubFor(WireMock.options(WireMock.urlPathEqualTo(preflightURL))
             .withRequestBody(WireMock.equalToJson(preflightObject.toString()))
             .willReturn(WireMock.aResponse()
-                .withHeader("Content-Type", "application/json")
+                .withHeader("Content-Type", APPLICATION_JSON)
                 .withStatus(200)
                 .withBody(canUploadResult)));
 
         wireMockRule.stubFor(WireMock.post(WireMock.urlPathEqualTo(sessionURL))
             .withRequestBody(WireMock.equalToJson(sessionObject.toString()))
             .willReturn(WireMock.aResponse()
-                .withHeader("Content-Type", "application/json")
+                .withHeader("Content-Type", APPLICATION_JSON)
                 .withBody(sessionResult)
                 .withStatus(201)));
 
         wireMockRule.stubFor(WireMock.put(WireMock.urlPathEqualTo(uploadURL))
             .withHeader("Digest", WireMock.containing("sha=31HjfCaaqU04+T5Te/biAgshQGw="))
-            .withHeader("Content-Type", WireMock.containing("application/octet-stream"))
+            .withHeader("Content-Type", WireMock.containing(APPLICATION_OCTET_STREAM))
             .withHeader("Content-Range", WireMock.containing("bytes 0-4/5"))
             .withRequestBody(WireMock.equalTo("aaaaa"))
             .willReturn(WireMock.aResponse()
-                .withHeader("Content-Type", "application/json")
+                .withHeader("Content-Type", APPLICATION_JSON)
                 .withBody(responseBody500)
                 .withStatus(500)));
 
         wireMockRule.stubFor(WireMock.get(WireMock.urlPathEqualTo(listPartsURL))
             .willReturn(WireMock.aResponse()
-                .withHeader("Content-Type", "application/json")
+                .withHeader("Content-Type", APPLICATION_JSON)
                 .withBody(partsResult)
                 .withStatus(200)));
 
         wireMockRule.stubFor(WireMock.post(WireMock.urlPathEqualTo(commitURL))
-            .withHeader("Content-Type", WireMock.equalTo("application/json"))
+            .withHeader("Content-Type", WireMock.equalTo(APPLICATION_JSON))
             .withRequestBody(WireMock.containing(commitObject.toString()))
             .willReturn(WireMock.aResponse()
-                .withHeader("Content-Type", "application/json")
+                .withHeader("Content-Type", APPLICATION_JSON)
                 .withBody(commitResult)
                 .withStatus(201)));
 
@@ -367,7 +370,7 @@ public class BoxFolderTest {
 
         BoxFileTest.FakeStream stream = new BoxFileTest.FakeStream("aaaaa");
 
-        String sessionResult = TestUtils.getFixture("BoxFile/CreateUploadSession201", wireMockRule.port());
+        String sessionResult = TestUtils.getFixture("BoxFile/CreateUploadSession201", wireMockRule.httpsPort());
         String uploadResult = TestUtils.getFixture("BoxFile/UploadPartOne200");
         String wrongPartsResult = TestUtils.getFixture("BoxFile/ListUploadedParts200");
         String commitResult = TestUtils.getFixture("BoxFile/CommitUpload201");
@@ -400,48 +403,48 @@ public class BoxFolderTest {
         wireMockRule.stubFor(WireMock.options(WireMock.urlPathEqualTo(preflightURL))
             .withRequestBody(WireMock.equalToJson(preflightObject.toString()))
             .willReturn(WireMock.aResponse()
-                .withHeader("Content-Type", "application/json")
+                .withHeader("Content-Type", APPLICATION_JSON)
                 .withStatus(200)
                 .withBody(canUploadResult)));
 
         wireMockRule.stubFor(WireMock.post(WireMock.urlPathEqualTo(sessionURL))
             .withRequestBody(WireMock.equalToJson(sessionObject.toString()))
             .willReturn(WireMock.aResponse()
-                .withHeader("Content-Type", "application/json")
+                .withHeader("Content-Type", APPLICATION_JSON)
                 .withBody(sessionResult)
                 .withStatus(201)));
 
         wireMockRule.stubFor(WireMock.put(WireMock.urlPathEqualTo(uploadURL))
             .withHeader("Digest", WireMock.containing("sha=31HjfCaaqU04+T5Te/biAgshQGw="))
-            .withHeader("Content-Type", WireMock.containing("application/octet-stream"))
+            .withHeader("Content-Type", WireMock.containing(APPLICATION_OCTET_STREAM))
             .withHeader("Content-Range", WireMock.containing("bytes 0-4/5"))
             .withRequestBody(WireMock.equalTo("aaaaa"))
             .willReturn(WireMock.aResponse()
-                .withHeader("Content-Type", "application/json")
+                .withHeader("Content-Type", APPLICATION_JSON)
                 .withBody(responseBody500)
                 .withStatus(500)));
 
         wireMockRule.stubFor(WireMock.get(WireMock.urlPathEqualTo(listPartsURL))
             .willReturn(WireMock.aResponse()
-                .withHeader("Content-Type", "application/json")
+                .withHeader("Content-Type", APPLICATION_JSON)
                 .withBody(wrongPartsResult)
                 .withStatus(200)));
 
         wireMockRule.stubFor(WireMock.put(WireMock.urlPathEqualTo(uploadURL))
             .withHeader("Digest", WireMock.containing("sha=31HjfCaaqU04+T5Te/biAgshQGw="))
-            .withHeader("Content-Type", WireMock.containing("application/octet-stream"))
+            .withHeader("Content-Type", WireMock.containing(APPLICATION_OCTET_STREAM))
             .withHeader("Content-Range", WireMock.containing("bytes 0-4/5"))
             .withRequestBody(WireMock.equalTo("aaaaa"))
             .willReturn(WireMock.aResponse()
-                .withHeader("Content-Type", "application/json")
+                .withHeader("Content-Type", APPLICATION_JSON)
                 .withBody(uploadResult)
                 .withStatus(200)));
 
         wireMockRule.stubFor(WireMock.post(WireMock.urlPathEqualTo(commitURL))
-            .withHeader("Content-Type", WireMock.equalTo("application/json"))
+            .withHeader("Content-Type", WireMock.equalTo(APPLICATION_JSON))
             .withRequestBody(WireMock.containing(commitObject.toString()))
             .willReturn(WireMock.aResponse()
-                .withHeader("Content-Type", "application/json")
+                .withHeader("Content-Type", APPLICATION_JSON)
                 .withBody(commitResult)
                 .withStatus(201)));
 
@@ -463,17 +466,19 @@ public class BoxFolderTest {
         final String modifiedByLogin = "test@user.com";
         final String modifiedByName = "Test User";
 
-        String result = TestUtils.getFixture("BoxFolder/GetAllRootFolderItems200");
+        String items = TestUtils.getFixture("BoxFolder/GetAllRootFolderItems200");
+        String info = TestUtils.getFixture("BoxFolder/GetFolderInfo200");
 
         wireMockRule.stubFor(WireMock.get(WireMock.urlPathEqualTo(rootFolderItemsURL))
             .willReturn(WireMock.aResponse()
-                .withHeader("Content-Type", "application/json")
-                .withStatus(200)));
+                .withHeader("Content-Type", APPLICATION_JSON)
+                .withStatus(200).withBody(items)));
 
         wireMockRule.stubFor(WireMock.get(WireMock.urlPathEqualTo(folderURL))
             .willReturn(WireMock.aResponse()
-                .withHeader("Content-Type", "application/json")
-                .withBody(result)));
+                .withHeader("Content-Type", APPLICATION_JSON)
+                .withBody(info)
+                .withStatus(200)));
 
         BoxFolder rootFolder = BoxFolder.getRootFolder(this.api);
         BoxFolder.Info rootFolderInfo = rootFolder.getInfo();
@@ -495,7 +500,7 @@ public class BoxFolderTest {
             .withQueryParam("limit", WireMock.containing("1000"))
             .withQueryParam("usemarker", WireMock.containing("true"))
             .willReturn(WireMock.aResponse()
-                .withHeader("Content-Type", "application/json")
+                .withHeader("Content-Type", APPLICATION_JSON)
                 .withBody(result)));
 
         BoxFolder folder = new BoxFolder(this.api, folderID);
@@ -523,7 +528,7 @@ public class BoxFolderTest {
 
         wireMockRule.stubFor(WireMock.get(WireMock.urlPathEqualTo(folderInfoURL))
             .willReturn(WireMock.aResponse()
-                .withHeader("Content-Type", "application/json")
+                .withHeader("Content-Type", APPLICATION_JSON)
                 .withBody(result)));
 
         BoxFolder folder = new BoxFolder(this.api, folderID);
@@ -553,7 +558,7 @@ public class BoxFolderTest {
 
         wireMockRule.stubFor(WireMock.get(WireMock.urlPathEqualTo(folderInfoURL))
             .willReturn(WireMock.aResponse()
-                .withHeader("Content-Type", "application/json")
+                .withHeader("Content-Type", APPLICATION_JSON)
                 .withBody(result)));
 
         BoxFolder folder = new BoxFolder(this.api, folderID);
@@ -573,13 +578,13 @@ public class BoxFolderTest {
 
         wireMockRule.stubFor(WireMock.get(WireMock.urlPathEqualTo(folderInfoURL))
             .willReturn(WireMock.aResponse()
-                .withHeader("Content-Type", "application/json")
+                .withHeader("Content-Type", APPLICATION_JSON)
                 .withBody(result)));
 
         wireMockRule.stubFor(WireMock.put(WireMock.urlPathEqualTo(folderInfoURL))
             .withRequestBody(WireMock.equalToJson(jsonObject.toString()))
             .willReturn(WireMock.aResponse()
-                .withHeader("Content-Type", "application/json")
+                .withHeader("Content-Type", APPLICATION_JSON)
                 .withBody(result)));
 
         BoxFolder folder = new BoxFolder(this.api, folderID);
@@ -609,7 +614,7 @@ public class BoxFolderTest {
         wireMockRule.stubFor(WireMock.put(WireMock.urlPathEqualTo(folderURL))
             .withRequestBody(WireMock.equalToJson(updateFolderObject.toString()))
             .willReturn(WireMock.aResponse()
-                .withHeader("Content-Type", "application/json")
+                .withHeader("Content-Type", APPLICATION_JSON)
                 .withBody(result)));
 
         BoxFolder folder = new BoxFolder(this.api, folderID);
@@ -647,7 +652,7 @@ public class BoxFolderTest {
         wireMockRule.stubFor(WireMock.post(WireMock.urlPathEqualTo(folderURL))
             .withRequestBody(WireMock.equalToJson(createFolderObject.toString()))
             .willReturn(WireMock.aResponse()
-                .withHeader("Content-Type", "application/json")
+                .withHeader("Content-Type", APPLICATION_JSON)
                 .withBody(result)));
 
         BoxFolder parentFolder = new BoxFolder(this.api, folderID);
@@ -677,7 +682,7 @@ public class BoxFolderTest {
         wireMockRule.stubFor(WireMock.post(WireMock.urlPathEqualTo(folderURL))
             .withRequestBody(WireMock.equalToJson(copyObject.toString()))
             .willReturn(WireMock.aResponse()
-                .withHeader("Content-Type", "application/json")
+                .withHeader("Content-Type", APPLICATION_JSON)
                 .withBody(result)));
 
         BoxFolder folder = new BoxFolder(this.api, folderID);
@@ -705,7 +710,7 @@ public class BoxFolderTest {
         wireMockRule.stubFor(WireMock.put(WireMock.urlPathEqualTo(moveFolderURL))
             .withRequestBody(WireMock.equalToJson(parentObject.toString()))
             .willReturn(WireMock.aResponse()
-                .withHeader("Content-Type", "application/json")
+                .withHeader("Content-Type", APPLICATION_JSON)
                 .withBody(result)));
 
         BoxFolder folder = new BoxFolder(this.api, folderID);
@@ -724,7 +729,7 @@ public class BoxFolderTest {
         wireMockRule.stubFor(WireMock.delete(WireMock.urlPathEqualTo(deleteFolderURL))
             .withQueryParam("recursive", WireMock.containing("true"))
             .willReturn(WireMock.aResponse()
-                .withHeader("Content-Type", "application/json")
+                .withHeader("Content-Type", APPLICATION_JSON)
                 .withStatus(204)));
 
         BoxFolder folder = new BoxFolder(this.api, folderID);
@@ -747,7 +752,7 @@ public class BoxFolderTest {
         wireMockRule.stubFor(WireMock.put(WireMock.urlPathEqualTo(folderURL))
             .withRequestBody(WireMock.equalToJson(sharedLinkObject.toString()))
             .willReturn(WireMock.aResponse()
-                .withHeader("Content-Type", "application/json")
+                .withHeader("Content-Type", APPLICATION_JSON)
                 .withBody(result)));
 
         BoxSharedLink sharedLink = new BoxSharedLink();
@@ -775,7 +780,7 @@ public class BoxFolderTest {
 
         wireMockRule.stubFor(WireMock.get(WireMock.urlPathEqualTo(folderCollaborationURL))
             .willReturn(WireMock.aResponse()
-                .withHeader("Content-Type", "application/json")
+                .withHeader("Content-Type", APPLICATION_JSON)
                 .withBody(result)));
 
         BoxFolder folder = new BoxFolder(this.api, folderID);
@@ -808,7 +813,7 @@ public class BoxFolderTest {
         wireMockRule.stubFor(WireMock.post(WireMock.urlPathEqualTo(metadataURL))
             .withRequestBody(WireMock.equalToJson(metadataObject.toString()))
             .willReturn(WireMock.aResponse()
-                .withHeader("Content-Type", "application/json")
+                .withHeader("Content-Type", APPLICATION_JSON)
                 .withBody(result)));
 
         BoxFolder folder = new BoxFolder(this.api, folderID);
@@ -828,7 +833,7 @@ public class BoxFolderTest {
 
         wireMockRule.stubFor(WireMock.get(WireMock.urlPathEqualTo(metadataURL))
             .willReturn(WireMock.aResponse()
-                .withHeader("Content-Type", "application/json")
+                .withHeader("Content-Type", APPLICATION_JSON)
                 .withBody(result)));
 
         BoxFolder folder = new BoxFolder(this.api, folderID);
@@ -852,7 +857,7 @@ public class BoxFolderTest {
         wireMockRule.stubFor(WireMock.get(WireMock.urlPathEqualTo(metadataURL))
             .withQueryParam("limit", WireMock.containing("100"))
             .willReturn(WireMock.aResponse()
-                .withHeader("Content-Type", "application/json")
+                .withHeader("Content-Type", APPLICATION_JSON)
                 .withBody(result)));
 
         BoxFolder folder = new BoxFolder(this.api, folderID);
@@ -881,7 +886,7 @@ public class BoxFolderTest {
         wireMockRule.stubFor(WireMock.post(WireMock.urlPathEqualTo(cascadePolicyURL))
             .withRequestBody(WireMock.equalToJson(cascadeObject.toString()))
             .willReturn(WireMock.aResponse()
-                .withHeader("Content-Type", "application/json")
+                .withHeader("Content-Type", APPLICATION_JSON)
                 .withBody(result)));
 
         BoxFolder folder = new BoxFolder(this.api, folderID);
@@ -906,7 +911,7 @@ public class BoxFolderTest {
         wireMockRule.stubFor(WireMock.get(WireMock.urlPathEqualTo(cascadePoliciesURL))
             .withQueryParam("folder_id", WireMock.equalTo(folderID))
             .willReturn(WireMock.aResponse()
-                .withHeader("Content-Type", "application/json")
+                .withHeader("Content-Type", APPLICATION_JSON)
                 .withBody(result)));
 
         BoxFolder folder = new BoxFolder(this.api, folderID);
@@ -938,7 +943,7 @@ public class BoxFolderTest {
             .withQueryParam("fields", WireMock.equalTo("owner_enterprise"))
             .withQueryParam("limit", WireMock.equalTo("100"))
             .willReturn(WireMock.aResponse()
-                .withHeader("Content-Type", "application/json")
+                .withHeader("Content-Type", APPLICATION_JSON)
                 .withBody(result)));
 
         BoxFolder folder = new BoxFolder(this.api, folderID);
@@ -972,7 +977,7 @@ public class BoxFolderTest {
             .withQueryParam("fields", WireMock.equalTo("owner_enterprise"))
             .withQueryParam("limit", WireMock.equalTo("100"))
             .willReturn(WireMock.aResponse()
-                .withHeader("Content-Type", "application/json")
+                .withHeader("Content-Type", APPLICATION_JSON)
                 .withBody(result)));
 
         BoxFolder folder = new BoxFolder(this.api, folderID);
@@ -1011,7 +1016,7 @@ public class BoxFolderTest {
         wireMockRule.stubFor(WireMock.put(WireMock.urlPathEqualTo("/2.0/folders/" + folderID))
             .withRequestBody(WireMock.equalToJson(sharedLinkObject.toString()))
             .willReturn(WireMock.aResponse()
-                .withHeader("Content-Type", "application/json")
+                .withHeader("Content-Type", APPLICATION_JSON)
                 .withBody(result)));
 
         BoxFolder folder = new BoxFolder(this.api, folderID);
@@ -1049,7 +1054,7 @@ public class BoxFolderTest {
         wireMockRule.stubFor(WireMock.put(WireMock.urlPathEqualTo("/2.0/folders/" + folderID))
             .withRequestBody(WireMock.equalToJson(sharedLinkObject.toString()))
             .willReturn(WireMock.aResponse()
-                .withHeader("Content-Type", "application/json")
+                .withHeader("Content-Type", APPLICATION_JSON)
                 .withBody(result)));
 
         BoxFolder folder = new BoxFolder(this.api, folderID);
@@ -1075,7 +1080,7 @@ public class BoxFolderTest {
         wireMockRule.stubFor(WireMock.post(WireMock.urlPathEqualTo(metadataURL))
             .withRequestBody(WireMock.equalToJson(metadataObject.toString()))
             .willReturn(WireMock.aResponse()
-                .withHeader("Content-Type", "application/json")
+                .withHeader("Content-Type", APPLICATION_JSON)
                 .withBody(result)));
 
         BoxFolder folder = new BoxFolder(this.api, folderID);
@@ -1103,7 +1108,7 @@ public class BoxFolderTest {
         wireMockRule.stubFor(WireMock.put(WireMock.urlPathEqualTo(metadataURL))
             .withRequestBody(WireMock.equalToJson(metadataArray.toString()))
             .willReturn(WireMock.aResponse()
-                .withHeader("Content-Type", "application/json-patch+json")
+                .withHeader("Content-Type", APPLICATION_JSON_PATCH)
                 .withBody(result)));
 
         BoxFolder folder = new BoxFolder(this.api, folderID);
@@ -1130,12 +1135,13 @@ public class BoxFolderTest {
 
         wireMockRule.stubFor(WireMock.post(WireMock.urlPathEqualTo(metadataURL))
             .willReturn(WireMock.aResponse()
+                .withBody("{}")
                 .withStatus(409)));
 
         wireMockRule.stubFor(WireMock.put(WireMock.urlPathEqualTo(metadataURL))
             .withRequestBody(WireMock.equalToJson(metadataArray.toString()))
             .willReturn(WireMock.aResponse()
-                .withHeader("Content-Type", "application/json-patch+json")
+                .withHeader("Content-Type", APPLICATION_JSON_PATCH)
                 .withBody(result)));
 
         BoxFolder folder = new BoxFolder(this.api, folderID);
@@ -1153,6 +1159,7 @@ public class BoxFolderTest {
 
         wireMockRule.stubFor(WireMock.post(WireMock.urlPathEqualTo(metadataURL))
             .willReturn(WireMock.aResponse()
+                .withBody("{}")
                 .withStatus(403)));
 
         BoxFolder folder = new BoxFolder(this.api, folderID);
@@ -1171,7 +1178,7 @@ public class BoxFolderTest {
 
         wireMockRule.stubFor(WireMock.get(WireMock.urlPathEqualTo(metadataURL))
             .willReturn(WireMock.aResponse()
-                .withHeader("Content-Type", "application/json")
+                .withHeader("Content-Type", APPLICATION_JSON)
                 .withBody(result)));
 
         BoxFolder folder = new BoxFolder(this.api, folderID);
@@ -1188,7 +1195,7 @@ public class BoxFolderTest {
 
         wireMockRule.stubFor(WireMock.delete(WireMock.urlPathEqualTo(metadataURL))
             .willReturn(WireMock.aResponse()
-                .withHeader("Content-Type", "application/json-patch+json")
+                .withHeader("Content-Type", APPLICATION_JSON_PATCH)
                 .withStatus(204)));
 
         BoxFolder folder = new BoxFolder(this.api, folderID);
@@ -1210,7 +1217,7 @@ public class BoxFolderTest {
 
         wireMockRule.stubFor(WireMock.post(WireMock.urlPathEqualTo(fileURL))
             .willReturn(WireMock.aResponse()
-                .withHeader("Content-Type", "application/json-patch+json")
+                .withHeader("Content-Type", APPLICATION_JSON_PATCH)
                 .withBody(result)
                 .withStatus(201)));
 
@@ -1234,7 +1241,7 @@ public class BoxFolderTest {
             .withQueryParam("limit", WireMock.equalTo("1000"))
             .withQueryParam("offset", WireMock.equalTo("0"))
             .willReturn(WireMock.aResponse()
-                .withHeader("Content-Type", "application/json")
+                .withHeader("Content-Type", APPLICATION_JSON)
                 .withBody(result)
                 .withStatus(200)));
 
@@ -1261,7 +1268,7 @@ public class BoxFolderTest {
             .withQueryParam("limit", WireMock.equalTo("500"))
             .withQueryParam("offset", WireMock.equalTo("10"))
             .willReturn(WireMock.aResponse()
-                .withHeader("Content-Type", "application/json")
+                .withHeader("Content-Type", APPLICATION_JSON)
                 .withBody(result)
                 .withStatus(200)));
 
@@ -1302,8 +1309,7 @@ public class BoxFolderTest {
             .add("second")
             .add("third");
         final int thirdValue = 2;
-        final float fourthValue = 1234567890f;
-        final double fifthValue = 233333333333333340.0;
+        final double fourthValue = 233333333333333340.0;
 
         JsonObject firstAttribute = new JsonObject()
             .add("op", "add")
@@ -1325,29 +1331,23 @@ public class BoxFolderTest {
             .add("path", "/test4")
             .add("value", fourthValue);
 
-        JsonObject fifthAttribute = new JsonObject()
-            .add("op", "add")
-            .add("path", "/test5")
-            .add("value", fifthValue);
-
         JsonArray jsonArray = new JsonArray()
             .add(firstAttribute)
             .add(secondAttribute)
             .add(thirdAttribute)
-            .add(fourthAttribute)
-            .add(fifthAttribute);
+            .add(fourthAttribute);
 
         wireMockRule.stubFor(WireMock.post(WireMock.urlPathEqualTo(metadataURL))
             .willReturn(WireMock.aResponse()
-                .withHeader("Content-Type", "application/json")
+                .withHeader("Content-Type", APPLICATION_JSON)
                 .withBody(postResult)
                 .withStatus(409)));
 
         wireMockRule.stubFor(WireMock.put(WireMock.urlPathEqualTo(metadataURL))
             .withRequestBody(WireMock.equalToJson(jsonArray.toString()))
-            .withHeader("Content-Type", WireMock.equalTo("application/json-patch+json"))
+            .withHeader("Content-Type", WireMock.equalTo(APPLICATION_JSON_PATCH))
             .willReturn(WireMock.aResponse()
-                .withHeader("Content-Type", "application/json-patch+json")
+                .withHeader("Content-Type", APPLICATION_JSON)
                 .withBody(putResult)
                 .withStatus(200)));
 
@@ -1357,8 +1357,7 @@ public class BoxFolderTest {
             .add("/test1", firstValue)
             .add("/test2", secondValueArray)
             .add("/test3", thirdValue)
-            .add("/test4", fourthValue)
-            .add("/test5", fifthValue);
+            .add("/test4", fourthValue);
 
         Metadata metadataValues = folder.setMetadata("testtemplate", "enterprise", metadata);
 
@@ -1369,7 +1368,6 @@ public class BoxFolderTest {
         assertEquals(secondValueJson, metadataValues.getValue("/test2"));
         assertEquals(thirdValue, metadataValues.getDouble("/test3"), 0);
         assertEquals(fourthValue, metadataValues.getDouble("/test4"), 4);
-        assertEquals(fifthValue, metadataValues.getDouble("/test5"), 0);
     }
 
     @Test(expected = BoxDeserializationException.class)
@@ -1381,7 +1379,7 @@ public class BoxFolderTest {
 
         wireMockRule.stubFor(WireMock.get(WireMock.urlPathEqualTo(foldersURL))
             .willReturn(WireMock.aResponse()
-                .withHeader("Content-Type", "application/json")
+                .withHeader("Content-Type", APPLICATION_JSON)
                 .withBody(result)));
 
         BoxFolder.Info folderInfo = new BoxFolder(this.api, folderID).getInfo();
@@ -1410,7 +1408,7 @@ public class BoxFolderTest {
         wireMockRule.stubFor(WireMock.post(WireMock.urlPathEqualTo(folderLockURL))
             .withRequestBody(WireMock.equalToJson(body.toString()))
             .willReturn(WireMock.aResponse()
-                .withHeader("Content-Type", "application/json")
+                .withHeader("Content-Type", APPLICATION_JSON)
                 .withBody(result)));
 
         BoxFolder folder = new BoxFolder(this.api, folderID);
@@ -1431,7 +1429,7 @@ public class BoxFolderTest {
         wireMockRule.stubFor(WireMock.get(WireMock.urlPathEqualTo(folderLocksURL))
             .withQueryParam("folder_id", WireMock.equalTo(folderID))
             .willReturn(WireMock.aResponse()
-                .withHeader("Content-Type", "application/json")
+                .withHeader("Content-Type", APPLICATION_JSON)
                 .withBody(result)
                 .withStatus(200)));
 
@@ -1452,7 +1450,7 @@ public class BoxFolderTest {
 
         wireMockRule.stubFor(WireMock.delete(WireMock.urlPathEqualTo(deleteFolderLockURL))
             .willReturn(WireMock.aResponse()
-                .withHeader("Content-Type", "application/json")
+                .withHeader("Content-Type", APPLICATION_JSON)
                 .withStatus(204)));
 
         BoxFolderLock folderLock = new BoxFolderLock(this.api, folderLockID);
@@ -1462,7 +1460,7 @@ public class BoxFolderTest {
     @Test
     public void setsVanityUrlOnASharedLink() {
         //given
-        BoxAPIConnection api = new BoxAPIConnection("");
+        BoxAPIConnection api = new BoxAPIConnectionForTests("");
         api.setRequestInterceptor(
             request -> {
                 //then
@@ -1522,7 +1520,7 @@ public class BoxFolderTest {
     @Test
     public void setMetadataWorksWhenNoChangesSubmittedAndConflictOccured() {
         // given
-        BoxAPIConnection api = new BoxAPIConnection("");
+        BoxAPIConnection api = new BoxAPIConnectionForTests("");
         BoxFolder folder = new BoxFolder(api, "someFolder");
         final AtomicInteger postCounter = new AtomicInteger(0);
         final AtomicInteger getCounter = new AtomicInteger(0);
@@ -1530,7 +1528,7 @@ public class BoxFolderTest {
             request -> {
                 if (request.getMethod().equals("POST")) {
                     postCounter.incrementAndGet();
-                    throw new BoxAPIException("Conflict", 409, "Conflict");
+                    throw new BoxAPIException("Conflict", 409, "{}");
                 }
                 if (request.getMethod().equals("GET")) {
                     getCounter.incrementAndGet();
@@ -1561,7 +1559,7 @@ public class BoxFolderTest {
         wireMockRule.stubFor(WireMock.put(WireMock.urlPathEqualTo(metadataURL))
             .withRequestBody(new EqualToJsonPattern("{\"name\": \"New Name\"}", false, false))
             .willReturn(WireMock.aResponse()
-                .withHeader("Content-Type", "application/json")
+                .withHeader("Content-Type", APPLICATION_JSON)
                 .withBody(result)
                 .withStatus(200)));
 

@@ -2,7 +2,6 @@ package com.box.sdk;
 
 import static org.junit.Assert.assertEquals;
 
-import com.box.sdk.BoxGroupMembership.Role;
 import com.eclipsesource.json.Json;
 import com.eclipsesource.json.JsonObject;
 import java.text.ParseException;
@@ -19,15 +18,13 @@ public class BoxGroupMembershipTest {
      */
     @Test
     public void testUpdateInfoSendsCorrectJson() {
-        final Role role = Role.SUBMASTER;
         final BoxGroupMembership.GroupRole groupRole = BoxGroupMembership.GroupRole.COADMIN;
 
-        BoxAPIConnection api = new BoxAPIConnection("");
+        BoxAPIConnection api = new BoxAPIConnectionForTests("");
         api.setRequestInterceptor(new JSONRequestInterceptor() {
             @Override
             protected BoxAPIResponse onJSONRequest(BoxJSONRequest request, JsonObject json) {
                 assertEquals("https://api.box.com/2.0/group_memberships/0", request.getUrl().toString());
-                assertEquals(role.toJSONString(), json.get("role").asString());
                 assertEquals(groupRole.toJSONString(), json.get("role").asString());
                 return new BoxJSONResponse() {
                     @Override
@@ -55,7 +52,6 @@ public class BoxGroupMembershipTest {
         final String userLogin = "alice@gmail.com";
         final String groupID = "119720";
         final String groupName = "family";
-        final Role role = Role.SUBMASTER;
         final BoxGroupMembership.GroupRole groupRole = BoxGroupMembership.GroupRole.COADMIN;
         final Date createdAt = BoxDateFormat.parse("2013-05-16T15:27:57-07:00");
         final Date modifiedAt = BoxDateFormat.parse("2013-05-16T15:27:57-07:00");
@@ -79,7 +75,7 @@ public class BoxGroupMembershipTest {
             + "    \"modified_at\": \"2013-05-16T15:27:57-07:00\"\n"
             + "}").asObject();
 
-        BoxAPIConnection api = new BoxAPIConnection("");
+        BoxAPIConnection api = new BoxAPIConnectionForTests("");
         api.setRequestInterceptor(JSONRequestInterceptor.respondWith(fakeJSONResponse));
         BoxGroupMembership membership = new BoxGroupMembership(api, id);
         BoxGroupMembership.Info info = membership.new Info();
@@ -91,7 +87,6 @@ public class BoxGroupMembershipTest {
         assertEquals(userLogin, info.getUser().getLogin());
         assertEquals(groupID, info.getGroup().getID());
         assertEquals(groupName, info.getGroup().getName());
-        assertEquals(role, info.getRole());
         assertEquals(groupRole, info.getGroupRole());
         assertEquals(createdAt, info.getCreatedAt());
         assertEquals(modifiedAt, info.getModifiedAt());

@@ -7,6 +7,9 @@ A retention policy blocks permanent deletion of content for a specified amount o
 <!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
 
 - [Create Retention Policy](#create-retention-policy)
+  - [Indefinite Retention Policies](#indefinite-policies) 
+  - [Finite Retention Policies](#finite-policies) 
+  - [Optional parameters](#optional-parameters) 
 - [Get Retention Policy](#get-retention-policy)
 - [Update Retention Policy](#update-retention-policy)
 - [Get Retention Policies](#get-retention-policies)
@@ -15,7 +18,7 @@ A retention policy blocks permanent deletion of content for a specified amount o
 - [Get Retention Policy Assignment](#get-retention-policy-assignment)
 - [Delete Retention Policy Assignment](#delete-retention-policy-assignment)
 - [Get File Version Retention](#get-file-version-retention)
-- [Get File Version Retentions](#get-file-version-retentions) (will be deprecated in the future, use [Get Files Under Retention For Assignment](#get-files-under-retention-for-assignment) and [Get File Version Under Retention For Assignment](#get-file-versions-under-retention-for-assignment) instead)
+- [Get File Version Retentions](#get-file-version-retentions)
 - [Get Files Under Retention For Assignment](#get-files-under-retention-for-assignment)
 - [Get File Versions Under Retention For Assignment](#get-file-versions-under-retention-for-assignment)
 - [Extend retention for a file](#extend-retention-for-a-file)
@@ -25,6 +28,7 @@ A retention policy blocks permanent deletion of content for a specified amount o
 
 ## Create Retention Policy
 
+### Indefinite policies
 The static [`createIndefinitePolicy(BoxAPIConnection api, String name)`][create-indefinite-retention-policy]
 method will let you create a new indefinite retention policy with a specified name.
 
@@ -33,15 +37,16 @@ method will let you create a new indefinite retention policy with a specified na
 BoxRetentionPolicy.createIndefinitePolicy(api, name);
 ```
 
-The static [`createFinitePolicy(BoxAPIConnection api, String name, int retentionPeriod, String action)`][create-finite-retention-policy]
+### Finite policies
+The static [`BoxRetentionPolicy.createFinitePolicy(com.box.sdk.BoxAPIConnection, java.lang.String, int, com.box.sdk.BoxRetentionPolicy.BoxRetentionPolicyAction)`][create-finite-retention-policy]
 method will let you create a new finite retention policy with a specified name,
 amount of time to apply the retention policy (in days) and a disposition action.
-The disposition action can be `"permanently_delete"` or `"remove_retention"`.
 
 ```java
-BoxRetentionPolicy.createFinitePolicy(api, name, length, action);
+BoxRetentionPolicy.createFinitePolicy(api, name, length, PermanentlyDelete);
 ```
 
+### Optional parameters
 Both finite and indefinite policies allow you to specify optional parameters using the [`RetentionPolicyParams`][policy-params]
 object.
 
@@ -58,11 +63,11 @@ optionalParams.addCustomNotificationRecipient(notifiedUserID);
 BoxRetentionPolicy.createIndefinitePolicy(api, "Retain Stuff Forever", optionalParams);
 
 // Create finite policy with optional parameters
-BoxRetentionPolicy.createFinitePolicy(api, "Keep One Year", 365, BoxRetentionPolicy.ACTION_REMOVE_RETENTION, optionalParams);
+BoxRetentionPolicy.createFinitePolicy(api, "Keep One Year", 365, BoxRetentionPolicyAction.RemoveRetention, optionalParams);
 ```
 
 [create-indefinite-retention-policy]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxRetentionPolicy.html#createIndefinitePolicy-com.box.sdk.BoxAPIConnection-java.lang.String-
-[create-finite-retention-policy]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxRetentionPolicy.html#createFinitePolicy-com.box.sdk.BoxAPIConnection-java.lang.String-int-java.lang.String-
+[create-finite-retention-policy]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxRetentionPolicy.html#createFinitePolicy-com.box.sdk.BoxAPIConnection-java.lang.String-int-com.box.sdk.BoxRetentionPolicy.BoxRetentionPolicyAction-
 [policy-params]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/RetentionPolicyParams.html
 
 ## Get Retention Policy

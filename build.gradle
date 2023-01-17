@@ -63,6 +63,7 @@ dependencies {
         }
         because "v1.57 is compatible with org.bouncycastle:bc-fips:1.0.2.1 which is needed for FIPS compliance purposes"
     }
+    implementation "com.squareup.okhttp3:okhttp:4.10.0"
     testsCommonImplementation "junit:junit:4.13.2"
     testsCommonImplementation "org.hamcrest:hamcrest-library:2.2"
     testsCommonImplementation "org.mockito:mockito-core:4.8.0"
@@ -116,16 +117,6 @@ task integrationTest(type: Test) {
     testClassesDirs = sourceSets.intTest.output.classesDirs
     classpath = sourceSets.intTest.runtimeClasspath
 }
-
-//TODO: enable JWT tests
-//task integrationTestJWT(type: Test) {
-//    description "Runs the JWT based integration tests."
-//    group "Verification"
-//    testLogging.showStandardStreams = true
-//    useJUnit {
-//        includeCategories "com.box.sdk.IntegrationTestJWT"
-//    }
-//}
 
 jacoco {
     reportsDirectory = file("$buildDir/reports/jacoco")

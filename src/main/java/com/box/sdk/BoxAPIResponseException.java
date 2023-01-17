@@ -2,10 +2,8 @@ package com.box.sdk;
 
 import com.eclipsesource.json.Json;
 import com.eclipsesource.json.JsonObject;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.TreeMap;
 
 /**
  * Thrown to indicate than an error occured while returning with a response from the Box API.
@@ -17,21 +15,18 @@ public class BoxAPIResponseException extends BoxAPIException {
     /**
      * Constructs a BoxAPIException that contains detailed message for underlying exception.
      *
-     * @param message     a message explaining why the error occurred.
-     * @param responseObj a response object from the server.
+     * @param message         a message explaining why the error occurred.
+     * @param responseCode    a response code.
+     * @param bodyString      a response body.
+     * @param responseHeaders response headers.
      */
-    public BoxAPIResponseException(String message, BoxAPIResponse responseObj) {
-        super(message, responseObj.getResponseCode(), responseObj.bodyToString());
+    public BoxAPIResponseException(
+        String message, int responseCode, String bodyString, Map<String, List<String>> responseHeaders
+    ) {
+        super(message, responseCode, bodyString);
         String requestId = "";
         String apiMessage = "";
         JsonObject responseJSON = null;
-
-        Map<String, List<String>> responseHeaders = new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
-        for (String headerKey : responseObj.getHeaders().keySet()) {
-            List<String> headerValues = new ArrayList<>();
-            headerValues.add(responseObj.getHeaderField(headerKey));
-            responseHeaders.put(headerKey, headerValues);
-        }
 
         this.setHeaders(responseHeaders);
 
@@ -40,7 +35,7 @@ public class BoxAPIResponseException extends BoxAPIException {
         }
 
         try {
-            responseJSON = Json.parse(responseObj.bodyToString()).asObject();
+            responseJSON = Json.parse(bodyString).asObject();
         } catch (Exception ex) {
             // Continue because we will construct the exception message below and return it to user.
         }
@@ -64,10 +59,10 @@ public class BoxAPIResponseException extends BoxAPIException {
         }
 
         if (!requestId.isEmpty()) {
-            this.setMessage(message + " [" + responseObj.getResponseCode() + " | " + requestId + "]"
+            this.setMessage(message + " [" + responseCode + " | " + requestId + "]"
                 + apiMessage);
         } else {
-            this.setMessage(message + " [" + responseObj.getResponseCode() + "]" + apiMessage);
+            this.setMessage(message + " [" + responseCode + "]" + apiMessage);
         }
     }
 

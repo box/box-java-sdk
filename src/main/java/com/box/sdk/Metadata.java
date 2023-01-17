@@ -7,6 +7,7 @@ import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * The Metadata class represents one type instance of Box metadata.
@@ -139,7 +140,7 @@ public class Metadata {
      * @return the metadata ID.
      */
     public String getID() {
-        return this.get("/$id");
+        return getStringOrNull("/$id");
     }
 
     /**
@@ -148,7 +149,7 @@ public class Metadata {
      * @return the metadata type.
      */
     public String getTypeName() {
-        return this.get("/$type");
+        return getStringOrNull("/$type");
     }
 
     /**
@@ -157,25 +158,27 @@ public class Metadata {
      * @return the parent object ID.
      */
     public String getParentID() {
-        return this.get("/$parent");
+        return getStringOrNull("/$parent");
     }
 
     /**
      * Returns the scope.
+     * Can throw {@link NullPointerException} is value if not present.
      *
      * @return the scope.
      */
     public String getScope() {
-        return this.get("/$scope");
+        return getStringOrNull("/$scope");
     }
 
     /**
      * Returns the template name.
+     * Can throw {@link NullPointerException} is value if not present.
      *
      * @return the template name.
      */
     public String getTemplateName() {
-        return this.get("/$template");
+        return getStringOrNull("/$template");
     }
 
     /**
@@ -186,22 +189,6 @@ public class Metadata {
      * @return this metadata object.
      */
     public Metadata add(String path, String value) {
-        this.values.add(this.pathToProperty(path), value);
-        this.addOp("add", path, value);
-        return this;
-    }
-
-    /**
-     * Adds a new metadata value.
-     *
-     * @param path  the path that designates the key. Must be prefixed with a "/".
-     * @param value the value.
-     * @return this metadata object.
-     * @deprecated add(String, double) is preferred as it avoids errors when converting a
-     * float to the underlying data type used by Metadata (double)
-     */
-    @Deprecated
-    public Metadata add(String path, float value) {
         this.values.add(this.pathToProperty(path), value);
         this.addOp("add", path, value);
         return this;
@@ -335,25 +322,6 @@ public class Metadata {
     }
 
     /**
-     * Returns a value.
-     *
-     * @param path the path that designates the key. Must be prefixed with a "/".
-     * @return the metadata property value.
-     * @deprecated Metadata#get() does not handle all possible metadata types; use Metadata#getValue() instead
-     */
-    @Deprecated
-    public String get(String path) {
-        final JsonValue value = this.values.get(this.pathToProperty(path));
-        if (value == null) {
-            return null;
-        }
-        if (!value.isString()) {
-            return value.toString();
-        }
-        return value.asString();
-    }
-
-    /**
      * Returns a value, regardless of type.
      *
      * @param path the path that designates the key. Must be prefixed with a "/".
@@ -365,6 +333,7 @@ public class Metadata {
 
     /**
      * Get a value from a string or enum metadata field.
+     * Can throw {@link NullPointerException} is value if not present.
      *
      * @param path the key path in the metadata object.  Must be prefixed with a "/".
      * @return the metadata value as a string.
@@ -375,19 +344,7 @@ public class Metadata {
 
     /**
      * Get a value from a double metadata field.
-     *
-     * @param path the key path in the metadata object.  Must be prefixed with a "/".
-     * @return the metadata value as a double floating point number.
-     * @deprecated getDouble() is preferred as it more clearly describes the return type (double)
-     */
-    @Deprecated
-    public double getFloat(String path) {
-        // @NOTE(mwiller) 2018-02-05: JS number are all 64-bit floating point, so double is the correct type to use here
-        return this.getValue(path).asDouble();
-    }
-
-    /**
-     * Get a value from a double metadata field.
+     * Can throw {@link NullPointerException} is value if not present.
      *
      * @param path the key path in the metadata object.  Must be prefixed with a "/".
      * @return the metadata value as a floating point number.
@@ -398,6 +355,7 @@ public class Metadata {
 
     /**
      * Get a value from a date metadata field.
+     * Can throw {@link NullPointerException} is value if not present.
      *
      * @param path the key path in the metadata object.  Must be prefixed with a "/".
      * @return the metadata value as a Date.
@@ -522,24 +480,6 @@ public class Metadata {
      * @param path  the path that designates the key. Must be prefixed with a "/".
      * @param value the value to be set.
      */
-    private void addOp(String op, String path, float value) {
-        if (this.operations == null) {
-            this.operations = new JsonArray();
-        }
-
-        this.operations.add(new JsonObject()
-            .add("op", op)
-            .add("path", path)
-            .add("value", value));
-    }
-
-    /**
-     * Adds a patch operation.
-     *
-     * @param op    the operation type. Must be add, replace, remove, or test.
-     * @param path  the path that designates the key. Must be prefixed with a "/".
-     * @param value the value to be set.
-     */
     private void addOp(String op, String path, double value) {
         if (this.operations == null) {
             this.operations = new JsonArray();
@@ -568,5 +508,9 @@ public class Metadata {
             .add("op", op)
             .add("path", path)
             .add("value", values));
+    }
+
+    private String getStringOrNull(String path) {
+        return Optional.ofNullable(this.getValue(path)).map(JsonValue::asString).orElse(null);
     }
 }

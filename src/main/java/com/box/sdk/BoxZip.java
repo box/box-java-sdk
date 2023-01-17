@@ -1,10 +1,10 @@
 package com.box.sdk;
 
+import static com.box.sdk.BinaryBodyUtils.writeStream;
+
 import com.eclipsesource.json.Json;
 import com.eclipsesource.json.JsonArray;
 import com.eclipsesource.json.JsonObject;
-import java.io.IOException;
-import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.URL;
 import java.util.List;
@@ -18,11 +18,6 @@ public class BoxZip {
      * Zip URL Template.
      */
     public static final URLTemplate ZIP_URL_TEMPLATE = new URLTemplate("zip_downloads");
-    /**
-     * Zip Download URL Template.
-     */
-    public static final URLTemplate ZIP_DOWNLOAD_URL_TEMPLATE = new URLTemplate("zip_downloads/%s/content");
-    private static final int BUFFER_SIZE = 8192;
     private final BoxAPIConnection api;
 
     /**
@@ -51,12 +46,12 @@ public class BoxZip {
         requestJSON.add("download_file_name", name);
 
         URL url = ZIP_URL_TEMPLATE.build(this.getAPI().getBaseURL());
-        BoxAPIRequest request = new BoxAPIRequest(this.getAPI(), url, "POST");
+        BoxJSONRequest request = new BoxJSONRequest(this.getAPI(), url, "POST");
         request.setBody(requestJSON.toString());
-        BoxJSONResponse response = (BoxJSONResponse) request.send();
-        JsonObject responseJSON = Json.parse(response.getJSON()).asObject();
-
-        return new BoxZipInfo(responseJSON);
+        try (BoxJSONResponse response = request.send()) {
+            JsonObject responseJSON = Json.parse(response.getJSON()).asObject();
+            return new BoxZipInfo(responseJSON);
+        }
     }
 
     /**
@@ -80,29 +75,18 @@ public class BoxZip {
      * @param listener a listener for monitoring the download's progress.
      * @return information about status of the download
      */
-    public BoxZipDownloadStatus download(String name, List<BoxZipItem> items, OutputStream output,
-                                         ProgressListener listener) {
+    public BoxZipDownloadStatus download(
+        String name, List<BoxZipItem> items, OutputStream output, ProgressListener listener
+    ) {
         BoxZipInfo zipInfo = this.create(name, items);
         BoxAPIRequest request = new BoxAPIRequest(this.getAPI(), zipInfo.getDownloadURL(), "GET");
         BoxAPIResponse response = request.send();
-        InputStream input = response.getBody(listener);
-
-        byte[] buffer = new byte[BUFFER_SIZE];
-        try {
-            int n = input.read(buffer);
-            while (n != -1) {
-                output.write(buffer, 0, n);
-                n = input.read(buffer);
-            }
-        } catch (IOException e) {
-            throw new BoxAPIException("Couldn't connect to the Box API due to a network error.", e);
-        } finally {
-            response.disconnect();
+        writeStream(response, output, listener);
+        BoxJSONRequest statusRequest = new BoxJSONRequest(this.getAPI(), zipInfo.getStatusURL(), "GET");
+        try (BoxJSONResponse statusResponse = statusRequest.send()) {
+            JsonObject statusResponseJSON = Json.parse(statusResponse.getJSON()).asObject();
+            return new BoxZipDownloadStatus(statusResponseJSON);
         }
-        BoxAPIRequest statusRequest = new BoxAPIRequest(this.getAPI(), zipInfo.getStatusURL(), "GET");
-        BoxJSONResponse statusResponse = (BoxJSONResponse) statusRequest.send();
-        JsonObject statusResponseJSON = Json.parse(statusResponse.getJSON()).asObject();
-        return new BoxZipDownloadStatus(statusResponseJSON);
     }
 
     /**

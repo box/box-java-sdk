@@ -1,5 +1,6 @@
 package com.box.sdk;
 
+import static com.box.sdk.http.ContentType.APPLICATION_JSON;
 import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
 import static com.github.tomakehurst.wiremock.client.WireMock.equalToJson;
 import static com.github.tomakehurst.wiremock.client.WireMock.post;
@@ -14,9 +15,7 @@ import com.eclipsesource.json.JsonArray;
 import com.eclipsesource.json.JsonObject;
 import com.github.tomakehurst.wiremock.client.WireMock;
 import com.github.tomakehurst.wiremock.junit.WireMockRule;
-import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import org.junit.Before;
@@ -29,17 +28,17 @@ import org.junit.Test;
 public class MetadataTemplateTest {
 
     @Rule
-    public WireMockRule wireMockRule = new WireMockRule(wireMockConfig().dynamicPort());
+    public WireMockRule wireMockRule = new WireMockRule(wireMockConfig().dynamicHttpsPort().httpDisabled(true));
     private final BoxAPIConnection api = TestUtils.getAPIConnection();
 
     @Before
     public void setUpBaseUrl() {
         api.setMaxRetryAttempts(1);
-        api.setBaseURL(format("http://localhost:%d", wireMockRule.port()));
+        api.setBaseURL(format("https://localhost:%d", wireMockRule.httpsPort()));
     }
 
     @Test
-    public void testGetAllEnterpriseMetadataTemplatesSucceeds() throws IOException {
+    public void testGetAllEnterpriseMetadataTemplatesSucceeds() {
         final String firstEntryID = "12345";
         final String firstTemplateKey = "Test Template";
         final String secondEntryID = "23131";
@@ -51,7 +50,7 @@ public class MetadataTemplateTest {
         wireMockRule.stubFor(WireMock.get(WireMock.urlPathEqualTo(metadataTemplateURL))
             .withQueryParam("limit", WireMock.containing("100"))
             .willReturn(WireMock.aResponse()
-                .withHeader("Content-Type", "application/json")
+                .withHeader("Content-Type", APPLICATION_JSON)
                 .withBody(result)));
 
         Iterator<MetadataTemplate> templates = MetadataTemplate.getEnterpriseMetadataTemplates(this.api).iterator();
@@ -67,7 +66,7 @@ public class MetadataTemplateTest {
     }
 
     @Test
-    public void testGetOptionsReturnsListOfStrings() throws IOException {
+    public void testGetOptionsReturnsListOfStrings() {
         final String templateID = "f7a9891f";
         final String metadataTemplateURL = "/2.0/metadata_templates/" + templateID;
         final ArrayList<String> list = new ArrayList<>();
@@ -76,7 +75,7 @@ public class MetadataTemplateTest {
         String result = TestUtils.getFixture("BoxMetadataTemplate/GetMetadataTemplateOptionInfo200");
         wireMockRule.stubFor(WireMock.get(WireMock.urlPathEqualTo(metadataTemplateURL))
             .willReturn(WireMock.aResponse()
-                .withHeader("Content-Type", "application/json")
+                .withHeader("Content-Type", APPLICATION_JSON)
                 .withBody(result)));
 
         MetadataTemplate template = MetadataTemplate.getMetadataTemplateByID(this.api, templateID);
@@ -89,14 +88,14 @@ public class MetadataTemplateTest {
     }
 
     @Test
-    public void testGetOptionsReturnsListOfOptionsObject() throws IOException {
+    public void testGetOptionsReturnsListOfOptionsObject() {
         final String templateID = "f7a9891f";
         final String metadataTemplateURL = "/2.0/metadata_templates/" + templateID;
         String result = TestUtils.getFixture("BoxMetadataTemplate/GetMetadataTemplateOptionInfo200");
 
         wireMockRule.stubFor(WireMock.get(WireMock.urlPathEqualTo(metadataTemplateURL))
             .willReturn(WireMock.aResponse()
-                .withHeader("Content-Type", "application/json")
+                .withHeader("Content-Type", APPLICATION_JSON)
                 .withBody(result)));
 
         MetadataTemplate template = MetadataTemplate.getMetadataTemplateByID(this.api, templateID);
@@ -116,7 +115,7 @@ public class MetadataTemplateTest {
     }
 
     @Test
-    public void testSetOptionReturnsCorrectly() throws IOException {
+    public void testSetOptionReturnsCorrectly() {
         final String metadataTemplateURL = "/2.0/metadata_templates/schema";
         String result = TestUtils.getFixture("BoxMetadataTemplate/CreateMetadataTemplate200");
 
@@ -149,7 +148,7 @@ public class MetadataTemplateTest {
         wireMockRule.stubFor(WireMock.post(WireMock.urlPathEqualTo(metadataTemplateURL))
             .withRequestBody(WireMock.equalToJson(templateBody.toString()))
             .willReturn(WireMock.aResponse()
-                .withHeader("Content-Type", "application/json")
+                .withHeader("Content-Type", APPLICATION_JSON)
                 .withBody(result)));
 
         MetadataTemplate.Field fyField = new MetadataTemplate.Field();
@@ -173,7 +172,7 @@ public class MetadataTemplateTest {
     }
 
     @Test
-    public void testUpdateMetadataReturnsCorrectly() throws IOException {
+    public void testUpdateMetadataReturnsCorrectly() {
         final String metadataTemplateURL = "/2.0/metadata_templates/enterprise/documentFlow03/schema";
         String result = TestUtils.getFixture("BoxMetadataTemplate/UpdateMetadataTemplate200");
 
@@ -190,7 +189,7 @@ public class MetadataTemplateTest {
         wireMockRule.stubFor(WireMock.put(WireMock.urlPathEqualTo(metadataTemplateURL))
             .withRequestBody(WireMock.equalToJson(body.toString()))
             .willReturn(WireMock.aResponse()
-                .withHeader("Content-Type", "application/json")
+                .withHeader("Content-Type", APPLICATION_JSON)
                 .withBody(result)));
 
         List<MetadataTemplate.FieldOperation> fieldOperations = new ArrayList<>();
@@ -209,143 +208,7 @@ public class MetadataTemplateTest {
     }
 
     @Test
-    public void testDeprecatedExecuteMetadataQuery() throws IOException {
-        final String metadataQueryURL = "/2.0/metadata_queries/execute_read";
-
-        final String from = "enterprise_67890.relayWorkflowInformation";
-        final String query = "templateName >= :arg";
-        final JsonObject queryParameters = new JsonObject().add("arg", "Templ Name");
-        final String ancestorFolderId = "0";
-        final String indexName = null;
-        final JsonArray orderBy = null;
-        final int limit = 2;
-        final String marker = null;
-
-        // First request will return a page of results with two items
-        String request1 = TestUtils.getFixture("BoxMetadataTemplate/MetadataQuery1stRequest");
-        String result1 = TestUtils.getFixture("BoxMetadataTemplate/MetadataQuery1stResponse200");
-        wireMockRule.stubFor(post(urlPathEqualTo(metadataQueryURL))
-            .withRequestBody(equalToJson(request1))
-            .willReturn(aResponse()
-                .withHeader("Content-Type", "application/json")
-                .withBody(result1)));
-
-        // Second request will contain a marker and will return a page of results with remaining one item
-        String result2 = TestUtils.getFixture("BoxMetadataTemplate/MetadataQuery2ndResponse200");
-        String request2 = TestUtils.getFixture("BoxMetadataTemplate/MetadataQuery2ndRequest");
-        wireMockRule.stubFor(post(urlPathEqualTo(metadataQueryURL))
-            .withRequestBody(equalToJson(request2))
-            .willReturn(aResponse()
-                .withHeader("Content-Type", "application/json")
-                .withBody(result2)));
-
-        // Make the first request and get the result
-        BoxResourceIterable<BoxMetadataQueryItem> results = MetadataTemplate.executeMetadataQuery(
-            this.api,
-            from,
-            query,
-            queryParameters,
-            ancestorFolderId,
-            indexName,
-            orderBy,
-            limit,
-            marker
-        );
-
-        // First item on the first page of results
-        BoxMetadataQueryItem currBoxItem = results.iterator().next();
-        assertEquals("file", currBoxItem.getItem().getType());
-        assertEquals("123450", currBoxItem.getItem().getID());
-        assertEquals("1.jpg", currBoxItem.getItem().getName());
-        HashMap<String, ArrayList<Metadata>> metadata = currBoxItem.getMetadata();
-        assertEquals("relayWorkflowInformation", metadata.get("enterprise_67890").get(0).getTemplateName());
-        assertEquals("enterprise_67890", metadata.get("enterprise_67890").get(0).getScope());
-        assertEquals("Werk Flow 0", metadata.get("enterprise_67890").get(0).getString("/workflowName"));
-
-        // Second item on the first page of results
-        currBoxItem = results.iterator().next();
-        assertEquals("file", currBoxItem.getItem().getType());
-        assertEquals("123451", currBoxItem.getItem().getID());
-        assertEquals("2.jpg", currBoxItem.getItem().getName());
-        metadata = currBoxItem.getMetadata();
-        assertEquals("relayWorkflowInformation", metadata.get("enterprise_67890").get(0).getTemplateName());
-        assertEquals("randomTemplate", metadata.get("enterprise_67890").get(1).getTemplateName());
-        assertEquals("someTemplate", metadata.get("enterprise_123456").get(0).getTemplateName());
-
-        // First item on the second page of results (this next call makes the second request to get the second page)
-        currBoxItem = results.iterator().next();
-        assertEquals("file", currBoxItem.getItem().getType());
-        assertEquals("123452", currBoxItem.getItem().getID());
-        assertEquals("3.jpg", currBoxItem.getItem().getName());
-        metadata = currBoxItem.getMetadata();
-        assertEquals("relayWorkflowInformation", metadata.get("enterprise_67890").get(0).getTemplateName());
-    }
-
-    @Test
-    public void testDeprecatedExecuteMetadataQueryWithFields() throws IOException {
-        final String metadataQueryURL = "/2.0/metadata_queries/execute_read";
-
-        final String from = "enterprise_67890.catalogImages";
-        final String query = "photographer = :arg";
-        final JsonObject queryParameters = new JsonObject().add("arg", "Bob Dylan");
-        final String ancestorFolderId = "0";
-        final String indexName = null;
-        final String field1 = "sha1";
-        final String field2 = "name";
-        final String field3 = "id";
-        final String field4 = "metadata.enterprise_240748.catalogImages.photographer";
-        final JsonArray orderBy = null;
-        final int limit = 2;
-        final String marker = null;
-
-        JsonArray fields = new JsonArray();
-        fields.add(field1);
-        fields.add(field2);
-        fields.add(field3);
-        fields.add(field4);
-        JsonObject body = new JsonObject();
-        body.add("from", from);
-        body.add("query", query);
-        body.add("query_params", queryParameters);
-        body.add("ancestor_folder_id", ancestorFolderId);
-        body.add("limit", limit);
-        body.add("fields", fields);
-
-        // First request will return a page of results with two items
-        String result = TestUtils.getFixture("BoxMetadataTemplate/MetadataQueryResponseForFields200");
-        wireMockRule.stubFor(post(urlPathEqualTo(metadataQueryURL))
-            .withRequestBody(equalToJson(body.toString()))
-            .willReturn(aResponse()
-                .withHeader("Content-Type", "application/json")
-                .withBody(result)));
-
-        // Make the first request and get the result
-        BoxResourceIterable<BoxItem.Info> results = MetadataTemplate.executeMetadataQuery(this.api, from, query,
-            queryParameters, ancestorFolderId, indexName, orderBy, limit, marker, field1, field2, field3, field4);
-
-        // First item on the first page of results
-        BoxFile.Info fileBoxItem = (BoxFile.Info) results.iterator().next();
-        assertEquals("file", fileBoxItem.getType());
-        assertEquals("1244738582", fileBoxItem.getID());
-        assertEquals("Very Important.docx", fileBoxItem.getName());
-        Metadata fileMetadata = fileBoxItem.getMetadata("catalogImages", "enterprise_67890");
-        assertEquals("catalogImages", fileMetadata.getTemplateName());
-        assertEquals("enterprise_67890", fileMetadata.getScope());
-        assertEquals("Bob Dylan", fileMetadata.getString("/photographer"));
-
-        // Second item on the first page of results
-        BoxFolder.Info folderBoxItem = (BoxFolder.Info) results.iterator().next();
-        assertEquals("folder", folderBoxItem.getType());
-        assertEquals("124242482", folderBoxItem.getID());
-        assertEquals("Also Important.docx", folderBoxItem.getName());
-        Metadata folderMetadata = folderBoxItem.getMetadata("catalogImages", "enterprise_67890");
-        assertEquals("catalogImages", folderMetadata.getTemplateName());
-        assertEquals("enterprise_67890", folderMetadata.getScope());
-        assertEquals("Bob Dylan", folderMetadata.getString("/photographer"));
-    }
-
-    @Test
-    public void testExecuteMetadataQueryWithFields() throws IOException {
+    public void testExecuteMetadataQueryWithFields() {
         final String metadataQueryURL = "/2.0/metadata_queries/execute_read";
 
         final String from = "enterprise_67890.catalogImages";
@@ -375,7 +238,7 @@ public class MetadataTemplateTest {
         wireMockRule.stubFor(post(urlPathEqualTo(metadataQueryURL))
             .withRequestBody(equalToJson(body.toString()))
             .willReturn(aResponse()
-                .withHeader("Content-Type", "application/json")
+                .withHeader("Content-Type", APPLICATION_JSON)
                 .withBody(result)));
 
         // Make the first request and get the result

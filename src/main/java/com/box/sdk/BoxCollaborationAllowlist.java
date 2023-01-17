@@ -65,12 +65,13 @@ public class BoxCollaborationAllowlist extends BoxResource {
             .add("direction", direction.toString());
 
         request.setBody(requestJSON.toString());
-        BoxJSONResponse response = (BoxJSONResponse) request.send();
-        JsonObject responseJSON = Json.parse(response.getJSON()).asObject();
-        BoxCollaborationAllowlist domainAllowlist =
-            new BoxCollaborationAllowlist(api, responseJSON.get("id").asString());
+        try (BoxJSONResponse response = request.send()) {
+            JsonObject responseJSON = Json.parse(response.getJSON()).asObject();
+            BoxCollaborationAllowlist domainAllowlist =
+                new BoxCollaborationAllowlist(api, responseJSON.get("id").asString());
 
-        return domainAllowlist.new Info(responseJSON);
+            return domainAllowlist.new Info(responseJSON);
+        }
     }
 
     /**
@@ -119,10 +120,10 @@ public class BoxCollaborationAllowlist extends BoxResource {
      */
     public BoxCollaborationAllowlist.Info getInfo() {
         URL url = COLLABORATION_ALLOWLIST_ENTRY_URL_TEMPLATE.build(this.getAPI().getBaseURL(), this.getID());
-        BoxAPIRequest request = new BoxAPIRequest(this.getAPI(), url, HttpMethod.GET);
-        BoxJSONResponse response = (BoxJSONResponse) request.send();
-
-        return new Info(Json.parse(response.getJSON()).asObject());
+        BoxJSONRequest request = new BoxJSONRequest(this.getAPI(), url, HttpMethod.GET);
+        try (BoxJSONResponse response = request.send()) {
+            return new Info(Json.parse(response.getJSON()).asObject());
+        }
     }
 
     /**
@@ -133,8 +134,7 @@ public class BoxCollaborationAllowlist extends BoxResource {
         URL url = COLLABORATION_ALLOWLIST_ENTRY_URL_TEMPLATE.build(api.getBaseURL(), this.getID());
 
         BoxAPIRequest request = new BoxAPIRequest(api, url, HttpMethod.DELETE);
-        BoxAPIResponse response = request.send();
-        response.disconnect();
+        request.send().close();
     }
 
     /**

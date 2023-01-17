@@ -62,11 +62,12 @@ public class BoxInvite extends BoxResource {
         body.add("actionable_by", actionableBy);
 
         request.setBody(body);
-        BoxJSONResponse response = (BoxJSONResponse) request.send();
-        JsonObject responseJSON = Json.parse(response.getJSON()).asObject();
+        try (BoxJSONResponse response = request.send()) {
+            JsonObject responseJSON = Json.parse(response.getJSON()).asObject();
 
-        BoxInvite invite = new BoxInvite(api, responseJSON.get("id").asString());
-        return invite.new Info(responseJSON);
+            BoxInvite invite = new BoxInvite(api, responseJSON.get("id").asString());
+            return invite.new Info(responseJSON);
+        }
     }
 
     /**
@@ -78,10 +79,11 @@ public class BoxInvite extends BoxResource {
         BoxAPIConnection api = this.getAPI();
         URL url = INVITE_URL_TEMPLATE.build(api.getBaseURL(), this.getID());
 
-        BoxAPIRequest request = new BoxAPIRequest(api, url, "GET");
-        BoxJSONResponse response = (BoxJSONResponse) request.send();
-        JsonObject jsonObject = Json.parse(response.getJSON()).asObject();
-        return new Info(jsonObject);
+        BoxJSONRequest request = new BoxJSONRequest(api, url, "GET");
+        try (BoxJSONResponse response = request.send()) {
+            JsonObject jsonObject = Json.parse(response.getJSON()).asObject();
+            return new Info(jsonObject);
+        }
     }
 
     /**

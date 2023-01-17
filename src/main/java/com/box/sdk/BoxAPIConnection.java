@@ -1,14 +1,21 @@
 package com.box.sdk;
 
+import static java.lang.String.format;
 import static java.lang.String.join;
+import static java.util.Collections.singletonList;
+import static okhttp3.ConnectionSpec.MODERN_TLS;
 
 import com.eclipsesource.json.Json;
 import com.eclipsesource.json.JsonObject;
 import com.eclipsesource.json.JsonValue;
+import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.Proxy;
 import java.net.URI;
 import java.net.URL;
+import java.security.KeyManagementException;
+import java.security.NoSuchAlgorithmException;
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -17,6 +24,15 @@ import java.util.Optional;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 import java.util.regex.Pattern;
+import javax.net.ssl.HostnameVerifier;
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.TrustManager;
+import javax.net.ssl.X509TrustManager;
+import okhttp3.Authenticator;
+import okhttp3.Credentials;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.Response;
 
 /**
  * Represents an authenticated connection to the Box API.
@@ -26,27 +42,35 @@ import java.util.regex.Pattern;
  * BoxAPIConnection may be created to support multi-user login.</p>
  */
 public class BoxAPIConnection {
+
     /**
-     * The default total maximum number of times an API request will be tried when error responses
-     * are received.
-     *
-     * @deprecated DEFAULT_MAX_RETRIES is preferred because it more clearly sets the number
-     * of times a request should be retried after an error response is received.
+     * Used as a marker to setup connection to use default HostnameVerifier
+     * Example:<pre>{@code
+     * BoxApiConnection api = new BoxApiConnection(...);
+     * HostnameVerifier myHostnameVerifier = ...
+     * api.configureSslCertificatesValidation(DEFAULT_TRUST_MANAGER, myHostnameVerifier);
+     * }</pre>
      */
-    @Deprecated
-    public static final int DEFAULT_MAX_ATTEMPTS = 5;
+    public static final X509TrustManager DEFAULT_TRUST_MANAGER = null;
+    /**
+     * Used as a marker to setup connection to use default HostnameVerifier
+     * Example:<pre>{@code
+     * BoxApiConnection api = new BoxApiConnection(...);
+     * X509TrustManager myTrustManager = ...
+     * api.configureSslCertificatesValidation(myTrustManager, DEFAULT_HOSTNAME_VERIFIER);
+     * }</pre>
+     */
+    public static final HostnameVerifier DEFAULT_HOSTNAME_VERIFIER = null;
 
     /**
      * The default maximum number of times an API request will be retried after an error response
      * is received.
      */
     public static final int DEFAULT_MAX_RETRIES = 5;
-
     /**
      * Default authorization URL
      */
     protected static final String DEFAULT_BASE_AUTHORIZATION_URL = "https://account.box.com/api/";
-
     static final String AS_USER_HEADER = "As-User";
 
     private static final String API_VERSION = "2.0";
@@ -71,6 +95,8 @@ public class BoxAPIConnection {
     private final String clientID;
     private final String clientSecret;
     private final ReadWriteLock refreshLock;
+    private X509TrustManager trustManager;
+    private HostnameVerifier hostnameVerifier;
 
     // These volatile fields are used when determining if the access token needs to be refreshed. Since they are used in
     // the double-checked lock in getAccessToken(), they must be atomic.
@@ -97,6 +123,10 @@ public class BoxAPIConnection {
     private final List<BoxAPIConnectionListener> listeners;
     private RequestInterceptor interceptor;
     private final Map<String, String> customHeaders;
+
+    private OkHttpClient httpClient;
+    private OkHttpClient noRedirectsHttpClient;
+    private Authenticator authenticator;
 
     /**
      * Constructs a new BoxAPIConnection that authenticates with a developer or access token.
@@ -132,6 +162,8 @@ public class BoxAPIConnection {
         this.userAgent = "Box Java SDK v" + SDK_VERSION + " (Java " + JAVA_VERSION + ")";
         this.listeners = new ArrayList<>();
         this.customHeaders = new HashMap<>();
+
+        buildHttpClients();
     }
 
     /**
@@ -163,6 +195,76 @@ public class BoxAPIConnection {
      */
     public BoxAPIConnection(BoxConfig boxConfig) {
         this(boxConfig.getClientId(), boxConfig.getClientSecret(), null, null);
+    }
+
+    private void buildHttpClients() {
+        OkHttpClient.Builder httpClientBuilder = new OkHttpClient.Builder();
+        if (trustManager != null) {
+            try {
+                SSLContext sslContext = SSLContext.getInstance("SSL");
+                sslContext.init(null, new TrustManager[]{trustManager}, new java.security.SecureRandom());
+                httpClientBuilder.sslSocketFactory(sslContext.getSocketFactory(), trustManager);
+            } catch (NoSuchAlgorithmException | KeyManagementException e) {
+                throw new RuntimeException(e);
+            }
+        }
+
+        OkHttpClient.Builder builder = httpClientBuilder
+            .followSslRedirects(true)
+            .followRedirects(true)
+            .connectTimeout(Duration.ofMillis(connectTimeout))
+            .readTimeout(Duration.ofMillis(readTimeout))
+            .connectionSpecs(singletonList(MODERN_TLS));
+
+        if (hostnameVerifier != null) {
+            httpClientBuilder.hostnameVerifier(hostnameVerifier);
+        }
+
+        if (proxy != null) {
+            builder.proxy(proxy);
+            if (proxyUsername != null && proxyPassword != null) {
+                builder.proxyAuthenticator((route, response) -> {
+                    String credential = Credentials.basic(proxyUsername, proxyPassword);
+                    return response.request().newBuilder()
+                        .header("Proxy-Authorization", credential)
+                        .build();
+                });
+            }
+            if (this.authenticator != null) {
+                builder.proxyAuthenticator(authenticator);
+            }
+        }
+        builder = modifyHttpClientBuilder(builder);
+
+        this.httpClient = builder.build();
+        this.noRedirectsHttpClient = new OkHttpClient.Builder(httpClient)
+            .followSslRedirects(false)
+            .followRedirects(false)
+            .build();
+    }
+
+    /**
+     * Can be used to modify OkHttp.Builder used to create connection. This method is called after all modifications
+     * were done, thus allowing others to create their own connections and further customize builder.
+     * @param httpClientBuilder Builder that will be used to create http connection.
+     * @return Modified builder.
+     */
+    protected OkHttpClient.Builder modifyHttpClientBuilder(OkHttpClient.Builder httpClientBuilder) {
+        return httpClientBuilder;
+    }
+
+    /**
+     * Sets a proxy authenticator that will be used when proxy requires authentication.
+     * If you use {@link BoxAPIConnection#setProxyBasicAuthentication(String, String)} it adds an authenticator
+     * that performs Basic authorization. By calling this method you can override this behaviour.
+     * You do not need to call {@link BoxAPIConnection#setProxyBasicAuthentication(String, String)}
+     * in order to set custom authenticator.
+     *
+     * @param authenticator Custom authenticator that will be called when proxy asks for authorization.
+     */
+    public void setProxyAuthenticator(Authenticator authenticator) {
+        this.authenticator = authenticator;
+        buildHttpClients();
     }
 
     /**
@@ -227,21 +329,23 @@ public class BoxAPIConnection {
             throw new RuntimeException("An invalid token URL indicates a bug in the SDK.", e);
         }
 
-        String urlParameters = String.format("grant_type=authorization_code&code=%s&client_id=%s&client_secret=%s",
+        String urlParameters = format("grant_type=authorization_code&code=%s&client_id=%s&client_secret=%s",
             authCode, this.clientID, this.clientSecret);
 
         BoxAPIRequest request = new BoxAPIRequest(this, url, "POST");
         request.shouldAuthenticate(false);
         request.setBody(urlParameters);
 
-        BoxJSONResponse response = (BoxJSONResponse) request.send();
-        String json = response.getJSON();
+        // authentication uses form url encoded but response is JSON
+        try (BoxJSONResponse response = (BoxJSONResponse) request.send()) {
+            String json = response.getJSON();
 
-        JsonObject jsonObject = Json.parse(json).asObject();
-        this.accessToken = jsonObject.get("access_token").asString();
-        this.refreshToken = jsonObject.get("refresh_token").asString();
-        this.lastRefresh = System.currentTimeMillis();
-        this.expires = jsonObject.get("expires_in").asLong() * 1000;
+            JsonObject jsonObject = Json.parse(json).asObject();
+            this.accessToken = jsonObject.get("access_token").asString();
+            this.refreshToken = jsonObject.get("refresh_token").asString();
+            this.lastRefresh = System.currentTimeMillis();
+            this.expires = jsonObject.get("expires_in").asLong() * 1000;
+        }
     }
 
     /**
@@ -296,17 +400,6 @@ public class BoxAPIConnection {
     }
 
     /**
-     * Sets the token URL that's used to request access tokens.  For example, the default token URL is
-     * "https://www.box.com/api/oauth2/token".
-     *
-     * @param tokenURL the token URL.
-     * @deprecated Use {@link BoxAPIConnection#setBaseURL(String)}
-     */
-    public void setTokenURL(String tokenURL) {
-        this.tokenURL = tokenURL;
-    }
-
-    /**
      * Returns the URL used for token revocation.
      * The URL is created from {@link BoxAPIConnection#baseURL} and {@link BoxAPIConnection#REVOKE_URL_SUFFIX}.
      *
@@ -318,16 +411,6 @@ public class BoxAPIConnection {
         } else {
             return this.baseURL + REVOKE_URL_SUFFIX;
         }
-    }
-
-    /**
-     * Set the URL used for token revocation.
-     *
-     * @param url The url to use.
-     * @deprecated Use {@link BoxAPIConnection#setBaseURL(String)}
-     */
-    public void setRevokeURL(String url) {
-        this.revokeURL = url;
     }
 
     /**
@@ -529,31 +612,6 @@ public class BoxAPIConnection {
         this.autoRefresh = autoRefresh;
     }
 
-    /**
-     * Sets the total maximum number of times an API request will be tried when error responses
-     * are received.
-     *
-     * @return the maximum number of request attempts.
-     * @deprecated getMaxRetryAttempts is preferred because it more clearly gets the number
-     * of times a request should be retried after an error response is received.
-     */
-    @Deprecated
-    public int getMaxRequestAttempts() {
-        return this.maxRetryAttempts + 1;
-    }
-
-    /**
-     * Sets the total maximum number of times an API request will be tried when error responses
-     * are received.
-     *
-     * @param attempts the maximum number of request attempts.
-     * @deprecated setMaxRetryAttempts is preferred because it more clearly sets the number
-     * of times a request should be retried after an error response is received.
-     */
-    @Deprecated
-    public void setMaxRequestAttempts(int attempts) {
-        this.maxRetryAttempts = attempts - 1;
-    }
 
     /**
      * Gets the maximum number of times an API request will be retried after an error response
@@ -591,6 +649,7 @@ public class BoxAPIConnection {
      */
     public void setConnectTimeout(int connectTimeout) {
         this.connectTimeout = connectTimeout;
+        buildHttpClients();
     }
 
     /**
@@ -609,6 +668,7 @@ public class BoxAPIConnection {
      */
     public void setReadTimeout(int readTimeout) {
         this.readTimeout = readTimeout;
+        buildHttpClients();
     }
 
     /**
@@ -627,6 +687,7 @@ public class BoxAPIConnection {
      */
     public void setProxy(Proxy proxy) {
         this.proxy = proxy;
+        buildHttpClients();
     }
 
     /**
@@ -642,9 +703,11 @@ public class BoxAPIConnection {
      * Sets the username to use for a proxy that requires basic auth.
      *
      * @param proxyUsername the username to use for a proxy that requires basic auth.
+     * @deprecated Use {@link BoxAPIConnection#setProxyBasicAuthentication(String, String)}
      */
     public void setProxyUsername(String proxyUsername) {
         this.proxyUsername = proxyUsername;
+        buildHttpClients();
     }
 
     /**
@@ -657,12 +720,26 @@ public class BoxAPIConnection {
     }
 
     /**
+     * Sets the proxy user and password used in basic authentication
+     *
+     * @param proxyUsername Username to use for a proxy that requires basic auth.
+     * @param proxyPassword Password to use for a proxy that requires basic auth.
+     */
+    public void setProxyBasicAuthentication(String proxyUsername, String proxyPassword) {
+        this.proxyUsername = proxyUsername;
+        this.proxyPassword = proxyPassword;
+        buildHttpClients();
+    }
+
+    /**
      * Sets the password to use for a proxy that requires basic auth.
      *
      * @param proxyPassword the password to use for a proxy that requires basic auth.
+     * @deprecated Use {@link BoxAPIConnection#setProxyBasicAuthentication(String, String)}
      */
     public void setProxyPassword(String proxyPassword) {
         this.proxyPassword = proxyPassword;
+        buildHttpClients();
     }
 
     /**
@@ -718,8 +795,7 @@ public class BoxAPIConnection {
         BoxAPIRequest request = createTokenRequest(url);
 
         String json;
-        try {
-            BoxAPIResponse boxAPIResponse = request.send();
+        try (BoxAPIResponse boxAPIResponse = request.send()) {
             BoxJSONResponse response = (BoxJSONResponse) boxAPIResponse;
             json = response.getJSON();
         } catch (BoxAPIException e) {
@@ -898,7 +974,7 @@ public class BoxAPIConnection {
 
         StringBuilder spaceSeparatedScopes = this.buildScopesForTokenDownscoping(scopes);
 
-        String urlParameters = String.format("grant_type=urn:ietf:params:oauth:grant-type:token-exchange"
+        String urlParameters = format("grant_type=urn:ietf:params:oauth:grant-type:token-exchange"
                 + "&subject_token_type=urn:ietf:params:oauth:token-type:access_token&subject_token=%s"
                 + "&scope=%s",
             this.getAccessToken(), spaceSeparatedScopes);
@@ -908,16 +984,16 @@ public class BoxAPIConnection {
             ResourceLinkType resourceType = this.determineResourceLinkType(resource);
 
             if (resourceType == ResourceLinkType.APIEndpoint) {
-                urlParameters = String.format(urlParameters + "&resource=%s", resource);
+                urlParameters = format(urlParameters + "&resource=%s", resource);
             } else if (resourceType == ResourceLinkType.SharedLink) {
-                urlParameters = String.format(urlParameters + "&box_shared_link=%s", resource);
+                urlParameters = format(urlParameters + "&box_shared_link=%s", resource);
             } else if (resourceType == ResourceLinkType.Unknown) {
-                String argExceptionMessage = String.format("Unable to determine resource type: %s", resource);
+                String argExceptionMessage = format("Unable to determine resource type: %s", resource);
                 BoxAPIException e = new BoxAPIException(argExceptionMessage);
                 this.notifyError(e);
                 throw e;
             } else {
-                String argExceptionMessage = String.format("Unhandled resource type: %s", resource);
+                String argExceptionMessage = format("Unhandled resource type: %s", resource);
                 BoxAPIException e = new BoxAPIException(argExceptionMessage);
                 this.notifyError(e);
                 throw e;
@@ -929,8 +1005,7 @@ public class BoxAPIConnection {
         request.setBody(urlParameters);
 
         String jsonResponse;
-        try {
-            BoxJSONResponse response = (BoxJSONResponse) request.send();
+        try (BoxJSONResponse response = (BoxJSONResponse) request.send()) {
             jsonResponse = response.getJSON();
         } catch (BoxAPIException e) {
             this.notifyError(e);
@@ -1007,14 +1082,14 @@ public class BoxAPIConnection {
             throw new RuntimeException("An invalid refresh URL indicates a bug in the SDK.", e);
         }
 
-        String urlParameters = String.format("token=%s&client_id=%s&client_secret=%s",
+        String urlParameters = format("token=%s&client_id=%s&client_secret=%s",
             this.accessToken, this.clientID, this.clientSecret);
 
         BoxAPIRequest request = new BoxAPIRequest(this, url, "POST");
         request.shouldAuthenticate(false);
         request.setBody(urlParameters);
 
-        request.send();
+        request.send().close();
     }
 
     /**
@@ -1132,6 +1207,20 @@ public class BoxAPIConnection {
         this.removeCustomHeader(AS_USER_HEADER);
     }
 
+    /**
+     * Used to override default SSL certification handling. For example, you can provide your own
+     * trust manager or hostname verifier to allow self-signed certificates.
+     * You can check examples <a href="https://github.com/box/box-java-sdk/blob/main/doc/configuration.md#ssl-configuration">here</a>.
+     *
+     * @param trustManager     TrustManager that verifies certificates are valid.
+     * @param hostnameVerifier HostnameVerifier that allows you to specify what hostnames are allowed.
+     */
+    public void configureSslCertificatesValidation(X509TrustManager trustManager, HostnameVerifier hostnameVerifier) {
+        this.trustManager = trustManager;
+        this.hostnameVerifier = hostnameVerifier;
+        buildHttpClients();
+    }
+
     Map<String, String> getHeaders() {
         return this.customHeaders;
     }
@@ -1144,7 +1233,7 @@ public class BoxAPIConnection {
     }
 
     protected BoxAPIRequest createTokenRequest(URL url) {
-        String urlParameters = String.format("grant_type=refresh_token&refresh_token=%s&client_id=%s&client_secret=%s",
+        String urlParameters = format("grant_type=refresh_token&refresh_token=%s&client_id=%s&client_secret=%s",
             this.refreshToken, this.clientID, this.clientSecret);
 
         BoxAPIRequest request = new BoxAPIRequest(this, url, "POST");
@@ -1155,6 +1244,22 @@ public class BoxAPIConnection {
 
     private String fixBaseUrl(String baseUrl) {
         return baseUrl.endsWith("/") ? baseUrl : baseUrl + "/";
+    }
+
+    Response execute(Request request) {
+        return executeOnClient(httpClient, request);
+    }
+
+    Response executeWithoutRedirect(Request request) {
+        return executeOnClient(noRedirectsHttpClient, request);
+    }
+
+    private Response executeOnClient(OkHttpClient httpClient, Request request) {
+        try {
+            return httpClient.newCall(request).execute();
+        } catch (IOException e) {
+            throw new BoxAPIException("Couldn't connect to the Box API due to a network error. Request\n" + request, e);
+        }
     }
 
     /**

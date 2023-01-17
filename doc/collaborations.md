@@ -89,7 +89,7 @@ collaboration.delete();
 Get a Collaboration's Information
 ---------------------------------
 
-Calling [`getInfo()`][get-info] on a collaboration returns a snapshot of the
+Calling [`getInfo()`][get-info-fields] on a collaboration returns a snapshot of the
 collaboration's info.
 
 <!-- sample get_collaborations_id -->
@@ -106,7 +106,6 @@ BoxCollaboration collaboration = new BoxCollaboration(api, "id");
 BoxCollaboration.Info info = collaboration.getInfo(BoxCollaboration.ALL_FIELDS);
 ```
 
-[get-info]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxCollaboration.html#getInfo--
 [get-info-fields]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxCollaboration.html#getInfo-java.lang.String...-
 
 Get the Collaborations on a Folder

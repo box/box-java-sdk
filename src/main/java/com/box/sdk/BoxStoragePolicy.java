@@ -88,9 +88,10 @@ public class BoxStoragePolicy extends BoxResource {
         URL url = STORAGE_POLICY_WITH_ID_URL_TEMPLATE.buildWithQuery(this.getAPI().getBaseURL(), builder.toString(),
             this.getID());
 
-        BoxAPIRequest request = new BoxAPIRequest(this.getAPI(), url, "GET");
-        BoxJSONResponse response = (BoxJSONResponse) request.send();
-        return new Info(response.getJSON());
+        BoxJSONRequest request = new BoxJSONRequest(this.getAPI(), url, "GET");
+        try (BoxJSONResponse response = request.send()) {
+            return new Info(response.getJSON());
+        }
     }
 
     /**

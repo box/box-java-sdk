@@ -2,28 +2,27 @@ package com.box.sdk;
 
 import static java.lang.String.format;
 
+import com.box.sdk.http.ContentType;
 import com.box.sdk.http.HttpHeaders;
 import com.box.sdk.http.HttpMethod;
 import com.eclipsesource.json.Json;
 import com.eclipsesource.json.JsonObject;
+import com.eclipsesource.json.ParseException;
 import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.ProtocolException;
 import java.net.URL;
-import java.security.KeyManagementException;
-import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import javax.net.ssl.HttpsURLConnection;
-import javax.net.ssl.SSLContext;
-import javax.net.ssl.SSLParameters;
-import javax.net.ssl.SSLSocketFactory;
+import okhttp3.MediaType;
+import okhttp3.Request;
+import okhttp3.RequestBody;
+import okhttp3.Response;
 
 
 /**
@@ -44,82 +43,20 @@ import javax.net.ssl.SSLSocketFactory;
  */
 public class BoxAPIRequest {
     private static final BoxLogger LOGGER = BoxLogger.defaultLogger();
-    private static final int MAX_REDIRECTS = 3;
     private static final String ERROR_CREATING_REQUEST_BODY = "Error creating request body";
     private static final int BUFFER_SIZE = 8192;
-    private static final EmptyBody EMPTY_BODY = new EmptyBody();
-    private static SSLSocketFactory sslSocketFactory;
-
-    static {
-        // Setup the SSL context manually to force newer TLS version on legacy Java environments
-        // This is necessary because Java 7 uses TLSv1.0 by default, but the Box API will need
-        // to deprecate this protocol in the future.  To prevent clients from breaking, we must
-        // ensure that they are using TLSv1.1 or greater!
-        SSLContext sc = null;
-        try {
-            sc = SSLContext.getDefault();
-            SSLParameters params = sc.getDefaultSSLParameters();
-            boolean supportsNewTLS = false;
-            for (String protocol : params.getProtocols()) {
-                if (protocol.compareTo("TLSv1") > 0) {
-                    supportsNewTLS = true;
-                    break;
-                }
-            }
-            if (!supportsNewTLS) {
-                // Try to upgrade to a higher TLS version
-                sc = null;
-                sc = SSLContext.getInstance("TLSv1.1");
-                sc.init(null, null, new java.security.SecureRandom());
-                sc = SSLContext.getInstance("TLSv1.2");
-                sc.init(null, null, new java.security.SecureRandom());
-            }
-        } catch (NoSuchAlgorithmException ex) {
-            if (sc == null) {
-                LOGGER.error("Unable to set up SSL context for HTTPS! "
-                    + "This may result in the inability  to connect to the Box API.");
-            }
-            if (sc != null && sc.getProtocol().equals("TLSv1")) {
-                // Could not find a good version of TLS
-                LOGGER.error("Using deprecated TLSv1 protocol, which will be deprecated by the Box API! "
-                    + "Upgrade to a newer version of Java as soon as possible.");
-            }
-        } catch (KeyManagementException ex) {
-            LOGGER.error(
-                "Exception when initializing SSL Context!  This may result in the inabilty to connect to the Box API"
-            );
-            sc = null;
-        }
-
-        if (sc != null) {
-            sslSocketFactory = sc.getSocketFactory();
-        }
-
-    }
-
     private final BoxAPIConnection api;
     private final List<RequestHeader> headers;
     private final String method;
-    private URL url;
+    private final URL url;
     private BackoffCounter backoffCounter;
     private int connectTimeout;
     private int readTimeout;
     private InputStream body;
     private long bodyLength;
-    private Map<String, List<String>> requestProperties;
-    private int numRedirects;
-    private boolean followRedirects = true;
     private boolean shouldAuthenticate;
-
-    /**
-     * Constructs an unauthenticated BoxAPIRequest.
-     *
-     * @param url    the URL of the request.
-     * @param method the HTTP method of the request.
-     */
-    public BoxAPIRequest(URL url, String method) {
-        this(null, url, method);
-    }
+    private boolean followRedirects = true;
+    private final String mediaType;
 
     /**
      * Constructs an authenticated BoxAPIRequest using a provided BoxAPIConnection.
@@ -129,9 +66,14 @@ public class BoxAPIRequest {
      * @param method the HTTP method of the request.
      */
     public BoxAPIRequest(BoxAPIConnection api, URL url, String method) {
+        this(api, url, method, ContentType.APPLICATION_FORM_URLENCODED);
+    }
+
+    protected BoxAPIRequest(BoxAPIConnection api, URL url, String method, String mediaType) {
         this.api = api;
         this.url = url;
         this.method = method;
+        this.mediaType = mediaType;
         this.headers = new ArrayList<>();
         if (api != null) {
             Map<String, String> customHeaders = api.getHeaders();
@@ -152,9 +94,7 @@ public class BoxAPIRequest {
             this.readTimeout = BoxGlobalSettings.getReadTimeout();
         }
 
-        this.addHeader("Accept-Encoding", "gzip");
         this.addHeader("Accept-Charset", "utf-8");
-
     }
 
     /**
@@ -175,7 +115,7 @@ public class BoxAPIRequest {
      * @param method the HTTP method of the request.
      */
     public BoxAPIRequest(URL url, HttpMethod method) {
-        this(url, method.name());
+        this(null, url, method.name());
     }
 
     /**
@@ -193,7 +133,17 @@ public class BoxAPIRequest {
      * @return true if the response is one that should be retried, otherwise false
      */
     public static boolean isResponseRetryable(int responseCode, BoxAPIException apiException) {
+        if (responseCode >= 500 || responseCode == 429) {
+            return true;
+        }
+        return isClockSkewError(responseCode, apiException);
+    }
+
+    private static boolean isClockSkewError(int responseCode, BoxAPIException apiException) {
         String response = apiException.getResponse();
+        if (response == null || response.length() == 0) {
+            return false;
+        }
         String message = apiException.getMessage();
         String errorCode = "";
 
@@ -204,16 +154,12 @@ public class BoxAPIRequest {
             } else if (responseBody.get("error") != null) {
                 errorCode = responseBody.get("error").toString();
             }
-        } catch (Exception e) {
+
+            return responseCode == 400 && errorCode.contains("invalid_grant") && message.contains("exp");
+        } catch (ParseException e) {
+            // 400 error which is not a JSON will not trigger a retry
+            throw new BoxAPIException("API returned an error", responseCode, response);
         }
-
-        boolean isClockSkewError = responseCode == 400
-            && errorCode.contains("invalid_grant")
-            && message.contains("exp");
-
-        return (isClockSkewError
-            || responseCode >= 500
-            || responseCode == 429);
     }
 
     private static boolean isResponseRedirect(int responseCode) {
@@ -493,8 +439,8 @@ public class BoxAPIRequest {
         }
 
         while (this.backoffCounter.getAttemptsRemaining() > 0) {
-            try {
-                BoxJSONResponse response = (BoxJSONResponse) this.trySend(null);
+            try (BoxJSONResponse response = (BoxJSONResponse) this.trySend(null)) {
+                // upload sends binary data but response is JSON
                 JsonObject jsonObject = Json.parse(response.getJSON()).asObject();
                 return new BoxFileUploadSessionPart((JsonObject) jsonObject.get("part"));
             } catch (BoxAPIException apiException) {
@@ -512,6 +458,7 @@ public class BoxAPIRequest {
                             }
                         }
                     } catch (BoxAPIException e) {
+                        // ignoring exception as we are retrying
                     }
                 }
                 LOGGER.warn(format(
@@ -554,32 +501,6 @@ public class BoxAPIRequest {
         builder.append(this.url.toString());
         builder.append(lineSeparator);
 
-        if (this.requestProperties != null) {
-
-            for (Map.Entry<String, List<String>> entry : this.requestProperties.entrySet()) {
-                List<String> nonEmptyValues = new ArrayList<>();
-                for (String value : entry.getValue()) {
-                    if (value != null && value.trim().length() != 0) {
-                        nonEmptyValues.add(value);
-                    }
-                }
-
-                if (nonEmptyValues.size() == 0) {
-                    continue;
-                }
-
-                builder.append(entry.getKey());
-                builder.append(": ");
-                for (String value : nonEmptyValues) {
-                    builder.append(value);
-                    builder.append(", ");
-                }
-
-                builder.delete(builder.length() - 2, builder.length());
-                builder.append(lineSeparator);
-            }
-        }
-
         String bodyString = this.bodyToString();
         if (bodyString != null) {
             builder.append(lineSeparator);
@@ -602,51 +523,20 @@ public class BoxAPIRequest {
         return null;
     }
 
-    /**
-     * Writes the body of this request to an HttpURLConnection.
-     *
-     * <p>Subclasses overriding this method must remember to close the connection's OutputStream after writing.</p>
-     *
-     * @param connection the connection to which the body should be written.
-     * @param listener   an optional listener for monitoring the write progress.
-     * @throws BoxAPIException if an error occurs while writing to the connection.
-     */
-    protected void writeBody(HttpURLConnection connection, ProgressListener listener) {
-        if (this.body == null) {
-            return;
-        }
-
-        connection.setDoOutput(true);
-
-        if (bodyLength > 0) {
-            connection.setFixedLengthStreamingMode((int) this.bodyLength);
-        }
-
-        // if method requires body, but it is empty we do not write anything.
-        // Just tell HTTP client to add proper Content-length header
-        if (this.body instanceof EmptyBody) {
-            connection.setFixedLengthStreamingMode(0);
-            return;
-        }
-
+    private void writeWithBuffer(OutputStream output, ProgressListener listener) {
         try {
-            OutputStream output = connection.getOutputStream();
+            OutputStream finalOutput = output;
             if (listener != null) {
-                output = new ProgressOutputStream(output, listener, this.bodyLength);
+                finalOutput = new ProgressOutputStream(output, listener, this.bodyLength);
             }
-            writeWithBuffer(output);
-            output.close();
+            byte[] buffer = new byte[BUFFER_SIZE];
+            int b = this.body.read(buffer);
+            while (b != -1) {
+                finalOutput.write(buffer, 0, b);
+                b = this.body.read(buffer);
+            }
         } catch (IOException e) {
-            throw new BoxAPIException(ERROR_CREATING_REQUEST_BODY, e);
-        }
-    }
-
-    private void writeWithBuffer(OutputStream output) throws IOException {
-        byte[] buffer = new byte[BUFFER_SIZE];
-        int b = this.body.read(buffer);
-        while (b != -1) {
-            output.write(buffer, 0, b);
-            b = this.body.read(buffer);
+            throw new RuntimeException("Error writting body", e);
         }
     }
 
@@ -679,127 +569,82 @@ public class BoxAPIRequest {
             }
         }
 
-        HttpURLConnection connection = this.createConnection();
+        Request.Builder requestBuilder = new Request.Builder().url(getUrl());
 
-        if (connection instanceof HttpsURLConnection) {
-            HttpsURLConnection httpsConnection = (HttpsURLConnection) connection;
+        if (this.shouldAuthenticate) {
+            requestBuilder.addHeader(HttpHeaders.AUTHORIZATION, "Bearer " + this.api.lockAccessToken());
+        }
+        requestBuilder.addHeader("User-Agent", this.api.getUserAgent());
+        requestBuilder.addHeader("X-Box-UA", this.api.getBoxUAHeader());
+        headers.forEach(h -> {
+            requestBuilder.removeHeader(h.getKey());
+            requestBuilder.addHeader(h.getKey(), h.getValue());
+        });
 
-            if (sslSocketFactory != null) {
-                httpsConnection.setSSLSocketFactory(sslSocketFactory);
+        if (this.api instanceof SharedLinkAPIConnection) {
+            SharedLinkAPIConnection sharedItemAPI = (SharedLinkAPIConnection) this.api;
+            String sharedLink = sharedItemAPI.getSharedLink();
+            String boxAPIValue = "shared_link=" + sharedLink;
+            String sharedLinkPassword = sharedItemAPI.getSharedLinkPassword();
+            if (sharedLinkPassword != null) {
+                boxAPIValue += "&shared_link_password=" + sharedLinkPassword;
             }
+            requestBuilder.addHeader("BoxApi", boxAPIValue);
         }
 
-        if (this.api != null) {
-            if (this.shouldAuthenticate) {
-                connection.addRequestProperty(HttpHeaders.AUTHORIZATION, "Bearer " + this.api.lockAccessToken());
-            }
-            connection.setRequestProperty("User-Agent", this.api.getUserAgent());
-            if (this.api.getProxy() != null) {
-                if (this.api.getProxyUsername() != null && this.api.getProxyPassword() != null) {
-                    String usernameAndPassword = this.api.getProxyUsername() + ":" + this.api.getProxyPassword();
-                    String encoded = Base64.encode(usernameAndPassword.getBytes());
-                    connection.addRequestProperty("Proxy-Authorization", "Basic " + encoded);
-                }
-            }
-
-            if (this.api instanceof SharedLinkAPIConnection) {
-                SharedLinkAPIConnection sharedItemAPI = (SharedLinkAPIConnection) this.api;
-                String sharedLink = sharedItemAPI.getSharedLink();
-                String boxAPIValue = "shared_link=" + sharedLink;
-                String sharedLinkPassword = sharedItemAPI.getSharedLinkPassword();
-                if (sharedLinkPassword != null) {
-                    boxAPIValue += "&shared_link_password=" + sharedLinkPassword;
-                }
-                connection.addRequestProperty("BoxApi", boxAPIValue);
-            }
-        }
-
-        this.requestProperties = connection.getRequestProperties();
-
-        int responseCode;
         try {
-            long writeStart = System.currentTimeMillis();
-            this.writeBody(connection, listener);
-            logDebug(format("[trySend] Body write took %dms%n", (System.currentTimeMillis() - writeStart)));
-            // Ensure that we're connected in case writeBody() didn't write anything.
-            try {
-                long start = System.currentTimeMillis();
-                connection.connect();
-                logDebug(format("[trySend] connection.connect() took %dms%n", (System.currentTimeMillis() - start)));
-            } catch (IOException e) {
-                throw new BoxAPIException("Couldn't connect to the Box API due to a network error.", e);
+            long start = System.currentTimeMillis();
+            writeMethodWithBody(requestBuilder, listener);
+            Request request = requestBuilder.build();
+            Response response;
+            if (this.followRedirects) {
+                response = api.execute(request);
+            } else {
+                response = api.executeWithoutRedirect(request);
             }
+            logDebug(format("[trySend] connection.connect() took %dms%n", (System.currentTimeMillis() - start)));
 
+            BoxAPIResponse result = BoxAPIResponse.toBoxResponse(response);
             this.logRequest();
+            long getResponseStart = System.currentTimeMillis();
+            logDebug(format(
+                "[trySend] Get Response (read network) took %dms%n", System.currentTimeMillis() - getResponseStart
+            ));
+            return result;
 
-            // We need to manually handle redirects by creating a new HttpURLConnection so that connection pooling
-            // happens correctly. There seems to be a bug in Oracle's Java implementation where automatically handled
-            // redirects will not keep the connection alive.
-            try {
-                long getResponseStart = System.currentTimeMillis();
-                responseCode = connection.getResponseCode();
-                logDebug(format(
-                    "[trySend] Get Response (read network) took %dms%n", System.currentTimeMillis() - getResponseStart
-                ));
-            } catch (IOException e) {
-                throw new BoxAPIException("Couldn't connect to the Box API due to a network error.", e);
-            }
         } finally {
-            if (this.api != null && this.shouldAuthenticate) {
+            if (this.shouldAuthenticate) {
                 this.api.unlockAccessToken();
             }
         }
 
-        if (isResponseRedirect(responseCode)) {
-            return this.handleRedirect(connection, listener);
-        }
-
-        String contentType = connection.getContentType();
-        BoxAPIResponse response;
-        if (contentType == null) {
-            response = new BoxAPIResponse(connection);
-        } else if (contentType.contains("application/json")) {
-            response = new BoxJSONResponse(connection);
-        } else {
-            response = new BoxAPIResponse(connection);
-        }
-
-        return response;
     }
 
-    private BoxAPIResponse handleRedirect(HttpURLConnection connection, ProgressListener listener) {
-        if (this.numRedirects >= MAX_REDIRECTS) {
-            throw new BoxAPIException("The Box API responded with too many redirects.");
+    protected void writeMethodWithBody(Request.Builder requestBuilder, ProgressListener listener) {
+        ByteArrayOutputStream bodyBytes = new ByteArrayOutputStream();
+        if (body != null) {
+            long writeStart = System.currentTimeMillis();
+            writeWithBuffer(bodyBytes, listener);
+            logDebug(format("[trySend] Body write took %dms%n", (System.currentTimeMillis() - writeStart)));
         }
-        this.numRedirects++;
-
-        // Even though the redirect response won't have a body, we need to read the InputStream so that Java will put
-        // the connection back in the connection pool.
-        try {
-            InputStream stream = connection.getInputStream();
-            byte[] buffer = new byte[8192];
-            int n = stream.read(buffer);
-            while (n != -1) {
-                n = stream.read(buffer);
+        if (method.equals("GET")) {
+            requestBuilder.get();
+        }
+        if (method.equals("DELETE")) {
+            requestBuilder.delete();
+        }
+        if (method.equals("OPTIONS")) {
+            if (body == null) {
+                requestBuilder.method("OPTIONS", null);
+            } else {
+                requestBuilder.method("OPTIONS", RequestBody.create(bodyBytes.toByteArray(), mediaType()));
             }
-            stream.close();
-        } catch (IOException e) {
-            throw new BoxAPIException("Couldn't connect to the Box API due to a network error.", e);
         }
-
-        String redirect = connection.getHeaderField("Location");
-        try {
-            this.url = new URL(redirect);
-        } catch (MalformedURLException e) {
-            throw new BoxAPIException("The Box API responded with an invalid redirect.", e);
+        if (method.equals("POST")) {
+            requestBuilder.post(RequestBody.create(bodyBytes.toByteArray(), mediaType()));
         }
-
-        if (this.followRedirects) {
-            return this.trySend(listener);
-        } else {
-            BoxRedirectResponse redirectResponse = new BoxRedirectResponse();
-            redirectResponse.setRedirectURL(this.url);
-            return redirectResponse;
+        if (method.equals("PUT")) {
+            requestBuilder.put(RequestBody.create(bodyBytes.toByteArray(), mediaType()));
         }
     }
 
@@ -813,50 +658,8 @@ public class BoxAPIRequest {
         logDebug(this.toString());
     }
 
-    private HttpURLConnection createConnection() {
-        HttpURLConnection connection;
-
-        try {
-            if (this.api == null || this.api.getProxy() == null) {
-                connection = (HttpURLConnection) this.url.openConnection();
-            } else {
-                connection = (HttpURLConnection) this.url.openConnection(this.api.getProxy());
-            }
-        } catch (IOException e) {
-            throw new BoxAPIException("Couldn't connect to the Box API due to a network error.", e);
-        }
-
-        try {
-            connection.setRequestMethod(this.method);
-        } catch (ProtocolException e) {
-            throw new BoxAPIException("Couldn't connect to the Box API because the request's method was invalid.", e);
-        }
-
-        connection.setConnectTimeout(this.connectTimeout);
-        connection.setReadTimeout(this.readTimeout);
-
-        // Don't allow HttpURLConnection to automatically redirect because it messes up the connection pool. See the
-        // trySend(ProgressListener) method for how we handle redirects.
-        connection.setInstanceFollowRedirects(false);
-
-        for (RequestHeader header : this.headers) {
-            connection.addRequestProperty(header.getKey(), header.getValue());
-        }
-
-        return connection;
-    }
-
     void shouldAuthenticate(boolean shouldAuthenticate) {
         this.shouldAuthenticate = shouldAuthenticate;
-    }
-
-    /**
-     * Use it to force sending empty body with HTTP methods that require body to be sent.
-     * This will force HTTP client to add proper Content-length header.
-     */
-    void noBody() {
-        this.bodyLength = 0;
-        this.body = EMPTY_BODY;
     }
 
     /**
@@ -896,11 +699,7 @@ public class BoxAPIRequest {
         }
     }
 
-    private static final class EmptyBody extends InputStream {
-
-        @Override
-        public int read() throws IOException {
-            return 0;
-        }
+    protected MediaType mediaType() {
+        return MediaType.parse(mediaType);
     }
 }

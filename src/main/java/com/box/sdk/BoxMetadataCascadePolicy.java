@@ -106,11 +106,12 @@ public class BoxMetadataCascadePolicy extends BoxResource {
             .add("scope", scope)
             .add("templateKey", templateKey);
         request.setBody(requestJSON.toString());
-        BoxJSONResponse response = (BoxJSONResponse) request.send();
-        JsonObject responseJSON = Json.parse(response.getJSON()).asObject();
-        BoxMetadataCascadePolicy createdMetadataCascadePolicy = new BoxMetadataCascadePolicy(api,
-            responseJSON.get("id").asString());
-        return createdMetadataCascadePolicy.new Info(responseJSON);
+        try (BoxJSONResponse response = request.send()) {
+            JsonObject responseJSON = Json.parse(response.getJSON()).asObject();
+            BoxMetadataCascadePolicy createdMetadataCascadePolicy = new BoxMetadataCascadePolicy(api,
+                responseJSON.get("id").asString());
+            return createdMetadataCascadePolicy.new Info(responseJSON);
+        }
     }
 
     /**
@@ -126,10 +127,11 @@ public class BoxMetadataCascadePolicy extends BoxResource {
         }
         URL url = METADATA_CASCADE_POLICIES_URL_TEMPLATE.buildAlphaWithQuery(this.getAPI().getBaseURL(),
             builder.toString(), this.getID());
-        BoxAPIRequest request = new BoxAPIRequest(this.getAPI(), url, "GET");
-        BoxJSONResponse response = (BoxJSONResponse) request.send();
-        JsonObject responseJSON = Json.parse(response.getJSON()).asObject();
-        return new Info(responseJSON);
+        BoxJSONRequest request = new BoxJSONRequest(this.getAPI(), url, "GET");
+        try (BoxJSONResponse response = request.send()) {
+            JsonObject responseJSON = Json.parse(response.getJSON()).asObject();
+            return new Info(responseJSON);
+        }
     }
 
     /**
@@ -141,11 +143,11 @@ public class BoxMetadataCascadePolicy extends BoxResource {
     public void forceApply(String conflictResolution) {
 
         URL url = FORCE_METADATA_CASCADE_POLICIES_URL_TEMPLATE.buildAlpha(this.getAPI().getBaseURL(), this.getID());
-        BoxJSONRequest request = new BoxJSONRequest(this.getAPI(), url, "POST");
+        BoxAPIRequest request = new BoxAPIRequest(this.getAPI(), url, "POST");
         JsonObject requestJSON = new JsonObject()
             .add("conflict_resolution", conflictResolution);
         request.setBody(requestJSON.toString());
-        request.send();
+        request.send().close();
     }
 
     /**
@@ -154,7 +156,7 @@ public class BoxMetadataCascadePolicy extends BoxResource {
     public void delete() {
         URL url = METADATA_CASCADE_POLICIES_URL_TEMPLATE.buildAlpha(this.getAPI().getBaseURL(), this.getID());
         BoxAPIRequest request = new BoxAPIRequest(this.getAPI(), url, "DELETE");
-        BoxAPIResponse response = request.send();
+        request.send().close();
     }
 
     /**

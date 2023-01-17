@@ -1,5 +1,6 @@
 package com.box.sdk;
 
+import static com.box.sdk.BinaryBodyUtils.writeStream;
 import static com.box.sdk.http.HttpMethod.DELETE;
 import static com.box.sdk.internal.utils.JsonUtils.addIfNotNull;
 
@@ -7,16 +8,21 @@ import com.eclipsesource.json.Json;
 import com.eclipsesource.json.JsonArray;
 import com.eclipsesource.json.JsonObject;
 import com.eclipsesource.json.JsonValue;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 /**
  * Represents a Box user account.
@@ -165,11 +171,12 @@ public class BoxUser extends BoxCollaborator {
         URL url = USERS_URL_TEMPLATE.build(api.getBaseURL());
         BoxJSONRequest request = new BoxJSONRequest(api, url, "POST");
         request.setBody(requestJSON.toString());
-        BoxJSONResponse response = (BoxJSONResponse) request.send();
-        JsonObject responseJSON = Json.parse(response.getJSON()).asObject();
+        try (BoxJSONResponse response = request.send()) {
+            JsonObject responseJSON = Json.parse(response.getJSON()).asObject();
 
-        BoxUser createdUser = new BoxUser(api, responseJSON.get("id").asString());
-        return createdUser.new Info(responseJSON);
+            BoxUser createdUser = new BoxUser(api, responseJSON.get("id").asString());
+            return createdUser.new Info(responseJSON);
+        }
     }
 
     /**
@@ -180,10 +187,11 @@ public class BoxUser extends BoxCollaborator {
      */
     public static BoxUser getCurrentUser(BoxAPIConnection api) {
         URL url = GET_ME_URL.build(api.getBaseURL());
-        BoxAPIRequest request = new BoxAPIRequest(api, url, "GET");
-        BoxJSONResponse response = (BoxJSONResponse) request.send();
-        JsonObject jsonObject = Json.parse(response.getJSON()).asObject();
-        return new BoxUser(api, jsonObject.get("id").asString());
+        BoxJSONRequest request = new BoxJSONRequest(api, url, "GET");
+        try (BoxJSONResponse response = request.send()) {
+            JsonObject jsonObject = Json.parse(response.getJSON()).asObject();
+            return new BoxUser(api, jsonObject.get("id").asString());
+        }
     }
 
     /**
@@ -448,10 +456,11 @@ public class BoxUser extends BoxCollaborator {
         } else {
             url = USER_URL_TEMPLATE.build(this.getAPI().getBaseURL(), this.getID());
         }
-        BoxAPIRequest request = new BoxAPIRequest(this.getAPI(), url, "GET");
-        BoxJSONResponse response = (BoxJSONResponse) request.send();
-        JsonObject jsonObject = Json.parse(response.getJSON()).asObject();
-        return new Info(jsonObject);
+        BoxJSONRequest request = new BoxJSONRequest(this.getAPI(), url, "GET");
+        try (BoxJSONResponse response = request.send()) {
+            JsonObject jsonObject = Json.parse(response.getJSON()).asObject();
+            return new Info(jsonObject);
+        }
     }
 
     /**
@@ -466,21 +475,22 @@ public class BoxUser extends BoxCollaborator {
         BoxAPIConnection api = this.getAPI();
         URL url = USER_MEMBERSHIPS_URL_TEMPLATE.build(this.getAPI().getBaseURL(), this.getID());
 
-        BoxAPIRequest request = new BoxAPIRequest(api, url, "GET");
-        BoxJSONResponse response = (BoxJSONResponse) request.send();
-        JsonObject responseJSON = Json.parse(response.getJSON()).asObject();
+        BoxJSONRequest request = new BoxJSONRequest(api, url, "GET");
+        try (BoxJSONResponse response = request.send()) {
+            JsonObject responseJSON = Json.parse(response.getJSON()).asObject();
 
-        int entriesCount = responseJSON.get("total_count").asInt();
-        Collection<BoxGroupMembership.Info> memberships = new ArrayList<>(entriesCount);
-        JsonArray entries = responseJSON.get("entries").asArray();
-        for (JsonValue entry : entries) {
-            JsonObject entryObject = entry.asObject();
-            BoxGroupMembership membership = new BoxGroupMembership(api, entryObject.get("id").asString());
-            BoxGroupMembership.Info info = membership.new Info(entryObject);
-            memberships.add(info);
+            int entriesCount = responseJSON.get("total_count").asInt();
+            Collection<BoxGroupMembership.Info> memberships = new ArrayList<>(entriesCount);
+            JsonArray entries = responseJSON.get("entries").asArray();
+            for (JsonValue entry : entries) {
+                JsonObject entryObject = entry.asObject();
+                BoxGroupMembership membership = new BoxGroupMembership(api, entryObject.get("id").asString());
+                BoxGroupMembership.Info info = membership.new Info(entryObject);
+                memberships.add(info);
+            }
+
+            return memberships;
         }
-
-        return memberships;
     }
 
     /**
@@ -531,9 +541,10 @@ public class BoxUser extends BoxCollaborator {
         }
 
         request.setBody(requestJSON.toString());
-        BoxJSONResponse response = (BoxJSONResponse) request.send();
-        JsonObject responseJSON = Json.parse(response.getJSON()).asObject();
-        return new EmailAlias(responseJSON);
+        try (BoxJSONResponse response = request.send()) {
+            JsonObject responseJSON = Json.parse(response.getJSON()).asObject();
+            return new EmailAlias(responseJSON);
+        }
     }
 
     /**
@@ -546,8 +557,7 @@ public class BoxUser extends BoxCollaborator {
     public void deleteEmailAlias(String emailAliasID) {
         URL url = EMAIL_ALIAS_URL_TEMPLATE.build(this.getAPI().getBaseURL(), this.getID(), emailAliasID);
         BoxAPIRequest request = new BoxAPIRequest(this.getAPI(), url, "DELETE");
-        BoxAPIResponse response = request.send();
-        response.disconnect();
+        request.send().close();
     }
 
     /**
@@ -559,19 +569,20 @@ public class BoxUser extends BoxCollaborator {
      */
     public Collection<EmailAlias> getEmailAliases() {
         URL url = EMAIL_ALIASES_URL_TEMPLATE.build(this.getAPI().getBaseURL(), this.getID());
-        BoxAPIRequest request = new BoxAPIRequest(this.getAPI(), url, "GET");
-        BoxJSONResponse response = (BoxJSONResponse) request.send();
-        JsonObject responseJSON = Json.parse(response.getJSON()).asObject();
+        BoxJSONRequest request = new BoxJSONRequest(this.getAPI(), url, "GET");
+        try (BoxJSONResponse response = request.send()) {
+            JsonObject responseJSON = Json.parse(response.getJSON()).asObject();
 
-        int totalCount = responseJSON.get("total_count").asInt();
-        Collection<EmailAlias> emailAliases = new ArrayList<>(totalCount);
-        JsonArray entries = responseJSON.get("entries").asArray();
-        for (JsonValue value : entries) {
-            JsonObject emailAliasJSON = value.asObject();
-            emailAliases.add(new EmailAlias(emailAliasJSON));
+            int totalCount = responseJSON.get("total_count").asInt();
+            Collection<EmailAlias> emailAliases = new ArrayList<>(totalCount);
+            JsonArray entries = responseJSON.get("entries").asArray();
+            for (JsonValue value : entries) {
+                JsonObject emailAliasJSON = value.asObject();
+                emailAliases.add(new EmailAlias(emailAliasJSON));
+            }
+
+            return emailAliases;
         }
-
-        return emailAliases;
     }
 
     /**
@@ -600,8 +611,7 @@ public class BoxUser extends BoxCollaborator {
     private void performUserDelete(String queryString) {
         URL url = USER_URL_TEMPLATE.buildWithQuery(this.getAPI().getBaseURL(), queryString, this.getID());
         BoxAPIRequest request = new BoxAPIRequest(this.getAPI(), url, "DELETE");
-        BoxAPIResponse response = request.send();
-        response.disconnect();
+        request.send().close();
     }
 
     /**
@@ -615,42 +625,14 @@ public class BoxUser extends BoxCollaborator {
         URL url = USER_URL_TEMPLATE.build(this.getAPI().getBaseURL(), this.getID());
         BoxJSONRequest request = new BoxJSONRequest(this.getAPI(), url, "PUT");
         request.setBody(info.getPendingChanges());
-        BoxJSONResponse response = (BoxJSONResponse) request.send();
-        JsonObject jsonObject = Json.parse(response.getJSON()).asObject();
-        info.update(jsonObject);
+        try (BoxJSONResponse response = request.send()) {
+            JsonObject jsonObject = Json.parse(response.getJSON()).asObject();
+            info.update(jsonObject);
+        }
     }
 
     /**
-     * @param sourceUserID the user id of the user whose files will be the source for this operation
-     * @return info for the newly created folder
-     * @deprecated As of release 2.22.0, replaced by {@link #transferContent(String)} ()}
-     * <p>
-     * Moves all of the owned content from within one user’s folder into a new folder in another user's account.
-     * You can move folders across users as long as the you have administrative permissions and the 'source'
-     * user owns the folders. Per the documentation at the link below, this will move everything from the root
-     * folder, as this is currently the only mode of operation supported.
-     * <p>
-     * See also <a href="https://developer.box.com/en/reference/put-users-id-folders-id/">https://developer.box.com/en/reference/put-users-id-folders-id/</a>
-     */
-    @Deprecated
-    public BoxFolder.Info moveFolderToUser(String sourceUserID) {
-        // Currently the API only supports moving of the root folder (0), hence the hard coded "0"
-        URL url = MOVE_FOLDER_TO_USER_TEMPLATE.build(this.getAPI().getBaseURL(), sourceUserID, "0");
-        BoxJSONRequest request = new BoxJSONRequest(this.getAPI(), url, "PUT");
-        JsonObject idValue = new JsonObject();
-        idValue.add("id", this.getID());
-        JsonObject ownedBy = new JsonObject();
-        ownedBy.add("owned_by", idValue);
-        request.setBody(ownedBy.toString());
-        BoxJSONResponse response = (BoxJSONResponse) request.send();
-        JsonObject responseJSON = Json.parse(response.getJSON()).asObject();
-        BoxFolder movedFolder = new BoxFolder(this.getAPI(), responseJSON.get("id").asString());
-
-        return movedFolder.new Info(responseJSON);
-    }
-
-    /**
-     * Moves all of the owned content from within one user’s folder into a new folder in another user's account.
+     * Moves all the owned content from within one user’s folder into a new folder in another user's account.
      * You can move folders across users as long as the you have administrative permissions and the 'source'
      * user owns the folders. Per the documentation at the link below, this will move everything from the root
      * folder, as this is currently the only mode of operation supported.
@@ -668,24 +650,43 @@ public class BoxUser extends BoxCollaborator {
         JsonObject ownedBy = new JsonObject();
         ownedBy.add("owned_by", destinationUser);
         request.setBody(ownedBy.toString());
-        BoxJSONResponse response = (BoxJSONResponse) request.send();
-        JsonObject responseJSON = Json.parse(response.getJSON()).asObject();
-        BoxFolder movedFolder = new BoxFolder(this.getAPI(), responseJSON.get("id").asString());
+        try (BoxJSONResponse response = request.send()) {
+            JsonObject responseJSON = Json.parse(response.getJSON()).asObject();
+            BoxFolder movedFolder = new BoxFolder(this.getAPI(), responseJSON.get("id").asString());
 
-        return movedFolder.new Info(responseJSON);
+            return movedFolder.new Info(responseJSON);
+        }
+    }
+
+    /**
+     * Writes avatar into specified {@link OutputStream}
+     *
+     * @param outputStream Stream where to write avatar.
+     */
+    public void downloadAvatar(OutputStream outputStream) {
+        URL url = USER_AVATAR_TEMPLATE.build(this.getAPI().getBaseURL(), this.getID());
+        BoxAPIRequest request = new BoxAPIRequest(this.getAPI(), url, "GET");
+        writeStream(request.send(), outputStream);
     }
 
     /**
      * Retrieves the avatar of a user as an InputStream.
      *
      * @return InputStream representing the user avater.
+     * @deprecated This method loads whole avatar image to memory.
+     * Use {@link BoxUser#downloadAvatar(OutputStream)} to store avatar in file or memory.
+     * That method uses very small buffer to store bytes in memory.
      */
     public InputStream getAvatar() {
         URL url = USER_AVATAR_TEMPLATE.build(this.getAPI().getBaseURL(), this.getID());
         BoxAPIRequest request = new BoxAPIRequest(this.getAPI(), url, "GET");
         BoxAPIResponse response = request.send();
-
-        return response.getBody();
+        try (ByteArrayOutputStream outputStream = new ByteArrayOutputStream()) {
+            writeStream(response, outputStream);
+            return new ByteArrayInputStream(outputStream.toByteArray());
+        } catch (IOException e) {
+            throw new RuntimeException("Error while closing stream", e);
+        }
     }
 
     /**
@@ -745,14 +746,18 @@ public class BoxUser extends BoxCollaborator {
         BoxImageMultipartRequest request = new BoxImageMultipartRequest(getAPI(), url, "pic");
         request.setFile(content, fileName);
 
-        BoxAPIResponse response;
-        if (progressListener != null) {
-            response = request.send(progressListener);
-        } else {
-            response = request.send();
-        }
+        BoxAPIResponse response = null;
+        try {
+            if (progressListener != null) {
+                response = request.send(progressListener);
+            } else {
+                response = request.send();
+            }
 
-        return parseUploadAvatarResponse(response);
+            return parseUploadAvatarResponse(response);
+        } finally {
+            Optional.ofNullable(response).ifPresent(BoxAPIResponse::close);
+        }
     }
 
     /**
@@ -761,7 +766,7 @@ public class BoxUser extends BoxCollaborator {
     public void deleteAvatar() {
         URL url = USER_AVATAR_TEMPLATE.build(getAPI().getBaseURL(), this.getID());
         BoxAPIRequest request = new BoxAPIRequest(getAPI(), url, DELETE);
-        request.send();
+        request.send().close();
     }
 
     private AvatarUploadResponse parseUploadAvatarResponse(BoxAPIResponse response) {

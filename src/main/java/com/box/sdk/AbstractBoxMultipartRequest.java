@@ -2,32 +2,31 @@ package com.box.sdk;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.OutputStream;
-import java.net.HttpURLConnection;
 import java.net.URL;
-import java.net.URLEncoder;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import okhttp3.MediaType;
+import okhttp3.MultipartBody;
+import okhttp3.Request;
+import okhttp3.RequestBody;
+import okio.BufferedSink;
 
 /**
  * <p>Base class for multipart uploads</p>
  * <p>This class partially implements the HTTP multipart standard in order to upload files to Box. The body of this
- *  * request type cannot be set directly. Instead, it can be modified by adding multipart fields and setting file
- *  * contents. The body of multipart requests will not be logged since they are likely to contain binary data.</p>
+ * * request type cannot be set directly. Instead, it can be modified by adding multipart fields and setting file
+ * * contents. The body of multipart requests will not be logged since they are likely to contain binary data.</p>
  */
 abstract class AbstractBoxMultipartRequest extends BoxAPIRequest {
     protected static final String BOUNDARY = "da39a3ee5e6b4b0d3255bfef95601890afd80709";
-    private static final BoxLogger LOGGER = BoxLogger.defaultLogger();
     private static final int BUFFER_SIZE = 8192;
     private final StringBuilder loggedRequest = new StringBuilder();
     private final Map<String, String> fields = new HashMap<>();
     private InputStream inputStream;
     private String filename;
     private long fileSize;
-    private OutputStream outputStream;
     private UploadFileCallback callback;
-    private boolean firstBoundary = true;
 
     AbstractBoxMultipartRequest(BoxAPIConnection api, URL url) {
         super(api, url, "POST");
@@ -122,54 +121,12 @@ abstract class AbstractBoxMultipartRequest extends BoxAPIRequest {
         throw new UnsupportedOperationException();
     }
 
-    @Override
-    protected void writeBody(HttpURLConnection connection, ProgressListener listener) {
-        try {
-            connection.setChunkedStreamingMode(0);
-            connection.setDoOutput(true);
-            this.outputStream = connection.getOutputStream();
-
-            for (Map.Entry<String, String> entry : this.fields.entrySet()) {
-                this.writePartHeader(new String[][]{{"name", entry.getKey()}});
-                this.writeOutput(entry.getValue());
-            }
-
-            this.writePartHeader(new String[][]{{"name", getPartName()}, {"filename", this.filename}},
-                getPartContentType(this.filename));
-
-            OutputStream fileContentsOutputStream = this.outputStream;
-            if (listener != null) {
-                fileContentsOutputStream = new ProgressOutputStream(this.outputStream, listener, this.fileSize);
-            }
-            if (this.inputStream != null) {
-                byte[] buffer = new byte[BUFFER_SIZE];
-                int n = this.inputStream.read(buffer);
-                while (n != -1) {
-                    fileContentsOutputStream.write(buffer, 0, n);
-                    n = this.inputStream.read(buffer);
-                }
-            } else {
-                this.callback.writeToStream(this.outputStream);
-            }
-
-            if (LOGGER.isDebugEnabled()) {
-                this.loggedRequest.append("<File Contents Omitted>");
-            }
-
-            this.writeBoundary();
-            this.writeOutput("--");
-        } catch (IOException e) {
-            throw new BoxAPIException("Couldn't connect to the Box API due to a network error.", e);
-        }
-    }
-
     protected abstract String getPartName();
 
-    protected abstract String getPartContentType(String filename);
+    protected abstract MediaType getPartContentType(String filename);
 
     @Override
     protected void resetBody() throws IOException {
-        this.firstBoundary = true;
         this.inputStream.reset();
         this.loggedRequest.setLength(0);
     }
@@ -179,44 +136,89 @@ abstract class AbstractBoxMultipartRequest extends BoxAPIRequest {
         return this.loggedRequest.toString();
     }
 
-    private void writeBoundary() throws IOException {
-        if (!this.firstBoundary) {
-            this.writeOutput("\r\n");
-        }
-
-        this.firstBoundary = false;
-        this.writeOutput("--");
-        this.writeOutput(BOUNDARY);
+    @Override
+    protected void writeMethodWithBody(Request.Builder requestBuilder, ProgressListener progressListener) {
+        MultipartBody.Builder bodyBuilder =
+            new MultipartBody.Builder()
+                .setType(MultipartBody.FORM)
+                .addFormDataPart(
+                    getPartName(),
+                    filename,
+                    getBody(progressListener)
+                );
+        this.fields.forEach(bodyBuilder::addFormDataPart);
+        requestBuilder.post(bodyBuilder.build());
     }
 
-    private void writePartHeader(String[][] formData) throws IOException {
-        this.writePartHeader(formData, null);
+    private RequestBody getBody(ProgressListener progressListener) {
+        if (this.callback == null) {
+            return new RequestBodyFromStream(this.inputStream, getPartContentType(filename), progressListener);
+        } else {
+            return new RequestBodyFromCallback(this.callback, getPartContentType(filename));
+        }
     }
 
-    private void writePartHeader(String[][] formData, String contentType) throws IOException {
-        this.writeBoundary();
-        this.writeOutput("\r\n");
-        this.writeOutput("Content-Disposition: form-data");
-        for (String[] part : formData) {
-            this.writeOutput("; ");
-            this.writeOutput(part[0]);
-            this.writeOutput("=\"");
-            this.writeOutput(URLEncoder.encode(part[1], "UTF-8"));
-            this.writeOutput("\"");
+    private static final class RequestBodyFromStream extends RequestBody {
+        private final InputStream inputStream;
+        private final ProgressListener progressListener;
+        private final MediaType mediaType;
+        private final int contentLength;
+
+        private RequestBodyFromStream(InputStream inputStream, MediaType mediaType, ProgressListener progressListener) {
+            this.inputStream = inputStream;
+            this.progressListener = progressListener;
+            this.mediaType = mediaType;
+            try {
+                this.contentLength = inputStream.available();
+            } catch (IOException e) {
+                throw new RuntimeException("Cannot read input stream for upload", e);
+            }
         }
 
-        if (contentType != null) {
-            this.writeOutput("\r\nContent-Type: ");
-            this.writeOutput(contentType);
+        @Override
+        public long contentLength() {
+            return contentLength;
         }
 
-        this.writeOutput("\r\n\r\n");
+        @Override
+        public MediaType contentType() {
+            return mediaType;
+        }
+
+        @Override
+        public void writeTo(BufferedSink bufferedSink) throws IOException {
+            byte[] buffer = new byte[BUFFER_SIZE];
+            int n = this.inputStream.read(buffer);
+            int totalWritten = n;
+            while (n != -1) {
+                bufferedSink.write(buffer, 0, n);
+                if (progressListener != null) {
+                    progressListener.onProgressChanged(totalWritten, this.contentLength());
+                }
+                totalWritten += n;
+                n = this.inputStream.read(buffer);
+            }
+        }
     }
 
-    private void writeOutput(String s) throws IOException {
-        this.outputStream.write(s.getBytes(StandardCharsets.UTF_8));
-        if (LOGGER.isDebugEnabled()) {
-            this.loggedRequest.append(s);
+    private static final class RequestBodyFromCallback extends RequestBody {
+
+        private final UploadFileCallback callback;
+        private final MediaType mediaType;
+
+        private RequestBodyFromCallback(UploadFileCallback callback, MediaType mediaType) {
+            this.callback = callback;
+            this.mediaType = mediaType;
+        }
+
+        @Override
+        public MediaType contentType() {
+            return mediaType;
+        }
+
+        @Override
+        public void writeTo(BufferedSink bufferedSink) throws IOException {
+            callback.writeToStream(bufferedSink.outputStream());
         }
     }
 }

@@ -44,8 +44,7 @@ public class BoxTask extends BoxResource {
     public void delete() {
         URL url = TASK_URL_TEMPLATE.build(this.getAPI().getBaseURL(), this.getID());
         BoxAPIRequest request = new BoxAPIRequest(this.getAPI(), url, "DELETE");
-        BoxAPIResponse response = request.send();
-        response.disconnect();
+        request.send().close();
     }
 
     /**
@@ -69,11 +68,12 @@ public class BoxTask extends BoxResource {
         URL url = ADD_TASK_ASSIGNMENT_URL_TEMPLATE.build(this.getAPI().getBaseURL());
         BoxJSONRequest request = new BoxJSONRequest(this.getAPI(), url, "POST");
         request.setBody(requestJSON.toString());
-        BoxJSONResponse response = (BoxJSONResponse) request.send();
-        JsonObject responseJSON = Json.parse(response.getJSON()).asObject();
+        try (BoxJSONResponse response = request.send()) {
+            JsonObject responseJSON = Json.parse(response.getJSON()).asObject();
 
-        BoxTaskAssignment addedAssignment = new BoxTaskAssignment(this.getAPI(), responseJSON.get("id").asString());
-        return addedAssignment.new Info(responseJSON);
+            BoxTaskAssignment addedAssignment = new BoxTaskAssignment(this.getAPI(), responseJSON.get("id").asString());
+            return addedAssignment.new Info(responseJSON);
+        }
     }
 
     /**
@@ -97,11 +97,12 @@ public class BoxTask extends BoxResource {
         URL url = ADD_TASK_ASSIGNMENT_URL_TEMPLATE.build(this.getAPI().getBaseURL());
         BoxJSONRequest request = new BoxJSONRequest(this.getAPI(), url, "POST");
         request.setBody(requestJSON.toString());
-        BoxJSONResponse response = (BoxJSONResponse) request.send();
-        JsonObject responseJSON = Json.parse(response.getJSON()).asObject();
+        try (BoxJSONResponse response = request.send()) {
+            JsonObject responseJSON = Json.parse(response.getJSON()).asObject();
 
-        BoxTaskAssignment addedAssignment = new BoxTaskAssignment(this.getAPI(), responseJSON.get("id").asString());
-        return addedAssignment.new Info(responseJSON);
+            BoxTaskAssignment addedAssignment = new BoxTaskAssignment(this.getAPI(), responseJSON.get("id").asString());
+            return addedAssignment.new Info(responseJSON);
+        }
     }
 
     /**
@@ -111,21 +112,23 @@ public class BoxTask extends BoxResource {
      */
     public List<BoxTaskAssignment.Info> getAssignments() {
         URL url = GET_ASSIGNMENTS_URL_TEMPLATE.build(this.getAPI().getBaseURL(), this.getID());
-        BoxAPIRequest request = new BoxAPIRequest(this.getAPI(), url, "GET");
-        BoxJSONResponse response = (BoxJSONResponse) request.send();
-        JsonObject responseJSON = Json.parse(response.getJSON()).asObject();
+        BoxJSONRequest request = new BoxJSONRequest(this.getAPI(), url, "GET");
+        try (BoxJSONResponse response = request.send()) {
+            JsonObject responseJSON = Json.parse(response.getJSON()).asObject();
 
-        int totalCount = responseJSON.get("total_count").asInt();
-        List<BoxTaskAssignment.Info> assignments = new ArrayList<>(totalCount);
-        JsonArray entries = responseJSON.get("entries").asArray();
-        for (JsonValue value : entries) {
-            JsonObject assignmentJSON = value.asObject();
-            BoxTaskAssignment assignment = new BoxTaskAssignment(this.getAPI(), assignmentJSON.get("id").asString());
-            BoxTaskAssignment.Info info = assignment.new Info(assignmentJSON);
-            assignments.add(info);
+            int totalCount = responseJSON.get("total_count").asInt();
+            List<BoxTaskAssignment.Info> assignments = new ArrayList<>(totalCount);
+            JsonArray entries = responseJSON.get("entries").asArray();
+            for (JsonValue value : entries) {
+                JsonObject assignmentJSON = value.asObject();
+                BoxTaskAssignment assignment =
+                    new BoxTaskAssignment(this.getAPI(), assignmentJSON.get("id").asString());
+                BoxTaskAssignment.Info info = assignment.new Info(assignmentJSON);
+                assignments.add(info);
+            }
+
+            return assignments;
         }
-
-        return assignments;
     }
 
     /**
@@ -146,18 +149,6 @@ public class BoxTask extends BoxResource {
         };
     }
 
-    /**
-     * Gets information about this task.
-     *
-     * @return info about this task.
-     */
-    public Info getInfo() {
-        URL url = TASK_URL_TEMPLATE.build(this.getAPI().getBaseURL(), this.getID());
-        BoxAPIRequest request = new BoxAPIRequest(this.getAPI(), url, "GET");
-        BoxJSONResponse response = (BoxJSONResponse) request.send();
-        JsonObject responseJSON = Json.parse(response.getJSON()).asObject();
-        return new Info(responseJSON);
-    }
 
     /**
      * Gets information about this task.
@@ -166,15 +157,16 @@ public class BoxTask extends BoxResource {
      * @return info about this task.
      */
     public Info getInfo(String... fields) {
-        QueryStringBuilder builder = new QueryStringBuilder();
+        URL url = TASK_URL_TEMPLATE.build(this.getAPI().getBaseURL(), this.getID());
         if (fields.length > 0) {
-            builder.appendParam("fields", fields);
+            QueryStringBuilder builder = new QueryStringBuilder().appendParam("fields", fields);
+            url = TASK_URL_TEMPLATE.buildWithQuery(this.getAPI().getBaseURL(), builder.toString(), this.getID());
         }
-        URL url = TASK_URL_TEMPLATE.buildWithQuery(this.getAPI().getBaseURL(), builder.toString(), this.getID());
-        BoxAPIRequest request = new BoxAPIRequest(this.getAPI(), url, "GET");
-        BoxJSONResponse response = (BoxJSONResponse) request.send();
-        JsonObject responseJSON = Json.parse(response.getJSON()).asObject();
-        return new Info(responseJSON);
+        BoxJSONRequest request = new BoxJSONRequest(this.getAPI(), url, "GET");
+        try (BoxJSONResponse response = request.send()) {
+            JsonObject responseJSON = Json.parse(response.getJSON()).asObject();
+            return new Info(responseJSON);
+        }
     }
 
     /**
@@ -194,9 +186,10 @@ public class BoxTask extends BoxResource {
         URL url = TASK_URL_TEMPLATE.build(this.getAPI().getBaseURL(), this.getID());
         BoxJSONRequest request = new BoxJSONRequest(this.getAPI(), url, "PUT");
         request.setBody(info.getPendingChanges());
-        BoxJSONResponse response = (BoxJSONResponse) request.send();
-        JsonObject jsonObject = Json.parse(response.getJSON()).asObject();
-        info.update(jsonObject);
+        try (BoxJSONResponse response = request.send()) {
+            JsonObject jsonObject = Json.parse(response.getJSON()).asObject();
+            info.update(jsonObject);
+        }
     }
 
     /**
@@ -333,17 +326,6 @@ public class BoxTask extends BoxResource {
         }
 
         /**
-         * @return the action the task assignee will be prompted to do.
-         * @deprecated Please use getTaskType()
-         * <p>
-         * Gets the action the task assignee will be prompted to do.
-         */
-        @Deprecated
-        public Action getAction() {
-            return Action.REVIEW;
-        }
-
-        /**
          * Gets the action the task assignee will be prompted to do.
          *
          * @return the action the task assignee will be prompted to do.
@@ -433,30 +415,42 @@ public class BoxTask extends BoxResource {
             String memberName = member.getName();
             JsonValue value = member.getValue();
             try {
-                if (memberName.equals("item")) {
-                    JsonObject itemJSON = value.asObject();
-                    String itemID = itemJSON.get("id").asString();
-                    BoxFile file = new BoxFile(getAPI(), itemID);
-                    this.item = file.new Info(itemJSON);
-                } else if (memberName.equals("due_at")) {
-                    this.dueAt = BoxDateFormat.parse(value.asString());
-                } else if (memberName.equals("action")) {
-                    this.action = value.asString();
-                } else if (memberName.equals("completion_rule")) {
-                    this.completionRule = value.asString();
-                } else if (memberName.equals("message")) {
-                    this.message = value.asString();
-                } else if (memberName.equals("task_assignment_collection")) {
-                    this.taskAssignments = this.parseTaskAssignmentCollection(value.asObject());
-                } else if (memberName.equals("is_completed")) {
-                    this.completed = value.asBoolean();
-                } else if (memberName.equals("created_by")) {
-                    JsonObject userJSON = value.asObject();
-                    String userID = userJSON.get("id").asString();
-                    BoxUser user = new BoxUser(getAPI(), userID);
-                    this.createdBy = user.new Info(userJSON);
-                } else if (memberName.equals("created_at")) {
-                    this.createdAt = BoxDateFormat.parse(value.asString());
+                switch (memberName) {
+                    case "item":
+                        JsonObject itemJSON = value.asObject();
+                        String itemID = itemJSON.get("id").asString();
+                        BoxFile file = new BoxFile(getAPI(), itemID);
+                        this.item = file.new Info(itemJSON);
+                        break;
+                    case "due_at":
+                        this.dueAt = BoxDateFormat.parse(value.asString());
+                        break;
+                    case "action":
+                        this.action = value.asString();
+                        break;
+                    case "completion_rule":
+                        this.completionRule = value.asString();
+                        break;
+                    case "message":
+                        this.message = value.asString();
+                        break;
+                    case "task_assignment_collection":
+                        this.taskAssignments = this.parseTaskAssignmentCollection(value.asObject());
+                        break;
+                    case "is_completed":
+                        this.completed = value.asBoolean();
+                        break;
+                    case "created_by":
+                        JsonObject userJSON = value.asObject();
+                        String userID = userJSON.get("id").asString();
+                        BoxUser user = new BoxUser(getAPI(), userID);
+                        this.createdBy = user.new Info(userJSON);
+                        break;
+                    case "created_at":
+                        this.createdAt = BoxDateFormat.parse(value.asString());
+                        break;
+                    default:
+                        break;
                 }
 
             } catch (Exception e) {

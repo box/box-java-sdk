@@ -20,12 +20,7 @@ import java.util.concurrent.TimeUnit;
  * Utility class for uploading large files.
  */
 public final class LargeFileUpload {
-
-    private static final String DIGEST_HEADER_PREFIX_SHA = "sha=";
     private static final String DIGEST_ALGORITHM_SHA1 = "SHA1";
-
-    private static final String OFFSET_QUERY_STRING = "offset";
-    private static final String LIMIT_QUERY_STRING = "limit";
     private static final int DEFAULT_CONNECTIONS = 3;
     private static final int DEFAULT_TIMEOUT = 1;
     private static final TimeUnit DEFAULT_TIMEUNIT = TimeUnit.HOURS;
@@ -33,7 +28,6 @@ public final class LargeFileUpload {
     private final ThreadPoolExecutor executorService;
     private final long timeout;
     private final TimeUnit timeUnit;
-    private int connections;
 
     /**
      * Creates a LargeFileUpload object.
@@ -95,13 +89,14 @@ public final class LargeFileUpload {
         body.add("file_size", fileSize);
         request.setBody(body.toString());
 
-        BoxJSONResponse response = (BoxJSONResponse) request.send();
-        JsonObject jsonObject = Json.parse(response.getJSON()).asObject();
+        try (BoxJSONResponse response = request.send()) {
+            JsonObject jsonObject = Json.parse(response.getJSON()).asObject();
 
-        String sessionId = jsonObject.get("id").asString();
-        BoxFileUploadSession session = new BoxFileUploadSession(boxApi, sessionId);
+            String sessionId = jsonObject.get("id").asString();
+            BoxFileUploadSession session = new BoxFileUploadSession(boxApi, sessionId);
 
-        return session.new Info(jsonObject);
+            return session.new Info(jsonObject);
+        }
     }
 
     /**
@@ -179,7 +174,7 @@ public final class LargeFileUpload {
     public BoxFile.Info upload(BoxAPIConnection boxApi, InputStream stream, URL url, long fileSize,
                                Map<String, String> fileAttributes)
         throws InterruptedException, IOException {
-        //creates a upload session
+        //creates an upload session
         BoxFileUploadSession.Info session = this.createUploadSession(boxApi, url, fileSize);
         return this.uploadHelper(session, stream, fileSize, fileAttributes);
     }
@@ -218,20 +213,22 @@ public final class LargeFileUpload {
         body.add("file_size", fileSize);
         request.setBody(body.toString());
 
-        BoxJSONResponse response = (BoxJSONResponse) request.send();
-        JsonObject jsonObject = Json.parse(response.getJSON()).asObject();
+        try (BoxJSONResponse response = request.send()) {
+            JsonObject jsonObject = Json.parse(response.getJSON()).asObject();
 
-        String sessionId = jsonObject.get("id").asString();
-        BoxFileUploadSession session = new BoxFileUploadSession(boxApi, sessionId);
+            String sessionId = jsonObject.get("id").asString();
+            BoxFileUploadSession session = new BoxFileUploadSession(boxApi, sessionId);
 
-        return session.new Info(jsonObject);
+            return session.new Info(jsonObject);
+        }
     }
 
     /*
      * Upload parts of the file. The part size is retrieved from the upload session.
      */
-    private List<BoxFileUploadSessionPart> uploadParts(BoxFileUploadSession.Info session, InputStream stream,
-                                                       long fileSize) throws InterruptedException {
+    private List<BoxFileUploadSessionPart> uploadParts(
+        BoxFileUploadSession.Info session, InputStream stream, long fileSize
+    ) throws InterruptedException {
         List<BoxFileUploadSessionPart> parts = new ArrayList<>();
 
         int partSize = session.getPartSize();

@@ -58,16 +58,13 @@ public class BoxFileVersionRetention extends BoxResource {
     }
 
     /**
+     * Retrieves all file version retentions matching given filters as an Iterable.
+     *
      * @param api    the API connection to be used by the resource.
      * @param filter filters for the query stored in QueryFilter object.
      * @param fields the fields to retrieve.
      * @return an iterable contains information about all file version retentions matching given filter.
-     * @deprecated This method will be deprecated in the future. Please use
-     * {@link BoxRetentionPolicyAssignment#getFilesUnderRetention(int, String...)}
-     * and {@link BoxRetentionPolicyAssignment#getFileVersionsUnderRetention(String...)} instead.
-     * Retrieves all file version retentions matching given filters as an Iterable.
      */
-    @Deprecated
     public static Iterable<BoxFileVersionRetention.Info> getRetentions(
         final BoxAPIConnection api, QueryFilter filter, String... fields) {
         filter.addFields(fields);
@@ -93,10 +90,11 @@ public class BoxFileVersionRetention extends BoxResource {
             builder.appendParam("fields", fields);
         }
         URL url = RETENTION_URL_TEMPLATE.buildWithQuery(this.getAPI().getBaseURL(), builder.toString(), this.getID());
-        BoxAPIRequest request = new BoxAPIRequest(this.getAPI(), url, "GET");
-        BoxJSONResponse response = (BoxJSONResponse) request.send();
-        JsonObject responseJSON = Json.parse(response.getJSON()).asObject();
-        return new Info(responseJSON);
+        BoxJSONRequest request = new BoxJSONRequest(this.getAPI(), url, "GET");
+        try (BoxJSONResponse response = request.send()) {
+            JsonObject responseJSON = Json.parse(response.getJSON()).asObject();
+            return new Info(responseJSON);
+        }
     }
 
     /**
@@ -321,32 +319,40 @@ public class BoxFileVersionRetention extends BoxResource {
             String memberName = member.getName();
             JsonValue value = member.getValue();
             try {
-                if (memberName.equals("winning_retention_policy")) {
-                    JsonObject policyJSON = value.asObject();
-                    if (this.winningPolicy == null) {
-                        String policyID = policyJSON.get("id").asString();
-                        BoxRetentionPolicy policy = new BoxRetentionPolicy(getAPI(), policyID);
-                        this.winningPolicy = policy.new Info(policyJSON);
-                    } else {
-                        this.winningPolicy.update(policyJSON);
-                    }
-                } else if (memberName.equals("file")) {
-                    JsonObject fileJSON = value.asObject();
-                    if (this.file == null) {
-                        String fileID = fileJSON.get("id").asString();
-                        BoxFile file = new BoxFile(getAPI(), fileID);
-                        this.file = file.new Info(fileJSON);
-                    } else {
-                        this.file.update(fileJSON);
-                    }
-                } else if (memberName.equals("file_version")) {
-                    JsonObject versionJSON = value.asObject();
-                    String fileVersionID = versionJSON.get("id").asString();
-                    this.fileVersion = new BoxFileVersion(getAPI(), versionJSON, fileVersionID);
-                } else if (memberName.equals("applied_at")) {
-                    this.appliedAt = BoxDateFormat.parse(value.asString());
-                } else if (memberName.equals("disposition_at")) {
-                    this.dispositionAt = BoxDateFormat.parse(value.asString());
+                switch (memberName) {
+                    case "winning_retention_policy":
+                        JsonObject policyJSON = value.asObject();
+                        if (this.winningPolicy == null) {
+                            String policyID = policyJSON.get("id").asString();
+                            BoxRetentionPolicy policy = new BoxRetentionPolicy(getAPI(), policyID);
+                            this.winningPolicy = policy.new Info(policyJSON);
+                        } else {
+                            this.winningPolicy.update(policyJSON);
+                        }
+                        break;
+                    case "file":
+                        JsonObject fileJSON = value.asObject();
+                        if (this.file == null) {
+                            String fileID = fileJSON.get("id").asString();
+                            BoxFile file = new BoxFile(getAPI(), fileID);
+                            this.file = file.new Info(fileJSON);
+                        } else {
+                            this.file.update(fileJSON);
+                        }
+                        break;
+                    case "file_version":
+                        JsonObject versionJSON = value.asObject();
+                        String fileVersionID = versionJSON.get("id").asString();
+                        this.fileVersion = new BoxFileVersion(getAPI(), versionJSON, fileVersionID);
+                        break;
+                    case "applied_at":
+                        this.appliedAt = BoxDateFormat.parse(value.asString());
+                        break;
+                    case "disposition_at":
+                        this.dispositionAt = BoxDateFormat.parse(value.asString());
+                        break;
+                    default:
+                        break;
                 }
             } catch (Exception e) {
                 throw new BoxDeserializationException(memberName, value.toString(), e);

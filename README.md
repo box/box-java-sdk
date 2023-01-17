@@ -11,6 +11,9 @@ The Box Java SDK for interacting with the
 ## Latest Release
 Latest release can be found [here](https://github.com/box/box-java-sdk/tree/v3.8.2).
 
+## Upgrades
+You can read about how to migrate to the new version [here](https://github.com/box/box-java-sdk/tree/v3.8.0/doc/upgrades).
+
 ## Versions
 We use a modified version of [Semantic Versioning](https://semver.org/) for all changes. See [version strategy](VERSIONS.md) for details which is effective from 30 July 2022.
 
@@ -56,6 +59,14 @@ If you are developing application for Android visit our [Android guide](doc/andr
    If you don't install this, you'll get an exception about key length or exception about parsing PKCS private key for Box Developer Edition. This is not a Box thing, this is a U.S. Government requirement concerning strong encryption.
    The listed jar is for Oracle JRE. There might be other similar JARs for different JRE versions like the one below for IBM JDK
    [Java Cryptography Extension for IBM JDK](https://www14.software.ibm.com/webapp/iwm/web/preLogin.do?source=jcesdk)
+6. [okhttp v4.10.0](https://mvnrepository.com/artifact/com.squareup.okhttp3/okhttp/4.10.0)
+   Maven: `com.squareup.okhttp3:okhttp:4.10.0`
+7. [okio-jvm v3.2.0](https://mvnrepository.com/artifact/com.squareup.okio/okio-jvm/3.2.0)
+   Maven: `com.squareup.okio:okio-jvm:3.2.0`
+8. [kotlin-stdlib v1.6.20](https://mvnrepository.com/artifact/org.jetbrains.kotlin/kotlin-stdlib/1.6.20) 
+   Maven: `org.jetbrains.kotlin:kotlin-stdlib:1.6.20`
+9. [kotlin-stdlib-common v1.6.20](https://mvnrepository.com/artifact/org.jetbrains.kotlin/kotlin-stdlib-common/1.6.20)
+   Maven: `org.jetbrains.kotlin:kotlin-stdlib-common:1.6.20`
 
 An app has to be authorized by the admin of the enterprise before these tests. It's always good to begin with the
 [Getting Started Section](https://developer.box.com/docs/setting-up-a-jwt-app) at Box's developer website.
@@ -161,16 +172,21 @@ To run the project, follow below steps
 
 3. Provide the Id of the admin user (or any enterprise user) in `src/example/java/com/box/sdk/example/BoxDeveloperEditionAPIConnectionAsEnterpriseUser.java`.
 
-```java
+```java 
 public final class BoxDeveloperEditionAPIConnectionAsEnterpriseUser {
 
    private static final String USER_ID = "";
    // ...
    Reader reader = new FileReader("src/example/config/config.json");
    BoxConfig boxConfig = BoxConfig.readFrom(reader);
+   IAccessTokenCache accessTokenCache = new InMemoryLRUAccessTokenCache(10);
 
-   BoxDeveloperEditionAPIConnection api = 
-           new BoxDeveloperEditionAPIConnection(USER_ID, DeveloperEditionEntityType.USER, boxConfig, accessTokenCache);
+   BoxDeveloperEditionAPIConnection api = new BoxDeveloperEditionAPIConnection(
+           USER_ID,
+           DeveloperEditionEntityType.USER,
+           boxConfig,
+           accessTokenCache
+   );
 }
 ```
 

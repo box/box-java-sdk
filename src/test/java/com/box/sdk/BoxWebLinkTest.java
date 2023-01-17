@@ -1,6 +1,7 @@
 package com.box.sdk;
 
 import static com.box.sdk.BoxSharedLink.Access.OPEN;
+import static com.box.sdk.http.ContentType.APPLICATION_JSON;
 import static com.github.tomakehurst.wiremock.core.WireMockConfiguration.wireMockConfig;
 import static java.lang.String.format;
 import static java.util.Calendar.OCTOBER;
@@ -15,10 +16,8 @@ import com.github.tomakehurst.wiremock.client.WireMock;
 import com.github.tomakehurst.wiremock.junit.WireMockRule;
 import java.io.IOException;
 import java.net.URL;
-import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.TimeZone;
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -29,13 +28,13 @@ import org.junit.Test;
 public class BoxWebLinkTest {
 
     @Rule
-    public WireMockRule wireMockRule = new WireMockRule(wireMockConfig().dynamicPort());
+    public WireMockRule wireMockRule = new WireMockRule(wireMockConfig().dynamicHttpsPort().httpDisabled(true));
     private final BoxAPIConnection api = TestUtils.getAPIConnection();
 
     @Before
     public void setUpBaseUrl() {
         api.setMaxRetryAttempts(1);
-        api.setBaseURL(format("http://localhost:%d", wireMockRule.port()));
+        api.setBaseURL(format("https://localhost:%d", wireMockRule.httpsPort()));
     }
 
     @Test
@@ -50,7 +49,7 @@ public class BoxWebLinkTest {
 
         wireMockRule.stubFor(WireMock.post(WireMock.urlPathEqualTo(webLinkURL))
             .willReturn(WireMock.aResponse()
-                .withHeader("Content-Type", "application/json")
+                .withHeader("Content-Type", APPLICATION_JSON)
                 .withBody(result)));
 
         BoxFolder folder = new BoxFolder(this.api, folderID);
@@ -77,7 +76,7 @@ public class BoxWebLinkTest {
 
         wireMockRule.stubFor(WireMock.get(WireMock.urlPathEqualTo(webLinkURL))
             .willReturn(WireMock.aResponse()
-                .withHeader("Content-Type", "application/json")
+                .withHeader("Content-Type", APPLICATION_JSON)
                 .withBody(result)));
 
         BoxWebLink webLink = new BoxWebLink(this.api, webLinkID);
@@ -107,7 +106,7 @@ public class BoxWebLinkTest {
         wireMockRule.stubFor(WireMock.put(WireMock.urlPathEqualTo(webLinkURL))
             .withRequestBody(WireMock.containing(updatedObject.toString()))
             .willReturn(WireMock.aResponse()
-                .withHeader("Content-Type", "application/json")
+                .withHeader("Content-Type", APPLICATION_JSON)
                 .withBody(result)));
 
         BoxWebLink webLink = new BoxWebLink(this.api, webLinkID);
@@ -151,29 +150,5 @@ public class BoxWebLinkTest {
             .unsharedDate(unsharedDate.getTime())
             .vanityName("myCustomName");
         webLink.createSharedLink(sharedLinkRequest);
-    }
-
-    @Test
-    public void cannotCreateShareLinkWithPermissions() {
-        final BoxWebLink webLink = new BoxWebLink(this.api, "12345");
-
-        Assert.assertThrows(
-            "Cannot set permissions on a shared link to web link.",
-            IllegalArgumentException.class,
-            () -> webLink.createSharedLink(OPEN, new Date(), new BoxSharedLink.Permissions())
-        );
-    }
-
-    @Test
-    public void cannotCreateShareLinkWithPermissionsWhenSettingPassword() {
-        final BoxWebLink webLink = new BoxWebLink(this.api, "12345");
-
-        Assert.assertThrows(
-            "Cannot set permissions on a shared link to web link.",
-            IllegalArgumentException.class,
-            () -> webLink.createSharedLink(
-                OPEN, new Date(), new BoxSharedLink.Permissions(), "my-very-secret-password"
-            )
-        );
     }
 }

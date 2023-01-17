@@ -1,5 +1,6 @@
 package com.box.sdk;
 
+import static com.box.sdk.http.ContentType.APPLICATION_JSON;
 import static com.github.tomakehurst.wiremock.core.WireMockConfiguration.wireMockConfig;
 import static java.lang.String.format;
 import static org.junit.Assert.assertEquals;
@@ -7,7 +8,6 @@ import static org.junit.Assert.assertEquals;
 import com.eclipsesource.json.JsonObject;
 import com.github.tomakehurst.wiremock.client.WireMock;
 import com.github.tomakehurst.wiremock.junit.WireMockRule;
-import java.io.IOException;
 import java.util.Iterator;
 import org.junit.Before;
 import org.junit.Rule;
@@ -16,17 +16,17 @@ import org.junit.Test;
 public class BoxMetadataCascadePolicyTest {
 
     @Rule
-    public WireMockRule wireMockRule = new WireMockRule(wireMockConfig().dynamicPort());
+    public WireMockRule wireMockRule = new WireMockRule(wireMockConfig().dynamicHttpsPort().httpDisabled(true));
     private final BoxAPIConnection api = TestUtils.getAPIConnection();
 
     @Before
     public void setUpBaseUrl() {
         api.setMaxRetryAttempts(1);
-        api.setBaseURL(format("http://localhost:%d", wireMockRule.port()));
+        api.setBaseURL(format("https://localhost:%d", wireMockRule.httpsPort()));
     }
 
     @Test
-    public void testCreateMetadataCascadePolicySucceedsSendsCorrectJson() throws IOException {
+    public void testCreateMetadataCascadePolicySucceedsSendsCorrectJson() {
         final String cascadePolicyURL = "/2.0/metadata_cascade_policies";
         final String folderID = "22222";
         final String scope = "enterprise_11111";
@@ -41,7 +41,7 @@ public class BoxMetadataCascadePolicyTest {
         wireMockRule.stubFor(WireMock.post(WireMock.urlPathEqualTo(cascadePolicyURL))
             .withRequestBody(WireMock.equalToJson(cascadeObject.toString()))
             .willReturn(WireMock.aResponse()
-                .withHeader("Content-Type", "application/json")
+                .withHeader("Content-Type", APPLICATION_JSON)
                 .withBody(result)));
 
         BoxMetadataCascadePolicy.Info metadataCascadePolicyInfo = BoxMetadataCascadePolicy.create(this.api, folderID,
@@ -53,7 +53,7 @@ public class BoxMetadataCascadePolicyTest {
     }
 
     @Test
-    public void testGetAllMetadataCascadePoliciesSucceeds() throws IOException {
+    public void testGetAllMetadataCascadePoliciesSucceeds() {
         final String folderID = "22222";
         final String cascadePolicyID = "84113349-794d-445c-b93c-d8481b223434";
         final String enterpriseID = "11111";
@@ -65,7 +65,7 @@ public class BoxMetadataCascadePolicyTest {
 
         wireMockRule.stubFor(WireMock.get(WireMock.urlPathEqualTo(cascadePoliciesURL))
             .willReturn(WireMock.aResponse()
-                .withHeader("Content-Type", "application/json")
+                .withHeader("Content-Type", APPLICATION_JSON)
                 .withBody(result)));
 
         Iterator<BoxMetadataCascadePolicy.Info> metadataCascadePolicies =
@@ -81,7 +81,7 @@ public class BoxMetadataCascadePolicyTest {
     }
 
     @Test
-    public void testGetAMetadataCascadePolicySucceeds() throws IOException {
+    public void testGetAMetadataCascadePolicySucceeds() {
         final String cascadePolicyID = "84113349-794d-445c-b93c-d8481b223434";
         final String enterpriseID = "11111";
         final String parentID = "22222";
@@ -93,7 +93,7 @@ public class BoxMetadataCascadePolicyTest {
 
         wireMockRule.stubFor(WireMock.get(WireMock.urlPathEqualTo(cascadePolicyURL))
             .willReturn(WireMock.aResponse()
-                .withHeader("Content-Type", "application/json")
+                .withHeader("Content-Type", APPLICATION_JSON)
                 .withBody(result)));
 
         BoxMetadataCascadePolicy metadataCascadePolicy = new BoxMetadataCascadePolicy(this.api, cascadePolicyID);
@@ -117,7 +117,6 @@ public class BoxMetadataCascadePolicyTest {
         wireMockRule.stubFor(WireMock.post(WireMock.urlPathEqualTo(forceApplyURL))
             .withRequestBody(WireMock.equalToJson(policyObject.toString()))
             .willReturn(WireMock.aResponse()
-                .withHeader("Content-Type", "application/json")
                 .withStatus(202)));
 
         BoxMetadataCascadePolicy metadataCascadePolicy = new BoxMetadataCascadePolicy(this.api, cascadePolicyID);
@@ -131,7 +130,7 @@ public class BoxMetadataCascadePolicyTest {
 
         wireMockRule.stubFor(WireMock.delete(WireMock.urlPathEqualTo(cascadePolicyURL))
             .willReturn(WireMock.aResponse()
-                .withHeader("Content-Type", "application/json")
+                .withHeader("Content-Type", APPLICATION_JSON)
                 .withStatus(204)));
 
         BoxMetadataCascadePolicy metadataCascadePolicy = new BoxMetadataCascadePolicy(this.api, cascadePolicyID);

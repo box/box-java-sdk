@@ -147,10 +147,11 @@ public class BoxSignRequest extends BoxResource {
         URL url = SIGN_REQUESTS_URL_TEMPLATE.build(api.getBaseURL());
         BoxJSONRequest request = new BoxJSONRequest(api, url, "POST");
         request.setBody(requestJSON.toString());
-        BoxJSONResponse response = (BoxJSONResponse) request.send();
-        JsonObject responseJSON = Json.parse(response.getJSON()).asObject();
-        BoxSignRequest signRequest = new BoxSignRequest(api, responseJSON.get("id").asString());
-        return signRequest.new Info(responseJSON);
+        try (BoxJSONResponse response = request.send()) {
+            JsonObject responseJSON = Json.parse(response.getJSON()).asObject();
+            BoxSignRequest signRequest = new BoxSignRequest(api, responseJSON.get("id").asString());
+            return signRequest.new Info(responseJSON);
+        }
     }
 
     /**
@@ -212,10 +213,11 @@ public class BoxSignRequest extends BoxResource {
         }
         URL url = SIGN_REQUEST_URL_TEMPLATE.buildAlphaWithQuery(
             this.getAPI().getBaseURL(), builder.toString(), this.getID());
-        BoxAPIRequest request = new BoxAPIRequest(this.getAPI(), url, "GET");
-        BoxJSONResponse response = (BoxJSONResponse) request.send();
-        JsonObject responseJSON = Json.parse(response.getJSON()).asObject();
-        return new BoxSignRequest.Info(responseJSON);
+        BoxJSONRequest request = new BoxJSONRequest(this.getAPI(), url, "GET");
+        try (BoxJSONResponse response = request.send()) {
+            JsonObject responseJSON = Json.parse(response.getJSON()).asObject();
+            return new BoxSignRequest.Info(responseJSON);
+        }
     }
 
     /**
@@ -226,11 +228,11 @@ public class BoxSignRequest extends BoxResource {
      */
     public BoxSignRequest.Info cancel() {
         URL url = SIGN_REQUEST_CANCEL_URL_TEMPLATE.buildAlphaWithQuery(getAPI().getBaseURL(), "", this.getID());
-        BoxAPIRequest request = new BoxAPIRequest(getAPI(), url, "POST");
-        request.noBody();
-        BoxJSONResponse response = (BoxJSONResponse) request.send();
-        JsonObject responseJSON = Json.parse(response.getJSON()).asObject();
-        return new BoxSignRequest.Info(responseJSON);
+        BoxJSONRequest request = new BoxJSONRequest(getAPI(), url, "POST");
+        try (BoxJSONResponse response = request.send()) {
+            JsonObject responseJSON = Json.parse(response.getJSON()).asObject();
+            return new BoxSignRequest.Info(responseJSON);
+        }
     }
 
     /**
@@ -240,9 +242,8 @@ public class BoxSignRequest extends BoxResource {
      */
     public void resend() {
         URL url = SIGN_REQUEST_RESEND_URL_TEMPLATE.buildAlphaWithQuery(getAPI().getBaseURL(), "", this.getID());
-        BoxJSONRequest request = new BoxJSONRequest(getAPI(), url, "POST");
-        BoxAPIResponse response = request.send();
-        response.disconnect();
+        BoxAPIRequest request = new BoxAPIRequest(getAPI(), url, "POST");
+        request.send().close();
     }
 
     /**
@@ -680,7 +681,6 @@ public class BoxSignRequest extends BoxResource {
                         this.declinedRedirectUrl = value.asString();
                         break;
                     default:
-                        return;
                 }
             } catch (Exception e) {
                 throw new BoxDeserializationException(memberName, value.toString(), e);

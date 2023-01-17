@@ -44,10 +44,11 @@ public class BoxGroupMembership extends BoxResource {
         BoxAPIConnection api = this.getAPI();
         URL url = MEMBERSHIP_URL_TEMPLATE.build(api.getBaseURL(), this.getID());
 
-        BoxAPIRequest request = new BoxAPIRequest(api, url, "GET");
-        BoxJSONResponse response = (BoxJSONResponse) request.send();
-        JsonObject jsonObject = Json.parse(response.getJSON()).asObject();
-        return new Info(jsonObject);
+        BoxJSONRequest request = new BoxJSONRequest(api, url, "GET");
+        try (BoxJSONResponse response = request.send()) {
+            JsonObject jsonObject = Json.parse(response.getJSON()).asObject();
+            return new Info(jsonObject);
+        }
     }
 
     /**
@@ -61,9 +62,10 @@ public class BoxGroupMembership extends BoxResource {
 
         BoxJSONRequest request = new BoxJSONRequest(api, url, "PUT");
         request.setBody(info.getPendingChanges());
-        BoxJSONResponse response = (BoxJSONResponse) request.send();
-        JsonObject jsonObject = Json.parse(response.getJSON()).asObject();
-        info.update(jsonObject);
+        try (BoxJSONResponse response = request.send()) {
+            JsonObject jsonObject = Json.parse(response.getJSON()).asObject();
+            info.update(jsonObject);
+        }
     }
 
     /**
@@ -74,62 +76,7 @@ public class BoxGroupMembership extends BoxResource {
         URL url = MEMBERSHIP_URL_TEMPLATE.build(api.getBaseURL(), this.getID());
 
         BoxAPIRequest request = new BoxAPIRequest(api, url, "DELETE");
-        BoxAPIResponse response = request.send();
-        response.disconnect();
-    }
-
-    /**
-     * Enumerates the possible roles that a user can have within a group.
-     *
-     * @deprecated use GroupRole instead.
-     */
-    @Deprecated
-    public enum Role {
-        /**
-         * The user is an administrator in the group.
-         */
-        ADMIN("admin"),
-
-        /**
-         * The user is a submaster in the group.
-         */
-        SUBMASTER("submaster"),
-
-        /**
-         * The user is a regular member in the group.
-         */
-        MEMBER("member");
-
-        /**
-         * String representation of the role.
-         */
-        private final String jsonValue;
-
-        /**
-         * Constructor.
-         *
-         * @param jsonValue srting representation of the role.
-         */
-        Role(String jsonValue) {
-            this.jsonValue = jsonValue;
-        }
-
-        /**
-         * Creates the role from given string.
-         *
-         * @param jsonValue string to be converted to role.
-         * @return the role, created from string value.
-         */
-        static Role fromJSONString(String jsonValue) {
-            return Role.valueOf(jsonValue.toUpperCase());
-        }
-
-        /**
-         * @return string representation of the role.
-         */
-        String toJSONString() {
-            return this.jsonValue;
-        }
+        request.send().close();
     }
 
     /**
@@ -243,11 +190,6 @@ public class BoxGroupMembership extends BoxResource {
         private BoxGroup.Info group;
 
         /**
-         * @see #getRole()
-         */
-        private Role role;
-
-        /**
          * @see #getGroupRole()
          */
         private GroupRole groupRole;
@@ -313,29 +255,6 @@ public class BoxGroupMembership extends BoxResource {
          */
         public BoxGroup.Info getGroup() {
             return this.group;
-        }
-
-        /**
-         * Gets the level of access the user has.
-         *
-         * @return the level of access the user has.
-         * @deprecated use getGroupRole() instead.
-         */
-        @Deprecated
-        public Role getRole() {
-            return this.role;
-        }
-
-        /**
-         * Sets the level of access the user has.
-         *
-         * @param role the new level of access to give the user.
-         * @deprecated use setGroupRole() instead.
-         */
-        @Deprecated
-        public void setRole(Role role) {
-            this.role = role;
-            this.addPendingChange("role", role.toJSONString());
         }
 
         /**
@@ -429,14 +348,21 @@ public class BoxGroupMembership extends BoxResource {
             for (JsonObject.Member member : jsonObject) {
                 String memberName = member.getName();
                 boolean memberValue = member.getValue().asBoolean();
-                if (memberName.equals("can_create_accounts")) {
-                    permissions.put(Permission.CAN_CREATE_ACCOUNTS, memberValue);
-                } else if (memberName.equals("can_edit_accounts")) {
-                    permissions.put(Permission.CAN_EDIT_ACCOUNTS, memberValue);
-                } else if (memberName.equals("can_instant_login")) {
-                    permissions.put(Permission.CAN_INSTANT_LOGIN, memberValue);
-                } else if (memberName.equals("can_run_reports")) {
-                    permissions.put(Permission.CAN_RUN_REPORTS, memberValue);
+                switch (memberName) {
+                    case "can_create_accounts":
+                        permissions.put(Permission.CAN_CREATE_ACCOUNTS, memberValue);
+                        break;
+                    case "can_edit_accounts":
+                        permissions.put(Permission.CAN_EDIT_ACCOUNTS, memberValue);
+                        break;
+                    case "can_instant_login":
+                        permissions.put(Permission.CAN_INSTANT_LOGIN, memberValue);
+                        break;
+                    case "can_run_reports":
+                        permissions.put(Permission.CAN_RUN_REPORTS, memberValue);
+                        break;
+                    default:
+                        break;
                 }
             }
             return permissions;
@@ -453,39 +379,47 @@ public class BoxGroupMembership extends BoxResource {
             JsonValue value = member.getValue();
 
             try {
-                if (memberName.equals("user")) {
-                    JsonObject userJSON = value.asObject();
-                    if (this.user == null) {
-                        String userID = userJSON.get("id").asString();
-                        BoxUser user = new BoxUser(getAPI(), userID);
-                        this.user = user.new Info(userJSON);
-                    } else {
-                        this.user.update(userJSON);
-                    }
+                switch (memberName) {
+                    case "user":
+                        JsonObject userJSON = value.asObject();
+                        if (this.user == null) {
+                            String userID = userJSON.get("id").asString();
+                            BoxUser user = new BoxUser(getAPI(), userID);
+                            this.user = user.new Info(userJSON);
+                        } else {
+                            this.user.update(userJSON);
+                        }
 
-                } else if (memberName.equals("group")) {
-                    JsonObject groupJSON = value.asObject();
-                    if (this.group == null) {
-                        String userID = groupJSON.get("id").asString();
-                        BoxGroup group = new BoxGroup(getAPI(), userID);
-                        this.group = group.new Info(groupJSON);
-                    } else {
-                        this.group.update(groupJSON);
-                    }
+                        break;
+                    case "group":
+                        JsonObject groupJSON = value.asObject();
+                        if (this.group == null) {
+                            String userID = groupJSON.get("id").asString();
+                            BoxGroup group = new BoxGroup(getAPI(), userID);
+                            this.group = group.new Info(groupJSON);
+                        } else {
+                            this.group.update(groupJSON);
+                        }
 
-                } else if (memberName.equals("role")) {
-                    this.role = Role.fromJSONString(value.asString());
-                    this.groupRole = GroupRole.fromJSONString(value.asString());
+                        break;
+                    case "role":
+                        this.groupRole = GroupRole.fromJSONString(value.asString());
 
-                } else if (memberName.equals("created_at")) {
-                    this.createdAt = BoxDateFormat.parse(value.asString());
+                        break;
+                    case "created_at":
+                        this.createdAt = BoxDateFormat.parse(value.asString());
 
-                } else if (memberName.equals("modified_at")) {
-                    this.modifiedAt = BoxDateFormat.parse(value.asString());
+                        break;
+                    case "modified_at":
+                        this.modifiedAt = BoxDateFormat.parse(value.asString());
 
-                } else if (memberName.equals("configurable_permissions")) {
-                    this.configurablePermissions = this.parseConfigurablePermissions(value.asObject());
+                        break;
+                    case "configurable_permissions":
+                        this.configurablePermissions = this.parseConfigurablePermissions(value.asObject());
 
+                        break;
+                    default:
+                        break;
                 }
             } catch (Exception e) {
                 throw new BoxDeserializationException(memberName, value.toString(), e);

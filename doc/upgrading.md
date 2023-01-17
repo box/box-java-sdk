@@ -108,7 +108,7 @@ these things yourself.
 ```java
 BoxAPIConnection api = new BoxAPIConnection(...);
 URL url = new URL("https://api.box.com/2.0/folders/0/items?fields=name,created_at")
-BoxAPIRequest request = new BoxAPIRequest(api, url, "GET");
+BoxJSONRequest request = new BoxJSONRequest(api, url, "GET");
 BoxJSONResponse response = (BoxJSONResponse) request.send();
 String json = response.getJSON();
 ```

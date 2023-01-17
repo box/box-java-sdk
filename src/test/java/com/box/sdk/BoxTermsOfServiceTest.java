@@ -1,12 +1,12 @@
 package com.box.sdk;
 
+import static com.box.sdk.http.ContentType.APPLICATION_JSON;
 import static com.github.tomakehurst.wiremock.core.WireMockConfiguration.wireMockConfig;
 import static java.lang.String.format;
 import static org.junit.Assert.assertEquals;
 
 import com.github.tomakehurst.wiremock.client.WireMock;
 import com.github.tomakehurst.wiremock.junit.WireMockRule;
-import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 import org.junit.Before;
@@ -18,17 +18,17 @@ import org.junit.runners.Parameterized;
 public class BoxTermsOfServiceTest {
 
     @Rule
-    public WireMockRule wireMockRule = new WireMockRule(wireMockConfig().dynamicPort());
+    public WireMockRule wireMockRule = new WireMockRule(wireMockConfig().dynamicHttpsPort().httpDisabled(true));
     private final BoxAPIConnection api = TestUtils.getAPIConnection();
 
     @Before
     public void setUpBaseUrl() {
         api.setMaxRetryAttempts(1);
-        api.setBaseURL(format("http://localhost:%d", wireMockRule.port()));
+        api.setBaseURL(format("https://localhost:%d", wireMockRule.httpsPort()));
     }
 
     @Test
-    public void testGetAllTermsOfServicesSucceeds() throws IOException {
+    public void testGetAllTermsOfServicesSucceeds() {
         final String tosURL = "/2.0/terms_of_services";
         final String firstTosID = "12345";
         final String firstEnterpriseID = "1111";
@@ -39,7 +39,7 @@ public class BoxTermsOfServiceTest {
 
         wireMockRule.stubFor(WireMock.get(WireMock.urlPathEqualTo(tosURL))
             .willReturn(WireMock.aResponse()
-                .withHeader("Content-Type", "application/json")
+                .withHeader("Content-Type", APPLICATION_JSON)
                 .withBody(result)));
 
         List<BoxTermsOfService.Info> termsOfServices = BoxTermsOfService.getAllTermsOfServices(this.api);
@@ -55,7 +55,7 @@ public class BoxTermsOfServiceTest {
     }
 
     @Test
-    public void testGetATermsOfServiceInfoSucceeds() throws IOException {
+    public void testGetATermsOfServiceInfoSucceeds() {
         final String tosID = "12345";
         final String tosURL = "/2.0/terms_of_services/" + tosID;
         final String enterpriseID = "1111";
@@ -64,7 +64,7 @@ public class BoxTermsOfServiceTest {
 
         wireMockRule.stubFor(WireMock.get(WireMock.urlPathEqualTo(tosURL))
             .willReturn(WireMock.aResponse()
-                .withHeader("Content-Type", "application/json")
+                .withHeader("Content-Type", APPLICATION_JSON)
                 .withBody(result)));
 
         BoxTermsOfService termsOfService = new BoxTermsOfService(this.api, tosID);

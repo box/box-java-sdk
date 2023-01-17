@@ -1,5 +1,6 @@
 package com.box.sdk;
 
+import static com.box.sdk.http.ContentType.APPLICATION_JSON;
 import static com.github.tomakehurst.wiremock.core.WireMockConfiguration.wireMockConfig;
 import static java.lang.String.format;
 import static org.junit.Assert.assertEquals;
@@ -7,7 +8,6 @@ import static org.junit.Assert.assertEquals;
 import com.eclipsesource.json.JsonObject;
 import com.github.tomakehurst.wiremock.client.WireMock;
 import com.github.tomakehurst.wiremock.junit.WireMockRule;
-import java.io.IOException;
 import java.util.Iterator;
 import org.junit.Before;
 import org.junit.Rule;
@@ -19,17 +19,17 @@ import org.junit.Test;
 public class BoxRetentionPolicyAssignmentTest {
 
     @Rule
-    public WireMockRule wireMockRule = new WireMockRule(wireMockConfig().dynamicPort());
+    public WireMockRule wireMockRule = new WireMockRule(wireMockConfig().dynamicHttpsPort().httpDisabled(true));
     private final BoxAPIConnection api = TestUtils.getAPIConnection();
 
     @Before
     public void setUpBaseUrl() {
         api.setMaxRetryAttempts(1);
-        api.setBaseURL(format("http://localhost:%d", wireMockRule.port()));
+        api.setBaseURL(format("https://localhost:%d", wireMockRule.httpsPort()));
     }
 
     @Test
-    public void testGetPolicyAssignmentForEnterpriseSucceeds() throws IOException {
+    public void testGetPolicyAssignmentForEnterpriseSucceeds() {
         final String assignmentID = "12345";
         final String policyID = "1111";
         final String getAssignmentsURL = "/2.0/retention_policies/" + policyID + "/assignments";
@@ -39,7 +39,7 @@ public class BoxRetentionPolicyAssignmentTest {
         wireMockRule.stubFor(WireMock.get(WireMock.urlPathEqualTo(getAssignmentsURL))
             .withQueryParam("type", WireMock.containing("enterprise"))
             .willReturn(WireMock.aResponse()
-                .withHeader("Content-Type", "application/json")
+                .withHeader("Content-Type", APPLICATION_JSON)
                 .withBody(result)));
 
         BoxRetentionPolicy policy = new BoxRetentionPolicy(this.api, policyID);
@@ -52,7 +52,7 @@ public class BoxRetentionPolicyAssignmentTest {
     }
 
     @Test
-    public void testGetPolicyAssignmentForFolderSucceeds() throws IOException {
+    public void testGetPolicyAssignmentForFolderSucceeds() {
         final String assignmentID = "12345";
         final String policyID = "1111";
         final String getAssignmentsURL = "/2.0/retention_policies/" + policyID + "/assignments";
@@ -62,7 +62,7 @@ public class BoxRetentionPolicyAssignmentTest {
         wireMockRule.stubFor(WireMock.get(WireMock.urlPathEqualTo(getAssignmentsURL))
             .withQueryParam("type", WireMock.containing("folder"))
             .willReturn(WireMock.aResponse()
-                .withHeader("Content-Type", "application/json")
+                .withHeader("Content-Type", APPLICATION_JSON)
                 .withBody(result)));
 
         BoxRetentionPolicy policy = new BoxRetentionPolicy(this.api, policyID);
@@ -75,7 +75,7 @@ public class BoxRetentionPolicyAssignmentTest {
     }
 
     @Test
-    public void testGetAllPolicyAssignmentsSucceeds() throws IOException {
+    public void testGetAllPolicyAssignmentsSucceeds() {
         final String policyID = "1111";
         final String getAssignmentsURL = "/2.0/retention_policies/" + policyID + "/assignments";
         final String firstAssignmentID = "12345";
@@ -85,7 +85,7 @@ public class BoxRetentionPolicyAssignmentTest {
 
         wireMockRule.stubFor(WireMock.get(WireMock.urlPathEqualTo(getAssignmentsURL))
             .willReturn(WireMock.aResponse()
-                .withHeader("Content-Type", "application/json")
+                .withHeader("Content-Type", APPLICATION_JSON)
                 .withBody(result)));
 
         BoxRetentionPolicy policy = new BoxRetentionPolicy(this.api, policyID);
@@ -103,7 +103,7 @@ public class BoxRetentionPolicyAssignmentTest {
     }
 
     @Test
-    public void testCreateRetentionPolicyAssignmentSucceedsAndSendsCorrectJson() throws IOException {
+    public void testCreateRetentionPolicyAssignmentSucceedsAndSendsCorrectJson() {
         final String assignmentID = "12345";
         final String assignmentURL = "/2.0/retention_policy_assignments";
         final String policyID = "1111";
@@ -123,7 +123,7 @@ public class BoxRetentionPolicyAssignmentTest {
         wireMockRule.stubFor(WireMock.post(WireMock.urlPathEqualTo(assignmentURL))
             .withRequestBody(WireMock.equalToJson(assignmentObject.toString()))
             .willReturn(WireMock.aResponse()
-                .withHeader("Content-Type", "application/json")
+                .withHeader("Content-Type", APPLICATION_JSON)
                 .withBody(result)));
 
         BoxRetentionPolicy policy = new BoxRetentionPolicy(this.api, policyID);
@@ -136,7 +136,7 @@ public class BoxRetentionPolicyAssignmentTest {
     }
 
     @Test
-    public void testCreateRetentionPolicyAssignmentToMetadataTemplate() throws IOException {
+    public void testCreateRetentionPolicyAssignmentToMetadataTemplate() {
         final String assignmentID = "12345";
         final String assignmentURL = "/2.0/retention_policy_assignments";
         final String policyID = "1111";
@@ -158,7 +158,7 @@ public class BoxRetentionPolicyAssignmentTest {
         wireMockRule.stubFor(WireMock.post(WireMock.urlPathEqualTo(assignmentURL))
             .withRequestBody(WireMock.equalToJson(assignmentObject.toString()))
             .willReturn(WireMock.aResponse()
-                .withHeader("Content-Type", "application/json")
+                .withHeader("Content-Type", APPLICATION_JSON)
                 .withBody(result)));
 
         BoxRetentionPolicy policy = new BoxRetentionPolicy(this.api, policyID);
@@ -172,7 +172,7 @@ public class BoxRetentionPolicyAssignmentTest {
     }
 
     @Test
-    public void testCreateRetentionPolicyAssignmentToMetadataTemplateWithoutStartDateField() throws IOException {
+    public void testCreateRetentionPolicyAssignmentToMetadataTemplateWithoutStartDateField() {
         final String assignmentID = "12345";
         final String assignmentURL = "/2.0/retention_policy_assignments";
         final String policyID = "1111";
@@ -192,7 +192,7 @@ public class BoxRetentionPolicyAssignmentTest {
         wireMockRule.stubFor(WireMock.post(WireMock.urlPathEqualTo(assignmentURL))
             .withRequestBody(WireMock.equalToJson(assignmentObject.toString()))
             .willReturn(WireMock.aResponse()
-                .withHeader("Content-Type", "application/json")
+                .withHeader("Content-Type", APPLICATION_JSON)
                 .withBody(result)));
 
         BoxRetentionPolicy policy = new BoxRetentionPolicy(this.api, policyID);
@@ -206,7 +206,7 @@ public class BoxRetentionPolicyAssignmentTest {
     }
 
     @Test
-    public void testGetRetentionPolicyAssignmentInfoSucceeds() throws IOException {
+    public void testGetRetentionPolicyAssignmentInfoSucceeds() {
         final String assignmentID = "12345";
         String assignmentURL = "/2.0/retention_policy_assignments/" + assignmentID;
         final String retentionPolicyID = "1111";
@@ -217,7 +217,7 @@ public class BoxRetentionPolicyAssignmentTest {
 
         wireMockRule.stubFor(WireMock.get(WireMock.urlPathEqualTo(assignmentURL))
             .willReturn(WireMock.aResponse()
-                .withHeader("Content-Type", "application/json")
+                .withHeader("Content-Type", APPLICATION_JSON)
                 .withBody(result)));
 
         BoxRetentionPolicyAssignment assignment = new BoxRetentionPolicyAssignment(this.api, assignmentID);
@@ -230,7 +230,7 @@ public class BoxRetentionPolicyAssignmentTest {
     }
 
     @Test
-    public void testGetAllFileVersionRetentionsSucceeds() throws IOException {
+    public void testGetAllFileVersionRetentionsSucceeds() {
         String versionRetentionURL = "/2.0/file_version_retentions";
         final String firstRetentionID = "12345";
         final String secondRetentionID = "32442";
@@ -239,7 +239,7 @@ public class BoxRetentionPolicyAssignmentTest {
 
         wireMockRule.stubFor(WireMock.get(WireMock.urlPathEqualTo(versionRetentionURL))
             .willReturn(WireMock.aResponse()
-                .withHeader("Content-Type", "application/json")
+                .withHeader("Content-Type", APPLICATION_JSON)
                 .withBody(result)));
 
         BoxFileVersionRetention.QueryFilter filter = new BoxFileVersionRetention.QueryFilter();
@@ -256,7 +256,7 @@ public class BoxRetentionPolicyAssignmentTest {
     }
 
     @Test
-    public void testGetFileRetentionInfoSucceeds() throws IOException {
+    public void testGetFileRetentionInfoSucceeds() {
         final String retentionID = "12345";
         final String versionRetentionURL = "/2.0/file_version_retentions/" + retentionID;
         final String retentionPolicyID = "1111";
@@ -267,7 +267,7 @@ public class BoxRetentionPolicyAssignmentTest {
 
         wireMockRule.stubFor(WireMock.get(WireMock.urlPathEqualTo(versionRetentionURL))
             .willReturn(WireMock.aResponse()
-                .withHeader("Content-Type", "application/json")
+                .withHeader("Content-Type", APPLICATION_JSON)
                 .withBody(result)));
 
         BoxFileVersionRetention policy = new BoxFileVersionRetention(this.api, retentionID);
@@ -280,7 +280,7 @@ public class BoxRetentionPolicyAssignmentTest {
     }
 
     @Test
-    public void testGetFilesUnderRetentionSucceeds() throws IOException {
+    public void testGetFilesUnderRetentionSucceeds() {
         final String retentionAssignmentID = "12345";
         final String filesUnderRetentionURL = "/2.0/retention_policy_assignments/"
             + retentionAssignmentID + "/files_under_retention";
@@ -292,7 +292,7 @@ public class BoxRetentionPolicyAssignmentTest {
 
         wireMockRule.stubFor(WireMock.get(WireMock.urlPathEqualTo(filesUnderRetentionURL))
             .willReturn(WireMock.aResponse()
-                .withHeader("Content-Type", "application/json")
+                .withHeader("Content-Type", APPLICATION_JSON)
                 .withBody(result)));
 
         BoxRetentionPolicyAssignment retetionAssignment =
@@ -307,7 +307,7 @@ public class BoxRetentionPolicyAssignmentTest {
     }
 
     @Test
-    public void testGetFileVersionsUnderRetentionSucceeds() throws IOException {
+    public void testGetFileVersionsUnderRetentionSucceeds() {
         final String retentionAssignmentID = "12345";
         final String filesUnderRetentionURL = "/2.0/retention_policy_assignments/"
             + retentionAssignmentID + "/file_versions_under_retention";
@@ -319,7 +319,7 @@ public class BoxRetentionPolicyAssignmentTest {
 
         wireMockRule.stubFor(WireMock.get(WireMock.urlPathEqualTo(filesUnderRetentionURL))
             .willReturn(WireMock.aResponse()
-                .withHeader("Content-Type", "application/json")
+                .withHeader("Content-Type", APPLICATION_JSON)
                 .withBody(result)));
 
         BoxRetentionPolicyAssignment retetionAssignment =
@@ -343,7 +343,7 @@ public class BoxRetentionPolicyAssignmentTest {
         wireMockRule.stubFor(WireMock.delete(WireMock.urlPathEqualTo(retentionPolicyAssignmentURL))
             .willReturn(WireMock.noContent()
                 .withStatus(204)
-                .withHeader("Content-Type", "application/json")
+                .withHeader("Content-Type", APPLICATION_JSON)
             ));
 
         BoxRetentionPolicyAssignment retetionAssignment =

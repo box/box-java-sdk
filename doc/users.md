@@ -55,13 +55,18 @@ BoxUser.Info userInfo = user.getInfo();
 
 ## Get Avatar for a User
 
-To retrieve the avatar for a User, call the [`getAvatar()`][get-avatar] method on the user object.
+To retrieve the avatar for a User, call the [`downloadAvatar(OutputStream stream)`][download-avatar] method on the user object.
 
 <!-- sample get_users_id_avatar -->
 ```java
 String userID = "33333";
-BoxUser user = new BoxUser(api, userID);
-InputStream avatarStream = user.getAvatar();
+// some stream do download avatar
+try (ByteArrayOutputStream outputStream = new ByteArrayOutputStream()){
+  BoxUser user=new BoxUser(api,userID);
+  user.downloadAvatar(outputStream);
+} catch (IOException e) {
+  throw new RuntimeException(e);
+}
 ```
 
 ## Add or update user avatar
@@ -99,7 +104,7 @@ BoxUser user = new BoxUser(api, userID);
 user.deleteAvatar();
 ```
 
-[get-avatar]: https://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxUser.html#getAvatar--
+[download-avatar]: https://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxUser.html#downloadAvatar-java.io.OutputStream-
 [upload-avatar-1]: https://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxUser.html#uploadAvatar-java.io.File-
 [upload-avatar-2]: https://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxUser.html#uploadAvatar-java.io.InputStream-java.lang.String-
 [delete-avatar]: https://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxUser.html#deleteAvatar--

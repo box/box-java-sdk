@@ -22,7 +22,7 @@ public class BoxResourceIterableTest {
         final URLTemplate urlTemplate = new URLTemplate("endpoint/%s");
         final int limit = 19;
 
-        BoxAPIConnection api = new BoxAPIConnection("");
+        BoxAPIConnection api = new BoxAPIConnectionForTests("");
         api.setRequestInterceptor(new RequestInterceptor() {
             @Override
             public BoxAPIResponse onRequest(BoxAPIRequest request) {
@@ -56,7 +56,7 @@ public class BoxResourceIterableTest {
         final URLTemplate urlTemplate = new URLTemplate("endpoint/%s");
         final int limit = 19;
 
-        BoxAPIConnection api = new BoxAPIConnection("");
+        BoxAPIConnection api = new BoxAPIConnectionForTests("");
         api.setRequestInterceptor(new RequestInterceptor() {
             @Override
             public BoxAPIResponse onRequest(BoxAPIRequest request) {
@@ -107,7 +107,7 @@ public class BoxResourceIterableTest {
         final URLTemplate urlTemplate = new URLTemplate("endpoint/%s");
         final int limit = 19;
 
-        BoxAPIConnection api = new BoxAPIConnection("");
+        BoxAPIConnection api = new BoxAPIConnectionForTests("");
         api.setRequestInterceptor(new RequestInterceptor() {
             @Override
             public BoxAPIResponse onRequest(BoxAPIRequest request) {

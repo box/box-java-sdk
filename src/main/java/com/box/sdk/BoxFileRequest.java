@@ -39,10 +39,11 @@ public class BoxFileRequest extends BoxResource {
      */
     public BoxFileRequest.Info getInfo() {
         URL url = FILE_REQUEST_URL_TEMPLATE.build(this.getAPI().getBaseURL(), this.getID());
-        BoxAPIRequest request = new BoxAPIRequest(this.getAPI(), url, "GET");
-        BoxJSONResponse response = (BoxJSONResponse) request.send();
-        JsonObject responseJSON = Json.parse(response.getJSON()).asObject();
-        return new Info(responseJSON, this.getAPI().getBaseAppUrl());
+        BoxJSONRequest request = new BoxJSONRequest(this.getAPI(), url, "GET");
+        try (BoxJSONResponse response = request.send()) {
+            JsonObject responseJSON = Json.parse(response.getJSON()).asObject();
+            return new Info(responseJSON, this.getAPI().getBaseAppUrl());
+        }
     }
 
     /**
@@ -60,9 +61,10 @@ public class BoxFileRequest extends BoxResource {
         folderBody.add("type", "folder");
         body.add("folder", folderBody);
         request.setBody(body.toString());
-        BoxJSONResponse response = (BoxJSONResponse) request.send();
-        JsonObject jsonObject = Json.parse(response.getJSON()).asObject();
-        return new Info(jsonObject, this.getAPI().getBaseAppUrl());
+        try (BoxJSONResponse response = request.send()) {
+            JsonObject jsonObject = Json.parse(response.getJSON()).asObject();
+            return new Info(jsonObject, this.getAPI().getBaseAppUrl());
+        }
     }
 
     /**
@@ -87,10 +89,11 @@ public class BoxFileRequest extends BoxResource {
         folderBody.add("type", "folder");
         body.add("folder", folderBody);
         request.setBody(body.toString());
-        BoxJSONResponse response = (BoxJSONResponse) request.send();
-        JsonObject jsonObject = Json.parse(response.getJSON()).asObject();
-        info.update(jsonObject);
-        return new Info(jsonObject, this.getAPI().getBaseAppUrl());
+        try (BoxJSONResponse response = request.send()) {
+            JsonObject jsonObject = Json.parse(response.getJSON()).asObject();
+            info.update(jsonObject);
+            return new Info(jsonObject, this.getAPI().getBaseAppUrl());
+        }
     }
 
     /**
@@ -111,10 +114,11 @@ public class BoxFileRequest extends BoxResource {
         URL url = FILE_REQUEST_URL_TEMPLATE.build(this.getAPI().getBaseURL(), this.getID());
         BoxJSONRequest request = new BoxJSONRequest(this.getAPI(), url, "PUT");
         request.setBody(info.getPendingChanges());
-        BoxJSONResponse response = (BoxJSONResponse) request.send();
-        JsonObject jsonObject = Json.parse(response.getJSON()).asObject();
-        info.update(jsonObject);
-        return info;
+        try (BoxJSONResponse response = request.send()) {
+            JsonObject jsonObject = Json.parse(response.getJSON()).asObject();
+            info.update(jsonObject);
+            return info;
+        }
     }
 
     /**
@@ -123,8 +127,7 @@ public class BoxFileRequest extends BoxResource {
     public void delete() {
         URL url = FILE_REQUEST_URL_TEMPLATE.build(this.getAPI().getBaseURL(), this.getID());
         BoxAPIRequest request = new BoxAPIRequest(this.getAPI(), url, "DELETE");
-        BoxAPIResponse response = request.send();
-        response.disconnect();
+        request.send().close();
     }
 
     /**

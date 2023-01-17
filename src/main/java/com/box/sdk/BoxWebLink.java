@@ -7,7 +7,6 @@ import com.eclipsesource.json.JsonObject;
 import com.eclipsesource.json.JsonValue;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.Date;
 
 /**
  * Represents an individual WebLink file on Box. This class can be used to retrieve the link's URL or perform other
@@ -21,7 +20,7 @@ import java.util.Date;
 public class BoxWebLink extends BoxItem {
 
     /**
-     * An array of all possible weblink fields that can be requested when calling {@link #getInfo()}.
+     * An array of all possible weblink fields that can be requested when calling {@link #getInfo(String...)}.
      */
     public static final String[] ALL_FIELDS = {"type", "id", "sequence_id", "etag", "name", "url", "description",
         "path_collection", "created_at", "modified_at", "trashed_at", "purged_at", "created_by", "modified_by",
@@ -44,58 +43,6 @@ public class BoxWebLink extends BoxItem {
      */
     public BoxWebLink(BoxAPIConnection api, String id) {
         super(api, id);
-    }
-
-    /**
-     * Creates a new shared link for this item.
-     *
-     * <p>This method is a convenience method for manually creating a new shared link and applying it to this item with
-     * {@link BoxItem.Info#setSharedLink}. You may want to create the shared link manually so that it can be updated along with
-     * other changes to the item's info in a single network request, giving a boost to performance.</p>
-     *
-     * @param access      the access level of the shared link.
-     * @param unshareDate the date and time at which the link will expire. Can be null to create a non-expiring link.
-     * @param permissions the permissions of the shared link. Can be null to use the default permissions.
-     * @return the created shared link.
-     * @deprecated use {@link BoxWebLink#createSharedLink(BoxSharedLinkWithoutPermissionsRequest)}
-     */
-    @Override
-    @Deprecated
-    public BoxSharedLink createSharedLink(BoxSharedLink.Access access, Date unshareDate,
-                                          BoxSharedLink.Permissions permissions) {
-
-        if (permissions != null) {
-            throw new IllegalArgumentException(
-                "Cannot set permissions on a shared link to web link. "
-                    + "The BoxWebLink#createSharedLink(BoxSharedLinkWithoutPermissionsRequest) is preferred."
-            );
-        }
-        BoxSharedLink sharedLink = new BoxSharedLink(access, unshareDate, permissions);
-        return this.createSharedLink(sharedLink);
-    }
-
-    /**
-     * Creates new SharedLink for a BoxWebLink with a password.
-     *
-     * @param access      The access level of the shared link.
-     * @param unshareDate A specified date to unshare the Box web link.
-     * @param permissions The permissions to set on the shared link for the Box web link.
-     * @param password    Password set on the shared link to give access to the Box web link.
-     * @return information about the newly created shared link.
-     * @deprecated Use {@link BoxWebLink#createSharedLink(BoxSharedLinkWithoutPermissionsRequest)}
-     */
-    @Deprecated
-    public BoxSharedLink createSharedLink(BoxSharedLink.Access access, Date unshareDate,
-                                          BoxSharedLink.Permissions permissions, String password) {
-
-        if (permissions != null) {
-            throw new IllegalArgumentException(
-                "Cannot set permissions on a shared link to web link. "
-                    + "The BoxWebLink#createSharedLink(BoxSharedLinkWithoutPermissionsRequest) is supported."
-            );
-        }
-        BoxSharedLink sharedLink = new BoxSharedLink(access, unshareDate, permissions, password);
-        return this.createSharedLink(sharedLink);
     }
 
     /**
@@ -137,10 +84,11 @@ public class BoxWebLink extends BoxItem {
 
         BoxJSONRequest request = new BoxJSONRequest(this.getAPI(), url, "POST");
         request.setBody(copyInfo.toString());
-        BoxJSONResponse response = (BoxJSONResponse) request.send();
-        JsonObject responseJSON = Json.parse(response.getJSON()).asObject();
-        BoxWebLink copiedWebLink = new BoxWebLink(this.getAPI(), responseJSON.get("id").asString());
-        return copiedWebLink.new Info(responseJSON);
+        try (BoxJSONResponse response = request.send()) {
+            JsonObject responseJSON = Json.parse(response.getJSON()).asObject();
+            BoxWebLink copiedWebLink = new BoxWebLink(this.getAPI(), responseJSON.get("id").asString());
+            return copiedWebLink.new Info(responseJSON);
+        }
     }
 
     /**
@@ -149,8 +97,7 @@ public class BoxWebLink extends BoxItem {
     public void delete() {
         URL url = WEB_LINK_URL_TEMPLATE.build(this.getAPI().getBaseURL(), this.getID());
         BoxAPIRequest request = new BoxAPIRequest(this.getAPI(), url, "DELETE");
-        BoxAPIResponse response = request.send();
-        response.disconnect();
+        request.send().close();
     }
 
     @Override
@@ -173,10 +120,11 @@ public class BoxWebLink extends BoxItem {
         }
 
         request.setBody(updateInfo.toString());
-        BoxJSONResponse response = (BoxJSONResponse) request.send();
-        JsonObject responseJSON = Json.parse(response.getJSON()).asObject();
-        BoxWebLink movedWebLink = new BoxWebLink(this.getAPI(), responseJSON.get("id").asString());
-        return movedWebLink.new Info(responseJSON);
+        try (BoxJSONResponse response = request.send()) {
+            JsonObject responseJSON = Json.parse(response.getJSON()).asObject();
+            BoxWebLink movedWebLink = new BoxWebLink(this.getAPI(), responseJSON.get("id").asString());
+            return movedWebLink.new Info(responseJSON);
+        }
     }
 
     /**
@@ -192,26 +140,21 @@ public class BoxWebLink extends BoxItem {
         updateInfo.add("name", newName);
 
         request.setBody(updateInfo.toString());
-        BoxJSONResponse response = (BoxJSONResponse) request.send();
-        response.getJSON();
-    }
-
-    @Override
-    public BoxWebLink.Info getInfo() {
-        URL url = WEB_LINK_URL_TEMPLATE.build(this.getAPI().getBaseURL(), this.getID());
-        BoxAPIRequest request = new BoxAPIRequest(this.getAPI(), url, "GET");
-        BoxJSONResponse response = (BoxJSONResponse) request.send();
-        return new Info(response.getJSON());
+        request.send().close();
     }
 
     @Override
     public BoxWebLink.Info getInfo(String... fields) {
-        String queryString = new QueryStringBuilder().appendParam("fields", fields).toString();
-        URL url = WEB_LINK_URL_TEMPLATE.buildWithQuery(this.getAPI().getBaseURL(), queryString, this.getID());
+        URL url = WEB_LINK_URL_TEMPLATE.build(this.getAPI().getBaseURL(), this.getID());
+        if (fields.length > 0) {
+            String queryString = new QueryStringBuilder().appendParam("fields", fields).toString();
+            url = WEB_LINK_URL_TEMPLATE.buildWithQuery(this.getAPI().getBaseURL(), queryString, this.getID());
+        }
 
-        BoxAPIRequest request = new BoxAPIRequest(this.getAPI(), url, "GET");
-        BoxJSONResponse response = (BoxJSONResponse) request.send();
-        return new Info(response.getJSON());
+        BoxJSONRequest request = new BoxJSONRequest(this.getAPI(), url, "GET");
+        try (BoxJSONResponse response = request.send()) {
+            return new Info(response.getJSON());
+        }
     }
 
     /**
@@ -231,9 +174,10 @@ public class BoxWebLink extends BoxItem {
         URL url = WEB_LINK_URL_TEMPLATE.build(this.getAPI().getBaseURL(), this.getID());
         BoxJSONRequest request = new BoxJSONRequest(this.getAPI(), url, "PUT");
         request.setBody(info.getPendingChanges());
-        BoxJSONResponse response = (BoxJSONResponse) request.send();
-        JsonObject jsonObject = Json.parse(response.getJSON()).asObject();
-        info.update(jsonObject);
+        try (BoxJSONResponse response = request.send()) {
+            JsonObject jsonObject = Json.parse(response.getJSON()).asObject();
+            info.update(jsonObject);
+        }
     }
 
     @Override
@@ -251,9 +195,10 @@ public class BoxWebLink extends BoxItem {
         URL url = WEB_LINK_URL_TEMPLATE.buildWithQuery(this.getAPI().getBaseURL(), queryString, this.getID());
         BoxJSONRequest request = new BoxJSONRequest(this.getAPI(), url, "PUT");
         request.setBody(infoJSON.toString());
-        BoxJSONResponse response = (BoxJSONResponse) request.send();
-        JsonObject jsonObject = Json.parse(response.getJSON()).asObject();
-        return new Info(jsonObject);
+        try (BoxJSONResponse response = request.send()) {
+            JsonObject jsonObject = Json.parse(response.getJSON()).asObject();
+            return new Info(jsonObject);
+        }
     }
 
     /**

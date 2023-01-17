@@ -1,0 +1,17 @@
+{
+  "representation": "jpg",
+  "properties": {
+    "dimensions": "32x32",
+    "paged": false,
+    "thumb": true
+  },
+  "info": {
+    "url": "https://localhost:53621/2.0/internal_files/1030335435441/versions/1116437417841/representations/jpg_thumb_32x32"
+  },
+  "status": {
+    "state": "success"
+  },
+  "content": {
+    "url_template": "https://localhost:53621/2.0/internal_files/1030335435441/versions/1116437417841/representations/jpg_thumb_32x32/content/{+asset_path}"
+  }
+}

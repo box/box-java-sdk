@@ -1,14 +1,25 @@
 package com.box.sdk;
 
+import static com.box.sdk.StandardCharsets.UTF_8;
+import static com.box.sdk.http.ContentType.APPLICATION_JSON;
+import static java.lang.String.format;
+
+import com.eclipsesource.json.Json;
+import com.eclipsesource.json.ParseException;
+import java.io.ByteArrayInputStream;
+import java.io.Closeable;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
 import java.util.TreeMap;
-import java.util.zip.GZIPInputStream;
+import okhttp3.MediaType;
+import okhttp3.Response;
+import okhttp3.ResponseBody;
 
 /**
  * Used to read HTTP responses from the Box API.
@@ -24,13 +35,14 @@ import java.util.zip.GZIPInputStream;
  * This class usually isn't instantiated directly, but is instead returned after calling {@link BoxAPIRequest#send}.
  * </p>
  */
-public class BoxAPIResponse {
-    private static final BoxLogger LOGGER = BoxLogger.defaultLogger();
+public class BoxAPIResponse implements Closeable {
     private static final int BUFFER_SIZE = 8192;
-
-    private final HttpURLConnection connection;
-    //Batch API Response will have headers in response body
-    private final Map<String, String> headers;
+    private static final BoxLogger LOGGER = BoxLogger.defaultLogger();
+    private final Map<String, List<String>> headers = new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
+    private final long contentLength;
+    private final String contentType;
+    private final String requestMethod;
+    private final String requestUrl;
 
     private int responseCode;
     private String bodyString;
@@ -51,8 +63,10 @@ public class BoxAPIResponse {
      * Constructs an empty BoxAPIResponse without an associated HttpURLConnection.
      */
     public BoxAPIResponse() {
-        this.connection = null;
-        this.headers = null;
+        this.contentLength = 0;
+        this.contentType = null;
+        this.requestMethod = null;
+        this.requestUrl = null;
     }
 
     /**
@@ -61,69 +75,113 @@ public class BoxAPIResponse {
      * @param responseCode http response code
      * @param headers      map of headers
      */
-    public BoxAPIResponse(int responseCode, Map<String, String> headers) {
-        this.connection = null;
-        this.responseCode = responseCode;
-        this.headers = headers;
+    public BoxAPIResponse(
+        int responseCode, String requestMethod, String requestUrl, Map<String, List<String>> headers
+    ) {
+        this(responseCode, requestMethod, requestUrl, headers, null, null, 0);
     }
 
-    /**
-     * Constructs a BoxAPIResponse using an HttpURLConnection.
-     *
-     * @param connection a connection that has already sent a request to the API.
-     */
-    public BoxAPIResponse(HttpURLConnection connection) {
-        this.connection = connection;
-        this.inputStream = null;
-
-        try {
-            this.responseCode = this.connection.getResponseCode();
-        } catch (IOException e) {
-            throw new BoxAPIException("Couldn't connect to the Box API due to a network error.", e);
+    public BoxAPIResponse(int code,
+                          String requestMethod,
+                          String requestUrl,
+                          Map<String, List<String>> headers,
+                          InputStream body,
+                          String contentType,
+                          long contentLength
+    ) {
+        this.responseCode = code;
+        this.requestMethod = requestMethod;
+        this.requestUrl = requestUrl;
+        if (headers != null) {
+            this.headers.putAll(headers);
         }
-
-        Map<String, String> responseHeaders = new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
-        for (String headerKey : connection.getHeaderFields().keySet()) {
-            if (headerKey != null) {
-                responseHeaders.put(headerKey, connection.getHeaderField(headerKey));
-            }
-        }
-        this.headers = responseHeaders;
-
-        if (!isSuccess(this.responseCode)) {
+        this.rawInputStream = body;
+        this.contentType = contentType;
+        this.contentLength = contentLength;
+        storeBodyResponse(body);
+        if (isSuccess(responseCode)) {
+            this.logResponse();
+        } else {
             this.logErrorResponse(this.responseCode);
-            throw new BoxAPIResponseException("The API returned an error code", this);
+            throw new BoxAPIResponseException("The API returned an error code", responseCode, null, headers);
         }
+    }
 
-        this.logResponse();
+    private void storeBodyResponse(InputStream body) {
+        try {
+            if (contentType != null && body != null && contentType.contains(APPLICATION_JSON) && body.available() > 0) {
+                InputStreamReader reader = new InputStreamReader(this.getBody(), UTF_8);
+                StringBuilder builder = new StringBuilder();
+                char[] buffer = new char[BUFFER_SIZE];
+
+                int read = reader.read(buffer, 0, BUFFER_SIZE);
+                while (read != -1) {
+                    builder.append(buffer, 0, read);
+                    read = reader.read(buffer, 0, BUFFER_SIZE);
+                }
+                reader.close();
+                this.disconnect();
+                bodyString = builder.toString();
+                rawInputStream = new ByteArrayInputStream(bodyString.getBytes(UTF_8));
+            }
+        } catch (IOException e) {
+            throw new RuntimeException("Cannot read body stream", e);
+        }
     }
 
     private static boolean isSuccess(int responseCode) {
-        return responseCode >= 200 && responseCode < 300;
+        return responseCode >= 200 && responseCode < 400;
     }
 
-    private static String readErrorStream(InputStream stream) {
-        if (stream == null) {
-            return null;
+    static BoxAPIResponse toBoxResponse(Response response) {
+        if (!response.isSuccessful() && !response.isRedirect()) {
+            throw new BoxAPIResponseException(
+                "The API returned an error code",
+                response.code(),
+                Optional.ofNullable(response.body()).map(body -> {
+                    try {
+                        return body.string();
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
+                    }
+                }).orElse("Body was null"),
+                response.headers().toMultimap()
+            );
         }
-
-        InputStreamReader reader = new InputStreamReader(stream, StandardCharsets.UTF_8);
-        StringBuilder builder = new StringBuilder();
-        char[] buffer = new char[BUFFER_SIZE];
-
-        try {
-            int read = reader.read(buffer, 0, BUFFER_SIZE);
-            while (read != -1) {
-                builder.append(buffer, 0, read);
-                read = reader.read(buffer, 0, BUFFER_SIZE);
+        ResponseBody responseBody = response.body();
+        if (responseBody.contentLength() == 0 || responseBody.contentType() == null) {
+            return new BoxAPIResponse(response.code(),
+                response.request().method(),
+                response.request().url().toString(),
+                response.headers().toMultimap()
+            );
+        }
+        if (responseBody != null && responseBody.contentType() != null) {
+            if (responseBody.contentType().toString().contains(APPLICATION_JSON)) {
+                String bodyAsString = "";
+                try {
+                    bodyAsString = responseBody.string();
+                    return new BoxJSONResponse(response.code(),
+                        response.request().method(),
+                        response.request().url().toString(),
+                        response.headers().toMultimap(),
+                        Json.parse(bodyAsString).asObject()
+                    );
+                } catch (ParseException e) {
+                    throw new BoxAPIException(format("Error parsing JSON:\n%s", bodyAsString), e);
+                } catch (IOException e) {
+                    throw new RuntimeException("Error getting response to string", e);
+                }
             }
-
-            reader.close();
-        } catch (IOException e) {
-            return null;
         }
-
-        return builder.toString();
+        return new BoxAPIResponse(response.code(),
+            response.request().method(),
+            response.request().url().toString(),
+            response.headers().toMultimap(),
+            responseBody.byteStream(),
+            Optional.ofNullable(responseBody.contentType()).map(MediaType::toString).orElse(null),
+            responseBody.contentLength()
+        );
     }
 
     /**
@@ -141,7 +199,7 @@ public class BoxAPIResponse {
      * @return the length of the response's body.
      */
     public long getContentLength() {
-        return this.connection.getContentLength();
+        return this.contentLength;
     }
 
     /**
@@ -151,16 +209,7 @@ public class BoxAPIResponse {
      * @return value of the header.
      */
     public String getHeaderField(String fieldName) {
-        // headers map is null for all regular response calls except when made as a batch request
-        if (this.headers == null) {
-            if (this.connection != null) {
-                return this.connection.getHeaderField(fieldName);
-            } else {
-                return null;
-            }
-        } else {
-            return this.headers.get(fieldName);
-        }
+        return Optional.ofNullable(this.headers.get(fieldName)).map((l) -> l.get(0)).orElse("");
     }
 
     /**
@@ -180,27 +229,12 @@ public class BoxAPIResponse {
      */
     public InputStream getBody(ProgressListener listener) {
         if (this.inputStream == null) {
-            String contentEncoding = this.connection.getContentEncoding();
-            try {
-                if (this.rawInputStream == null) {
-                    this.rawInputStream = this.connection.getInputStream();
-                }
-
-                if (listener == null) {
-                    this.inputStream = this.rawInputStream;
-                } else {
-                    this.inputStream = new ProgressInputStream(this.rawInputStream, listener,
-                        this.getContentLength());
-                }
-
-                if (contentEncoding != null && contentEncoding.equalsIgnoreCase("gzip")) {
-                    this.inputStream = new GZIPInputStream(this.inputStream);
-                }
-            } catch (IOException e) {
-                throw new BoxAPIException("Couldn't connect to the Box API due to a network error.", e);
+            if (listener == null) {
+                this.inputStream = this.rawInputStream;
+            } else {
+                this.inputStream = new ProgressInputStream(this.rawInputStream, listener, this.getContentLength());
             }
         }
-
         return this.inputStream;
     }
 
@@ -209,90 +243,56 @@ public class BoxAPIResponse {
      * longer be read after it has been disconnected.
      */
     public void disconnect() {
-        if (this.connection == null) {
-            return;
-        }
-
-        try {
-            if (this.rawInputStream == null) {
-                this.rawInputStream = this.connection.getInputStream();
-            }
-
-            // We need to manually read from the raw input stream in case there are any remaining bytes. There's a bug
-            // where a wrapping GZIPInputStream may not read to the end of a chunked response, causing Java to not
-            // return the connection to the connection pool.
-            byte[] buffer = new byte[BUFFER_SIZE];
-            int n = this.rawInputStream.read(buffer);
-            while (n != -1) {
-                n = this.rawInputStream.read(buffer);
-            }
-            this.rawInputStream.close();
-
-            if (this.inputStream != null) {
-                this.inputStream.close();
-            }
-        } catch (IOException e) {
-            throw new BoxAPIException("Couldn't finish closing the connection to the Box API due to a network error or "
-                + "because the stream was already closed.", e);
-        }
+        this.close();
     }
 
     /**
      * @return A Map containg headers on this Box API Response.
      */
-    public Map<String, String> getHeaders() {
+    public Map<String, List<String>> getHeaders() {
         return this.headers;
     }
 
     @Override
     public String toString() {
         String lineSeparator = System.getProperty("line.separator");
-        Map<String, List<String>> headers = this.connection.getHeaderFields();
         StringBuilder builder = new StringBuilder();
-        builder.append("Response");
-        builder.append(lineSeparator);
-        builder.append(this.connection.getRequestMethod());
-        builder.append(' ');
-        builder.append(this.connection.getURL().toString());
-        builder.append(lineSeparator);
-        builder.append(headers.get(null).get(0));
-        builder.append(lineSeparator);
-
-        for (Map.Entry<String, List<String>> entry : headers.entrySet()) {
-            String key = entry.getKey();
-            if (key == null) {
-                continue;
-            }
-
-            List<String> nonEmptyValues = new ArrayList<>();
-            for (String value : entry.getValue()) {
-                if (value != null && value.trim().length() != 0) {
-                    nonEmptyValues.add(value);
-                }
-            }
-
-            if (nonEmptyValues.size() == 0) {
-                continue;
-            }
-
-            builder.append(key);
-            builder.append(": ");
-            for (String value : nonEmptyValues) {
-                builder.append(value);
-                builder.append(", ");
-            }
-
-            builder.delete(builder.length() - 2, builder.length());
-            builder.append(lineSeparator);
-        }
+        builder.append("Response")
+            .append(lineSeparator)
+            .append(this.requestMethod)
+            .append(' ')
+            .append(this.requestUrl)
+            .append(lineSeparator)
+            .append(contentType != null ? "Content-Type: " + contentType + lineSeparator : "")
+            .append(headers.isEmpty() ? "" : "Headers:" + lineSeparator);
+        headers.entrySet()
+            .stream()
+            .filter(Objects::nonNull)
+            .forEach(e -> builder.append(format("%s: [%s]%s", e.getKey().toLowerCase(), e.getValue(), lineSeparator)));
 
         String bodyString = this.bodyToString();
         if (bodyString != null && !bodyString.equals("")) {
-            builder.append(lineSeparator);
-            builder.append(bodyString);
+            builder.append("Body:").append(lineSeparator).append(bodyString);
         }
 
         return builder.toString().trim();
+    }
+
+    @Override
+    public void close() {
+        try {
+            if (this.inputStream == null && this.rawInputStream != null) {
+                this.rawInputStream.close();
+            }
+            if (this.inputStream != null) {
+                this.inputStream.close();
+            }
+        } catch (IOException e) {
+            throw new BoxAPIException(
+                "Couldn't finish closing the connection to the Box API due to a network error or "
+                    + "because the stream was already closed.", e
+            );
+        }
     }
 
     /**
@@ -303,32 +303,7 @@ public class BoxAPIResponse {
      * @return a string representation of this response's body.
      */
     protected String bodyToString() {
-        if (this.bodyString == null && !isSuccess(this.responseCode)) {
-            this.bodyString = readErrorStream(this.getErrorStream());
-        }
-
         return this.bodyString;
-    }
-
-    /**
-     * Returns the response error stream, handling the case when it contains gzipped data.
-     *
-     * @return gzip decoded (if needed) error stream or null
-     */
-    private InputStream getErrorStream() {
-        InputStream errorStream = this.connection.getErrorStream();
-        if (errorStream != null) {
-            final String contentEncoding = this.connection.getContentEncoding();
-            if (contentEncoding != null && contentEncoding.equalsIgnoreCase("gzip")) {
-                try {
-                    errorStream = new GZIPInputStream(errorStream);
-                } catch (IOException e) {
-                    // just return the error stream as is
-                }
-            }
-        }
-
-        return errorStream;
     }
 
     private void logResponse() {

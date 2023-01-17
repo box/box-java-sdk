@@ -1,6 +1,7 @@
 package com.box.sdk;
 
 import static com.box.sdk.BoxApiProvider.jwtApiForServiceAccount;
+import static com.box.sdk.UniqueTestFolder.randomizeName;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
@@ -34,8 +35,9 @@ public class EventStreamIT {
         stream.start();
 
         BoxFolder rootFolder = BoxFolder.getRootFolder(api);
-        BoxFolder childFolder = rootFolder.createFolder("[receiveEventsForFolderCreateAndFolderDelete] Child Folder")
-            .getResource();
+        BoxFolder childFolder = rootFolder.createFolder(
+            randomizeName("[receiveEventsForFolderCreateAndFolderDelete] Child Folder")
+        ).getResource();
         String expectedID = childFolder.getID();
         childFolder.delete(false);
 
@@ -58,8 +60,7 @@ public class EventStreamIT {
             if (source instanceof BoxFolder) {
                 BoxFolder sourceFolder = (BoxFolder) source;
                 if (sourceFolder.getID().equals(expectedID)) {
-                    if (event.getType() == BoxEvent.Type.ITEM_CREATE
-                        && event.getEventType() == BoxEvent.EventType.ITEM_CREATE) {
+                    if (event.getEventType() == BoxEvent.EventType.ITEM_CREATE) {
                         BoxFolder folder = (BoxFolder) event.getSourceInfo().getResource();
                         final String eventFolderID = folder.getID();
                         final String childFolderID = childFolder.getID();
@@ -67,8 +68,7 @@ public class EventStreamIT {
                         createdEventFound = true;
                     }
 
-                    if (event.getType() == BoxEvent.Type.ITEM_TRASH
-                        && event.getEventType() == BoxEvent.EventType.ITEM_TRASH) {
+                    if (event.getEventType() == BoxEvent.EventType.ITEM_TRASH) {
                         BoxFolder folder = (BoxFolder) event.getSourceInfo().getResource();
                         assertThat(folder.getID(), is(equalTo(childFolder.getID())));
                         deletedEventFound = true;
