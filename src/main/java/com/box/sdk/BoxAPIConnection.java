@@ -84,7 +84,7 @@ public class BoxAPIConnection {
     private static final String BOX_NOTIFICATIONS_HEADER = "Box-Notifications";
 
     private static final String JAVA_VERSION = System.getProperty("java.version");
-    private static final String SDK_VERSION = "3.8.2";
+    private static final String SDK_VERSION = "4.0.0";
 
     /**
      * The amount of buffer time, in milliseconds, to use when determining if an access token should be refreshed. For

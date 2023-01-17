@@ -9,10 +9,10 @@ The Box Java SDK for interacting with the
 [Box Content API](https://developers.box.com/docs/).
 
 ## Latest Release
-Latest release can be found [here](https://github.com/box/box-java-sdk/tree/v3.8.2).
+Latest release can be found [here](https://github.com/box/box-java-sdk/tree/v4.0.0).
 
 ## Upgrades
-You can read about how to migrate to the new version [here](https://github.com/box/box-java-sdk/tree/v3.8.0/doc/upgrades).
+You can read about how to migrate to the new version [here](https://github.com/box/box-java-sdk/tree/v4.0.0).
 
 ## Versions
 We use a modified version of [Semantic Versioning](https://semver.org/) for all changes. See [version strategy](VERSIONS.md) for details which is effective from 30 July 2022.
@@ -220,31 +220,31 @@ You can find guides and tutorials in the `doc` directory.
 
 * [BUILD ON BOX PLATFORM](https://developer.box.com/guides/getting-started/)
 * [Javadocs](http://box.github.io/box-java-sdk/javadoc/com/box/sdk/package-summary.html)
-* [Overview](https://github.com/box/box-java-sdk/blob/v3.8.2/doc/overview.md)
-* [Configuration](https://github.com/box/box-java-sdk/blob/v3.8.2/doc/configuration.md)
-* [Logging](https://github.com/box/box-java-sdk/blob/v3.8.2/doc/logging.md)
-* [Authentication](https://github.com/box/box-java-sdk/blob/v3.8.2/doc/authentication.md)
-* [Files](https://github.com/box/box-java-sdk/blob/v3.8.2/doc/files.md)
-* [Folders](https://github.com/box/box-java-sdk/blob/v3.8.2/doc/folders.md)
-* [Comments](https://github.com/box/box-java-sdk/blob/v3.8.2/doc/comments.md)
-* [Collaborations](https://github.com/box/box-java-sdk/blob/v3.8.2/doc/collaborations.md)
-* [Collaboration Allowlists](https://github.com/box/box-java-sdk/blob/v3.8.2/doc/collaboration_allowlists.md)
-* [Events](https://github.com/box/box-java-sdk/blob/v3.8.2/doc/events.md)
-* [Search](https://github.com/box/box-java-sdk/blob/v3.8.2/doc/search.md)
-* [Users](https://github.com/box/box-java-sdk/blob/v3.8.2/doc/users.md)
-* [Groups](https://github.com/box/box-java-sdk/blob/v3.8.2/doc/groups.md)
-* [Tasks](https://github.com/box/box-java-sdk/blob/v3.8.2/doc/tasks.md)
-* [Trash](https://github.com/box/box-java-sdk/blob/v3.8.2/doc/trash.md)
-* [Collections](https://github.com/box/box-java-sdk/blob/v3.8.2/doc/collections.md)
-* [Devices](https://github.com/box/box-java-sdk/blob/v3.8.2/doc/devices.md)
-* [Retention Policies](https://github.com/box/box-java-sdk/blob/v3.8.2/doc/retention_policies.md)
-* [Legal Holds Policy](https://github.com/box/box-java-sdk/blob/v3.8.2/doc/legal_holds.md)
-* [Watermarking](https://github.com/box/box-java-sdk/blob/v3.8.2/doc/watermarking.md)
-* [Webhooks](https://github.com/box/box-java-sdk/blob/v3.8.2/doc/webhooks.md)
-* [Web Links](https://github.com/box/box-java-sdk/blob/v3.8.2/doc/weblinks.md)
-* [Metadata Templates](https://github.com/box/box-java-sdk/blob/v3.8.2/doc/metadata_template.md)
-* [Classifications](https://github.com/box/box-java-sdk/blob/v3.8.2/doc/classifications.md)
-* [Recent Items](https://github.com/box/box-java-sdk/blob/v3.8.2/doc/recent_items.md)
+* [Overview](https://github.com/box/box-java-sdk/blob/v4.0.0/doc/overview.md)
+* [Configuration](https://github.com/box/box-java-sdk/blob/v4.0.0/doc/configuration.md)
+* [Logging](https://github.com/box/box-java-sdk/blob/v4.0.0/doc/logging.md)
+* [Authentication](https://github.com/box/box-java-sdk/blob/v4.0.0/doc/authentication.md)
+* [Files](https://github.com/box/box-java-sdk/blob/v4.0.0/doc/files.md)
+* [Folders](https://github.com/box/box-java-sdk/blob/v4.0.0/doc/folders.md)
+* [Comments](https://github.com/box/box-java-sdk/blob/v4.0.0/doc/comments.md)
+* [Collaborations](https://github.com/box/box-java-sdk/blob/v4.0.0/doc/collaborations.md)
+* [Collaboration Allowlists](https://github.com/box/box-java-sdk/blob/v4.0.0/doc/collaboration_allowlists.md)
+* [Events](https://github.com/box/box-java-sdk/blob/v4.0.0/doc/events.md)
+* [Search](https://github.com/box/box-java-sdk/blob/v4.0.0/doc/search.md)
+* [Users](https://github.com/box/box-java-sdk/blob/v4.0.0/doc/users.md)
+* [Groups](https://github.com/box/box-java-sdk/blob/v4.0.0/doc/groups.md)
+* [Tasks](https://github.com/box/box-java-sdk/blob/v4.0.0/doc/tasks.md)
+* [Trash](https://github.com/box/box-java-sdk/blob/v4.0.0/doc/trash.md)
+* [Collections](https://github.com/box/box-java-sdk/blob/v4.0.0/doc/collections.md)
+* [Devices](https://github.com/box/box-java-sdk/blob/v4.0.0/doc/devices.md)
+* [Retention Policies](https://github.com/box/box-java-sdk/blob/v4.0.0/doc/retention_policies.md)
+* [Legal Holds Policy](https://github.com/box/box-java-sdk/blob/v4.0.0/doc/legal_holds.md)
+* [Watermarking](https://github.com/box/box-java-sdk/blob/v4.0.0/doc/watermarking.md)
+* [Webhooks](https://github.com/box/box-java-sdk/blob/v4.0.0/doc/webhooks.md)
+* [Web Links](https://github.com/box/box-java-sdk/blob/v4.0.0/doc/weblinks.md)
+* [Metadata Templates](https://github.com/box/box-java-sdk/blob/v4.0.0/doc/metadata_template.md)
+* [Classifications](https://github.com/box/box-java-sdk/blob/v4.0.0/doc/classifications.md)
+* [Recent Items](https://github.com/box/box-java-sdk/blob/v4.0.0/doc/recent_items.md)
 
 
 Javadocs are generated when `gradle javadoc` is run and can be found in

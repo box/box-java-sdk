@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [4.0.0](https://github.com/box/box-java-sdk/compare/v3.8.2...v4.0.0) (2023-01-17)
+
+
+### New Features and Enhancements:
+
+* Using `OkHttp` in Java SDK ([#1083](https://github.com/box/box-java-sdk/issues/1083)) ([2656698](https://github.com/box/box-java-sdk/commit/265669897100dd8f1757fc2c5f25665da42c2889))
+
 ### [3.8.2](https://github.com/box/box-java-sdk/compare/v3.8.1...v3.8.2) (2023-01-04)
 
 
