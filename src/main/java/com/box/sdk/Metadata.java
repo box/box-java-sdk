@@ -161,13 +161,9 @@ public class Metadata {
         return getStringOrNull("/$parent");
     }
 
-    private String getStringOrNull(String path) {
-        return Optional.ofNullable(this.getValue(path)).map(JsonValue::asString).orElse(null);
-    }
-
     /**
      * Returns the scope.
-     * Can throw {@link NullPointerException} is value is not present.
+     * Can throw {@link NullPointerException} is value if not present.
      *
      * @return the scope.
      */
@@ -177,7 +173,7 @@ public class Metadata {
 
     /**
      * Returns the template name.
-     * Can throw {@link NullPointerException} is value is not present.
+     * Can throw {@link NullPointerException} is value if not present.
      *
      * @return the template name.
      */
@@ -337,7 +333,7 @@ public class Metadata {
 
     /**
      * Get a value from a string or enum metadata field.
-     * Can throw {@link NullPointerException} is value is not present.
+     * Can throw {@link NullPointerException} is value if not present.
      *
      * @param path the key path in the metadata object.  Must be prefixed with a "/".
      * @return the metadata value as a string.
@@ -348,7 +344,7 @@ public class Metadata {
 
     /**
      * Get a value from a double metadata field.
-     * Can throw {@link NullPointerException} is value is not present.
+     * Can throw {@link NullPointerException} is value if not present.
      *
      * @param path the key path in the metadata object.  Must be prefixed with a "/".
      * @return the metadata value as a floating point number.
@@ -359,7 +355,7 @@ public class Metadata {
 
     /**
      * Get a value from a date metadata field.
-     * Can throw {@link NullPointerException} is value is not present.
+     * Can throw {@link NullPointerException} is value if not present.
      *
      * @param path the key path in the metadata object.  Must be prefixed with a "/".
      * @return the metadata value as a Date.
@@ -512,5 +508,9 @@ public class Metadata {
             .add("op", op)
             .add("path", path)
             .add("value", values));
+    }
+
+    private String getStringOrNull(String path) {
+        return Optional.ofNullable(this.getValue(path)).map(JsonValue::asString).orElse(null);
     }
 }

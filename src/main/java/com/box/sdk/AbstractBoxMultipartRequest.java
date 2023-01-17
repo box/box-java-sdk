@@ -11,8 +11,6 @@ import okhttp3.MultipartBody;
 import okhttp3.Request;
 import okhttp3.RequestBody;
 import okio.BufferedSink;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 /**
  * <p>Base class for multipart uploads</p>
@@ -152,7 +150,6 @@ abstract class AbstractBoxMultipartRequest extends BoxAPIRequest {
         requestBuilder.post(bodyBuilder.build());
     }
 
-    @NotNull
     private RequestBody getBody(ProgressListener progressListener) {
         if (this.callback == null) {
             return new RequestBodyFromStream(this.inputStream, getPartContentType(filename), progressListener);
@@ -183,14 +180,13 @@ abstract class AbstractBoxMultipartRequest extends BoxAPIRequest {
             return contentLength;
         }
 
-        @Nullable
         @Override
         public MediaType contentType() {
             return mediaType;
         }
 
         @Override
-        public void writeTo(@NotNull BufferedSink bufferedSink) throws IOException {
+        public void writeTo(BufferedSink bufferedSink) throws IOException {
             byte[] buffer = new byte[BUFFER_SIZE];
             int n = this.inputStream.read(buffer);
             int totalWritten = n;
@@ -215,14 +211,13 @@ abstract class AbstractBoxMultipartRequest extends BoxAPIRequest {
             this.mediaType = mediaType;
         }
 
-        @Nullable
         @Override
         public MediaType contentType() {
             return mediaType;
         }
 
         @Override
-        public void writeTo(@NotNull BufferedSink bufferedSink) throws IOException {
+        public void writeTo(BufferedSink bufferedSink) throws IOException {
             callback.writeToStream(bufferedSink.outputStream());
         }
     }
