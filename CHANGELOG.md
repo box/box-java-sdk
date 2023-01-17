@@ -2,6 +2,28 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [4.0.0](https://github.com/box/box-java-sdk/compare/v3.8.2...v4.0.0) (2023-01-17)
+
+
+The most important change this release includes is the replacement of the HTTP library from a native one to
+[OkHttp](https://square.github.io/okhttp/) which allows SDK to
+- Support the HTTP2 version of the HTTP protocol.
+- Support proxies that do not use only basic authentication method. For details on creating custom proxy authenticators and an example of
+  [NTLM proxy authentication](https://github.com/box/box-java-sdk/blob/kb/ok-http/doc/configuration.md#custom-proxy-authenticator).
+
+### Breaking Changes
+* `BatchAPIRequest` – is no longer supported by the SDK
+* `BoxAPIConnection#DEFAULT_MAX_ATTEMPTS` is replaced with `BoxAPIConnection#DEFAULT_MAX_RETRIES`
+* `BoxRedirectResponse` – was removed and will not be replaced
+* `BoxEvent.Type` is replaced with `EventType`
+* Removing deprecated methods from `BoxFile`, `BoxFileVersionRetention`, `BoxFolder`, `BoxGroup`, `BoxGroupMembership`,`BoxItem`, `BoxRetentionPolicy`, `BoxTask`, `BoxUser`, `BoxWebLink`, `EventLog`, `Metadata` and `MetadataTemplate`.
+
+Migration details can be found [here](doc/upgrades/3.x.x%20to%204.x.x.md).
+
+### New Features and Enhancements:
+
+*  Using `OkHttp` in Java SDK ([#1083](https://github.com/box/box-java-sdk/issues/1083)) ([2656698](https://github.com/box/box-java-sdk/commit/265669897100dd8f1757fc2c5f25665da42c2889))
+
 ### [3.8.2](https://github.com/box/box-java-sdk/compare/v3.8.1...v3.8.2) (2023-01-04)
 
 
