@@ -18,8 +18,8 @@
     catch(err) {
     }
 //-->
-var methods = {"i0":10,"i1":10,"i2":10,"i3":10,"i4":10,"i5":10,"i6":10,"i7":10,"i8":10,"i9":10,"i10":10,"i11":10,"i12":10,"i13":10,"i14":10,"i15":42,"i16":42,"i17":10,"i18":10,"i19":10,"i20":10,"i21":10,"i22":10,"i23":10,"i24":10,"i25":10,"i26":10,"i27":10,"i28":10,"i29":10,"i30":10,"i31":10,"i32":10,"i33":10,"i34":10,"i35":10,"i36":10,"i37":10,"i38":10,"i39":10,"i40":10,"i41":10,"i42":10,"i43":10,"i44":10,"i45":10,"i46":9,"i47":10,"i48":10,"i49":10,"i50":10,"i51":10,"i52":10,"i53":10,"i54":42,"i55":10,"i56":10,"i57":10,"i58":10,"i59":10,"i60":10,"i61":10,"i62":10,"i63":10,"i64":10,"i65":10,"i66":10,"i67":10,"i68":10,"i69":10};
-var tabs = {65535:["t0","All Methods"],1:["t1","Static Methods"],2:["t2","Instance Methods"],8:["t4","Concrete Methods"],32:["t6","Deprecated Methods"]};
+var methods = {"i0":10,"i1":10,"i2":10,"i3":10,"i4":10,"i5":10,"i6":10,"i7":10,"i8":10,"i9":10,"i10":10,"i11":10,"i12":10,"i13":10,"i14":10,"i15":10,"i16":10,"i17":10,"i18":10,"i19":10,"i20":10,"i21":10,"i22":10,"i23":10,"i24":10,"i25":10,"i26":10,"i27":10,"i28":10,"i29":10,"i30":10,"i31":10,"i32":10,"i33":10,"i34":10,"i35":10,"i36":10,"i37":10,"i38":10,"i39":10,"i40":10,"i41":10,"i42":10,"i43":9,"i44":10,"i45":10,"i46":10,"i47":10,"i48":10,"i49":10,"i50":10,"i51":10,"i52":10,"i53":10,"i54":10,"i55":10,"i56":10,"i57":10,"i58":10,"i59":10,"i60":10,"i61":10,"i62":10,"i63":10,"i64":10,"i65":10};
+var tabs = {65535:["t0","All Methods"],1:["t1","Static Methods"],2:["t2","Instance Methods"],8:["t4","Concrete Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
 var tableTab = "tableTab";
@@ -62,7 +62,7 @@ var activeTableTab = "activeTableTab";
 <hr>
 <br>
 <pre><a href="../../../com/box/sdk/BoxResourceType.html" title="annotation in com.box.sdk">@BoxResourceType</a>(<a href="../../../com/box/sdk/BoxResourceType.html#value--">value</a>="folder")
-public class <a href="../../../src-html/com/box/sdk/BoxFolder.html#line.34">BoxFolder</a>
+public class <a href="../../../src-html/com/box/sdk/BoxFolder.html#line.35">BoxFolder</a>
 extends <a href="../../../com/box/sdk/BoxItem.html" title="class in com.box.sdk">BoxItem</a>
 implements <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Iterable.html?is-external=true" title="class or interface in java.lang">Iterable</a>&lt;<a href="../../../com/box/sdk/BoxItem.Info.html" title="class in com.box.sdk">BoxItem.Info</a>&gt;</pre>
 <div class="block"><p>Represents a folder on Box. This class can be used to iterate through a folder's contents, collaborate a folder with
@@ -137,7 +137,7 @@ implements <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Iterable
 <tr class="rowColor">
 <td class="colFirst"><code>static <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>[]</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../com/box/sdk/BoxFolder.html#ALL_FIELDS">ALL_FIELDS</a></span></code>
-<div class="block">An array of all possible folder fields that can be requested when calling <a href="../../../com/box/sdk/BoxFolder.html#getInfo--"><code>getInfo()</code></a>.</div>
+<div class="block">An array of all possible folder fields that can be requested when calling <a href="../../../com/box/sdk/BoxFolder.html#getInfo-java.lang.String...-"><code>getInfo(String...)</code></a>.</div>
 </td>
 </tr>
 <tr class="altColor">
@@ -249,7 +249,7 @@ implements <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Iterable
 </a>
 <h3>Method Summary</h3>
 <table class="memberSummary" border="0" cellpadding="3" cellspacing="0" summary="Method Summary table, listing methods, and an explanation">
-<caption><span id="t0" class="activeTableTab"><span>All Methods</span><span class="tabEnd">&nbsp;</span></span><span id="t1" class="tableTab"><span><a href="javascript:show(1);">Static Methods</a></span><span class="tabEnd">&nbsp;</span></span><span id="t2" class="tableTab"><span><a href="javascript:show(2);">Instance Methods</a></span><span class="tabEnd">&nbsp;</span></span><span id="t4" class="tableTab"><span><a href="javascript:show(8);">Concrete Methods</a></span><span class="tabEnd">&nbsp;</span></span><span id="t6" class="tableTab"><span><a href="javascript:show(32);">Deprecated Methods</a></span><span class="tabEnd">&nbsp;</span></span></caption>
+<caption><span id="t0" class="activeTableTab"><span>All Methods</span><span class="tabEnd">&nbsp;</span></span><span id="t1" class="tableTab"><span><a href="javascript:show(1);">Static Methods</a></span><span class="tabEnd">&nbsp;</span></span><span id="t2" class="tableTab"><span><a href="javascript:show(2);">Instance Methods</a></span><span class="tabEnd">&nbsp;</span></span><span id="t4" class="tableTab"><span><a href="javascript:show(8);">Concrete Methods</a></span><span class="tabEnd">&nbsp;</span></span></caption>
 <tr>
 <th class="colFirst" scope="col">Modifier and Type</th>
 <th class="colLast" scope="col">Method and Description</th>
@@ -361,46 +361,25 @@ implements <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Iterable
 </tr>
 <tr id="i15" class="rowColor">
 <td class="colFirst"><code><a href="../../../com/box/sdk/BoxSharedLink.html" title="class in com.box.sdk">BoxSharedLink</a></code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../com/box/sdk/BoxFolder.html#createSharedLink-com.box.sdk.BoxSharedLink.Access-java.util.Date-com.box.sdk.BoxSharedLink.Permissions-">createSharedLink</a></span>(<a href="../../../com/box/sdk/BoxSharedLink.Access.html" title="enum in com.box.sdk">BoxSharedLink.Access</a>&nbsp;access,
-                <a href="https://docs.oracle.com/javase/8/docs/api/java/util/Date.html?is-external=true" title="class or interface in java.util">Date</a>&nbsp;unshareDate,
-                <a href="../../../com/box/sdk/BoxSharedLink.Permissions.html" title="class in com.box.sdk">BoxSharedLink.Permissions</a>&nbsp;permissions)</code>
-<div class="block"><span class="deprecatedLabel">Deprecated.</span>&nbsp;
-<div class="block"><span class="deprecationComment">use <a href="../../../com/box/sdk/BoxFolder.html#createSharedLink-com.box.sdk.sharedlink.BoxSharedLinkRequest-"><code>createSharedLink(BoxSharedLinkRequest)</code></a></span></div>
-</div>
-</td>
-</tr>
-<tr id="i16" class="altColor">
-<td class="colFirst"><code><a href="../../../com/box/sdk/BoxSharedLink.html" title="class in com.box.sdk">BoxSharedLink</a></code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../com/box/sdk/BoxFolder.html#createSharedLink-com.box.sdk.BoxSharedLink.Access-java.util.Date-com.box.sdk.BoxSharedLink.Permissions-java.lang.String-">createSharedLink</a></span>(<a href="../../../com/box/sdk/BoxSharedLink.Access.html" title="enum in com.box.sdk">BoxSharedLink.Access</a>&nbsp;access,
-                <a href="https://docs.oracle.com/javase/8/docs/api/java/util/Date.html?is-external=true" title="class or interface in java.util">Date</a>&nbsp;unshareDate,
-                <a href="../../../com/box/sdk/BoxSharedLink.Permissions.html" title="class in com.box.sdk">BoxSharedLink.Permissions</a>&nbsp;permissions,
-                <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;password)</code>
-<div class="block"><span class="deprecatedLabel">Deprecated.</span>&nbsp;
-<div class="block"><span class="deprecationComment">Use <a href="../../../com/box/sdk/BoxFolder.html#createSharedLink-com.box.sdk.sharedlink.BoxSharedLinkRequest-"><code>createSharedLink(BoxSharedLinkRequest)</code></a></span></div>
-</div>
-</td>
-</tr>
-<tr id="i17" class="rowColor">
-<td class="colFirst"><code><a href="../../../com/box/sdk/BoxSharedLink.html" title="class in com.box.sdk">BoxSharedLink</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../com/box/sdk/BoxFolder.html#createSharedLink-com.box.sdk.sharedlink.BoxSharedLinkRequest-">createSharedLink</a></span>(<a href="../../../com/box/sdk/sharedlink/BoxSharedLinkRequest.html" title="class in com.box.sdk.sharedlink">BoxSharedLinkRequest</a>&nbsp;sharedLinkRequest)</code>
 <div class="block">Creates a shared link.</div>
 </td>
 </tr>
-<tr id="i18" class="altColor">
+<tr id="i16" class="altColor">
 <td class="colFirst"><code><a href="../../../com/box/sdk/BoxFileUploadSession.Info.html" title="class in com.box.sdk">BoxFileUploadSession.Info</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../com/box/sdk/BoxFolder.html#createUploadSession-java.lang.String-long-">createUploadSession</a></span>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;fileName,
                    long&nbsp;fileSize)</code>
 <div class="block">Creates an upload session to create a new file in chunks.</div>
 </td>
 </tr>
-<tr id="i19" class="rowColor">
+<tr id="i17" class="rowColor">
 <td class="colFirst"><code><a href="../../../com/box/sdk/BoxWebLink.Info.html" title="class in com.box.sdk">BoxWebLink.Info</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../com/box/sdk/BoxFolder.html#createWebLink-java.lang.String-java.net.URL-">createWebLink</a></span>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;name,
              <a href="https://docs.oracle.com/javase/8/docs/api/java/net/URL.html?is-external=true" title="class or interface in java.net">URL</a>&nbsp;linkURL)</code>
 <div class="block">Uploads a new weblink to this folder.</div>
 </td>
 </tr>
-<tr id="i20" class="altColor">
+<tr id="i18" class="altColor">
 <td class="colFirst"><code><a href="../../../com/box/sdk/BoxWebLink.Info.html" title="class in com.box.sdk">BoxWebLink.Info</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../com/box/sdk/BoxFolder.html#createWebLink-java.lang.String-java.net.URL-java.lang.String-">createWebLink</a></span>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;name,
              <a href="https://docs.oracle.com/javase/8/docs/api/java/net/URL.html?is-external=true" title="class or interface in java.net">URL</a>&nbsp;linkURL,
@@ -408,63 +387,63 @@ implements <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Iterable
 <div class="block">Uploads a new weblink to this folder.</div>
 </td>
 </tr>
-<tr id="i21" class="rowColor">
+<tr id="i19" class="rowColor">
 <td class="colFirst"><code><a href="../../../com/box/sdk/BoxWebLink.Info.html" title="class in com.box.sdk">BoxWebLink.Info</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../com/box/sdk/BoxFolder.html#createWebLink-java.net.URL-">createWebLink</a></span>(<a href="https://docs.oracle.com/javase/8/docs/api/java/net/URL.html?is-external=true" title="class or interface in java.net">URL</a>&nbsp;linkURL)</code>
 <div class="block">Uploads a new weblink to this folder.</div>
 </td>
 </tr>
-<tr id="i22" class="altColor">
+<tr id="i20" class="altColor">
 <td class="colFirst"><code><a href="../../../com/box/sdk/BoxWebLink.Info.html" title="class in com.box.sdk">BoxWebLink.Info</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../com/box/sdk/BoxFolder.html#createWebLink-java.net.URL-java.lang.String-">createWebLink</a></span>(<a href="https://docs.oracle.com/javase/8/docs/api/java/net/URL.html?is-external=true" title="class or interface in java.net">URL</a>&nbsp;linkURL,
              <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;description)</code>
 <div class="block">Uploads a new weblink to this folder.</div>
 </td>
 </tr>
-<tr id="i23" class="rowColor">
+<tr id="i21" class="rowColor">
 <td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../com/box/sdk/BoxFolder.html#delete-boolean-">delete</a></span>(boolean&nbsp;recursive)</code>
 <div class="block">Deletes this folder, optionally recursively deleting all of its contents.</div>
 </td>
 </tr>
-<tr id="i24" class="altColor">
+<tr id="i22" class="altColor">
 <td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../com/box/sdk/BoxFolder.html#deleteClassification--">deleteClassification</a></span>()</code>
 <div class="block">Deletes the classification on the file.</div>
 </td>
 </tr>
-<tr id="i25" class="rowColor">
+<tr id="i23" class="rowColor">
 <td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../com/box/sdk/BoxFolder.html#deleteMetadata--">deleteMetadata</a></span>()</code>
 <div class="block">Deletes the global properties metadata on this folder.</div>
 </td>
 </tr>
-<tr id="i26" class="altColor">
+<tr id="i24" class="altColor">
 <td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../com/box/sdk/BoxFolder.html#deleteMetadata-java.lang.String-">deleteMetadata</a></span>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;templateName)</code>
 <div class="block">Deletes the metadata on this folder associated with a specified template.</div>
 </td>
 </tr>
-<tr id="i27" class="rowColor">
+<tr id="i25" class="rowColor">
 <td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../com/box/sdk/BoxFolder.html#deleteMetadata-java.lang.String-java.lang.String-">deleteMetadata</a></span>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;templateName,
               <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;scope)</code>
 <div class="block">Deletes the metadata on this folder associated with a specified scope and template.</div>
 </td>
 </tr>
-<tr id="i28" class="altColor">
+<tr id="i26" class="altColor">
 <td class="colFirst"><code><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Iterable.html?is-external=true" title="class or interface in java.lang">Iterable</a>&lt;<a href="../../../com/box/sdk/Metadata.html" title="class in com.box.sdk">Metadata</a>&gt;</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../com/box/sdk/BoxFolder.html#getAllMetadata-java.lang.String...-">getAllMetadata</a></span>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>...&nbsp;fields)</code>
 <div class="block">Used to retrieve all metadata associated with the folder.</div>
 </td>
 </tr>
-<tr id="i29" class="rowColor">
+<tr id="i27" class="rowColor">
 <td class="colFirst"><code><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Iterable.html?is-external=true" title="class or interface in java.lang">Iterable</a>&lt;<a href="../../../com/box/sdk/BoxItem.Info.html" title="class in com.box.sdk">BoxItem.Info</a>&gt;</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../com/box/sdk/BoxFolder.html#getChildren--">getChildren</a></span>()</code>
 <div class="block">Returns an iterable containing the items in this folder.</div>
 </td>
 </tr>
-<tr id="i30" class="altColor">
+<tr id="i28" class="altColor">
 <td class="colFirst"><code><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Iterable.html?is-external=true" title="class or interface in java.lang">Iterable</a>&lt;<a href="../../../com/box/sdk/BoxItem.Info.html" title="class in com.box.sdk">BoxItem.Info</a>&gt;</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../com/box/sdk/BoxFolder.html#getChildren-com.box.sdk.SortParameters-com.box.sdk.PagingParameters-java.lang.String...-">getChildren</a></span>(<a href="../../../com/box/sdk/SortParameters.html" title="class in com.box.sdk">SortParameters</a>&nbsp;sortParameters,
            <a href="../../../com/box/sdk/PagingParameters.html" title="class in com.box.sdk">PagingParameters</a>&nbsp;pagingParameters,
@@ -472,14 +451,14 @@ implements <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Iterable
 <div class="block">Returns an iterable containing the items in this folder sorted by name and direction.</div>
 </td>
 </tr>
-<tr id="i31" class="rowColor">
+<tr id="i29" class="rowColor">
 <td class="colFirst"><code><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Iterable.html?is-external=true" title="class or interface in java.lang">Iterable</a>&lt;<a href="../../../com/box/sdk/BoxItem.Info.html" title="class in com.box.sdk">BoxItem.Info</a>&gt;</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../com/box/sdk/BoxFolder.html#getChildren-java.lang.String...-">getChildren</a></span>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>...&nbsp;fields)</code>
 <div class="block">Returns an iterable containing the items in this folder and specifies which child fields to retrieve from the
  API.</div>
 </td>
 </tr>
-<tr id="i32" class="altColor">
+<tr id="i30" class="altColor">
 <td class="colFirst"><code><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Iterable.html?is-external=true" title="class or interface in java.lang">Iterable</a>&lt;<a href="../../../com/box/sdk/BoxItem.Info.html" title="class in com.box.sdk">BoxItem.Info</a>&gt;</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../com/box/sdk/BoxFolder.html#getChildren-java.lang.String-com.box.sdk.BoxFolder.SortDirection-long-long-java.lang.String...-">getChildren</a></span>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;sort,
            <a href="../../../com/box/sdk/BoxFolder.SortDirection.html" title="enum in com.box.sdk">BoxFolder.SortDirection</a>&nbsp;direction,
@@ -489,7 +468,7 @@ implements <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Iterable
 <div class="block">Returns an iterable containing the items in this folder sorted by name and direction.</div>
 </td>
 </tr>
-<tr id="i33" class="rowColor">
+<tr id="i31" class="rowColor">
 <td class="colFirst"><code><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Iterable.html?is-external=true" title="class or interface in java.lang">Iterable</a>&lt;<a href="../../../com/box/sdk/BoxItem.Info.html" title="class in com.box.sdk">BoxItem.Info</a>&gt;</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../com/box/sdk/BoxFolder.html#getChildren-java.lang.String-com.box.sdk.BoxFolder.SortDirection-java.lang.String...-">getChildren</a></span>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;sort,
            <a href="../../../com/box/sdk/BoxFolder.SortDirection.html" title="enum in com.box.sdk">BoxFolder.SortDirection</a>&nbsp;direction,
@@ -497,7 +476,7 @@ implements <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Iterable
 <div class="block">Returns an iterable containing the items in this folder sorted by name and direction.</div>
 </td>
 </tr>
-<tr id="i34" class="altColor">
+<tr id="i32" class="altColor">
 <td class="colFirst"><code><a href="../../../com/box/sdk/PartialCollection.html" title="class in com.box.sdk">PartialCollection</a>&lt;<a href="../../../com/box/sdk/BoxItem.Info.html" title="class in com.box.sdk">BoxItem.Info</a>&gt;</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../com/box/sdk/BoxFolder.html#getChildrenRange-long-long-java.lang.String...-">getChildrenRange</a></span>(long&nbsp;offset,
                 long&nbsp;limit,
@@ -505,66 +484,60 @@ implements <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Iterable
 <div class="block">Retrieves a specific range of child items in this folder.</div>
 </td>
 </tr>
-<tr id="i35" class="rowColor">
+<tr id="i33" class="rowColor">
 <td class="colFirst"><code><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../com/box/sdk/BoxFolder.html#getClassification--">getClassification</a></span>()</code>
 <div class="block">Gets the classification type for the specified file.</div>
 </td>
 </tr>
-<tr id="i36" class="altColor">
+<tr id="i34" class="altColor">
 <td class="colFirst"><code><a href="https://docs.oracle.com/javase/8/docs/api/java/util/Collection.html?is-external=true" title="class or interface in java.util">Collection</a>&lt;<a href="../../../com/box/sdk/BoxCollaboration.Info.html" title="class in com.box.sdk">BoxCollaboration.Info</a>&gt;</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../com/box/sdk/BoxFolder.html#getCollaborations--">getCollaborations</a></span>()</code>
 <div class="block">Gets information about all of the collaborations for this folder.</div>
 </td>
 </tr>
-<tr id="i37" class="rowColor">
-<td class="colFirst"><code><a href="../../../com/box/sdk/BoxFolder.Info.html" title="class in com.box.sdk">BoxFolder.Info</a></code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../com/box/sdk/BoxFolder.html#getInfo--">getInfo</a></span>()</code>
-<div class="block">Gets information about this item.</div>
-</td>
-</tr>
-<tr id="i38" class="altColor">
+<tr id="i35" class="rowColor">
 <td class="colFirst"><code><a href="../../../com/box/sdk/BoxFolder.Info.html" title="class in com.box.sdk">BoxFolder.Info</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../com/box/sdk/BoxFolder.html#getInfo-java.lang.String...-">getInfo</a></span>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>...&nbsp;fields)</code>
 <div class="block">Gets information about this item that's limited to a list of specified fields.</div>
 </td>
 </tr>
-<tr id="i39" class="rowColor">
+<tr id="i36" class="altColor">
 <td class="colFirst"><code>protected <a href="https://docs.oracle.com/javase/8/docs/api/java/net/URL.html?is-external=true" title="class or interface in java.net">URL</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../com/box/sdk/BoxFolder.html#getItemURL--">getItemURL</a></span>()</code></td>
 </tr>
-<tr id="i40" class="altColor">
+<tr id="i37" class="rowColor">
 <td class="colFirst"><code><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Iterable.html?is-external=true" title="class or interface in java.lang">Iterable</a>&lt;<a href="../../../com/box/sdk/BoxFolderLock.Info.html" title="class in com.box.sdk">BoxFolderLock.Info</a>&gt;</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../com/box/sdk/BoxFolder.html#getLocks--">getLocks</a></span>()</code>
 <div class="block">Get the lock on this folder.</div>
 </td>
 </tr>
-<tr id="i41" class="rowColor">
+<tr id="i38" class="altColor">
 <td class="colFirst"><code><a href="../../../com/box/sdk/Metadata.html" title="class in com.box.sdk">Metadata</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../com/box/sdk/BoxFolder.html#getMetadata--">getMetadata</a></span>()</code>
 <div class="block">Gets the global properties metadata on this folder.</div>
 </td>
 </tr>
-<tr id="i42" class="altColor">
+<tr id="i39" class="rowColor">
 <td class="colFirst"><code><a href="../../../com/box/sdk/Metadata.html" title="class in com.box.sdk">Metadata</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../com/box/sdk/BoxFolder.html#getMetadata-java.lang.String-">getMetadata</a></span>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;templateName)</code>
 <div class="block">Gets the metadata on this folder associated with a specified template.</div>
 </td>
 </tr>
-<tr id="i43" class="rowColor">
+<tr id="i40" class="altColor">
 <td class="colFirst"><code><a href="../../../com/box/sdk/Metadata.html" title="class in com.box.sdk">Metadata</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../com/box/sdk/BoxFolder.html#getMetadata-java.lang.String-java.lang.String-">getMetadata</a></span>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;templateName,
            <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;scope)</code>
 <div class="block">Gets the metadata on this folder associated with a specified scope and template.</div>
 </td>
 </tr>
-<tr id="i44" class="altColor">
+<tr id="i41" class="rowColor">
 <td class="colFirst"><code><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Iterable.html?is-external=true" title="class or interface in java.lang">Iterable</a>&lt;<a href="../../../com/box/sdk/BoxMetadataCascadePolicy.Info.html" title="class in com.box.sdk">BoxMetadataCascadePolicy.Info</a>&gt;</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../com/box/sdk/BoxFolder.html#getMetadataCascadePolicies-java.lang.String...-">getMetadataCascadePolicies</a></span>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>...&nbsp;fields)</code>
 <div class="block">Retrieves all Metadata Cascade Policies on a folder.</div>
 </td>
 </tr>
-<tr id="i45" class="rowColor">
+<tr id="i42" class="altColor">
 <td class="colFirst"><code><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Iterable.html?is-external=true" title="class or interface in java.lang">Iterable</a>&lt;<a href="../../../com/box/sdk/BoxMetadataCascadePolicy.Info.html" title="class in com.box.sdk">BoxMetadataCascadePolicy.Info</a>&gt;</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../com/box/sdk/BoxFolder.html#getMetadataCascadePolicies-java.lang.String-int-java.lang.String...-">getMetadataCascadePolicies</a></span>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;enterpriseID,
                           int&nbsp;limit,
@@ -572,74 +545,68 @@ implements <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Iterable
 <div class="block">Retrieves all Metadata Cascade Policies on a folder.</div>
 </td>
 </tr>
-<tr id="i46" class="altColor">
+<tr id="i43" class="rowColor">
 <td class="colFirst"><code>static <a href="../../../com/box/sdk/BoxFolder.html" title="class in com.box.sdk">BoxFolder</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../com/box/sdk/BoxFolder.html#getRootFolder-com.box.sdk.BoxAPIConnection-">getRootFolder</a></span>(<a href="../../../com/box/sdk/BoxAPIConnection.html" title="class in com.box.sdk">BoxAPIConnection</a>&nbsp;api)</code>
 <div class="block">Gets the current user's root folder.</div>
 </td>
 </tr>
-<tr id="i47" class="rowColor">
+<tr id="i44" class="altColor">
 <td class="colFirst"><code><a href="../../../com/box/sdk/BoxWatermark.html" title="class in com.box.sdk">BoxWatermark</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../com/box/sdk/BoxFolder.html#getWatermark-java.lang.String...-">getWatermark</a></span>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>...&nbsp;fields)</code>
 <div class="block">Used to retrieve the watermark for the folder.</div>
 </td>
 </tr>
-<tr id="i48" class="altColor">
+<tr id="i45" class="rowColor">
 <td class="colFirst"><code><a href="https://docs.oracle.com/javase/8/docs/api/java/util/Iterator.html?is-external=true" title="class or interface in java.util">Iterator</a>&lt;<a href="../../../com/box/sdk/BoxItem.Info.html" title="class in com.box.sdk">BoxItem.Info</a>&gt;</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../com/box/sdk/BoxFolder.html#iterator--">iterator</a></span>()</code>
 <div class="block">Returns an iterator over the items in this folder.</div>
 </td>
 </tr>
-<tr id="i49" class="rowColor">
+<tr id="i46" class="altColor">
 <td class="colFirst"><code><a href="../../../com/box/sdk/BoxFolderLock.Info.html" title="class in com.box.sdk">BoxFolderLock.Info</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../com/box/sdk/BoxFolder.html#lock--">lock</a></span>()</code>
 <div class="block">Lock this folder.</div>
 </td>
 </tr>
-<tr id="i50" class="altColor">
+<tr id="i47" class="rowColor">
 <td class="colFirst"><code><a href="../../../com/box/sdk/BoxItem.Info.html" title="class in com.box.sdk">BoxItem.Info</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../com/box/sdk/BoxFolder.html#move-com.box.sdk.BoxFolder-">move</a></span>(<a href="../../../com/box/sdk/BoxFolder.html" title="class in com.box.sdk">BoxFolder</a>&nbsp;destination)</code>
 <div class="block">Moves this item to another folder.</div>
 </td>
 </tr>
-<tr id="i51" class="rowColor">
+<tr id="i48" class="altColor">
 <td class="colFirst"><code><a href="../../../com/box/sdk/BoxItem.Info.html" title="class in com.box.sdk">BoxItem.Info</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../com/box/sdk/BoxFolder.html#move-com.box.sdk.BoxFolder-java.lang.String-">move</a></span>(<a href="../../../com/box/sdk/BoxFolder.html" title="class in com.box.sdk">BoxFolder</a>&nbsp;destination,
     <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;newName)</code>
 <div class="block">Moves this item to another folder and gives it a new name.</div>
 </td>
 </tr>
-<tr id="i52" class="altColor">
+<tr id="i49" class="rowColor">
 <td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../com/box/sdk/BoxFolder.html#removeWatermark--">removeWatermark</a></span>()</code>
 <div class="block">Removes a watermark from the folder.</div>
 </td>
 </tr>
-<tr id="i53" class="rowColor">
+<tr id="i50" class="altColor">
 <td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../com/box/sdk/BoxFolder.html#rename-java.lang.String-">rename</a></span>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;newName)</code>
 <div class="block">Renames this folder.</div>
 </td>
 </tr>
-<tr id="i54" class="altColor">
-<td class="colFirst"><code><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Iterable.html?is-external=true" title="class or interface in java.lang">Iterable</a>&lt;<a href="../../../com/box/sdk/BoxItem.Info.html" title="class in com.box.sdk">BoxItem.Info</a>&gt;</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../com/box/sdk/BoxFolder.html#search-java.lang.String-">search</a></span>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;query)</code>
-<div class="block"><span class="deprecatedLabel">Deprecated.</span>&nbsp;</div>
-</td>
-</tr>
-<tr id="i55" class="rowColor">
+<tr id="i51" class="rowColor">
 <td class="colFirst"><code><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../com/box/sdk/BoxFolder.html#setClassification-java.lang.String-">setClassification</a></span>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;classificationType)</code>
 <div class="block">Attempts to add classification to a file.</div>
 </td>
 </tr>
-<tr id="i56" class="altColor">
+<tr id="i52" class="altColor">
 <td class="colFirst"><code><a href="../../../com/box/sdk/BoxFolder.Info.html" title="class in com.box.sdk">BoxFolder.Info</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../com/box/sdk/BoxFolder.html#setCollections-com.box.sdk.BoxCollection...-">setCollections</a></span>(<a href="../../../com/box/sdk/BoxCollection.html" title="class in com.box.sdk">BoxCollection</a>...&nbsp;collections)</code>
 <div class="block">Sets the collections that this item belongs to.</div>
 </td>
 </tr>
-<tr id="i57" class="rowColor">
+<tr id="i53" class="rowColor">
 <td class="colFirst"><code><a href="../../../com/box/sdk/Metadata.html" title="class in com.box.sdk">Metadata</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../com/box/sdk/BoxFolder.html#setMetadata-java.lang.String-java.lang.String-com.box.sdk.Metadata-">setMetadata</a></span>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;templateName,
            <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;scope,
@@ -647,38 +614,38 @@ implements <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Iterable
 <div class="block">Sets the provided metadata on the folder.</div>
 </td>
 </tr>
-<tr id="i58" class="altColor">
+<tr id="i54" class="altColor">
 <td class="colFirst"><code><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../com/box/sdk/BoxFolder.html#updateClassification-java.lang.String-">updateClassification</a></span>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;classificationType)</code>
 <div class="block">Updates a metadata classification on the specified file.</div>
 </td>
 </tr>
-<tr id="i59" class="rowColor">
+<tr id="i55" class="rowColor">
 <td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../com/box/sdk/BoxFolder.html#updateInfo-com.box.sdk.BoxFolder.Info-">updateInfo</a></span>(<a href="../../../com/box/sdk/BoxFolder.Info.html" title="class in com.box.sdk">BoxFolder.Info</a>&nbsp;info)</code>
 <div class="block">Updates the information about this folder with any info fields that have been modified locally.</div>
 </td>
 </tr>
-<tr id="i60" class="altColor">
+<tr id="i56" class="altColor">
 <td class="colFirst"><code><a href="../../../com/box/sdk/Metadata.html" title="class in com.box.sdk">Metadata</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../com/box/sdk/BoxFolder.html#updateMetadata-com.box.sdk.Metadata-">updateMetadata</a></span>(<a href="../../../com/box/sdk/Metadata.html" title="class in com.box.sdk">Metadata</a>&nbsp;metadata)</code>
 <div class="block">Updates the folder metadata.</div>
 </td>
 </tr>
-<tr id="i61" class="rowColor">
+<tr id="i57" class="rowColor">
 <td class="colFirst"><code><a href="../../../com/box/sdk/BoxFile.Info.html" title="class in com.box.sdk">BoxFile.Info</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../com/box/sdk/BoxFolder.html#uploadFile-com.box.sdk.FileUploadParams-">uploadFile</a></span>(<a href="../../../com/box/sdk/FileUploadParams.html" title="class in com.box.sdk">FileUploadParams</a>&nbsp;uploadParams)</code>
 <div class="block">Uploads a new file to this folder with custom upload parameters.</div>
 </td>
 </tr>
-<tr id="i62" class="altColor">
+<tr id="i58" class="altColor">
 <td class="colFirst"><code><a href="../../../com/box/sdk/BoxFile.Info.html" title="class in com.box.sdk">BoxFile.Info</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../com/box/sdk/BoxFolder.html#uploadFile-java.io.InputStream-java.lang.String-">uploadFile</a></span>(<a href="https://docs.oracle.com/javase/8/docs/api/java/io/InputStream.html?is-external=true" title="class or interface in java.io">InputStream</a>&nbsp;fileContent,
           <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;name)</code>
 <div class="block">Uploads a new file to this folder.</div>
 </td>
 </tr>
-<tr id="i63" class="rowColor">
+<tr id="i59" class="rowColor">
 <td class="colFirst"><code><a href="../../../com/box/sdk/BoxFile.Info.html" title="class in com.box.sdk">BoxFile.Info</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../com/box/sdk/BoxFolder.html#uploadFile-java.io.InputStream-java.lang.String-long-com.box.sdk.ProgressListener-">uploadFile</a></span>(<a href="https://docs.oracle.com/javase/8/docs/api/java/io/InputStream.html?is-external=true" title="class or interface in java.io">InputStream</a>&nbsp;fileContent,
           <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;name,
@@ -687,7 +654,7 @@ implements <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Iterable
 <div class="block">Uploads a new file to this folder while reporting the progress to a ProgressListener.</div>
 </td>
 </tr>
-<tr id="i64" class="altColor">
+<tr id="i60" class="altColor">
 <td class="colFirst"><code><a href="../../../com/box/sdk/BoxFile.Info.html" title="class in com.box.sdk">BoxFile.Info</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../com/box/sdk/BoxFolder.html#uploadFile-java.io.InputStream-java.lang.String-java.lang.String-">uploadFile</a></span>(<a href="https://docs.oracle.com/javase/8/docs/api/java/io/InputStream.html?is-external=true" title="class or interface in java.io">InputStream</a>&nbsp;fileContent,
           <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;name,
@@ -695,14 +662,14 @@ implements <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Iterable
 <div class="block">Uploads a new file to this folder with a specified file description.</div>
 </td>
 </tr>
-<tr id="i65" class="rowColor">
+<tr id="i61" class="rowColor">
 <td class="colFirst"><code><a href="../../../com/box/sdk/BoxFile.Info.html" title="class in com.box.sdk">BoxFile.Info</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../com/box/sdk/BoxFolder.html#uploadFile-com.box.sdk.UploadFileCallback-java.lang.String-">uploadFile</a></span>(<a href="../../../com/box/sdk/UploadFileCallback.html" title="interface in com.box.sdk">UploadFileCallback</a>&nbsp;callback,
           <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;name)</code>
 <div class="block">Uploads a new file to this folder.</div>
 </td>
 </tr>
-<tr id="i66" class="altColor">
+<tr id="i62" class="altColor">
 <td class="colFirst"><code><a href="../../../com/box/sdk/BoxFile.Info.html" title="class in com.box.sdk">BoxFile.Info</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../com/box/sdk/BoxFolder.html#uploadLargeFile-java.io.InputStream-java.lang.String-long-">uploadLargeFile</a></span>(<a href="https://docs.oracle.com/javase/8/docs/api/java/io/InputStream.html?is-external=true" title="class or interface in java.io">InputStream</a>&nbsp;inputStream,
                <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;fileName,
@@ -710,7 +677,7 @@ implements <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Iterable
 <div class="block">Creates a new file.</div>
 </td>
 </tr>
-<tr id="i67" class="rowColor">
+<tr id="i63" class="rowColor">
 <td class="colFirst"><code><a href="../../../com/box/sdk/BoxFile.Info.html" title="class in com.box.sdk">BoxFile.Info</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../com/box/sdk/BoxFolder.html#uploadLargeFile-java.io.InputStream-java.lang.String-long-int-long-java.util.concurrent.TimeUnit-">uploadLargeFile</a></span>(<a href="https://docs.oracle.com/javase/8/docs/api/java/io/InputStream.html?is-external=true" title="class or interface in java.io">InputStream</a>&nbsp;inputStream,
                <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;fileName,
@@ -721,7 +688,7 @@ implements <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Iterable
 <div class="block">Creates a new file using specified number of parallel http connections.</div>
 </td>
 </tr>
-<tr id="i68" class="altColor">
+<tr id="i64" class="altColor">
 <td class="colFirst"><code><a href="../../../com/box/sdk/BoxFile.Info.html" title="class in com.box.sdk">BoxFile.Info</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../com/box/sdk/BoxFolder.html#uploadLargeFile-java.io.InputStream-java.lang.String-long-int-long-java.util.concurrent.TimeUnit-java.util.Map-">uploadLargeFile</a></span>(<a href="https://docs.oracle.com/javase/8/docs/api/java/io/InputStream.html?is-external=true" title="class or interface in java.io">InputStream</a>&nbsp;inputStream,
                <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;fileName,
@@ -733,7 +700,7 @@ implements <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Iterable
 <div class="block">Creates a new file using specified number of parallel http connections.</div>
 </td>
 </tr>
-<tr id="i69" class="rowColor">
+<tr id="i65" class="rowColor">
 <td class="colFirst"><code><a href="../../../com/box/sdk/BoxFile.Info.html" title="class in com.box.sdk">BoxFile.Info</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../com/box/sdk/BoxFolder.html#uploadLargeFile-java.io.InputStream-java.lang.String-long-java.util.Map-">uploadLargeFile</a></span>(<a href="https://docs.oracle.com/javase/8/docs/api/java/io/InputStream.html?is-external=true" title="class or interface in java.io">InputStream</a>&nbsp;inputStream,
                <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;fileName,
@@ -791,8 +758,8 @@ implements <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Iterable
 <ul class="blockList">
 <li class="blockList">
 <h4>ALL_FIELDS</h4>
-<pre>public static final&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>[] <a href="../../../src-html/com/box/sdk/BoxFolder.html#line.38">ALL_FIELDS</a></pre>
-<div class="block">An array of all possible folder fields that can be requested when calling <a href="../../../com/box/sdk/BoxFolder.html#getInfo--"><code>getInfo()</code></a>.</div>
+<pre>public static final&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>[] <a href="../../../src-html/com/box/sdk/BoxFolder.html#line.39">ALL_FIELDS</a></pre>
+<div class="block">An array of all possible folder fields that can be requested when calling <a href="../../../com/box/sdk/BoxFolder.html#getInfo-java.lang.String...-"><code>getInfo(String...)</code></a>.</div>
 </li>
 </ul>
 <a name="CREATE_FOLDER_URL">
@@ -801,7 +768,7 @@ implements <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Iterable
 <ul class="blockList">
 <li class="blockList">
 <h4>CREATE_FOLDER_URL</h4>
-<pre>public static final&nbsp;<a href="../../../com/box/sdk/URLTemplate.html" title="class in com.box.sdk">URLTemplate</a> <a href="../../../src-html/com/box/sdk/BoxFolder.html#line.49">CREATE_FOLDER_URL</a></pre>
+<pre>public static final&nbsp;<a href="../../../com/box/sdk/URLTemplate.html" title="class in com.box.sdk">URLTemplate</a> <a href="../../../src-html/com/box/sdk/BoxFolder.html#line.50">CREATE_FOLDER_URL</a></pre>
 <div class="block">Create Folder URL Template.</div>
 </li>
 </ul>
@@ -811,7 +778,7 @@ implements <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Iterable
 <ul class="blockList">
 <li class="blockList">
 <h4>CREATE_WEB_LINK_URL</h4>
-<pre>public static final&nbsp;<a href="../../../com/box/sdk/URLTemplate.html" title="class in com.box.sdk">URLTemplate</a> <a href="../../../src-html/com/box/sdk/BoxFolder.html#line.53">CREATE_WEB_LINK_URL</a></pre>
+<pre>public static final&nbsp;<a href="../../../com/box/sdk/URLTemplate.html" title="class in com.box.sdk">URLTemplate</a> <a href="../../../src-html/com/box/sdk/BoxFolder.html#line.54">CREATE_WEB_LINK_URL</a></pre>
 <div class="block">Create Web Link URL Template.</div>
 </li>
 </ul>
@@ -821,7 +788,7 @@ implements <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Iterable
 <ul class="blockList">
 <li class="blockList">
 <h4>COPY_FOLDER_URL</h4>
-<pre>public static final&nbsp;<a href="../../../com/box/sdk/URLTemplate.html" title="class in com.box.sdk">URLTemplate</a> <a href="../../../src-html/com/box/sdk/BoxFolder.html#line.57">COPY_FOLDER_URL</a></pre>
+<pre>public static final&nbsp;<a href="../../../com/box/sdk/URLTemplate.html" title="class in com.box.sdk">URLTemplate</a> <a href="../../../src-html/com/box/sdk/BoxFolder.html#line.58">COPY_FOLDER_URL</a></pre>
 <div class="block">Copy Folder URL Template.</div>
 </li>
 </ul>
@@ -831,7 +798,7 @@ implements <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Iterable
 <ul class="blockList">
 <li class="blockList">
 <h4>DELETE_FOLDER_URL</h4>
-<pre>public static final&nbsp;<a href="../../../com/box/sdk/URLTemplate.html" title="class in com.box.sdk">URLTemplate</a> <a href="../../../src-html/com/box/sdk/BoxFolder.html#line.61">DELETE_FOLDER_URL</a></pre>
+<pre>public static final&nbsp;<a href="../../../com/box/sdk/URLTemplate.html" title="class in com.box.sdk">URLTemplate</a> <a href="../../../src-html/com/box/sdk/BoxFolder.html#line.62">DELETE_FOLDER_URL</a></pre>
 <div class="block">Delete Folder URL Template.</div>
 </li>
 </ul>
@@ -841,7 +808,7 @@ implements <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Iterable
 <ul class="blockList">
 <li class="blockList">
 <h4>FOLDER_INFO_URL_TEMPLATE</h4>
-<pre>public static final&nbsp;<a href="../../../com/box/sdk/URLTemplate.html" title="class in com.box.sdk">URLTemplate</a> <a href="../../../src-html/com/box/sdk/BoxFolder.html#line.65">FOLDER_INFO_URL_TEMPLATE</a></pre>
+<pre>public static final&nbsp;<a href="../../../com/box/sdk/URLTemplate.html" title="class in com.box.sdk">URLTemplate</a> <a href="../../../src-html/com/box/sdk/BoxFolder.html#line.66">FOLDER_INFO_URL_TEMPLATE</a></pre>
 <div class="block">Folder Info URL Template.</div>
 </li>
 </ul>
@@ -851,7 +818,7 @@ implements <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Iterable
 <ul class="blockList">
 <li class="blockList">
 <h4>UPLOAD_FILE_URL</h4>
-<pre>public static final&nbsp;<a href="../../../com/box/sdk/URLTemplate.html" title="class in com.box.sdk">URLTemplate</a> <a href="../../../src-html/com/box/sdk/BoxFolder.html#line.69">UPLOAD_FILE_URL</a></pre>
+<pre>public static final&nbsp;<a href="../../../com/box/sdk/URLTemplate.html" title="class in com.box.sdk">URLTemplate</a> <a href="../../../src-html/com/box/sdk/BoxFolder.html#line.70">UPLOAD_FILE_URL</a></pre>
 <div class="block">Upload File URL Template.</div>
 </li>
 </ul>
@@ -861,7 +828,7 @@ implements <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Iterable
 <ul class="blockList">
 <li class="blockList">
 <h4>ADD_COLLABORATION_URL</h4>
-<pre>public static final&nbsp;<a href="../../../com/box/sdk/URLTemplate.html" title="class in com.box.sdk">URLTemplate</a> <a href="../../../src-html/com/box/sdk/BoxFolder.html#line.73">ADD_COLLABORATION_URL</a></pre>
+<pre>public static final&nbsp;<a href="../../../com/box/sdk/URLTemplate.html" title="class in com.box.sdk">URLTemplate</a> <a href="../../../src-html/com/box/sdk/BoxFolder.html#line.74">ADD_COLLABORATION_URL</a></pre>
 <div class="block">Add Collaboration URL Template.</div>
 </li>
 </ul>
@@ -871,7 +838,7 @@ implements <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Iterable
 <ul class="blockList">
 <li class="blockList">
 <h4>GET_COLLABORATIONS_URL</h4>
-<pre>public static final&nbsp;<a href="../../../com/box/sdk/URLTemplate.html" title="class in com.box.sdk">URLTemplate</a> <a href="../../../src-html/com/box/sdk/BoxFolder.html#line.77">GET_COLLABORATIONS_URL</a></pre>
+<pre>public static final&nbsp;<a href="../../../com/box/sdk/URLTemplate.html" title="class in com.box.sdk">URLTemplate</a> <a href="../../../src-html/com/box/sdk/BoxFolder.html#line.78">GET_COLLABORATIONS_URL</a></pre>
 <div class="block">Get Collaborations URL Template.</div>
 </li>
 </ul>
@@ -881,7 +848,7 @@ implements <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Iterable
 <ul class="blockList">
 <li class="blockList">
 <h4>GET_ITEMS_URL</h4>
-<pre>public static final&nbsp;<a href="../../../com/box/sdk/URLTemplate.html" title="class in com.box.sdk">URLTemplate</a> <a href="../../../src-html/com/box/sdk/BoxFolder.html#line.81">GET_ITEMS_URL</a></pre>
+<pre>public static final&nbsp;<a href="../../../com/box/sdk/URLTemplate.html" title="class in com.box.sdk">URLTemplate</a> <a href="../../../src-html/com/box/sdk/BoxFolder.html#line.82">GET_ITEMS_URL</a></pre>
 <div class="block">Get Items URL Template.</div>
 </li>
 </ul>
@@ -891,7 +858,7 @@ implements <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Iterable
 <ul class="blockList">
 <li class="blockList">
 <h4>SEARCH_URL_TEMPLATE</h4>
-<pre>public static final&nbsp;<a href="../../../com/box/sdk/URLTemplate.html" title="class in com.box.sdk">URLTemplate</a> <a href="../../../src-html/com/box/sdk/BoxFolder.html#line.85">SEARCH_URL_TEMPLATE</a></pre>
+<pre>public static final&nbsp;<a href="../../../com/box/sdk/URLTemplate.html" title="class in com.box.sdk">URLTemplate</a> <a href="../../../src-html/com/box/sdk/BoxFolder.html#line.86">SEARCH_URL_TEMPLATE</a></pre>
 <div class="block">Search URL Template.</div>
 </li>
 </ul>
@@ -901,7 +868,7 @@ implements <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Iterable
 <ul class="blockList">
 <li class="blockList">
 <h4>METADATA_URL_TEMPLATE</h4>
-<pre>public static final&nbsp;<a href="../../../com/box/sdk/URLTemplate.html" title="class in com.box.sdk">URLTemplate</a> <a href="../../../src-html/com/box/sdk/BoxFolder.html#line.89">METADATA_URL_TEMPLATE</a></pre>
+<pre>public static final&nbsp;<a href="../../../com/box/sdk/URLTemplate.html" title="class in com.box.sdk">URLTemplate</a> <a href="../../../src-html/com/box/sdk/BoxFolder.html#line.90">METADATA_URL_TEMPLATE</a></pre>
 <div class="block">Metadata URL Template.</div>
 </li>
 </ul>
@@ -911,7 +878,7 @@ implements <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Iterable
 <ul class="blockList">
 <li class="blockList">
 <h4>UPLOAD_SESSION_URL_TEMPLATE</h4>
-<pre>public static final&nbsp;<a href="../../../com/box/sdk/URLTemplate.html" title="class in com.box.sdk">URLTemplate</a> <a href="../../../src-html/com/box/sdk/BoxFolder.html#line.93">UPLOAD_SESSION_URL_TEMPLATE</a></pre>
+<pre>public static final&nbsp;<a href="../../../com/box/sdk/URLTemplate.html" title="class in com.box.sdk">URLTemplate</a> <a href="../../../src-html/com/box/sdk/BoxFolder.html#line.94">UPLOAD_SESSION_URL_TEMPLATE</a></pre>
 <div class="block">Upload Session URL Template.</div>
 </li>
 </ul>
@@ -921,7 +888,7 @@ implements <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Iterable
 <ul class="blockListLast">
 <li class="blockList">
 <h4>FOLDER_LOCK_URL_TEMPLATE</h4>
-<pre>public static final&nbsp;<a href="../../../com/box/sdk/URLTemplate.html" title="class in com.box.sdk">URLTemplate</a> <a href="../../../src-html/com/box/sdk/BoxFolder.html#line.97">FOLDER_LOCK_URL_TEMPLATE</a></pre>
+<pre>public static final&nbsp;<a href="../../../com/box/sdk/URLTemplate.html" title="class in com.box.sdk">URLTemplate</a> <a href="../../../src-html/com/box/sdk/BoxFolder.html#line.98">FOLDER_LOCK_URL_TEMPLATE</a></pre>
 <div class="block">Folder Locks URL Template.</div>
 </li>
 </ul>
@@ -939,7 +906,7 @@ implements <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Iterable
 <ul class="blockListLast">
 <li class="blockList">
 <h4>BoxFolder</h4>
-<pre>public&nbsp;<a href="../../../src-html/com/box/sdk/BoxFolder.html#line.109">BoxFolder</a>(<a href="../../../com/box/sdk/BoxAPIConnection.html" title="class in com.box.sdk">BoxAPIConnection</a>&nbsp;api,
+<pre>public&nbsp;<a href="../../../src-html/com/box/sdk/BoxFolder.html#line.110">BoxFolder</a>(<a href="../../../com/box/sdk/BoxAPIConnection.html" title="class in com.box.sdk">BoxAPIConnection</a>&nbsp;api,
                  <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;id)</pre>
 <div class="block">Constructs a BoxFolder for a folder with a given ID.</div>
 <dl>
@@ -963,7 +930,7 @@ implements <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Iterable
 <ul class="blockList">
 <li class="blockList">
 <h4>getRootFolder</h4>
-<pre>public static&nbsp;<a href="../../../com/box/sdk/BoxFolder.html" title="class in com.box.sdk">BoxFolder</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxFolder.html#line.119">getRootFolder</a>(<a href="../../../com/box/sdk/BoxAPIConnection.html" title="class in com.box.sdk">BoxAPIConnection</a>&nbsp;api)</pre>
+<pre>public static&nbsp;<a href="../../../com/box/sdk/BoxFolder.html" title="class in com.box.sdk">BoxFolder</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxFolder.html#line.120">getRootFolder</a>(<a href="../../../com/box/sdk/BoxAPIConnection.html" title="class in com.box.sdk">BoxAPIConnection</a>&nbsp;api)</pre>
 <div class="block">Gets the current user's root folder.</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
@@ -979,7 +946,7 @@ implements <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Iterable
 <ul class="blockList">
 <li class="blockList">
 <h4>getItemURL</h4>
-<pre>protected&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/net/URL.html?is-external=true" title="class or interface in java.net">URL</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxFolder.html#line.127">getItemURL</a>()</pre>
+<pre>protected&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/net/URL.html?is-external=true" title="class or interface in java.net">URL</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxFolder.html#line.128">getItemURL</a>()</pre>
 <dl>
 <dt><span class="overrideSpecifyLabel">Overrides:</span></dt>
 <dd><code><a href="../../../com/box/sdk/BoxItem.html#getItemURL--">getItemURL</a></code>&nbsp;in class&nbsp;<code><a href="../../../com/box/sdk/BoxItem.html" title="class in com.box.sdk">BoxItem</a></code></dd>
@@ -994,7 +961,7 @@ implements <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Iterable
 <ul class="blockList">
 <li class="blockList">
 <h4>collaborate</h4>
-<pre>public&nbsp;<a href="../../../com/box/sdk/BoxCollaboration.Info.html" title="class in com.box.sdk">BoxCollaboration.Info</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxFolder.html#line.138">collaborate</a>(<a href="../../../com/box/sdk/BoxCollaborator.html" title="class in com.box.sdk">BoxCollaborator</a>&nbsp;collaborator,
+<pre>public&nbsp;<a href="../../../com/box/sdk/BoxCollaboration.Info.html" title="class in com.box.sdk">BoxCollaboration.Info</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxFolder.html#line.139">collaborate</a>(<a href="../../../com/box/sdk/BoxCollaborator.html" title="class in com.box.sdk">BoxCollaborator</a>&nbsp;collaborator,
                                          <a href="../../../com/box/sdk/BoxCollaboration.Role.html" title="enum in com.box.sdk">BoxCollaboration.Role</a>&nbsp;role)</pre>
 <div class="block">Adds a collaborator to this folder.</div>
 <dl>
@@ -1012,7 +979,7 @@ implements <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Iterable
 <ul class="blockList">
 <li class="blockList">
 <h4>collaborate</h4>
-<pre>public&nbsp;<a href="../../../com/box/sdk/BoxCollaboration.Info.html" title="class in com.box.sdk">BoxCollaboration.Info</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxFolder.html#line.161">collaborate</a>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;email,
+<pre>public&nbsp;<a href="../../../com/box/sdk/BoxCollaboration.Info.html" title="class in com.box.sdk">BoxCollaboration.Info</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxFolder.html#line.162">collaborate</a>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;email,
                                          <a href="../../../com/box/sdk/BoxCollaboration.Role.html" title="enum in com.box.sdk">BoxCollaboration.Role</a>&nbsp;role)</pre>
 <div class="block">Adds a collaborator to this folder. An email will be sent to the collaborator if they don't already have a Box
  account.</div>
@@ -1031,7 +998,7 @@ implements <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Iterable
 <ul class="blockList">
 <li class="blockList">
 <h4>collaborate</h4>
-<pre>public&nbsp;<a href="../../../com/box/sdk/BoxCollaboration.Info.html" title="class in com.box.sdk">BoxCollaboration.Info</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxFolder.html#line.180">collaborate</a>(<a href="../../../com/box/sdk/BoxCollaborator.html" title="class in com.box.sdk">BoxCollaborator</a>&nbsp;collaborator,
+<pre>public&nbsp;<a href="../../../com/box/sdk/BoxCollaboration.Info.html" title="class in com.box.sdk">BoxCollaboration.Info</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxFolder.html#line.181">collaborate</a>(<a href="../../../com/box/sdk/BoxCollaborator.html" title="class in com.box.sdk">BoxCollaborator</a>&nbsp;collaborator,
                                          <a href="../../../com/box/sdk/BoxCollaboration.Role.html" title="enum in com.box.sdk">BoxCollaboration.Role</a>&nbsp;role,
                                          <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Boolean.html?is-external=true" title="class or interface in java.lang">Boolean</a>&nbsp;notify,
                                          <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Boolean.html?is-external=true" title="class or interface in java.lang">Boolean</a>&nbsp;canViewPath)</pre>
@@ -1055,7 +1022,7 @@ implements <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Iterable
 <ul class="blockList">
 <li class="blockList">
 <h4>collaborate</h4>
-<pre>public&nbsp;<a href="../../../com/box/sdk/BoxCollaboration.Info.html" title="class in com.box.sdk">BoxCollaboration.Info</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxFolder.html#line.208">collaborate</a>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;email,
+<pre>public&nbsp;<a href="../../../com/box/sdk/BoxCollaboration.Info.html" title="class in com.box.sdk">BoxCollaboration.Info</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxFolder.html#line.209">collaborate</a>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;email,
                                          <a href="../../../com/box/sdk/BoxCollaboration.Role.html" title="enum in com.box.sdk">BoxCollaboration.Role</a>&nbsp;role,
                                          <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Boolean.html?is-external=true" title="class or interface in java.lang">Boolean</a>&nbsp;notify,
                                          <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Boolean.html?is-external=true" title="class or interface in java.lang">Boolean</a>&nbsp;canViewPath)</pre>
@@ -1074,65 +1041,13 @@ implements <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Iterable
 </dl>
 </li>
 </ul>
-<a name="createSharedLink-com.box.sdk.BoxSharedLink.Access-java.util.Date-com.box.sdk.BoxSharedLink.Permissions-">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>createSharedLink</h4>
-<pre><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Deprecated.html?is-external=true" title="class or interface in java.lang">@Deprecated</a>
-public&nbsp;<a href="../../../com/box/sdk/BoxSharedLink.html" title="class in com.box.sdk">BoxSharedLink</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxFolder.html#line.242">createSharedLink</a>(<a href="../../../com/box/sdk/BoxSharedLink.Access.html" title="enum in com.box.sdk">BoxSharedLink.Access</a>&nbsp;access,
-                                                  <a href="https://docs.oracle.com/javase/8/docs/api/java/util/Date.html?is-external=true" title="class or interface in java.util">Date</a>&nbsp;unshareDate,
-                                                  <a href="../../../com/box/sdk/BoxSharedLink.Permissions.html" title="class in com.box.sdk">BoxSharedLink.Permissions</a>&nbsp;permissions)</pre>
-<div class="block"><span class="deprecatedLabel">Deprecated.</span>&nbsp;<span class="deprecationComment">use <a href="../../../com/box/sdk/BoxFolder.html#createSharedLink-com.box.sdk.sharedlink.BoxSharedLinkRequest-"><code>createSharedLink(BoxSharedLinkRequest)</code></a></span></div>
-<div class="block">Creates a new shared link for this item.
-
- <p>This method is a convenience method for manually creating a new shared link and applying it to this item with
- <a href="../../../com/box/sdk/BoxItem.Info.html#setSharedLink-com.box.sdk.BoxSharedLink-"><code>BoxItem.Info.setSharedLink(com.box.sdk.BoxSharedLink)</code></a>. You may want to create the shared link manually so that it can be updated along with
- other changes to the item's info in a single network request, giving a boost to performance.</p></div>
-<dl>
-<dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
-<dd><code><a href="../../../com/box/sdk/BoxItem.html#createSharedLink-com.box.sdk.BoxSharedLink.Access-java.util.Date-com.box.sdk.BoxSharedLink.Permissions-">createSharedLink</a></code>&nbsp;in class&nbsp;<code><a href="../../../com/box/sdk/BoxItem.html" title="class in com.box.sdk">BoxItem</a></code></dd>
-<dt><span class="paramLabel">Parameters:</span></dt>
-<dd><code>access</code> - the access level of the shared link.</dd>
-<dd><code>unshareDate</code> - the date and time at which the link will expire. Can be null to create a non-expiring link.</dd>
-<dd><code>permissions</code> - the permissions of the shared link. Can be null to use the default permissions.</dd>
-<dt><span class="returnLabel">Returns:</span></dt>
-<dd>the created shared link.</dd>
-</dl>
-</li>
-</ul>
-<a name="createSharedLink-com.box.sdk.BoxSharedLink.Access-java.util.Date-com.box.sdk.BoxSharedLink.Permissions-java.lang.String-">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>createSharedLink</h4>
-<pre><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Deprecated.html?is-external=true" title="class or interface in java.lang">@Deprecated</a>
-public&nbsp;<a href="../../../com/box/sdk/BoxSharedLink.html" title="class in com.box.sdk">BoxSharedLink</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxFolder.html#line.259">createSharedLink</a>(<a href="../../../com/box/sdk/BoxSharedLink.Access.html" title="enum in com.box.sdk">BoxSharedLink.Access</a>&nbsp;access,
-                                                  <a href="https://docs.oracle.com/javase/8/docs/api/java/util/Date.html?is-external=true" title="class or interface in java.util">Date</a>&nbsp;unshareDate,
-                                                  <a href="../../../com/box/sdk/BoxSharedLink.Permissions.html" title="class in com.box.sdk">BoxSharedLink.Permissions</a>&nbsp;permissions,
-                                                  <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;password)</pre>
-<div class="block"><span class="deprecatedLabel">Deprecated.</span>&nbsp;<span class="deprecationComment">Use <a href="../../../com/box/sdk/BoxFolder.html#createSharedLink-com.box.sdk.sharedlink.BoxSharedLinkRequest-"><code>createSharedLink(BoxSharedLinkRequest)</code></a></span></div>
-<div class="block">Creates new SharedLink for a BoxFolder with a password.</div>
-<dl>
-<dt><span class="paramLabel">Parameters:</span></dt>
-<dd><code>access</code> - The access level of the shared link.</dd>
-<dd><code>unshareDate</code> - A specified date to unshare the Box folder.</dd>
-<dd><code>permissions</code> - The permissions to set on the shared link for the Box folder.</dd>
-<dd><code>password</code> - Password set on the shared link to give access to the Box folder.</dd>
-<dt><span class="returnLabel">Returns:</span></dt>
-<dd>information about the newly created shared link.</dd>
-</dl>
-</li>
-</ul>
 <a name="createSharedLink-com.box.sdk.sharedlink.BoxSharedLinkRequest-">
 <!--   -->
 </a>
 <ul class="blockList">
 <li class="blockList">
 <h4>createSharedLink</h4>
-<pre>public&nbsp;<a href="../../../com/box/sdk/BoxSharedLink.html" title="class in com.box.sdk">BoxSharedLink</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxFolder.html#line.271">createSharedLink</a>(<a href="../../../com/box/sdk/sharedlink/BoxSharedLinkRequest.html" title="class in com.box.sdk.sharedlink">BoxSharedLinkRequest</a>&nbsp;sharedLinkRequest)</pre>
+<pre>public&nbsp;<a href="../../../com/box/sdk/BoxSharedLink.html" title="class in com.box.sdk">BoxSharedLink</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxFolder.html#line.234">createSharedLink</a>(<a href="../../../com/box/sdk/sharedlink/BoxSharedLinkRequest.html" title="class in com.box.sdk.sharedlink">BoxSharedLinkRequest</a>&nbsp;sharedLinkRequest)</pre>
 <div class="block">Creates a shared link.</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
@@ -1148,28 +1063,11 @@ public&nbsp;<a href="../../../com/box/sdk/BoxSharedLink.html" title="class in co
 <ul class="blockList">
 <li class="blockList">
 <h4>getCollaborations</h4>
-<pre>public&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/util/Collection.html?is-external=true" title="class or interface in java.util">Collection</a>&lt;<a href="../../../com/box/sdk/BoxCollaboration.Info.html" title="class in com.box.sdk">BoxCollaboration.Info</a>&gt;&nbsp;<a href="../../../src-html/com/box/sdk/BoxFolder.html#line.298">getCollaborations</a>()</pre>
+<pre>public&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/util/Collection.html?is-external=true" title="class or interface in java.util">Collection</a>&lt;<a href="../../../com/box/sdk/BoxCollaboration.Info.html" title="class in com.box.sdk">BoxCollaboration.Info</a>&gt;&nbsp;<a href="../../../src-html/com/box/sdk/BoxFolder.html#line.261">getCollaborations</a>()</pre>
 <div class="block">Gets information about all of the collaborations for this folder.</div>
 <dl>
 <dt><span class="returnLabel">Returns:</span></dt>
 <dd>a collection of information about the collaborations for this folder.</dd>
-</dl>
-</li>
-</ul>
-<a name="getInfo--">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>getInfo</h4>
-<pre>public&nbsp;<a href="../../../com/box/sdk/BoxFolder.Info.html" title="class in com.box.sdk">BoxFolder.Info</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxFolder.html#line.320">getInfo</a>()</pre>
-<div class="block"><span class="descfrmTypeLabel">Description copied from class:&nbsp;<code><a href="../../../com/box/sdk/BoxItem.html#getInfo--">BoxItem</a></code></span></div>
-<div class="block">Gets information about this item.</div>
-<dl>
-<dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
-<dd><code><a href="../../../com/box/sdk/BoxItem.html#getInfo--">getInfo</a></code>&nbsp;in class&nbsp;<code><a href="../../../com/box/sdk/BoxItem.html" title="class in com.box.sdk">BoxItem</a></code></dd>
-<dt><span class="returnLabel">Returns:</span></dt>
-<dd>info about this item.</dd>
 </dl>
 </li>
 </ul>
@@ -1179,7 +1077,7 @@ public&nbsp;<a href="../../../com/box/sdk/BoxSharedLink.html" title="class in co
 <ul class="blockList">
 <li class="blockList">
 <h4>getInfo</h4>
-<pre>public&nbsp;<a href="../../../com/box/sdk/BoxFolder.Info.html" title="class in com.box.sdk">BoxFolder.Info</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxFolder.html#line.328">getInfo</a>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>...&nbsp;fields)</pre>
+<pre>public&nbsp;<a href="../../../com/box/sdk/BoxFolder.Info.html" title="class in com.box.sdk">BoxFolder.Info</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxFolder.html#line.284">getInfo</a>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>...&nbsp;fields)</pre>
 <div class="block"><span class="descfrmTypeLabel">Description copied from class:&nbsp;<code><a href="../../../com/box/sdk/BoxItem.html#getInfo-java.lang.String...-">BoxItem</a></code></span></div>
 <div class="block">Gets information about this item that's limited to a list of specified fields.</div>
 <dl>
@@ -1198,7 +1096,7 @@ public&nbsp;<a href="../../../com/box/sdk/BoxSharedLink.html" title="class in co
 <ul class="blockList">
 <li class="blockList">
 <h4>updateInfo</h4>
-<pre>public&nbsp;void&nbsp;<a href="../../../src-html/com/box/sdk/BoxFolder.html#line.342">updateInfo</a>(<a href="../../../com/box/sdk/BoxFolder.Info.html" title="class in com.box.sdk">BoxFolder.Info</a>&nbsp;info)</pre>
+<pre>public&nbsp;void&nbsp;<a href="../../../src-html/com/box/sdk/BoxFolder.html#line.302">updateInfo</a>(<a href="../../../com/box/sdk/BoxFolder.Info.html" title="class in com.box.sdk">BoxFolder.Info</a>&nbsp;info)</pre>
 <div class="block">Updates the information about this folder with any info fields that have been modified locally.</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
@@ -1212,7 +1110,7 @@ public&nbsp;<a href="../../../com/box/sdk/BoxSharedLink.html" title="class in co
 <ul class="blockList">
 <li class="blockList">
 <h4>copy</h4>
-<pre>public&nbsp;<a href="../../../com/box/sdk/BoxFolder.Info.html" title="class in com.box.sdk">BoxFolder.Info</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxFolder.html#line.352">copy</a>(<a href="../../../com/box/sdk/BoxFolder.html" title="class in com.box.sdk">BoxFolder</a>&nbsp;destination)</pre>
+<pre>public&nbsp;<a href="../../../com/box/sdk/BoxFolder.Info.html" title="class in com.box.sdk">BoxFolder.Info</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxFolder.html#line.313">copy</a>(<a href="../../../com/box/sdk/BoxFolder.html" title="class in com.box.sdk">BoxFolder</a>&nbsp;destination)</pre>
 <div class="block"><span class="descfrmTypeLabel">Description copied from class:&nbsp;<code><a href="../../../com/box/sdk/BoxItem.html#copy-com.box.sdk.BoxFolder-">BoxItem</a></code></span></div>
 <div class="block">Copies this item to another folder.</div>
 <dl>
@@ -1231,7 +1129,7 @@ public&nbsp;<a href="../../../com/box/sdk/BoxSharedLink.html" title="class in co
 <ul class="blockList">
 <li class="blockList">
 <h4>copy</h4>
-<pre>public&nbsp;<a href="../../../com/box/sdk/BoxFolder.Info.html" title="class in com.box.sdk">BoxFolder.Info</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxFolder.html#line.357">copy</a>(<a href="../../../com/box/sdk/BoxFolder.html" title="class in com.box.sdk">BoxFolder</a>&nbsp;destination,
+<pre>public&nbsp;<a href="../../../com/box/sdk/BoxFolder.Info.html" title="class in com.box.sdk">BoxFolder.Info</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxFolder.html#line.318">copy</a>(<a href="../../../com/box/sdk/BoxFolder.html" title="class in com.box.sdk">BoxFolder</a>&nbsp;destination,
                            <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;newName)</pre>
 <div class="block"><span class="descfrmTypeLabel">Description copied from class:&nbsp;<code><a href="../../../com/box/sdk/BoxItem.html#copy-com.box.sdk.BoxFolder-java.lang.String-">BoxItem</a></code></span></div>
 <div class="block">Copies this item to another folder and gives it a new name. If the destination is the same folder as the item's
@@ -1253,7 +1151,7 @@ public&nbsp;<a href="../../../com/box/sdk/BoxSharedLink.html" title="class in co
 <ul class="blockList">
 <li class="blockList">
 <h4>createFolder</h4>
-<pre>public&nbsp;<a href="../../../com/box/sdk/BoxFolder.Info.html" title="class in com.box.sdk">BoxFolder.Info</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxFolder.html#line.383">createFolder</a>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;name)</pre>
+<pre>public&nbsp;<a href="../../../com/box/sdk/BoxFolder.Info.html" title="class in com.box.sdk">BoxFolder.Info</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxFolder.html#line.345">createFolder</a>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;name)</pre>
 <div class="block">Creates a new child folder inside this folder.</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
@@ -1269,7 +1167,7 @@ public&nbsp;<a href="../../../com/box/sdk/BoxSharedLink.html" title="class in co
 <ul class="blockList">
 <li class="blockList">
 <h4>delete</h4>
-<pre>public&nbsp;void&nbsp;<a href="../../../src-html/com/box/sdk/BoxFolder.html#line.406">delete</a>(boolean&nbsp;recursive)</pre>
+<pre>public&nbsp;void&nbsp;<a href="../../../src-html/com/box/sdk/BoxFolder.html#line.369">delete</a>(boolean&nbsp;recursive)</pre>
 <div class="block">Deletes this folder, optionally recursively deleting all of its contents.</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
@@ -1283,7 +1181,7 @@ public&nbsp;<a href="../../../com/box/sdk/BoxSharedLink.html" title="class in co
 <ul class="blockList">
 <li class="blockList">
 <h4>move</h4>
-<pre>public&nbsp;<a href="../../../com/box/sdk/BoxItem.Info.html" title="class in com.box.sdk">BoxItem.Info</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxFolder.html#line.414">move</a>(<a href="../../../com/box/sdk/BoxFolder.html" title="class in com.box.sdk">BoxFolder</a>&nbsp;destination)</pre>
+<pre>public&nbsp;<a href="../../../com/box/sdk/BoxItem.Info.html" title="class in com.box.sdk">BoxItem.Info</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxFolder.html#line.376">move</a>(<a href="../../../com/box/sdk/BoxFolder.html" title="class in com.box.sdk">BoxFolder</a>&nbsp;destination)</pre>
 <div class="block"><span class="descfrmTypeLabel">Description copied from class:&nbsp;<code><a href="../../../com/box/sdk/BoxItem.html#move-com.box.sdk.BoxFolder-">BoxItem</a></code></span></div>
 <div class="block">Moves this item to another folder.</div>
 <dl>
@@ -1302,7 +1200,7 @@ public&nbsp;<a href="../../../com/box/sdk/BoxSharedLink.html" title="class in co
 <ul class="blockList">
 <li class="blockList">
 <h4>move</h4>
-<pre>public&nbsp;<a href="../../../com/box/sdk/BoxItem.Info.html" title="class in com.box.sdk">BoxItem.Info</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxFolder.html#line.419">move</a>(<a href="../../../com/box/sdk/BoxFolder.html" title="class in com.box.sdk">BoxFolder</a>&nbsp;destination,
+<pre>public&nbsp;<a href="../../../com/box/sdk/BoxItem.Info.html" title="class in com.box.sdk">BoxItem.Info</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxFolder.html#line.381">move</a>(<a href="../../../com/box/sdk/BoxFolder.html" title="class in com.box.sdk">BoxFolder</a>&nbsp;destination,
                          <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;newName)</pre>
 <div class="block"><span class="descfrmTypeLabel">Description copied from class:&nbsp;<code><a href="../../../com/box/sdk/BoxItem.html#move-com.box.sdk.BoxFolder-java.lang.String-">BoxItem</a></code></span></div>
 <div class="block">Moves this item to another folder and gives it a new name.</div>
@@ -1323,7 +1221,7 @@ public&nbsp;<a href="../../../com/box/sdk/BoxSharedLink.html" title="class in co
 <ul class="blockList">
 <li class="blockList">
 <h4>rename</h4>
-<pre>public&nbsp;void&nbsp;<a href="../../../src-html/com/box/sdk/BoxFolder.html#line.444">rename</a>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;newName)</pre>
+<pre>public&nbsp;void&nbsp;<a href="../../../src-html/com/box/sdk/BoxFolder.html#line.407">rename</a>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;newName)</pre>
 <div class="block">Renames this folder.</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
@@ -1337,7 +1235,7 @@ public&nbsp;<a href="../../../com/box/sdk/BoxSharedLink.html" title="class in co
 <ul class="blockList">
 <li class="blockList">
 <h4>canUpload</h4>
-<pre>public&nbsp;void&nbsp;<a href="../../../src-html/com/box/sdk/BoxFolder.html#line.462">canUpload</a>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;name,
+<pre>public&nbsp;void&nbsp;<a href="../../../src-html/com/box/sdk/BoxFolder.html#line.426">canUpload</a>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;name,
                       long&nbsp;fileSize)</pre>
 <div class="block">Checks if the file can be successfully uploaded by using the preflight check.</div>
 <dl>
@@ -1353,7 +1251,7 @@ public&nbsp;<a href="../../../com/box/sdk/BoxSharedLink.html" title="class in co
 <ul class="blockList">
 <li class="blockList">
 <h4>uploadFile</h4>
-<pre>public&nbsp;<a href="../../../com/box/sdk/BoxFile.Info.html" title="class in com.box.sdk">BoxFile.Info</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxFolder.html#line.487">uploadFile</a>(<a href="https://docs.oracle.com/javase/8/docs/api/java/io/InputStream.html?is-external=true" title="class or interface in java.io">InputStream</a>&nbsp;fileContent,
+<pre>public&nbsp;<a href="../../../com/box/sdk/BoxFile.Info.html" title="class in com.box.sdk">BoxFile.Info</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxFolder.html#line.452">uploadFile</a>(<a href="https://docs.oracle.com/javase/8/docs/api/java/io/InputStream.html?is-external=true" title="class or interface in java.io">InputStream</a>&nbsp;fileContent,
                                <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;name)</pre>
 <div class="block">Uploads a new file to this folder.</div>
 <dl>
@@ -1371,7 +1269,7 @@ public&nbsp;<a href="../../../com/box/sdk/BoxSharedLink.html" title="class in co
 <ul class="blockList">
 <li class="blockList">
 <h4>uploadFile</h4>
-<pre>public&nbsp;<a href="../../../com/box/sdk/BoxFile.Info.html" title="class in com.box.sdk">BoxFile.Info</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxFolder.html#line.501">uploadFile</a>(<a href="../../../com/box/sdk/UploadFileCallback.html" title="interface in com.box.sdk">UploadFileCallback</a>&nbsp;callback,
+<pre>public&nbsp;<a href="../../../com/box/sdk/BoxFile.Info.html" title="class in com.box.sdk">BoxFile.Info</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxFolder.html#line.466">uploadFile</a>(<a href="../../../com/box/sdk/UploadFileCallback.html" title="interface in com.box.sdk">UploadFileCallback</a>&nbsp;callback,
                                <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;name)</pre>
 <div class="block">Uploads a new file to this folder.</div>
 <dl>
@@ -1389,7 +1287,7 @@ public&nbsp;<a href="../../../com/box/sdk/BoxSharedLink.html" title="class in co
 <ul class="blockList">
 <li class="blockList">
 <h4>uploadFile</h4>
-<pre>public&nbsp;<a href="../../../com/box/sdk/BoxFile.Info.html" title="class in com.box.sdk">BoxFile.Info</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxFolder.html#line.517">uploadFile</a>(<a href="https://docs.oracle.com/javase/8/docs/api/java/io/InputStream.html?is-external=true" title="class or interface in java.io">InputStream</a>&nbsp;fileContent,
+<pre>public&nbsp;<a href="../../../com/box/sdk/BoxFile.Info.html" title="class in com.box.sdk">BoxFile.Info</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxFolder.html#line.482">uploadFile</a>(<a href="https://docs.oracle.com/javase/8/docs/api/java/io/InputStream.html?is-external=true" title="class or interface in java.io">InputStream</a>&nbsp;fileContent,
                                <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;name,
                                long&nbsp;fileSize,
                                <a href="../../../com/box/sdk/ProgressListener.html" title="interface in com.box.sdk">ProgressListener</a>&nbsp;listener)</pre>
@@ -1411,7 +1309,7 @@ public&nbsp;<a href="../../../com/box/sdk/BoxSharedLink.html" title="class in co
 <ul class="blockList">
 <li class="blockList">
 <h4>uploadFile</h4>
-<pre>public&nbsp;<a href="../../../com/box/sdk/BoxFile.Info.html" title="class in com.box.sdk">BoxFile.Info</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxFolder.html#line.534">uploadFile</a>(<a href="https://docs.oracle.com/javase/8/docs/api/java/io/InputStream.html?is-external=true" title="class or interface in java.io">InputStream</a>&nbsp;fileContent,
+<pre>public&nbsp;<a href="../../../com/box/sdk/BoxFile.Info.html" title="class in com.box.sdk">BoxFile.Info</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxFolder.html#line.499">uploadFile</a>(<a href="https://docs.oracle.com/javase/8/docs/api/java/io/InputStream.html?is-external=true" title="class or interface in java.io">InputStream</a>&nbsp;fileContent,
                                <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;name,
                                <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;description)</pre>
 <div class="block">Uploads a new file to this folder with a specified file description.</div>
@@ -1431,7 +1329,7 @@ public&nbsp;<a href="../../../com/box/sdk/BoxSharedLink.html" title="class in co
 <ul class="blockList">
 <li class="blockList">
 <h4>uploadFile</h4>
-<pre>public&nbsp;<a href="../../../com/box/sdk/BoxFile.Info.html" title="class in com.box.sdk">BoxFile.Info</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxFolder.html#line.548">uploadFile</a>(<a href="../../../com/box/sdk/FileUploadParams.html" title="class in com.box.sdk">FileUploadParams</a>&nbsp;uploadParams)</pre>
+<pre>public&nbsp;<a href="../../../com/box/sdk/BoxFile.Info.html" title="class in com.box.sdk">BoxFile.Info</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxFolder.html#line.513">uploadFile</a>(<a href="../../../com/box/sdk/FileUploadParams.html" title="class in com.box.sdk">FileUploadParams</a>&nbsp;uploadParams)</pre>
 <div class="block">Uploads a new file to this folder with custom upload parameters.</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
@@ -1447,7 +1345,7 @@ public&nbsp;<a href="../../../com/box/sdk/BoxSharedLink.html" title="class in co
 <ul class="blockList">
 <li class="blockList">
 <h4>createWebLink</h4>
-<pre>public&nbsp;<a href="../../../com/box/sdk/BoxWebLink.Info.html" title="class in com.box.sdk">BoxWebLink.Info</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxFolder.html#line.605">createWebLink</a>(<a href="https://docs.oracle.com/javase/8/docs/api/java/net/URL.html?is-external=true" title="class or interface in java.net">URL</a>&nbsp;linkURL)</pre>
+<pre>public&nbsp;<a href="../../../com/box/sdk/BoxWebLink.Info.html" title="class in com.box.sdk">BoxWebLink.Info</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxFolder.html#line.576">createWebLink</a>(<a href="https://docs.oracle.com/javase/8/docs/api/java/net/URL.html?is-external=true" title="class or interface in java.net">URL</a>&nbsp;linkURL)</pre>
 <div class="block">Uploads a new weblink to this folder.</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
@@ -1463,7 +1361,7 @@ public&nbsp;<a href="../../../com/box/sdk/BoxSharedLink.html" title="class in co
 <ul class="blockList">
 <li class="blockList">
 <h4>createWebLink</h4>
-<pre>public&nbsp;<a href="../../../com/box/sdk/BoxWebLink.Info.html" title="class in com.box.sdk">BoxWebLink.Info</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxFolder.html#line.617">createWebLink</a>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;name,
+<pre>public&nbsp;<a href="../../../com/box/sdk/BoxWebLink.Info.html" title="class in com.box.sdk">BoxWebLink.Info</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxFolder.html#line.588">createWebLink</a>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;name,
                                      <a href="https://docs.oracle.com/javase/8/docs/api/java/net/URL.html?is-external=true" title="class or interface in java.net">URL</a>&nbsp;linkURL)</pre>
 <div class="block">Uploads a new weblink to this folder.</div>
 <dl>
@@ -1481,7 +1379,7 @@ public&nbsp;<a href="../../../com/box/sdk/BoxSharedLink.html" title="class in co
 <ul class="blockList">
 <li class="blockList">
 <h4>createWebLink</h4>
-<pre>public&nbsp;<a href="../../../com/box/sdk/BoxWebLink.Info.html" title="class in com.box.sdk">BoxWebLink.Info</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxFolder.html#line.629">createWebLink</a>(<a href="https://docs.oracle.com/javase/8/docs/api/java/net/URL.html?is-external=true" title="class or interface in java.net">URL</a>&nbsp;linkURL,
+<pre>public&nbsp;<a href="../../../com/box/sdk/BoxWebLink.Info.html" title="class in com.box.sdk">BoxWebLink.Info</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxFolder.html#line.600">createWebLink</a>(<a href="https://docs.oracle.com/javase/8/docs/api/java/net/URL.html?is-external=true" title="class or interface in java.net">URL</a>&nbsp;linkURL,
                                      <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;description)</pre>
 <div class="block">Uploads a new weblink to this folder.</div>
 <dl>
@@ -1499,7 +1397,7 @@ public&nbsp;<a href="../../../com/box/sdk/BoxSharedLink.html" title="class in co
 <ul class="blockList">
 <li class="blockList">
 <h4>createWebLink</h4>
-<pre>public&nbsp;<a href="../../../com/box/sdk/BoxWebLink.Info.html" title="class in com.box.sdk">BoxWebLink.Info</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxFolder.html#line.641">createWebLink</a>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;name,
+<pre>public&nbsp;<a href="../../../com/box/sdk/BoxWebLink.Info.html" title="class in com.box.sdk">BoxWebLink.Info</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxFolder.html#line.612">createWebLink</a>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;name,
                                      <a href="https://docs.oracle.com/javase/8/docs/api/java/net/URL.html?is-external=true" title="class or interface in java.net">URL</a>&nbsp;linkURL,
                                      <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;description)</pre>
 <div class="block">Uploads a new weblink to this folder.</div>
@@ -1519,7 +1417,7 @@ public&nbsp;<a href="../../../com/box/sdk/BoxSharedLink.html" title="class in co
 <ul class="blockList">
 <li class="blockList">
 <h4>getChildren</h4>
-<pre>public&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Iterable.html?is-external=true" title="class or interface in java.lang">Iterable</a>&lt;<a href="../../../com/box/sdk/BoxItem.Info.html" title="class in com.box.sdk">BoxItem.Info</a>&gt;&nbsp;<a href="../../../src-html/com/box/sdk/BoxFolder.html#line.670">getChildren</a>()</pre>
+<pre>public&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Iterable.html?is-external=true" title="class or interface in java.lang">Iterable</a>&lt;<a href="../../../com/box/sdk/BoxItem.Info.html" title="class in com.box.sdk">BoxItem.Info</a>&gt;&nbsp;<a href="../../../src-html/com/box/sdk/BoxFolder.html#line.642">getChildren</a>()</pre>
 <div class="block">Returns an iterable containing the items in this folder. Iterating over the iterable returned by this method is
  equivalent to iterating over this BoxFolder directly.</div>
 <dl>
@@ -1534,7 +1432,7 @@ public&nbsp;<a href="../../../com/box/sdk/BoxSharedLink.html" title="class in co
 <ul class="blockList">
 <li class="blockList">
 <h4>getChildren</h4>
-<pre>public&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Iterable.html?is-external=true" title="class or interface in java.lang">Iterable</a>&lt;<a href="../../../com/box/sdk/BoxItem.Info.html" title="class in com.box.sdk">BoxItem.Info</a>&gt;&nbsp;<a href="../../../src-html/com/box/sdk/BoxFolder.html#line.681">getChildren</a>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>...&nbsp;fields)</pre>
+<pre>public&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Iterable.html?is-external=true" title="class or interface in java.lang">Iterable</a>&lt;<a href="../../../com/box/sdk/BoxItem.Info.html" title="class in com.box.sdk">BoxItem.Info</a>&gt;&nbsp;<a href="../../../src-html/com/box/sdk/BoxFolder.html#line.653">getChildren</a>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>...&nbsp;fields)</pre>
 <div class="block">Returns an iterable containing the items in this folder and specifies which child fields to retrieve from the
  API.</div>
 <dl>
@@ -1551,7 +1449,7 @@ public&nbsp;<a href="../../../com/box/sdk/BoxSharedLink.html" title="class in co
 <ul class="blockList">
 <li class="blockList">
 <h4>getChildren</h4>
-<pre>public&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Iterable.html?is-external=true" title="class or interface in java.lang">Iterable</a>&lt;<a href="../../../com/box/sdk/BoxItem.Info.html" title="class in com.box.sdk">BoxItem.Info</a>&gt;&nbsp;<a href="../../../src-html/com/box/sdk/BoxFolder.html#line.697">getChildren</a>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;sort,
+<pre>public&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Iterable.html?is-external=true" title="class or interface in java.lang">Iterable</a>&lt;<a href="../../../com/box/sdk/BoxItem.Info.html" title="class in com.box.sdk">BoxItem.Info</a>&gt;&nbsp;<a href="../../../src-html/com/box/sdk/BoxFolder.html#line.669">getChildren</a>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;sort,
                                           <a href="../../../com/box/sdk/BoxFolder.SortDirection.html" title="enum in com.box.sdk">BoxFolder.SortDirection</a>&nbsp;direction,
                                           <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>...&nbsp;fields)</pre>
 <div class="block">Returns an iterable containing the items in this folder sorted by name and direction.</div>
@@ -1571,7 +1469,7 @@ public&nbsp;<a href="../../../com/box/sdk/BoxSharedLink.html" title="class in co
 <ul class="blockList">
 <li class="blockList">
 <h4>getChildren</h4>
-<pre>public&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Iterable.html?is-external=true" title="class or interface in java.lang">Iterable</a>&lt;<a href="../../../com/box/sdk/BoxItem.Info.html" title="class in com.box.sdk">BoxItem.Info</a>&gt;&nbsp;<a href="../../../src-html/com/box/sdk/BoxFolder.html#line.722">getChildren</a>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;sort,
+<pre>public&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Iterable.html?is-external=true" title="class or interface in java.lang">Iterable</a>&lt;<a href="../../../com/box/sdk/BoxItem.Info.html" title="class in com.box.sdk">BoxItem.Info</a>&gt;&nbsp;<a href="../../../src-html/com/box/sdk/BoxFolder.html#line.694">getChildren</a>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;sort,
                                           <a href="../../../com/box/sdk/BoxFolder.SortDirection.html" title="enum in com.box.sdk">BoxFolder.SortDirection</a>&nbsp;direction,
                                           long&nbsp;offset,
                                           long&nbsp;limit,
@@ -1595,7 +1493,7 @@ public&nbsp;<a href="../../../com/box/sdk/BoxSharedLink.html" title="class in co
 <ul class="blockList">
 <li class="blockList">
 <h4>getChildrenRange</h4>
-<pre>public&nbsp;<a href="../../../com/box/sdk/PartialCollection.html" title="class in com.box.sdk">PartialCollection</a>&lt;<a href="../../../com/box/sdk/BoxItem.Info.html" title="class in com.box.sdk">BoxItem.Info</a>&gt;&nbsp;<a href="../../../src-html/com/box/sdk/BoxFolder.html#line.746">getChildrenRange</a>(long&nbsp;offset,
+<pre>public&nbsp;<a href="../../../com/box/sdk/PartialCollection.html" title="class in com.box.sdk">PartialCollection</a>&lt;<a href="../../../com/box/sdk/BoxItem.Info.html" title="class in com.box.sdk">BoxItem.Info</a>&gt;&nbsp;<a href="../../../src-html/com/box/sdk/BoxFolder.html#line.718">getChildrenRange</a>(long&nbsp;offset,
                                                         long&nbsp;limit,
                                                         <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>...&nbsp;fields)</pre>
 <div class="block">Retrieves a specific range of child items in this folder.</div>
@@ -1615,7 +1513,7 @@ public&nbsp;<a href="../../../com/box/sdk/BoxSharedLink.html" title="class in co
 <ul class="blockList">
 <li class="blockList">
 <h4>getChildren</h4>
-<pre>public&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Iterable.html?is-external=true" title="class or interface in java.lang">Iterable</a>&lt;<a href="../../../com/box/sdk/BoxItem.Info.html" title="class in com.box.sdk">BoxItem.Info</a>&gt;&nbsp;<a href="../../../src-html/com/box/sdk/BoxFolder.html#line.784">getChildren</a>(<a href="../../../com/box/sdk/SortParameters.html" title="class in com.box.sdk">SortParameters</a>&nbsp;sortParameters,
+<pre>public&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Iterable.html?is-external=true" title="class or interface in java.lang">Iterable</a>&lt;<a href="../../../com/box/sdk/BoxItem.Info.html" title="class in com.box.sdk">BoxItem.Info</a>&gt;&nbsp;<a href="../../../src-html/com/box/sdk/BoxFolder.html#line.757">getChildren</a>(<a href="../../../com/box/sdk/SortParameters.html" title="class in com.box.sdk">SortParameters</a>&nbsp;sortParameters,
                                           <a href="../../../com/box/sdk/PagingParameters.html" title="class in com.box.sdk">PagingParameters</a>&nbsp;pagingParameters,
                                           <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>...&nbsp;fields)</pre>
 <div class="block">Returns an iterable containing the items in this folder sorted by name and direction.</div>
@@ -1637,7 +1535,7 @@ public&nbsp;<a href="../../../com/box/sdk/BoxSharedLink.html" title="class in co
 <ul class="blockList">
 <li class="blockList">
 <h4>iterator</h4>
-<pre>public&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/util/Iterator.html?is-external=true" title="class or interface in java.util">Iterator</a>&lt;<a href="../../../com/box/sdk/BoxItem.Info.html" title="class in com.box.sdk">BoxItem.Info</a>&gt;&nbsp;<a href="../../../src-html/com/box/sdk/BoxFolder.html#line.806">iterator</a>()</pre>
+<pre>public&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/util/Iterator.html?is-external=true" title="class or interface in java.util">Iterator</a>&lt;<a href="../../../com/box/sdk/BoxItem.Info.html" title="class in com.box.sdk">BoxItem.Info</a>&gt;&nbsp;<a href="../../../src-html/com/box/sdk/BoxFolder.html#line.779">iterator</a>()</pre>
 <div class="block">Returns an iterator over the items in this folder.</div>
 <dl>
 <dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
@@ -1653,7 +1551,7 @@ public&nbsp;<a href="../../../com/box/sdk/BoxSharedLink.html" title="class in co
 <ul class="blockList">
 <li class="blockList">
 <h4>addWebHook</h4>
-<pre>public&nbsp;<a href="../../../com/box/sdk/BoxWebHook.Info.html" title="class in com.box.sdk">BoxWebHook.Info</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxFolder.html#line.818">addWebHook</a>(<a href="https://docs.oracle.com/javase/8/docs/api/java/net/URL.html?is-external=true" title="class or interface in java.net">URL</a>&nbsp;address,
+<pre>public&nbsp;<a href="../../../com/box/sdk/BoxWebHook.Info.html" title="class in com.box.sdk">BoxWebHook.Info</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxFolder.html#line.791">addWebHook</a>(<a href="https://docs.oracle.com/javase/8/docs/api/java/net/URL.html?is-external=true" title="class or interface in java.net">URL</a>&nbsp;address,
                                   <a href="../../../com/box/sdk/BoxWebHook.Trigger.html" title="enum in com.box.sdk">BoxWebHook.Trigger</a>...&nbsp;triggers)</pre>
 <div class="block">Adds new <a href="../../../com/box/sdk/BoxWebHook.html" title="class in com.box.sdk"><code>BoxWebHook</code></a> to this <a href="../../../com/box/sdk/BoxFolder.html" title="class in com.box.sdk"><code>BoxFolder</code></a>.</div>
 <dl>
@@ -1671,7 +1569,7 @@ public&nbsp;<a href="../../../com/box/sdk/BoxSharedLink.html" title="class in co
 <ul class="blockList">
 <li class="blockList">
 <h4>getWatermark</h4>
-<pre>public&nbsp;<a href="../../../com/box/sdk/BoxWatermark.html" title="class in com.box.sdk">BoxWatermark</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxFolder.html#line.829">getWatermark</a>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>...&nbsp;fields)</pre>
+<pre>public&nbsp;<a href="../../../com/box/sdk/BoxWatermark.html" title="class in com.box.sdk">BoxWatermark</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxFolder.html#line.802">getWatermark</a>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>...&nbsp;fields)</pre>
 <div class="block">Used to retrieve the watermark for the folder.
  If the folder does not have a watermark applied to it, a 404 Not Found will be returned by API.</div>
 <dl>
@@ -1688,7 +1586,7 @@ public&nbsp;<a href="../../../com/box/sdk/BoxSharedLink.html" title="class in co
 <ul class="blockList">
 <li class="blockList">
 <h4>applyWatermark</h4>
-<pre>public&nbsp;<a href="../../../com/box/sdk/BoxWatermark.html" title="class in com.box.sdk">BoxWatermark</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxFolder.html#line.838">applyWatermark</a>()</pre>
+<pre>public&nbsp;<a href="../../../com/box/sdk/BoxWatermark.html" title="class in com.box.sdk">BoxWatermark</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxFolder.html#line.811">applyWatermark</a>()</pre>
 <div class="block">Used to apply or update the watermark for the folder.</div>
 <dl>
 <dt><span class="returnLabel">Returns:</span></dt>
@@ -1702,7 +1600,7 @@ public&nbsp;<a href="../../../com/box/sdk/BoxSharedLink.html" title="class in co
 <ul class="blockList">
 <li class="blockList">
 <h4>removeWatermark</h4>
-<pre>public&nbsp;void&nbsp;<a href="../../../src-html/com/box/sdk/BoxFolder.html#line.846">removeWatermark</a>()</pre>
+<pre>public&nbsp;void&nbsp;<a href="../../../src-html/com/box/sdk/BoxFolder.html#line.819">removeWatermark</a>()</pre>
 <div class="block">Removes a watermark from the folder.
  If the folder did not have a watermark applied to it, a 404 Not Found will be returned by API.</div>
 </li>
@@ -1713,7 +1611,7 @@ public&nbsp;<a href="../../../com/box/sdk/BoxSharedLink.html" title="class in co
 <ul class="blockList">
 <li class="blockList">
 <h4>getAllMetadata</h4>
-<pre>public&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Iterable.html?is-external=true" title="class or interface in java.lang">Iterable</a>&lt;<a href="../../../com/box/sdk/Metadata.html" title="class in com.box.sdk">Metadata</a>&gt;&nbsp;<a href="../../../src-html/com/box/sdk/BoxFolder.html#line.856">getAllMetadata</a>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>...&nbsp;fields)</pre>
+<pre>public&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Iterable.html?is-external=true" title="class or interface in java.lang">Iterable</a>&lt;<a href="../../../com/box/sdk/Metadata.html" title="class in com.box.sdk">Metadata</a>&gt;&nbsp;<a href="../../../src-html/com/box/sdk/BoxFolder.html#line.829">getAllMetadata</a>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>...&nbsp;fields)</pre>
 <div class="block">Used to retrieve all metadata associated with the folder.</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
@@ -1723,32 +1621,13 @@ public&nbsp;<a href="../../../com/box/sdk/BoxSharedLink.html" title="class in co
 </dl>
 </li>
 </ul>
-<a name="search-java.lang.String-">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>search</h4>
-<pre><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Deprecated.html?is-external=true" title="class or interface in java.lang">@Deprecated</a>
-public&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Iterable.html?is-external=true" title="class or interface in java.lang">Iterable</a>&lt;<a href="../../../com/box/sdk/BoxItem.Info.html" title="class in com.box.sdk">BoxItem.Info</a>&gt;&nbsp;<a href="../../../src-html/com/box/sdk/BoxFolder.html#line.868">search</a>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;query)</pre>
-<div class="block"><span class="deprecatedLabel">Deprecated.</span>&nbsp;</div>
-<div class="block">This method is deprecated, please use the <a href="../../../com/box/sdk/BoxSearch.html" title="class in com.box.sdk"><code>BoxSearch</code></a> class instead.
- Searches this folder and all descendant folders using a given queryPlease use BoxSearch Instead.</div>
-<dl>
-<dt><span class="paramLabel">Parameters:</span></dt>
-<dd><code>query</code> - the search query.</dd>
-<dt><span class="returnLabel">Returns:</span></dt>
-<dd>an Iterable containing the search results.</dd>
-</dl>
-</li>
-</ul>
 <a name="setCollections-com.box.sdk.BoxCollection...-">
 <!--   -->
 </a>
 <ul class="blockList">
 <li class="blockList">
 <h4>setCollections</h4>
-<pre>public&nbsp;<a href="../../../com/box/sdk/BoxFolder.Info.html" title="class in com.box.sdk">BoxFolder.Info</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxFolder.html#line.880">setCollections</a>(<a href="../../../com/box/sdk/BoxCollection.html" title="class in com.box.sdk">BoxCollection</a>...&nbsp;collections)</pre>
+<pre>public&nbsp;<a href="../../../com/box/sdk/BoxFolder.Info.html" title="class in com.box.sdk">BoxFolder.Info</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxFolder.html#line.834">setCollections</a>(<a href="../../../com/box/sdk/BoxCollection.html" title="class in com.box.sdk">BoxCollection</a>...&nbsp;collections)</pre>
 <div class="block"><span class="descfrmTypeLabel">Description copied from class:&nbsp;<code><a href="../../../com/box/sdk/BoxItem.html#setCollections-com.box.sdk.BoxCollection...-">BoxItem</a></code></span></div>
 <div class="block">Sets the collections that this item belongs to.</div>
 <dl>
@@ -1767,7 +1646,7 @@ public&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Iterabl
 <ul class="blockList">
 <li class="blockList">
 <h4>createMetadata</h4>
-<pre>public&nbsp;<a href="../../../com/box/sdk/Metadata.html" title="class in com.box.sdk">Metadata</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxFolder.html#line.905">createMetadata</a>(<a href="../../../com/box/sdk/Metadata.html" title="class in com.box.sdk">Metadata</a>&nbsp;metadata)</pre>
+<pre>public&nbsp;<a href="../../../com/box/sdk/Metadata.html" title="class in com.box.sdk">Metadata</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxFolder.html#line.860">createMetadata</a>(<a href="../../../com/box/sdk/Metadata.html" title="class in com.box.sdk">Metadata</a>&nbsp;metadata)</pre>
 <div class="block">Creates global property metadata on this folder.</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
@@ -1783,7 +1662,7 @@ public&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Iterabl
 <ul class="blockList">
 <li class="blockList">
 <h4>createMetadata</h4>
-<pre>public&nbsp;<a href="../../../com/box/sdk/Metadata.html" title="class in com.box.sdk">Metadata</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxFolder.html#line.916">createMetadata</a>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;templateName,
+<pre>public&nbsp;<a href="../../../com/box/sdk/Metadata.html" title="class in com.box.sdk">Metadata</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxFolder.html#line.871">createMetadata</a>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;templateName,
                                <a href="../../../com/box/sdk/Metadata.html" title="class in com.box.sdk">Metadata</a>&nbsp;metadata)</pre>
 <div class="block">Creates metadata on this folder using a specified template.</div>
 <dl>
@@ -1801,7 +1680,7 @@ public&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Iterabl
 <ul class="blockList">
 <li class="blockList">
 <h4>createMetadata</h4>
-<pre>public&nbsp;<a href="../../../com/box/sdk/Metadata.html" title="class in com.box.sdk">Metadata</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxFolder.html#line.929">createMetadata</a>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;templateName,
+<pre>public&nbsp;<a href="../../../com/box/sdk/Metadata.html" title="class in com.box.sdk">Metadata</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxFolder.html#line.884">createMetadata</a>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;templateName,
                                <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;scope,
                                <a href="../../../com/box/sdk/Metadata.html" title="class in com.box.sdk">Metadata</a>&nbsp;metadata)</pre>
 <div class="block">Creates metadata on this folder using a specified scope and template.</div>
@@ -1821,7 +1700,7 @@ public&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Iterabl
 <ul class="blockList">
 <li class="blockList">
 <h4>setMetadata</h4>
-<pre>public&nbsp;<a href="../../../com/box/sdk/Metadata.html" title="class in com.box.sdk">Metadata</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxFolder.html#line.947">setMetadata</a>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;templateName,
+<pre>public&nbsp;<a href="../../../com/box/sdk/Metadata.html" title="class in com.box.sdk">Metadata</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxFolder.html#line.902">setMetadata</a>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;templateName,
                             <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;scope,
                             <a href="../../../com/box/sdk/Metadata.html" title="class in com.box.sdk">Metadata</a>&nbsp;metadata)</pre>
 <div class="block">Sets the provided metadata on the folder. If metadata has already been created on this folder,
@@ -1842,7 +1721,7 @@ public&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Iterabl
 <ul class="blockList">
 <li class="blockList">
 <h4>getMetadata</h4>
-<pre>public&nbsp;<a href="../../../com/box/sdk/Metadata.html" title="class in com.box.sdk">Metadata</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxFolder.html#line.1003">getMetadata</a>()</pre>
+<pre>public&nbsp;<a href="../../../com/box/sdk/Metadata.html" title="class in com.box.sdk">Metadata</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxFolder.html#line.958">getMetadata</a>()</pre>
 <div class="block">Gets the global properties metadata on this folder.</div>
 <dl>
 <dt><span class="returnLabel">Returns:</span></dt>
@@ -1856,7 +1735,7 @@ public&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Iterabl
 <ul class="blockList">
 <li class="blockList">
 <h4>getMetadata</h4>
-<pre>public&nbsp;<a href="../../../com/box/sdk/Metadata.html" title="class in com.box.sdk">Metadata</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxFolder.html#line.1013">getMetadata</a>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;templateName)</pre>
+<pre>public&nbsp;<a href="../../../com/box/sdk/Metadata.html" title="class in com.box.sdk">Metadata</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxFolder.html#line.968">getMetadata</a>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;templateName)</pre>
 <div class="block">Gets the metadata on this folder associated with a specified template.</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
@@ -1872,7 +1751,7 @@ public&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Iterabl
 <ul class="blockList">
 <li class="blockList">
 <h4>getMetadata</h4>
-<pre>public&nbsp;<a href="../../../com/box/sdk/Metadata.html" title="class in com.box.sdk">Metadata</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxFolder.html#line.1025">getMetadata</a>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;templateName,
+<pre>public&nbsp;<a href="../../../com/box/sdk/Metadata.html" title="class in com.box.sdk">Metadata</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxFolder.html#line.980">getMetadata</a>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;templateName,
                             <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;scope)</pre>
 <div class="block">Gets the metadata on this folder associated with a specified scope and template.</div>
 <dl>
@@ -1890,7 +1769,7 @@ public&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Iterabl
 <ul class="blockList">
 <li class="blockList">
 <h4>updateMetadata</h4>
-<pre>public&nbsp;<a href="../../../com/box/sdk/Metadata.html" title="class in com.box.sdk">Metadata</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxFolder.html#line.1038">updateMetadata</a>(<a href="../../../com/box/sdk/Metadata.html" title="class in com.box.sdk">Metadata</a>&nbsp;metadata)</pre>
+<pre>public&nbsp;<a href="../../../com/box/sdk/Metadata.html" title="class in com.box.sdk">Metadata</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxFolder.html#line.994">updateMetadata</a>(<a href="../../../com/box/sdk/Metadata.html" title="class in com.box.sdk">Metadata</a>&nbsp;metadata)</pre>
 <div class="block">Updates the folder metadata.</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
@@ -1906,7 +1785,7 @@ public&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Iterabl
 <ul class="blockList">
 <li class="blockList">
 <h4>deleteMetadata</h4>
-<pre>public&nbsp;void&nbsp;<a href="../../../src-html/com/box/sdk/BoxFolder.html#line.1051">deleteMetadata</a>()</pre>
+<pre>public&nbsp;void&nbsp;<a href="../../../src-html/com/box/sdk/BoxFolder.html#line.1007">deleteMetadata</a>()</pre>
 <div class="block">Deletes the global properties metadata on this folder.</div>
 </li>
 </ul>
@@ -1916,7 +1795,7 @@ public&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Iterabl
 <ul class="blockList">
 <li class="blockList">
 <h4>deleteMetadata</h4>
-<pre>public&nbsp;void&nbsp;<a href="../../../src-html/com/box/sdk/BoxFolder.html#line.1060">deleteMetadata</a>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;templateName)</pre>
+<pre>public&nbsp;void&nbsp;<a href="../../../src-html/com/box/sdk/BoxFolder.html#line.1016">deleteMetadata</a>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;templateName)</pre>
 <div class="block">Deletes the metadata on this folder associated with a specified template.</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
@@ -1930,7 +1809,7 @@ public&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Iterabl
 <ul class="blockList">
 <li class="blockList">
 <h4>deleteMetadata</h4>
-<pre>public&nbsp;void&nbsp;<a href="../../../src-html/com/box/sdk/BoxFolder.html#line.1071">deleteMetadata</a>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;templateName,
+<pre>public&nbsp;void&nbsp;<a href="../../../src-html/com/box/sdk/BoxFolder.html#line.1027">deleteMetadata</a>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;templateName,
                            <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;scope)</pre>
 <div class="block">Deletes the metadata on this folder associated with a specified scope and template.</div>
 <dl>
@@ -1946,7 +1825,7 @@ public&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Iterabl
 <ul class="blockList">
 <li class="blockList">
 <h4>addClassification</h4>
-<pre>public&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxFolder.html#line.1084">addClassification</a>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;classificationType)</pre>
+<pre>public&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxFolder.html#line.1039">addClassification</a>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;classificationType)</pre>
 <div class="block">Adds a metadata classification to the specified file.</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
@@ -1962,7 +1841,7 @@ public&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Iterabl
 <ul class="blockList">
 <li class="blockList">
 <h4>updateClassification</h4>
-<pre>public&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxFolder.html#line.1098">updateClassification</a>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;classificationType)</pre>
+<pre>public&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxFolder.html#line.1053">updateClassification</a>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;classificationType)</pre>
 <div class="block">Updates a metadata classification on the specified file.</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
@@ -1978,7 +1857,7 @@ public&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Iterabl
 <ul class="blockList">
 <li class="blockList">
 <h4>setClassification</h4>
-<pre>public&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxFolder.html#line.1112">setClassification</a>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;classificationType)</pre>
+<pre>public&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxFolder.html#line.1067">setClassification</a>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;classificationType)</pre>
 <div class="block">Attempts to add classification to a file. If classification already exists then do update.</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
@@ -1994,7 +1873,7 @@ public&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Iterabl
 <ul class="blockList">
 <li class="blockList">
 <h4>getClassification</h4>
-<pre>public&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxFolder.html#line.1136">getClassification</a>()</pre>
+<pre>public&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxFolder.html#line.1091">getClassification</a>()</pre>
 <div class="block">Gets the classification type for the specified file.</div>
 <dl>
 <dt><span class="returnLabel">Returns:</span></dt>
@@ -2008,7 +1887,7 @@ public&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Iterabl
 <ul class="blockList">
 <li class="blockList">
 <h4>deleteClassification</h4>
-<pre>public&nbsp;void&nbsp;<a href="../../../src-html/com/box/sdk/BoxFolder.html#line.1144">deleteClassification</a>()</pre>
+<pre>public&nbsp;void&nbsp;<a href="../../../src-html/com/box/sdk/BoxFolder.html#line.1099">deleteClassification</a>()</pre>
 <div class="block">Deletes the classification on the file.</div>
 </li>
 </ul>
@@ -2018,7 +1897,7 @@ public&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Iterabl
 <ul class="blockList">
 <li class="blockList">
 <h4>createUploadSession</h4>
-<pre>public&nbsp;<a href="../../../com/box/sdk/BoxFileUploadSession.Info.html" title="class in com.box.sdk">BoxFileUploadSession.Info</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxFolder.html#line.1156">createUploadSession</a>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;fileName,
+<pre>public&nbsp;<a href="../../../com/box/sdk/BoxFileUploadSession.Info.html" title="class in com.box.sdk">BoxFileUploadSession.Info</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxFolder.html#line.1111">createUploadSession</a>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;fileName,
                                                      long&nbsp;fileSize)</pre>
 <div class="block">Creates an upload session to create a new file in chunks.
  This will first verify that the file can be created and then open a session for uploading pieces of the file.</div>
@@ -2037,7 +1916,7 @@ public&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Iterabl
 <ul class="blockList">
 <li class="blockList">
 <h4>uploadLargeFile</h4>
-<pre>public&nbsp;<a href="../../../com/box/sdk/BoxFile.Info.html" title="class in com.box.sdk">BoxFile.Info</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxFolder.html#line.1186">uploadLargeFile</a>(<a href="https://docs.oracle.com/javase/8/docs/api/java/io/InputStream.html?is-external=true" title="class or interface in java.io">InputStream</a>&nbsp;inputStream,
+<pre>public&nbsp;<a href="../../../com/box/sdk/BoxFile.Info.html" title="class in com.box.sdk">BoxFile.Info</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxFolder.html#line.1142">uploadLargeFile</a>(<a href="https://docs.oracle.com/javase/8/docs/api/java/io/InputStream.html?is-external=true" title="class or interface in java.io">InputStream</a>&nbsp;inputStream,
                                     <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;fileName,
                                     long&nbsp;fileSize)
                              throws <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/InterruptedException.html?is-external=true" title="class or interface in java.lang">InterruptedException</a>,
@@ -2062,7 +1941,7 @@ public&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Iterabl
 <ul class="blockList">
 <li class="blockList">
 <h4>uploadLargeFile</h4>
-<pre>public&nbsp;<a href="../../../com/box/sdk/BoxFile.Info.html" title="class in com.box.sdk">BoxFile.Info</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxFolder.html#line.1205">uploadLargeFile</a>(<a href="https://docs.oracle.com/javase/8/docs/api/java/io/InputStream.html?is-external=true" title="class or interface in java.io">InputStream</a>&nbsp;inputStream,
+<pre>public&nbsp;<a href="../../../com/box/sdk/BoxFile.Info.html" title="class in com.box.sdk">BoxFile.Info</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxFolder.html#line.1161">uploadLargeFile</a>(<a href="https://docs.oracle.com/javase/8/docs/api/java/io/InputStream.html?is-external=true" title="class or interface in java.io">InputStream</a>&nbsp;inputStream,
                                     <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;fileName,
                                     long&nbsp;fileSize,
                                     <a href="https://docs.oracle.com/javase/8/docs/api/java/util/Map.html?is-external=true" title="class or interface in java.util">Map</a>&lt;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>,<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&gt;&nbsp;fileAttributes)
@@ -2089,7 +1968,7 @@ public&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Iterabl
 <ul class="blockList">
 <li class="blockList">
 <h4>uploadLargeFile</h4>
-<pre>public&nbsp;<a href="../../../com/box/sdk/BoxFile.Info.html" title="class in com.box.sdk">BoxFile.Info</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxFolder.html#line.1227">uploadLargeFile</a>(<a href="https://docs.oracle.com/javase/8/docs/api/java/io/InputStream.html?is-external=true" title="class or interface in java.io">InputStream</a>&nbsp;inputStream,
+<pre>public&nbsp;<a href="../../../com/box/sdk/BoxFile.Info.html" title="class in com.box.sdk">BoxFile.Info</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxFolder.html#line.1183">uploadLargeFile</a>(<a href="https://docs.oracle.com/javase/8/docs/api/java/io/InputStream.html?is-external=true" title="class or interface in java.io">InputStream</a>&nbsp;inputStream,
                                     <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;fileName,
                                     long&nbsp;fileSize,
                                     int&nbsp;nParallelConnections,
@@ -2120,7 +1999,7 @@ public&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Iterabl
 <ul class="blockList">
 <li class="blockList">
 <h4>uploadLargeFile</h4>
-<pre>public&nbsp;<a href="../../../com/box/sdk/BoxFile.Info.html" title="class in com.box.sdk">BoxFile.Info</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxFolder.html#line.1250">uploadLargeFile</a>(<a href="https://docs.oracle.com/javase/8/docs/api/java/io/InputStream.html?is-external=true" title="class or interface in java.io">InputStream</a>&nbsp;inputStream,
+<pre>public&nbsp;<a href="../../../com/box/sdk/BoxFile.Info.html" title="class in com.box.sdk">BoxFile.Info</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxFolder.html#line.1206">uploadLargeFile</a>(<a href="https://docs.oracle.com/javase/8/docs/api/java/io/InputStream.html?is-external=true" title="class or interface in java.io">InputStream</a>&nbsp;inputStream,
                                     <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;fileName,
                                     long&nbsp;fileSize,
                                     int&nbsp;nParallelConnections,
@@ -2153,7 +2032,7 @@ public&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Iterabl
 <ul class="blockList">
 <li class="blockList">
 <h4>addMetadataCascadePolicy</h4>
-<pre>public&nbsp;<a href="../../../com/box/sdk/BoxMetadataCascadePolicy.Info.html" title="class in com.box.sdk">BoxMetadataCascadePolicy.Info</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxFolder.html#line.1267">addMetadataCascadePolicy</a>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;scope,
+<pre>public&nbsp;<a href="../../../com/box/sdk/BoxMetadataCascadePolicy.Info.html" title="class in com.box.sdk">BoxMetadataCascadePolicy.Info</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxFolder.html#line.1223">addMetadataCascadePolicy</a>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;scope,
                                                               <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;templateKey)</pre>
 <div class="block">Creates a new Metadata Cascade Policy on a folder.</div>
 <dl>
@@ -2171,7 +2050,7 @@ public&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Iterabl
 <ul class="blockList">
 <li class="blockList">
 <h4>getMetadataCascadePolicies</h4>
-<pre>public&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Iterable.html?is-external=true" title="class or interface in java.lang">Iterable</a>&lt;<a href="../../../com/box/sdk/BoxMetadataCascadePolicy.Info.html" title="class in com.box.sdk">BoxMetadataCascadePolicy.Info</a>&gt;&nbsp;<a href="../../../src-html/com/box/sdk/BoxFolder.html#line.1278">getMetadataCascadePolicies</a>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>...&nbsp;fields)</pre>
+<pre>public&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Iterable.html?is-external=true" title="class or interface in java.lang">Iterable</a>&lt;<a href="../../../com/box/sdk/BoxMetadataCascadePolicy.Info.html" title="class in com.box.sdk">BoxMetadataCascadePolicy.Info</a>&gt;&nbsp;<a href="../../../src-html/com/box/sdk/BoxFolder.html#line.1234">getMetadataCascadePolicies</a>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>...&nbsp;fields)</pre>
 <div class="block">Retrieves all Metadata Cascade Policies on a folder.</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
@@ -2187,7 +2066,7 @@ public&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Iterabl
 <ul class="blockList">
 <li class="blockList">
 <h4>getMetadataCascadePolicies</h4>
-<pre>public&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Iterable.html?is-external=true" title="class or interface in java.lang">Iterable</a>&lt;<a href="../../../com/box/sdk/BoxMetadataCascadePolicy.Info.html" title="class in com.box.sdk">BoxMetadataCascadePolicy.Info</a>&gt;&nbsp;<a href="../../../src-html/com/box/sdk/BoxFolder.html#line.1290">getMetadataCascadePolicies</a>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;enterpriseID,
+<pre>public&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Iterable.html?is-external=true" title="class or interface in java.lang">Iterable</a>&lt;<a href="../../../com/box/sdk/BoxMetadataCascadePolicy.Info.html" title="class in com.box.sdk">BoxMetadataCascadePolicy.Info</a>&gt;&nbsp;<a href="../../../src-html/com/box/sdk/BoxFolder.html#line.1246">getMetadataCascadePolicies</a>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;enterpriseID,
                                                                           int&nbsp;limit,
                                                                           <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>...&nbsp;fields)</pre>
 <div class="block">Retrieves all Metadata Cascade Policies on a folder.</div>
@@ -2207,7 +2086,7 @@ public&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Iterabl
 <ul class="blockList">
 <li class="blockList">
 <h4>lock</h4>
-<pre>public&nbsp;<a href="../../../com/box/sdk/BoxFolderLock.Info.html" title="class in com.box.sdk">BoxFolderLock.Info</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxFolder.html#line.1301">lock</a>()</pre>
+<pre>public&nbsp;<a href="../../../com/box/sdk/BoxFolderLock.Info.html" title="class in com.box.sdk">BoxFolderLock.Info</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxFolder.html#line.1257">lock</a>()</pre>
 <div class="block">Lock this folder.</div>
 <dl>
 <dt><span class="returnLabel">Returns:</span></dt>
@@ -2221,7 +2100,7 @@ public&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Iterabl
 <ul class="blockListLast">
 <li class="blockList">
 <h4>getLocks</h4>
-<pre>public&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Iterable.html?is-external=true" title="class or interface in java.lang">Iterable</a>&lt;<a href="../../../com/box/sdk/BoxFolderLock.Info.html" title="class in com.box.sdk">BoxFolderLock.Info</a>&gt;&nbsp;<a href="../../../src-html/com/box/sdk/BoxFolder.html#line.1331">getLocks</a>()</pre>
+<pre>public&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Iterable.html?is-external=true" title="class or interface in java.lang">Iterable</a>&lt;<a href="../../../com/box/sdk/BoxFolderLock.Info.html" title="class in com.box.sdk">BoxFolderLock.Info</a>&gt;&nbsp;<a href="../../../src-html/com/box/sdk/BoxFolder.html#line.1288">getLocks</a>()</pre>
 <div class="block">Get the lock on this folder.</div>
 <dl>
 <dt><span class="returnLabel">Returns:</span></dt>

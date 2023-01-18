@@ -70,80 +70,80 @@
 <span class="sourceLineNo">062</span>                .add("id", userID));<a name="line.62"></a>
 <span class="sourceLineNo">063</span><a name="line.63"></a>
 <span class="sourceLineNo">064</span>        request.setBody(requestJSON.toString());<a name="line.64"></a>
-<span class="sourceLineNo">065</span>        BoxJSONResponse response = (BoxJSONResponse) request.send();<a name="line.65"></a>
-<span class="sourceLineNo">066</span>        JsonObject responseJSON = Json.parse(response.getJSON()).asObject();<a name="line.66"></a>
-<span class="sourceLineNo">067</span>        BoxCollaborationAllowlistExemptTarget userAllowlist = new BoxCollaborationAllowlistExemptTarget(api,<a name="line.67"></a>
-<span class="sourceLineNo">068</span>            responseJSON.get("id").asString());<a name="line.68"></a>
+<span class="sourceLineNo">065</span>        try (BoxJSONResponse response = request.send()) {<a name="line.65"></a>
+<span class="sourceLineNo">066</span>            JsonObject responseJSON = Json.parse(response.getJSON()).asObject();<a name="line.66"></a>
+<span class="sourceLineNo">067</span>            BoxCollaborationAllowlistExemptTarget userAllowlist = new BoxCollaborationAllowlistExemptTarget(api,<a name="line.67"></a>
+<span class="sourceLineNo">068</span>                responseJSON.get("id").asString());<a name="line.68"></a>
 <span class="sourceLineNo">069</span><a name="line.69"></a>
-<span class="sourceLineNo">070</span>        return userAllowlist.new Info(responseJSON);<a name="line.70"></a>
-<span class="sourceLineNo">071</span>    }<a name="line.71"></a>
-<span class="sourceLineNo">072</span><a name="line.72"></a>
-<span class="sourceLineNo">073</span>    /**<a name="line.73"></a>
-<span class="sourceLineNo">074</span>     * Returns all the collaboration allowlisting for user with default limit set to 100.<a name="line.74"></a>
-<span class="sourceLineNo">075</span>     *<a name="line.75"></a>
-<span class="sourceLineNo">076</span>     * @param api    the API connection to be use by the resource.<a name="line.76"></a>
-<span class="sourceLineNo">077</span>     * @param fields the fields to retrieve.<a name="line.77"></a>
-<span class="sourceLineNo">078</span>     * @return an iterable with all the collaboration allowlists for users met search conditions.<a name="line.78"></a>
-<span class="sourceLineNo">079</span>     */<a name="line.79"></a>
-<span class="sourceLineNo">080</span>    public static Iterable&lt;BoxCollaborationAllowlistExemptTarget.Info&gt; getAll(final BoxAPIConnection api,<a name="line.80"></a>
-<span class="sourceLineNo">081</span>                                                                              String... fields) {<a name="line.81"></a>
-<span class="sourceLineNo">082</span>        return getAll(api, DEFAULT_LIMIT, fields);<a name="line.82"></a>
-<span class="sourceLineNo">083</span>    }<a name="line.83"></a>
-<span class="sourceLineNo">084</span><a name="line.84"></a>
-<span class="sourceLineNo">085</span>    /**<a name="line.85"></a>
-<span class="sourceLineNo">086</span>     * Returns all the collaboration allowlisting for user with specified filters.<a name="line.86"></a>
-<span class="sourceLineNo">087</span>     *<a name="line.87"></a>
-<span class="sourceLineNo">088</span>     * @param api    the API connection to be used by the resource.<a name="line.88"></a>
-<span class="sourceLineNo">089</span>     * @param limit  the number of collaboration allowlists to retrieve.<a name="line.89"></a>
-<span class="sourceLineNo">090</span>     * @param fields the fields to retrieve.<a name="line.90"></a>
-<span class="sourceLineNo">091</span>     * @return an iterable with all the collaboration allowlists for users met search conditions.<a name="line.91"></a>
-<span class="sourceLineNo">092</span>     */<a name="line.92"></a>
-<span class="sourceLineNo">093</span>    public static Iterable&lt;BoxCollaborationAllowlistExemptTarget.Info&gt; getAll(final BoxAPIConnection api, int limit,<a name="line.93"></a>
-<span class="sourceLineNo">094</span>                                                                              String... fields) {<a name="line.94"></a>
-<span class="sourceLineNo">095</span>        QueryStringBuilder builder = new QueryStringBuilder();<a name="line.95"></a>
-<span class="sourceLineNo">096</span>        if (fields.length &gt; 0) {<a name="line.96"></a>
-<span class="sourceLineNo">097</span>            builder.appendParam("fields", fields);<a name="line.97"></a>
-<span class="sourceLineNo">098</span>        }<a name="line.98"></a>
-<span class="sourceLineNo">099</span><a name="line.99"></a>
-<span class="sourceLineNo">100</span>        URL url = COLLABORATION_ALLOWLIST_EXEMPT_TARGET_ENTRIES_URL_TEMPLATE.buildWithQuery(api.getBaseURL(),<a name="line.100"></a>
-<span class="sourceLineNo">101</span>            builder.toString());<a name="line.101"></a>
-<span class="sourceLineNo">102</span>        return new BoxResourceIterable&lt;BoxCollaborationAllowlistExemptTarget.Info&gt;(api, url, limit) {<a name="line.102"></a>
-<span class="sourceLineNo">103</span><a name="line.103"></a>
-<span class="sourceLineNo">104</span>            @Override<a name="line.104"></a>
-<span class="sourceLineNo">105</span>            protected BoxCollaborationAllowlistExemptTarget.Info factory(JsonObject jsonObject) {<a name="line.105"></a>
-<span class="sourceLineNo">106</span>                BoxCollaborationAllowlistExemptTarget userAllowlist = new BoxCollaborationAllowlistExemptTarget(<a name="line.106"></a>
-<span class="sourceLineNo">107</span>                    api, jsonObject.get("id").asString());<a name="line.107"></a>
-<span class="sourceLineNo">108</span><a name="line.108"></a>
-<span class="sourceLineNo">109</span>                return userAllowlist.new Info(jsonObject);<a name="line.109"></a>
-<span class="sourceLineNo">110</span>            }<a name="line.110"></a>
-<span class="sourceLineNo">111</span>        };<a name="line.111"></a>
-<span class="sourceLineNo">112</span>    }<a name="line.112"></a>
-<span class="sourceLineNo">113</span><a name="line.113"></a>
-<span class="sourceLineNo">114</span>    /**<a name="line.114"></a>
-<span class="sourceLineNo">115</span>     * Retrieves information for a collaboration allowlist for a given allowlist ID.<a name="line.115"></a>
-<span class="sourceLineNo">116</span>     *<a name="line.116"></a>
-<span class="sourceLineNo">117</span>     * @return information about this {@link BoxCollaborationAllowlistExemptTarget}.<a name="line.117"></a>
-<span class="sourceLineNo">118</span>     */<a name="line.118"></a>
-<span class="sourceLineNo">119</span>    public BoxCollaborationAllowlistExemptTarget.Info getInfo() {<a name="line.119"></a>
-<span class="sourceLineNo">120</span>        URL url = COLLABORATION_ALLOWLIST_EXEMPT_TARGET_ENTRY_URL_TEMPLATE.build(this.getAPI().getBaseURL(),<a name="line.120"></a>
-<span class="sourceLineNo">121</span>            this.getID());<a name="line.121"></a>
-<span class="sourceLineNo">122</span>        BoxAPIRequest request = new BoxAPIRequest(this.getAPI(), url, HttpMethod.GET);<a name="line.122"></a>
-<span class="sourceLineNo">123</span>        BoxJSONResponse response = (BoxJSONResponse) request.send();<a name="line.123"></a>
-<span class="sourceLineNo">124</span><a name="line.124"></a>
-<span class="sourceLineNo">125</span>        return new Info(Json.parse(response.getJSON()).asObject());<a name="line.125"></a>
-<span class="sourceLineNo">126</span>    }<a name="line.126"></a>
-<span class="sourceLineNo">127</span><a name="line.127"></a>
-<span class="sourceLineNo">128</span>    /**<a name="line.128"></a>
-<span class="sourceLineNo">129</span>     * Deletes this collaboration allowlist entry for user.<a name="line.129"></a>
-<span class="sourceLineNo">130</span>     */<a name="line.130"></a>
-<span class="sourceLineNo">131</span>    public void delete() {<a name="line.131"></a>
-<span class="sourceLineNo">132</span>        BoxAPIConnection api = this.getAPI();<a name="line.132"></a>
-<span class="sourceLineNo">133</span>        URL url = COLLABORATION_ALLOWLIST_EXEMPT_TARGET_ENTRY_URL_TEMPLATE.build(api.getBaseURL(),<a name="line.133"></a>
-<span class="sourceLineNo">134</span>            this.getID());<a name="line.134"></a>
-<span class="sourceLineNo">135</span><a name="line.135"></a>
-<span class="sourceLineNo">136</span>        BoxAPIRequest request = new BoxAPIRequest(api, url, HttpMethod.DELETE);<a name="line.136"></a>
-<span class="sourceLineNo">137</span>        BoxAPIResponse response = request.send();<a name="line.137"></a>
-<span class="sourceLineNo">138</span>        response.disconnect();<a name="line.138"></a>
+<span class="sourceLineNo">070</span>            return userAllowlist.new Info(responseJSON);<a name="line.70"></a>
+<span class="sourceLineNo">071</span>        }<a name="line.71"></a>
+<span class="sourceLineNo">072</span>    }<a name="line.72"></a>
+<span class="sourceLineNo">073</span><a name="line.73"></a>
+<span class="sourceLineNo">074</span>    /**<a name="line.74"></a>
+<span class="sourceLineNo">075</span>     * Returns all the collaboration allowlisting for user with default limit set to 100.<a name="line.75"></a>
+<span class="sourceLineNo">076</span>     *<a name="line.76"></a>
+<span class="sourceLineNo">077</span>     * @param api    the API connection to be use by the resource.<a name="line.77"></a>
+<span class="sourceLineNo">078</span>     * @param fields the fields to retrieve.<a name="line.78"></a>
+<span class="sourceLineNo">079</span>     * @return an iterable with all the collaboration allowlists for users met search conditions.<a name="line.79"></a>
+<span class="sourceLineNo">080</span>     */<a name="line.80"></a>
+<span class="sourceLineNo">081</span>    public static Iterable&lt;BoxCollaborationAllowlistExemptTarget.Info&gt; getAll(final BoxAPIConnection api,<a name="line.81"></a>
+<span class="sourceLineNo">082</span>                                                                              String... fields) {<a name="line.82"></a>
+<span class="sourceLineNo">083</span>        return getAll(api, DEFAULT_LIMIT, fields);<a name="line.83"></a>
+<span class="sourceLineNo">084</span>    }<a name="line.84"></a>
+<span class="sourceLineNo">085</span><a name="line.85"></a>
+<span class="sourceLineNo">086</span>    /**<a name="line.86"></a>
+<span class="sourceLineNo">087</span>     * Returns all the collaboration allowlisting for user with specified filters.<a name="line.87"></a>
+<span class="sourceLineNo">088</span>     *<a name="line.88"></a>
+<span class="sourceLineNo">089</span>     * @param api    the API connection to be used by the resource.<a name="line.89"></a>
+<span class="sourceLineNo">090</span>     * @param limit  the number of collaboration allowlists to retrieve.<a name="line.90"></a>
+<span class="sourceLineNo">091</span>     * @param fields the fields to retrieve.<a name="line.91"></a>
+<span class="sourceLineNo">092</span>     * @return an iterable with all the collaboration allowlists for users met search conditions.<a name="line.92"></a>
+<span class="sourceLineNo">093</span>     */<a name="line.93"></a>
+<span class="sourceLineNo">094</span>    public static Iterable&lt;BoxCollaborationAllowlistExemptTarget.Info&gt; getAll(final BoxAPIConnection api, int limit,<a name="line.94"></a>
+<span class="sourceLineNo">095</span>                                                                              String... fields) {<a name="line.95"></a>
+<span class="sourceLineNo">096</span>        QueryStringBuilder builder = new QueryStringBuilder();<a name="line.96"></a>
+<span class="sourceLineNo">097</span>        if (fields.length &gt; 0) {<a name="line.97"></a>
+<span class="sourceLineNo">098</span>            builder.appendParam("fields", fields);<a name="line.98"></a>
+<span class="sourceLineNo">099</span>        }<a name="line.99"></a>
+<span class="sourceLineNo">100</span><a name="line.100"></a>
+<span class="sourceLineNo">101</span>        URL url = COLLABORATION_ALLOWLIST_EXEMPT_TARGET_ENTRIES_URL_TEMPLATE.buildWithQuery(api.getBaseURL(),<a name="line.101"></a>
+<span class="sourceLineNo">102</span>            builder.toString());<a name="line.102"></a>
+<span class="sourceLineNo">103</span>        return new BoxResourceIterable&lt;BoxCollaborationAllowlistExemptTarget.Info&gt;(api, url, limit) {<a name="line.103"></a>
+<span class="sourceLineNo">104</span><a name="line.104"></a>
+<span class="sourceLineNo">105</span>            @Override<a name="line.105"></a>
+<span class="sourceLineNo">106</span>            protected BoxCollaborationAllowlistExemptTarget.Info factory(JsonObject jsonObject) {<a name="line.106"></a>
+<span class="sourceLineNo">107</span>                BoxCollaborationAllowlistExemptTarget userAllowlist = new BoxCollaborationAllowlistExemptTarget(<a name="line.107"></a>
+<span class="sourceLineNo">108</span>                    api, jsonObject.get("id").asString());<a name="line.108"></a>
+<span class="sourceLineNo">109</span><a name="line.109"></a>
+<span class="sourceLineNo">110</span>                return userAllowlist.new Info(jsonObject);<a name="line.110"></a>
+<span class="sourceLineNo">111</span>            }<a name="line.111"></a>
+<span class="sourceLineNo">112</span>        };<a name="line.112"></a>
+<span class="sourceLineNo">113</span>    }<a name="line.113"></a>
+<span class="sourceLineNo">114</span><a name="line.114"></a>
+<span class="sourceLineNo">115</span>    /**<a name="line.115"></a>
+<span class="sourceLineNo">116</span>     * Retrieves information for a collaboration allowlist for a given allowlist ID.<a name="line.116"></a>
+<span class="sourceLineNo">117</span>     *<a name="line.117"></a>
+<span class="sourceLineNo">118</span>     * @return information about this {@link BoxCollaborationAllowlistExemptTarget}.<a name="line.118"></a>
+<span class="sourceLineNo">119</span>     */<a name="line.119"></a>
+<span class="sourceLineNo">120</span>    public BoxCollaborationAllowlistExemptTarget.Info getInfo() {<a name="line.120"></a>
+<span class="sourceLineNo">121</span>        URL url = COLLABORATION_ALLOWLIST_EXEMPT_TARGET_ENTRY_URL_TEMPLATE.build(this.getAPI().getBaseURL(),<a name="line.121"></a>
+<span class="sourceLineNo">122</span>            this.getID());<a name="line.122"></a>
+<span class="sourceLineNo">123</span>        BoxJSONRequest request = new BoxJSONRequest(this.getAPI(), url, HttpMethod.GET);<a name="line.123"></a>
+<span class="sourceLineNo">124</span>        try (BoxJSONResponse response = request.send()) {<a name="line.124"></a>
+<span class="sourceLineNo">125</span>            return new Info(Json.parse(response.getJSON()).asObject());<a name="line.125"></a>
+<span class="sourceLineNo">126</span>        }<a name="line.126"></a>
+<span class="sourceLineNo">127</span>    }<a name="line.127"></a>
+<span class="sourceLineNo">128</span><a name="line.128"></a>
+<span class="sourceLineNo">129</span>    /**<a name="line.129"></a>
+<span class="sourceLineNo">130</span>     * Deletes this collaboration allowlist entry for user.<a name="line.130"></a>
+<span class="sourceLineNo">131</span>     */<a name="line.131"></a>
+<span class="sourceLineNo">132</span>    public void delete() {<a name="line.132"></a>
+<span class="sourceLineNo">133</span>        BoxAPIConnection api = this.getAPI();<a name="line.133"></a>
+<span class="sourceLineNo">134</span>        URL url = COLLABORATION_ALLOWLIST_EXEMPT_TARGET_ENTRY_URL_TEMPLATE.build(api.getBaseURL(),<a name="line.134"></a>
+<span class="sourceLineNo">135</span>            this.getID());<a name="line.135"></a>
+<span class="sourceLineNo">136</span><a name="line.136"></a>
+<span class="sourceLineNo">137</span>        BoxAPIRequest request = new BoxAPIRequest(api, url, HttpMethod.DELETE);<a name="line.137"></a>
+<span class="sourceLineNo">138</span>        request.send().close();<a name="line.138"></a>
 <span class="sourceLineNo">139</span>    }<a name="line.139"></a>
 <span class="sourceLineNo">140</span><a name="line.140"></a>
 <span class="sourceLineNo">141</span>    /**<a name="line.141"></a>

@@ -18,7 +18,7 @@
     catch(err) {
     }
 //-->
-var methods = {"i0":10,"i1":10,"i2":10,"i3":10,"i4":10,"i5":10,"i6":10,"i7":10,"i8":9,"i9":9,"i10":10,"i11":10,"i12":10,"i13":10,"i14":10,"i15":10,"i16":10,"i17":10,"i18":10,"i19":10,"i20":10,"i21":10};
+var methods = {"i0":10,"i1":10,"i2":10,"i3":10,"i4":10,"i5":10,"i6":10,"i7":10,"i8":9,"i9":9,"i10":10,"i11":10,"i12":10,"i13":10,"i14":10,"i15":10,"i16":10,"i17":10,"i18":10,"i19":10,"i20":10,"i21":10,"i22":10};
 var tabs = {65535:["t0","All Methods"],1:["t1","Static Methods"],2:["t2","Instance Methods"],8:["t4","Concrete Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
@@ -51,7 +51,7 @@ var activeTableTab = "activeTableTab";
 </dl>
 <hr>
 <br>
-<pre>public class <a href="../../../src-html/com/box/sdk/BoxAPIRequest.html#line.45">BoxAPIRequest</a>
+<pre>public class <a href="../../../src-html/com/box/sdk/BoxAPIRequest.html#line.44">BoxAPIRequest</a>
 extends <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html?is-external=true" title="class or interface in java.lang">Object</a></pre>
 <div class="block">Used to make HTTP requests to the Box API.
 
@@ -102,32 +102,37 @@ extends <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html
 <table class="memberSummary" border="0" cellpadding="3" cellspacing="0" summary="Constructor Summary table, listing constructors, and an explanation">
 <caption><span>Constructors</span><span class="tabEnd">&nbsp;</span></caption>
 <tr>
-<th class="colOne" scope="col">Constructor and Description</th>
+<th class="colFirst" scope="col">Modifier</th>
+<th class="colLast" scope="col">Constructor and Description</th>
 </tr>
 <tr class="altColor">
-<td class="colOne"><code><span class="memberNameLink"><a href="../../../com/box/sdk/BoxAPIRequest.html#BoxAPIRequest-com.box.sdk.BoxAPIConnection-java.net.URL-com.box.sdk.http.HttpMethod-">BoxAPIRequest</a></span>(<a href="../../../com/box/sdk/BoxAPIConnection.html" title="class in com.box.sdk">BoxAPIConnection</a>&nbsp;api,
+<td class="colFirst"><code>&nbsp;</code></td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../com/box/sdk/BoxAPIRequest.html#BoxAPIRequest-com.box.sdk.BoxAPIConnection-java.net.URL-com.box.sdk.http.HttpMethod-">BoxAPIRequest</a></span>(<a href="../../../com/box/sdk/BoxAPIConnection.html" title="class in com.box.sdk">BoxAPIConnection</a>&nbsp;api,
              <a href="https://docs.oracle.com/javase/8/docs/api/java/net/URL.html?is-external=true" title="class or interface in java.net">URL</a>&nbsp;url,
              <a href="../../../com/box/sdk/http/HttpMethod.html" title="enum in com.box.sdk.http">HttpMethod</a>&nbsp;method)</code>
 <div class="block">Constructs an authenticated BoxAPIRequest using a provided BoxAPIConnection.</div>
 </td>
 </tr>
 <tr class="rowColor">
-<td class="colOne"><code><span class="memberNameLink"><a href="../../../com/box/sdk/BoxAPIRequest.html#BoxAPIRequest-com.box.sdk.BoxAPIConnection-java.net.URL-java.lang.String-">BoxAPIRequest</a></span>(<a href="../../../com/box/sdk/BoxAPIConnection.html" title="class in com.box.sdk">BoxAPIConnection</a>&nbsp;api,
+<td class="colFirst"><code>&nbsp;</code></td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../com/box/sdk/BoxAPIRequest.html#BoxAPIRequest-com.box.sdk.BoxAPIConnection-java.net.URL-java.lang.String-">BoxAPIRequest</a></span>(<a href="../../../com/box/sdk/BoxAPIConnection.html" title="class in com.box.sdk">BoxAPIConnection</a>&nbsp;api,
              <a href="https://docs.oracle.com/javase/8/docs/api/java/net/URL.html?is-external=true" title="class or interface in java.net">URL</a>&nbsp;url,
              <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;method)</code>
 <div class="block">Constructs an authenticated BoxAPIRequest using a provided BoxAPIConnection.</div>
 </td>
 </tr>
 <tr class="altColor">
-<td class="colOne"><code><span class="memberNameLink"><a href="../../../com/box/sdk/BoxAPIRequest.html#BoxAPIRequest-java.net.URL-com.box.sdk.http.HttpMethod-">BoxAPIRequest</a></span>(<a href="https://docs.oracle.com/javase/8/docs/api/java/net/URL.html?is-external=true" title="class or interface in java.net">URL</a>&nbsp;url,
+<td class="colFirst"><code>protected </code></td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../com/box/sdk/BoxAPIRequest.html#BoxAPIRequest-com.box.sdk.BoxAPIConnection-java.net.URL-java.lang.String-java.lang.String-">BoxAPIRequest</a></span>(<a href="../../../com/box/sdk/BoxAPIConnection.html" title="class in com.box.sdk">BoxAPIConnection</a>&nbsp;api,
+             <a href="https://docs.oracle.com/javase/8/docs/api/java/net/URL.html?is-external=true" title="class or interface in java.net">URL</a>&nbsp;url,
+             <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;method,
+             <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;mediaType)</code>&nbsp;</td>
+</tr>
+<tr class="rowColor">
+<td class="colFirst"><code>&nbsp;</code></td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../com/box/sdk/BoxAPIRequest.html#BoxAPIRequest-java.net.URL-com.box.sdk.http.HttpMethod-">BoxAPIRequest</a></span>(<a href="https://docs.oracle.com/javase/8/docs/api/java/net/URL.html?is-external=true" title="class or interface in java.net">URL</a>&nbsp;url,
              <a href="../../../com/box/sdk/http/HttpMethod.html" title="enum in com.box.sdk.http">HttpMethod</a>&nbsp;method)</code>
 <div class="block">Constructs an request, using URL and HttpMethod.</div>
-</td>
-</tr>
-<tr class="rowColor">
-<td class="colOne"><code><span class="memberNameLink"><a href="../../../com/box/sdk/BoxAPIRequest.html#BoxAPIRequest-java.net.URL-java.lang.String-">BoxAPIRequest</a></span>(<a href="https://docs.oracle.com/javase/8/docs/api/java/net/URL.html?is-external=true" title="class or interface in java.net">URL</a>&nbsp;url,
-             <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;method)</code>
-<div class="block">Constructs an unauthenticated BoxAPIRequest.</div>
 </td>
 </tr>
 </table>
@@ -204,78 +209,80 @@ extends <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html
                    <a href="../../../com/box/sdk/BoxAPIException.html" title="class in com.box.sdk">BoxAPIException</a>&nbsp;apiException)</code>&nbsp;</td>
 </tr>
 <tr id="i10" class="altColor">
+<td class="colFirst"><code>protected MediaType</code></td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../com/box/sdk/BoxAPIRequest.html#mediaType--">mediaType</a></span>()</code>&nbsp;</td>
+</tr>
+<tr id="i11" class="rowColor">
 <td class="colFirst"><code>protected void</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../com/box/sdk/BoxAPIRequest.html#resetBody--">resetBody</a></span>()</code>
 <div class="block">Resets the InputStream containing this request's body.</div>
 </td>
 </tr>
-<tr id="i11" class="rowColor">
+<tr id="i12" class="altColor">
 <td class="colFirst"><code><a href="../../../com/box/sdk/BoxAPIResponse.html" title="class in com.box.sdk">BoxAPIResponse</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../com/box/sdk/BoxAPIRequest.html#send--">send</a></span>()</code>
 <div class="block">Sends this request and returns a BoxAPIResponse containing the server's response.</div>
 </td>
 </tr>
-<tr id="i12" class="altColor">
+<tr id="i13" class="rowColor">
 <td class="colFirst"><code><a href="../../../com/box/sdk/BoxAPIResponse.html" title="class in com.box.sdk">BoxAPIResponse</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../com/box/sdk/BoxAPIRequest.html#send-com.box.sdk.ProgressListener-">send</a></span>(<a href="../../../com/box/sdk/ProgressListener.html" title="interface in com.box.sdk">ProgressListener</a>&nbsp;listener)</code>
 <div class="block">Sends this request while monitoring its progress and returns a BoxAPIResponse containing the server's response.</div>
 </td>
 </tr>
-<tr id="i13" class="rowColor">
+<tr id="i14" class="altColor">
 <td class="colFirst"><code><a href="../../../com/box/sdk/BoxAPIResponse.html" title="class in com.box.sdk">BoxAPIResponse</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../com/box/sdk/BoxAPIRequest.html#sendWithoutRetry--">sendWithoutRetry</a></span>()</code>
 <div class="block">Sends this request and returns a BoxAPIResponse containing the server's response.</div>
 </td>
 </tr>
-<tr id="i14" class="altColor">
+<tr id="i15" class="rowColor">
 <td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../com/box/sdk/BoxAPIRequest.html#setBody-java.io.InputStream-">setBody</a></span>(<a href="https://docs.oracle.com/javase/8/docs/api/java/io/InputStream.html?is-external=true" title="class or interface in java.io">InputStream</a>&nbsp;stream)</code>
 <div class="block">Sets the request body to the contents of an InputStream.</div>
 </td>
 </tr>
-<tr id="i15" class="rowColor">
+<tr id="i16" class="altColor">
 <td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../com/box/sdk/BoxAPIRequest.html#setBody-java.io.InputStream-long-">setBody</a></span>(<a href="https://docs.oracle.com/javase/8/docs/api/java/io/InputStream.html?is-external=true" title="class or interface in java.io">InputStream</a>&nbsp;stream,
        long&nbsp;length)</code>
 <div class="block">Sets the request body to the contents of an InputStream.</div>
 </td>
 </tr>
-<tr id="i16" class="altColor">
+<tr id="i17" class="rowColor">
 <td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../com/box/sdk/BoxAPIRequest.html#setBody-java.lang.String-">setBody</a></span>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;body)</code>
 <div class="block">Sets the request body to the contents of a String.</div>
 </td>
 </tr>
-<tr id="i17" class="rowColor">
+<tr id="i18" class="altColor">
 <td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../com/box/sdk/BoxAPIRequest.html#setConnectTimeout-int-">setConnectTimeout</a></span>(int&nbsp;timeout)</code>
 <div class="block">Sets a Connect timeout for this request in milliseconds.</div>
 </td>
 </tr>
-<tr id="i18" class="altColor">
+<tr id="i19" class="rowColor">
 <td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../com/box/sdk/BoxAPIRequest.html#setFollowRedirects-boolean-">setFollowRedirects</a></span>(boolean&nbsp;followRedirects)</code>
 <div class="block">Sets whether or not to follow redirects (i.e.</div>
 </td>
 </tr>
-<tr id="i19" class="rowColor">
+<tr id="i20" class="altColor">
 <td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../com/box/sdk/BoxAPIRequest.html#setReadTimeout-int-">setReadTimeout</a></span>(int&nbsp;timeout)</code>
 <div class="block">Sets a read timeout for this request in milliseconds.</div>
 </td>
 </tr>
-<tr id="i20" class="altColor">
+<tr id="i21" class="rowColor">
 <td class="colFirst"><code><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../com/box/sdk/BoxAPIRequest.html#toString--">toString</a></span>()</code>
 <div class="block">Returns a String containing the URL, HTTP method, headers and body of this request.</div>
 </td>
 </tr>
-<tr id="i21" class="rowColor">
+<tr id="i22" class="altColor">
 <td class="colFirst"><code>protected void</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../com/box/sdk/BoxAPIRequest.html#writeBody-java.net.HttpURLConnection-com.box.sdk.ProgressListener-">writeBody</a></span>(<a href="https://docs.oracle.com/javase/8/docs/api/java/net/HttpURLConnection.html?is-external=true" title="class or interface in java.net">HttpURLConnection</a>&nbsp;connection,
-         <a href="../../../com/box/sdk/ProgressListener.html" title="interface in com.box.sdk">ProgressListener</a>&nbsp;listener)</code>
-<div class="block">Writes the body of this request to an HttpURLConnection.</div>
-</td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../com/box/sdk/BoxAPIRequest.html#writeMethodWithBody-okhttp3.Request.Builder-com.box.sdk.ProgressListener-">writeMethodWithBody</a></span>(Request.Builder&nbsp;requestBuilder,
+                   <a href="../../../com/box/sdk/ProgressListener.html" title="interface in com.box.sdk">ProgressListener</a>&nbsp;listener)</code>&nbsp;</td>
 </tr>
 </table>
 <ul class="blockList">
@@ -299,29 +306,13 @@ extends <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html
 <!--   -->
 </a>
 <h3>Constructor Detail</h3>
-<a name="BoxAPIRequest-java.net.URL-java.lang.String-">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>BoxAPIRequest</h4>
-<pre>public&nbsp;<a href="../../../src-html/com/box/sdk/BoxAPIRequest.html#line.120">BoxAPIRequest</a>(<a href="https://docs.oracle.com/javase/8/docs/api/java/net/URL.html?is-external=true" title="class or interface in java.net">URL</a>&nbsp;url,
-                     <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;method)</pre>
-<div class="block">Constructs an unauthenticated BoxAPIRequest.</div>
-<dl>
-<dt><span class="paramLabel">Parameters:</span></dt>
-<dd><code>url</code> - the URL of the request.</dd>
-<dd><code>method</code> - the HTTP method of the request.</dd>
-</dl>
-</li>
-</ul>
 <a name="BoxAPIRequest-com.box.sdk.BoxAPIConnection-java.net.URL-java.lang.String-">
 <!--   -->
 </a>
 <ul class="blockList">
 <li class="blockList">
 <h4>BoxAPIRequest</h4>
-<pre>public&nbsp;<a href="../../../src-html/com/box/sdk/BoxAPIRequest.html#line.131">BoxAPIRequest</a>(<a href="../../../com/box/sdk/BoxAPIConnection.html" title="class in com.box.sdk">BoxAPIConnection</a>&nbsp;api,
+<pre>public&nbsp;<a href="../../../src-html/com/box/sdk/BoxAPIRequest.html#line.68">BoxAPIRequest</a>(<a href="../../../com/box/sdk/BoxAPIConnection.html" title="class in com.box.sdk">BoxAPIConnection</a>&nbsp;api,
                      <a href="https://docs.oracle.com/javase/8/docs/api/java/net/URL.html?is-external=true" title="class or interface in java.net">URL</a>&nbsp;url,
                      <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;method)</pre>
 <div class="block">Constructs an authenticated BoxAPIRequest using a provided BoxAPIConnection.</div>
@@ -333,13 +324,25 @@ extends <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html
 </dl>
 </li>
 </ul>
+<a name="BoxAPIRequest-com.box.sdk.BoxAPIConnection-java.net.URL-java.lang.String-java.lang.String-">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>BoxAPIRequest</h4>
+<pre>protected&nbsp;<a href="../../../src-html/com/box/sdk/BoxAPIRequest.html#line.72">BoxAPIRequest</a>(<a href="../../../com/box/sdk/BoxAPIConnection.html" title="class in com.box.sdk">BoxAPIConnection</a>&nbsp;api,
+                        <a href="https://docs.oracle.com/javase/8/docs/api/java/net/URL.html?is-external=true" title="class or interface in java.net">URL</a>&nbsp;url,
+                        <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;method,
+                        <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;mediaType)</pre>
+</li>
+</ul>
 <a name="BoxAPIRequest-com.box.sdk.BoxAPIConnection-java.net.URL-com.box.sdk.http.HttpMethod-">
 <!--   -->
 </a>
 <ul class="blockList">
 <li class="blockList">
 <h4>BoxAPIRequest</h4>
-<pre>public&nbsp;<a href="../../../src-html/com/box/sdk/BoxAPIRequest.html#line.167">BoxAPIRequest</a>(<a href="../../../com/box/sdk/BoxAPIConnection.html" title="class in com.box.sdk">BoxAPIConnection</a>&nbsp;api,
+<pre>public&nbsp;<a href="../../../src-html/com/box/sdk/BoxAPIRequest.html#line.107">BoxAPIRequest</a>(<a href="../../../com/box/sdk/BoxAPIConnection.html" title="class in com.box.sdk">BoxAPIConnection</a>&nbsp;api,
                      <a href="https://docs.oracle.com/javase/8/docs/api/java/net/URL.html?is-external=true" title="class or interface in java.net">URL</a>&nbsp;url,
                      <a href="../../../com/box/sdk/http/HttpMethod.html" title="enum in com.box.sdk.http">HttpMethod</a>&nbsp;method)</pre>
 <div class="block">Constructs an authenticated BoxAPIRequest using a provided BoxAPIConnection.</div>
@@ -357,7 +360,7 @@ extends <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html
 <ul class="blockListLast">
 <li class="blockList">
 <h4>BoxAPIRequest</h4>
-<pre>public&nbsp;<a href="../../../src-html/com/box/sdk/BoxAPIRequest.html#line.177">BoxAPIRequest</a>(<a href="https://docs.oracle.com/javase/8/docs/api/java/net/URL.html?is-external=true" title="class or interface in java.net">URL</a>&nbsp;url,
+<pre>public&nbsp;<a href="../../../src-html/com/box/sdk/BoxAPIRequest.html#line.117">BoxAPIRequest</a>(<a href="https://docs.oracle.com/javase/8/docs/api/java/net/URL.html?is-external=true" title="class or interface in java.net">URL</a>&nbsp;url,
                      <a href="../../../com/box/sdk/http/HttpMethod.html" title="enum in com.box.sdk.http">HttpMethod</a>&nbsp;method)</pre>
 <div class="block">Constructs an request, using URL and HttpMethod.</div>
 <dl>
@@ -381,7 +384,7 @@ extends <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html
 <ul class="blockList">
 <li class="blockList">
 <h4>isRequestRetryable</h4>
-<pre>public static&nbsp;boolean&nbsp;<a href="../../../src-html/com/box/sdk/BoxAPIRequest.html#line.185">isRequestRetryable</a>(<a href="../../../com/box/sdk/BoxAPIException.html" title="class in com.box.sdk">BoxAPIException</a>&nbsp;apiException)</pre>
+<pre>public static&nbsp;boolean&nbsp;<a href="../../../src-html/com/box/sdk/BoxAPIRequest.html#line.125">isRequestRetryable</a>(<a href="../../../com/box/sdk/BoxAPIException.html" title="class in com.box.sdk">BoxAPIException</a>&nbsp;apiException)</pre>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
 <dd><code>apiException</code> - BoxAPIException thrown</dd>
@@ -396,7 +399,7 @@ extends <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html
 <ul class="blockList">
 <li class="blockList">
 <h4>isResponseRetryable</h4>
-<pre>public static&nbsp;boolean&nbsp;<a href="../../../src-html/com/box/sdk/BoxAPIRequest.html#line.195">isResponseRetryable</a>(int&nbsp;responseCode,
+<pre>public static&nbsp;boolean&nbsp;<a href="../../../src-html/com/box/sdk/BoxAPIRequest.html#line.135">isResponseRetryable</a>(int&nbsp;responseCode,
                                           <a href="../../../com/box/sdk/BoxAPIException.html" title="class in com.box.sdk">BoxAPIException</a>&nbsp;apiException)</pre>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
@@ -413,7 +416,7 @@ extends <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html
 <ul class="blockList">
 <li class="blockList">
 <h4>addHeader</h4>
-<pre>public&nbsp;void&nbsp;<a href="../../../src-html/com/box/sdk/BoxAPIRequest.html#line.229">addHeader</a>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;key,
+<pre>public&nbsp;void&nbsp;<a href="../../../src-html/com/box/sdk/BoxAPIRequest.html#line.175">addHeader</a>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;key,
                       <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;value)</pre>
 <div class="block">Adds an HTTP header to this request.</div>
 <dl>
@@ -429,7 +432,7 @@ extends <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html
 <ul class="blockList">
 <li class="blockList">
 <h4>getConnectTimeout</h4>
-<pre>public&nbsp;int&nbsp;<a href="../../../src-html/com/box/sdk/BoxAPIRequest.html#line.248">getConnectTimeout</a>()</pre>
+<pre>public&nbsp;int&nbsp;<a href="../../../src-html/com/box/sdk/BoxAPIRequest.html#line.194">getConnectTimeout</a>()</pre>
 <div class="block">Gets the connect timeout for the request.</div>
 <dl>
 <dt><span class="returnLabel">Returns:</span></dt>
@@ -443,7 +446,7 @@ extends <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html
 <ul class="blockList">
 <li class="blockList">
 <h4>setConnectTimeout</h4>
-<pre>public&nbsp;void&nbsp;<a href="../../../src-html/com/box/sdk/BoxAPIRequest.html#line.257">setConnectTimeout</a>(int&nbsp;timeout)</pre>
+<pre>public&nbsp;void&nbsp;<a href="../../../src-html/com/box/sdk/BoxAPIRequest.html#line.203">setConnectTimeout</a>(int&nbsp;timeout)</pre>
 <div class="block">Sets a Connect timeout for this request in milliseconds.</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
@@ -457,7 +460,7 @@ extends <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html
 <ul class="blockList">
 <li class="blockList">
 <h4>getReadTimeout</h4>
-<pre>public&nbsp;int&nbsp;<a href="../../../src-html/com/box/sdk/BoxAPIRequest.html#line.266">getReadTimeout</a>()</pre>
+<pre>public&nbsp;int&nbsp;<a href="../../../src-html/com/box/sdk/BoxAPIRequest.html#line.212">getReadTimeout</a>()</pre>
 <div class="block">Gets the read timeout for the request.</div>
 <dl>
 <dt><span class="returnLabel">Returns:</span></dt>
@@ -471,7 +474,7 @@ extends <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html
 <ul class="blockList">
 <li class="blockList">
 <h4>setReadTimeout</h4>
-<pre>public&nbsp;void&nbsp;<a href="../../../src-html/com/box/sdk/BoxAPIRequest.html#line.275">setReadTimeout</a>(int&nbsp;timeout)</pre>
+<pre>public&nbsp;void&nbsp;<a href="../../../src-html/com/box/sdk/BoxAPIRequest.html#line.221">setReadTimeout</a>(int&nbsp;timeout)</pre>
 <div class="block">Sets a read timeout for this request in milliseconds.</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
@@ -485,7 +488,7 @@ extends <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html
 <ul class="blockList">
 <li class="blockList">
 <h4>setFollowRedirects</h4>
-<pre>public&nbsp;void&nbsp;<a href="../../../src-html/com/box/sdk/BoxAPIRequest.html#line.284">setFollowRedirects</a>(boolean&nbsp;followRedirects)</pre>
+<pre>public&nbsp;void&nbsp;<a href="../../../src-html/com/box/sdk/BoxAPIRequest.html#line.230">setFollowRedirects</a>(boolean&nbsp;followRedirects)</pre>
 <div class="block">Sets whether or not to follow redirects (i.e. Location header)</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
@@ -499,7 +502,7 @@ extends <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html
 <ul class="blockList">
 <li class="blockList">
 <h4>getBody</h4>
-<pre>public&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/io/InputStream.html?is-external=true" title="class or interface in java.io">InputStream</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxAPIRequest.html#line.296">getBody</a>()</pre>
+<pre>public&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/io/InputStream.html?is-external=true" title="class or interface in java.io">InputStream</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxAPIRequest.html#line.242">getBody</a>()</pre>
 <div class="block">Gets the stream containing contents of this request's body.
 
  <p>Note that any bytes that read from the returned stream won't be sent unless the stream is reset back to its
@@ -516,7 +519,7 @@ extends <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html
 <ul class="blockList">
 <li class="blockList">
 <h4>setBody</h4>
-<pre>public&nbsp;void&nbsp;<a href="../../../src-html/com/box/sdk/BoxAPIRequest.html#line.308">setBody</a>(<a href="https://docs.oracle.com/javase/8/docs/api/java/io/InputStream.html?is-external=true" title="class or interface in java.io">InputStream</a>&nbsp;stream)</pre>
+<pre>public&nbsp;void&nbsp;<a href="../../../src-html/com/box/sdk/BoxAPIRequest.html#line.254">setBody</a>(<a href="https://docs.oracle.com/javase/8/docs/api/java/io/InputStream.html?is-external=true" title="class or interface in java.io">InputStream</a>&nbsp;stream)</pre>
 <div class="block">Sets the request body to the contents of an InputStream.
 
  <p>The stream must support the <a href="https://docs.oracle.com/javase/8/docs/api/java/io/InputStream.html?is-external=true#reset--" title="class or interface in java.io"><code>InputStream.reset()</code></a> method if auto-retry is used or if the request needs to
@@ -533,7 +536,7 @@ extends <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html
 <ul class="blockList">
 <li class="blockList">
 <h4>setBody</h4>
-<pre>public&nbsp;void&nbsp;<a href="../../../src-html/com/box/sdk/BoxAPIRequest.html#line.320">setBody</a>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;body)</pre>
+<pre>public&nbsp;void&nbsp;<a href="../../../src-html/com/box/sdk/BoxAPIRequest.html#line.266">setBody</a>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;body)</pre>
 <div class="block">Sets the request body to the contents of a String.
 
  <p>If the contents of the body are large, then it may be more efficient to use an <a href="https://docs.oracle.com/javase/8/docs/api/java/io/InputStream.html?is-external=true" title="class or interface in java.io"><code>InputStream</code></a> instead of
@@ -550,7 +553,7 @@ extends <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html
 <ul class="blockList">
 <li class="blockList">
 <h4>setBody</h4>
-<pre>public&nbsp;void&nbsp;<a href="../../../src-html/com/box/sdk/BoxAPIRequest.html#line.337">setBody</a>(<a href="https://docs.oracle.com/javase/8/docs/api/java/io/InputStream.html?is-external=true" title="class or interface in java.io">InputStream</a>&nbsp;stream,
+<pre>public&nbsp;void&nbsp;<a href="../../../src-html/com/box/sdk/BoxAPIRequest.html#line.283">setBody</a>(<a href="https://docs.oracle.com/javase/8/docs/api/java/io/InputStream.html?is-external=true" title="class or interface in java.io">InputStream</a>&nbsp;stream,
                     long&nbsp;length)</pre>
 <div class="block">Sets the request body to the contents of an InputStream.
 
@@ -571,7 +574,7 @@ extends <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html
 <ul class="blockList">
 <li class="blockList">
 <h4>getUrl</h4>
-<pre>public&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/net/URL.html?is-external=true" title="class or interface in java.net">URL</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxAPIRequest.html#line.347">getUrl</a>()</pre>
+<pre>public&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/net/URL.html?is-external=true" title="class or interface in java.net">URL</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxAPIRequest.html#line.293">getUrl</a>()</pre>
 <div class="block">Gets the URL from the request.</div>
 <dl>
 <dt><span class="returnLabel">Returns:</span></dt>
@@ -585,7 +588,7 @@ extends <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html
 <ul class="blockList">
 <li class="blockList">
 <h4>getMethod</h4>
-<pre>public&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxAPIRequest.html#line.356">getMethod</a>()</pre>
+<pre>public&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxAPIRequest.html#line.302">getMethod</a>()</pre>
 <div class="block">Gets the http method from the request.</div>
 <dl>
 <dt><span class="returnLabel">Returns:</span></dt>
@@ -599,7 +602,7 @@ extends <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html
 <ul class="blockList">
 <li class="blockList">
 <h4>getHeaders</h4>
-<pre>protected&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/util/List.html?is-external=true" title="class or interface in java.util">List</a>&lt;<a href="../../../com/box/sdk/BoxAPIRequest.RequestHeader.html" title="class in com.box.sdk">BoxAPIRequest.RequestHeader</a>&gt;&nbsp;<a href="../../../src-html/com/box/sdk/BoxAPIRequest.html#line.365">getHeaders</a>()</pre>
+<pre>protected&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/util/List.html?is-external=true" title="class or interface in java.util">List</a>&lt;<a href="../../../com/box/sdk/BoxAPIRequest.RequestHeader.html" title="class in com.box.sdk">BoxAPIRequest.RequestHeader</a>&gt;&nbsp;<a href="../../../src-html/com/box/sdk/BoxAPIRequest.html#line.311">getHeaders</a>()</pre>
 <div class="block">Get headers as list of RequestHeader objects.</div>
 <dl>
 <dt><span class="returnLabel">Returns:</span></dt>
@@ -613,7 +616,7 @@ extends <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html
 <ul class="blockList">
 <li class="blockList">
 <h4>sendWithoutRetry</h4>
-<pre>public&nbsp;<a href="../../../com/box/sdk/BoxAPIResponse.html" title="class in com.box.sdk">BoxAPIResponse</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxAPIRequest.html#line.381">sendWithoutRetry</a>()</pre>
+<pre>public&nbsp;<a href="../../../com/box/sdk/BoxAPIResponse.html" title="class in com.box.sdk">BoxAPIResponse</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxAPIRequest.html#line.327">sendWithoutRetry</a>()</pre>
 <div class="block">Sends this request and returns a BoxAPIResponse containing the server's response.
 
  <p>The type of the returned BoxAPIResponse will be based on the content type returned by the server, allowing it
@@ -635,7 +638,7 @@ extends <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html
 <ul class="blockList">
 <li class="blockList">
 <h4>send</h4>
-<pre>public&nbsp;<a href="../../../com/box/sdk/BoxAPIResponse.html" title="class in com.box.sdk">BoxAPIResponse</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxAPIRequest.html#line.403">send</a>()</pre>
+<pre>public&nbsp;<a href="../../../com/box/sdk/BoxAPIResponse.html" title="class in com.box.sdk">BoxAPIResponse</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxAPIRequest.html#line.349">send</a>()</pre>
 <div class="block">Sends this request and returns a BoxAPIResponse containing the server's response.
 
  <p>The type of the returned BoxAPIResponse will be based on the content type returned by the server, allowing it
@@ -663,7 +666,7 @@ extends <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html
 <ul class="blockList">
 <li class="blockList">
 <h4>send</h4>
-<pre>public&nbsp;<a href="../../../com/box/sdk/BoxAPIResponse.html" title="class in com.box.sdk">BoxAPIResponse</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxAPIRequest.html#line.428">send</a>(<a href="../../../com/box/sdk/ProgressListener.html" title="interface in com.box.sdk">ProgressListener</a>&nbsp;listener)</pre>
+<pre>public&nbsp;<a href="../../../com/box/sdk/BoxAPIResponse.html" title="class in com.box.sdk">BoxAPIResponse</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxAPIRequest.html#line.374">send</a>(<a href="../../../com/box/sdk/ProgressListener.html" title="interface in com.box.sdk">ProgressListener</a>&nbsp;listener)</pre>
 <div class="block">Sends this request while monitoring its progress and returns a BoxAPIResponse containing the server's response.
 
  <p>The type of the returned BoxAPIResponse will be based on the content type returned by the server, allowing it
@@ -695,7 +698,7 @@ extends <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html
 <ul class="blockList">
 <li class="blockList">
 <h4>toString</h4>
-<pre>public&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxAPIRequest.html#line.547">toString</a>()</pre>
+<pre>public&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxAPIRequest.html#line.494">toString</a>()</pre>
 <div class="block">Returns a String containing the URL, HTTP method, headers and body of this request.</div>
 <dl>
 <dt><span class="overrideSpecifyLabel">Overrides:</span></dt>
@@ -711,7 +714,7 @@ extends <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html
 <ul class="blockList">
 <li class="blockList">
 <h4>bodyToString</h4>
-<pre>protected&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxAPIRequest.html#line.601">bodyToString</a>()</pre>
+<pre>protected&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxAPIRequest.html#line.522">bodyToString</a>()</pre>
 <div class="block">Returns a String representation of this request's body used in <a href="../../../com/box/sdk/BoxAPIRequest.html#toString--"><code>toString()</code></a>. This method returns
  null by default.
 
@@ -723,33 +726,13 @@ extends <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html
 </dl>
 </li>
 </ul>
-<a name="writeBody-java.net.HttpURLConnection-com.box.sdk.ProgressListener-">
+<a name="resetBody--">
 <!--   -->
 </a>
 <ul class="blockList">
 <li class="blockList">
-<h4>writeBody</h4>
-<pre>protected&nbsp;void&nbsp;<a href="../../../src-html/com/box/sdk/BoxAPIRequest.html#line.614">writeBody</a>(<a href="https://docs.oracle.com/javase/8/docs/api/java/net/HttpURLConnection.html?is-external=true" title="class or interface in java.net">HttpURLConnection</a>&nbsp;connection,
-                         <a href="../../../com/box/sdk/ProgressListener.html" title="interface in com.box.sdk">ProgressListener</a>&nbsp;listener)</pre>
-<div class="block">Writes the body of this request to an HttpURLConnection.
-
- <p>Subclasses overriding this method must remember to close the connection's OutputStream after writing.</p></div>
-<dl>
-<dt><span class="paramLabel">Parameters:</span></dt>
-<dd><code>connection</code> - the connection to which the body should be written.</dd>
-<dd><code>listener</code> - an optional listener for monitoring the write progress.</dd>
-<dt><span class="throwsLabel">Throws:</span></dt>
-<dd><code><a href="../../../com/box/sdk/BoxAPIException.html" title="class in com.box.sdk">BoxAPIException</a></code> - if an error occurs while writing to the connection.</dd>
-</dl>
-</li>
-</ul>
-<a name="resetBody--">
-<!--   -->
-</a>
-<ul class="blockListLast">
-<li class="blockList">
 <h4>resetBody</h4>
-<pre>protected&nbsp;void&nbsp;<a href="../../../src-html/com/box/sdk/BoxAPIRequest.html#line.661">resetBody</a>()
+<pre>protected&nbsp;void&nbsp;<a href="../../../src-html/com/box/sdk/BoxAPIRequest.html#line.551">resetBody</a>()
                   throws <a href="https://docs.oracle.com/javase/8/docs/api/java/io/IOException.html?is-external=true" title="class or interface in java.io">IOException</a></pre>
 <div class="block">Resets the InputStream containing this request's body.
 
@@ -759,6 +742,25 @@ extends <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html
 <dt><span class="throwsLabel">Throws:</span></dt>
 <dd><code><a href="https://docs.oracle.com/javase/8/docs/api/java/io/IOException.html?is-external=true" title="class or interface in java.io">IOException</a></code> - if the stream cannot be reset.</dd>
 </dl>
+</li>
+</ul>
+<a name="writeMethodWithBody-okhttp3.Request.Builder-com.box.sdk.ProgressListener-">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>writeMethodWithBody</h4>
+<pre>protected&nbsp;void&nbsp;<a href="../../../src-html/com/box/sdk/BoxAPIRequest.html#line.623">writeMethodWithBody</a>(Request.Builder&nbsp;requestBuilder,
+                                   <a href="../../../com/box/sdk/ProgressListener.html" title="interface in com.box.sdk">ProgressListener</a>&nbsp;listener)</pre>
+</li>
+</ul>
+<a name="mediaType--">
+<!--   -->
+</a>
+<ul class="blockListLast">
+<li class="blockList">
+<h4>mediaType</h4>
+<pre>protected&nbsp;MediaType&nbsp;<a href="../../../src-html/com/box/sdk/BoxAPIRequest.html#line.702">mediaType</a>()</pre>
 </li>
 </ul>
 </li>

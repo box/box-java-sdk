@@ -18,8 +18,8 @@
     catch(err) {
     }
 //-->
-var methods = {"i0":10,"i1":10,"i2":10,"i3":10,"i4":10,"i5":10,"i6":10,"i7":10,"i8":10,"i9":10,"i10":42,"i11":10};
-var tabs = {65535:["t0","All Methods"],2:["t2","Instance Methods"],8:["t4","Concrete Methods"],32:["t6","Deprecated Methods"]};
+var methods = {"i0":10,"i1":10,"i2":10,"i3":10,"i4":10,"i5":10,"i6":10,"i7":10,"i8":10,"i9":10,"i10":10};
+var tabs = {65535:["t0","All Methods"],2:["t2","Instance Methods"],8:["t4","Concrete Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
 var tableTab = "tableTab";
@@ -80,14 +80,6 @@ extends <a href="../../../com/box/sdk/BoxResource.html" title="class in com.box.
 <div class="block">Enumerates the possible types for an event.</div>
 </td>
 </tr>
-<tr class="rowColor">
-<td class="colFirst"><code>static class&nbsp;</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../com/box/sdk/BoxEvent.Type.html" title="enum in com.box.sdk">BoxEvent.Type</a></span></code>
-<div class="block"><span class="deprecatedLabel">Deprecated.</span>&nbsp;
-<div class="block"><span class="deprecationComment">use EventType instead.</span></div>
-</div>
-</td>
-</tr>
 </table>
 <ul class="blockList">
 <li class="blockList"><a name="nested.classes.inherited.from.class.com.box.sdk.BoxResource">
@@ -125,7 +117,7 @@ extends <a href="../../../com/box/sdk/BoxResource.html" title="class in com.box.
 </a>
 <h3>Method Summary</h3>
 <table class="memberSummary" border="0" cellpadding="3" cellspacing="0" summary="Method Summary table, listing methods, and an explanation">
-<caption><span id="t0" class="activeTableTab"><span>All Methods</span><span class="tabEnd">&nbsp;</span></span><span id="t2" class="tableTab"><span><a href="javascript:show(2);">Instance Methods</a></span><span class="tabEnd">&nbsp;</span></span><span id="t4" class="tableTab"><span><a href="javascript:show(8);">Concrete Methods</a></span><span class="tabEnd">&nbsp;</span></span><span id="t6" class="tableTab"><span><a href="javascript:show(32);">Deprecated Methods</a></span><span class="tabEnd">&nbsp;</span></span></caption>
+<caption><span id="t0" class="activeTableTab"><span>All Methods</span><span class="tabEnd">&nbsp;</span></span><span id="t2" class="tableTab"><span><a href="javascript:show(2);">Instance Methods</a></span><span class="tabEnd">&nbsp;</span></span><span id="t4" class="tableTab"><span><a href="javascript:show(8);">Concrete Methods</a></span><span class="tabEnd">&nbsp;</span></span></caption>
 <tr>
 <th class="colFirst" scope="col">Modifier and Type</th>
 <th class="colLast" scope="col">Method and Description</th>
@@ -191,14 +183,6 @@ extends <a href="../../../com/box/sdk/BoxResource.html" title="class in com.box.
 </td>
 </tr>
 <tr id="i10" class="altColor">
-<td class="colFirst"><code><a href="../../../com/box/sdk/BoxEvent.Type.html" title="enum in com.box.sdk">BoxEvent.Type</a></code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../com/box/sdk/BoxEvent.html#getType--">getType</a></span>()</code>
-<div class="block"><span class="deprecatedLabel">Deprecated.</span>&nbsp;
-<div class="block"><span class="deprecationComment">use getEventType instead.</span></div>
-</div>
-</td>
-</tr>
-<tr id="i11" class="rowColor">
 <td class="colFirst"><code><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../com/box/sdk/BoxEvent.html#getTypeName--">getTypeName</a></span>()</code>
 <div class="block">Gets the type name as String.</div>
@@ -239,7 +223,7 @@ extends <a href="../../../com/box/sdk/BoxResource.html" title="class in com.box.
 <ul class="blockListLast">
 <li class="blockList">
 <h4>BoxEvent</h4>
-<pre>public&nbsp;<a href="../../../src-html/com/box/sdk/BoxEvent.html#line.35">BoxEvent</a>(<a href="../../../com/box/sdk/BoxAPIConnection.html" title="class in com.box.sdk">BoxAPIConnection</a>&nbsp;api,
+<pre>public&nbsp;<a href="../../../src-html/com/box/sdk/BoxEvent.html#line.34">BoxEvent</a>(<a href="../../../com/box/sdk/BoxAPIConnection.html" title="class in com.box.sdk">BoxAPIConnection</a>&nbsp;api,
                 <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;json)</pre>
 <div class="block">Constructs a BoxEvent from a JSON string.</div>
 <dl>
@@ -263,7 +247,7 @@ extends <a href="../../../com/box/sdk/BoxResource.html" title="class in com.box.
 <ul class="blockList">
 <li class="blockList">
 <h4>getSourceInfo</h4>
-<pre>public&nbsp;<a href="../../../com/box/sdk/BoxResource.Info.html" title="class in com.box.sdk">BoxResource.Info</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxEvent.html#line.60">getSourceInfo</a>()</pre>
+<pre>public&nbsp;<a href="../../../com/box/sdk/BoxResource.Info.html" title="class in com.box.sdk">BoxResource.Info</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxEvent.html#line.59">getSourceInfo</a>()</pre>
 <div class="block">Gets info about the source of this event.
 
  <p>Note that there is a bug in the enterprise event stream where certain event sources don't correctly map to a
@@ -281,7 +265,7 @@ extends <a href="../../../com/box/sdk/BoxResource.html" title="class in com.box.
 <ul class="blockList">
 <li class="blockList">
 <h4>getSourceJSON</h4>
-<pre>public&nbsp;JsonObject&nbsp;<a href="../../../src-html/com/box/sdk/BoxEvent.html#line.73">getSourceJSON</a>()</pre>
+<pre>public&nbsp;JsonObject&nbsp;<a href="../../../src-html/com/box/sdk/BoxEvent.html#line.72">getSourceJSON</a>()</pre>
 <div class="block">Gets the raw JSON object containing information about the source of this event.
 
  <p>This method can be used to work around bugs in the enterprise events API where some enterprise event sources
@@ -293,29 +277,13 @@ extends <a href="../../../com/box/sdk/BoxResource.html" title="class in com.box.
 </dl>
 </li>
 </ul>
-<a name="getType--">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>getType</h4>
-<pre><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Deprecated.html?is-external=true" title="class or interface in java.lang">@Deprecated</a>
-public&nbsp;<a href="../../../com/box/sdk/BoxEvent.Type.html" title="enum in com.box.sdk">BoxEvent.Type</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxEvent.html#line.84">getType</a>()</pre>
-<div class="block"><span class="deprecatedLabel">Deprecated.</span>&nbsp;<span class="deprecationComment">use getEventType instead.</span></div>
-<div class="block">Gets the type of this event.</div>
-<dl>
-<dt><span class="returnLabel">Returns:</span></dt>
-<dd>the type of this event.</dd>
-</dl>
-</li>
-</ul>
 <a name="getEventType--">
 <!--   -->
 </a>
 <ul class="blockList">
 <li class="blockList">
 <h4>getEventType</h4>
-<pre>public&nbsp;<a href="../../../com/box/sdk/BoxEvent.EventType.html" title="enum in com.box.sdk">BoxEvent.EventType</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxEvent.html#line.93">getEventType</a>()</pre>
+<pre>public&nbsp;<a href="../../../com/box/sdk/BoxEvent.EventType.html" title="enum in com.box.sdk">BoxEvent.EventType</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxEvent.html#line.81">getEventType</a>()</pre>
 <div class="block">Gets the type of this event.</div>
 <dl>
 <dt><span class="returnLabel">Returns:</span></dt>
@@ -329,7 +297,7 @@ public&nbsp;<a href="../../../com/box/sdk/BoxEvent.Type.html" title="enum in com
 <ul class="blockList">
 <li class="blockList">
 <h4>getTypeName</h4>
-<pre>public&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxEvent.html#line.103">getTypeName</a>()</pre>
+<pre>public&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxEvent.html#line.91">getTypeName</a>()</pre>
 <div class="block">Gets the type name as String. Every BoxEvent will have typeName, some will have
  eventType set to specific value and some will have eventType = UNKNOWN.</div>
 <dl>
@@ -344,7 +312,7 @@ public&nbsp;<a href="../../../com/box/sdk/BoxEvent.Type.html" title="enum in com
 <ul class="blockList">
 <li class="blockList">
 <h4>getCreatedAt</h4>
-<pre>public&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/util/Date.html?is-external=true" title="class or interface in java.util">Date</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxEvent.html#line.112">getCreatedAt</a>()</pre>
+<pre>public&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/util/Date.html?is-external=true" title="class or interface in java.util">Date</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxEvent.html#line.100">getCreatedAt</a>()</pre>
 <div class="block">Gets the time that this event was created.</div>
 <dl>
 <dt><span class="returnLabel">Returns:</span></dt>
@@ -358,7 +326,7 @@ public&nbsp;<a href="../../../com/box/sdk/BoxEvent.Type.html" title="enum in com
 <ul class="blockList">
 <li class="blockList">
 <h4>getIPAddress</h4>
-<pre>public&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxEvent.html#line.121">getIPAddress</a>()</pre>
+<pre>public&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxEvent.html#line.109">getIPAddress</a>()</pre>
 <div class="block">Gets the IP address of the user that triggered this event.</div>
 <dl>
 <dt><span class="returnLabel">Returns:</span></dt>
@@ -372,7 +340,7 @@ public&nbsp;<a href="../../../com/box/sdk/BoxEvent.Type.html" title="enum in com
 <ul class="blockList">
 <li class="blockList">
 <h4>getAdditionalDetails</h4>
-<pre>public&nbsp;JsonObject&nbsp;<a href="../../../src-html/com/box/sdk/BoxEvent.html#line.132">getAdditionalDetails</a>()</pre>
+<pre>public&nbsp;JsonObject&nbsp;<a href="../../../src-html/com/box/sdk/BoxEvent.html#line.120">getAdditionalDetails</a>()</pre>
 <div class="block">Gets a JSON object containing additional details about this event.
 
  <p>The fields and data within the returned JSON object will vary depending on the type of the event.</p></div>
@@ -388,7 +356,7 @@ public&nbsp;<a href="../../../com/box/sdk/BoxEvent.Type.html" title="enum in com
 <ul class="blockList">
 <li class="blockList">
 <h4>getAccessibleBy</h4>
-<pre>public&nbsp;<a href="../../../com/box/sdk/BoxCollaborator.Info.html" title="class in com.box.sdk">BoxCollaborator.Info</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxEvent.html#line.144">getAccessibleBy</a>()</pre>
+<pre>public&nbsp;<a href="../../../com/box/sdk/BoxCollaborator.Info.html" title="class in com.box.sdk">BoxCollaborator.Info</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxEvent.html#line.132">getAccessibleBy</a>()</pre>
 <div class="block">Gets info about the collaborator who was given access to a folder within the current enterprise.
 
  <p>This field is only populated when the event is related to a collaboration that occurred within an enterprise.
@@ -405,7 +373,7 @@ public&nbsp;<a href="../../../com/box/sdk/BoxEvent.Type.html" title="enum in com
 <ul class="blockList">
 <li class="blockList">
 <h4>getCreatedBy</h4>
-<pre>public&nbsp;<a href="../../../com/box/sdk/BoxUser.Info.html" title="class in com.box.sdk">BoxUser.Info</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxEvent.html#line.153">getCreatedBy</a>()</pre>
+<pre>public&nbsp;<a href="../../../com/box/sdk/BoxUser.Info.html" title="class in com.box.sdk">BoxUser.Info</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxEvent.html#line.141">getCreatedBy</a>()</pre>
 <div class="block">Gets info about the user that triggered this event.</div>
 <dl>
 <dt><span class="returnLabel">Returns:</span></dt>
@@ -419,7 +387,7 @@ public&nbsp;<a href="../../../com/box/sdk/BoxEvent.Type.html" title="enum in com
 <ul class="blockList">
 <li class="blockList">
 <h4>getSessionID</h4>
-<pre>public&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxEvent.html#line.162">getSessionID</a>()</pre>
+<pre>public&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxEvent.html#line.150">getSessionID</a>()</pre>
 <div class="block">Gets the session ID of the user that triggered this event.</div>
 <dl>
 <dt><span class="returnLabel">Returns:</span></dt>
@@ -433,7 +401,7 @@ public&nbsp;<a href="../../../com/box/sdk/BoxEvent.Type.html" title="enum in com
 <ul class="blockListLast">
 <li class="blockList">
 <h4>getActionBy</h4>
-<pre>public&nbsp;<a href="../../../com/box/sdk/BoxUser.Info.html" title="class in com.box.sdk">BoxUser.Info</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxEvent.html#line.171">getActionBy</a>()</pre>
+<pre>public&nbsp;<a href="../../../com/box/sdk/BoxUser.Info.html" title="class in com.box.sdk">BoxUser.Info</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxEvent.html#line.159">getActionBy</a>()</pre>
 <div class="block">Gets the user that performed the action for this event.</div>
 <dl>
 <dt><span class="returnLabel">Returns:</span></dt>

@@ -71,7 +71,7 @@ var activeTableTab = "activeTableTab";
 </dl>
 <hr>
 <br>
-<pre>public class <a href="../../../src-html/com/box/sdk/BoxAPIResponseException.html#line.13">BoxAPIResponseException</a>
+<pre>public class <a href="../../../src-html/com/box/sdk/BoxAPIResponseException.html#line.11">BoxAPIResponseException</a>
 extends <a href="../../../com/box/sdk/BoxAPIException.html" title="class in com.box.sdk">BoxAPIException</a></pre>
 <div class="block">Thrown to indicate than an error occured while returning with a response from the Box API.</div>
 <dl>
@@ -96,8 +96,10 @@ extends <a href="../../../com/box/sdk/BoxAPIException.html" title="class in com.
 <th class="colOne" scope="col">Constructor and Description</th>
 </tr>
 <tr class="altColor">
-<td class="colOne"><code><span class="memberNameLink"><a href="../../../com/box/sdk/BoxAPIResponseException.html#BoxAPIResponseException-java.lang.String-com.box.sdk.BoxAPIResponse-">BoxAPIResponseException</a></span>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;message,
-                       <a href="../../../com/box/sdk/BoxAPIResponse.html" title="class in com.box.sdk">BoxAPIResponse</a>&nbsp;responseObj)</code>
+<td class="colOne"><code><span class="memberNameLink"><a href="../../../com/box/sdk/BoxAPIResponseException.html#BoxAPIResponseException-java.lang.String-int-java.lang.String-java.util.Map-">BoxAPIResponseException</a></span>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;message,
+                       int&nbsp;responseCode,
+                       <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;bodyString,
+                       <a href="https://docs.oracle.com/javase/8/docs/api/java/util/Map.html?is-external=true" title="class or interface in java.util">Map</a>&lt;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>,<a href="https://docs.oracle.com/javase/8/docs/api/java/util/List.html?is-external=true" title="class or interface in java.util">List</a>&lt;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&gt;&gt;&nbsp;responseHeaders)</code>
 <div class="block">Constructs a BoxAPIException that contains detailed message for underlying exception.</div>
 </td>
 </tr>
@@ -162,19 +164,23 @@ extends <a href="../../../com/box/sdk/BoxAPIException.html" title="class in com.
 <!--   -->
 </a>
 <h3>Constructor Detail</h3>
-<a name="BoxAPIResponseException-java.lang.String-com.box.sdk.BoxAPIResponse-">
+<a name="BoxAPIResponseException-java.lang.String-int-java.lang.String-java.util.Map-">
 <!--   -->
 </a>
 <ul class="blockListLast">
 <li class="blockList">
 <h4>BoxAPIResponseException</h4>
 <pre>public&nbsp;<a href="../../../src-html/com/box/sdk/BoxAPIResponseException.html#line.23">BoxAPIResponseException</a>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;message,
-                               <a href="../../../com/box/sdk/BoxAPIResponse.html" title="class in com.box.sdk">BoxAPIResponse</a>&nbsp;responseObj)</pre>
+                               int&nbsp;responseCode,
+                               <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;bodyString,
+                               <a href="https://docs.oracle.com/javase/8/docs/api/java/util/Map.html?is-external=true" title="class or interface in java.util">Map</a>&lt;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>,<a href="https://docs.oracle.com/javase/8/docs/api/java/util/List.html?is-external=true" title="class or interface in java.util">List</a>&lt;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&gt;&gt;&nbsp;responseHeaders)</pre>
 <div class="block">Constructs a BoxAPIException that contains detailed message for underlying exception.</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
 <dd><code>message</code> - a message explaining why the error occurred.</dd>
-<dd><code>responseObj</code> - a response object from the server.</dd>
+<dd><code>responseCode</code> - a response code.</dd>
+<dd><code>bodyString</code> - a response body.</dd>
+<dd><code>responseHeaders</code> - response headers.</dd>
 </dl>
 </li>
 </ul>
@@ -192,7 +198,7 @@ extends <a href="../../../com/box/sdk/BoxAPIException.html" title="class in com.
 <ul class="blockList">
 <li class="blockList">
 <h4>getMessage</h4>
-<pre>public&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxAPIResponseException.html#line.77">getMessage</a>()</pre>
+<pre>public&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxAPIResponseException.html#line.72">getMessage</a>()</pre>
 <dl>
 <dt><span class="overrideSpecifyLabel">Overrides:</span></dt>
 <dd><code><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Throwable.html?is-external=true#getMessage--" title="class or interface in java.lang">getMessage</a></code>&nbsp;in class&nbsp;<code><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Throwable.html?is-external=true" title="class or interface in java.lang">Throwable</a></code></dd>
@@ -207,7 +213,7 @@ extends <a href="../../../com/box/sdk/BoxAPIException.html" title="class in com.
 <ul class="blockListLast">
 <li class="blockList">
 <h4>setMessage</h4>
-<pre>protected&nbsp;void&nbsp;<a href="../../../src-html/com/box/sdk/BoxAPIResponseException.html#line.86">setMessage</a>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;message)</pre>
+<pre>protected&nbsp;void&nbsp;<a href="../../../src-html/com/box/sdk/BoxAPIResponseException.html#line.81">setMessage</a>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;message)</pre>
 <div class="block">The message to return for the API exception.</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>

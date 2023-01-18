@@ -18,8 +18,8 @@
     catch(err) {
     }
 //-->
-var methods = {"i0":10,"i1":10,"i2":10,"i3":9,"i4":9,"i5":41,"i6":9,"i7":41,"i8":41,"i9":41,"i10":41,"i11":41,"i12":9,"i13":9,"i14":10};
-var tabs = {65535:["t0","All Methods"],1:["t1","Static Methods"],2:["t2","Instance Methods"],8:["t4","Concrete Methods"],32:["t6","Deprecated Methods"]};
+var methods = {"i0":10,"i1":10,"i2":10,"i3":9,"i4":9,"i5":9,"i6":9,"i7":9,"i8":9,"i9":9,"i10":10};
+var tabs = {65535:["t0","All Methods"],1:["t1","Static Methods"],2:["t2","Instance Methods"],8:["t4","Concrete Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
 var tableTab = "tableTab";
@@ -89,7 +89,7 @@ extends <a href="../../../com/box/sdk/BoxAPIConnection.html" title="class in com
 <!--   -->
 </a>
 <h3>Fields inherited from class&nbsp;<a href="../../../com/box/sdk/BoxAPIConnection.html" title="class in com.box.sdk">BoxAPIConnection</a></h3>
-<code><a href="../../../com/box/sdk/BoxAPIConnection.html#DEFAULT_BASE_AUTHORIZATION_URL">DEFAULT_BASE_AUTHORIZATION_URL</a>, <a href="../../../com/box/sdk/BoxAPIConnection.html#DEFAULT_MAX_ATTEMPTS">DEFAULT_MAX_ATTEMPTS</a>, <a href="../../../com/box/sdk/BoxAPIConnection.html#DEFAULT_MAX_RETRIES">DEFAULT_MAX_RETRIES</a></code></li>
+<code><a href="../../../com/box/sdk/BoxAPIConnection.html#DEFAULT_BASE_AUTHORIZATION_URL">DEFAULT_BASE_AUTHORIZATION_URL</a>, <a href="../../../com/box/sdk/BoxAPIConnection.html#DEFAULT_HOSTNAME_VERIFIER">DEFAULT_HOSTNAME_VERIFIER</a>, <a href="../../../com/box/sdk/BoxAPIConnection.html#DEFAULT_MAX_RETRIES">DEFAULT_MAX_RETRIES</a>, <a href="../../../com/box/sdk/BoxAPIConnection.html#DEFAULT_TRUST_MANAGER">DEFAULT_TRUST_MANAGER</a></code></li>
 </ul>
 </li>
 </ul>
@@ -118,10 +118,7 @@ extends <a href="../../../com/box/sdk/BoxAPIConnection.html" title="class in com
                                 <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;clientID,
                                 <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;clientSecret,
                                 <a href="../../../com/box/sdk/JWTEncryptionPreferences.html" title="class in com.box.sdk">JWTEncryptionPreferences</a>&nbsp;encryptionPref)</code>
-<div class="block"><span class="deprecatedLabel">Deprecated.</span>&nbsp;
-<div class="block"><span class="deprecationComment">Use the version of this constructor that accepts an IAccessTokenCache to prevent unneeded
- requests to Box for access tokens.</span></div>
-</div>
+<div class="block">Constructs a new BoxDeveloperEditionAPIConnection.</div>
 </td>
 </tr>
 <tr class="altColor">
@@ -144,7 +141,7 @@ extends <a href="../../../com/box/sdk/BoxAPIConnection.html" title="class in com
 </a>
 <h3>Method Summary</h3>
 <table class="memberSummary" border="0" cellpadding="3" cellspacing="0" summary="Method Summary table, listing methods, and an explanation">
-<caption><span id="t0" class="activeTableTab"><span>All Methods</span><span class="tabEnd">&nbsp;</span></span><span id="t1" class="tableTab"><span><a href="javascript:show(1);">Static Methods</a></span><span class="tabEnd">&nbsp;</span></span><span id="t2" class="tableTab"><span><a href="javascript:show(2);">Instance Methods</a></span><span class="tabEnd">&nbsp;</span></span><span id="t4" class="tableTab"><span><a href="javascript:show(8);">Concrete Methods</a></span><span class="tabEnd">&nbsp;</span></span><span id="t6" class="tableTab"><span><a href="javascript:show(32);">Deprecated Methods</a></span><span class="tabEnd">&nbsp;</span></span></caption>
+<caption><span id="t0" class="activeTableTab"><span>All Methods</span><span class="tabEnd">&nbsp;</span></span><span id="t1" class="tableTab"><span><a href="javascript:show(1);">Static Methods</a></span><span class="tabEnd">&nbsp;</span></span><span id="t2" class="tableTab"><span><a href="javascript:show(2);">Instance Methods</a></span><span class="tabEnd">&nbsp;</span></span><span id="t4" class="tableTab"><span><a href="javascript:show(8);">Concrete Methods</a></span><span class="tabEnd">&nbsp;</span></span></caption>
 <tr>
 <th class="colFirst" scope="col">Modifier and Type</th>
 <th class="colLast" scope="col">Method and Description</th>
@@ -186,10 +183,7 @@ extends <a href="../../../com/box/sdk/BoxAPIConnection.html" title="class in com
                           <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;clientId,
                           <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;clientSecret,
                           <a href="../../../com/box/sdk/JWTEncryptionPreferences.html" title="class in com.box.sdk">JWTEncryptionPreferences</a>&nbsp;encryptionPref)</code>
-<div class="block"><span class="deprecatedLabel">Deprecated.</span>&nbsp;
-<div class="block"><span class="deprecationComment">Use the version of this method that accepts an IAccessTokenCache to prevent unneeded
- requests to Box for access tokens.</span></div>
-</div>
+<div class="block">Creates a new Box Developer Edition connection with enterprise token.</div>
 </td>
 </tr>
 <tr id="i6" class="altColor">
@@ -204,57 +198,12 @@ extends <a href="../../../com/box/sdk/BoxAPIConnection.html" title="class in com
 </tr>
 <tr id="i7" class="rowColor">
 <td class="colFirst"><code>static <a href="../../../com/box/sdk/BoxDeveloperEditionAPIConnection.html" title="class in com.box.sdk">BoxDeveloperEditionAPIConnection</a></code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../com/box/sdk/BoxDeveloperEditionAPIConnection.html#getAppUserConnection-java.lang.String-com.box.sdk.BoxConfig-">getAppUserConnection</a></span>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;userId,
-                    <a href="../../../com/box/sdk/BoxConfig.html" title="class in com.box.sdk">BoxConfig</a>&nbsp;boxConfig)</code>
-<div class="block"><span class="deprecatedLabel">Deprecated.</span>&nbsp;
-<div class="block"><span class="deprecationComment">use <a href="../../../com/box/sdk/BoxDeveloperEditionAPIConnection.html#getUserConnection-java.lang.String-com.box.sdk.BoxConfig-com.box.sdk.IAccessTokenCache-"><code>getUserConnection(String, BoxConfig, IAccessTokenCache)</code></a></span></div>
-</div>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../com/box/sdk/BoxDeveloperEditionAPIConnection.html#getUserConnection-java.lang.String-com.box.sdk.BoxConfig-">getUserConnection</a></span>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;userId,
+                 <a href="../../../com/box/sdk/BoxConfig.html" title="class in com.box.sdk">BoxConfig</a>&nbsp;boxConfig)</code>
+<div class="block">Creates a new Box Developer Edition connection with App User or Managed User token.</div>
 </td>
 </tr>
 <tr id="i8" class="altColor">
-<td class="colFirst"><code>static <a href="../../../com/box/sdk/BoxDeveloperEditionAPIConnection.html" title="class in com.box.sdk">BoxDeveloperEditionAPIConnection</a></code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../com/box/sdk/BoxDeveloperEditionAPIConnection.html#getAppUserConnection-java.lang.String-com.box.sdk.BoxConfig-com.box.sdk.IAccessTokenCache-">getAppUserConnection</a></span>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;userId,
-                    <a href="../../../com/box/sdk/BoxConfig.html" title="class in com.box.sdk">BoxConfig</a>&nbsp;boxConfig,
-                    <a href="../../../com/box/sdk/IAccessTokenCache.html" title="interface in com.box.sdk">IAccessTokenCache</a>&nbsp;accessTokenCache)</code>
-<div class="block"><span class="deprecatedLabel">Deprecated.</span>&nbsp;
-<div class="block"><span class="deprecationComment">use <a href="../../../com/box/sdk/BoxDeveloperEditionAPIConnection.html#getUserConnection-java.lang.String-com.box.sdk.BoxConfig-com.box.sdk.IAccessTokenCache-"><code>getUserConnection(String, BoxConfig, IAccessTokenCache)</code></a></span></div>
-</div>
-</td>
-</tr>
-<tr id="i9" class="rowColor">
-<td class="colFirst"><code>static <a href="../../../com/box/sdk/BoxDeveloperEditionAPIConnection.html" title="class in com.box.sdk">BoxDeveloperEditionAPIConnection</a></code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../com/box/sdk/BoxDeveloperEditionAPIConnection.html#getAppUserConnection-java.lang.String-java.lang.String-java.lang.String-com.box.sdk.JWTEncryptionPreferences-">getAppUserConnection</a></span>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;userId,
-                    <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;clientId,
-                    <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;clientSecret,
-                    <a href="../../../com/box/sdk/JWTEncryptionPreferences.html" title="class in com.box.sdk">JWTEncryptionPreferences</a>&nbsp;encryptionPref)</code>
-<div class="block"><span class="deprecatedLabel">Deprecated.</span>&nbsp;
-<div class="block"><span class="deprecationComment">use <a href="../../../com/box/sdk/BoxDeveloperEditionAPIConnection.html#getUserConnection-java.lang.String-java.lang.String-java.lang.String-com.box.sdk.JWTEncryptionPreferences-com.box.sdk.IAccessTokenCache-"><code>getUserConnection(String, String, String, JWTEncryptionPreferences, IAccessTokenCache)</code></a>
- requests to Box for access tokens.</span></div>
-</div>
-</td>
-</tr>
-<tr id="i10" class="altColor">
-<td class="colFirst"><code>static <a href="../../../com/box/sdk/BoxDeveloperEditionAPIConnection.html" title="class in com.box.sdk">BoxDeveloperEditionAPIConnection</a></code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../com/box/sdk/BoxDeveloperEditionAPIConnection.html#getAppUserConnection-java.lang.String-java.lang.String-java.lang.String-com.box.sdk.JWTEncryptionPreferences-com.box.sdk.IAccessTokenCache-">getAppUserConnection</a></span>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;userId,
-                    <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;clientId,
-                    <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;clientSecret,
-                    <a href="../../../com/box/sdk/JWTEncryptionPreferences.html" title="class in com.box.sdk">JWTEncryptionPreferences</a>&nbsp;encryptionPref,
-                    <a href="../../../com/box/sdk/IAccessTokenCache.html" title="interface in com.box.sdk">IAccessTokenCache</a>&nbsp;accessTokenCache)</code>
-<div class="block"><span class="deprecatedLabel">Deprecated.</span>&nbsp;
-<div class="block"><span class="deprecationComment">use <a href="../../../com/box/sdk/BoxDeveloperEditionAPIConnection.html#getUserConnection-java.lang.String-java.lang.String-java.lang.String-com.box.sdk.JWTEncryptionPreferences-com.box.sdk.IAccessTokenCache-"><code>getUserConnection(String, String, String, JWTEncryptionPreferences, IAccessTokenCache)</code></a></span></div>
-</div>
-</td>
-</tr>
-<tr id="i11" class="rowColor">
-<td class="colFirst"><code>static <a href="../../../com/box/sdk/BoxDeveloperEditionAPIConnection.html" title="class in com.box.sdk">BoxDeveloperEditionAPIConnection</a></code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../com/box/sdk/BoxDeveloperEditionAPIConnection.html#getUserConnection-java.lang.String-com.box.sdk.BoxConfig-">getUserConnection</a></span>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;userId,
-                 <a href="../../../com/box/sdk/BoxConfig.html" title="class in com.box.sdk">BoxConfig</a>&nbsp;boxConfig)</code>
-<div class="block"><span class="deprecatedLabel">Deprecated.</span>&nbsp;
-<div class="block"><span class="deprecationComment">use <a href="../../../com/box/sdk/BoxDeveloperEditionAPIConnection.html#getUserConnection-java.lang.String-com.box.sdk.BoxConfig-com.box.sdk.IAccessTokenCache-"><code>getUserConnection(String, BoxConfig, IAccessTokenCache)</code></a></span></div>
-</div>
-</td>
-</tr>
-<tr id="i12" class="altColor">
 <td class="colFirst"><code>static <a href="../../../com/box/sdk/BoxDeveloperEditionAPIConnection.html" title="class in com.box.sdk">BoxDeveloperEditionAPIConnection</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../com/box/sdk/BoxDeveloperEditionAPIConnection.html#getUserConnection-java.lang.String-com.box.sdk.BoxConfig-com.box.sdk.IAccessTokenCache-">getUserConnection</a></span>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;userId,
                  <a href="../../../com/box/sdk/BoxConfig.html" title="class in com.box.sdk">BoxConfig</a>&nbsp;boxConfig,
@@ -263,7 +212,7 @@ extends <a href="../../../com/box/sdk/BoxAPIConnection.html" title="class in com
  and access token cache.</div>
 </td>
 </tr>
-<tr id="i13" class="rowColor">
+<tr id="i9" class="rowColor">
 <td class="colFirst"><code>static <a href="../../../com/box/sdk/BoxDeveloperEditionAPIConnection.html" title="class in com.box.sdk">BoxDeveloperEditionAPIConnection</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../com/box/sdk/BoxDeveloperEditionAPIConnection.html#getUserConnection-java.lang.String-java.lang.String-java.lang.String-com.box.sdk.JWTEncryptionPreferences-com.box.sdk.IAccessTokenCache-">getUserConnection</a></span>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;userId,
                  <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;clientId,
@@ -273,7 +222,7 @@ extends <a href="../../../com/box/sdk/BoxAPIConnection.html" title="class in com
 <div class="block">Creates a new Box Developer Edition connection with App User or Managed User token.</div>
 </td>
 </tr>
-<tr id="i14" class="altColor">
+<tr id="i10" class="altColor">
 <td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../com/box/sdk/BoxDeveloperEditionAPIConnection.html#refresh--">refresh</a></span>()</code>
 <div class="block">Refresh's this connection's access token using Box Developer Edition.</div>
@@ -285,7 +234,7 @@ extends <a href="../../../com/box/sdk/BoxAPIConnection.html" title="class in com
 <!--   -->
 </a>
 <h3>Methods inherited from class&nbsp;<a href="../../../com/box/sdk/BoxAPIConnection.html" title="class in com.box.sdk">BoxAPIConnection</a></h3>
-<code><a href="../../../com/box/sdk/BoxAPIConnection.html#addListener-com.box.sdk.BoxAPIConnectionListener-">addListener</a>, <a href="../../../com/box/sdk/BoxAPIConnection.html#asSelf--">asSelf</a>, <a href="../../../com/box/sdk/BoxAPIConnection.html#asUser-java.lang.String-">asUser</a>, <a href="../../../com/box/sdk/BoxAPIConnection.html#createTokenRequest-java.net.URL-">createTokenRequest</a>, <a href="../../../com/box/sdk/BoxAPIConnection.html#determineResourceLinkType-java.lang.String-">determineResourceLinkType</a>, <a href="../../../com/box/sdk/BoxAPIConnection.html#enableNotifications--">enableNotifications</a>, <a href="../../../com/box/sdk/BoxAPIConnection.html#extractTokens-com.eclipsesource.json.JsonObject-">extractTokens</a>, <a href="../../../com/box/sdk/BoxAPIConnection.html#getAccessToken--">getAccessToken</a>, <a href="../../../com/box/sdk/BoxAPIConnection.html#getAuthorizationURL-java.lang.String-java.net.URI-java.lang.String-java.util.List-">getAuthorizationURL</a>, <a href="../../../com/box/sdk/BoxAPIConnection.html#getAuthorizationURL-java.net.URI-java.lang.String-java.util.List-">getAuthorizationURL</a>, <a href="../../../com/box/sdk/BoxAPIConnection.html#getAutoRefresh--">getAutoRefresh</a>, <a href="../../../com/box/sdk/BoxAPIConnection.html#getBaseAppUrl--">getBaseAppUrl</a>, <a href="../../../com/box/sdk/BoxAPIConnection.html#getBaseUploadURL--">getBaseUploadURL</a>, <a href="../../../com/box/sdk/BoxAPIConnection.html#getBaseURL--">getBaseURL</a>, <a href="../../../com/box/sdk/BoxAPIConnection.html#getClientID--">getClientID</a>, <a href="../../../com/box/sdk/BoxAPIConnection.html#getClientSecret--">getClientSecret</a>, <a href="../../../com/box/sdk/BoxAPIConnection.html#getConnectTimeout--">getConnectTimeout</a>, <a href="../../../com/box/sdk/BoxAPIConnection.html#getExpires--">getExpires</a>, <a href="../../../com/box/sdk/BoxAPIConnection.html#getKeyValueOrDefault-com.eclipsesource.json.JsonObject-java.lang.String-java.lang.String-">getKeyValueOrDefault</a>, <a href="../../../com/box/sdk/BoxAPIConnection.html#getLastRefresh--">getLastRefresh</a>, <a href="../../../com/box/sdk/BoxAPIConnection.html#getLowerScopedToken-java.util.List-java.lang.String-">getLowerScopedToken</a>, <a href="../../../com/box/sdk/BoxAPIConnection.html#getMaxRequestAttempts--">getMaxRequestAttempts</a>, <a href="../../../com/box/sdk/BoxAPIConnection.html#getMaxRetryAttempts--">getMaxRetryAttempts</a>, <a href="../../../com/box/sdk/BoxAPIConnection.html#getProxy--">getProxy</a>, <a href="../../../com/box/sdk/BoxAPIConnection.html#getProxyPassword--">getProxyPassword</a>, <a href="../../../com/box/sdk/BoxAPIConnection.html#getProxyUsername--">getProxyUsername</a>, <a href="../../../com/box/sdk/BoxAPIConnection.html#getReadTimeout--">getReadTimeout</a>, <a href="../../../com/box/sdk/BoxAPIConnection.html#getRefreshLock--">getRefreshLock</a>, <a href="../../../com/box/sdk/BoxAPIConnection.html#getRefreshToken--">getRefreshToken</a>, <a href="../../../com/box/sdk/BoxAPIConnection.html#getRequestInterceptor--">getRequestInterceptor</a>, <a href="../../../com/box/sdk/BoxAPIConnection.html#getRevokeURL--">getRevokeURL</a>, <a href="../../../com/box/sdk/BoxAPIConnection.html#getTokenURL--">getTokenURL</a>, <a href="../../../com/box/sdk/BoxAPIConnection.html#getUserAgent--">getUserAgent</a>, <a href="../../../com/box/sdk/BoxAPIConnection.html#needsRefresh--">needsRefresh</a>, <a href="../../../com/box/sdk/BoxAPIConnection.html#notifyError-com.box.sdk.BoxAPIException-">notifyError</a>, <a href="../../../com/box/sdk/BoxAPIConnection.html#notifyRefresh--">notifyRefresh</a>, <a href="../../../com/box/sdk/BoxAPIConnection.html#removeCustomHeader-java.lang.String-">removeCustomHeader</a>, <a href="../../../com/box/sdk/BoxAPIConnection.html#removeListener-com.box.sdk.BoxAPIConnectionListener-">removeListener</a>, <a href="../../../com/box/sdk/BoxAPIConnection.html#restore-java.lang.String-">restore</a>, <a href="../../../com/box/sdk/BoxAPIConnection.html#restore-java.lang.String-java.lang.String-java.lang.String-">restore</a>, <a href="../../../com/box/sdk/BoxAPIConnection.html#revokeToken--">revokeToken</a>, <a href="../../../com/box/sdk/BoxAPIConnection.html#save--">save</a>, <a href="../../../com/box/sdk/BoxAPIConnection.html#setAccessToken-java.lang.String-">setAccessToken</a>, <a href="../../../com/box/sdk/BoxAPIConnection.html#setAutoRefresh-boolean-">setAutoRefresh</a>, <a href="../../../com/box/sdk/BoxAPIConnection.html#setBaseAppUrl-java.lang.String-">setBaseAppUrl</a>, <a href="../../../com/box/sdk/BoxAPIConnection.html#setBaseAuthorizationURL-java.lang.String-">setBaseAuthorizationURL</a>, <a href="../../../com/box/sdk/BoxAPIConnection.html#setBaseUploadURL-java.lang.String-">setBaseUploadURL</a>, <a href="../../../com/box/sdk/BoxAPIConnection.html#setBaseURL-java.lang.String-">setBaseURL</a>, <a href="../../../com/box/sdk/BoxAPIConnection.html#setConnectTimeout-int-">setConnectTimeout</a>, <a href="../../../com/box/sdk/BoxAPIConnection.html#setCustomHeader-java.lang.String-java.lang.String-">setCustomHeader</a>, <a href="../../../com/box/sdk/BoxAPIConnection.html#setExpires-long-">setExpires</a>, <a href="../../../com/box/sdk/BoxAPIConnection.html#setLastRefresh-long-">setLastRefresh</a>, <a href="../../../com/box/sdk/BoxAPIConnection.html#setMaxRequestAttempts-int-">setMaxRequestAttempts</a>, <a href="../../../com/box/sdk/BoxAPIConnection.html#setMaxRetryAttempts-int-">setMaxRetryAttempts</a>, <a href="../../../com/box/sdk/BoxAPIConnection.html#setProxy-java.net.Proxy-">setProxy</a>, <a href="../../../com/box/sdk/BoxAPIConnection.html#setProxyPassword-java.lang.String-">setProxyPassword</a>, <a href="../../../com/box/sdk/BoxAPIConnection.html#setProxyUsername-java.lang.String-">setProxyUsername</a>, <a href="../../../com/box/sdk/BoxAPIConnection.html#setReadTimeout-int-">setReadTimeout</a>, <a href="../../../com/box/sdk/BoxAPIConnection.html#setRefreshToken-java.lang.String-">setRefreshToken</a>, <a href="../../../com/box/sdk/BoxAPIConnection.html#setRequestInterceptor-com.box.sdk.RequestInterceptor-">setRequestInterceptor</a>, <a href="../../../com/box/sdk/BoxAPIConnection.html#setRevokeURL-java.lang.String-">setRevokeURL</a>, <a href="../../../com/box/sdk/BoxAPIConnection.html#setTokenURL-java.lang.String-">setTokenURL</a>, <a href="../../../com/box/sdk/BoxAPIConnection.html#setUserAgent-java.lang.String-">setUserAgent</a>, <a href="../../../com/box/sdk/BoxAPIConnection.html#suppressNotifications--">suppressNotifications</a></code></li>
+<code><a href="../../../com/box/sdk/BoxAPIConnection.html#addListener-com.box.sdk.BoxAPIConnectionListener-">addListener</a>, <a href="../../../com/box/sdk/BoxAPIConnection.html#asSelf--">asSelf</a>, <a href="../../../com/box/sdk/BoxAPIConnection.html#asUser-java.lang.String-">asUser</a>, <a href="../../../com/box/sdk/BoxAPIConnection.html#configureSslCertificatesValidation-javax.net.ssl.X509TrustManager-javax.net.ssl.HostnameVerifier-">configureSslCertificatesValidation</a>, <a href="../../../com/box/sdk/BoxAPIConnection.html#createTokenRequest-java.net.URL-">createTokenRequest</a>, <a href="../../../com/box/sdk/BoxAPIConnection.html#determineResourceLinkType-java.lang.String-">determineResourceLinkType</a>, <a href="../../../com/box/sdk/BoxAPIConnection.html#enableNotifications--">enableNotifications</a>, <a href="../../../com/box/sdk/BoxAPIConnection.html#extractTokens-com.eclipsesource.json.JsonObject-">extractTokens</a>, <a href="../../../com/box/sdk/BoxAPIConnection.html#getAccessToken--">getAccessToken</a>, <a href="../../../com/box/sdk/BoxAPIConnection.html#getAuthorizationURL-java.lang.String-java.net.URI-java.lang.String-java.util.List-">getAuthorizationURL</a>, <a href="../../../com/box/sdk/BoxAPIConnection.html#getAuthorizationURL-java.net.URI-java.lang.String-java.util.List-">getAuthorizationURL</a>, <a href="../../../com/box/sdk/BoxAPIConnection.html#getAutoRefresh--">getAutoRefresh</a>, <a href="../../../com/box/sdk/BoxAPIConnection.html#getBaseAppUrl--">getBaseAppUrl</a>, <a href="../../../com/box/sdk/BoxAPIConnection.html#getBaseUploadURL--">getBaseUploadURL</a>, <a href="../../../com/box/sdk/BoxAPIConnection.html#getBaseURL--">getBaseURL</a>, <a href="../../../com/box/sdk/BoxAPIConnection.html#getClientID--">getClientID</a>, <a href="../../../com/box/sdk/BoxAPIConnection.html#getClientSecret--">getClientSecret</a>, <a href="../../../com/box/sdk/BoxAPIConnection.html#getConnectTimeout--">getConnectTimeout</a>, <a href="../../../com/box/sdk/BoxAPIConnection.html#getExpires--">getExpires</a>, <a href="../../../com/box/sdk/BoxAPIConnection.html#getKeyValueOrDefault-com.eclipsesource.json.JsonObject-java.lang.String-java.lang.String-">getKeyValueOrDefault</a>, <a href="../../../com/box/sdk/BoxAPIConnection.html#getLastRefresh--">getLastRefresh</a>, <a href="../../../com/box/sdk/BoxAPIConnection.html#getLowerScopedToken-java.util.List-java.lang.String-">getLowerScopedToken</a>, <a href="../../../com/box/sdk/BoxAPIConnection.html#getMaxRetryAttempts--">getMaxRetryAttempts</a>, <a href="../../../com/box/sdk/BoxAPIConnection.html#getProxy--">getProxy</a>, <a href="../../../com/box/sdk/BoxAPIConnection.html#getProxyPassword--">getProxyPassword</a>, <a href="../../../com/box/sdk/BoxAPIConnection.html#getProxyUsername--">getProxyUsername</a>, <a href="../../../com/box/sdk/BoxAPIConnection.html#getReadTimeout--">getReadTimeout</a>, <a href="../../../com/box/sdk/BoxAPIConnection.html#getRefreshLock--">getRefreshLock</a>, <a href="../../../com/box/sdk/BoxAPIConnection.html#getRefreshToken--">getRefreshToken</a>, <a href="../../../com/box/sdk/BoxAPIConnection.html#getRequestInterceptor--">getRequestInterceptor</a>, <a href="../../../com/box/sdk/BoxAPIConnection.html#getRevokeURL--">getRevokeURL</a>, <a href="../../../com/box/sdk/BoxAPIConnection.html#getTokenURL--">getTokenURL</a>, <a href="../../../com/box/sdk/BoxAPIConnection.html#getUserAgent--">getUserAgent</a>, <a href="../../../com/box/sdk/BoxAPIConnection.html#modifyHttpClientBuilder-okhttp3.OkHttpClient.Builder-">modifyHttpClientBuilder</a>, <a href="../../../com/box/sdk/BoxAPIConnection.html#needsRefresh--">needsRefresh</a>, <a href="../../../com/box/sdk/BoxAPIConnection.html#notifyError-com.box.sdk.BoxAPIException-">notifyError</a>, <a href="../../../com/box/sdk/BoxAPIConnection.html#notifyRefresh--">notifyRefresh</a>, <a href="../../../com/box/sdk/BoxAPIConnection.html#removeCustomHeader-java.lang.String-">removeCustomHeader</a>, <a href="../../../com/box/sdk/BoxAPIConnection.html#removeListener-com.box.sdk.BoxAPIConnectionListener-">removeListener</a>, <a href="../../../com/box/sdk/BoxAPIConnection.html#restore-java.lang.String-">restore</a>, <a href="../../../com/box/sdk/BoxAPIConnection.html#restore-java.lang.String-java.lang.String-java.lang.String-">restore</a>, <a href="../../../com/box/sdk/BoxAPIConnection.html#revokeToken--">revokeToken</a>, <a href="../../../com/box/sdk/BoxAPIConnection.html#save--">save</a>, <a href="../../../com/box/sdk/BoxAPIConnection.html#setAccessToken-java.lang.String-">setAccessToken</a>, <a href="../../../com/box/sdk/BoxAPIConnection.html#setAutoRefresh-boolean-">setAutoRefresh</a>, <a href="../../../com/box/sdk/BoxAPIConnection.html#setBaseAppUrl-java.lang.String-">setBaseAppUrl</a>, <a href="../../../com/box/sdk/BoxAPIConnection.html#setBaseAuthorizationURL-java.lang.String-">setBaseAuthorizationURL</a>, <a href="../../../com/box/sdk/BoxAPIConnection.html#setBaseUploadURL-java.lang.String-">setBaseUploadURL</a>, <a href="../../../com/box/sdk/BoxAPIConnection.html#setBaseURL-java.lang.String-">setBaseURL</a>, <a href="../../../com/box/sdk/BoxAPIConnection.html#setConnectTimeout-int-">setConnectTimeout</a>, <a href="../../../com/box/sdk/BoxAPIConnection.html#setCustomHeader-java.lang.String-java.lang.String-">setCustomHeader</a>, <a href="../../../com/box/sdk/BoxAPIConnection.html#setExpires-long-">setExpires</a>, <a href="../../../com/box/sdk/BoxAPIConnection.html#setLastRefresh-long-">setLastRefresh</a>, <a href="../../../com/box/sdk/BoxAPIConnection.html#setMaxRetryAttempts-int-">setMaxRetryAttempts</a>, <a href="../../../com/box/sdk/BoxAPIConnection.html#setProxy-java.net.Proxy-">setProxy</a>, <a href="../../../com/box/sdk/BoxAPIConnection.html#setProxyAuthenticator-okhttp3.Authenticator-">setProxyAuthenticator</a>, <a href="../../../com/box/sdk/BoxAPIConnection.html#setProxyBasicAuthentication-java.lang.String-java.lang.String-">setProxyBasicAuthentication</a>, <a href="../../../com/box/sdk/BoxAPIConnection.html#setProxyPassword-java.lang.String-">setProxyPassword</a>, <a href="../../../com/box/sdk/BoxAPIConnection.html#setProxyUsername-java.lang.String-">setProxyUsername</a>, <a href="../../../com/box/sdk/BoxAPIConnection.html#setReadTimeout-int-">setReadTimeout</a>, <a href="../../../com/box/sdk/BoxAPIConnection.html#setRefreshToken-java.lang.String-">setRefreshToken</a>, <a href="../../../com/box/sdk/BoxAPIConnection.html#setRequestInterceptor-com.box.sdk.RequestInterceptor-">setRequestInterceptor</a>, <a href="../../../com/box/sdk/BoxAPIConnection.html#setUserAgent-java.lang.String-">setUserAgent</a>, <a href="../../../com/box/sdk/BoxAPIConnection.html#suppressNotifications--">suppressNotifications</a></code></li>
 </ul>
 <ul class="blockList">
 <li class="blockList"><a name="methods.inherited.from.class.Object">
@@ -308,38 +257,13 @@ extends <a href="../../../com/box/sdk/BoxAPIConnection.html" title="class in com
 <!--   -->
 </a>
 <h3>Constructor Detail</h3>
-<a name="BoxDeveloperEditionAPIConnection-java.lang.String-com.box.sdk.DeveloperEditionEntityType-java.lang.String-java.lang.String-com.box.sdk.JWTEncryptionPreferences-">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>BoxDeveloperEditionAPIConnection</h4>
-<pre><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Deprecated.html?is-external=true" title="class or interface in java.lang">@Deprecated</a>
-public&nbsp;<a href="../../../src-html/com/box/sdk/BoxDeveloperEditionAPIConnection.html#line.117">BoxDeveloperEditionAPIConnection</a>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;entityId,
-                                                    <a href="../../../com/box/sdk/DeveloperEditionEntityType.html" title="enum in com.box.sdk">DeveloperEditionEntityType</a>&nbsp;entityType,
-                                                    <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;clientID,
-                                                    <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;clientSecret,
-                                                    <a href="../../../com/box/sdk/JWTEncryptionPreferences.html" title="class in com.box.sdk">JWTEncryptionPreferences</a>&nbsp;encryptionPref)</pre>
-<div class="block"><span class="deprecatedLabel">Deprecated.</span>&nbsp;<span class="deprecationComment">Use the version of this constructor that accepts an IAccessTokenCache to prevent unneeded
- requests to Box for access tokens.</span></div>
-<div class="block">Constructs a new BoxDeveloperEditionAPIConnection.</div>
-<dl>
-<dt><span class="paramLabel">Parameters:</span></dt>
-<dd><code>entityId</code> - enterprise ID or a user ID.</dd>
-<dd><code>entityType</code> - the type of entityId.</dd>
-<dd><code>clientID</code> - the client ID to use when exchanging the JWT assertion for an access token.</dd>
-<dd><code>clientSecret</code> - the client secret to use when exchanging the JWT assertion for an access token.</dd>
-<dd><code>encryptionPref</code> - the encryption preferences for signing the JWT.</dd>
-</dl>
-</li>
-</ul>
 <a name="BoxDeveloperEditionAPIConnection-java.lang.String-com.box.sdk.DeveloperEditionEntityType-java.lang.String-java.lang.String-com.box.sdk.JWTEncryptionPreferences-com.box.sdk.IAccessTokenCache-">
 <!--   -->
 </a>
 <ul class="blockList">
 <li class="blockList">
 <h4>BoxDeveloperEditionAPIConnection</h4>
-<pre>public&nbsp;<a href="../../../src-html/com/box/sdk/BoxDeveloperEditionAPIConnection.html#line.139">BoxDeveloperEditionAPIConnection</a>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;entityId,
+<pre>public&nbsp;<a href="../../../src-html/com/box/sdk/BoxDeveloperEditionAPIConnection.html#line.69">BoxDeveloperEditionAPIConnection</a>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;entityId,
                                         <a href="../../../com/box/sdk/DeveloperEditionEntityType.html" title="enum in com.box.sdk">DeveloperEditionEntityType</a>&nbsp;entityType,
                                         <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;clientID,
                                         <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;clientSecret,
@@ -357,13 +281,37 @@ public&nbsp;<a href="../../../src-html/com/box/sdk/BoxDeveloperEditionAPIConnect
 </dl>
 </li>
 </ul>
+<a name="BoxDeveloperEditionAPIConnection-java.lang.String-com.box.sdk.DeveloperEditionEntityType-java.lang.String-java.lang.String-com.box.sdk.JWTEncryptionPreferences-">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>BoxDeveloperEditionAPIConnection</h4>
+<pre>public&nbsp;<a href="../../../src-html/com/box/sdk/BoxDeveloperEditionAPIConnection.html#line.97">BoxDeveloperEditionAPIConnection</a>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;entityId,
+                                        <a href="../../../com/box/sdk/DeveloperEditionEntityType.html" title="enum in com.box.sdk">DeveloperEditionEntityType</a>&nbsp;entityType,
+                                        <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;clientID,
+                                        <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;clientSecret,
+                                        <a href="../../../com/box/sdk/JWTEncryptionPreferences.html" title="class in com.box.sdk">JWTEncryptionPreferences</a>&nbsp;encryptionPref)</pre>
+<div class="block">Constructs a new BoxDeveloperEditionAPIConnection.
+ Uses <a href="../../../com/box/sdk/InMemoryLRUAccessTokenCache.html" title="class in com.box.sdk"><code>InMemoryLRUAccessTokenCache</code></a> with a size of 100 to prevent unneeded
+ requests to Box for access tokens.</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>entityId</code> - enterprise ID or a user ID.</dd>
+<dd><code>entityType</code> - the type of entityId.</dd>
+<dd><code>clientID</code> - the client ID to use when exchanging the JWT assertion for an access token.</dd>
+<dd><code>clientSecret</code> - the client secret to use when exchanging the JWT assertion for an access token.</dd>
+<dd><code>encryptionPref</code> - the encryption preferences for signing the JWT.</dd>
+</dl>
+</li>
+</ul>
 <a name="BoxDeveloperEditionAPIConnection-java.lang.String-com.box.sdk.DeveloperEditionEntityType-com.box.sdk.BoxConfig-com.box.sdk.IAccessTokenCache-">
 <!--   -->
 </a>
 <ul class="blockListLast">
 <li class="blockList">
 <h4>BoxDeveloperEditionAPIConnection</h4>
-<pre>public&nbsp;<a href="../../../src-html/com/box/sdk/BoxDeveloperEditionAPIConnection.html#line.164">BoxDeveloperEditionAPIConnection</a>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;entityId,
+<pre>public&nbsp;<a href="../../../src-html/com/box/sdk/BoxDeveloperEditionAPIConnection.html#line.123">BoxDeveloperEditionAPIConnection</a>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;entityId,
                                         <a href="../../../com/box/sdk/DeveloperEditionEntityType.html" title="enum in com.box.sdk">DeveloperEditionEntityType</a>&nbsp;entityType,
                                         <a href="../../../com/box/sdk/BoxConfig.html" title="class in com.box.sdk">BoxConfig</a>&nbsp;boxConfig,
                                         <a href="../../../com/box/sdk/IAccessTokenCache.html" title="interface in com.box.sdk">IAccessTokenCache</a>&nbsp;accessTokenCache)</pre>
@@ -385,38 +333,13 @@ public&nbsp;<a href="../../../src-html/com/box/sdk/BoxDeveloperEditionAPIConnect
 <!--   -->
 </a>
 <h3>Method Detail</h3>
-<a name="getAppEnterpriseConnection-java.lang.String-java.lang.String-java.lang.String-com.box.sdk.JWTEncryptionPreferences-">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>getAppEnterpriseConnection</h4>
-<pre><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Deprecated.html?is-external=true" title="class or interface in java.lang">@Deprecated</a>
-public static&nbsp;<a href="../../../com/box/sdk/BoxDeveloperEditionAPIConnection.html" title="class in com.box.sdk">BoxDeveloperEditionAPIConnection</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxDeveloperEditionAPIConnection.html#line.183">getAppEnterpriseConnection</a>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;enterpriseId,
-                                                                                      <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;clientId,
-                                                                                      <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;clientSecret,
-                                                                                      <a href="../../../com/box/sdk/JWTEncryptionPreferences.html" title="class in com.box.sdk">JWTEncryptionPreferences</a>&nbsp;encryptionPref)</pre>
-<div class="block"><span class="deprecatedLabel">Deprecated.</span>&nbsp;<span class="deprecationComment">Use the version of this method that accepts an IAccessTokenCache to prevent unneeded
- requests to Box for access tokens.</span></div>
-<div class="block">Creates a new Box Developer Edition connection with enterprise token.</div>
-<dl>
-<dt><span class="paramLabel">Parameters:</span></dt>
-<dd><code>enterpriseId</code> - the enterprise ID to use for requesting access token.</dd>
-<dd><code>clientId</code> - the client ID to use when exchanging the JWT assertion for an access token.</dd>
-<dd><code>clientSecret</code> - the client secret to use when exchanging the JWT assertion for an access token.</dd>
-<dd><code>encryptionPref</code> - the encryption preferences for signing the JWT.</dd>
-<dt><span class="returnLabel">Returns:</span></dt>
-<dd>a new instance of BoxAPIConnection.</dd>
-</dl>
-</li>
-</ul>
 <a name="getAppEnterpriseConnection-java.lang.String-java.lang.String-java.lang.String-com.box.sdk.JWTEncryptionPreferences-com.box.sdk.IAccessTokenCache-">
 <!--   -->
 </a>
 <ul class="blockList">
 <li class="blockList">
 <h4>getAppEnterpriseConnection</h4>
-<pre>public static&nbsp;<a href="../../../com/box/sdk/BoxDeveloperEditionAPIConnection.html" title="class in com.box.sdk">BoxDeveloperEditionAPIConnection</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxDeveloperEditionAPIConnection.html#line.208">getAppEnterpriseConnection</a>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;enterpriseId,
+<pre>public static&nbsp;<a href="../../../com/box/sdk/BoxDeveloperEditionAPIConnection.html" title="class in com.box.sdk">BoxDeveloperEditionAPIConnection</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxDeveloperEditionAPIConnection.html#line.140">getAppEnterpriseConnection</a>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;enterpriseId,
                                                                           <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;clientId,
                                                                           <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;clientSecret,
                                                                           <a href="../../../com/box/sdk/JWTEncryptionPreferences.html" title="class in com.box.sdk">JWTEncryptionPreferences</a>&nbsp;encryptionPref,
@@ -434,17 +357,25 @@ public static&nbsp;<a href="../../../com/box/sdk/BoxDeveloperEditionAPIConnectio
 </dl>
 </li>
 </ul>
-<a name="getAppEnterpriseConnection-com.box.sdk.BoxConfig-">
+<a name="getAppEnterpriseConnection-java.lang.String-java.lang.String-java.lang.String-com.box.sdk.JWTEncryptionPreferences-">
 <!--   -->
 </a>
 <ul class="blockList">
 <li class="blockList">
 <h4>getAppEnterpriseConnection</h4>
-<pre>public static&nbsp;<a href="../../../com/box/sdk/BoxDeveloperEditionAPIConnection.html" title="class in com.box.sdk">BoxDeveloperEditionAPIConnection</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxDeveloperEditionAPIConnection.html#line.230">getAppEnterpriseConnection</a>(<a href="../../../com/box/sdk/BoxConfig.html" title="class in com.box.sdk">BoxConfig</a>&nbsp;boxConfig)</pre>
-<div class="block">Creates a new Box Developer Edition connection with enterprise token leveraging BoxConfig.</div>
+<pre>public static&nbsp;<a href="../../../com/box/sdk/BoxDeveloperEditionAPIConnection.html" title="class in com.box.sdk">BoxDeveloperEditionAPIConnection</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxDeveloperEditionAPIConnection.html#line.167">getAppEnterpriseConnection</a>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;enterpriseId,
+                                                                          <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;clientId,
+                                                                          <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;clientSecret,
+                                                                          <a href="../../../com/box/sdk/JWTEncryptionPreferences.html" title="class in com.box.sdk">JWTEncryptionPreferences</a>&nbsp;encryptionPref)</pre>
+<div class="block">Creates a new Box Developer Edition connection with enterprise token.
+ Uses <a href="../../../com/box/sdk/InMemoryLRUAccessTokenCache.html" title="class in com.box.sdk"><code>InMemoryLRUAccessTokenCache</code></a> with a size of 100 to prevent unneeded
+ requests to Box for access tokens.</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
-<dd><code>boxConfig</code> - box configuration settings object</dd>
+<dd><code>enterpriseId</code> - the enterprise ID to use for requesting access token.</dd>
+<dd><code>clientId</code> - the client ID to use when exchanging the JWT assertion for an access token.</dd>
+<dd><code>clientSecret</code> - the client secret to use when exchanging the JWT assertion for an access token.</dd>
+<dd><code>encryptionPref</code> - the encryption preferences for signing the JWT.</dd>
 <dt><span class="returnLabel">Returns:</span></dt>
 <dd>a new instance of BoxAPIConnection.</dd>
 </dl>
@@ -456,7 +387,7 @@ public static&nbsp;<a href="../../../com/box/sdk/BoxDeveloperEditionAPIConnectio
 <ul class="blockList">
 <li class="blockList">
 <h4>getAppEnterpriseConnection</h4>
-<pre>public static&nbsp;<a href="../../../com/box/sdk/BoxDeveloperEditionAPIConnection.html" title="class in com.box.sdk">BoxDeveloperEditionAPIConnection</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxDeveloperEditionAPIConnection.html#line.247">getAppEnterpriseConnection</a>(<a href="../../../com/box/sdk/BoxConfig.html" title="class in com.box.sdk">BoxConfig</a>&nbsp;boxConfig,
+<pre>public static&nbsp;<a href="../../../com/box/sdk/BoxDeveloperEditionAPIConnection.html" title="class in com.box.sdk">BoxDeveloperEditionAPIConnection</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxDeveloperEditionAPIConnection.html#line.194">getAppEnterpriseConnection</a>(<a href="../../../com/box/sdk/BoxConfig.html" title="class in com.box.sdk">BoxConfig</a>&nbsp;boxConfig,
                                                                           <a href="../../../com/box/sdk/IAccessTokenCache.html" title="interface in com.box.sdk">IAccessTokenCache</a>&nbsp;accessTokenCache)</pre>
 <div class="block">Creates a new Box Developer Edition connection with enterprise token leveraging BoxConfig and access token cache.</div>
 <dl>
@@ -468,52 +399,19 @@ public static&nbsp;<a href="../../../com/box/sdk/BoxDeveloperEditionAPIConnectio
 </dl>
 </li>
 </ul>
-<a name="getAppUserConnection-java.lang.String-java.lang.String-java.lang.String-com.box.sdk.JWTEncryptionPreferences-">
+<a name="getAppEnterpriseConnection-com.box.sdk.BoxConfig-">
 <!--   -->
 </a>
 <ul class="blockList">
 <li class="blockList">
-<h4>getAppUserConnection</h4>
-<pre><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Deprecated.html?is-external=true" title="class or interface in java.lang">@Deprecated</a>
-public static&nbsp;<a href="../../../com/box/sdk/BoxDeveloperEditionAPIConnection.html" title="class in com.box.sdk">BoxDeveloperEditionAPIConnection</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxDeveloperEditionAPIConnection.html#line.271">getAppUserConnection</a>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;userId,
-                                                                                <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;clientId,
-                                                                                <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;clientSecret,
-                                                                                <a href="../../../com/box/sdk/JWTEncryptionPreferences.html" title="class in com.box.sdk">JWTEncryptionPreferences</a>&nbsp;encryptionPref)</pre>
-<div class="block"><span class="deprecatedLabel">Deprecated.</span>&nbsp;<span class="deprecationComment">use <a href="../../../com/box/sdk/BoxDeveloperEditionAPIConnection.html#getUserConnection-java.lang.String-java.lang.String-java.lang.String-com.box.sdk.JWTEncryptionPreferences-com.box.sdk.IAccessTokenCache-"><code>getUserConnection(String, String, String, JWTEncryptionPreferences, IAccessTokenCache)</code></a>
- requests to Box for access tokens.</span></div>
-<div class="block">Creates a new Box Developer Edition connection with App User or Managed User token.</div>
+<h4>getAppEnterpriseConnection</h4>
+<pre>public static&nbsp;<a href="../../../com/box/sdk/BoxDeveloperEditionAPIConnection.html" title="class in com.box.sdk">BoxDeveloperEditionAPIConnection</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxDeveloperEditionAPIConnection.html#line.214">getAppEnterpriseConnection</a>(<a href="../../../com/box/sdk/BoxConfig.html" title="class in com.box.sdk">BoxConfig</a>&nbsp;boxConfig)</pre>
+<div class="block">Creates a new Box Developer Edition connection with enterprise token leveraging BoxConfig.
+ Uses <a href="../../../com/box/sdk/InMemoryLRUAccessTokenCache.html" title="class in com.box.sdk"><code>InMemoryLRUAccessTokenCache</code></a> with a size of 100 to prevent unneeded
+ requests to Box for access tokens.</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
-<dd><code>userId</code> - the user ID to use for an App User.</dd>
-<dd><code>clientId</code> - the client ID to use when exchanging the JWT assertion for an access token.</dd>
-<dd><code>clientSecret</code> - the client secret to use when exchanging the JWT assertion for an access token.</dd>
-<dd><code>encryptionPref</code> - the encryption preferences for signing the JWT.</dd>
-<dt><span class="returnLabel">Returns:</span></dt>
-<dd>a new instance of BoxAPIConnection.</dd>
-</dl>
-</li>
-</ul>
-<a name="getAppUserConnection-java.lang.String-java.lang.String-java.lang.String-com.box.sdk.JWTEncryptionPreferences-com.box.sdk.IAccessTokenCache-">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>getAppUserConnection</h4>
-<pre><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Deprecated.html?is-external=true" title="class or interface in java.lang">@Deprecated</a>
-public static&nbsp;<a href="../../../com/box/sdk/BoxDeveloperEditionAPIConnection.html" title="class in com.box.sdk">BoxDeveloperEditionAPIConnection</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxDeveloperEditionAPIConnection.html#line.303">getAppUserConnection</a>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;userId,
-                                                                                <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;clientId,
-                                                                                <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;clientSecret,
-                                                                                <a href="../../../com/box/sdk/JWTEncryptionPreferences.html" title="class in com.box.sdk">JWTEncryptionPreferences</a>&nbsp;encryptionPref,
-                                                                                <a href="../../../com/box/sdk/IAccessTokenCache.html" title="interface in com.box.sdk">IAccessTokenCache</a>&nbsp;accessTokenCache)</pre>
-<div class="block"><span class="deprecatedLabel">Deprecated.</span>&nbsp;<span class="deprecationComment">use <a href="../../../com/box/sdk/BoxDeveloperEditionAPIConnection.html#getUserConnection-java.lang.String-java.lang.String-java.lang.String-com.box.sdk.JWTEncryptionPreferences-com.box.sdk.IAccessTokenCache-"><code>getUserConnection(String, String, String, JWTEncryptionPreferences, IAccessTokenCache)</code></a></span></div>
-<div class="block">Creates a new Box Developer Edition connection with App User or Managed User token.</div>
-<dl>
-<dt><span class="paramLabel">Parameters:</span></dt>
-<dd><code>userId</code> - the user ID to use for an App User.</dd>
-<dd><code>clientId</code> - the client ID to use when exchanging the JWT assertion for an access token.</dd>
-<dd><code>clientSecret</code> - the client secret to use when exchanging the JWT assertion for an access token.</dd>
-<dd><code>encryptionPref</code> - the encryption preferences for signing the JWT.</dd>
-<dd><code>accessTokenCache</code> - the cache for storing access token information (to minimize fetching new tokens)</dd>
+<dd><code>boxConfig</code> - box configuration settings object</dd>
 <dt><span class="returnLabel">Returns:</span></dt>
 <dd>a new instance of BoxAPIConnection.</dd>
 </dl>
@@ -525,7 +423,7 @@ public static&nbsp;<a href="../../../com/box/sdk/BoxDeveloperEditionAPIConnectio
 <ul class="blockList">
 <li class="blockList">
 <h4>getUserConnection</h4>
-<pre>public static&nbsp;<a href="../../../com/box/sdk/BoxDeveloperEditionAPIConnection.html" title="class in com.box.sdk">BoxDeveloperEditionAPIConnection</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxDeveloperEditionAPIConnection.html#line.323">getUserConnection</a>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;userId,
+<pre>public static&nbsp;<a href="../../../com/box/sdk/BoxDeveloperEditionAPIConnection.html" title="class in com.box.sdk">BoxDeveloperEditionAPIConnection</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxDeveloperEditionAPIConnection.html#line.234">getUserConnection</a>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;userId,
                                                                  <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;clientId,
                                                                  <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;clientSecret,
                                                                  <a href="../../../com/box/sdk/JWTEncryptionPreferences.html" title="class in com.box.sdk">JWTEncryptionPreferences</a>&nbsp;encryptionPref,
@@ -543,39 +441,17 @@ public static&nbsp;<a href="../../../com/box/sdk/BoxDeveloperEditionAPIConnectio
 </dl>
 </li>
 </ul>
-<a name="getAppUserConnection-java.lang.String-com.box.sdk.BoxConfig-">
+<a name="getUserConnection-java.lang.String-com.box.sdk.BoxConfig-com.box.sdk.IAccessTokenCache-">
 <!--   -->
 </a>
 <ul class="blockList">
 <li class="blockList">
-<h4>getAppUserConnection</h4>
-<pre><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Deprecated.html?is-external=true" title="class or interface in java.lang">@Deprecated</a>
-public static&nbsp;<a href="../../../com/box/sdk/BoxDeveloperEditionAPIConnection.html" title="class in com.box.sdk">BoxDeveloperEditionAPIConnection</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxDeveloperEditionAPIConnection.html#line.347">getAppUserConnection</a>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;userId,
-                                                                                <a href="../../../com/box/sdk/BoxConfig.html" title="class in com.box.sdk">BoxConfig</a>&nbsp;boxConfig)</pre>
-<div class="block"><span class="deprecatedLabel">Deprecated.</span>&nbsp;<span class="deprecationComment">use <a href="../../../com/box/sdk/BoxDeveloperEditionAPIConnection.html#getUserConnection-java.lang.String-com.box.sdk.BoxConfig-com.box.sdk.IAccessTokenCache-"><code>getUserConnection(String, BoxConfig, IAccessTokenCache)</code></a></span></div>
-<div class="block">Creates a new Box Developer Edition connection with App User or Managed User token levaraging BoxConfig.</div>
-<dl>
-<dt><span class="paramLabel">Parameters:</span></dt>
-<dd><code>userId</code> - the user ID to use for an App User.</dd>
-<dd><code>boxConfig</code> - box configuration settings object</dd>
-<dt><span class="returnLabel">Returns:</span></dt>
-<dd>a new instance of BoxAPIConnection.</dd>
-</dl>
-</li>
-</ul>
-<a name="getAppUserConnection-java.lang.String-com.box.sdk.BoxConfig-com.box.sdk.IAccessTokenCache-">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>getAppUserConnection</h4>
-<pre><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Deprecated.html?is-external=true" title="class or interface in java.lang">@Deprecated</a>
-public static&nbsp;<a href="../../../com/box/sdk/BoxDeveloperEditionAPIConnection.html" title="class in com.box.sdk">BoxDeveloperEditionAPIConnection</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxDeveloperEditionAPIConnection.html#line.363">getAppUserConnection</a>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;userId,
-                                                                                <a href="../../../com/box/sdk/BoxConfig.html" title="class in com.box.sdk">BoxConfig</a>&nbsp;boxConfig,
-                                                                                <a href="../../../com/box/sdk/IAccessTokenCache.html" title="interface in com.box.sdk">IAccessTokenCache</a>&nbsp;accessTokenCache)</pre>
-<div class="block"><span class="deprecatedLabel">Deprecated.</span>&nbsp;<span class="deprecationComment">use <a href="../../../com/box/sdk/BoxDeveloperEditionAPIConnection.html#getUserConnection-java.lang.String-com.box.sdk.BoxConfig-com.box.sdk.IAccessTokenCache-"><code>getUserConnection(String, BoxConfig, IAccessTokenCache)</code></a></span></div>
-<div class="block">Creates a new Box Developer Edition connection with App User or Managed User
- token leveraging BoxConfig and access token cache.</div>
+<h4>getUserConnection</h4>
+<pre>public static&nbsp;<a href="../../../com/box/sdk/BoxDeveloperEditionAPIConnection.html" title="class in com.box.sdk">BoxDeveloperEditionAPIConnection</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxDeveloperEditionAPIConnection.html#line.264">getUserConnection</a>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;userId,
+                                                                 <a href="../../../com/box/sdk/BoxConfig.html" title="class in com.box.sdk">BoxConfig</a>&nbsp;boxConfig,
+                                                                 <a href="../../../com/box/sdk/IAccessTokenCache.html" title="interface in com.box.sdk">IAccessTokenCache</a>&nbsp;accessTokenCache)</pre>
+<div class="block">Creates a new Box Developer Edition connection with App User or Managed User token leveraging BoxConfig
+ and access token cache.</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
 <dd><code>userId</code> - the user ID to use for an App User.</dd>
@@ -592,36 +468,15 @@ public static&nbsp;<a href="../../../com/box/sdk/BoxDeveloperEditionAPIConnectio
 <ul class="blockList">
 <li class="blockList">
 <h4>getUserConnection</h4>
-<pre><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Deprecated.html?is-external=true" title="class or interface in java.lang">@Deprecated</a>
-public static&nbsp;<a href="../../../com/box/sdk/BoxDeveloperEditionAPIConnection.html" title="class in com.box.sdk">BoxDeveloperEditionAPIConnection</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxDeveloperEditionAPIConnection.html#line.379">getUserConnection</a>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;userId,
-                                                                             <a href="../../../com/box/sdk/BoxConfig.html" title="class in com.box.sdk">BoxConfig</a>&nbsp;boxConfig)</pre>
-<div class="block"><span class="deprecatedLabel">Deprecated.</span>&nbsp;<span class="deprecationComment">use <a href="../../../com/box/sdk/BoxDeveloperEditionAPIConnection.html#getUserConnection-java.lang.String-com.box.sdk.BoxConfig-com.box.sdk.IAccessTokenCache-"><code>getUserConnection(String, BoxConfig, IAccessTokenCache)</code></a></span></div>
-<div class="block">Creates a new Box Developer Edition connection with App User or Managed User token levaraging BoxConfig.</div>
+<pre>public static&nbsp;<a href="../../../com/box/sdk/BoxDeveloperEditionAPIConnection.html" title="class in com.box.sdk">BoxDeveloperEditionAPIConnection</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxDeveloperEditionAPIConnection.html#line.287">getUserConnection</a>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;userId,
+                                                                 <a href="../../../com/box/sdk/BoxConfig.html" title="class in com.box.sdk">BoxConfig</a>&nbsp;boxConfig)</pre>
+<div class="block">Creates a new Box Developer Edition connection with App User or Managed User token.
+ Uses <a href="../../../com/box/sdk/InMemoryLRUAccessTokenCache.html" title="class in com.box.sdk"><code>InMemoryLRUAccessTokenCache</code></a> with a size of 100 to prevent unneeded
+ requests to Box for access tokens.</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
 <dd><code>userId</code> - the user ID to use for an App User.</dd>
 <dd><code>boxConfig</code> - box configuration settings object</dd>
-<dt><span class="returnLabel">Returns:</span></dt>
-<dd>a new instance of BoxAPIConnection.</dd>
-</dl>
-</li>
-</ul>
-<a name="getUserConnection-java.lang.String-com.box.sdk.BoxConfig-com.box.sdk.IAccessTokenCache-">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>getUserConnection</h4>
-<pre>public static&nbsp;<a href="../../../com/box/sdk/BoxDeveloperEditionAPIConnection.html" title="class in com.box.sdk">BoxDeveloperEditionAPIConnection</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxDeveloperEditionAPIConnection.html#line.393">getUserConnection</a>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;userId,
-                                                                 <a href="../../../com/box/sdk/BoxConfig.html" title="class in com.box.sdk">BoxConfig</a>&nbsp;boxConfig,
-                                                                 <a href="../../../com/box/sdk/IAccessTokenCache.html" title="interface in com.box.sdk">IAccessTokenCache</a>&nbsp;accessTokenCache)</pre>
-<div class="block">Creates a new Box Developer Edition connection with App User or Managed User token leveraging BoxConfig
- and access token cache.</div>
-<dl>
-<dt><span class="paramLabel">Parameters:</span></dt>
-<dd><code>userId</code> - the user ID to use for an App User.</dd>
-<dd><code>boxConfig</code> - box configuration settings object</dd>
-<dd><code>accessTokenCache</code> - the cache for storing access token information (to minimize fetching new tokens)</dd>
 <dt><span class="returnLabel">Returns:</span></dt>
 <dd>a new instance of BoxAPIConnection.</dd>
 </dl>
@@ -633,7 +488,7 @@ public static&nbsp;<a href="../../../com/box/sdk/BoxDeveloperEditionAPIConnectio
 <ul class="blockList">
 <li class="blockList">
 <h4>authenticate</h4>
-<pre>public&nbsp;void&nbsp;<a href="../../../src-html/com/box/sdk/BoxDeveloperEditionAPIConnection.html#line.405">authenticate</a>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;authCode)</pre>
+<pre>public&nbsp;void&nbsp;<a href="../../../src-html/com/box/sdk/BoxDeveloperEditionAPIConnection.html#line.301">authenticate</a>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;authCode)</pre>
 <div class="block">Disabling the non-Box Developer Edition authenticate method.</div>
 <dl>
 <dt><span class="overrideSpecifyLabel">Overrides:</span></dt>
@@ -649,7 +504,7 @@ public static&nbsp;<a href="../../../com/box/sdk/BoxDeveloperEditionAPIConnectio
 <ul class="blockList">
 <li class="blockList">
 <h4>authenticate</h4>
-<pre>public&nbsp;void&nbsp;<a href="../../../src-html/com/box/sdk/BoxDeveloperEditionAPIConnection.html#line.412">authenticate</a>()</pre>
+<pre>public&nbsp;void&nbsp;<a href="../../../src-html/com/box/sdk/BoxDeveloperEditionAPIConnection.html#line.308">authenticate</a>()</pre>
 <div class="block">Authenticates the API connection for Box Developer Edition.</div>
 </li>
 </ul>
@@ -659,7 +514,7 @@ public static&nbsp;<a href="../../../com/box/sdk/BoxDeveloperEditionAPIConnectio
 <ul class="blockList">
 <li class="blockList">
 <h4>canRefresh</h4>
-<pre>public&nbsp;boolean&nbsp;<a href="../../../src-html/com/box/sdk/BoxDeveloperEditionAPIConnection.html#line.543">canRefresh</a>()</pre>
+<pre>public&nbsp;boolean&nbsp;<a href="../../../src-html/com/box/sdk/BoxDeveloperEditionAPIConnection.html#line.439">canRefresh</a>()</pre>
 <div class="block">BoxDeveloperEditionAPIConnection can always refresh, but this method is required elsewhere.</div>
 <dl>
 <dt><span class="overrideSpecifyLabel">Overrides:</span></dt>
@@ -675,7 +530,7 @@ public static&nbsp;<a href="../../../com/box/sdk/BoxDeveloperEditionAPIConnectio
 <ul class="blockListLast">
 <li class="blockList">
 <h4>refresh</h4>
-<pre>public&nbsp;void&nbsp;<a href="../../../src-html/com/box/sdk/BoxDeveloperEditionAPIConnection.html#line.552">refresh</a>()</pre>
+<pre>public&nbsp;void&nbsp;<a href="../../../src-html/com/box/sdk/BoxDeveloperEditionAPIConnection.html#line.448">refresh</a>()</pre>
 <div class="block">Refresh's this connection's access token using Box Developer Edition.</div>
 <dl>
 <dt><span class="overrideSpecifyLabel">Overrides:</span></dt>

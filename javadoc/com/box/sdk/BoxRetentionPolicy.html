@@ -18,8 +18,8 @@
     catch(err) {
     }
 //-->
-var methods = {"i0":10,"i1":10,"i2":10,"i3":10,"i4":9,"i5":9,"i6":41,"i7":41,"i8":9,"i9":9,"i10":9,"i11":9,"i12":10,"i13":10,"i14":10,"i15":10,"i16":10,"i17":10,"i18":10,"i19":10};
-var tabs = {65535:["t0","All Methods"],1:["t1","Static Methods"],2:["t2","Instance Methods"],8:["t4","Concrete Methods"],32:["t6","Deprecated Methods"]};
+var methods = {"i0":10,"i1":10,"i2":10,"i3":10,"i4":9,"i5":9,"i6":9,"i7":9,"i8":9,"i9":9,"i10":10,"i11":10,"i12":10,"i13":10,"i14":10,"i15":10,"i16":10,"i17":10};
+var tabs = {65535:["t0","All Methods"],1:["t1","Static Methods"],2:["t2","Instance Methods"],8:["t4","Concrete Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
 var tableTab = "tableTab";
@@ -183,7 +183,7 @@ extends <a href="../../../com/box/sdk/BoxResource.html" title="class in com.box.
 </a>
 <h3>Method Summary</h3>
 <table class="memberSummary" border="0" cellpadding="3" cellspacing="0" summary="Method Summary table, listing methods, and an explanation">
-<caption><span id="t0" class="activeTableTab"><span>All Methods</span><span class="tabEnd">&nbsp;</span></span><span id="t1" class="tableTab"><span><a href="javascript:show(1);">Static Methods</a></span><span class="tabEnd">&nbsp;</span></span><span id="t2" class="tableTab"><span><a href="javascript:show(2);">Instance Methods</a></span><span class="tabEnd">&nbsp;</span></span><span id="t4" class="tableTab"><span><a href="javascript:show(8);">Concrete Methods</a></span><span class="tabEnd">&nbsp;</span></span><span id="t6" class="tableTab"><span><a href="javascript:show(32);">Deprecated Methods</a></span><span class="tabEnd">&nbsp;</span></span></caption>
+<caption><span id="t0" class="activeTableTab"><span>All Methods</span><span class="tabEnd">&nbsp;</span></span><span id="t1" class="tableTab"><span><a href="javascript:show(1);">Static Methods</a></span><span class="tabEnd">&nbsp;</span></span><span id="t2" class="tableTab"><span><a href="javascript:show(2);">Instance Methods</a></span><span class="tabEnd">&nbsp;</span></span><span id="t4" class="tableTab"><span><a href="javascript:show(8);">Concrete Methods</a></span><span class="tabEnd">&nbsp;</span></span></caption>
 <tr>
 <th class="colFirst" scope="col">Modifier and Type</th>
 <th class="colLast" scope="col">Method and Description</th>
@@ -236,35 +236,12 @@ extends <a href="../../../com/box/sdk/BoxResource.html" title="class in com.box.
 </tr>
 <tr id="i6" class="altColor">
 <td class="colFirst"><code>static <a href="../../../com/box/sdk/BoxRetentionPolicy.Info.html" title="class in com.box.sdk">BoxRetentionPolicy.Info</a></code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../com/box/sdk/BoxRetentionPolicy.html#createFinitePolicy-com.box.sdk.BoxAPIConnection-java.lang.String-int-java.lang.String-">createFinitePolicy</a></span>(<a href="../../../com/box/sdk/BoxAPIConnection.html" title="class in com.box.sdk">BoxAPIConnection</a>&nbsp;api,
-                  <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;name,
-                  int&nbsp;length,
-                  <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;action)</code>
-<div class="block"><span class="deprecatedLabel">Deprecated.</span>&nbsp;
-<div class="block"><span class="deprecationComment">Use <a href="../../../com/box/sdk/BoxRetentionPolicy.html#createFinitePolicy-com.box.sdk.BoxAPIConnection-java.lang.String-int-com.box.sdk.BoxRetentionPolicy.BoxRetentionPolicyAction-"><code>createFinitePolicy(BoxAPIConnection, String, int, BoxRetentionPolicyAction)</code></a></span></div>
-</div>
-</td>
-</tr>
-<tr id="i7" class="rowColor">
-<td class="colFirst"><code>static <a href="../../../com/box/sdk/BoxRetentionPolicy.Info.html" title="class in com.box.sdk">BoxRetentionPolicy.Info</a></code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../com/box/sdk/BoxRetentionPolicy.html#createFinitePolicy-com.box.sdk.BoxAPIConnection-java.lang.String-int-java.lang.String-com.box.sdk.RetentionPolicyParams-">createFinitePolicy</a></span>(<a href="../../../com/box/sdk/BoxAPIConnection.html" title="class in com.box.sdk">BoxAPIConnection</a>&nbsp;api,
-                  <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;name,
-                  int&nbsp;length,
-                  <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;action,
-                  <a href="../../../com/box/sdk/RetentionPolicyParams.html" title="class in com.box.sdk">RetentionPolicyParams</a>&nbsp;optionalParams)</code>
-<div class="block"><span class="deprecatedLabel">Deprecated.</span>&nbsp;
-<div class="block"><span class="deprecationComment">Use <a href="../../../com/box/sdk/BoxRetentionPolicy.html#createFinitePolicy-com.box.sdk.BoxAPIConnection-java.lang.String-int-com.box.sdk.BoxRetentionPolicy.BoxRetentionPolicyAction-com.box.sdk.RetentionPolicyParams-"><code>createFinitePolicy(BoxAPIConnection, String, int, BoxRetentionPolicyAction, RetentionPolicyParams)</code></a></span></div>
-</div>
-</td>
-</tr>
-<tr id="i8" class="altColor">
-<td class="colFirst"><code>static <a href="../../../com/box/sdk/BoxRetentionPolicy.Info.html" title="class in com.box.sdk">BoxRetentionPolicy.Info</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../com/box/sdk/BoxRetentionPolicy.html#createIndefinitePolicy-com.box.sdk.BoxAPIConnection-java.lang.String-">createIndefinitePolicy</a></span>(<a href="../../../com/box/sdk/BoxAPIConnection.html" title="class in com.box.sdk">BoxAPIConnection</a>&nbsp;api,
                       <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;name)</code>
 <div class="block">Used to create a new indefinite retention policy.</div>
 </td>
 </tr>
-<tr id="i9" class="rowColor">
+<tr id="i7" class="rowColor">
 <td class="colFirst"><code>static <a href="../../../com/box/sdk/BoxRetentionPolicy.Info.html" title="class in com.box.sdk">BoxRetentionPolicy.Info</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../com/box/sdk/BoxRetentionPolicy.html#createIndefinitePolicy-com.box.sdk.BoxAPIConnection-java.lang.String-com.box.sdk.RetentionPolicyParams-">createIndefinitePolicy</a></span>(<a href="../../../com/box/sdk/BoxAPIConnection.html" title="class in com.box.sdk">BoxAPIConnection</a>&nbsp;api,
                       <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;name,
@@ -272,14 +249,14 @@ extends <a href="../../../com/box/sdk/BoxResource.html" title="class in com.box.
 <div class="block">Used to create a new indefinite retention policy with optional parameters.</div>
 </td>
 </tr>
-<tr id="i10" class="altColor">
+<tr id="i8" class="altColor">
 <td class="colFirst"><code>static <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Iterable.html?is-external=true" title="class or interface in java.lang">Iterable</a>&lt;<a href="../../../com/box/sdk/BoxRetentionPolicy.Info.html" title="class in com.box.sdk">BoxRetentionPolicy.Info</a>&gt;</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../com/box/sdk/BoxRetentionPolicy.html#getAll-com.box.sdk.BoxAPIConnection-java.lang.String...-">getAll</a></span>(<a href="../../../com/box/sdk/BoxAPIConnection.html" title="class in com.box.sdk">BoxAPIConnection</a>&nbsp;api,
       <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>...&nbsp;fields)</code>
 <div class="block">Returns all the retention policies.</div>
 </td>
 </tr>
-<tr id="i11" class="rowColor">
+<tr id="i9" class="rowColor">
 <td class="colFirst"><code>static <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Iterable.html?is-external=true" title="class or interface in java.lang">Iterable</a>&lt;<a href="../../../com/box/sdk/BoxRetentionPolicy.Info.html" title="class in com.box.sdk">BoxRetentionPolicy.Info</a>&gt;</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../com/box/sdk/BoxRetentionPolicy.html#getAll-java.lang.String-java.lang.String-java.lang.String-int-com.box.sdk.BoxAPIConnection-java.lang.String...-">getAll</a></span>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;name,
       <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;type,
@@ -290,52 +267,52 @@ extends <a href="../../../com/box/sdk/BoxResource.html" title="class in com.box.
 <div class="block">Returns all the retention policies with specified filters.</div>
 </td>
 </tr>
-<tr id="i12" class="altColor">
+<tr id="i10" class="altColor">
 <td class="colFirst"><code><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Iterable.html?is-external=true" title="class or interface in java.lang">Iterable</a>&lt;<a href="../../../com/box/sdk/BoxRetentionPolicyAssignment.Info.html" title="class in com.box.sdk">BoxRetentionPolicyAssignment.Info</a>&gt;</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../com/box/sdk/BoxRetentionPolicy.html#getAllAssignments-int-java.lang.String...-">getAllAssignments</a></span>(int&nbsp;limit,
                  <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>...&nbsp;fields)</code>
 <div class="block">Returns iterable with all assignments of this retention policy.</div>
 </td>
 </tr>
-<tr id="i13" class="rowColor">
+<tr id="i11" class="rowColor">
 <td class="colFirst"><code><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Iterable.html?is-external=true" title="class or interface in java.lang">Iterable</a>&lt;<a href="../../../com/box/sdk/BoxRetentionPolicyAssignment.Info.html" title="class in com.box.sdk">BoxRetentionPolicyAssignment.Info</a>&gt;</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../com/box/sdk/BoxRetentionPolicy.html#getAllAssignments-java.lang.String...-">getAllAssignments</a></span>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>...&nbsp;fields)</code>
 <div class="block">Returns iterable with all assignments of this retention policy.</div>
 </td>
 </tr>
-<tr id="i14" class="altColor">
+<tr id="i12" class="altColor">
 <td class="colFirst"><code><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Iterable.html?is-external=true" title="class or interface in java.lang">Iterable</a>&lt;<a href="../../../com/box/sdk/BoxRetentionPolicyAssignment.Info.html" title="class in com.box.sdk">BoxRetentionPolicyAssignment.Info</a>&gt;</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../com/box/sdk/BoxRetentionPolicy.html#getEnterpriseAssignments-int-java.lang.String...-">getEnterpriseAssignments</a></span>(int&nbsp;limit,
                         <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>...&nbsp;fields)</code>
 <div class="block">Returns iterable with all enterprise assignments of this retention policy.</div>
 </td>
 </tr>
-<tr id="i15" class="rowColor">
+<tr id="i13" class="rowColor">
 <td class="colFirst"><code><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Iterable.html?is-external=true" title="class or interface in java.lang">Iterable</a>&lt;<a href="../../../com/box/sdk/BoxRetentionPolicyAssignment.Info.html" title="class in com.box.sdk">BoxRetentionPolicyAssignment.Info</a>&gt;</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../com/box/sdk/BoxRetentionPolicy.html#getEnterpriseAssignments-java.lang.String...-">getEnterpriseAssignments</a></span>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>...&nbsp;fields)</code>
 <div class="block">Returns iterable with all enterprise assignments of this retention policy.</div>
 </td>
 </tr>
-<tr id="i16" class="altColor">
+<tr id="i14" class="altColor">
 <td class="colFirst"><code><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Iterable.html?is-external=true" title="class or interface in java.lang">Iterable</a>&lt;<a href="../../../com/box/sdk/BoxRetentionPolicyAssignment.Info.html" title="class in com.box.sdk">BoxRetentionPolicyAssignment.Info</a>&gt;</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../com/box/sdk/BoxRetentionPolicy.html#getFolderAssignments-int-java.lang.String...-">getFolderAssignments</a></span>(int&nbsp;limit,
                     <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>...&nbsp;fields)</code>
 <div class="block">Returns iterable with all folder assignments of this retention policy.</div>
 </td>
 </tr>
-<tr id="i17" class="rowColor">
+<tr id="i15" class="rowColor">
 <td class="colFirst"><code><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Iterable.html?is-external=true" title="class or interface in java.lang">Iterable</a>&lt;<a href="../../../com/box/sdk/BoxRetentionPolicyAssignment.Info.html" title="class in com.box.sdk">BoxRetentionPolicyAssignment.Info</a>&gt;</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../com/box/sdk/BoxRetentionPolicy.html#getFolderAssignments-java.lang.String...-">getFolderAssignments</a></span>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>...&nbsp;fields)</code>
 <div class="block">Returns iterable with all folder assignments of this retention policy.</div>
 </td>
 </tr>
-<tr id="i18" class="altColor">
+<tr id="i16" class="altColor">
 <td class="colFirst"><code><a href="../../../com/box/sdk/BoxRetentionPolicy.Info.html" title="class in com.box.sdk">BoxRetentionPolicy.Info</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../com/box/sdk/BoxRetentionPolicy.html#getInfo-java.lang.String...-">getInfo</a></span>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>...&nbsp;fields)</code>
 <div class="block">Returns information about this retention policy.</div>
 </td>
 </tr>
-<tr id="i19" class="rowColor">
+<tr id="i17" class="rowColor">
 <td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../com/box/sdk/BoxRetentionPolicy.html#updateInfo-com.box.sdk.BoxRetentionPolicy.Info-">updateInfo</a></span>(<a href="../../../com/box/sdk/BoxRetentionPolicy.Info.html" title="class in com.box.sdk">BoxRetentionPolicy.Info</a>&nbsp;info)</code>
 <div class="block">Updates the information about this retention policy with any info fields that have been modified locally.</div>
@@ -526,37 +503,13 @@ extends <a href="../../../com/box/sdk/BoxResource.html" title="class in com.box.
 </dl>
 </li>
 </ul>
-<a name="createFinitePolicy-com.box.sdk.BoxAPIConnection-java.lang.String-int-java.lang.String-">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>createFinitePolicy</h4>
-<pre><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Deprecated.html?is-external=true" title="class or interface in java.lang">@Deprecated</a>
-public static&nbsp;<a href="../../../com/box/sdk/BoxRetentionPolicy.Info.html" title="class in com.box.sdk">BoxRetentionPolicy.Info</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxRetentionPolicy.html#line.115">createFinitePolicy</a>(<a href="../../../com/box/sdk/BoxAPIConnection.html" title="class in com.box.sdk">BoxAPIConnection</a>&nbsp;api,
-                                                                     <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;name,
-                                                                     int&nbsp;length,
-                                                                     <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;action)</pre>
-<div class="block"><span class="deprecatedLabel">Deprecated.</span>&nbsp;<span class="deprecationComment">Use <a href="../../../com/box/sdk/BoxRetentionPolicy.html#createFinitePolicy-com.box.sdk.BoxAPIConnection-java.lang.String-int-com.box.sdk.BoxRetentionPolicy.BoxRetentionPolicyAction-"><code>createFinitePolicy(BoxAPIConnection, String, int, BoxRetentionPolicyAction)</code></a></span></div>
-<div class="block">Used to create a new finite retention policy.</div>
-<dl>
-<dt><span class="paramLabel">Parameters:</span></dt>
-<dd><code>api</code> - the API connection to be used by the created user.</dd>
-<dd><code>name</code> - the name of the retention policy.</dd>
-<dd><code>length</code> - the duration in days that the retention policy will be active for after being assigned to content.</dd>
-<dd><code>action</code> - the disposition action can be "permanently_delete" or "remove_retention".</dd>
-<dt><span class="returnLabel">Returns:</span></dt>
-<dd>the created retention policy's info.</dd>
-</dl>
-</li>
-</ul>
 <a name="createFinitePolicy-com.box.sdk.BoxAPIConnection-java.lang.String-int-com.box.sdk.BoxRetentionPolicy.BoxRetentionPolicyAction-">
 <!--   -->
 </a>
 <ul class="blockList">
 <li class="blockList">
 <h4>createFinitePolicy</h4>
-<pre>public static&nbsp;<a href="../../../com/box/sdk/BoxRetentionPolicy.Info.html" title="class in com.box.sdk">BoxRetentionPolicy.Info</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxRetentionPolicy.html#line.133">createFinitePolicy</a>(<a href="../../../com/box/sdk/BoxAPIConnection.html" title="class in com.box.sdk">BoxAPIConnection</a>&nbsp;api,
+<pre>public static&nbsp;<a href="../../../com/box/sdk/BoxRetentionPolicy.Info.html" title="class in com.box.sdk">BoxRetentionPolicy.Info</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxRetentionPolicy.html#line.113">createFinitePolicy</a>(<a href="../../../com/box/sdk/BoxAPIConnection.html" title="class in com.box.sdk">BoxAPIConnection</a>&nbsp;api,
                                                          <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;name,
                                                          int&nbsp;length,
                                                          <a href="../../../com/box/sdk/BoxRetentionPolicy.BoxRetentionPolicyAction.html" title="enum in com.box.sdk">BoxRetentionPolicy.BoxRetentionPolicyAction</a>&nbsp;action)</pre>
@@ -572,39 +525,13 @@ public static&nbsp;<a href="../../../com/box/sdk/BoxRetentionPolicy.Info.html" t
 </dl>
 </li>
 </ul>
-<a name="createFinitePolicy-com.box.sdk.BoxAPIConnection-java.lang.String-int-java.lang.String-com.box.sdk.RetentionPolicyParams-">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>createFinitePolicy</h4>
-<pre><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Deprecated.html?is-external=true" title="class or interface in java.lang">@Deprecated</a>
-public static&nbsp;<a href="../../../com/box/sdk/BoxRetentionPolicy.Info.html" title="class in com.box.sdk">BoxRetentionPolicy.Info</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxRetentionPolicy.html#line.152">createFinitePolicy</a>(<a href="../../../com/box/sdk/BoxAPIConnection.html" title="class in com.box.sdk">BoxAPIConnection</a>&nbsp;api,
-                                                                     <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;name,
-                                                                     int&nbsp;length,
-                                                                     <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;action,
-                                                                     <a href="../../../com/box/sdk/RetentionPolicyParams.html" title="class in com.box.sdk">RetentionPolicyParams</a>&nbsp;optionalParams)</pre>
-<div class="block"><span class="deprecatedLabel">Deprecated.</span>&nbsp;<span class="deprecationComment">Use <a href="../../../com/box/sdk/BoxRetentionPolicy.html#createFinitePolicy-com.box.sdk.BoxAPIConnection-java.lang.String-int-com.box.sdk.BoxRetentionPolicy.BoxRetentionPolicyAction-com.box.sdk.RetentionPolicyParams-"><code>createFinitePolicy(BoxAPIConnection, String, int, BoxRetentionPolicyAction, RetentionPolicyParams)</code></a></span></div>
-<div class="block">Used to create a new finite retention policy with optional parameters.</div>
-<dl>
-<dt><span class="paramLabel">Parameters:</span></dt>
-<dd><code>api</code> - the API connection to be used by the created user.</dd>
-<dd><code>name</code> - the name of the retention policy.</dd>
-<dd><code>length</code> - the duration in days that the retention policy will be active for after being assigned to content.</dd>
-<dd><code>action</code> - the disposition action can be "permanently_delete" or "remove_retention".</dd>
-<dd><code>optionalParams</code> - the optional parameters.</dd>
-<dt><span class="returnLabel">Returns:</span></dt>
-<dd>the created retention policy's info.</dd>
-</dl>
-</li>
-</ul>
 <a name="createFinitePolicy-com.box.sdk.BoxAPIConnection-java.lang.String-int-com.box.sdk.BoxRetentionPolicy.BoxRetentionPolicyAction-com.box.sdk.RetentionPolicyParams-">
 <!--   -->
 </a>
 <ul class="blockList">
 <li class="blockList">
 <h4>createFinitePolicy</h4>
-<pre>public static&nbsp;<a href="../../../com/box/sdk/BoxRetentionPolicy.Info.html" title="class in com.box.sdk">BoxRetentionPolicy.Info</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxRetentionPolicy.html#line.174">createFinitePolicy</a>(<a href="../../../com/box/sdk/BoxAPIConnection.html" title="class in com.box.sdk">BoxAPIConnection</a>&nbsp;api,
+<pre>public static&nbsp;<a href="../../../com/box/sdk/BoxRetentionPolicy.Info.html" title="class in com.box.sdk">BoxRetentionPolicy.Info</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxRetentionPolicy.html#line.130">createFinitePolicy</a>(<a href="../../../com/box/sdk/BoxAPIConnection.html" title="class in com.box.sdk">BoxAPIConnection</a>&nbsp;api,
                                                          <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;name,
                                                          int&nbsp;length,
                                                          <a href="../../../com/box/sdk/BoxRetentionPolicy.BoxRetentionPolicyAction.html" title="enum in com.box.sdk">BoxRetentionPolicy.BoxRetentionPolicyAction</a>&nbsp;action,
@@ -628,7 +555,7 @@ public static&nbsp;<a href="../../../com/box/sdk/BoxRetentionPolicy.Info.html" t
 <ul class="blockList">
 <li class="blockList">
 <h4>getAll</h4>
-<pre>public static&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Iterable.html?is-external=true" title="class or interface in java.lang">Iterable</a>&lt;<a href="../../../com/box/sdk/BoxRetentionPolicy.Info.html" title="class in com.box.sdk">BoxRetentionPolicy.Info</a>&gt;&nbsp;<a href="../../../src-html/com/box/sdk/BoxRetentionPolicy.html#line.262">getAll</a>(<a href="../../../com/box/sdk/BoxAPIConnection.html" title="class in com.box.sdk">BoxAPIConnection</a>&nbsp;api,
+<pre>public static&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Iterable.html?is-external=true" title="class or interface in java.lang">Iterable</a>&lt;<a href="../../../com/box/sdk/BoxRetentionPolicy.Info.html" title="class in com.box.sdk">BoxRetentionPolicy.Info</a>&gt;&nbsp;<a href="../../../src-html/com/box/sdk/BoxRetentionPolicy.html#line.219">getAll</a>(<a href="../../../com/box/sdk/BoxAPIConnection.html" title="class in com.box.sdk">BoxAPIConnection</a>&nbsp;api,
                                                        <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>...&nbsp;fields)</pre>
 <div class="block">Returns all the retention policies.</div>
 <dl>
@@ -646,7 +573,7 @@ public static&nbsp;<a href="../../../com/box/sdk/BoxRetentionPolicy.Info.html" t
 <ul class="blockList">
 <li class="blockList">
 <h4>getAll</h4>
-<pre>public static&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Iterable.html?is-external=true" title="class or interface in java.lang">Iterable</a>&lt;<a href="../../../com/box/sdk/BoxRetentionPolicy.Info.html" title="class in com.box.sdk">BoxRetentionPolicy.Info</a>&gt;&nbsp;<a href="../../../src-html/com/box/sdk/BoxRetentionPolicy.html#line.278">getAll</a>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;name,
+<pre>public static&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Iterable.html?is-external=true" title="class or interface in java.lang">Iterable</a>&lt;<a href="../../../com/box/sdk/BoxRetentionPolicy.Info.html" title="class in com.box.sdk">BoxRetentionPolicy.Info</a>&gt;&nbsp;<a href="../../../src-html/com/box/sdk/BoxRetentionPolicy.html#line.235">getAll</a>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;name,
                                                        <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;type,
                                                        <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;userID,
                                                        int&nbsp;limit,
@@ -673,7 +600,7 @@ public static&nbsp;<a href="../../../com/box/sdk/BoxRetentionPolicy.Info.html" t
 <ul class="blockList">
 <li class="blockList">
 <h4>getFolderAssignments</h4>
-<pre>public&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Iterable.html?is-external=true" title="class or interface in java.lang">Iterable</a>&lt;<a href="../../../com/box/sdk/BoxRetentionPolicyAssignment.Info.html" title="class in com.box.sdk">BoxRetentionPolicyAssignment.Info</a>&gt;&nbsp;<a href="../../../src-html/com/box/sdk/BoxRetentionPolicy.html#line.311">getFolderAssignments</a>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>...&nbsp;fields)</pre>
+<pre>public&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Iterable.html?is-external=true" title="class or interface in java.lang">Iterable</a>&lt;<a href="../../../com/box/sdk/BoxRetentionPolicyAssignment.Info.html" title="class in com.box.sdk">BoxRetentionPolicyAssignment.Info</a>&gt;&nbsp;<a href="../../../src-html/com/box/sdk/BoxRetentionPolicy.html#line.268">getFolderAssignments</a>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>...&nbsp;fields)</pre>
 <div class="block">Returns iterable with all folder assignments of this retention policy.</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
@@ -689,7 +616,7 @@ public static&nbsp;<a href="../../../com/box/sdk/BoxRetentionPolicy.Info.html" t
 <ul class="blockList">
 <li class="blockList">
 <h4>getFolderAssignments</h4>
-<pre>public&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Iterable.html?is-external=true" title="class or interface in java.lang">Iterable</a>&lt;<a href="../../../com/box/sdk/BoxRetentionPolicyAssignment.Info.html" title="class in com.box.sdk">BoxRetentionPolicyAssignment.Info</a>&gt;&nbsp;<a href="../../../src-html/com/box/sdk/BoxRetentionPolicy.html#line.322">getFolderAssignments</a>(int&nbsp;limit,
+<pre>public&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Iterable.html?is-external=true" title="class or interface in java.lang">Iterable</a>&lt;<a href="../../../com/box/sdk/BoxRetentionPolicyAssignment.Info.html" title="class in com.box.sdk">BoxRetentionPolicyAssignment.Info</a>&gt;&nbsp;<a href="../../../src-html/com/box/sdk/BoxRetentionPolicy.html#line.279">getFolderAssignments</a>(int&nbsp;limit,
                                                                         <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>...&nbsp;fields)</pre>
 <div class="block">Returns iterable with all folder assignments of this retention policy.</div>
 <dl>
@@ -707,7 +634,7 @@ public static&nbsp;<a href="../../../com/box/sdk/BoxRetentionPolicy.Info.html" t
 <ul class="blockList">
 <li class="blockList">
 <h4>getEnterpriseAssignments</h4>
-<pre>public&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Iterable.html?is-external=true" title="class or interface in java.lang">Iterable</a>&lt;<a href="../../../com/box/sdk/BoxRetentionPolicyAssignment.Info.html" title="class in com.box.sdk">BoxRetentionPolicyAssignment.Info</a>&gt;&nbsp;<a href="../../../src-html/com/box/sdk/BoxRetentionPolicy.html#line.332">getEnterpriseAssignments</a>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>...&nbsp;fields)</pre>
+<pre>public&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Iterable.html?is-external=true" title="class or interface in java.lang">Iterable</a>&lt;<a href="../../../com/box/sdk/BoxRetentionPolicyAssignment.Info.html" title="class in com.box.sdk">BoxRetentionPolicyAssignment.Info</a>&gt;&nbsp;<a href="../../../src-html/com/box/sdk/BoxRetentionPolicy.html#line.289">getEnterpriseAssignments</a>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>...&nbsp;fields)</pre>
 <div class="block">Returns iterable with all enterprise assignments of this retention policy.</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
@@ -723,7 +650,7 @@ public static&nbsp;<a href="../../../com/box/sdk/BoxRetentionPolicy.Info.html" t
 <ul class="blockList">
 <li class="blockList">
 <h4>getEnterpriseAssignments</h4>
-<pre>public&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Iterable.html?is-external=true" title="class or interface in java.lang">Iterable</a>&lt;<a href="../../../com/box/sdk/BoxRetentionPolicyAssignment.Info.html" title="class in com.box.sdk">BoxRetentionPolicyAssignment.Info</a>&gt;&nbsp;<a href="../../../src-html/com/box/sdk/BoxRetentionPolicy.html#line.343">getEnterpriseAssignments</a>(int&nbsp;limit,
+<pre>public&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Iterable.html?is-external=true" title="class or interface in java.lang">Iterable</a>&lt;<a href="../../../com/box/sdk/BoxRetentionPolicyAssignment.Info.html" title="class in com.box.sdk">BoxRetentionPolicyAssignment.Info</a>&gt;&nbsp;<a href="../../../src-html/com/box/sdk/BoxRetentionPolicy.html#line.300">getEnterpriseAssignments</a>(int&nbsp;limit,
                                                                             <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>...&nbsp;fields)</pre>
 <div class="block">Returns iterable with all enterprise assignments of this retention policy.</div>
 <dl>
@@ -741,7 +668,7 @@ public static&nbsp;<a href="../../../com/box/sdk/BoxRetentionPolicy.Info.html" t
 <ul class="blockList">
 <li class="blockList">
 <h4>getAllAssignments</h4>
-<pre>public&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Iterable.html?is-external=true" title="class or interface in java.lang">Iterable</a>&lt;<a href="../../../com/box/sdk/BoxRetentionPolicyAssignment.Info.html" title="class in com.box.sdk">BoxRetentionPolicyAssignment.Info</a>&gt;&nbsp;<a href="../../../src-html/com/box/sdk/BoxRetentionPolicy.html#line.353">getAllAssignments</a>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>...&nbsp;fields)</pre>
+<pre>public&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Iterable.html?is-external=true" title="class or interface in java.lang">Iterable</a>&lt;<a href="../../../com/box/sdk/BoxRetentionPolicyAssignment.Info.html" title="class in com.box.sdk">BoxRetentionPolicyAssignment.Info</a>&gt;&nbsp;<a href="../../../src-html/com/box/sdk/BoxRetentionPolicy.html#line.310">getAllAssignments</a>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>...&nbsp;fields)</pre>
 <div class="block">Returns iterable with all assignments of this retention policy.</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
@@ -757,7 +684,7 @@ public static&nbsp;<a href="../../../com/box/sdk/BoxRetentionPolicy.Info.html" t
 <ul class="blockList">
 <li class="blockList">
 <h4>getAllAssignments</h4>
-<pre>public&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Iterable.html?is-external=true" title="class or interface in java.lang">Iterable</a>&lt;<a href="../../../com/box/sdk/BoxRetentionPolicyAssignment.Info.html" title="class in com.box.sdk">BoxRetentionPolicyAssignment.Info</a>&gt;&nbsp;<a href="../../../src-html/com/box/sdk/BoxRetentionPolicy.html#line.364">getAllAssignments</a>(int&nbsp;limit,
+<pre>public&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Iterable.html?is-external=true" title="class or interface in java.lang">Iterable</a>&lt;<a href="../../../com/box/sdk/BoxRetentionPolicyAssignment.Info.html" title="class in com.box.sdk">BoxRetentionPolicyAssignment.Info</a>&gt;&nbsp;<a href="../../../src-html/com/box/sdk/BoxRetentionPolicy.html#line.321">getAllAssignments</a>(int&nbsp;limit,
                                                                      <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>...&nbsp;fields)</pre>
 <div class="block">Returns iterable with all assignments of this retention policy.</div>
 <dl>
@@ -775,7 +702,7 @@ public static&nbsp;<a href="../../../com/box/sdk/BoxRetentionPolicy.Info.html" t
 <ul class="blockList">
 <li class="blockList">
 <h4>assignTo</h4>
-<pre>public&nbsp;<a href="../../../com/box/sdk/BoxRetentionPolicyAssignment.Info.html" title="class in com.box.sdk">BoxRetentionPolicyAssignment.Info</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxRetentionPolicy.html#line.403">assignTo</a>(<a href="../../../com/box/sdk/BoxFolder.html" title="class in com.box.sdk">BoxFolder</a>&nbsp;folder)</pre>
+<pre>public&nbsp;<a href="../../../com/box/sdk/BoxRetentionPolicyAssignment.Info.html" title="class in com.box.sdk">BoxRetentionPolicyAssignment.Info</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxRetentionPolicy.html#line.360">assignTo</a>(<a href="../../../com/box/sdk/BoxFolder.html" title="class in com.box.sdk">BoxFolder</a>&nbsp;folder)</pre>
 <div class="block">Assigns this retention policy to folder.</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
@@ -791,7 +718,7 @@ public static&nbsp;<a href="../../../com/box/sdk/BoxRetentionPolicy.Info.html" t
 <ul class="blockList">
 <li class="blockList">
 <h4>assignToEnterprise</h4>
-<pre>public&nbsp;<a href="../../../com/box/sdk/BoxRetentionPolicyAssignment.Info.html" title="class in com.box.sdk">BoxRetentionPolicyAssignment.Info</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxRetentionPolicy.html#line.412">assignToEnterprise</a>()</pre>
+<pre>public&nbsp;<a href="../../../com/box/sdk/BoxRetentionPolicyAssignment.Info.html" title="class in com.box.sdk">BoxRetentionPolicyAssignment.Info</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxRetentionPolicy.html#line.369">assignToEnterprise</a>()</pre>
 <div class="block">Assigns this retention policy to the current enterprise.</div>
 <dl>
 <dt><span class="returnLabel">Returns:</span></dt>
@@ -805,7 +732,7 @@ public static&nbsp;<a href="../../../com/box/sdk/BoxRetentionPolicy.Info.html" t
 <ul class="blockList">
 <li class="blockList">
 <h4>assignToMetadataTemplate</h4>
-<pre>public&nbsp;<a href="../../../com/box/sdk/BoxRetentionPolicyAssignment.Info.html" title="class in com.box.sdk">BoxRetentionPolicyAssignment.Info</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxRetentionPolicy.html#line.423">assignToMetadataTemplate</a>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;templateID,
+<pre>public&nbsp;<a href="../../../com/box/sdk/BoxRetentionPolicyAssignment.Info.html" title="class in com.box.sdk">BoxRetentionPolicyAssignment.Info</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxRetentionPolicy.html#line.380">assignToMetadataTemplate</a>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;templateID,
                                                                   <a href="../../../com/box/sdk/MetadataFieldFilter.html" title="class in com.box.sdk">MetadataFieldFilter</a>...&nbsp;fieldFilters)</pre>
 <div class="block">Assigns this retention policy to a metadata template, optionally with certain field values.</div>
 <dl>
@@ -823,7 +750,7 @@ public static&nbsp;<a href="../../../com/box/sdk/BoxRetentionPolicy.Info.html" t
 <ul class="blockList">
 <li class="blockList">
 <h4>assignToMetadataTemplate</h4>
-<pre>public&nbsp;<a href="../../../com/box/sdk/BoxRetentionPolicyAssignment.Info.html" title="class in com.box.sdk">BoxRetentionPolicyAssignment.Info</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxRetentionPolicy.html#line.436">assignToMetadataTemplate</a>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;templateID,
+<pre>public&nbsp;<a href="../../../com/box/sdk/BoxRetentionPolicyAssignment.Info.html" title="class in com.box.sdk">BoxRetentionPolicyAssignment.Info</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxRetentionPolicy.html#line.393">assignToMetadataTemplate</a>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;templateID,
                                                                   <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;startDateField,
                                                                   <a href="../../../com/box/sdk/MetadataFieldFilter.html" title="class in com.box.sdk">MetadataFieldFilter</a>...&nbsp;fieldFilters)</pre>
 <div class="block">Assigns this retention policy to a metadata template, optionally with certain field values.</div>
@@ -843,7 +770,7 @@ public static&nbsp;<a href="../../../com/box/sdk/BoxRetentionPolicy.Info.html" t
 <ul class="blockList">
 <li class="blockList">
 <h4>updateInfo</h4>
-<pre>public&nbsp;void&nbsp;<a href="../../../src-html/com/box/sdk/BoxRetentionPolicy.html#line.448">updateInfo</a>(<a href="../../../com/box/sdk/BoxRetentionPolicy.Info.html" title="class in com.box.sdk">BoxRetentionPolicy.Info</a>&nbsp;info)</pre>
+<pre>public&nbsp;void&nbsp;<a href="../../../src-html/com/box/sdk/BoxRetentionPolicy.html#line.405">updateInfo</a>(<a href="../../../com/box/sdk/BoxRetentionPolicy.Info.html" title="class in com.box.sdk">BoxRetentionPolicy.Info</a>&nbsp;info)</pre>
 <div class="block">Updates the information about this retention policy with any info fields that have been modified locally.</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
@@ -857,7 +784,7 @@ public static&nbsp;<a href="../../../com/box/sdk/BoxRetentionPolicy.Info.html" t
 <ul class="blockListLast">
 <li class="blockList">
 <h4>getInfo</h4>
-<pre>public&nbsp;<a href="../../../com/box/sdk/BoxRetentionPolicy.Info.html" title="class in com.box.sdk">BoxRetentionPolicy.Info</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxRetentionPolicy.html#line.463">getInfo</a>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>...&nbsp;fields)</pre>
+<pre>public&nbsp;<a href="../../../com/box/sdk/BoxRetentionPolicy.Info.html" title="class in com.box.sdk">BoxRetentionPolicy.Info</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxRetentionPolicy.html#line.421">getInfo</a>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>...&nbsp;fields)</pre>
 <div class="block">Returns information about this retention policy.</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>

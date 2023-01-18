@@ -18,7 +18,7 @@
     catch(err) {
     }
 //-->
-var methods = {"i0":10,"i1":9,"i2":10,"i3":10,"i4":10,"i5":10,"i6":10,"i7":10,"i8":10,"i9":10,"i10":10,"i11":10,"i12":10,"i13":10,"i14":10};
+var methods = {"i0":10,"i1":9,"i2":10,"i3":10,"i4":10,"i5":10,"i6":10,"i7":10,"i8":10,"i9":10,"i10":10,"i11":10,"i12":10,"i13":10,"i14":10,"i15":10};
 var tabs = {65535:["t0","All Methods"],1:["t1","Static Methods"],2:["t2","Instance Methods"],8:["t4","Concrete Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
@@ -118,41 +118,47 @@ extends <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html
 </tr>
 <tr id="i8" class="altColor">
 <td class="colFirst"><code>void</code></td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../com/box/sdk/BoxLogger.html#resetToDefaultLevel--">resetToDefaultLevel</a></span>()</code>
+<div class="block">Reset logging level to default.</div>
+</td>
+</tr>
+<tr id="i9" class="rowColor">
+<td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../com/box/sdk/BoxLogger.html#setLevelToAll--">setLevelToAll</a></span>()</code>
 <div class="block">Set logging level to ALL <a href="https://docs.oracle.com/javase/8/docs/api/java/util/logging/Level.html?is-external=true#ALL" title="class or interface in java.util.logging"><code>Level.ALL</code></a></div>
 </td>
 </tr>
-<tr id="i9" class="rowColor">
+<tr id="i10" class="altColor">
 <td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../com/box/sdk/BoxLogger.html#setLevelToError--">setLevelToError</a></span>()</code>
 <div class="block">Set logging level to ERROR <a href="https://docs.oracle.com/javase/8/docs/api/java/util/logging/Level.html?is-external=true#SEVERE" title="class or interface in java.util.logging"><code>Level.SEVERE</code></a></div>
 </td>
 </tr>
-<tr id="i10" class="altColor">
+<tr id="i11" class="rowColor">
 <td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../com/box/sdk/BoxLogger.html#setLevelToInfo--">setLevelToInfo</a></span>()</code>
 <div class="block">Set logging level to INFO <a href="https://docs.oracle.com/javase/8/docs/api/java/util/logging/Level.html?is-external=true#INFO" title="class or interface in java.util.logging"><code>Level.INFO</code></a></div>
 </td>
 </tr>
-<tr id="i11" class="rowColor">
+<tr id="i12" class="altColor">
 <td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../com/box/sdk/BoxLogger.html#setLevelToWarning--">setLevelToWarning</a></span>()</code>
 <div class="block">Set logging level to WARNING <a href="https://docs.oracle.com/javase/8/docs/api/java/util/logging/Level.html?is-external=true#WARNING" title="class or interface in java.util.logging"><code>Level.WARNING</code></a></div>
 </td>
 </tr>
-<tr id="i12" class="altColor">
+<tr id="i13" class="rowColor">
 <td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../com/box/sdk/BoxLogger.html#setUseParentHandlers-boolean-">setUseParentHandlers</a></span>(boolean&nbsp;useParentHandlers)</code>
 <div class="block">Specify whether this logger should send its output to its parent Logger.</div>
 </td>
 </tr>
-<tr id="i13" class="rowColor">
+<tr id="i14" class="altColor">
 <td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../com/box/sdk/BoxLogger.html#turnLoggingOff--">turnLoggingOff</a></span>()</code>
 <div class="block">Turns logging off</div>
 </td>
 </tr>
-<tr id="i14" class="altColor">
+<tr id="i15" class="rowColor">
 <td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../com/box/sdk/BoxLogger.html#warn-java.lang.String-">warn</a></span>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;message)</code>
 <div class="block">Log message with level WARNING <a href="https://docs.oracle.com/javase/8/docs/api/java/util/logging/Level.html?is-external=true#WARNING" title="class or interface in java.util.logging"><code>Level.WARNING</code></a></div>
@@ -316,13 +322,23 @@ extends <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html
 <div class="block">Set logging level to ALL <a href="https://docs.oracle.com/javase/8/docs/api/java/util/logging/Level.html?is-external=true#ALL" title="class or interface in java.util.logging"><code>Level.ALL</code></a></div>
 </li>
 </ul>
+<a name="resetToDefaultLevel--">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>resetToDefaultLevel</h4>
+<pre>public&nbsp;void&nbsp;<a href="../../../src-html/com/box/sdk/BoxLogger.html#line.106">resetToDefaultLevel</a>()</pre>
+<div class="block">Reset logging level to default.</div>
+</li>
+</ul>
 <a name="setLevelToInfo--">
 <!--   -->
 </a>
 <ul class="blockList">
 <li class="blockList">
 <h4>setLevelToInfo</h4>
-<pre>public&nbsp;void&nbsp;<a href="../../../src-html/com/box/sdk/BoxLogger.html#line.106">setLevelToInfo</a>()</pre>
+<pre>public&nbsp;void&nbsp;<a href="../../../src-html/com/box/sdk/BoxLogger.html#line.113">setLevelToInfo</a>()</pre>
 <div class="block">Set logging level to INFO <a href="https://docs.oracle.com/javase/8/docs/api/java/util/logging/Level.html?is-external=true#INFO" title="class or interface in java.util.logging"><code>Level.INFO</code></a></div>
 </li>
 </ul>
@@ -332,7 +348,7 @@ extends <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html
 <ul class="blockList">
 <li class="blockList">
 <h4>setLevelToWarning</h4>
-<pre>public&nbsp;void&nbsp;<a href="../../../src-html/com/box/sdk/BoxLogger.html#line.113">setLevelToWarning</a>()</pre>
+<pre>public&nbsp;void&nbsp;<a href="../../../src-html/com/box/sdk/BoxLogger.html#line.120">setLevelToWarning</a>()</pre>
 <div class="block">Set logging level to WARNING <a href="https://docs.oracle.com/javase/8/docs/api/java/util/logging/Level.html?is-external=true#WARNING" title="class or interface in java.util.logging"><code>Level.WARNING</code></a></div>
 </li>
 </ul>
@@ -342,7 +358,7 @@ extends <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html
 <ul class="blockList">
 <li class="blockList">
 <h4>setLevelToError</h4>
-<pre>public&nbsp;void&nbsp;<a href="../../../src-html/com/box/sdk/BoxLogger.html#line.120">setLevelToError</a>()</pre>
+<pre>public&nbsp;void&nbsp;<a href="../../../src-html/com/box/sdk/BoxLogger.html#line.127">setLevelToError</a>()</pre>
 <div class="block">Set logging level to ERROR <a href="https://docs.oracle.com/javase/8/docs/api/java/util/logging/Level.html?is-external=true#SEVERE" title="class or interface in java.util.logging"><code>Level.SEVERE</code></a></div>
 </li>
 </ul>
@@ -352,7 +368,7 @@ extends <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html
 <ul class="blockList">
 <li class="blockList">
 <h4>turnLoggingOff</h4>
-<pre>public&nbsp;void&nbsp;<a href="../../../src-html/com/box/sdk/BoxLogger.html#line.127">turnLoggingOff</a>()</pre>
+<pre>public&nbsp;void&nbsp;<a href="../../../src-html/com/box/sdk/BoxLogger.html#line.134">turnLoggingOff</a>()</pre>
 <div class="block">Turns logging off</div>
 </li>
 </ul>
@@ -362,7 +378,7 @@ extends <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html
 <ul class="blockListLast">
 <li class="blockList">
 <h4>setUseParentHandlers</h4>
-<pre>public&nbsp;void&nbsp;<a href="../../../src-html/com/box/sdk/BoxLogger.html#line.139">setUseParentHandlers</a>(boolean&nbsp;useParentHandlers)</pre>
+<pre>public&nbsp;void&nbsp;<a href="../../../src-html/com/box/sdk/BoxLogger.html#line.146">setUseParentHandlers</a>(boolean&nbsp;useParentHandlers)</pre>
 <div class="block">Specify whether this logger should send its output to its parent Logger. This means that any LogRecords
  will also be written to the parent's Handlers, and potentially to its parent, recursively up the namespace.</div>
 <dl>
