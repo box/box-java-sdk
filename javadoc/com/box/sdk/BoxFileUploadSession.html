@@ -238,7 +238,7 @@ extends <a href="../../../com/box/sdk/BoxResource.html" title="class in com.box.
 <ul class="blockList">
 <li class="blockList">
 <h4>listParts</h4>
-<pre>public&nbsp;<a href="../../../com/box/sdk/BoxFileUploadSessionPartList.html" title="class in com.box.sdk">BoxFileUploadSessionPartList</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxFileUploadSession.html#line.122">listParts</a>(int&nbsp;offset,
+<pre>public&nbsp;<a href="../../../com/box/sdk/BoxFileUploadSessionPartList.html" title="class in com.box.sdk">BoxFileUploadSessionPartList</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxFileUploadSession.html#line.123">listParts</a>(int&nbsp;offset,
                                               int&nbsp;limit)</pre>
 <div class="block">Returns a list of all parts that have been uploaded to an upload session.</div>
 <dl>
@@ -256,7 +256,7 @@ extends <a href="../../../com/box/sdk/BoxResource.html" title="class in com.box.
 <ul class="blockList">
 <li class="blockList">
 <h4>listParts</h4>
-<pre>protected&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Iterable.html?is-external=true" title="class or interface in java.lang">Iterable</a>&lt;<a href="../../../com/box/sdk/BoxFileUploadSessionPart.html" title="class in com.box.sdk">BoxFileUploadSessionPart</a>&gt;&nbsp;<a href="../../../src-html/com/box/sdk/BoxFileUploadSession.html#line.145">listParts</a>()</pre>
+<pre>protected&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Iterable.html?is-external=true" title="class or interface in java.lang">Iterable</a>&lt;<a href="../../../com/box/sdk/BoxFileUploadSessionPart.html" title="class in com.box.sdk">BoxFileUploadSessionPart</a>&gt;&nbsp;<a href="../../../src-html/com/box/sdk/BoxFileUploadSession.html#line.147">listParts</a>()</pre>
 <div class="block">Returns a list of all parts that have been uploaded to an upload session.</div>
 <dl>
 <dt><span class="returnLabel">Returns:</span></dt>
@@ -270,7 +270,7 @@ extends <a href="../../../com/box/sdk/BoxResource.html" title="class in com.box.
 <ul class="blockList">
 <li class="blockList">
 <h4>commit</h4>
-<pre>public&nbsp;<a href="../../../com/box/sdk/BoxFile.Info.html" title="class in com.box.sdk">BoxFile.Info</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxFileUploadSession.html#line.170">commit</a>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;digest,
+<pre>public&nbsp;<a href="../../../com/box/sdk/BoxFile.Info.html" title="class in com.box.sdk">BoxFile.Info</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxFileUploadSession.html#line.172">commit</a>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;digest,
                            <a href="https://docs.oracle.com/javase/8/docs/api/java/util/List.html?is-external=true" title="class or interface in java.util">List</a>&lt;<a href="../../../com/box/sdk/BoxFileUploadSessionPart.html" title="class in com.box.sdk">BoxFileUploadSessionPart</a>&gt;&nbsp;parts,
                            <a href="https://docs.oracle.com/javase/8/docs/api/java/util/Map.html?is-external=true" title="class or interface in java.util">Map</a>&lt;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>,<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&gt;&nbsp;attributes,
                            <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;ifMatch,
@@ -294,7 +294,7 @@ extends <a href="../../../com/box/sdk/BoxResource.html" title="class in com.box.
 <ul class="blockList">
 <li class="blockList">
 <h4>getStatus</h4>
-<pre>public&nbsp;<a href="../../../com/box/sdk/BoxFileUploadSession.Info.html" title="class in com.box.sdk">BoxFileUploadSession.Info</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxFileUploadSession.html#line.262">getStatus</a>()</pre>
+<pre>public&nbsp;<a href="../../../com/box/sdk/BoxFileUploadSession.Info.html" title="class in com.box.sdk">BoxFileUploadSession.Info</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxFileUploadSession.html#line.260">getStatus</a>()</pre>
 <div class="block">Get the status of the upload session. It contains the number of parts that are processed so far,
  the total number of parts required for the commit and expiration date and time of the upload session.</div>
 <dl>
@@ -309,7 +309,7 @@ extends <a href="../../../com/box/sdk/BoxResource.html" title="class in com.box.
 <ul class="blockListLast">
 <li class="blockList">
 <h4>abort</h4>
-<pre>public&nbsp;void&nbsp;<a href="../../../src-html/com/box/sdk/BoxFileUploadSession.html#line.276">abort</a>()</pre>
+<pre>public&nbsp;void&nbsp;<a href="../../../src-html/com/box/sdk/BoxFileUploadSession.html#line.275">abort</a>()</pre>
 <div class="block">Abort an upload session, discarding any chunks that were uploaded to it.</div>
 </li>
 </ul>

@@ -18,8 +18,8 @@
     catch(err) {
     }
 //-->
-var methods = {"i0":10,"i1":10,"i2":10,"i3":42,"i4":42,"i5":9,"i6":9,"i7":10,"i8":10,"i9":9,"i10":9,"i11":9,"i12":9,"i13":10,"i14":10,"i15":10,"i16":10,"i17":10,"i18":10};
-var tabs = {65535:["t0","All Methods"],1:["t1","Static Methods"],2:["t2","Instance Methods"],8:["t4","Concrete Methods"],32:["t6","Deprecated Methods"]};
+var methods = {"i0":10,"i1":10,"i2":10,"i3":9,"i4":9,"i5":10,"i6":10,"i7":9,"i8":9,"i9":9,"i10":10,"i11":10,"i12":10,"i13":10,"i14":10};
+var tabs = {65535:["t0","All Methods"],1:["t1","Static Methods"],2:["t2","Instance Methods"],8:["t4","Concrete Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
 var tableTab = "tableTab";
@@ -58,7 +58,7 @@ var activeTableTab = "activeTableTab";
 <hr>
 <br>
 <pre><a href="../../../com/box/sdk/BoxResourceType.html" title="annotation in com.box.sdk">@BoxResourceType</a>(<a href="../../../com/box/sdk/BoxResourceType.html#value--">value</a>="group")
-public class <a href="../../../src-html/com/box/sdk/BoxGroup.html#line.22">BoxGroup</a>
+public class <a href="../../../src-html/com/box/sdk/BoxGroup.html#line.21">BoxGroup</a>
 extends <a href="../../../com/box/sdk/BoxCollaborator.html" title="class in com.box.sdk">BoxCollaborator</a></pre>
 <div class="block">Represents a set of Box users.
 
@@ -161,7 +161,7 @@ extends <a href="../../../com/box/sdk/BoxCollaborator.html" title="class in com.
 </a>
 <h3>Method Summary</h3>
 <table class="memberSummary" border="0" cellpadding="3" cellspacing="0" summary="Method Summary table, listing methods, and an explanation">
-<caption><span id="t0" class="activeTableTab"><span>All Methods</span><span class="tabEnd">&nbsp;</span></span><span id="t1" class="tableTab"><span><a href="javascript:show(1);">Static Methods</a></span><span class="tabEnd">&nbsp;</span></span><span id="t2" class="tableTab"><span><a href="javascript:show(2);">Instance Methods</a></span><span class="tabEnd">&nbsp;</span></span><span id="t4" class="tableTab"><span><a href="javascript:show(8);">Concrete Methods</a></span><span class="tabEnd">&nbsp;</span></span><span id="t6" class="tableTab"><span><a href="javascript:show(32);">Deprecated Methods</a></span><span class="tabEnd">&nbsp;</span></span></caption>
+<caption><span id="t0" class="activeTableTab"><span>All Methods</span><span class="tabEnd">&nbsp;</span></span><span id="t1" class="tableTab"><span><a href="javascript:show(1);">Static Methods</a></span><span class="tabEnd">&nbsp;</span></span><span id="t2" class="tableTab"><span><a href="javascript:show(2);">Instance Methods</a></span><span class="tabEnd">&nbsp;</span></span><span id="t4" class="tableTab"><span><a href="javascript:show(8);">Concrete Methods</a></span><span class="tabEnd">&nbsp;</span></span></caption>
 <tr>
 <th class="colFirst" scope="col">Modifier and Type</th>
 <th class="colLast" scope="col">Method and Description</th>
@@ -188,33 +188,13 @@ extends <a href="../../../com/box/sdk/BoxCollaborator.html" title="class in com.
 </td>
 </tr>
 <tr id="i3" class="rowColor">
-<td class="colFirst"><code><a href="../../../com/box/sdk/BoxGroupMembership.Info.html" title="class in com.box.sdk">BoxGroupMembership.Info</a></code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../com/box/sdk/BoxGroup.html#addMembership-com.box.sdk.BoxUser-com.box.sdk.BoxGroupMembership.Role-">addMembership</a></span>(<a href="../../../com/box/sdk/BoxUser.html" title="class in com.box.sdk">BoxUser</a>&nbsp;user,
-             <a href="../../../com/box/sdk/BoxGroupMembership.Role.html" title="enum in com.box.sdk">BoxGroupMembership.Role</a>&nbsp;role)</code>
-<div class="block"><span class="deprecatedLabel">Deprecated.</span>&nbsp;
-<div class="block"><span class="deprecationComment">use addMembership(BoxUser user, BoxGroupMembership.GroupRole role) instead.</span></div>
-</div>
-</td>
-</tr>
-<tr id="i4" class="altColor">
-<td class="colFirst"><code><a href="../../../com/box/sdk/BoxGroupMembership.Info.html" title="class in com.box.sdk">BoxGroupMembership.Info</a></code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../com/box/sdk/BoxGroup.html#addMembership-com.box.sdk.BoxUser-com.box.sdk.BoxGroupMembership.Role-java.util.Map-">addMembership</a></span>(<a href="../../../com/box/sdk/BoxUser.html" title="class in com.box.sdk">BoxUser</a>&nbsp;user,
-             <a href="../../../com/box/sdk/BoxGroupMembership.Role.html" title="enum in com.box.sdk">BoxGroupMembership.Role</a>&nbsp;role,
-             <a href="https://docs.oracle.com/javase/8/docs/api/java/util/Map.html?is-external=true" title="class or interface in java.util">Map</a>&lt;<a href="../../../com/box/sdk/BoxGroupMembership.Permission.html" title="enum in com.box.sdk">BoxGroupMembership.Permission</a>,<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Boolean.html?is-external=true" title="class or interface in java.lang">Boolean</a>&gt;&nbsp;configurablePermissions)</code>
-<div class="block"><span class="deprecatedLabel">Deprecated.</span>&nbsp;
-<div class="block"><span class="deprecationComment">use <code>addMembership(BoxUser user, GroupRole role,
- Map&lt;BoxGroupMembership.Permission, Boolean&gt; configurablePermissions)</code> instead.</span></div>
-</div>
-</td>
-</tr>
-<tr id="i5" class="rowColor">
 <td class="colFirst"><code>static <a href="../../../com/box/sdk/BoxGroup.Info.html" title="class in com.box.sdk">BoxGroup.Info</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../com/box/sdk/BoxGroup.html#createGroup-com.box.sdk.BoxAPIConnection-java.lang.String-">createGroup</a></span>(<a href="../../../com/box/sdk/BoxAPIConnection.html" title="class in com.box.sdk">BoxAPIConnection</a>&nbsp;api,
            <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;name)</code>
 <div class="block">Creates a new group with a specified name.</div>
 </td>
 </tr>
-<tr id="i6" class="altColor">
+<tr id="i4" class="altColor">
 <td class="colFirst"><code>static <a href="../../../com/box/sdk/BoxGroup.Info.html" title="class in com.box.sdk">BoxGroup.Info</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../com/box/sdk/BoxGroup.html#createGroup-com.box.sdk.BoxAPIConnection-java.lang.String-java.lang.String-java.lang.String-java.lang.String-java.lang.String-java.lang.String-">createGroup</a></span>(<a href="../../../com/box/sdk/BoxAPIConnection.html" title="class in com.box.sdk">BoxAPIConnection</a>&nbsp;api,
            <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;name,
@@ -226,39 +206,32 @@ extends <a href="../../../com/box/sdk/BoxCollaborator.html" title="class in com.
 <div class="block">Creates a new group with a specified name.</div>
 </td>
 </tr>
-<tr id="i7" class="rowColor">
+<tr id="i5" class="rowColor">
 <td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../com/box/sdk/BoxGroup.html#delete--">delete</a></span>()</code>
 <div class="block">Deletes this group.</div>
 </td>
 </tr>
-<tr id="i8" class="altColor">
+<tr id="i6" class="altColor">
 <td class="colFirst"><code><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Iterable.html?is-external=true" title="class or interface in java.lang">Iterable</a>&lt;<a href="../../../com/box/sdk/BoxCollaboration.Info.html" title="class in com.box.sdk">BoxCollaboration.Info</a>&gt;</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../com/box/sdk/BoxGroup.html#getAllCollaborations-java.lang.String...-">getAllCollaborations</a></span>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>...&nbsp;fields)</code>
 <div class="block">Gets information about all of the collaborations for this group.</div>
 </td>
 </tr>
-<tr id="i9" class="rowColor">
+<tr id="i7" class="rowColor">
 <td class="colFirst"><code>static <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Iterable.html?is-external=true" title="class or interface in java.lang">Iterable</a>&lt;<a href="../../../com/box/sdk/BoxGroup.Info.html" title="class in com.box.sdk">BoxGroup.Info</a>&gt;</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../com/box/sdk/BoxGroup.html#getAllGroups-com.box.sdk.BoxAPIConnection-">getAllGroups</a></span>(<a href="../../../com/box/sdk/BoxAPIConnection.html" title="class in com.box.sdk">BoxAPIConnection</a>&nbsp;api)</code>
 <div class="block">Gets an iterable of all the groups in the enterprise.</div>
 </td>
 </tr>
-<tr id="i10" class="altColor">
+<tr id="i8" class="altColor">
 <td class="colFirst"><code>static <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Iterable.html?is-external=true" title="class or interface in java.lang">Iterable</a>&lt;<a href="../../../com/box/sdk/BoxGroup.Info.html" title="class in com.box.sdk">BoxGroup.Info</a>&gt;</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../com/box/sdk/BoxGroup.html#getAllGroups-com.box.sdk.BoxAPIConnection-java.lang.String...-">getAllGroups</a></span>(<a href="../../../com/box/sdk/BoxAPIConnection.html" title="class in com.box.sdk">BoxAPIConnection</a>&nbsp;api,
             <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>...&nbsp;fields)</code>
 <div class="block">Gets an iterable of all the groups in the enterprise.</div>
 </td>
 </tr>
-<tr id="i11" class="rowColor">
-<td class="colFirst"><code>static <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Iterable.html?is-external=true" title="class or interface in java.lang">Iterable</a>&lt;<a href="../../../com/box/sdk/BoxGroup.Info.html" title="class in com.box.sdk">BoxGroup.Info</a>&gt;</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../com/box/sdk/BoxGroup.html#getAllGroupsByName-com.box.sdk.BoxAPIConnection-java.lang.String-">getAllGroupsByName</a></span>(<a href="../../../com/box/sdk/BoxAPIConnection.html" title="class in com.box.sdk">BoxAPIConnection</a>&nbsp;api,
-                  <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;name)</code>
-<div class="block">Gets an iterable of all the groups in the enterprise that are starting with the given name string.</div>
-</td>
-</tr>
-<tr id="i12" class="altColor">
+<tr id="i9" class="rowColor">
 <td class="colFirst"><code>static <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Iterable.html?is-external=true" title="class or interface in java.lang">Iterable</a>&lt;<a href="../../../com/box/sdk/BoxGroup.Info.html" title="class in com.box.sdk">BoxGroup.Info</a>&gt;</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../com/box/sdk/BoxGroup.html#getAllGroupsByName-com.box.sdk.BoxAPIConnection-java.lang.String-java.lang.String...-">getAllGroupsByName</a></span>(<a href="../../../com/box/sdk/BoxAPIConnection.html" title="class in com.box.sdk">BoxAPIConnection</a>&nbsp;api,
                   <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;name,
@@ -266,37 +239,31 @@ extends <a href="../../../com/box/sdk/BoxCollaborator.html" title="class in com.
 <div class="block">Gets an iterable of all the groups in the enterprise that are starting with the given name string.</div>
 </td>
 </tr>
-<tr id="i13" class="rowColor">
+<tr id="i10" class="altColor">
 <td class="colFirst"><code><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Iterable.html?is-external=true" title="class or interface in java.lang">Iterable</a>&lt;<a href="../../../com/box/sdk/BoxGroupMembership.Info.html" title="class in com.box.sdk">BoxGroupMembership.Info</a>&gt;</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../com/box/sdk/BoxGroup.html#getAllMemberships-java.lang.String...-">getAllMemberships</a></span>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>...&nbsp;fields)</code>
 <div class="block">Gets information about all of the group memberships for this group as iterable with paging support.</div>
 </td>
 </tr>
-<tr id="i14" class="altColor">
+<tr id="i11" class="rowColor">
 <td class="colFirst"><code><a href="https://docs.oracle.com/javase/8/docs/api/java/util/Collection.html?is-external=true" title="class or interface in java.util">Collection</a>&lt;<a href="../../../com/box/sdk/BoxCollaboration.Info.html" title="class in com.box.sdk">BoxCollaboration.Info</a>&gt;</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../com/box/sdk/BoxGroup.html#getCollaborations--">getCollaborations</a></span>()</code>
 <div class="block">Gets information about all of the collaborations for this group.</div>
 </td>
 </tr>
-<tr id="i15" class="rowColor">
-<td class="colFirst"><code><a href="../../../com/box/sdk/BoxGroup.Info.html" title="class in com.box.sdk">BoxGroup.Info</a></code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../com/box/sdk/BoxGroup.html#getInfo--">getInfo</a></span>()</code>
-<div class="block">Gets information about this group.</div>
-</td>
-</tr>
-<tr id="i16" class="altColor">
+<tr id="i12" class="altColor">
 <td class="colFirst"><code><a href="../../../com/box/sdk/BoxGroup.Info.html" title="class in com.box.sdk">BoxGroup.Info</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../com/box/sdk/BoxGroup.html#getInfo-java.lang.String...-">getInfo</a></span>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>...&nbsp;fields)</code>
 <div class="block">Gets information about this group.</div>
 </td>
 </tr>
-<tr id="i17" class="rowColor">
+<tr id="i13" class="rowColor">
 <td class="colFirst"><code><a href="https://docs.oracle.com/javase/8/docs/api/java/util/Collection.html?is-external=true" title="class or interface in java.util">Collection</a>&lt;<a href="../../../com/box/sdk/BoxGroupMembership.Info.html" title="class in com.box.sdk">BoxGroupMembership.Info</a>&gt;</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../com/box/sdk/BoxGroup.html#getMemberships--">getMemberships</a></span>()</code>
 <div class="block">Gets information about all of the group memberships for this group.</div>
 </td>
 </tr>
-<tr id="i18" class="altColor">
+<tr id="i14" class="altColor">
 <td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../com/box/sdk/BoxGroup.html#updateInfo-com.box.sdk.BoxGroup.Info-">updateInfo</a></span>(<a href="../../../com/box/sdk/BoxGroup.Info.html" title="class in com.box.sdk">BoxGroup.Info</a>&nbsp;info)</code>
 <div class="block">Updates the information about this group with any info fields that have been modified locally.</div>
@@ -337,7 +304,7 @@ extends <a href="../../../com/box/sdk/BoxCollaborator.html" title="class in com.
 <ul class="blockList">
 <li class="blockList">
 <h4>GROUPS_URL_TEMPLATE</h4>
-<pre>public static final&nbsp;<a href="../../../com/box/sdk/URLTemplate.html" title="class in com.box.sdk">URLTemplate</a> <a href="../../../src-html/com/box/sdk/BoxGroup.html#line.27">GROUPS_URL_TEMPLATE</a></pre>
+<pre>public static final&nbsp;<a href="../../../com/box/sdk/URLTemplate.html" title="class in com.box.sdk">URLTemplate</a> <a href="../../../src-html/com/box/sdk/BoxGroup.html#line.26">GROUPS_URL_TEMPLATE</a></pre>
 <dl>
 <dt><span class="seeLabel">See Also:</span></dt>
 <dd><a href="../../../com/box/sdk/BoxGroup.html#getAllGroups-com.box.sdk.BoxAPIConnection-java.lang.String...-"><code>getAllGroups(BoxAPIConnection, String...)</code></a></dd>
@@ -350,10 +317,10 @@ extends <a href="../../../com/box/sdk/BoxCollaborator.html" title="class in com.
 <ul class="blockList">
 <li class="blockList">
 <h4>GROUP_URL_TEMPLATE</h4>
-<pre>public static final&nbsp;<a href="../../../com/box/sdk/URLTemplate.html" title="class in com.box.sdk">URLTemplate</a> <a href="../../../src-html/com/box/sdk/BoxGroup.html#line.32">GROUP_URL_TEMPLATE</a></pre>
+<pre>public static final&nbsp;<a href="../../../com/box/sdk/URLTemplate.html" title="class in com.box.sdk">URLTemplate</a> <a href="../../../src-html/com/box/sdk/BoxGroup.html#line.31">GROUP_URL_TEMPLATE</a></pre>
 <dl>
 <dt><span class="seeLabel">See Also:</span></dt>
-<dd><a href="../../../com/box/sdk/BoxGroup.html#getInfo--"><code>getInfo()</code></a></dd>
+<dd><a href="../../../com/box/sdk/BoxGroup.html#getInfo-java.lang.String...-"><code>getInfo(String...)</code></a></dd>
 </dl>
 </li>
 </ul>
@@ -363,7 +330,7 @@ extends <a href="../../../com/box/sdk/BoxCollaborator.html" title="class in com.
 <ul class="blockList">
 <li class="blockList">
 <h4>MEMBERSHIPS_URL_TEMPLATE</h4>
-<pre>public static final&nbsp;<a href="../../../com/box/sdk/URLTemplate.html" title="class in com.box.sdk">URLTemplate</a> <a href="../../../src-html/com/box/sdk/BoxGroup.html#line.37">MEMBERSHIPS_URL_TEMPLATE</a></pre>
+<pre>public static final&nbsp;<a href="../../../com/box/sdk/URLTemplate.html" title="class in com.box.sdk">URLTemplate</a> <a href="../../../src-html/com/box/sdk/BoxGroup.html#line.36">MEMBERSHIPS_URL_TEMPLATE</a></pre>
 <dl>
 <dt><span class="seeLabel">See Also:</span></dt>
 <dd><a href="../../../com/box/sdk/BoxGroup.html#getMemberships--"><code>getMemberships()</code></a></dd>
@@ -376,7 +343,7 @@ extends <a href="../../../com/box/sdk/BoxCollaborator.html" title="class in com.
 <ul class="blockList">
 <li class="blockList">
 <h4>ADD_MEMBERSHIP_URL_TEMPLATE</h4>
-<pre>public static final&nbsp;<a href="../../../com/box/sdk/URLTemplate.html" title="class in com.box.sdk">URLTemplate</a> <a href="../../../src-html/com/box/sdk/BoxGroup.html#line.42">ADD_MEMBERSHIP_URL_TEMPLATE</a></pre>
+<pre>public static final&nbsp;<a href="../../../com/box/sdk/URLTemplate.html" title="class in com.box.sdk">URLTemplate</a> <a href="../../../src-html/com/box/sdk/BoxGroup.html#line.41">ADD_MEMBERSHIP_URL_TEMPLATE</a></pre>
 <dl>
 <dt><span class="seeLabel">See Also:</span></dt>
 <dd><a href="../../../com/box/sdk/BoxGroup.html#addMembership-com.box.sdk.BoxUser-"><code>addMembership(BoxUser)</code></a></dd>
@@ -389,7 +356,7 @@ extends <a href="../../../com/box/sdk/BoxCollaborator.html" title="class in com.
 <ul class="blockListLast">
 <li class="blockList">
 <h4>COLLABORATIONS_URL_TEMPLATE</h4>
-<pre>public static final&nbsp;<a href="../../../com/box/sdk/URLTemplate.html" title="class in com.box.sdk">URLTemplate</a> <a href="../../../src-html/com/box/sdk/BoxGroup.html#line.47">COLLABORATIONS_URL_TEMPLATE</a></pre>
+<pre>public static final&nbsp;<a href="../../../com/box/sdk/URLTemplate.html" title="class in com.box.sdk">URLTemplate</a> <a href="../../../src-html/com/box/sdk/BoxGroup.html#line.46">COLLABORATIONS_URL_TEMPLATE</a></pre>
 <dl>
 <dt><span class="seeLabel">See Also:</span></dt>
 <dd><a href="../../../com/box/sdk/BoxGroup.html#getCollaborations--"><code>getCollaborations()</code></a></dd>
@@ -410,7 +377,7 @@ extends <a href="../../../com/box/sdk/BoxCollaborator.html" title="class in com.
 <ul class="blockListLast">
 <li class="blockList">
 <h4>BoxGroup</h4>
-<pre>public&nbsp;<a href="../../../src-html/com/box/sdk/BoxGroup.html#line.55">BoxGroup</a>(<a href="../../../com/box/sdk/BoxAPIConnection.html" title="class in com.box.sdk">BoxAPIConnection</a>&nbsp;api,
+<pre>public&nbsp;<a href="../../../src-html/com/box/sdk/BoxGroup.html#line.54">BoxGroup</a>(<a href="../../../com/box/sdk/BoxAPIConnection.html" title="class in com.box.sdk">BoxAPIConnection</a>&nbsp;api,
                 <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;id)</pre>
 <div class="block">Constructs a BoxGroup for a group with a given ID.</div>
 <dl>
@@ -434,7 +401,7 @@ extends <a href="../../../com/box/sdk/BoxCollaborator.html" title="class in com.
 <ul class="blockList">
 <li class="blockList">
 <h4>createGroup</h4>
-<pre>public static&nbsp;<a href="../../../com/box/sdk/BoxGroup.Info.html" title="class in com.box.sdk">BoxGroup.Info</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxGroup.html#line.66">createGroup</a>(<a href="../../../com/box/sdk/BoxAPIConnection.html" title="class in com.box.sdk">BoxAPIConnection</a>&nbsp;api,
+<pre>public static&nbsp;<a href="../../../com/box/sdk/BoxGroup.Info.html" title="class in com.box.sdk">BoxGroup.Info</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxGroup.html#line.65">createGroup</a>(<a href="../../../com/box/sdk/BoxAPIConnection.html" title="class in com.box.sdk">BoxAPIConnection</a>&nbsp;api,
                                         <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;name)</pre>
 <div class="block">Creates a new group with a specified name.</div>
 <dl>
@@ -452,7 +419,7 @@ extends <a href="../../../com/box/sdk/BoxCollaborator.html" title="class in com.
 <ul class="blockList">
 <li class="blockList">
 <h4>createGroup</h4>
-<pre>public static&nbsp;<a href="../../../com/box/sdk/BoxGroup.Info.html" title="class in com.box.sdk">BoxGroup.Info</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxGroup.html#line.82">createGroup</a>(<a href="../../../com/box/sdk/BoxAPIConnection.html" title="class in com.box.sdk">BoxAPIConnection</a>&nbsp;api,
+<pre>public static&nbsp;<a href="../../../com/box/sdk/BoxGroup.Info.html" title="class in com.box.sdk">BoxGroup.Info</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxGroup.html#line.81">createGroup</a>(<a href="../../../com/box/sdk/BoxAPIConnection.html" title="class in com.box.sdk">BoxAPIConnection</a>&nbsp;api,
                                         <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;name,
                                         <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;provenance,
                                         <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;externalSyncIdentifier,
@@ -508,32 +475,13 @@ extends <a href="../../../com/box/sdk/BoxCollaborator.html" title="class in com.
 </dl>
 </li>
 </ul>
-<a name="getAllGroupsByName-com.box.sdk.BoxAPIConnection-java.lang.String-">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>getAllGroupsByName</h4>
-<pre>public static&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Iterable.html?is-external=true" title="class or interface in java.lang">Iterable</a>&lt;<a href="../../../com/box/sdk/BoxGroup.Info.html" title="class in com.box.sdk">BoxGroup.Info</a>&gt;&nbsp;<a href="../../../src-html/com/box/sdk/BoxGroup.html#line.153">getAllGroupsByName</a>(<a href="../../../com/box/sdk/BoxAPIConnection.html" title="class in com.box.sdk">BoxAPIConnection</a>&nbsp;api,
-                                                         <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;name)</pre>
-<div class="block">Gets an iterable of all the groups in the enterprise that are starting with the given name string.</div>
-<dl>
-<dt><span class="paramLabel">Parameters:</span></dt>
-<dd><code>api</code> - the API connection to be used when retrieving the groups.</dd>
-<dd><code>name</code> - the name prefix of the groups. If the groups need to searched by full name that has spaces,
-             then the parameter string should have been wrapped with "".</dd>
-<dt><span class="returnLabel">Returns:</span></dt>
-<dd>an iterable containing info about all the groups.</dd>
-</dl>
-</li>
-</ul>
 <a name="getAllGroupsByName-com.box.sdk.BoxAPIConnection-java.lang.String-java.lang.String...-">
 <!--   -->
 </a>
 <ul class="blockList">
 <li class="blockList">
 <h4>getAllGroupsByName</h4>
-<pre>public static&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Iterable.html?is-external=true" title="class or interface in java.lang">Iterable</a>&lt;<a href="../../../com/box/sdk/BoxGroup.Info.html" title="class in com.box.sdk">BoxGroup.Info</a>&gt;&nbsp;<a href="../../../src-html/com/box/sdk/BoxGroup.html#line.166">getAllGroupsByName</a>(<a href="../../../com/box/sdk/BoxAPIConnection.html" title="class in com.box.sdk">BoxAPIConnection</a>&nbsp;api,
+<pre>public static&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Iterable.html?is-external=true" title="class or interface in java.lang">Iterable</a>&lt;<a href="../../../com/box/sdk/BoxGroup.Info.html" title="class in com.box.sdk">BoxGroup.Info</a>&gt;&nbsp;<a href="../../../src-html/com/box/sdk/BoxGroup.html#line.154">getAllGroupsByName</a>(<a href="../../../com/box/sdk/BoxAPIConnection.html" title="class in com.box.sdk">BoxAPIConnection</a>&nbsp;api,
                                                          <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;name,
                                                          <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>...&nbsp;fields)</pre>
 <div class="block">Gets an iterable of all the groups in the enterprise that are starting with the given name string.</div>
@@ -548,27 +496,13 @@ extends <a href="../../../com/box/sdk/BoxCollaborator.html" title="class in com.
 </dl>
 </li>
 </ul>
-<a name="getInfo--">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>getInfo</h4>
-<pre>public&nbsp;<a href="../../../com/box/sdk/BoxGroup.Info.html" title="class in com.box.sdk">BoxGroup.Info</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxGroup.html#line.189">getInfo</a>()</pre>
-<div class="block">Gets information about this group.</div>
-<dl>
-<dt><span class="returnLabel">Returns:</span></dt>
-<dd>info about this group.</dd>
-</dl>
-</li>
-</ul>
 <a name="getInfo-java.lang.String...-">
 <!--   -->
 </a>
 <ul class="blockList">
 <li class="blockList">
 <h4>getInfo</h4>
-<pre>public&nbsp;<a href="../../../com/box/sdk/BoxGroup.Info.html" title="class in com.box.sdk">BoxGroup.Info</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxGroup.html#line.203">getInfo</a>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>...&nbsp;fields)</pre>
+<pre>public&nbsp;<a href="../../../com/box/sdk/BoxGroup.Info.html" title="class in com.box.sdk">BoxGroup.Info</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxGroup.html#line.179">getInfo</a>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>...&nbsp;fields)</pre>
 <div class="block">Gets information about this group.</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
@@ -584,7 +518,7 @@ extends <a href="../../../com/box/sdk/BoxCollaborator.html" title="class in com.
 <ul class="blockList">
 <li class="blockList">
 <h4>getMemberships</h4>
-<pre>public&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/util/Collection.html?is-external=true" title="class or interface in java.util">Collection</a>&lt;<a href="../../../com/box/sdk/BoxGroupMembership.Info.html" title="class in com.box.sdk">BoxGroupMembership.Info</a>&gt;&nbsp;<a href="../../../src-html/com/box/sdk/BoxGroup.html#line.221">getMemberships</a>()</pre>
+<pre>public&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/util/Collection.html?is-external=true" title="class or interface in java.util">Collection</a>&lt;<a href="../../../com/box/sdk/BoxGroupMembership.Info.html" title="class in com.box.sdk">BoxGroupMembership.Info</a>&gt;&nbsp;<a href="../../../src-html/com/box/sdk/BoxGroup.html#line.198">getMemberships</a>()</pre>
 <div class="block">Gets information about all of the group memberships for this group.
  Does not support paging.</div>
 <dl>
@@ -599,7 +533,7 @@ extends <a href="../../../com/box/sdk/BoxCollaborator.html" title="class in com.
 <ul class="blockList">
 <li class="blockList">
 <h4>getAllMemberships</h4>
-<pre>public&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Iterable.html?is-external=true" title="class or interface in java.lang">Iterable</a>&lt;<a href="../../../com/box/sdk/BoxGroupMembership.Info.html" title="class in com.box.sdk">BoxGroupMembership.Info</a>&gt;&nbsp;<a href="../../../src-html/com/box/sdk/BoxGroup.html#line.245">getAllMemberships</a>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>...&nbsp;fields)</pre>
+<pre>public&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Iterable.html?is-external=true" title="class or interface in java.lang">Iterable</a>&lt;<a href="../../../com/box/sdk/BoxGroupMembership.Info.html" title="class in com.box.sdk">BoxGroupMembership.Info</a>&gt;&nbsp;<a href="../../../src-html/com/box/sdk/BoxGroup.html#line.222">getAllMemberships</a>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>...&nbsp;fields)</pre>
 <div class="block">Gets information about all of the group memberships for this group as iterable with paging support.</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
@@ -615,31 +549,11 @@ extends <a href="../../../com/box/sdk/BoxCollaborator.html" title="class in com.
 <ul class="blockList">
 <li class="blockList">
 <h4>addMembership</h4>
-<pre>public&nbsp;<a href="../../../com/box/sdk/BoxGroupMembership.Info.html" title="class in com.box.sdk">BoxGroupMembership.Info</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxGroup.html#line.263">addMembership</a>(<a href="../../../com/box/sdk/BoxUser.html" title="class in com.box.sdk">BoxUser</a>&nbsp;user)</pre>
+<pre>public&nbsp;<a href="../../../com/box/sdk/BoxGroupMembership.Info.html" title="class in com.box.sdk">BoxGroupMembership.Info</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxGroup.html#line.240">addMembership</a>(<a href="../../../com/box/sdk/BoxUser.html" title="class in com.box.sdk">BoxUser</a>&nbsp;user)</pre>
 <div class="block">Adds a member to this group with the default role.</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
 <dd><code>user</code> - the member to be added to this group.</dd>
-<dt><span class="returnLabel">Returns:</span></dt>
-<dd>info about the new group membership.</dd>
-</dl>
-</li>
-</ul>
-<a name="addMembership-com.box.sdk.BoxUser-com.box.sdk.BoxGroupMembership.Role-">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>addMembership</h4>
-<pre><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Deprecated.html?is-external=true" title="class or interface in java.lang">@Deprecated</a>
-public&nbsp;<a href="../../../com/box/sdk/BoxGroupMembership.Info.html" title="class in com.box.sdk">BoxGroupMembership.Info</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxGroup.html#line.276">addMembership</a>(<a href="../../../com/box/sdk/BoxUser.html" title="class in com.box.sdk">BoxUser</a>&nbsp;user,
-                                                         <a href="../../../com/box/sdk/BoxGroupMembership.Role.html" title="enum in com.box.sdk">BoxGroupMembership.Role</a>&nbsp;role)</pre>
-<div class="block"><span class="deprecatedLabel">Deprecated.</span>&nbsp;<span class="deprecationComment">use addMembership(BoxUser user, BoxGroupMembership.GroupRole role) instead.</span></div>
-<div class="block">Adds a member to this group with the specified role.</div>
-<dl>
-<dt><span class="paramLabel">Parameters:</span></dt>
-<dd><code>user</code> - the member to be added to this group.</dd>
-<dd><code>role</code> - the role of the user in this group. Can be null to assign the default role.</dd>
 <dt><span class="returnLabel">Returns:</span></dt>
 <dd>info about the new group membership.</dd>
 </dl>
@@ -651,7 +565,7 @@ public&nbsp;<a href="../../../com/box/sdk/BoxGroupMembership.Info.html" title="c
 <ul class="blockList">
 <li class="blockList">
 <h4>addMembership</h4>
-<pre>public&nbsp;<a href="../../../com/box/sdk/BoxGroupMembership.Info.html" title="class in com.box.sdk">BoxGroupMembership.Info</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxGroup.html#line.287">addMembership</a>(<a href="../../../com/box/sdk/BoxUser.html" title="class in com.box.sdk">BoxUser</a>&nbsp;user,
+<pre>public&nbsp;<a href="../../../com/box/sdk/BoxGroupMembership.Info.html" title="class in com.box.sdk">BoxGroupMembership.Info</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxGroup.html#line.251">addMembership</a>(<a href="../../../com/box/sdk/BoxUser.html" title="class in com.box.sdk">BoxUser</a>&nbsp;user,
                                              <a href="../../../com/box/sdk/BoxGroupMembership.GroupRole.html" title="enum in com.box.sdk">BoxGroupMembership.GroupRole</a>&nbsp;role)</pre>
 <div class="block">Adds a member to this group with the specified role.</div>
 <dl>
@@ -663,37 +577,13 @@ public&nbsp;<a href="../../../com/box/sdk/BoxGroupMembership.Info.html" title="c
 </dl>
 </li>
 </ul>
-<a name="addMembership-com.box.sdk.BoxUser-com.box.sdk.BoxGroupMembership.Role-java.util.Map-">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>addMembership</h4>
-<pre><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Deprecated.html?is-external=true" title="class or interface in java.lang">@Deprecated</a>
-public&nbsp;<a href="../../../com/box/sdk/BoxGroupMembership.Info.html" title="class in com.box.sdk">BoxGroupMembership.Info</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxGroup.html#line.303">addMembership</a>(<a href="../../../com/box/sdk/BoxUser.html" title="class in com.box.sdk">BoxUser</a>&nbsp;user,
-                                                         <a href="../../../com/box/sdk/BoxGroupMembership.Role.html" title="enum in com.box.sdk">BoxGroupMembership.Role</a>&nbsp;role,
-                                                         <a href="https://docs.oracle.com/javase/8/docs/api/java/util/Map.html?is-external=true" title="class or interface in java.util">Map</a>&lt;<a href="../../../com/box/sdk/BoxGroupMembership.Permission.html" title="enum in com.box.sdk">BoxGroupMembership.Permission</a>,<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Boolean.html?is-external=true" title="class or interface in java.lang">Boolean</a>&gt;&nbsp;configurablePermissions)</pre>
-<div class="block"><span class="deprecatedLabel">Deprecated.</span>&nbsp;<span class="deprecationComment">use <code>addMembership(BoxUser user, GroupRole role,
- Map&lt;BoxGroupMembership.Permission, Boolean&gt; configurablePermissions)</code> instead.</span></div>
-<div class="block">Adds a member to this group with the specified role.</div>
-<dl>
-<dt><span class="paramLabel">Parameters:</span></dt>
-<dd><code>user</code> - the member to be added to this group.</dd>
-<dd><code>role</code> - the role of the user in this group. Can be null to assign the default role.</dd>
-<dd><code>configurablePermissions</code> - the configurable permission of the user as a group admin.
-                                Can be null to give all group admin permissions.</dd>
-<dt><span class="returnLabel">Returns:</span></dt>
-<dd>info about the new group membership.</dd>
-</dl>
-</li>
-</ul>
 <a name="addMembership-com.box.sdk.BoxUser-com.box.sdk.BoxGroupMembership.GroupRole-java.util.Map-">
 <!--   -->
 </a>
 <ul class="blockList">
 <li class="blockList">
 <h4>addMembership</h4>
-<pre>public&nbsp;<a href="../../../com/box/sdk/BoxGroupMembership.Info.html" title="class in com.box.sdk">BoxGroupMembership.Info</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxGroup.html#line.341">addMembership</a>(<a href="../../../com/box/sdk/BoxUser.html" title="class in com.box.sdk">BoxUser</a>&nbsp;user,
+<pre>public&nbsp;<a href="../../../com/box/sdk/BoxGroupMembership.Info.html" title="class in com.box.sdk">BoxGroupMembership.Info</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxGroup.html#line.264">addMembership</a>(<a href="../../../com/box/sdk/BoxUser.html" title="class in com.box.sdk">BoxUser</a>&nbsp;user,
                                              <a href="../../../com/box/sdk/BoxGroupMembership.GroupRole.html" title="enum in com.box.sdk">BoxGroupMembership.GroupRole</a>&nbsp;role,
                                              <a href="https://docs.oracle.com/javase/8/docs/api/java/util/Map.html?is-external=true" title="class or interface in java.util">Map</a>&lt;<a href="../../../com/box/sdk/BoxGroupMembership.Permission.html" title="enum in com.box.sdk">BoxGroupMembership.Permission</a>,<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Boolean.html?is-external=true" title="class or interface in java.lang">Boolean</a>&gt;&nbsp;configurablePermissions)</pre>
 <div class="block">Adds a member to this group with the specified role.</div>
@@ -714,7 +604,7 @@ public&nbsp;<a href="../../../com/box/sdk/BoxGroupMembership.Info.html" title="c
 <ul class="blockList">
 <li class="blockList">
 <h4>getCollaborations</h4>
-<pre>public&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/util/Collection.html?is-external=true" title="class or interface in java.util">Collection</a>&lt;<a href="../../../com/box/sdk/BoxCollaboration.Info.html" title="class in com.box.sdk">BoxCollaboration.Info</a>&gt;&nbsp;<a href="../../../src-html/com/box/sdk/BoxGroup.html#line.375">getCollaborations</a>()</pre>
+<pre>public&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/util/Collection.html?is-external=true" title="class or interface in java.util">Collection</a>&lt;<a href="../../../com/box/sdk/BoxCollaboration.Info.html" title="class in com.box.sdk">BoxCollaboration.Info</a>&gt;&nbsp;<a href="../../../src-html/com/box/sdk/BoxGroup.html#line.299">getCollaborations</a>()</pre>
 <div class="block">Gets information about all of the collaborations for this group.</div>
 <dl>
 <dt><span class="returnLabel">Returns:</span></dt>
@@ -728,7 +618,7 @@ public&nbsp;<a href="../../../com/box/sdk/BoxGroupMembership.Info.html" title="c
 <ul class="blockList">
 <li class="blockList">
 <h4>getAllCollaborations</h4>
-<pre>public&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Iterable.html?is-external=true" title="class or interface in java.lang">Iterable</a>&lt;<a href="../../../com/box/sdk/BoxCollaboration.Info.html" title="class in com.box.sdk">BoxCollaboration.Info</a>&gt;&nbsp;<a href="../../../src-html/com/box/sdk/BoxGroup.html#line.402">getAllCollaborations</a>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>...&nbsp;fields)</pre>
+<pre>public&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Iterable.html?is-external=true" title="class or interface in java.lang">Iterable</a>&lt;<a href="../../../com/box/sdk/BoxCollaboration.Info.html" title="class in com.box.sdk">BoxCollaboration.Info</a>&gt;&nbsp;<a href="../../../src-html/com/box/sdk/BoxGroup.html#line.327">getAllCollaborations</a>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>...&nbsp;fields)</pre>
 <div class="block">Gets information about all of the collaborations for this group.</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
@@ -744,7 +634,7 @@ public&nbsp;<a href="../../../com/box/sdk/BoxGroupMembership.Info.html" title="c
 <ul class="blockList">
 <li class="blockList">
 <h4>delete</h4>
-<pre>public&nbsp;void&nbsp;<a href="../../../src-html/com/box/sdk/BoxGroup.html#line.418">delete</a>()</pre>
+<pre>public&nbsp;void&nbsp;<a href="../../../src-html/com/box/sdk/BoxGroup.html#line.343">delete</a>()</pre>
 <div class="block">Deletes this group.</div>
 </li>
 </ul>
@@ -754,7 +644,7 @@ public&nbsp;<a href="../../../com/box/sdk/BoxGroupMembership.Info.html" title="c
 <ul class="blockListLast">
 <li class="blockList">
 <h4>updateInfo</h4>
-<pre>public&nbsp;void&nbsp;<a href="../../../src-html/com/box/sdk/BoxGroup.html#line.430">updateInfo</a>(<a href="../../../com/box/sdk/BoxGroup.Info.html" title="class in com.box.sdk">BoxGroup.Info</a>&nbsp;info)</pre>
+<pre>public&nbsp;void&nbsp;<a href="../../../src-html/com/box/sdk/BoxGroup.html#line.354">updateInfo</a>(<a href="../../../com/box/sdk/BoxGroup.Info.html" title="class in com.box.sdk">BoxGroup.Info</a>&nbsp;info)</pre>
 <div class="block">Updates the information about this group with any info fields that have been modified locally.</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>

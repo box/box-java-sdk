@@ -18,8 +18,8 @@
     catch(err) {
     }
 //-->
-var methods = {"i0":42,"i1":10,"i2":10,"i3":10,"i4":10,"i5":10,"i6":10,"i7":10,"i8":10,"i9":10,"i10":10,"i11":10,"i12":10,"i13":10};
-var tabs = {65535:["t0","All Methods"],2:["t2","Instance Methods"],8:["t4","Concrete Methods"],32:["t6","Deprecated Methods"]};
+var methods = {"i0":10,"i1":10,"i2":10,"i3":10,"i4":10,"i5":10,"i6":10,"i7":10,"i8":10,"i9":10,"i10":10,"i11":10,"i12":10};
+var tabs = {65535:["t0","All Methods"],2:["t2","Instance Methods"],8:["t4","Concrete Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
 var tableTab = "tableTab";
@@ -61,7 +61,7 @@ var activeTableTab = "activeTableTab";
 </dl>
 <hr>
 <br>
-<pre>public class <a href="../../../src-html/com/box/sdk/BoxTask.html#line.266">BoxTask.Info</a>
+<pre>public class <a href="../../../src-html/com/box/sdk/BoxTask.html#line.259">BoxTask.Info</a>
 extends <a href="../../../com/box/sdk/BoxResource.Info.html" title="class in com.box.sdk">BoxResource.Info</a></pre>
 <div class="block">Contains information about a BoxTask.</div>
 </li>
@@ -101,94 +101,84 @@ extends <a href="../../../com/box/sdk/BoxResource.Info.html" title="class in com
 </a>
 <h3>Method Summary</h3>
 <table class="memberSummary" border="0" cellpadding="3" cellspacing="0" summary="Method Summary table, listing methods, and an explanation">
-<caption><span id="t0" class="activeTableTab"><span>All Methods</span><span class="tabEnd">&nbsp;</span></span><span id="t2" class="tableTab"><span><a href="javascript:show(2);">Instance Methods</a></span><span class="tabEnd">&nbsp;</span></span><span id="t4" class="tableTab"><span><a href="javascript:show(8);">Concrete Methods</a></span><span class="tabEnd">&nbsp;</span></span><span id="t6" class="tableTab"><span><a href="javascript:show(32);">Deprecated Methods</a></span><span class="tabEnd">&nbsp;</span></span></caption>
+<caption><span id="t0" class="activeTableTab"><span>All Methods</span><span class="tabEnd">&nbsp;</span></span><span id="t2" class="tableTab"><span><a href="javascript:show(2);">Instance Methods</a></span><span class="tabEnd">&nbsp;</span></span><span id="t4" class="tableTab"><span><a href="javascript:show(8);">Concrete Methods</a></span><span class="tabEnd">&nbsp;</span></span></caption>
 <tr>
 <th class="colFirst" scope="col">Modifier and Type</th>
 <th class="colLast" scope="col">Method and Description</th>
 </tr>
 <tr id="i0" class="altColor">
-<td class="colFirst"><code><a href="../../../com/box/sdk/BoxTask.Action.html" title="enum in com.box.sdk">BoxTask.Action</a></code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../com/box/sdk/BoxTask.Info.html#getAction--">getAction</a></span>()</code>
-<div class="block"><span class="deprecatedLabel">Deprecated.</span>&nbsp;
-<div class="block"><span class="deprecationComment">Please use getTaskType()
- <p>
- Gets the action the task assignee will be prompted to do.</span></div>
-</div>
-</td>
-</tr>
-<tr id="i1" class="rowColor">
 <td class="colFirst"><code><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../com/box/sdk/BoxTask.Info.html#getCompletionRule--">getCompletionRule</a></span>()</code>
 <div class="block">Returns the completion rule for the task.</div>
 </td>
 </tr>
-<tr id="i2" class="altColor">
+<tr id="i1" class="rowColor">
 <td class="colFirst"><code><a href="https://docs.oracle.com/javase/8/docs/api/java/util/Date.html?is-external=true" title="class or interface in java.util">Date</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../com/box/sdk/BoxTask.Info.html#getCreatedAt--">getCreatedAt</a></span>()</code>
 <div class="block">Gets when this task was created.</div>
 </td>
 </tr>
-<tr id="i3" class="rowColor">
+<tr id="i2" class="altColor">
 <td class="colFirst"><code><a href="../../../com/box/sdk/BoxUser.Info.html" title="class in com.box.sdk">BoxUser.Info</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../com/box/sdk/BoxTask.Info.html#getCreatedBy--">getCreatedBy</a></span>()</code>
 <div class="block">Gets the user who created this task.</div>
 </td>
 </tr>
-<tr id="i4" class="altColor">
+<tr id="i3" class="rowColor">
 <td class="colFirst"><code><a href="https://docs.oracle.com/javase/8/docs/api/java/util/Date.html?is-external=true" title="class or interface in java.util">Date</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../com/box/sdk/BoxTask.Info.html#getDueAt--">getDueAt</a></span>()</code>
 <div class="block">Gets the date at which this task is due.</div>
 </td>
 </tr>
-<tr id="i5" class="rowColor">
+<tr id="i4" class="altColor">
 <td class="colFirst"><code><a href="../../../com/box/sdk/BoxFile.Info.html" title="class in com.box.sdk">BoxFile.Info</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../com/box/sdk/BoxTask.Info.html#getItem--">getItem</a></span>()</code>
 <div class="block">Gets the file associated with this task.</div>
 </td>
 </tr>
-<tr id="i6" class="altColor">
+<tr id="i5" class="rowColor">
 <td class="colFirst"><code><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../com/box/sdk/BoxTask.Info.html#getMessage--">getMessage</a></span>()</code>
 <div class="block">Gets the message that will be included with this task.</div>
 </td>
 </tr>
-<tr id="i7" class="rowColor">
+<tr id="i6" class="altColor">
 <td class="colFirst"><code><a href="../../../com/box/sdk/BoxTask.html" title="class in com.box.sdk">BoxTask</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../com/box/sdk/BoxTask.Info.html#getResource--">getResource</a></span>()</code>
 <div class="block">Gets the resource associated with this Info.</div>
 </td>
 </tr>
-<tr id="i8" class="altColor">
+<tr id="i7" class="rowColor">
 <td class="colFirst"><code><a href="https://docs.oracle.com/javase/8/docs/api/java/util/List.html?is-external=true" title="class or interface in java.util">List</a>&lt;<a href="../../../com/box/sdk/BoxTaskAssignment.Info.html" title="class in com.box.sdk">BoxTaskAssignment.Info</a>&gt;</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../com/box/sdk/BoxTask.Info.html#getTaskAssignments--">getTaskAssignments</a></span>()</code>
 <div class="block">Gets the collection of task assignments associated with this task.</div>
 </td>
 </tr>
-<tr id="i9" class="rowColor">
+<tr id="i8" class="altColor">
 <td class="colFirst"><code><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../com/box/sdk/BoxTask.Info.html#getTaskType--">getTaskType</a></span>()</code>
 <div class="block">Gets the action the task assignee will be prompted to do.</div>
 </td>
 </tr>
-<tr id="i10" class="altColor">
+<tr id="i9" class="rowColor">
 <td class="colFirst"><code>boolean</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../com/box/sdk/BoxTask.Info.html#isCompleted--">isCompleted</a></span>()</code>
 <div class="block">Gets whether or not this task has been completed.</div>
 </td>
 </tr>
-<tr id="i11" class="rowColor">
+<tr id="i10" class="altColor">
 <td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../com/box/sdk/BoxTask.Info.html#setCompletionRule-com.box.sdk.BoxTask.CompletionRule-">setCompletionRule</a></span>(<a href="../../../com/box/sdk/BoxTask.CompletionRule.html" title="enum in com.box.sdk">BoxTask.CompletionRule</a>&nbsp;completionRule)</code>
 <div class="block">Sets the task's completion rule.</div>
 </td>
 </tr>
-<tr id="i12" class="altColor">
+<tr id="i11" class="rowColor">
 <td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../com/box/sdk/BoxTask.Info.html#setDueAt-java.util.Date-">setDueAt</a></span>(<a href="https://docs.oracle.com/javase/8/docs/api/java/util/Date.html?is-external=true" title="class or interface in java.util">Date</a>&nbsp;dueAt)</code>
 <div class="block">Sets the task's due date.</div>
 </td>
 </tr>
-<tr id="i13" class="rowColor">
+<tr id="i12" class="altColor">
 <td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../com/box/sdk/BoxTask.Info.html#setMessage-java.lang.String-">setMessage</a></span>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;message)</code>
 <div class="block">Sets the task's message.</div>
@@ -236,7 +226,7 @@ extends <a href="../../../com/box/sdk/BoxResource.Info.html" title="class in com
 <ul class="blockList">
 <li class="blockList">
 <h4>Info</h4>
-<pre>public&nbsp;<a href="../../../src-html/com/box/sdk/BoxTask.Info.html#line.280">Info</a>()</pre>
+<pre>public&nbsp;<a href="../../../src-html/com/box/sdk/BoxTask.Info.html#line.273">Info</a>()</pre>
 <div class="block">Constructs an empty Info object.</div>
 </li>
 </ul>
@@ -246,7 +236,7 @@ extends <a href="../../../com/box/sdk/BoxResource.Info.html" title="class in com
 <ul class="blockListLast">
 <li class="blockList">
 <h4>Info</h4>
-<pre>public&nbsp;<a href="../../../src-html/com/box/sdk/BoxTask.Info.html#line.289">Info</a>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;json)</pre>
+<pre>public&nbsp;<a href="../../../src-html/com/box/sdk/BoxTask.Info.html#line.282">Info</a>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;json)</pre>
 <div class="block">Constructs an Info object by parsing information from a JSON string.</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
@@ -268,7 +258,7 @@ extends <a href="../../../com/box/sdk/BoxResource.Info.html" title="class in com
 <ul class="blockList">
 <li class="blockList">
 <h4>getResource</h4>
-<pre>public&nbsp;<a href="../../../com/box/sdk/BoxTask.html" title="class in com.box.sdk">BoxTask</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxTask.Info.html#line.303">getResource</a>()</pre>
+<pre>public&nbsp;<a href="../../../com/box/sdk/BoxTask.html" title="class in com.box.sdk">BoxTask</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxTask.Info.html#line.296">getResource</a>()</pre>
 <div class="block"><span class="descfrmTypeLabel">Description copied from class:&nbsp;<code><a href="../../../com/box/sdk/BoxResource.Info.html#getResource--">BoxResource.Info</a></code></span></div>
 <div class="block">Gets the resource associated with this Info.</div>
 <dl>
@@ -285,7 +275,7 @@ extends <a href="../../../com/box/sdk/BoxResource.Info.html" title="class in com
 <ul class="blockList">
 <li class="blockList">
 <h4>getItem</h4>
-<pre>public&nbsp;<a href="../../../com/box/sdk/BoxFile.Info.html" title="class in com.box.sdk">BoxFile.Info</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxTask.Info.html#line.312">getItem</a>()</pre>
+<pre>public&nbsp;<a href="../../../com/box/sdk/BoxFile.Info.html" title="class in com.box.sdk">BoxFile.Info</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxTask.Info.html#line.305">getItem</a>()</pre>
 <div class="block">Gets the file associated with this task.</div>
 <dl>
 <dt><span class="returnLabel">Returns:</span></dt>
@@ -299,7 +289,7 @@ extends <a href="../../../com/box/sdk/BoxResource.Info.html" title="class in com
 <ul class="blockList">
 <li class="blockList">
 <h4>getDueAt</h4>
-<pre>public&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/util/Date.html?is-external=true" title="class or interface in java.util">Date</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxTask.Info.html#line.321">getDueAt</a>()</pre>
+<pre>public&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/util/Date.html?is-external=true" title="class or interface in java.util">Date</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxTask.Info.html#line.314">getDueAt</a>()</pre>
 <div class="block">Gets the date at which this task is due.</div>
 <dl>
 <dt><span class="returnLabel">Returns:</span></dt>
@@ -313,28 +303,11 @@ extends <a href="../../../com/box/sdk/BoxResource.Info.html" title="class in com
 <ul class="blockList">
 <li class="blockList">
 <h4>setDueAt</h4>
-<pre>public&nbsp;void&nbsp;<a href="../../../src-html/com/box/sdk/BoxTask.Info.html#line.330">setDueAt</a>(<a href="https://docs.oracle.com/javase/8/docs/api/java/util/Date.html?is-external=true" title="class or interface in java.util">Date</a>&nbsp;dueAt)</pre>
+<pre>public&nbsp;void&nbsp;<a href="../../../src-html/com/box/sdk/BoxTask.Info.html#line.323">setDueAt</a>(<a href="https://docs.oracle.com/javase/8/docs/api/java/util/Date.html?is-external=true" title="class or interface in java.util">Date</a>&nbsp;dueAt)</pre>
 <div class="block">Sets the task's due date.</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
 <dd><code>dueAt</code> - the task's due date.</dd>
-</dl>
-</li>
-</ul>
-<a name="getAction--">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>getAction</h4>
-<pre><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Deprecated.html?is-external=true" title="class or interface in java.lang">@Deprecated</a>
-public&nbsp;<a href="../../../com/box/sdk/BoxTask.Action.html" title="enum in com.box.sdk">BoxTask.Action</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxTask.Info.html#line.342">getAction</a>()</pre>
-<div class="block"><span class="deprecatedLabel">Deprecated.</span>&nbsp;<span class="deprecationComment">Please use getTaskType()
- <p>
- Gets the action the task assignee will be prompted to do.</span></div>
-<dl>
-<dt><span class="returnLabel">Returns:</span></dt>
-<dd>the action the task assignee will be prompted to do.</dd>
 </dl>
 </li>
 </ul>
@@ -344,7 +317,7 @@ public&nbsp;<a href="../../../com/box/sdk/BoxTask.Action.html" title="enum in co
 <ul class="blockList">
 <li class="blockList">
 <h4>getTaskType</h4>
-<pre>public&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxTask.Info.html#line.351">getTaskType</a>()</pre>
+<pre>public&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxTask.Info.html#line.333">getTaskType</a>()</pre>
 <div class="block">Gets the action the task assignee will be prompted to do.</div>
 <dl>
 <dt><span class="returnLabel">Returns:</span></dt>
@@ -358,7 +331,7 @@ public&nbsp;<a href="../../../com/box/sdk/BoxTask.Action.html" title="enum in co
 <ul class="blockList">
 <li class="blockList">
 <h4>getCompletionRule</h4>
-<pre>public&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxTask.Info.html#line.360">getCompletionRule</a>()</pre>
+<pre>public&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxTask.Info.html#line.342">getCompletionRule</a>()</pre>
 <div class="block">Returns the completion rule for the task.</div>
 <dl>
 <dt><span class="returnLabel">Returns:</span></dt>
@@ -372,7 +345,7 @@ public&nbsp;<a href="../../../com/box/sdk/BoxTask.Action.html" title="enum in co
 <ul class="blockList">
 <li class="blockList">
 <h4>setCompletionRule</h4>
-<pre>public&nbsp;void&nbsp;<a href="../../../src-html/com/box/sdk/BoxTask.Info.html#line.369">setCompletionRule</a>(<a href="../../../com/box/sdk/BoxTask.CompletionRule.html" title="enum in com.box.sdk">BoxTask.CompletionRule</a>&nbsp;completionRule)</pre>
+<pre>public&nbsp;void&nbsp;<a href="../../../src-html/com/box/sdk/BoxTask.Info.html#line.351">setCompletionRule</a>(<a href="../../../com/box/sdk/BoxTask.CompletionRule.html" title="enum in com.box.sdk">BoxTask.CompletionRule</a>&nbsp;completionRule)</pre>
 <div class="block">Sets the task's completion rule.</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
@@ -386,7 +359,7 @@ public&nbsp;<a href="../../../com/box/sdk/BoxTask.Action.html" title="enum in co
 <ul class="blockList">
 <li class="blockList">
 <h4>getMessage</h4>
-<pre>public&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxTask.Info.html#line.379">getMessage</a>()</pre>
+<pre>public&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxTask.Info.html#line.361">getMessage</a>()</pre>
 <div class="block">Gets the message that will be included with this task.</div>
 <dl>
 <dt><span class="returnLabel">Returns:</span></dt>
@@ -400,7 +373,7 @@ public&nbsp;<a href="../../../com/box/sdk/BoxTask.Action.html" title="enum in co
 <ul class="blockList">
 <li class="blockList">
 <h4>setMessage</h4>
-<pre>public&nbsp;void&nbsp;<a href="../../../src-html/com/box/sdk/BoxTask.Info.html#line.388">setMessage</a>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;message)</pre>
+<pre>public&nbsp;void&nbsp;<a href="../../../src-html/com/box/sdk/BoxTask.Info.html#line.370">setMessage</a>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;message)</pre>
 <div class="block">Sets the task's message.</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
@@ -414,7 +387,7 @@ public&nbsp;<a href="../../../com/box/sdk/BoxTask.Action.html" title="enum in co
 <ul class="blockList">
 <li class="blockList">
 <h4>getTaskAssignments</h4>
-<pre>public&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/util/List.html?is-external=true" title="class or interface in java.util">List</a>&lt;<a href="../../../com/box/sdk/BoxTaskAssignment.Info.html" title="class in com.box.sdk">BoxTaskAssignment.Info</a>&gt;&nbsp;<a href="../../../src-html/com/box/sdk/BoxTask.Info.html#line.398">getTaskAssignments</a>()</pre>
+<pre>public&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/util/List.html?is-external=true" title="class or interface in java.util">List</a>&lt;<a href="../../../com/box/sdk/BoxTaskAssignment.Info.html" title="class in com.box.sdk">BoxTaskAssignment.Info</a>&gt;&nbsp;<a href="../../../src-html/com/box/sdk/BoxTask.Info.html#line.380">getTaskAssignments</a>()</pre>
 <div class="block">Gets the collection of task assignments associated with this task.</div>
 <dl>
 <dt><span class="returnLabel">Returns:</span></dt>
@@ -428,7 +401,7 @@ public&nbsp;<a href="../../../com/box/sdk/BoxTask.Action.html" title="enum in co
 <ul class="blockList">
 <li class="blockList">
 <h4>isCompleted</h4>
-<pre>public&nbsp;boolean&nbsp;<a href="../../../src-html/com/box/sdk/BoxTask.Info.html#line.407">isCompleted</a>()</pre>
+<pre>public&nbsp;boolean&nbsp;<a href="../../../src-html/com/box/sdk/BoxTask.Info.html#line.389">isCompleted</a>()</pre>
 <div class="block">Gets whether or not this task has been completed.</div>
 <dl>
 <dt><span class="returnLabel">Returns:</span></dt>
@@ -442,7 +415,7 @@ public&nbsp;<a href="../../../com/box/sdk/BoxTask.Action.html" title="enum in co
 <ul class="blockList">
 <li class="blockList">
 <h4>getCreatedBy</h4>
-<pre>public&nbsp;<a href="../../../com/box/sdk/BoxUser.Info.html" title="class in com.box.sdk">BoxUser.Info</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxTask.Info.html#line.416">getCreatedBy</a>()</pre>
+<pre>public&nbsp;<a href="../../../com/box/sdk/BoxUser.Info.html" title="class in com.box.sdk">BoxUser.Info</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxTask.Info.html#line.398">getCreatedBy</a>()</pre>
 <div class="block">Gets the user who created this task.</div>
 <dl>
 <dt><span class="returnLabel">Returns:</span></dt>
@@ -456,7 +429,7 @@ public&nbsp;<a href="../../../com/box/sdk/BoxTask.Action.html" title="enum in co
 <ul class="blockListLast">
 <li class="blockList">
 <h4>getCreatedAt</h4>
-<pre>public&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/util/Date.html?is-external=true" title="class or interface in java.util">Date</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxTask.Info.html#line.425">getCreatedAt</a>()</pre>
+<pre>public&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/util/Date.html?is-external=true" title="class or interface in java.util">Date</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxTask.Info.html#line.407">getCreatedAt</a>()</pre>
 <div class="block">Gets when this task was created.</div>
 <dl>
 <dt><span class="returnLabel">Returns:</span></dt>

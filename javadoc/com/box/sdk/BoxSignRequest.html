@@ -440,7 +440,7 @@ extends <a href="../../../com/box/sdk/BoxResource.html" title="class in com.box.
 <ul class="blockList">
 <li class="blockList">
 <h4>getAll</h4>
-<pre>public static&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Iterable.html?is-external=true" title="class or interface in java.lang">Iterable</a>&lt;<a href="../../../com/box/sdk/BoxSignRequest.Info.html" title="class in com.box.sdk">BoxSignRequest.Info</a>&gt;&nbsp;<a href="../../../src-html/com/box/sdk/BoxSignRequest.html#line.163">getAll</a>(<a href="../../../com/box/sdk/BoxAPIConnection.html" title="class in com.box.sdk">BoxAPIConnection</a>&nbsp;api,
+<pre>public static&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Iterable.html?is-external=true" title="class or interface in java.lang">Iterable</a>&lt;<a href="../../../com/box/sdk/BoxSignRequest.Info.html" title="class in com.box.sdk">BoxSignRequest.Info</a>&gt;&nbsp;<a href="../../../src-html/com/box/sdk/BoxSignRequest.html#line.164">getAll</a>(<a href="../../../com/box/sdk/BoxAPIConnection.html" title="class in com.box.sdk">BoxAPIConnection</a>&nbsp;api,
                                                    <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>...&nbsp;fields)</pre>
 <div class="block">Returns all the sign requests.</div>
 <dl>
@@ -458,7 +458,7 @@ extends <a href="../../../com/box/sdk/BoxResource.html" title="class in com.box.
 <ul class="blockList">
 <li class="blockList">
 <h4>getAll</h4>
-<pre>public static&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Iterable.html?is-external=true" title="class or interface in java.lang">Iterable</a>&lt;<a href="../../../com/box/sdk/BoxSignRequest.Info.html" title="class in com.box.sdk">BoxSignRequest.Info</a>&gt;&nbsp;<a href="../../../src-html/com/box/sdk/BoxSignRequest.html#line.175">getAll</a>(<a href="../../../com/box/sdk/BoxAPIConnection.html" title="class in com.box.sdk">BoxAPIConnection</a>&nbsp;api,
+<pre>public static&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Iterable.html?is-external=true" title="class or interface in java.lang">Iterable</a>&lt;<a href="../../../com/box/sdk/BoxSignRequest.Info.html" title="class in com.box.sdk">BoxSignRequest.Info</a>&gt;&nbsp;<a href="../../../src-html/com/box/sdk/BoxSignRequest.html#line.176">getAll</a>(<a href="../../../com/box/sdk/BoxAPIConnection.html" title="class in com.box.sdk">BoxAPIConnection</a>&nbsp;api,
                                                    int&nbsp;limit,
                                                    <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>...&nbsp;fields)</pre>
 <div class="block">Returns all the sign requests.</div>
@@ -478,7 +478,7 @@ extends <a href="../../../com/box/sdk/BoxResource.html" title="class in com.box.
 <ul class="blockList">
 <li class="blockList">
 <h4>getInfo</h4>
-<pre>public&nbsp;<a href="../../../com/box/sdk/BoxSignRequest.Info.html" title="class in com.box.sdk">BoxSignRequest.Info</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxSignRequest.html#line.208">getInfo</a>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>...&nbsp;fields)</pre>
+<pre>public&nbsp;<a href="../../../com/box/sdk/BoxSignRequest.Info.html" title="class in com.box.sdk">BoxSignRequest.Info</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxSignRequest.html#line.209">getInfo</a>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>...&nbsp;fields)</pre>
 <div class="block">Returns information about this sign request.</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
@@ -494,7 +494,7 @@ extends <a href="../../../com/box/sdk/BoxResource.html" title="class in com.box.
 <ul class="blockList">
 <li class="blockList">
 <h4>cancel</h4>
-<pre>public&nbsp;<a href="../../../com/box/sdk/BoxSignRequest.Info.html" title="class in com.box.sdk">BoxSignRequest.Info</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxSignRequest.html#line.227">cancel</a>()</pre>
+<pre>public&nbsp;<a href="../../../com/box/sdk/BoxSignRequest.Info.html" title="class in com.box.sdk">BoxSignRequest.Info</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxSignRequest.html#line.229">cancel</a>()</pre>
 <div class="block">Cancels a sign request if it has not yet been signed or declined.
  Any outstanding signers will no longer be able to sign the document.</div>
 <dl>
@@ -509,7 +509,7 @@ extends <a href="../../../com/box/sdk/BoxResource.html" title="class in com.box.
 <ul class="blockListLast">
 <li class="blockList">
 <h4>resend</h4>
-<pre>public&nbsp;void&nbsp;<a href="../../../src-html/com/box/sdk/BoxSignRequest.html#line.241">resend</a>()</pre>
+<pre>public&nbsp;void&nbsp;<a href="../../../src-html/com/box/sdk/BoxSignRequest.html#line.243">resend</a>()</pre>
 <div class="block">Attempts to resend a Sign Request to all signers that have not signed yet.
  There is a 10 minute cooling-off period between each resend request.
  If you make a resend call during the cooling-off period, a BoxAPIException will be thrown.</div>

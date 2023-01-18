@@ -18,8 +18,8 @@
     catch(err) {
     }
 //-->
-var methods = {"i0":10,"i1":10,"i2":10,"i3":10,"i4":10,"i5":10,"i6":10,"i7":42,"i8":10,"i9":10,"i10":10,"i11":10,"i12":42};
-var tabs = {65535:["t0","All Methods"],2:["t2","Instance Methods"],8:["t4","Concrete Methods"],32:["t6","Deprecated Methods"]};
+var methods = {"i0":10,"i1":10,"i2":10,"i3":10,"i4":10,"i5":10,"i6":10,"i7":10,"i8":10,"i9":10,"i10":10};
+var tabs = {65535:["t0","All Methods"],2:["t2","Instance Methods"],8:["t4","Concrete Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
 var tableTab = "tableTab";
@@ -61,7 +61,7 @@ var activeTableTab = "activeTableTab";
 </dl>
 <hr>
 <br>
-<pre>public class <a href="../../../src-html/com/box/sdk/BoxGroupMembership.html#line.233">BoxGroupMembership.Info</a>
+<pre>public class <a href="../../../src-html/com/box/sdk/BoxGroupMembership.html#line.180">BoxGroupMembership.Info</a>
 extends <a href="../../../com/box/sdk/BoxResource.Info.html" title="class in com.box.sdk">BoxResource.Info</a></pre>
 <div class="block">Contains information about a BoxGroupMembership.</div>
 </li>
@@ -101,7 +101,7 @@ extends <a href="../../../com/box/sdk/BoxResource.Info.html" title="class in com
 </a>
 <h3>Method Summary</h3>
 <table class="memberSummary" border="0" cellpadding="3" cellspacing="0" summary="Method Summary table, listing methods, and an explanation">
-<caption><span id="t0" class="activeTableTab"><span>All Methods</span><span class="tabEnd">&nbsp;</span></span><span id="t2" class="tableTab"><span><a href="javascript:show(2);">Instance Methods</a></span><span class="tabEnd">&nbsp;</span></span><span id="t4" class="tableTab"><span><a href="javascript:show(8);">Concrete Methods</a></span><span class="tabEnd">&nbsp;</span></span><span id="t6" class="tableTab"><span><a href="javascript:show(32);">Deprecated Methods</a></span><span class="tabEnd">&nbsp;</span></span></caption>
+<caption><span id="t0" class="activeTableTab"><span>All Methods</span><span class="tabEnd">&nbsp;</span></span><span id="t2" class="tableTab"><span><a href="javascript:show(2);">Instance Methods</a></span><span class="tabEnd">&nbsp;</span></span><span id="t4" class="tableTab"><span><a href="javascript:show(8);">Concrete Methods</a></span><span class="tabEnd">&nbsp;</span></span></caption>
 <tr>
 <th class="colFirst" scope="col">Modifier and Type</th>
 <th class="colLast" scope="col">Method and Description</th>
@@ -150,43 +150,27 @@ extends <a href="../../../com/box/sdk/BoxResource.Info.html" title="class in com
 </td>
 </tr>
 <tr id="i7" class="rowColor">
-<td class="colFirst"><code><a href="../../../com/box/sdk/BoxGroupMembership.Role.html" title="enum in com.box.sdk">BoxGroupMembership.Role</a></code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../com/box/sdk/BoxGroupMembership.Info.html#getRole--">getRole</a></span>()</code>
-<div class="block"><span class="deprecatedLabel">Deprecated.</span>&nbsp;
-<div class="block"><span class="deprecationComment">use getGroupRole() instead.</span></div>
-</div>
-</td>
-</tr>
-<tr id="i8" class="altColor">
 <td class="colFirst"><code><a href="../../../com/box/sdk/BoxUser.Info.html" title="class in com.box.sdk">BoxUser.Info</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../com/box/sdk/BoxGroupMembership.Info.html#getUser--">getUser</a></span>()</code>
 <div class="block">Gets the user belonging to the group.</div>
 </td>
 </tr>
-<tr id="i9" class="rowColor">
+<tr id="i8" class="altColor">
 <td class="colFirst"><code>protected void</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../com/box/sdk/BoxGroupMembership.Info.html#parseJSONMember-com.eclipsesource.json.JsonObject.Member-">parseJSONMember</a></span>(JsonObject.Member&nbsp;member)</code>
 <div class="block">Invoked with a JSON member whenever this object is updated or created from a JSON object.</div>
 </td>
 </tr>
-<tr id="i10" class="altColor">
+<tr id="i9" class="rowColor">
 <td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../com/box/sdk/BoxGroupMembership.Info.html#setConfigurablePermissions-java.util.Map-">setConfigurablePermissions</a></span>(<a href="https://docs.oracle.com/javase/8/docs/api/java/util/Map.html?is-external=true" title="class or interface in java.util">Map</a>&lt;<a href="../../../com/box/sdk/BoxGroupMembership.Permission.html" title="enum in com.box.sdk">BoxGroupMembership.Permission</a>,<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Boolean.html?is-external=true" title="class or interface in java.lang">Boolean</a>&gt;&nbsp;configurablePermissions)</code>
 <div class="block">Sets the configurablePermissions that the current user has on the group as group admin.</div>
 </td>
 </tr>
-<tr id="i11" class="rowColor">
+<tr id="i10" class="altColor">
 <td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../com/box/sdk/BoxGroupMembership.Info.html#setGroupRole-com.box.sdk.BoxGroupMembership.GroupRole-">setGroupRole</a></span>(<a href="../../../com/box/sdk/BoxGroupMembership.GroupRole.html" title="enum in com.box.sdk">BoxGroupMembership.GroupRole</a>&nbsp;role)</code>
 <div class="block">Sets the level of access the user has.</div>
-</td>
-</tr>
-<tr id="i12" class="altColor">
-<td class="colFirst"><code>void</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../com/box/sdk/BoxGroupMembership.Info.html#setRole-com.box.sdk.BoxGroupMembership.Role-">setRole</a></span>(<a href="../../../com/box/sdk/BoxGroupMembership.Role.html" title="enum in com.box.sdk">BoxGroupMembership.Role</a>&nbsp;role)</code>
-<div class="block"><span class="deprecatedLabel">Deprecated.</span>&nbsp;
-<div class="block"><span class="deprecationComment">use setGroupRole() instead.</span></div>
-</div>
 </td>
 </tr>
 </table>
@@ -231,7 +215,7 @@ extends <a href="../../../com/box/sdk/BoxResource.Info.html" title="class in com
 <ul class="blockList">
 <li class="blockList">
 <h4>Info</h4>
-<pre>public&nbsp;<a href="../../../src-html/com/box/sdk/BoxGroupMembership.Info.html#line.273">Info</a>()</pre>
+<pre>public&nbsp;<a href="../../../src-html/com/box/sdk/BoxGroupMembership.Info.html#line.215">Info</a>()</pre>
 <div class="block">Constructs an empty Info object.</div>
 </li>
 </ul>
@@ -241,7 +225,7 @@ extends <a href="../../../com/box/sdk/BoxResource.Info.html" title="class in com
 <ul class="blockListLast">
 <li class="blockList">
 <h4>Info</h4>
-<pre>public&nbsp;<a href="../../../src-html/com/box/sdk/BoxGroupMembership.Info.html#line.282">Info</a>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;json)</pre>
+<pre>public&nbsp;<a href="../../../src-html/com/box/sdk/BoxGroupMembership.Info.html#line.224">Info</a>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;json)</pre>
 <div class="block">Constructs an Info object by parsing information from a JSON string.</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
@@ -263,7 +247,7 @@ extends <a href="../../../com/box/sdk/BoxResource.Info.html" title="class in com
 <ul class="blockList">
 <li class="blockList">
 <h4>getUser</h4>
-<pre>public&nbsp;<a href="../../../com/box/sdk/BoxUser.Info.html" title="class in com.box.sdk">BoxUser.Info</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxGroupMembership.Info.html#line.303">getUser</a>()</pre>
+<pre>public&nbsp;<a href="../../../com/box/sdk/BoxUser.Info.html" title="class in com.box.sdk">BoxUser.Info</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxGroupMembership.Info.html#line.245">getUser</a>()</pre>
 <div class="block">Gets the user belonging to the group.
 
  <p>Note: the BoxUser.Info returned by this method will only have the ID, name, and login fields
@@ -280,7 +264,7 @@ extends <a href="../../../com/box/sdk/BoxResource.Info.html" title="class in com
 <ul class="blockList">
 <li class="blockList">
 <h4>getGroup</h4>
-<pre>public&nbsp;<a href="../../../com/box/sdk/BoxGroup.Info.html" title="class in com.box.sdk">BoxGroup.Info</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxGroupMembership.Info.html#line.314">getGroup</a>()</pre>
+<pre>public&nbsp;<a href="../../../com/box/sdk/BoxGroup.Info.html" title="class in com.box.sdk">BoxGroup.Info</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxGroupMembership.Info.html#line.256">getGroup</a>()</pre>
 <div class="block">Gets the group the user belongs to.
 
  <p>Note: the BoxGroup.Info returned by this method will only have the ID and name fields populated.</p></div>
@@ -290,45 +274,13 @@ extends <a href="../../../com/box/sdk/BoxResource.Info.html" title="class in com
 </dl>
 </li>
 </ul>
-<a name="getRole--">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>getRole</h4>
-<pre><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Deprecated.html?is-external=true" title="class or interface in java.lang">@Deprecated</a>
-public&nbsp;<a href="../../../com/box/sdk/BoxGroupMembership.Role.html" title="enum in com.box.sdk">BoxGroupMembership.Role</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxGroupMembership.Info.html#line.325">getRole</a>()</pre>
-<div class="block"><span class="deprecatedLabel">Deprecated.</span>&nbsp;<span class="deprecationComment">use getGroupRole() instead.</span></div>
-<div class="block">Gets the level of access the user has.</div>
-<dl>
-<dt><span class="returnLabel">Returns:</span></dt>
-<dd>the level of access the user has.</dd>
-</dl>
-</li>
-</ul>
-<a name="setRole-com.box.sdk.BoxGroupMembership.Role-">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>setRole</h4>
-<pre><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Deprecated.html?is-external=true" title="class or interface in java.lang">@Deprecated</a>
-public&nbsp;void&nbsp;<a href="../../../src-html/com/box/sdk/BoxGroupMembership.Info.html#line.336">setRole</a>(<a href="../../../com/box/sdk/BoxGroupMembership.Role.html" title="enum in com.box.sdk">BoxGroupMembership.Role</a>&nbsp;role)</pre>
-<div class="block"><span class="deprecatedLabel">Deprecated.</span>&nbsp;<span class="deprecationComment">use setGroupRole() instead.</span></div>
-<div class="block">Sets the level of access the user has.</div>
-<dl>
-<dt><span class="paramLabel">Parameters:</span></dt>
-<dd><code>role</code> - the new level of access to give the user.</dd>
-</dl>
-</li>
-</ul>
 <a name="getGroupRole--">
 <!--   -->
 </a>
 <ul class="blockList">
 <li class="blockList">
 <h4>getGroupRole</h4>
-<pre>public&nbsp;<a href="../../../com/box/sdk/BoxGroupMembership.GroupRole.html" title="enum in com.box.sdk">BoxGroupMembership.GroupRole</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxGroupMembership.Info.html#line.346">getGroupRole</a>()</pre>
+<pre>public&nbsp;<a href="../../../com/box/sdk/BoxGroupMembership.GroupRole.html" title="enum in com.box.sdk">BoxGroupMembership.GroupRole</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxGroupMembership.Info.html#line.265">getGroupRole</a>()</pre>
 <div class="block">Gets the level of access the user has.</div>
 <dl>
 <dt><span class="returnLabel">Returns:</span></dt>
@@ -342,7 +294,7 @@ public&nbsp;void&nbsp;<a href="../../../src-html/com/box/sdk/BoxGroupMembership.
 <ul class="blockList">
 <li class="blockList">
 <h4>setGroupRole</h4>
-<pre>public&nbsp;void&nbsp;<a href="../../../src-html/com/box/sdk/BoxGroupMembership.Info.html#line.355">setGroupRole</a>(<a href="../../../com/box/sdk/BoxGroupMembership.GroupRole.html" title="enum in com.box.sdk">BoxGroupMembership.GroupRole</a>&nbsp;role)</pre>
+<pre>public&nbsp;void&nbsp;<a href="../../../src-html/com/box/sdk/BoxGroupMembership.Info.html#line.274">setGroupRole</a>(<a href="../../../com/box/sdk/BoxGroupMembership.GroupRole.html" title="enum in com.box.sdk">BoxGroupMembership.GroupRole</a>&nbsp;role)</pre>
 <div class="block">Sets the level of access the user has.</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
@@ -356,7 +308,7 @@ public&nbsp;void&nbsp;<a href="../../../src-html/com/box/sdk/BoxGroupMembership.
 <ul class="blockList">
 <li class="blockList">
 <h4>getCreatedAt</h4>
-<pre>public&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/util/Date.html?is-external=true" title="class or interface in java.util">Date</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxGroupMembership.Info.html#line.365">getCreatedAt</a>()</pre>
+<pre>public&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/util/Date.html?is-external=true" title="class or interface in java.util">Date</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxGroupMembership.Info.html#line.284">getCreatedAt</a>()</pre>
 <div class="block">Gets the time the group membership was created.</div>
 <dl>
 <dt><span class="returnLabel">Returns:</span></dt>
@@ -370,7 +322,7 @@ public&nbsp;void&nbsp;<a href="../../../src-html/com/box/sdk/BoxGroupMembership.
 <ul class="blockList">
 <li class="blockList">
 <h4>getModifiedAt</h4>
-<pre>public&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/util/Date.html?is-external=true" title="class or interface in java.util">Date</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxGroupMembership.Info.html#line.374">getModifiedAt</a>()</pre>
+<pre>public&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/util/Date.html?is-external=true" title="class or interface in java.util">Date</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxGroupMembership.Info.html#line.293">getModifiedAt</a>()</pre>
 <div class="block">Gets the time the group membership was last modified.</div>
 <dl>
 <dt><span class="returnLabel">Returns:</span></dt>
@@ -384,7 +336,7 @@ public&nbsp;void&nbsp;<a href="../../../src-html/com/box/sdk/BoxGroupMembership.
 <ul class="blockList">
 <li class="blockList">
 <h4>getConfigurablePermissions</h4>
-<pre>public&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/util/Map.html?is-external=true" title="class or interface in java.util">Map</a>&lt;<a href="../../../com/box/sdk/BoxGroupMembership.Permission.html" title="enum in com.box.sdk">BoxGroupMembership.Permission</a>,<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Boolean.html?is-external=true" title="class or interface in java.lang">Boolean</a>&gt;&nbsp;<a href="../../../src-html/com/box/sdk/BoxGroupMembership.Info.html#line.383">getConfigurablePermissions</a>()</pre>
+<pre>public&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/util/Map.html?is-external=true" title="class or interface in java.util">Map</a>&lt;<a href="../../../com/box/sdk/BoxGroupMembership.Permission.html" title="enum in com.box.sdk">BoxGroupMembership.Permission</a>,<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Boolean.html?is-external=true" title="class or interface in java.lang">Boolean</a>&gt;&nbsp;<a href="../../../src-html/com/box/sdk/BoxGroupMembership.Info.html#line.302">getConfigurablePermissions</a>()</pre>
 <div class="block">Gets the configurablePermissions that the current user has on the group as group admin.</div>
 <dl>
 <dt><span class="returnLabel">Returns:</span></dt>
@@ -398,7 +350,7 @@ public&nbsp;void&nbsp;<a href="../../../src-html/com/box/sdk/BoxGroupMembership.
 <ul class="blockList">
 <li class="blockList">
 <h4>setConfigurablePermissions</h4>
-<pre>public&nbsp;void&nbsp;<a href="../../../src-html/com/box/sdk/BoxGroupMembership.Info.html#line.392">setConfigurablePermissions</a>(<a href="https://docs.oracle.com/javase/8/docs/api/java/util/Map.html?is-external=true" title="class or interface in java.util">Map</a>&lt;<a href="../../../com/box/sdk/BoxGroupMembership.Permission.html" title="enum in com.box.sdk">BoxGroupMembership.Permission</a>,<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Boolean.html?is-external=true" title="class or interface in java.lang">Boolean</a>&gt;&nbsp;configurablePermissions)</pre>
+<pre>public&nbsp;void&nbsp;<a href="../../../src-html/com/box/sdk/BoxGroupMembership.Info.html#line.311">setConfigurablePermissions</a>(<a href="https://docs.oracle.com/javase/8/docs/api/java/util/Map.html?is-external=true" title="class or interface in java.util">Map</a>&lt;<a href="../../../com/box/sdk/BoxGroupMembership.Permission.html" title="enum in com.box.sdk">BoxGroupMembership.Permission</a>,<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Boolean.html?is-external=true" title="class or interface in java.lang">Boolean</a>&gt;&nbsp;configurablePermissions)</pre>
 <div class="block">Sets the configurablePermissions that the current user has on the group as group admin.</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
@@ -412,7 +364,7 @@ public&nbsp;void&nbsp;<a href="../../../src-html/com/box/sdk/BoxGroupMembership.
 <ul class="blockList">
 <li class="blockList">
 <h4>appendConfigurablePermissions</h4>
-<pre>public&nbsp;void&nbsp;<a href="../../../src-html/com/box/sdk/BoxGroupMembership.Info.html#line.403">appendConfigurablePermissions</a>(<a href="../../../com/box/sdk/BoxGroupMembership.Permission.html" title="enum in com.box.sdk">BoxGroupMembership.Permission</a>&nbsp;permission,
+<pre>public&nbsp;void&nbsp;<a href="../../../src-html/com/box/sdk/BoxGroupMembership.Info.html#line.322">appendConfigurablePermissions</a>(<a href="../../../com/box/sdk/BoxGroupMembership.Permission.html" title="enum in com.box.sdk">BoxGroupMembership.Permission</a>&nbsp;permission,
                                           <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Boolean.html?is-external=true" title="class or interface in java.lang">Boolean</a>&nbsp;value)</pre>
 <div class="block">append new configurable permissions to the previous existing list.</div>
 <dl>
@@ -428,7 +380,7 @@ public&nbsp;void&nbsp;<a href="../../../src-html/com/box/sdk/BoxGroupMembership.
 <ul class="blockList">
 <li class="blockList">
 <h4>getResource</h4>
-<pre>public&nbsp;<a href="../../../com/box/sdk/BoxGroupMembership.html" title="class in com.box.sdk">BoxGroupMembership</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxGroupMembership.Info.html#line.420">getResource</a>()</pre>
+<pre>public&nbsp;<a href="../../../com/box/sdk/BoxGroupMembership.html" title="class in com.box.sdk">BoxGroupMembership</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxGroupMembership.Info.html#line.339">getResource</a>()</pre>
 <div class="block">Gets the resource associated with this Info.</div>
 <dl>
 <dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
@@ -444,7 +396,7 @@ public&nbsp;void&nbsp;<a href="../../../src-html/com/box/sdk/BoxGroupMembership.
 <ul class="blockListLast">
 <li class="blockList">
 <h4>parseJSONMember</h4>
-<pre>protected&nbsp;void&nbsp;<a href="../../../src-html/com/box/sdk/BoxGroupMembership.Info.html#line.449">parseJSONMember</a>(JsonObject.Member&nbsp;member)</pre>
+<pre>protected&nbsp;void&nbsp;<a href="../../../src-html/com/box/sdk/BoxGroupMembership.Info.html#line.375">parseJSONMember</a>(JsonObject.Member&nbsp;member)</pre>
 <div class="block">Invoked with a JSON member whenever this object is updated or created from a JSON object.
 
  <p>Subclasses should override this method in order to parse any JSON members it knows about. This method is a

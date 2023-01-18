@@ -18,8 +18,8 @@
     catch(err) {
     }
 //-->
-var methods = {"i0":10,"i1":10,"i2":42,"i3":42,"i4":10,"i5":10,"i6":10,"i7":10,"i8":10,"i9":10,"i10":10,"i11":10,"i12":10};
-var tabs = {65535:["t0","All Methods"],2:["t2","Instance Methods"],8:["t4","Concrete Methods"],32:["t6","Deprecated Methods"]};
+var methods = {"i0":10,"i1":10,"i2":10,"i3":10,"i4":10,"i5":10,"i6":10,"i7":10,"i8":10,"i9":10};
+var tabs = {65535:["t0","All Methods"],2:["t2","Instance Methods"],8:["t4","Concrete Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
 var tableTab = "tableTab";
@@ -58,7 +58,7 @@ var activeTableTab = "activeTableTab";
 <hr>
 <br>
 <pre><a href="../../../com/box/sdk/BoxResourceType.html" title="annotation in com.box.sdk">@BoxResourceType</a>(<a href="../../../com/box/sdk/BoxResourceType.html#value--">value</a>="web_link")
-public class <a href="../../../src-html/com/box/sdk/BoxWebLink.html#line.21">BoxWebLink</a>
+public class <a href="../../../src-html/com/box/sdk/BoxWebLink.html#line.20">BoxWebLink</a>
 extends <a href="../../../com/box/sdk/BoxItem.html" title="class in com.box.sdk">BoxItem</a></pre>
 <div class="block">Represents an individual WebLink file on Box. This class can be used to retrieve the link's URL or perform other
  common file operations (move, copy, delete, etc.).
@@ -108,7 +108,7 @@ extends <a href="../../../com/box/sdk/BoxItem.html" title="class in com.box.sdk"
 <tr class="altColor">
 <td class="colFirst"><code>static <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>[]</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../com/box/sdk/BoxWebLink.html#ALL_FIELDS">ALL_FIELDS</a></span></code>
-<div class="block">An array of all possible weblink fields that can be requested when calling <a href="../../../com/box/sdk/BoxWebLink.html#getInfo--"><code>getInfo()</code></a>.</div>
+<div class="block">An array of all possible weblink fields that can be requested when calling <a href="../../../com/box/sdk/BoxWebLink.html#getInfo-java.lang.String...-"><code>getInfo(String...)</code></a>.</div>
 </td>
 </tr>
 <tr class="rowColor">
@@ -160,7 +160,7 @@ extends <a href="../../../com/box/sdk/BoxItem.html" title="class in com.box.sdk"
 </a>
 <h3>Method Summary</h3>
 <table class="memberSummary" border="0" cellpadding="3" cellspacing="0" summary="Method Summary table, listing methods, and an explanation">
-<caption><span id="t0" class="activeTableTab"><span>All Methods</span><span class="tabEnd">&nbsp;</span></span><span id="t2" class="tableTab"><span><a href="javascript:show(2);">Instance Methods</a></span><span class="tabEnd">&nbsp;</span></span><span id="t4" class="tableTab"><span><a href="javascript:show(8);">Concrete Methods</a></span><span class="tabEnd">&nbsp;</span></span><span id="t6" class="tableTab"><span><a href="javascript:show(32);">Deprecated Methods</a></span><span class="tabEnd">&nbsp;</span></span></caption>
+<caption><span id="t0" class="activeTableTab"><span>All Methods</span><span class="tabEnd">&nbsp;</span></span><span id="t2" class="tableTab"><span><a href="javascript:show(2);">Instance Methods</a></span><span class="tabEnd">&nbsp;</span></span><span id="t4" class="tableTab"><span><a href="javascript:show(8);">Concrete Methods</a></span><span class="tabEnd">&nbsp;</span></span></caption>
 <tr>
 <th class="colFirst" scope="col">Modifier and Type</th>
 <th class="colLast" scope="col">Method and Description</th>
@@ -180,75 +180,48 @@ extends <a href="../../../com/box/sdk/BoxItem.html" title="class in com.box.sdk"
 </tr>
 <tr id="i2" class="altColor">
 <td class="colFirst"><code><a href="../../../com/box/sdk/BoxSharedLink.html" title="class in com.box.sdk">BoxSharedLink</a></code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../com/box/sdk/BoxWebLink.html#createSharedLink-com.box.sdk.BoxSharedLink.Access-java.util.Date-com.box.sdk.BoxSharedLink.Permissions-">createSharedLink</a></span>(<a href="../../../com/box/sdk/BoxSharedLink.Access.html" title="enum in com.box.sdk">BoxSharedLink.Access</a>&nbsp;access,
-                <a href="https://docs.oracle.com/javase/8/docs/api/java/util/Date.html?is-external=true" title="class or interface in java.util">Date</a>&nbsp;unshareDate,
-                <a href="../../../com/box/sdk/BoxSharedLink.Permissions.html" title="class in com.box.sdk">BoxSharedLink.Permissions</a>&nbsp;permissions)</code>
-<div class="block"><span class="deprecatedLabel">Deprecated.</span>&nbsp;
-<div class="block"><span class="deprecationComment">use <a href="../../../com/box/sdk/BoxWebLink.html#createSharedLink-com.box.sdk.sharedlink.BoxSharedLinkWithoutPermissionsRequest-"><code>createSharedLink(BoxSharedLinkWithoutPermissionsRequest)</code></a></span></div>
-</div>
-</td>
-</tr>
-<tr id="i3" class="rowColor">
-<td class="colFirst"><code><a href="../../../com/box/sdk/BoxSharedLink.html" title="class in com.box.sdk">BoxSharedLink</a></code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../com/box/sdk/BoxWebLink.html#createSharedLink-com.box.sdk.BoxSharedLink.Access-java.util.Date-com.box.sdk.BoxSharedLink.Permissions-java.lang.String-">createSharedLink</a></span>(<a href="../../../com/box/sdk/BoxSharedLink.Access.html" title="enum in com.box.sdk">BoxSharedLink.Access</a>&nbsp;access,
-                <a href="https://docs.oracle.com/javase/8/docs/api/java/util/Date.html?is-external=true" title="class or interface in java.util">Date</a>&nbsp;unshareDate,
-                <a href="../../../com/box/sdk/BoxSharedLink.Permissions.html" title="class in com.box.sdk">BoxSharedLink.Permissions</a>&nbsp;permissions,
-                <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;password)</code>
-<div class="block"><span class="deprecatedLabel">Deprecated.</span>&nbsp;
-<div class="block"><span class="deprecationComment">Use <a href="../../../com/box/sdk/BoxWebLink.html#createSharedLink-com.box.sdk.sharedlink.BoxSharedLinkWithoutPermissionsRequest-"><code>createSharedLink(BoxSharedLinkWithoutPermissionsRequest)</code></a></span></div>
-</div>
-</td>
-</tr>
-<tr id="i4" class="altColor">
-<td class="colFirst"><code><a href="../../../com/box/sdk/BoxSharedLink.html" title="class in com.box.sdk">BoxSharedLink</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../com/box/sdk/BoxWebLink.html#createSharedLink-com.box.sdk.sharedlink.BoxSharedLinkWithoutPermissionsRequest-">createSharedLink</a></span>(<a href="../../../com/box/sdk/sharedlink/BoxSharedLinkWithoutPermissionsRequest.html" title="class in com.box.sdk.sharedlink">BoxSharedLinkWithoutPermissionsRequest</a>&nbsp;sharedLinkRequest)</code>
 <div class="block">Creates a shared link.</div>
 </td>
 </tr>
-<tr id="i5" class="rowColor">
+<tr id="i3" class="rowColor">
 <td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../com/box/sdk/BoxWebLink.html#delete--">delete</a></span>()</code>
 <div class="block">Deletes this weblink by moving it to the trash.</div>
 </td>
 </tr>
-<tr id="i6" class="altColor">
-<td class="colFirst"><code><a href="../../../com/box/sdk/BoxWebLink.Info.html" title="class in com.box.sdk">BoxWebLink.Info</a></code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../com/box/sdk/BoxWebLink.html#getInfo--">getInfo</a></span>()</code>
-<div class="block">Gets information about this item.</div>
-</td>
-</tr>
-<tr id="i7" class="rowColor">
+<tr id="i4" class="altColor">
 <td class="colFirst"><code><a href="../../../com/box/sdk/BoxWebLink.Info.html" title="class in com.box.sdk">BoxWebLink.Info</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../com/box/sdk/BoxWebLink.html#getInfo-java.lang.String...-">getInfo</a></span>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>...&nbsp;fields)</code>
 <div class="block">Gets information about this item that's limited to a list of specified fields.</div>
 </td>
 </tr>
-<tr id="i8" class="altColor">
+<tr id="i5" class="rowColor">
 <td class="colFirst"><code><a href="../../../com/box/sdk/BoxItem.Info.html" title="class in com.box.sdk">BoxItem.Info</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../com/box/sdk/BoxWebLink.html#move-com.box.sdk.BoxFolder-">move</a></span>(<a href="../../../com/box/sdk/BoxFolder.html" title="class in com.box.sdk">BoxFolder</a>&nbsp;destination)</code>
 <div class="block">Moves this item to another folder.</div>
 </td>
 </tr>
-<tr id="i9" class="rowColor">
+<tr id="i6" class="altColor">
 <td class="colFirst"><code><a href="../../../com/box/sdk/BoxItem.Info.html" title="class in com.box.sdk">BoxItem.Info</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../com/box/sdk/BoxWebLink.html#move-com.box.sdk.BoxFolder-java.lang.String-">move</a></span>(<a href="../../../com/box/sdk/BoxFolder.html" title="class in com.box.sdk">BoxFolder</a>&nbsp;destination,
     <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;newName)</code>
 <div class="block">Moves this item to another folder and gives it a new name.</div>
 </td>
 </tr>
-<tr id="i10" class="altColor">
+<tr id="i7" class="rowColor">
 <td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../com/box/sdk/BoxWebLink.html#rename-java.lang.String-">rename</a></span>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;newName)</code>
 <div class="block">Renames this weblink.</div>
 </td>
 </tr>
-<tr id="i11" class="rowColor">
+<tr id="i8" class="altColor">
 <td class="colFirst"><code><a href="../../../com/box/sdk/BoxWebLink.Info.html" title="class in com.box.sdk">BoxWebLink.Info</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../com/box/sdk/BoxWebLink.html#setCollections-com.box.sdk.BoxCollection...-">setCollections</a></span>(<a href="../../../com/box/sdk/BoxCollection.html" title="class in com.box.sdk">BoxCollection</a>...&nbsp;collections)</code>
 <div class="block">Sets the collections that this item belongs to.</div>
 </td>
 </tr>
-<tr id="i12" class="altColor">
+<tr id="i9" class="rowColor">
 <td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../com/box/sdk/BoxWebLink.html#updateInfo-com.box.sdk.BoxWebLink.Info-">updateInfo</a></span>(<a href="../../../com/box/sdk/BoxWebLink.Info.html" title="class in com.box.sdk">BoxWebLink.Info</a>&nbsp;info)</code>
 <div class="block">Updates the information about this weblink with any info fields that have been modified locally.</div>
@@ -296,8 +269,8 @@ extends <a href="../../../com/box/sdk/BoxItem.html" title="class in com.box.sdk"
 <ul class="blockList">
 <li class="blockList">
 <h4>ALL_FIELDS</h4>
-<pre>public static final&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>[] <a href="../../../src-html/com/box/sdk/BoxWebLink.html#line.26">ALL_FIELDS</a></pre>
-<div class="block">An array of all possible weblink fields that can be requested when calling <a href="../../../com/box/sdk/BoxWebLink.html#getInfo--"><code>getInfo()</code></a>.</div>
+<pre>public static final&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>[] <a href="../../../src-html/com/box/sdk/BoxWebLink.html#line.25">ALL_FIELDS</a></pre>
+<div class="block">An array of all possible weblink fields that can be requested when calling <a href="../../../com/box/sdk/BoxWebLink.html#getInfo-java.lang.String...-"><code>getInfo(String...)</code></a>.</div>
 </li>
 </ul>
 <a name="COPY_URL_TEMPLATE">
@@ -306,7 +279,7 @@ extends <a href="../../../com/box/sdk/BoxItem.html" title="class in com.box.sdk"
 <ul class="blockList">
 <li class="blockList">
 <h4>COPY_URL_TEMPLATE</h4>
-<pre>public static final&nbsp;<a href="../../../com/box/sdk/URLTemplate.html" title="class in com.box.sdk">URLTemplate</a> <a href="../../../src-html/com/box/sdk/BoxWebLink.html#line.33">COPY_URL_TEMPLATE</a></pre>
+<pre>public static final&nbsp;<a href="../../../com/box/sdk/URLTemplate.html" title="class in com.box.sdk">URLTemplate</a> <a href="../../../src-html/com/box/sdk/BoxWebLink.html#line.32">COPY_URL_TEMPLATE</a></pre>
 <div class="block">Copy URL Template.</div>
 </li>
 </ul>
@@ -316,7 +289,7 @@ extends <a href="../../../com/box/sdk/BoxItem.html" title="class in com.box.sdk"
 <ul class="blockListLast">
 <li class="blockList">
 <h4>WEB_LINK_URL_TEMPLATE</h4>
-<pre>public static final&nbsp;<a href="../../../com/box/sdk/URLTemplate.html" title="class in com.box.sdk">URLTemplate</a> <a href="../../../src-html/com/box/sdk/BoxWebLink.html#line.37">WEB_LINK_URL_TEMPLATE</a></pre>
+<pre>public static final&nbsp;<a href="../../../com/box/sdk/URLTemplate.html" title="class in com.box.sdk">URLTemplate</a> <a href="../../../src-html/com/box/sdk/BoxWebLink.html#line.36">WEB_LINK_URL_TEMPLATE</a></pre>
 <div class="block">Web Link URL Template.</div>
 </li>
 </ul>
@@ -334,7 +307,7 @@ extends <a href="../../../com/box/sdk/BoxItem.html" title="class in com.box.sdk"
 <ul class="blockListLast">
 <li class="blockList">
 <h4>BoxWebLink</h4>
-<pre>public&nbsp;<a href="../../../src-html/com/box/sdk/BoxWebLink.html#line.45">BoxWebLink</a>(<a href="../../../com/box/sdk/BoxAPIConnection.html" title="class in com.box.sdk">BoxAPIConnection</a>&nbsp;api,
+<pre>public&nbsp;<a href="../../../src-html/com/box/sdk/BoxWebLink.html#line.44">BoxWebLink</a>(<a href="../../../com/box/sdk/BoxAPIConnection.html" title="class in com.box.sdk">BoxAPIConnection</a>&nbsp;api,
                   <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;id)</pre>
 <div class="block">Constructs a BoxWebLink for a weblink with a given ID.</div>
 <dl>
@@ -352,65 +325,13 @@ extends <a href="../../../com/box/sdk/BoxItem.html" title="class in com.box.sdk"
 <!--   -->
 </a>
 <h3>Method Detail</h3>
-<a name="createSharedLink-com.box.sdk.BoxSharedLink.Access-java.util.Date-com.box.sdk.BoxSharedLink.Permissions-">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>createSharedLink</h4>
-<pre><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Deprecated.html?is-external=true" title="class or interface in java.lang">@Deprecated</a>
-public&nbsp;<a href="../../../com/box/sdk/BoxSharedLink.html" title="class in com.box.sdk">BoxSharedLink</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxWebLink.html#line.64">createSharedLink</a>(<a href="../../../com/box/sdk/BoxSharedLink.Access.html" title="enum in com.box.sdk">BoxSharedLink.Access</a>&nbsp;access,
-                                                  <a href="https://docs.oracle.com/javase/8/docs/api/java/util/Date.html?is-external=true" title="class or interface in java.util">Date</a>&nbsp;unshareDate,
-                                                  <a href="../../../com/box/sdk/BoxSharedLink.Permissions.html" title="class in com.box.sdk">BoxSharedLink.Permissions</a>&nbsp;permissions)</pre>
-<div class="block"><span class="deprecatedLabel">Deprecated.</span>&nbsp;<span class="deprecationComment">use <a href="../../../com/box/sdk/BoxWebLink.html#createSharedLink-com.box.sdk.sharedlink.BoxSharedLinkWithoutPermissionsRequest-"><code>createSharedLink(BoxSharedLinkWithoutPermissionsRequest)</code></a></span></div>
-<div class="block">Creates a new shared link for this item.
-
- <p>This method is a convenience method for manually creating a new shared link and applying it to this item with
- <a href="../../../com/box/sdk/BoxItem.Info.html#setSharedLink-com.box.sdk.BoxSharedLink-"><code>BoxItem.Info.setSharedLink(com.box.sdk.BoxSharedLink)</code></a>. You may want to create the shared link manually so that it can be updated along with
- other changes to the item's info in a single network request, giving a boost to performance.</p></div>
-<dl>
-<dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
-<dd><code><a href="../../../com/box/sdk/BoxItem.html#createSharedLink-com.box.sdk.BoxSharedLink.Access-java.util.Date-com.box.sdk.BoxSharedLink.Permissions-">createSharedLink</a></code>&nbsp;in class&nbsp;<code><a href="../../../com/box/sdk/BoxItem.html" title="class in com.box.sdk">BoxItem</a></code></dd>
-<dt><span class="paramLabel">Parameters:</span></dt>
-<dd><code>access</code> - the access level of the shared link.</dd>
-<dd><code>unshareDate</code> - the date and time at which the link will expire. Can be null to create a non-expiring link.</dd>
-<dd><code>permissions</code> - the permissions of the shared link. Can be null to use the default permissions.</dd>
-<dt><span class="returnLabel">Returns:</span></dt>
-<dd>the created shared link.</dd>
-</dl>
-</li>
-</ul>
-<a name="createSharedLink-com.box.sdk.BoxSharedLink.Access-java.util.Date-com.box.sdk.BoxSharedLink.Permissions-java.lang.String-">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>createSharedLink</h4>
-<pre><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Deprecated.html?is-external=true" title="class or interface in java.lang">@Deprecated</a>
-public&nbsp;<a href="../../../com/box/sdk/BoxSharedLink.html" title="class in com.box.sdk">BoxSharedLink</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxWebLink.html#line.88">createSharedLink</a>(<a href="../../../com/box/sdk/BoxSharedLink.Access.html" title="enum in com.box.sdk">BoxSharedLink.Access</a>&nbsp;access,
-                                                  <a href="https://docs.oracle.com/javase/8/docs/api/java/util/Date.html?is-external=true" title="class or interface in java.util">Date</a>&nbsp;unshareDate,
-                                                  <a href="../../../com/box/sdk/BoxSharedLink.Permissions.html" title="class in com.box.sdk">BoxSharedLink.Permissions</a>&nbsp;permissions,
-                                                  <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;password)</pre>
-<div class="block"><span class="deprecatedLabel">Deprecated.</span>&nbsp;<span class="deprecationComment">Use <a href="../../../com/box/sdk/BoxWebLink.html#createSharedLink-com.box.sdk.sharedlink.BoxSharedLinkWithoutPermissionsRequest-"><code>createSharedLink(BoxSharedLinkWithoutPermissionsRequest)</code></a></span></div>
-<div class="block">Creates new SharedLink for a BoxWebLink with a password.</div>
-<dl>
-<dt><span class="paramLabel">Parameters:</span></dt>
-<dd><code>access</code> - The access level of the shared link.</dd>
-<dd><code>unshareDate</code> - A specified date to unshare the Box web link.</dd>
-<dd><code>permissions</code> - The permissions to set on the shared link for the Box web link.</dd>
-<dd><code>password</code> - Password set on the shared link to give access to the Box web link.</dd>
-<dt><span class="returnLabel">Returns:</span></dt>
-<dd>information about the newly created shared link.</dd>
-</dl>
-</li>
-</ul>
 <a name="createSharedLink-com.box.sdk.sharedlink.BoxSharedLinkWithoutPermissionsRequest-">
 <!--   -->
 </a>
 <ul class="blockList">
 <li class="blockList">
 <h4>createSharedLink</h4>
-<pre>public&nbsp;<a href="../../../com/box/sdk/BoxSharedLink.html" title="class in com.box.sdk">BoxSharedLink</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxWebLink.html#line.107">createSharedLink</a>(<a href="../../../com/box/sdk/sharedlink/BoxSharedLinkWithoutPermissionsRequest.html" title="class in com.box.sdk.sharedlink">BoxSharedLinkWithoutPermissionsRequest</a>&nbsp;sharedLinkRequest)</pre>
+<pre>public&nbsp;<a href="../../../com/box/sdk/BoxSharedLink.html" title="class in com.box.sdk">BoxSharedLink</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxWebLink.html#line.54">createSharedLink</a>(<a href="../../../com/box/sdk/sharedlink/BoxSharedLinkWithoutPermissionsRequest.html" title="class in com.box.sdk.sharedlink">BoxSharedLinkWithoutPermissionsRequest</a>&nbsp;sharedLinkRequest)</pre>
 <div class="block">Creates a shared link.</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
@@ -426,7 +347,7 @@ public&nbsp;<a href="../../../com/box/sdk/BoxSharedLink.html" title="class in co
 <ul class="blockList">
 <li class="blockList">
 <h4>copy</h4>
-<pre>public&nbsp;<a href="../../../com/box/sdk/BoxWebLink.Info.html" title="class in com.box.sdk">BoxWebLink.Info</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxWebLink.html#line.121">copy</a>(<a href="../../../com/box/sdk/BoxFolder.html" title="class in com.box.sdk">BoxFolder</a>&nbsp;destination)</pre>
+<pre>public&nbsp;<a href="../../../com/box/sdk/BoxWebLink.Info.html" title="class in com.box.sdk">BoxWebLink.Info</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxWebLink.html#line.68">copy</a>(<a href="../../../com/box/sdk/BoxFolder.html" title="class in com.box.sdk">BoxFolder</a>&nbsp;destination)</pre>
 <div class="block"><span class="descfrmTypeLabel">Description copied from class:&nbsp;<code><a href="../../../com/box/sdk/BoxItem.html#copy-com.box.sdk.BoxFolder-">BoxItem</a></code></span></div>
 <div class="block">Copies this item to another folder.</div>
 <dl>
@@ -445,7 +366,7 @@ public&nbsp;<a href="../../../com/box/sdk/BoxSharedLink.html" title="class in co
 <ul class="blockList">
 <li class="blockList">
 <h4>copy</h4>
-<pre>public&nbsp;<a href="../../../com/box/sdk/BoxWebLink.Info.html" title="class in com.box.sdk">BoxWebLink.Info</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxWebLink.html#line.126">copy</a>(<a href="../../../com/box/sdk/BoxFolder.html" title="class in com.box.sdk">BoxFolder</a>&nbsp;destination,
+<pre>public&nbsp;<a href="../../../com/box/sdk/BoxWebLink.Info.html" title="class in com.box.sdk">BoxWebLink.Info</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxWebLink.html#line.73">copy</a>(<a href="../../../com/box/sdk/BoxFolder.html" title="class in com.box.sdk">BoxFolder</a>&nbsp;destination,
                             <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;newName)</pre>
 <div class="block"><span class="descfrmTypeLabel">Description copied from class:&nbsp;<code><a href="../../../com/box/sdk/BoxItem.html#copy-com.box.sdk.BoxFolder-java.lang.String-">BoxItem</a></code></span></div>
 <div class="block">Copies this item to another folder and gives it a new name. If the destination is the same folder as the item's
@@ -467,7 +388,7 @@ public&nbsp;<a href="../../../com/box/sdk/BoxSharedLink.html" title="class in co
 <ul class="blockList">
 <li class="blockList">
 <h4>delete</h4>
-<pre>public&nbsp;void&nbsp;<a href="../../../src-html/com/box/sdk/BoxWebLink.html#line.149">delete</a>()</pre>
+<pre>public&nbsp;void&nbsp;<a href="../../../src-html/com/box/sdk/BoxWebLink.html#line.97">delete</a>()</pre>
 <div class="block">Deletes this weblink by moving it to the trash.</div>
 </li>
 </ul>
@@ -477,7 +398,7 @@ public&nbsp;<a href="../../../com/box/sdk/BoxSharedLink.html" title="class in co
 <ul class="blockList">
 <li class="blockList">
 <h4>move</h4>
-<pre>public&nbsp;<a href="../../../com/box/sdk/BoxItem.Info.html" title="class in com.box.sdk">BoxItem.Info</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxWebLink.html#line.157">move</a>(<a href="../../../com/box/sdk/BoxFolder.html" title="class in com.box.sdk">BoxFolder</a>&nbsp;destination)</pre>
+<pre>public&nbsp;<a href="../../../com/box/sdk/BoxItem.Info.html" title="class in com.box.sdk">BoxItem.Info</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxWebLink.html#line.104">move</a>(<a href="../../../com/box/sdk/BoxFolder.html" title="class in com.box.sdk">BoxFolder</a>&nbsp;destination)</pre>
 <div class="block"><span class="descfrmTypeLabel">Description copied from class:&nbsp;<code><a href="../../../com/box/sdk/BoxItem.html#move-com.box.sdk.BoxFolder-">BoxItem</a></code></span></div>
 <div class="block">Moves this item to another folder.</div>
 <dl>
@@ -496,7 +417,7 @@ public&nbsp;<a href="../../../com/box/sdk/BoxSharedLink.html" title="class in co
 <ul class="blockList">
 <li class="blockList">
 <h4>move</h4>
-<pre>public&nbsp;<a href="../../../com/box/sdk/BoxItem.Info.html" title="class in com.box.sdk">BoxItem.Info</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxWebLink.html#line.162">move</a>(<a href="../../../com/box/sdk/BoxFolder.html" title="class in com.box.sdk">BoxFolder</a>&nbsp;destination,
+<pre>public&nbsp;<a href="../../../com/box/sdk/BoxItem.Info.html" title="class in com.box.sdk">BoxItem.Info</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxWebLink.html#line.109">move</a>(<a href="../../../com/box/sdk/BoxFolder.html" title="class in com.box.sdk">BoxFolder</a>&nbsp;destination,
                          <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;newName)</pre>
 <div class="block"><span class="descfrmTypeLabel">Description copied from class:&nbsp;<code><a href="../../../com/box/sdk/BoxItem.html#move-com.box.sdk.BoxFolder-java.lang.String-">BoxItem</a></code></span></div>
 <div class="block">Moves this item to another folder and gives it a new name.</div>
@@ -517,28 +438,11 @@ public&nbsp;<a href="../../../com/box/sdk/BoxSharedLink.html" title="class in co
 <ul class="blockList">
 <li class="blockList">
 <h4>rename</h4>
-<pre>public&nbsp;void&nbsp;<a href="../../../src-html/com/box/sdk/BoxWebLink.html#line.187">rename</a>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;newName)</pre>
+<pre>public&nbsp;void&nbsp;<a href="../../../src-html/com/box/sdk/BoxWebLink.html#line.135">rename</a>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;newName)</pre>
 <div class="block">Renames this weblink.</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
 <dd><code>newName</code> - the new name of the weblink.</dd>
-</dl>
-</li>
-</ul>
-<a name="getInfo--">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>getInfo</h4>
-<pre>public&nbsp;<a href="../../../com/box/sdk/BoxWebLink.Info.html" title="class in com.box.sdk">BoxWebLink.Info</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxWebLink.html#line.200">getInfo</a>()</pre>
-<div class="block"><span class="descfrmTypeLabel">Description copied from class:&nbsp;<code><a href="../../../com/box/sdk/BoxItem.html#getInfo--">BoxItem</a></code></span></div>
-<div class="block">Gets information about this item.</div>
-<dl>
-<dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
-<dd><code><a href="../../../com/box/sdk/BoxItem.html#getInfo--">getInfo</a></code>&nbsp;in class&nbsp;<code><a href="../../../com/box/sdk/BoxItem.html" title="class in com.box.sdk">BoxItem</a></code></dd>
-<dt><span class="returnLabel">Returns:</span></dt>
-<dd>info about this item.</dd>
 </dl>
 </li>
 </ul>
@@ -548,7 +452,7 @@ public&nbsp;<a href="../../../com/box/sdk/BoxSharedLink.html" title="class in co
 <ul class="blockList">
 <li class="blockList">
 <h4>getInfo</h4>
-<pre>public&nbsp;<a href="../../../com/box/sdk/BoxWebLink.Info.html" title="class in com.box.sdk">BoxWebLink.Info</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxWebLink.html#line.208">getInfo</a>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>...&nbsp;fields)</pre>
+<pre>public&nbsp;<a href="../../../com/box/sdk/BoxWebLink.Info.html" title="class in com.box.sdk">BoxWebLink.Info</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxWebLink.html#line.147">getInfo</a>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>...&nbsp;fields)</pre>
 <div class="block"><span class="descfrmTypeLabel">Description copied from class:&nbsp;<code><a href="../../../com/box/sdk/BoxItem.html#getInfo-java.lang.String...-">BoxItem</a></code></span></div>
 <div class="block">Gets information about this item that's limited to a list of specified fields.</div>
 <dl>
@@ -567,7 +471,7 @@ public&nbsp;<a href="../../../com/box/sdk/BoxSharedLink.html" title="class in co
 <ul class="blockList">
 <li class="blockList">
 <h4>updateInfo</h4>
-<pre>public&nbsp;void&nbsp;<a href="../../../src-html/com/box/sdk/BoxWebLink.html#line.230">updateInfo</a>(<a href="../../../com/box/sdk/BoxWebLink.Info.html" title="class in com.box.sdk">BoxWebLink.Info</a>&nbsp;info)</pre>
+<pre>public&nbsp;void&nbsp;<a href="../../../src-html/com/box/sdk/BoxWebLink.html#line.173">updateInfo</a>(<a href="../../../com/box/sdk/BoxWebLink.Info.html" title="class in com.box.sdk">BoxWebLink.Info</a>&nbsp;info)</pre>
 <div class="block">Updates the information about this weblink with any info fields that have been modified locally.
 
  <p>The only fields that will be updated are the ones that have been modified locally. For example, the following
@@ -589,7 +493,7 @@ public&nbsp;<a href="../../../com/box/sdk/BoxSharedLink.html" title="class in co
 <ul class="blockListLast">
 <li class="blockList">
 <h4>setCollections</h4>
-<pre>public&nbsp;<a href="../../../com/box/sdk/BoxWebLink.Info.html" title="class in com.box.sdk">BoxWebLink.Info</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxWebLink.html#line.240">setCollections</a>(<a href="../../../com/box/sdk/BoxCollection.html" title="class in com.box.sdk">BoxCollection</a>...&nbsp;collections)</pre>
+<pre>public&nbsp;<a href="../../../com/box/sdk/BoxWebLink.Info.html" title="class in com.box.sdk">BoxWebLink.Info</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxWebLink.html#line.184">setCollections</a>(<a href="../../../com/box/sdk/BoxCollection.html" title="class in com.box.sdk">BoxCollection</a>...&nbsp;collections)</pre>
 <div class="block"><span class="descfrmTypeLabel">Description copied from class:&nbsp;<code><a href="../../../com/box/sdk/BoxItem.html#setCollections-com.box.sdk.BoxCollection...-">BoxItem</a></code></span></div>
 <div class="block">Sets the collections that this item belongs to.</div>
 <dl>
