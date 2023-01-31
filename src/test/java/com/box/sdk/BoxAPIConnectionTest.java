@@ -56,7 +56,6 @@ public class BoxAPIConnectionTest {
     private final String clientId = "fakeID";
     private final String clientSecret = "fakeSecret";
 
-
     @Test
     public void canRefreshWhenGivenRefreshToken() {
         final String anyClientID = "";
@@ -180,7 +179,7 @@ public class BoxAPIConnectionTest {
 
         URL authURL = api.getAuthorizationURL(new URI("http://localhost:3000"), "test", scopes);
 
-        assertThat(authURL.toString(), startsWith("https://account.my-box.com/api/oauth2/authorize"));
+        assertThat(authURL.toString(), startsWith("https://account.my-box.com/api/oauth2/authorize?"));
 
         String query = authURL.getQuery();
         assertThat(query, containsString("client_id=" + clientId));
