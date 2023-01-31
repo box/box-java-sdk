@@ -466,9 +466,7 @@ public class BoxAPIConnection {
      * @return the authorization URL
      */
     public URL getAuthorizationURL(URI redirectUri, String state, List<String> scopes) {
-        return createFullAuthorizationUrl(
-            this.baseAuthorizationURL + OAUTH_SUFFIX, this.clientID, redirectUri, state, scopes
-        );
+        return createFullAuthorizationUrl(this.baseAuthorizationURL, this.clientID, redirectUri, state, scopes);
     }
 
     /**
