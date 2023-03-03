@@ -10,7 +10,6 @@ import okhttp3.MediaType;
 import okhttp3.MultipartBody;
 import okhttp3.Request;
 import okhttp3.RequestBody;
-import okio.BufferedSink;
 
 /**
  * <p>Base class for multipart uploads</p>
@@ -20,7 +19,7 @@ import okio.BufferedSink;
  */
 abstract class AbstractBoxMultipartRequest extends BoxAPIRequest {
     protected static final String BOUNDARY = "da39a3ee5e6b4b0d3255bfef95601890afd80709";
-    private static final int BUFFER_SIZE = 8192;
+    static final int BUFFER_SIZE = 8192;
     private final StringBuilder loggedRequest = new StringBuilder();
     private final Map<String, String> fields = new HashMap<>();
     private InputStream inputStream;
@@ -158,67 +157,4 @@ abstract class AbstractBoxMultipartRequest extends BoxAPIRequest {
         }
     }
 
-    private static final class RequestBodyFromStream extends RequestBody {
-        private final InputStream inputStream;
-        private final ProgressListener progressListener;
-        private final MediaType mediaType;
-        private final int contentLength;
-
-        private RequestBodyFromStream(InputStream inputStream, MediaType mediaType, ProgressListener progressListener) {
-            this.inputStream = inputStream;
-            this.progressListener = progressListener;
-            this.mediaType = mediaType;
-            try {
-                this.contentLength = inputStream.available();
-            } catch (IOException e) {
-                throw new RuntimeException("Cannot read input stream for upload", e);
-            }
-        }
-
-        @Override
-        public long contentLength() {
-            return contentLength;
-        }
-
-        @Override
-        public MediaType contentType() {
-            return mediaType;
-        }
-
-        @Override
-        public void writeTo(BufferedSink bufferedSink) throws IOException {
-            byte[] buffer = new byte[BUFFER_SIZE];
-            int n = this.inputStream.read(buffer);
-            int totalWritten = n;
-            while (n != -1) {
-                bufferedSink.write(buffer, 0, n);
-                if (progressListener != null) {
-                    progressListener.onProgressChanged(totalWritten, this.contentLength());
-                }
-                totalWritten += n;
-                n = this.inputStream.read(buffer);
-            }
-        }
-    }
-
-    private static final class RequestBodyFromCallback extends RequestBody {
-
-        private final UploadFileCallback callback;
-        private final MediaType mediaType;
-
-        private RequestBodyFromCallback(UploadFileCallback callback, MediaType mediaType) {
-            this.callback = callback;
-            this.mediaType = mediaType;
-        }
-
-        @Override
-        public MediaType contentType() {
-            return mediaType;
-        }
-
-        @Override
-        public void writeTo(BufferedSink bufferedSink) throws IOException {
-            callback.writeToStream(bufferedSink.outputStream());
-        }
-    }
 }
