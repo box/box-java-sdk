@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [4.0.1](https://github.com/box/box-java-sdk/compare/v4.0.0...v4.0.1) (2023-03-06)
+
+
+### Bug Fixes:
+
+* `OAUTH_SUFFIX` gets appended twice to `baseAuthorizationURL` ([#1148](https://github.com/box/box-java-sdk/issues/1148)) ([3164770](https://github.com/box/box-java-sdk/commit/3164770498e5115a43318640735317a896950f54)), closes [#1147](https://github.com/box/box-java-sdk/issues/1147)
+* Wrong progress reported to `ProgressListener` by `AbstractBoxMultipartRequest` ([#1151](https://github.com/box/box-java-sdk/issues/1151)) ([947ded3](https://github.com/box/box-java-sdk/commit/947ded394490fc840b8191bc7ad69ae0ea5f5c7d)), closes [#1149](https://github.com/box/box-java-sdk/issues/1149)
+
 ## [4.0.0](https://github.com/box/box-java-sdk/compare/v3.8.2...v4.0.0) (2023-01-17)
 
 
