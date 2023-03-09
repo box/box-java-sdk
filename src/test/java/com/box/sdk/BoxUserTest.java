@@ -171,7 +171,7 @@ public class BoxUserTest {
         String result = TestUtils.getFixture("BoxUser/CreateAppUser201");
 
         wireMockRule.stubFor(WireMock.post(WireMock.urlPathEqualTo(userURL))
-                .willReturn(WireMock.okForContentType(APPLICATION_JSON, result)));
+            .willReturn(WireMock.okForContentType(APPLICATION_JSON, result)));
 
         BoxUser.Info createdUserInfo = BoxUser.createAppUser(this.api, userName);
 
