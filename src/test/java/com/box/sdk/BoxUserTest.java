@@ -171,6 +171,25 @@ public class BoxUserTest {
         String result = TestUtils.getFixture("BoxUser/CreateAppUser201");
 
         wireMockRule.stubFor(WireMock.post(WireMock.urlPathEqualTo(userURL))
+                .willReturn(WireMock.okForContentType(APPLICATION_JSON, result)));
+
+        BoxUser.Info createdUserInfo = BoxUser.createAppUser(this.api, userName);
+
+        assertEquals(userID, createdUserInfo.getID());
+        assertEquals(userName, createdUserInfo.getName());
+        assertEquals(userLogin, createdUserInfo.getLogin());
+    }
+
+    @Test
+    public void testCreateAppUserSucceedsWithFields() {
+        final String userURL = "/2.0/users";
+        final String userID = "12345";
+        final String userName = "Java SDK App User";
+        final String userLogin = "testuser@boxdevedition.com";
+
+        String result = TestUtils.getFixture("BoxUser/CreateAppUser201");
+
+        wireMockRule.stubFor(WireMock.post(WireMock.urlPathEqualTo(userURL))
             .withQueryParam("fields", WireMock.equalTo("name,login"))
             .willReturn(WireMock.okForContentType(APPLICATION_JSON, result)));
 
@@ -192,8 +211,29 @@ public class BoxUserTest {
         String result = TestUtils.getFixture("BoxUser/CreateManagedUser201");
 
         wireMockRule.stubFor(WireMock.post(WireMock.urlPathEqualTo(userURL))
-            .withQueryParam("fields", WireMock.equalTo("name,login,timezone"))
             .willReturn(WireMock.okForContentType(APPLICATION_JSON, result)));
+
+        BoxUser.Info createdUserInfo = BoxUser.createEnterpriseUser(this.api, userLogin, userName);
+
+        assertEquals(userID, createdUserInfo.getID());
+        assertEquals(userName, createdUserInfo.getName());
+        assertEquals(userLogin, createdUserInfo.getLogin());
+        assertEquals(userTimeZone, createdUserInfo.getTimezone());
+    }
+
+    @Test
+    public void testCreateManagedUserSucceedsWithFields() {
+        final String userURL = "/2.0/users";
+        final String userID = "12345";
+        final String userName = "Test Managed User";
+        final String userLogin = "test@user.com";
+        final String userTimeZone = "America/Los_Angeles";
+
+        String result = TestUtils.getFixture("BoxUser/CreateManagedUser201");
+
+        wireMockRule.stubFor(WireMock.post(WireMock.urlPathEqualTo(userURL))
+                .withQueryParam("fields", WireMock.equalTo("name,login,timezone"))
+                .willReturn(WireMock.okForContentType(APPLICATION_JSON, result)));
 
         BoxUser.Info createdUserInfo = BoxUser.createEnterpriseUser(
                 this.api, userLogin, userName, "name", "login", "timezone"
