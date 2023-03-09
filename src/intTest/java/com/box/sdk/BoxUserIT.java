@@ -125,7 +125,7 @@ public class BoxUserIT {
         userInfo.setName(updatedName);
 
         BoxUser user = userInfo.getResource();
-        user.updateInfo(userInfo);
+        user.updateInfo(userInfo, "name");
 
         assertEquals(updatedName, userInfo.getName());
 

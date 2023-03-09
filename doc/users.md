@@ -113,9 +113,9 @@ user.deleteAvatar();
 ## Create An Enterprise User
 
 To create an enterprise user, call the
-[`createEnterpriseUser(BoxAPIConnection api, String loginEmail, String userName)`][create-enterprise-user].
+[`createEnterpriseUser(BoxAPIConnection api, String loginEmail, String userName, String... fields)`][create-enterprise-user].
 To pass additional optional parameters, use the
-[`createEnterpriseUser(BoxAPIConnection api, String loginEmail, String userName, CreateUserParams options)`][create-enterprise-user-2]
+[`createEnterpriseUser(BoxAPIConnection api, String loginEmail, String userName, CreateUserParams options, String... fields)`][create-enterprise-user-2]
 method.
 
 <!-- sample post_users -->
@@ -123,15 +123,15 @@ method.
 BoxUser.Info createdUserInfo = BoxUser.createEnterpriseUser(api, "user@example.com", "A User");
 ```
 
-[create-enterprise-user]: https://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxUser.html#createEnterpriseUser-com.box.sdk.BoxAPIConnection-java.lang.String-java.lang.String-
-[create-enterprise-user-2]: https://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxUser.html#createAppUser-com.box.sdk.BoxAPIConnection-java.lang.String-com.box.sdk.CreateUserParams-
+[create-enterprise-user]: https://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxUser.html#createEnterpriseUser-com.box.sdk.BoxAPIConnection-java.lang.String-java.lang.String-java.lang.String...-
+[create-enterprise-user-2]: https://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxUser.html#createAppUser-com.box.sdk.BoxAPIConnection-java.lang.String-com.box.sdk.CreateUserParams-java.lang.String...-
 
 ## Create An App User
 
 To create an app user, call the
-[`createAppUser(BoxAPIConnection api, String userName)`][create-app-user] method.
+[`createAppUser(BoxAPIConnection api, String userName, String... fields)`][create-app-user] method.
 To pass additional optional parameters, use the
-[`createAppUser(BoxAPIConnection api, String userName, CreateUserParams options)`][create-app-user-2] method.
+[`createAppUser(BoxAPIConnection api, String userName, CreateUserParams options, String... fields)`][create-app-user-2] method.
 
 <!-- sample post_users_app -->
 ```java
@@ -144,13 +144,13 @@ params.setExternalAppUserId("An Identifier Like Login");
 BoxUser.Info createdUserInfo = BoxUser.createAppUser(api, "A User", params);
 ```
 
-[create-app-user]: https://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxUser.html#createAppUser-com.box.sdk.BoxAPIConnection-java.lang.String-
-[create-app-user-2]: https://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxUser.html#createAppUser-com.box.sdk.BoxAPIConnection-java.lang.String-com.box.sdk.CreateUserParams-
+[create-app-user]: https://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxUser.html#createAppUser-com.box.sdk.BoxAPIConnection-java.lang.String-java.lang.String...-
+[create-app-user-2]: https://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxUser.html#createAppUser-com.box.sdk.BoxAPIConnection-java.lang.String-com.box.sdk.CreateUserParams-java.lang.String...-
 
 
 ## Update User
 
-To update a user call the [`updateInfo(BoxUser.Info fieldsToUpdate)`][update-info] method.
+To update a user call the [`updateInfo(BoxUser.Info fieldsToUpdate, String... fields)`][update-info] method.
 
 <!-- sample put_users_id -->
 ```java
@@ -160,7 +160,7 @@ info.setName(name);
 user.updateInfo(info);
 ```
 
-[update-info]: https://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxUser.html#updateInfo-com.box.sdk.BoxUser.Info-
+[update-info]: https://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxUser.html#updateInfo-com.box.sdk.BoxUser.Info-java.lang.String...-
 
 ## Delete User
 
