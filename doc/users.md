@@ -123,8 +123,8 @@ method.
 BoxUser.Info createdUserInfo = BoxUser.createEnterpriseUser(api, "user@example.com", "A User");
 ```
 
-[create-enterprise-user]: https://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxUser.html#createEnterpriseUser-com.box.sdk.BoxAPIConnection-java.lang.String-java.lang.String-
-[create-enterprise-user-2]: https://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxUser.html#createAppUser-com.box.sdk.BoxAPIConnection-java.lang.String-com.box.sdk.CreateUserParams-
+[create-enterprise-user]: https://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxUser.html#createEnterpriseUser-com.box.sdk.BoxAPIConnection-java.lang.String-java.lang.String-java.lang.String...-
+[create-enterprise-user-2]: https://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxUser.html#createAppUser-com.box.sdk.BoxAPIConnection-java.lang.String-com.box.sdk.CreateUserParams-java.lang.String...-
 
 ## Create An App User
 
@@ -144,8 +144,8 @@ params.setExternalAppUserId("An Identifier Like Login");
 BoxUser.Info createdUserInfo = BoxUser.createAppUser(api, "A User", params);
 ```
 
-[create-app-user]: https://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxUser.html#createAppUser-com.box.sdk.BoxAPIConnection-java.lang.String-
-[create-app-user-2]: https://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxUser.html#createAppUser-com.box.sdk.BoxAPIConnection-java.lang.String-com.box.sdk.CreateUserParams-
+[create-app-user]: https://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxUser.html#createAppUser-com.box.sdk.BoxAPIConnection-java.lang.String-java.lang.String...-
+[create-app-user-2]: https://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxUser.html#createAppUser-com.box.sdk.BoxAPIConnection-java.lang.String-com.box.sdk.CreateUserParams-java.lang.String...-
 
 
 ## Update User
@@ -160,7 +160,7 @@ info.setName(name);
 user.updateInfo(info);
 ```
 
-[update-info]: https://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxUser.html#updateInfo-com.box.sdk.BoxUser.Info-
+[update-info]: https://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxUser.html#updateInfo-com.box.sdk.BoxUser.Info-java.lang.String...-
 
 ## Delete User
 
