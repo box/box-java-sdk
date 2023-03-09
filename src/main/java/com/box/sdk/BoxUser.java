@@ -91,10 +91,11 @@ public class BoxUser extends BoxCollaborator {
      *
      * @param api  the API connection to be used by the created user.
      * @param name the name of the user.
+     * @param fields the fields to retrieve. Leave this out for the standard fields.
      * @return the created user's info.
      */
-    public static BoxUser.Info createAppUser(BoxAPIConnection api, String name) {
-        return createAppUser(api, name, new CreateUserParams());
+    public static BoxUser.Info createAppUser(BoxAPIConnection api, String name, String... fields) {
+        return createAppUser(api, name, new CreateUserParams(), fields);
     }
 
     /**
@@ -103,13 +104,14 @@ public class BoxUser extends BoxCollaborator {
      * @param api    the API connection to be used by the created user.
      * @param name   the name of the user.
      * @param params additional user information.
+     * @param fields the fields to retrieve. Leave this out for the standard fields.
      * @return the created user's info.
      */
     public static BoxUser.Info createAppUser(BoxAPIConnection api, String name,
-                                             CreateUserParams params) {
+                                             CreateUserParams params, String... fields) {
 
         params.setIsPlatformAccessOnly(true);
-        return createEnterpriseUser(api, null, name, params);
+        return createEnterpriseUser(api, null, name, params, fields);
     }
 
     /**
@@ -118,10 +120,11 @@ public class BoxUser extends BoxCollaborator {
      * @param api   the API connection to be used by the created user.
      * @param login the email address the user will use to login.
      * @param name  the name of the user.
+     * @param fields the fields to retrieve. Leave this out for the standard fields.
      * @return the created user's info.
      */
-    public static BoxUser.Info createEnterpriseUser(BoxAPIConnection api, String login, String name) {
-        return createEnterpriseUser(api, login, name, null);
+    public static BoxUser.Info createEnterpriseUser(BoxAPIConnection api, String login, String name, String... fields) {
+        return createEnterpriseUser(api, login, name, null, fields);
     }
 
     /**
@@ -131,10 +134,11 @@ public class BoxUser extends BoxCollaborator {
      * @param login  the email address the user will use to login.
      * @param name   the name of the user.
      * @param params additional user information.
+     * @param fields the fields to retrieve. Leave this out for the standard fields.
      * @return the created user's info.
      */
     public static BoxUser.Info createEnterpriseUser(BoxAPIConnection api, String login, String name,
-                                                    CreateUserParams params) {
+                                                    CreateUserParams params, String... fields) {
 
         JsonObject requestJSON = new JsonObject();
         requestJSON.add("login", login);
@@ -168,7 +172,11 @@ public class BoxUser extends BoxCollaborator {
             addIfNotNull(requestJSON, "is_external_collab_restricted", params.getIsExternalCollabRestricted());
         }
 
-        URL url = USERS_URL_TEMPLATE.build(api.getBaseURL());
+        QueryStringBuilder queryString = new QueryStringBuilder();
+        if (fields.length > 0) {
+            queryString.appendParam("fields", fields);
+        }
+        URL url = USERS_URL_TEMPLATE.buildWithQuery(api.getBaseURL(), queryString.toString());
         BoxJSONRequest request = new BoxJSONRequest(api, url, "POST");
         request.setBody(requestJSON.toString());
         try (BoxJSONResponse response = request.send()) {
@@ -620,9 +628,14 @@ public class BoxUser extends BoxCollaborator {
      * <p>Note: This method is only available to enterprise admins.</p>
      *
      * @param info info the updated info.
+     * @param fields the fields to retrieve. Leave this out for the standard fields.
      */
-    public void updateInfo(BoxUser.Info info) {
-        URL url = USER_URL_TEMPLATE.build(this.getAPI().getBaseURL(), this.getID());
+    public void updateInfo(BoxUser.Info info, String... fields) {
+        QueryStringBuilder builder = new QueryStringBuilder();
+        if (fields.length > 0) {
+            builder.appendParam("fields", fields);
+        }
+        URL url = USER_URL_TEMPLATE.buildWithQuery(this.getAPI().getBaseURL(), builder.toString(), this.getID());
         BoxJSONRequest request = new BoxJSONRequest(this.getAPI(), url, "PUT");
         request.setBody(info.getPendingChanges());
         try (BoxJSONResponse response = request.send()) {
