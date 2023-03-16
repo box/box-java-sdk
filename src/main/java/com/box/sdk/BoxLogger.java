@@ -7,6 +7,7 @@ import static java.util.logging.Level.OFF;
 import static java.util.logging.Level.SEVERE;
 import static java.util.logging.Level.WARNING;
 
+import java.util.logging.Handler;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -145,5 +146,24 @@ public final class BoxLogger {
      */
     public void setUseParentHandlers(boolean useParentHandlers) {
         this.logger.setUseParentHandlers(useParentHandlers);
+    }
+
+    /**
+     * Adds handler to logger.
+     * Check {@link Logger#addHandler(Handler)}
+     * @param handler a logging handler to add.
+     */
+    public void addHandler(Handler handler) {
+        logger.addHandler(handler);
+    }
+
+    /**
+     * Removes handler from logger.
+     * Will not fail if handler is null or not registered.
+     * Check {@link Logger#removeHandler(Handler)}
+     * @param handler a logging handler to remove.
+     */
+    public void removeHandler(Handler handler) {
+        logger.removeHandler(handler);
     }
 }
