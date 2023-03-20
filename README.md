@@ -1,9 +1,14 @@
+<p align="center">
+  <img src="https://github.com/box/sdks/blob/master/images/box-dev-logo.png" alt= “box-dev-logo” width="30%" height="50%">
+</p>
+
+# Box Java SDK
+
 [![Project Status](http://opensource.box.com/badges/active.svg)](http://opensource.box.com/badges)
 ![Platform](https://img.shields.io/badge/java-%3E%3D8-blue)
 [![License](https://img.shields.io/badge/license-Apache2-blue)](https://raw.githubusercontent.com/box/box-java-sdk/main/LICENSE)
 [![Build main](https://github.com/box/box-java-sdk/actions/workflows/build-main.yml/badge.svg)](https://github.com/box/box-java-sdk/actions/workflows/build-main.yml)
 [![Coverage](https://coveralls.io/repos/github/box/box-java-sdk/badge.svg?branch=main)](https://coveralls.io/github/box/box-java-sdk?branch=main)
-# Box Java SDK
 
 The Box Java SDK for interacting with the
 [Box Content API](https://developers.box.com/docs/).
