@@ -862,7 +862,8 @@ public class BoxAPIConnection {
         // Try to use deprecated value "maxRequestAttempts", else use newer value "maxRetryAttempts"
         if (maxRequestAttempts > -1) {
             this.maxRetryAttempts = maxRequestAttempts - 1;
-        } else {
+        }
+        if (maxRetryAttempts > -1) {
             this.maxRetryAttempts = maxRetryAttempts;
         }
 
