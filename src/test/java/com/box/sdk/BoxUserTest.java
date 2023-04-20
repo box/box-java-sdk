@@ -181,6 +181,26 @@ public class BoxUserTest {
     }
 
     @Test
+    public void testCreateAppUserSucceedsWithFields() {
+        final String userURL = "/2.0/users";
+        final String userID = "12345";
+        final String userName = "Java SDK App User";
+        final String userLogin = "testuser@boxdevedition.com";
+
+        String result = TestUtils.getFixture("BoxUser/CreateAppUser201");
+
+        wireMockRule.stubFor(WireMock.post(WireMock.urlPathEqualTo(userURL))
+            .withQueryParam("fields", WireMock.equalTo("name,login"))
+            .willReturn(WireMock.okForContentType(APPLICATION_JSON, result)));
+
+        BoxUser.Info createdUserInfo = BoxUser.createAppUser(this.api, userName, "name", "login");
+
+        assertEquals(userID, createdUserInfo.getID());
+        assertEquals(userName, createdUserInfo.getName());
+        assertEquals(userLogin, createdUserInfo.getLogin());
+    }
+
+    @Test
     public void testCreateManagedUserSucceeds() {
         final String userURL = "/2.0/users";
         final String userID = "12345";
@@ -194,6 +214,30 @@ public class BoxUserTest {
             .willReturn(WireMock.okForContentType(APPLICATION_JSON, result)));
 
         BoxUser.Info createdUserInfo = BoxUser.createEnterpriseUser(this.api, userLogin, userName);
+
+        assertEquals(userID, createdUserInfo.getID());
+        assertEquals(userName, createdUserInfo.getName());
+        assertEquals(userLogin, createdUserInfo.getLogin());
+        assertEquals(userTimeZone, createdUserInfo.getTimezone());
+    }
+
+    @Test
+    public void testCreateManagedUserSucceedsWithFields() {
+        final String userURL = "/2.0/users";
+        final String userID = "12345";
+        final String userName = "Test Managed User";
+        final String userLogin = "test@user.com";
+        final String userTimeZone = "America/Los_Angeles";
+
+        String result = TestUtils.getFixture("BoxUser/CreateManagedUser201");
+
+        wireMockRule.stubFor(WireMock.post(WireMock.urlPathEqualTo(userURL))
+                .withQueryParam("fields", WireMock.equalTo("name,login,timezone"))
+                .willReturn(WireMock.okForContentType(APPLICATION_JSON, result)));
+
+        BoxUser.Info createdUserInfo = BoxUser.createEnterpriseUser(
+                this.api, userLogin, userName, "name", "login", "timezone"
+        );
 
         assertEquals(userID, createdUserInfo.getID());
         assertEquals(userName, createdUserInfo.getName());
@@ -252,6 +296,43 @@ public class BoxUserTest {
         info.setJobTitle(userJob);
         info.setPhone(userPhone);
         user.updateInfo(info);
+
+        assertEquals(userID, info.getID());
+        assertEquals(userName, info.getName());
+        assertEquals(userLogin, info.getLogin());
+        assertEquals(userJob, info.getJobTitle());
+        assertEquals(userPhone, info.getPhone());
+    }
+
+    @Test
+    public void testUpdateUserInfoSucceedsWithFields() {
+        final String userID = "12345";
+        final String userURL = "/2.0/users/" + userID;
+        final String userName = "New User Name";
+        final String userLogin = "new@test.com";
+        final String userJob = "Example Job";
+        final String userPhone = "650-123-4567";
+
+        JsonObject userObject = new JsonObject()
+                .add("name", userName)
+                .add("login", userLogin)
+                .add("job_title", userJob)
+                .add("phone", userPhone);
+
+        String result = TestUtils.getFixture("BoxUser/UpdateUserInfo200");
+
+        wireMockRule.stubFor(WireMock.put(WireMock.urlPathEqualTo(userURL))
+                .withQueryParam("fields", WireMock.equalTo("name,login,job_title,phone"))
+                .withRequestBody(WireMock.equalToJson(userObject.toString()))
+                .willReturn(WireMock.okForContentType(APPLICATION_JSON, result)));
+
+        BoxUser user = new BoxUser(this.api, userID);
+        BoxUser.Info info = user.new Info();
+        info.setName(userName);
+        info.setLogin(userLogin);
+        info.setJobTitle(userJob);
+        info.setPhone(userPhone);
+        user.updateInfo(info, "name", "login", "job_title", "phone");
 
         assertEquals(userID, info.getID());
         assertEquals(userName, info.getName());
