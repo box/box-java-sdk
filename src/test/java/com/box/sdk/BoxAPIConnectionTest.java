@@ -625,6 +625,31 @@ public class BoxAPIConnectionTest {
     }
 
     @Test
+    public void restoresDefaultMaxRequestAttemptsWhenMissing() {
+        // given
+        String accessToken = "access_token";
+        String clientId = "some_client_id";
+        String clientSecret = "some_client_secret";
+        String refreshToken = "some_refresh_token";
+
+        String savedConnection = "{"
+                + "\"accessToken\":\"access_token\","
+                + "\"refreshToken\":\"some_refresh_token\","
+                + "\"lastRefresh\":0,"
+                + "\"expires\":0,"
+                + "\"userAgent\":\"Box Java SDK v3.8.0 (Java 1.8.0_345)\","
+                + "\"baseURL\":\"https://api.box.com/\","
+                + "\"authorizationURL\":\"https://account.box.com/api/\","
+                + "\"autoRefresh\":true"
+                + "}";
+        // when
+        BoxAPIConnection restoredApi = BoxAPIConnection.restore(clientId, clientSecret, savedConnection);
+
+        // then
+        assertThat(BoxGlobalSettings.getMaxRetryAttempts(), is(restoredApi.getMaxRetryAttempts()));
+    }
+
+    @Test
     public void successfullyRestoresConnectionWithDeprecatedSettings() {
         String restoreState = TestUtils.getFixture("BoxAPIConnection/State");
         String restoreStateDeprecated = TestUtils.getFixture("BoxAPIConnection/StateDeprecated");
