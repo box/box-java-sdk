@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [4.1.0](https://github.com/box/box-java-sdk/compare/v4.0.1...v4.1.0) (2023-04-24)
+
+
+### New Features and Enhancements:
+
+* Add missing `fields` parameter to create and update `BoxUser` methods ([#1155](https://github.com/box/box-java-sdk/issues/1155)) ([be3820d](https://github.com/box/box-java-sdk/commit/be3820dc4df15e99dfc13602d4f7269841bd15b3)), closes [#1154](https://github.com/box/box-java-sdk/issues/1154)
+
+### Bug Fixes:
+
+* Allow registering custom logger handlers ([#1156](https://github.com/box/box-java-sdk/issues/1156)) ([7373d5c](https://github.com/box/box-java-sdk/commit/7373d5cc2bf49bc198cbca70d056e43f0dffdb3a))
+* Fallback to default value of `maxRetryAttempts` when restoring `BoxAPIConnection` ([#1161](https://github.com/box/box-java-sdk/issues/1161)) ([2a10e5d](https://github.com/box/box-java-sdk/commit/2a10e5d07497611e077a9207fe98c1d8146cfd22)), closes [#1160](https://github.com/box/box-java-sdk/issues/1160)
+
 ### [4.0.1](https://github.com/box/box-java-sdk/compare/v4.0.0...v4.0.1) (2023-03-06)
 
 
