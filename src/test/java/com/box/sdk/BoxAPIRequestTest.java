@@ -18,6 +18,7 @@ import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.fail;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;
 
 import com.eclipsesource.json.ParseException;
@@ -30,6 +31,7 @@ import java.net.URL;
 import java.util.zip.GZIPOutputStream;
 import org.junit.Rule;
 import org.junit.Test;
+import org.mockito.Mockito;
 
 public class BoxAPIRequestTest {
     @Rule
@@ -107,6 +109,30 @@ public class BoxAPIRequestTest {
             request.send();
         } catch (BoxAPIException e) {
             verify(expectedNumRetryAttempts + 1, getRequestedFor(urlEqualTo("/")));
+        }
+    }
+
+    @Test
+    public void requestRetriesUsingSecondsProvidedInRetryHeader() throws InterruptedException {
+        final int expectedNumRetryAttempts = 1;
+        stubFor(get(urlEqualTo("/")).willReturn(aResponse()
+            .withStatus(429)
+            .withBody("{}")
+            .withHeader("Retry-After", "20")
+        ));
+        Time mockTime = mock(Time.class);
+        BackoffCounter backoffCounter = new BackoffCounter(mockTime);
+
+        BoxAPIConnection api = createConnectionWith(boxMockUrl().toString());
+        api.setMaxRetryAttempts(expectedNumRetryAttempts);
+
+        BoxAPIRequest request = new BoxAPIRequest(api, boxMockUrl(), "GET");
+        request.setBackoffCounter(backoffCounter);
+
+        try {
+            request.send();
+        } catch (BoxAPIException e) {
+            Mockito.verify(mockTime).waitDuration(eq(20000));
         }
     }
 

@@ -1,5 +1,6 @@
 package com.box.sdk;
 
+import static com.box.sdk.internal.utils.CollectionUtils.mapToString;
 import static java.lang.String.format;
 
 import com.box.sdk.http.ContentType;
@@ -389,9 +390,10 @@ public class BoxAPIRequest {
                 }
 
                 LOGGER.warn(
-                    format("Retrying request due to transient error status=%d body=%s",
+                    format("Retrying request due to transient error status=%d body=%s headers=%s",
                         apiException.getResponseCode(),
-                        apiException.getResponse())
+                        apiException.getResponse(),
+                        mapToString(apiException.getHeaders()))
                 );
 
                 try {
