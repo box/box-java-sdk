@@ -23,7 +23,7 @@ class BackoffCounter {
     }
 
     /**
-     * Waits for some random amount of time.
+     * Waits for some random amount of time {@link BackoffCounter#calculateDelay()}
      * @throws InterruptedException
      */
     public void waitBackoff() throws InterruptedException {
@@ -68,9 +68,7 @@ class BackoffCounter {
         int exponent = this.maxAttempts - this.attemptsRemaining;
         double minWindow = 1 - RANDOM_FACTOR;
         double maxWindow = 1 + RANDOM_FACTOR;
-        //1.0 + 0.5
         double jitter = (Math.random() * (maxWindow - minWindow)) + minWindow;
-        //2^5*1000*1,5
         return (int) (Math.pow(2, exponent) * BASE_TIMEOUT * jitter);
     }
 }
