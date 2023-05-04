@@ -22,11 +22,20 @@ class BackoffCounter {
         return this.attemptsRemaining;
     }
 
+    /**
+     * Waits for some random amount of time {@link BackoffCounter#calculateDelay()}
+     * @throws InterruptedException
+     */
     public void waitBackoff() throws InterruptedException {
         int delay = this.calculateDelay();
         this.waitBackoff(delay);
     }
 
+    /**
+     * Waits for specified amount of miliseconds.
+     * @param delay Time to wait for in miliseconds.
+     * @throws InterruptedException
+     */
     public void waitBackoff(int delay) throws InterruptedException {
         if (LOGGER.isWarnEnabled()) {
             LOGGER.warn(String.format(
@@ -50,12 +59,16 @@ class BackoffCounter {
         this.attemptsRemaining = maxAttempts;
     }
 
+    /**
+     * Generates some random amount of time to backoff.
+     * Time is within <16000, 48000) ms
+     * @return Time in miliseconds.
+     */
     private int calculateDelay() {
         int exponent = this.maxAttempts - this.attemptsRemaining;
         double minWindow = 1 - RANDOM_FACTOR;
         double maxWindow = 1 + RANDOM_FACTOR;
         double jitter = (Math.random() * (maxWindow - minWindow)) + minWindow;
-
         return (int) (Math.pow(2, exponent) * BASE_TIMEOUT * jitter);
     }
 }

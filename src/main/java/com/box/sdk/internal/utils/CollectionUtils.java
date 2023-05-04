@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * {@link Collection} related utlities.
@@ -47,6 +49,12 @@ public class CollectionUtils {
             result.add(element);
         }
         return result;
+    }
+
+    public static String mapToString(Map<?, ?> map) {
+        return map.keySet().stream()
+            .map(k -> k + "=" + map.get(k))
+            .collect(Collectors.joining(",\n", "{\n", "\n}"));
     }
 
     /**
