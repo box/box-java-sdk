@@ -17,7 +17,7 @@ The Box Java SDK for interacting with the
 Latest release can be found [here](https://github.com/box/box-java-sdk/tree/v4.1.0).
 
 ## Upgrades
-You can read about how to migrate to the new version [here](https://github.com/box/box-java-sdk/tree/v4.1.0).
+You can read about how to migrate to the 4 version [here](doc/upgrades/3.x.x%20to%204.x.x.md).
 
 ## Versions
 We use a modified version of [Semantic Versioning](https://semver.org/) for all changes. See [version strategy](VERSIONS.md) for details which is effective from 30 July 2022.
