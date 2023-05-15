@@ -423,7 +423,7 @@ public class BoxAPIRequest {
      *
      * @param shouldAuthenticate use `false` to disable authentication.
      */
-    void shouldAuthenticate(boolean shouldAuthenticate) {
+    public void shouldAuthenticate(boolean shouldAuthenticate) {
         this.shouldAuthenticate = shouldAuthenticate;
     }
 
