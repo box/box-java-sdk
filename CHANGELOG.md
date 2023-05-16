@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [4.1.1](https://github.com/box/box-java-sdk/compare/v4.1.0...v4.1.1) (2023-05-16)
+
+
+### Bug Fixes:
+
+* Allow users to disable adding authentication header. ([#1167](https://github.com/box/box-java-sdk/issues/1167)) ([3433e5a](https://github.com/box/box-java-sdk/commit/3433e5a405ceb9bc32791642518b1fd65c4b4032))
+* Logging headers when retrying request ([#1164](https://github.com/box/box-java-sdk/issues/1164)) ([e0c3d8e](https://github.com/box/box-java-sdk/commit/e0c3d8e730962ba5c97105ce506ee931a3bba362))
+
 ## [4.1.0](https://github.com/box/box-java-sdk/compare/v4.0.1...v4.1.0) (2023-04-24)
 
 
