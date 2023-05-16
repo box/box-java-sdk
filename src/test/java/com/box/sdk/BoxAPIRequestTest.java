@@ -2,6 +2,7 @@ package com.box.sdk;
 
 import static com.box.sdk.TestUtils.createConnectionWith;
 import static com.box.sdk.http.ContentType.APPLICATION_JSON;
+import static com.box.sdk.http.HttpHeaders.AUTHORIZATION;
 import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
 import static com.github.tomakehurst.wiremock.client.WireMock.equalTo;
 import static com.github.tomakehurst.wiremock.client.WireMock.get;
@@ -23,6 +24,7 @@ import static org.mockito.Mockito.mock;
 
 import com.eclipsesource.json.ParseException;
 import com.github.tomakehurst.wiremock.junit.WireMockRule;
+import com.github.tomakehurst.wiremock.matching.EqualToPattern;
 import com.github.tomakehurst.wiremock.matching.RequestPatternBuilder;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -283,6 +285,33 @@ public class BoxAPIRequestTest {
 
         new BoxAPIRequest(api, boxMockUrl(), "GET").send();
         verify(1, getRequestedFor(urlEqualTo("/")));
+    }
+
+    @Test
+    public void addsAuthenticationHeaderByDefault() {
+        stubFor(get(urlEqualTo("/"))
+            .willReturn(aResponse().withStatus(200).withBody("{\"foo\":\"bar\"}")));
+
+        BoxAPIConnection api = createConnectionWith(boxMockUrl().toString());
+
+
+        new BoxAPIRequest(api, boxMockUrl(), "GET").send();
+        verify(1, getRequestedFor(urlEqualTo("/"))
+            .withHeader(AUTHORIZATION, new EqualToPattern("Bearer", true))
+        );
+    }
+
+    @Test
+    public void willNotAddAuthenticationHeaderWhenDisabled() {
+        stubFor(get(urlEqualTo("/"))
+            .willReturn(aResponse().withStatus(200).withBody("{\"foo\":\"bar\"}")));
+
+        BoxAPIConnection api = createConnectionWith(boxMockUrl().toString());
+
+        BoxAPIRequest request = new BoxAPIRequest(api, boxMockUrl(), "GET");
+        request.shouldAuthenticate(false);
+        request.send();
+        verify(1, getRequestedFor(urlEqualTo("/")).withoutHeader(AUTHORIZATION));
     }
 
     private byte[] gzipped(String str) {

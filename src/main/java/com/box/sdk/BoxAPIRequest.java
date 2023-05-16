@@ -163,10 +163,6 @@ public class BoxAPIRequest {
         }
     }
 
-    private static boolean isResponseRedirect(int responseCode) {
-        return (responseCode == 301 || responseCode == 302);
-    }
-
     /**
      * Adds an HTTP header to this request.
      *
@@ -309,7 +305,7 @@ public class BoxAPIRequest {
      *
      * @return headers as list of RequestHeader objects
      */
-    protected List<RequestHeader> getHeaders() {
+    List<RequestHeader> getHeaders() {
         return this.headers;
     }
 
@@ -418,6 +414,17 @@ public class BoxAPIRequest {
         }
 
         throw new RuntimeException();
+    }
+
+    /**
+     * Disables adding authentication header to request.
+     * Useful when you want to add your own authentication method.
+     * Default value is `true` and SKD will add authenticaton header to request.
+     *
+     * @param shouldAuthenticate use `false` to disable authentication.
+     */
+    public void shouldAuthenticate(boolean shouldAuthenticate) {
+        this.shouldAuthenticate = shouldAuthenticate;
     }
 
     /**
@@ -658,10 +665,6 @@ public class BoxAPIRequest {
 
     private void logRequest() {
         logDebug(this.toString());
-    }
-
-    void shouldAuthenticate(boolean shouldAuthenticate) {
-        this.shouldAuthenticate = shouldAuthenticate;
     }
 
     /**
