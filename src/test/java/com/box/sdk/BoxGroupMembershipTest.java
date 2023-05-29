@@ -18,7 +18,7 @@ public class BoxGroupMembershipTest {
      */
     @Test
     public void testUpdateInfoSendsCorrectJson() {
-        final BoxGroupMembership.GroupRole groupRole = BoxGroupMembership.GroupRole.COADMIN;
+        final BoxGroupMembership.GroupRole groupRole = BoxGroupMembership.GroupRole.ADMIN;
 
         BoxAPIConnection api = new BoxAPIConnectionForTests("");
         api.setRequestInterceptor(new JSONRequestInterceptor() {
@@ -52,7 +52,7 @@ public class BoxGroupMembershipTest {
         final String userLogin = "alice@gmail.com";
         final String groupID = "119720";
         final String groupName = "family";
-        final BoxGroupMembership.GroupRole groupRole = BoxGroupMembership.GroupRole.COADMIN;
+        final BoxGroupMembership.GroupRole groupRole = BoxGroupMembership.GroupRole.ADMIN;
         final Date createdAt = BoxDateFormat.parse("2013-05-16T15:27:57-07:00");
         final Date modifiedAt = BoxDateFormat.parse("2013-05-16T15:27:57-07:00");
 
@@ -70,7 +70,7 @@ public class BoxGroupMembershipTest {
             + "        \"id\": \"119720\",\n"
             + "        \"name\": \"family\"\n"
             + "    },\n"
-            + "    \"role\": \"submaster\",\n"
+            + "    \"role\": \"admin\",\n"
             + "    \"created_at\": \"2013-05-16T15:27:57-07:00\",\n"
             + "    \"modified_at\": \"2013-05-16T15:27:57-07:00\"\n"
             + "}").asObject();
@@ -79,7 +79,7 @@ public class BoxGroupMembershipTest {
         api.setRequestInterceptor(JSONRequestInterceptor.respondWith(fakeJSONResponse));
         BoxGroupMembership membership = new BoxGroupMembership(api, id);
         BoxGroupMembership.Info info = membership.new Info();
-        info.setGroupRole(BoxGroupMembership.GroupRole.COADMIN);
+        info.setGroupRole(BoxGroupMembership.GroupRole.ADMIN);
         membership.updateInfo(info);
         assertEquals(id, info.getID());
         assertEquals(userID, info.getUser().getID());
