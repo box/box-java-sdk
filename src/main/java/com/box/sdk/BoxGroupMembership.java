@@ -89,11 +89,6 @@ public class BoxGroupMembership extends BoxResource {
         ADMIN("admin"),
 
         /**
-         * The user is a coadmin in the group.
-         */
-        COADMIN("submaster"),
-
-        /**
          * The user is a regular member in the group.
          */
         MEMBER("member");
