@@ -9,11 +9,11 @@ public class SharedLinkAPIConnection extends BoxAPIConnection {
     private final String sharedLink;
     private final String sharedLinkPassword;
 
-    SharedLinkAPIConnection(BoxAPIConnection connection, String sharedLink) {
+    public SharedLinkAPIConnection(BoxAPIConnection connection, String sharedLink) {
         this(connection, sharedLink, null);
     }
 
-    SharedLinkAPIConnection(BoxAPIConnection connection, String sharedLink, String sharedLinkPassword) {
+    public SharedLinkAPIConnection(BoxAPIConnection connection, String sharedLink, String sharedLinkPassword) {
         //this is a hack to maintain backward compatibility and to prevent confusing the compiler
         //between two possible BoxApiConnection constructors for super(null)
         super("");
