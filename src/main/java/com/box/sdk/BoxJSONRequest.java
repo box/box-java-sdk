@@ -98,12 +98,12 @@ public class BoxJSONRequest extends BoxAPIRequest {
 
     @Override
     public BoxJSONResponse send() {
-        return (BoxJSONResponse) super.send();
+        return super.send().toBoxJSONResponse();
     }
 
     @Override
     public BoxJSONResponse send(ProgressListener listener) {
-        return (BoxJSONResponse) super.send(listener);
+        return super.send(listener).toBoxJSONResponse();
     }
 
     @Override

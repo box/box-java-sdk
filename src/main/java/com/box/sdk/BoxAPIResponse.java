@@ -295,6 +295,19 @@ public class BoxAPIResponse implements Closeable {
         }
     }
 
+    public BoxJSONResponse toBoxJSONResponse() {
+        try {
+            return (BoxJSONResponse)this;
+        } catch (ClassCastException e) {
+            return new BoxJSONResponse(this.responseCode,
+                this.requestMethod,
+                this.requestUrl,
+                this.headers,
+                new JsonObject()
+            );
+        }
+    }
+
     /**
      * Returns a string representation of this response's body. This method is used when logging this response's body.
      * By default, it returns an empty string (to avoid accidentally logging binary data) unless the response contained
