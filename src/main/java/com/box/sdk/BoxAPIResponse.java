@@ -5,6 +5,7 @@ import static com.box.sdk.http.ContentType.APPLICATION_JSON;
 import static java.lang.String.format;
 
 import com.eclipsesource.json.Json;
+import com.eclipsesource.json.JsonObject;
 import com.eclipsesource.json.ParseException;
 import java.io.ByteArrayInputStream;
 import java.io.Closeable;
