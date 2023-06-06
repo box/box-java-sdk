@@ -298,7 +298,7 @@ public class BoxAPIResponse implements Closeable {
 
     public BoxJSONResponse toBoxJSONResponse() {
         try {
-            return (BoxJSONResponse)this;
+            return (BoxJSONResponse) this;
         } catch (ClassCastException e) {
             return new BoxJSONResponse(this.responseCode,
                 this.requestMethod,
