@@ -5,7 +5,6 @@ import static com.box.sdk.http.ContentType.APPLICATION_JSON;
 import static java.lang.String.format;
 
 import com.eclipsesource.json.Json;
-import com.eclipsesource.json.JsonObject;
 import com.eclipsesource.json.ParseException;
 import java.io.ByteArrayInputStream;
 import java.io.Closeable;
@@ -44,7 +43,6 @@ public class BoxAPIResponse implements Closeable {
     private final String contentType;
     private final String requestMethod;
     private final String requestUrl;
-
     private int responseCode;
     private String bodyString;
 
@@ -150,6 +148,7 @@ public class BoxAPIResponse implements Closeable {
             );
         }
         ResponseBody responseBody = response.body();
+        //we must be better in identifying API vs JSON
         if (responseBody.contentLength() == 0 || responseBody.contentType() == null) {
             return new BoxAPIResponse(response.code(),
                 response.request().method(),
@@ -296,19 +295,6 @@ public class BoxAPIResponse implements Closeable {
         }
     }
 
-    public BoxJSONResponse toBoxJSONResponse() {
-        try {
-            return (BoxJSONResponse) this;
-        } catch (ClassCastException e) {
-            return new BoxJSONResponse(this.responseCode,
-                this.requestMethod,
-                this.requestUrl,
-                this.headers,
-                new JsonObject()
-            );
-        }
-    }
-
     /**
      * Returns a string representation of this response's body. This method is used when logging this response's body.
      * By default, it returns an empty string (to avoid accidentally logging binary data) unless the response contained
@@ -333,5 +319,13 @@ public class BoxAPIResponse implements Closeable {
         if (responseCode >= 500 && LOGGER.isErrorEnabled()) {
             LOGGER.error(this.toString());
         }
+    }
+
+    protected String getRequestMethod() {
+        return requestMethod;
+    }
+
+    protected String getRequestUrl() {
+        return requestUrl;
     }
 }
