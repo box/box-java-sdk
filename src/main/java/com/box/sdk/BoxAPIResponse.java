@@ -148,7 +148,6 @@ public class BoxAPIResponse implements Closeable {
             );
         }
         ResponseBody responseBody = response.body();
-        //we must be better in identifying API vs JSON
         if (responseBody.contentLength() == 0 || responseBody.contentType() == null) {
             return new BoxAPIResponse(response.code(),
                 response.request().method(),
