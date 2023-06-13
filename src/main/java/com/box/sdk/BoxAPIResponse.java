@@ -43,7 +43,6 @@ public class BoxAPIResponse implements Closeable {
     private final String contentType;
     private final String requestMethod;
     private final String requestUrl;
-
     private int responseCode;
     private String bodyString;
 
@@ -319,5 +318,13 @@ public class BoxAPIResponse implements Closeable {
         if (responseCode >= 500 && LOGGER.isErrorEnabled()) {
             LOGGER.error(this.toString());
         }
+    }
+
+    protected String getRequestMethod() {
+        return requestMethod;
+    }
+
+    protected String getRequestUrl() {
+        return requestUrl;
     }
 }

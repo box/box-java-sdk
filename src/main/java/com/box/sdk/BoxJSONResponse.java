@@ -25,6 +25,16 @@ public class BoxJSONResponse extends BoxAPIResponse {
         super();
     }
 
+    BoxJSONResponse(BoxAPIResponse response) {
+        this(
+            response.getResponseCode(),
+            response.getRequestMethod(),
+            response.getRequestUrl(),
+            response.getHeaders(),
+            new JsonObject()
+        );
+    }
+
     /**
      * Constructs a BoxAPIResponse with an http response code and response body.
      *
