@@ -2,6 +2,15 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [4.1.2](https://github.com/box/box-java-sdk/compare/v4.1.1...v4.1.2) (2023-06-14)
+
+
+### Bug Fixes:
+
+* class cast exception when uploading large file ([#1174](https://github.com/box/box-java-sdk/issues/1174)) ([e7d28bd](https://github.com/box/box-java-sdk/commit/e7d28bddb706c8b4fd1328f0eebc50db19a8c656)), closes [#1173](https://github.com/box/box-java-sdk/issues/1173)
+* Make `SharedLinkAPIConnection` constructors public ([#1172](https://github.com/box/box-java-sdk/issues/1172)) ([4d1616d](https://github.com/box/box-java-sdk/commit/4d1616ddd2c39d1cb0d03af998d2c47efe607853))
+* Remove invalid Group membership role ([#1171](https://github.com/box/box-java-sdk/issues/1171)) ([a5915f9](https://github.com/box/box-java-sdk/commit/a5915f94114a8269287831280a57949ed203e4e8))
+
 ### [4.1.1](https://github.com/box/box-java-sdk/compare/v4.1.0...v4.1.1) (2023-05-16)
 
 
