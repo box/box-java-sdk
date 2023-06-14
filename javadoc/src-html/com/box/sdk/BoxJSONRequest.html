@@ -106,19 +106,27 @@
 <span class="sourceLineNo">098</span><a name="line.98"></a>
 <span class="sourceLineNo">099</span>    @Override<a name="line.99"></a>
 <span class="sourceLineNo">100</span>    public BoxJSONResponse send() {<a name="line.100"></a>
-<span class="sourceLineNo">101</span>        return (BoxJSONResponse) super.send();<a name="line.101"></a>
+<span class="sourceLineNo">101</span>        return convert(super.send());<a name="line.101"></a>
 <span class="sourceLineNo">102</span>    }<a name="line.102"></a>
 <span class="sourceLineNo">103</span><a name="line.103"></a>
 <span class="sourceLineNo">104</span>    @Override<a name="line.104"></a>
 <span class="sourceLineNo">105</span>    public BoxJSONResponse send(ProgressListener listener) {<a name="line.105"></a>
-<span class="sourceLineNo">106</span>        return (BoxJSONResponse) super.send(listener);<a name="line.106"></a>
+<span class="sourceLineNo">106</span>        return convert(super.send(listener));<a name="line.106"></a>
 <span class="sourceLineNo">107</span>    }<a name="line.107"></a>
 <span class="sourceLineNo">108</span><a name="line.108"></a>
-<span class="sourceLineNo">109</span>    @Override<a name="line.109"></a>
-<span class="sourceLineNo">110</span>    protected String bodyToString() {<a name="line.110"></a>
-<span class="sourceLineNo">111</span>        return this.jsonValue != null ? this.jsonValue.toString() : null;<a name="line.111"></a>
-<span class="sourceLineNo">112</span>    }<a name="line.112"></a>
-<span class="sourceLineNo">113</span>}<a name="line.113"></a>
+<span class="sourceLineNo">109</span>    private BoxJSONResponse convert(BoxAPIResponse response) {<a name="line.109"></a>
+<span class="sourceLineNo">110</span>        if (response instanceof BoxJSONResponse) {<a name="line.110"></a>
+<span class="sourceLineNo">111</span>            return (BoxJSONResponse) response;<a name="line.111"></a>
+<span class="sourceLineNo">112</span>        } else {<a name="line.112"></a>
+<span class="sourceLineNo">113</span>            return new BoxJSONResponse(response);<a name="line.113"></a>
+<span class="sourceLineNo">114</span>        }<a name="line.114"></a>
+<span class="sourceLineNo">115</span>    }<a name="line.115"></a>
+<span class="sourceLineNo">116</span><a name="line.116"></a>
+<span class="sourceLineNo">117</span>    @Override<a name="line.117"></a>
+<span class="sourceLineNo">118</span>    protected String bodyToString() {<a name="line.118"></a>
+<span class="sourceLineNo">119</span>        return this.jsonValue != null ? this.jsonValue.toString() : null;<a name="line.119"></a>
+<span class="sourceLineNo">120</span>    }<a name="line.120"></a>
+<span class="sourceLineNo">121</span>}<a name="line.121"></a>
 
 
 
