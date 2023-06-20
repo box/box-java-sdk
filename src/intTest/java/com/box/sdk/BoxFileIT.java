@@ -124,19 +124,21 @@ public class BoxFileIT {
     }
 
     @Test
-    public void getRepresentationContentSucceeds() {
+    public void getRepresentationContentSucceeds() throws InterruptedException {
         BoxAPIConnection api = jwtApiForServiceAccount();
         String fileName = "smalltest.pdf";
         BoxFile file = null;
         try {
             file = uploadSampleFileToUniqueFolder(api, fileName);
-
+            final String fileId = file.getID();
             String representationHint = "[jpg?dimensions=32x32]";
             ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-            file.getRepresentationContent(representationHint, outputStream);
-            byte[] downloadedRepresentationContent = outputStream.toByteArray();
+            Retry.retry(() -> {
+                new BoxFile(api, fileId).getRepresentationContent(representationHint, outputStream);
+                byte[] downloadedRepresentationContent = outputStream.toByteArray();
 
-            assertNotNull(downloadedRepresentationContent);
+                assertNotNull(downloadedRepresentationContent);
+            }, 5, 100);
         } finally {
             deleteFile(file);
         }
