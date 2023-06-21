@@ -190,28 +190,26 @@ public class MetadataIT {
             }
 
             // Update instance multiselect field
-            // this started failing for no reason - waiting for clarification
-//            actualMD.test("/" + fieldKey + "/0", "bar");
-            //todo: this check always fails
-//            actualMD.test("/" + fieldKey + "/1", "foo");
-//            values = new ArrayList<>();
-//            values.add("two");
-//            values.add("one");
-//            actualMD.add("/otherMultiSelect", values);
-//            actualMD.remove("/" + fieldKey + "/0");
-//            actualMD.add("/" + fieldKey + "/-", "blargh");
-//            Metadata updatedMD = folder.updateMetadata(actualMD);
+            actualMD.test("/" + fieldKey + "/0", "bar");
+            values = new ArrayList<>();
+            values.add("two");
+            values.add("one");
+            actualMD.add("/otherMultiSelect", values);
+            actualMD.remove("/" + fieldKey + "/0");
+            actualMD.add("/" + fieldKey + "/-", "blargh");
+            Metadata updatedMD = folder.updateMetadata(actualMD);
 
-            Metadata metadata = folder.getMetadata(templateKey);
-            multiSelectValues = metadata.getMultiSelect("/" + fieldKey);
+            multiSelectValues = updatedMD.getMultiSelect("/" + fieldKey);
             assertThat(multiSelectValues, Matchers.hasSize(2));
             assertThat(multiSelectValues, containsInAnyOrder("foooooo", "bar"));
-//            multiSelectValues = metadata.getMultiSelect("/otherMultiSelect");
-//            assertThat(multiSelectValues, hasSize(2));
-//            assertThat(multiSelectValues, containsInAnyOrder("one", "two"));
+            multiSelectValues = updatedMD.getMultiSelect("/otherMultiSelect");
+            assertThat(multiSelectValues, hasSize(2));
+            assertThat(multiSelectValues, containsInAnyOrder("one", "two"));
 
             // Delete metadata template and folder
         } finally {
+            System.out.printf("Template [ID %s] [Key %s]%n", template.getID(), template.getTemplateKey());
+            System.out.printf("Folder [ID %s]%n", folder.getID());
             this.deleteMetadata(api, template);
             deleteFolder(folder);
 
