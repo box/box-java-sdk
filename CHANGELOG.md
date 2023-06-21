@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [4.2.0](https://github.com/box/box-java-sdk/compare/v4.1.2...v4.2.0) (2023-06-21)
+
+
+### New Features and Enhancements:
+
+* Getting collaborators allows to specify fields ([#1178](https://github.com/box/box-java-sdk/issues/1178)) ([1694d75](https://github.com/box/box-java-sdk/commit/1694d75fff0fbddb938426ef03ba24f360a344aa))
+
 ### [4.1.2](https://github.com/box/box-java-sdk/compare/v4.1.1...v4.1.2) (2023-06-14)
 
 
