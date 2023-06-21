@@ -799,6 +799,33 @@ public class BoxFolderTest {
     }
 
     @Test
+    public void testGetAllFolderCollaborationsWithFieldsSucceeds() {
+        final String folderID = "3333";
+        final String folderCollaborationURL = "/2.0/folders/" + folderID
+            + "/collaborations?fields=id%2Ctype%2Ccan_view_path";
+
+        String result = TestUtils.getFixture("BoxFolder/GetAllFolderCollaborations200WithFields");
+
+        wireMockRule.stubFor(WireMock.get(WireMock.urlEqualTo(folderCollaborationURL))
+            .willReturn(WireMock.aResponse()
+                .withHeader("Content-Type", APPLICATION_JSON)
+                .withBody(result)));
+
+        BoxFolder folder = new BoxFolder(this.api, folderID);
+        Collection<BoxCollaboration.Info> collaborations = folder.getCollaborations("id", "type", "can_view_path");
+
+        Iterator<BoxCollaboration.Info> iterator = collaborations.iterator();
+
+        BoxCollaboration.Info collaborationInfo = iterator.next();
+        assertEquals("12345", collaborationInfo.getID());
+        assertFalse(collaborationInfo.getCanViewPath());
+
+        BoxCollaboration.Info collaborationInfo2 = iterator.next();
+        assertEquals("124783", collaborationInfo2.getID());
+        assertTrue(collaborationInfo2.getCanViewPath());
+    }
+
+    @Test
     public void testCreateMetadataOnFolderSucceedsAndSendsCorrectJson() {
         final String folderID = "12345";
         final String metadataURL = "/2.0/folders/" + folderID + "/metadata/global/properties";

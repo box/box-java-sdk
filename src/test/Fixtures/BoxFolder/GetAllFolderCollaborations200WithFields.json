@@ -1,0 +1,29 @@
+{
+  "total_count": 2,
+  "entries": [
+    {
+      "type": "collaboration",
+      "id": "12345",
+      "item": {
+        "type": "folder",
+        "id": "3333",
+        "sequence_id": "1",
+        "etag": "1",
+        "name": "Test Folder"
+      },
+      "can_view_path": false
+    },
+    {
+      "type": "collaboration",
+      "id": "124783",
+      "item": {
+        "type": "folder",
+        "id": "3333",
+        "sequence_id": "1",
+        "etag": "1",
+        "name": "Test Folder"
+      },
+      "can_view_path": true
+    }
+  ]
+}

@@ -105,6 +105,26 @@ public class BoxCollaborationTest {
     }
 
     @Test
+    public void testGetPendingCollaborationInfoWithFieldsSucceeds() {
+        final String collaborationURL = "/2.0/collaborations?status=pending&fields=id%2Crole%2Cstatus";
+
+        String result = TestUtils.getFixture("BoxCollaboration/GetPendingCollaborationInfo200");
+
+        wireMockRule.stubFor(WireMock.get(WireMock.urlEqualTo(collaborationURL))
+            .withQueryParam("status", WireMock.containing("pending"))
+            .willReturn(WireMock.aResponse()
+                .withHeader("Content-Type", APPLICATION_JSON)
+                .withBody(result)));
+
+        Collection<BoxCollaboration.Info> pendingCollaborations =
+            BoxCollaboration.getPendingCollaborations(this.api, "id", "role", "status");
+        BoxCollaboration.Info pendingCollabInfo = pendingCollaborations.iterator().next();
+
+        assertEquals(BoxCollaboration.Status.PENDING, pendingCollabInfo.getStatus());
+        assertEquals(BoxCollaboration.Role.EDITOR, pendingCollabInfo.getRole());
+    }
+
+    @Test
     public void testGetCollaborationsOnFolderSucceeds() {
         final String folderID = "12345";
         final String folderName = "Ball Valve Diagram";

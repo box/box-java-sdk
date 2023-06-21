@@ -258,9 +258,14 @@ public class BoxFolder extends BoxItem implements Iterable<BoxItem.Info> {
      *
      * @return a collection of information about the collaborations for this folder.
      */
-    public Collection<BoxCollaboration.Info> getCollaborations() {
+    public Collection<BoxCollaboration.Info> getCollaborations(String... fields) {
         BoxAPIConnection api = this.getAPI();
-        URL url = GET_COLLABORATIONS_URL.build(api.getBaseURL(), this.getID());
+        QueryStringBuilder queryBuilder = new QueryStringBuilder();
+        if (fields.length > 0) {
+            queryBuilder.appendParam("fields", fields);
+        }
+        URL url = GET_COLLABORATIONS_URL.buildWithQuery(api.getBaseURL(), queryBuilder.toString(), this.getID());
+
 
         BoxJSONRequest request = new BoxJSONRequest(api, url, "GET");
         try (BoxJSONResponse response = request.send()) {

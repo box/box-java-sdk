@@ -274,7 +274,7 @@ public class BoxFile extends BoxItem {
      * @return the temporary download URL
      */
     public URL getDownloadURL() {
-        URL url = CONTENT_URL_TEMPLATE.build(this.getAPI().getBaseURL(), this.getID());
+        URL url = getDownloadUrl();
         BoxAPIRequest request = new BoxAPIRequest(this.getAPI(), url, "GET");
         request.setFollowRedirects(false);
 
@@ -305,7 +305,7 @@ public class BoxFile extends BoxItem {
      * @param listener a listener for monitoring the download's progress.
      */
     public void download(OutputStream output, ProgressListener listener) {
-        URL url = CONTENT_URL_TEMPLATE.build(this.getAPI().getBaseURL(), this.getID());
+        URL url = getDownloadUrl();
         BoxAPIRequest request = new BoxAPIRequest(this.getAPI(), url, "GET");
         BoxAPIResponse response = request.send();
         writeStream(response, output, listener);
@@ -342,7 +342,7 @@ public class BoxFile extends BoxItem {
      * @param listener   a listener for monitoring the download's progress.
      */
     public void downloadRange(OutputStream output, long rangeStart, long rangeEnd, ProgressListener listener) {
-        URL url = CONTENT_URL_TEMPLATE.build(this.getAPI().getBaseURL(), this.getID());
+        URL url = getDownloadUrl();
         BoxAPIRequest request = new BoxAPIRequest(this.getAPI(), url, "GET");
         if (rangeEnd > 0) {
             request.addHeader("Range", String.format("bytes=%s-%s", rangeStart, rangeEnd));
@@ -350,6 +350,14 @@ public class BoxFile extends BoxItem {
             request.addHeader("Range", String.format("bytes=%s-", rangeStart));
         }
         writeStream(request.send(), output, listener);
+    }
+
+    /**
+     * Can be used to override the URL used for file download.
+     * @return URL for file downalod
+     */
+    protected URL getDownloadUrl() {
+        return CONTENT_URL_TEMPLATE.build(this.getAPI().getBaseURL(), this.getID());
     }
 
     @Override
@@ -516,6 +524,11 @@ public class BoxFile extends BoxItem {
                 String repContentURLString = null;
                 while (repContentURLString == null) {
                     repContentURLString = this.pollRepInfo(representation.getInfo().getUrl());
+                    try {
+                        Thread.sleep(100);
+                    } catch (InterruptedException e) {
+                        throw new RuntimeException(e);
+                    }
                 }
 
                 this.makeRepresentationContentRequest(repContentURLString, assetPath, output);
@@ -649,7 +662,7 @@ public class BoxFile extends BoxItem {
      */
     public boolean canUploadVersion(String name, long fileSize) {
 
-        URL url = CONTENT_URL_TEMPLATE.build(this.getAPI().getBaseURL(), this.getID());
+        URL url = getDownloadUrl();
         BoxJSONRequest request = new BoxJSONRequest(this.getAPI(), url, "OPTIONS");
 
         JsonObject preflightInfo = new JsonObject();

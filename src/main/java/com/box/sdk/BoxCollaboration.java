@@ -130,8 +130,14 @@ public class BoxCollaboration extends BoxResource {
      * @param api the API connection to use.
      * @return a collection of pending collaboration infos.
      */
-    public static Collection<Info> getPendingCollaborations(BoxAPIConnection api) {
-        URL url = PENDING_COLLABORATIONS_URL.build(api.getBaseURL());
+    public static Collection<Info> getPendingCollaborations(BoxAPIConnection api, String... fields) {
+        QueryStringBuilder queryBuilder = new QueryStringBuilder();
+        queryBuilder.appendParam("status", "pending");
+        if (fields.length > 0) {
+            queryBuilder.appendParam("fields", fields);
+        }
+        URL url = COLLABORATIONS_URL_TEMPLATE.buildWithQuery(api.getBaseURL(), queryBuilder.toString());
+
 
         BoxJSONRequest request = new BoxJSONRequest(api, url, "GET");
         try (BoxJSONResponse response = request.send()) {

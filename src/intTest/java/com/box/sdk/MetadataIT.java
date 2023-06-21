@@ -191,8 +191,6 @@ public class MetadataIT {
 
             // Update instance multiselect field
             actualMD.test("/" + fieldKey + "/0", "bar");
-            //todo: this check always fails
-//            actualMD.test("/" + fieldKey + "/1", "foo");
             values = new ArrayList<>();
             values.add("two");
             values.add("one");
@@ -203,13 +201,15 @@ public class MetadataIT {
 
             multiSelectValues = updatedMD.getMultiSelect("/" + fieldKey);
             assertThat(multiSelectValues, Matchers.hasSize(2));
-            assertThat(multiSelectValues, containsInAnyOrder("blargh", "foooooo"));
+            assertThat(multiSelectValues, containsInAnyOrder("foooooo", "bar"));
             multiSelectValues = updatedMD.getMultiSelect("/otherMultiSelect");
             assertThat(multiSelectValues, hasSize(2));
             assertThat(multiSelectValues, containsInAnyOrder("one", "two"));
 
             // Delete metadata template and folder
         } finally {
+            System.out.printf("Template [ID %s] [Key %s]%n", template.getID(), template.getTemplateKey());
+            System.out.printf("Folder [ID %s]%n", folder.getID());
             this.deleteMetadata(api, template);
             deleteFolder(folder);
 
