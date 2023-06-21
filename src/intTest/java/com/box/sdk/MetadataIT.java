@@ -1,7 +1,9 @@
 package com.box.sdk;
 
 import static com.box.sdk.BoxApiProvider.jwtApiForServiceAccount;
+import static com.box.sdk.CleanupTools.deleteFolder;
 import static com.box.sdk.UniqueTestFolder.getUniqueFolder;
+import static com.box.sdk.UniqueTestFolder.removeUniqueFolder;
 import static com.box.sdk.UniqueTestFolder.setupUniqeFolder;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsInAnyOrder;
@@ -26,7 +28,7 @@ public class MetadataIT {
 
     @AfterClass
     public static void afterClass() {
-//        removeUniqueFolder();
+        removeUniqueFolder();
     }
 
     @Test
@@ -67,7 +69,6 @@ public class MetadataIT {
     @Test
     public void testMultiSelectMetadataCRUD() {
         BoxAPIConnection api = jwtApiForServiceAccount();
-        System.out.printf("Token %s%n", api.getAccessToken());
         BoxFolder folder = null;
         MetadataTemplate template = null;
 
@@ -207,11 +208,8 @@ public class MetadataIT {
 
             // Delete metadata template and folder
         } finally {
-            //TODO: remove
-            System.out.printf("Template [Key %s] [Scope enterprise]%n", template.getID(), template.getTemplateKey());
-            System.out.printf("Folder [ID %s]%n", folder.getID());
-//            this.deleteMetadata(api, template);
-//            deleteFolder(folder);
+            this.deleteMetadata(api, template);
+            deleteFolder(folder);
 
         }
     }
