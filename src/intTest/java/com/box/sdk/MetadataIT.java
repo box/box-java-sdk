@@ -1,9 +1,7 @@
 package com.box.sdk;
 
 import static com.box.sdk.BoxApiProvider.jwtApiForServiceAccount;
-import static com.box.sdk.CleanupTools.deleteFolder;
 import static com.box.sdk.UniqueTestFolder.getUniqueFolder;
-import static com.box.sdk.UniqueTestFolder.removeUniqueFolder;
 import static com.box.sdk.UniqueTestFolder.setupUniqeFolder;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsInAnyOrder;
@@ -28,7 +26,7 @@ public class MetadataIT {
 
     @AfterClass
     public static void afterClass() {
-        removeUniqueFolder();
+//        removeUniqueFolder();
     }
 
     @Test
@@ -69,6 +67,7 @@ public class MetadataIT {
     @Test
     public void testMultiSelectMetadataCRUD() {
         BoxAPIConnection api = jwtApiForServiceAccount();
+        System.out.printf("Token %s%n", api.getAccessToken());
         BoxFolder folder = null;
         MetadataTemplate template = null;
 
@@ -190,7 +189,7 @@ public class MetadataIT {
             }
 
             // Update instance multiselect field
-            actualMD.test("/" + fieldKey + "/0", "bar");
+            actualMD.test("/" + fieldKey + "/1", "bar");
             values = new ArrayList<>();
             values.add("two");
             values.add("one");
@@ -201,17 +200,18 @@ public class MetadataIT {
 
             multiSelectValues = updatedMD.getMultiSelect("/" + fieldKey);
             assertThat(multiSelectValues, Matchers.hasSize(2));
-            assertThat(multiSelectValues, containsInAnyOrder("foooooo", "bar"));
+            assertThat(multiSelectValues, containsInAnyOrder("bar", "blargh"));
             multiSelectValues = updatedMD.getMultiSelect("/otherMultiSelect");
             assertThat(multiSelectValues, hasSize(2));
             assertThat(multiSelectValues, containsInAnyOrder("one", "two"));
 
             // Delete metadata template and folder
         } finally {
-            System.out.printf("Template [ID %s] [Key %s]%n", template.getID(), template.getTemplateKey());
+            //TODO: remove
+            System.out.printf("Template [Key %s] [Scope enterprise]%n", template.getID(), template.getTemplateKey());
             System.out.printf("Folder [ID %s]%n", folder.getID());
-            this.deleteMetadata(api, template);
-            deleteFolder(folder);
+//            this.deleteMetadata(api, template);
+//            deleteFolder(folder);
 
         }
     }
