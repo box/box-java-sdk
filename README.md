@@ -80,6 +80,13 @@ An app has to be authorized by the admin of the enterprise before these tests. I
 ## Android
 If you are developing application for Android visit our [Android guide](doc/android.md).
 
+## Box Java SDK and other frameworks
+Box Java SDK utilizes the OkHttp client as its underlying component. This client is widely adopted by various 
+frameworks, which can occasionally result in issues. We recommend considering library upgrades or excluding 
+OkHttp from those frameworks or the software development kit (SDK) to determine if that resolves the problems. 
+Typically, it is advisable to search for any reports or instances where others encountered similar 
+issues when using the specific framework alongside an external OkHttp client.
+
 ## Quick Test
 
 **Following things work only if the app has been configured and authorized as mentioned [here](https://developer.box.com/docs/setting-up-a-jwt-app)**
