@@ -21,14 +21,14 @@ Create Sign Request
 The [`createSignRequest(BoxAPIConnection api, List<BoxSignRequestSigner> signers, List<BoxSignRequestFile> files, String parentFolderId)`][create-sign-request]
 method will create a Sign Request.
 
-You need to provide at least one file (from which the signing document will be created) and at least one signer to receive the Sign Request. You can use [`BoxSignRequestFile`][box-sign-request-file]
+You need to provide 1 to 10 files (from which the signing document will be created) and at least one signer to receive the Sign Request. You can use [`BoxSignRequestFile`][box-sign-request-file]
 and [`BoxSignRequestSigner`][box-sign-request-signer] classes to provide the necessary data.
 
 <!-- sample post_sign_requests -->
 ```java
 List<BoxSignRequestFile> files = new ArrayList<BoxSignRequestFile>();
-        BoxSignRequestFile file = new BoxSignRequestFile("12345");
-        files.add(file);
+BoxSignRequestFile file = new BoxSignRequestFile("12345");
+files.add(file);
         
 // you can also use specific version of the file
 BoxFile file = new BoxFile(api, "12345");
