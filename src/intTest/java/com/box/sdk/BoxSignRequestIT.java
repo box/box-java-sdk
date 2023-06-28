@@ -43,15 +43,19 @@ public class BoxSignRequestIT {
         BoxAPIConnection api = jwtApiForServiceAccount();
         BoxFolder uniqueFolder = getUniqueFolder(api);
         String fileName = "file_to_sign.pdf";
+        String file2Name = "file_to_sign2.pdf";
         BoxFile file = null;
+        BoxFile file2 = null;
         BoxFolder signedFileFolder = null;
         AtomicReference<BoxSignRequest.Info> signRequestInfoCancel = new AtomicReference<>();
 
         try {
+
             file = uploadSampleFileToUniqueFolder(api, fileName);
+            file2 = uploadSampleFileToUniqueFolder(api, file2Name);
             List<BoxSignRequestFile> files = new ArrayList<>();
-            BoxSignRequestFile fileSignRequest = new BoxSignRequestFile(file.getID());
-            files.add(fileSignRequest);
+            files.add(new BoxSignRequestFile(file.getID()));
+            files.add(new BoxSignRequestFile(file2.getID()));
 
             String signerEmail = "user@example.com";
             List<BoxSignRequestSigner> signers = new ArrayList<>();
@@ -73,6 +77,7 @@ public class BoxSignRequestIT {
 
             String signRequestIdCreate = signRequestInfoCreate.getID();
             BoxFile.Info fileInfoCreate = signRequestInfoCreate.getSourceFiles().get(0);
+            BoxFile.Info file2InfoCreate = signRequestInfoCreate.getSourceFiles().get(1);
 
             // todo: get signer by role type. Using index=1 is fragile, as order may not be guaranteed.
             //signer at index 0 has role=final_copy_reader
@@ -82,6 +87,7 @@ public class BoxSignRequestIT {
             // Test Create
             assertNotNull(signRequestInfoCreate.getPrepareUrl());
             assertEquals(file.getID(), fileInfoCreate.getID());
+            assertEquals(file2.getID(), file2InfoCreate.getID());
             assertEquals(signerEmail, signerCreate.getEmail());
             assertNotNull(signRequestInfoCreate.getID());
 
@@ -89,6 +95,7 @@ public class BoxSignRequestIT {
             BoxSignRequest signRequestGetByID = new BoxSignRequest(api, signRequestIdCreate);
             BoxSignRequest.Info signRequestInfoGetByID = signRequestGetByID.getInfo();
             BoxFile.Info fileInfo = signRequestInfoGetByID.getSourceFiles().get(0);
+            BoxFile.Info file2Info = signRequestInfoGetByID.getSourceFiles().get(1);
             BoxSignRequestPrefillTag prefillTag = signRequestInfoGetByID.getPrefillTags().get(0);
             assertEquals(prefillTag.getDocumentTagId(), file.getID());
             assertEquals(BoxDateFormat.formatAsDateOnly(prefillTag.getDateValue()), "2021-11-20");
@@ -100,6 +107,7 @@ public class BoxSignRequestIT {
 
             // Test Get by ID
             assertEquals(file.getID(), fileInfo.getID());
+            assertEquals(file2.getID(), file2Info.getID());
             assertEquals(signerEmail, signer.getEmail());
             assertEquals(signRequestIdCreate, signRequestInfoGetByID.getID());
 
@@ -134,6 +142,7 @@ public class BoxSignRequestIT {
                 }
             }
             deleteFile(file);
+            deleteFile(file2);
             deleteFolder(signedFileFolder);
         }
     }
