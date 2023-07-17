@@ -263,7 +263,11 @@ You can find guides and tutorials in the `doc` directory.
 Javadocs are generated when `gradle javadoc` is run and can be found in
 `build/doc/javadoc`.
 
-## Vulnerabilities in Bouncycastle libraries
+## FIPS 140-2 Compliance
+
+The Box Java SDK uses libraries (`org.bouncycastle:bcpkix-jdk15on:1.57` and `org.bouncycastle:bcprov-jdk15on:1.57`) that are compatible with FIPS 140-2 validated cryptographic libraries (`org.bouncycastle:bc-fips:1.0.2.1`).
+
+### Vulnerabilities in Bouncycastle libraries
 In Box Java SDK we are using:
  - `org.bouncycastle:bcpkix-jdk15on:1.57`
  - `org.bouncycastle:bcprov-jdk15on:1.57`
