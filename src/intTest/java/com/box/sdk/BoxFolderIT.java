@@ -13,6 +13,7 @@ import static com.box.sdk.UniqueTestFolder.getUniqueFolder;
 import static com.box.sdk.UniqueTestFolder.randomizeName;
 import static com.box.sdk.UniqueTestFolder.removeUniqueFolder;
 import static com.box.sdk.UniqueTestFolder.setupUniqeFolder;
+import static com.box.sdk.UniqueTestFolder.uploadFileToUniqueFolder;
 import static com.box.sdk.UniqueTestFolder.uploadFileToUniqueFolderWithSomeContent;
 import static com.box.sdk.UniqueTestFolder.uploadFileWithSomeContent;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -32,6 +33,7 @@ import static org.junit.Assert.fail;
 import com.box.sdk.BoxCollaboration.Role;
 import com.box.sdk.sharedlink.BoxSharedLinkRequest;
 import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -51,6 +53,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.TimeZone;
 import java.util.UUID;
+import java.util.concurrent.Semaphore;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
 import org.hamcrest.Matchers;
@@ -764,13 +767,15 @@ public class BoxFolderIT {
     @Test
     public void uploadFileVersionInSeparateThreadsSucceeds() throws IOException, InterruptedException {
         BoxAPIConnection api = jwtApiForServiceAccount();
+        Semaphore semaphore = new Semaphore(0);
+        AtomicBoolean finishedUploadingNewVersion = new AtomicBoolean(false);
 
         PipedOutputStream outputStream = new PipedOutputStream();
         PipedInputStream inputStream = new PipedInputStream();
         outputStream.connect(inputStream);
 
-        final BoxFile uploadedFile = uploadFileToUniqueFolderWithSomeContent(api, "Test File.txt");
-        AtomicBoolean finished = new AtomicBoolean(false);
+        String fileContent = "This is only a test";
+        final BoxFile uploadedFile = uploadFileToUniqueFolder(api, "Test File.txt", fileContent);
 
         Thread thread1 =
             new Thread(
@@ -801,7 +806,8 @@ public class BoxFolderIT {
                     new BoxFile(api, uploadedFile.getID()).uploadNewVersion(inputStream);
                     try {
                         inputStream.close();
-                        finished.set(true);
+                        finishedUploadingNewVersion.set(true);
+                        semaphore.release();
                     } catch (IOException e) {
                         throw new RuntimeException(e);
                     }
@@ -813,7 +819,10 @@ public class BoxFolderIT {
         thread1.start();
         thread2.start();
 
-        Retry.retry(() -> assertTrue(finished.get()), 5, 500);
+        semaphore.acquire();
+        ByteArrayOutputStream output = new ByteArrayOutputStream();
+        new BoxFile(api, uploadedFile.getID()).download(output);
+        assertThat(output.toString(), is(fileContent));
     }
 
     private Collection<String> getNames(Iterable<BoxItem.Info> page) {
