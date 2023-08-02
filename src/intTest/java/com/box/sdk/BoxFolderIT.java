@@ -34,7 +34,10 @@ import com.box.sdk.sharedlink.BoxSharedLinkRequest;
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.IOException;
 import java.io.InputStream;
+import java.io.PipedInputStream;
+import java.io.PipedOutputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.text.SimpleDateFormat;
@@ -48,6 +51,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.TimeZone;
 import java.util.UUID;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
 import org.hamcrest.Matchers;
 import org.junit.AfterClass;
@@ -755,6 +759,61 @@ public class BoxFolderIT {
         } finally {
             this.deleteFolder(childFolder);
         }
+    }
+
+    @Test
+    public void uploadFileVersionInSeparateThreadsSucceeds() throws IOException, InterruptedException {
+        BoxAPIConnection api = jwtApiForServiceAccount();
+
+        PipedOutputStream outputStream = new PipedOutputStream();
+        PipedInputStream inputStream = new PipedInputStream();
+        outputStream.connect(inputStream);
+
+        final BoxFile uploadedFile = uploadFileToUniqueFolderWithSomeContent(api, "Test File.txt");
+        AtomicBoolean finished = new AtomicBoolean(false);
+
+        Thread thread1 =
+            new Thread(
+                () -> {
+                    System.out.printf(
+                        "Start to download file %s from storage in thread %s\n",
+                        uploadedFile.getID(), Thread.currentThread().getName());
+                    try {
+                        new BoxFile(api, uploadedFile.getID()).download(outputStream);
+                    } finally {
+                        try {
+                            outputStream.close();
+                        } catch (IOException e) {
+                            throw new RuntimeException(e);
+                        }
+                    }
+                    System.out.printf(
+                        "Success download file %s from storage in thread %s\n",
+                        uploadedFile.getID(), Thread.currentThread().getName());
+                });
+
+        Thread thread2 =
+            new Thread(
+                () -> {
+                    System.out.printf(
+                        "Start to upload file %s to storage in thread %s\n",
+                        uploadedFile.getID(), Thread.currentThread().getName());
+                    new BoxFile(api, uploadedFile.getID()).uploadNewVersion(inputStream);
+                    try {
+                        inputStream.close();
+                        finished.set(true);
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
+                    }
+                    System.out.printf(
+                        "Success upload file %s to storage in thread %s",
+                        uploadedFile.getID(), Thread.currentThread().getName());
+                });
+
+        thread1.start();
+        thread2.start();
+
+        Retry.retry(() -> assertTrue(finished.get()), 5, 500);
     }
 
     private Collection<String> getNames(Iterable<BoxItem.Info> page) {
