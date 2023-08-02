@@ -16,8 +16,9 @@ final class BinaryBodyUtils {
 
     /**
      * Writes response body bytes to output stream. After all closes the input stream.
+     *
      * @param response Response that is going to be written.
-     * @param output Output stream.
+     * @param output   Output stream.
      */
     static void writeStream(BoxAPIResponse response, OutputStream output) {
         writeStream(response, output, null);
@@ -25,8 +26,9 @@ final class BinaryBodyUtils {
 
     /**
      * Writes response body bytes to output stream. After all closes the input stream.
+     *
      * @param response Response that is going to be written.
-     * @param output Output stream.
+     * @param output   Output stream.
      * @param listener Listener that will be notified on writing response. Can be null.
      */
 
@@ -46,7 +48,8 @@ final class BinaryBodyUtils {
 
     /**
      * Writes content of input stream to provided output. Method is NOT closing input stream.
-     * @param input Input that will be read.
+     *
+     * @param input  Input that will be read.
      * @param output Output stream.
      */
     static void writeStreamTo(InputStream input, OutputStream output) {
@@ -59,6 +62,13 @@ final class BinaryBodyUtils {
             }
         } catch (IOException e) {
             throw new RuntimeException(e);
+        } finally {
+            try {
+                input.close();
+                output.close();
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
         }
     }
 }

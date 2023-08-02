@@ -24,7 +24,7 @@ abstract class AbstractBoxMultipartRequest extends BoxAPIRequest {
     private final Map<String, String> fields = new HashMap<>();
     private InputStream inputStream;
     private String filename;
-    private long fileSize;
+    private long fileSize = -1;
     private UploadFileCallback callback;
 
     AbstractBoxMultipartRequest(BoxAPIConnection api, URL url) {
@@ -151,7 +151,9 @@ abstract class AbstractBoxMultipartRequest extends BoxAPIRequest {
 
     private RequestBody getBody(ProgressListener progressListener) {
         if (this.callback == null) {
-            return new RequestBodyFromStream(this.inputStream, getPartContentType(filename), progressListener);
+            return new RequestBodyFromStream(
+                this.inputStream, getPartContentType(filename), progressListener, fileSize
+            );
         } else {
             return new RequestBodyFromCallback(this.callback, getPartContentType(filename));
         }

@@ -123,6 +123,7 @@ public class FileUploadParams {
 
     /**
      * Gets the size of the file's content used for monitoring the upload's progress.
+     * If the size cannot be determined value will be `-1L`.
      *
      * @return the size of the file's content.
      */
@@ -132,6 +133,9 @@ public class FileUploadParams {
 
     /**
      * Sets the size of the file content used for monitoring the upload's progress.
+     * When the content is coming from a dynamic source - other thread reading value
+     * set size to `-1L` to tell SDK that file size cannot be determined. Usefull
+     * when encuntering problems with writing different size of bytes than assumed.
      *
      * @param size the size of the file's content.
      * @return this FileUploadParams object for chaining.

@@ -16,6 +16,7 @@ import static com.box.sdk.UniqueTestFolder.setupUniqeFolder;
 import static com.box.sdk.UniqueTestFolder.uploadFileToUniqueFolder;
 import static com.box.sdk.UniqueTestFolder.uploadFileToUniqueFolderWithSomeContent;
 import static com.box.sdk.UniqueTestFolder.uploadFileWithSomeContent;
+import static java.nio.charset.StandardCharsets.UTF_8;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.contains;
 import static org.hamcrest.Matchers.emptyOrNullString;
@@ -55,6 +56,7 @@ import java.util.TimeZone;
 import java.util.UUID;
 import java.util.concurrent.Semaphore;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.atomic.AtomicReference;
 import org.hamcrest.Matchers;
 import org.junit.AfterClass;
@@ -823,6 +825,64 @@ public class BoxFolderIT {
         ByteArrayOutputStream output = new ByteArrayOutputStream();
         new BoxFile(api, uploadedFile.getID()).download(output);
         assertThat(output.toString(), is(fileContent));
+    }
+
+    @Test
+    public void uploadFileVersionWithProgressInSeparateThreadsSucceeds() throws IOException, InterruptedException {
+        BoxAPIConnection api = jwtApiForServiceAccount();
+        Semaphore semaphore = new Semaphore(0);
+        AtomicBoolean finishedUploadingNewVersion = new AtomicBoolean(false);
+
+        PipedOutputStream outputStream = new PipedOutputStream();
+        PipedInputStream inputStream = new PipedInputStream();
+        outputStream.connect(inputStream);
+        AtomicLong bytesUploaded = new AtomicLong(0);
+        ProgressListener progressListener = (numBytes, totalBytes) -> bytesUploaded.set(numBytes);
+
+        String fileContent = "This is only a test";
+        Long fileSize = new Long(fileContent.getBytes(UTF_8).length);
+
+        final BoxFile uploadedFile = uploadFileToUniqueFolder(api, "Test File.txt", fileContent);
+
+        Thread thread1 =
+            new Thread(
+                () -> {
+                    System.out.printf(
+                        "Start to download file %s from storage in thread %s\n",
+                        uploadedFile.getID(), Thread.currentThread().getName());
+                    try {
+                        new BoxFile(api, uploadedFile.getID()).download(outputStream);
+                    } finally {
+                        semaphore.release();
+                    }
+                    System.out.printf(
+                        "Success download file %s from storage in thread %s\n",
+                        uploadedFile.getID(), Thread.currentThread().getName());
+                });
+
+        Thread thread2 =
+            new Thread(
+                () -> {
+                    System.out.printf(
+                        "Start to upload file %s to storage in thread %s\n",
+                        uploadedFile.getID(), Thread.currentThread().getName());
+                    new BoxFile(api, uploadedFile.getID())
+                        .uploadNewVersion(inputStream, new Date(), fileSize, progressListener);
+                    finishedUploadingNewVersion.set(true);
+                    semaphore.release();
+                    System.out.printf(
+                        "Success upload file %s to storage in thread %s",
+                        uploadedFile.getID(), Thread.currentThread().getName());
+                });
+
+        thread1.start();
+        thread2.start();
+
+        semaphore.acquire(2);
+        ByteArrayOutputStream output = new ByteArrayOutputStream();
+        new BoxFile(api, uploadedFile.getID()).download(output);
+        assertThat(output.toString(), is(fileContent));
+        assertThat(bytesUploaded.get(), is(fileSize));
     }
 
     private Collection<String> getNames(Iterable<BoxItem.Info> page) {
