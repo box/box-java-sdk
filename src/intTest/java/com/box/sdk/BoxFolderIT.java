@@ -182,7 +182,7 @@ public class BoxFolderIT {
         BoxFile uploadedFile = null;
 
         try {
-            uploadedFile = uploadFileToUniqueFolderWithSomeContent(api, "Test File.txt");
+            uploadedFile = uploadFileToUniqueFolderWithSomeContent(api, randomizeName("Test File"));
 
             assertThat(rootFolder, hasItem(Matchers.<BoxItem.Info>hasProperty("ID", equalTo(uploadedFile.getID()))));
         } finally {
@@ -201,7 +201,7 @@ public class BoxFolderIT {
 
         try {
 
-            final String fileContent = "Test file";
+            final String fileContent = randomizeName("Test file");
             uploadedFile = rootFolder.uploadFile(outputStream -> {
                 outputStream.write(fileContent.getBytes());
                 callbackWasCalled.set(true);
@@ -777,7 +777,7 @@ public class BoxFolderIT {
         outputStream.connect(inputStream);
 
         String fileContent = "This is only a test";
-        final BoxFile uploadedFile = uploadFileToUniqueFolder(api, "Test File.txt", fileContent);
+        final BoxFile uploadedFile = uploadFileToUniqueFolder(api, randomizeName("Test File"), fileContent);
 
         Thread thread1 =
             new Thread(
@@ -842,7 +842,7 @@ public class BoxFolderIT {
         String fileContent = "This is only a test";
         Long fileSize = new Long(fileContent.getBytes(UTF_8).length);
 
-        final BoxFile uploadedFile = uploadFileToUniqueFolder(api, "Test File.txt", fileContent);
+        final BoxFile uploadedFile = uploadFileToUniqueFolder(api, randomizeName("Test File"), fileContent);
 
         Thread thread1 =
             new Thread(
