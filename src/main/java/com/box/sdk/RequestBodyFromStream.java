@@ -41,7 +41,7 @@ final class RequestBodyFromStream extends RequestBody {
     }
 
     /**
-     * Returns content length. If the content length cannot be derermined
+     * Returns content length. If the content length cannot be determined
      * (is coming from a stream) this value will be -1.
      * @return Long representing content length
      */
