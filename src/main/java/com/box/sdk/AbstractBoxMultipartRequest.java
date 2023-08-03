@@ -48,7 +48,9 @@ abstract class AbstractBoxMultipartRequest extends BoxAPIRequest {
      *
      * @param inputStream a stream containing the file contents.
      * @param filename    the name of the file.
-     * @param fileSize    the size of the file.
+     * @param fileSize    the size of the file. If the file content is coming from the dynamic stream,
+     *                    and it's full size cannot be determined on starting upload use fizeSize=-1
+     *                    or use {@link AbstractBoxMultipartRequest#setFile(InputStream, String)}
      */
     public void setFile(InputStream inputStream, String filename, long fileSize) {
         this.setFile(inputStream, filename);
