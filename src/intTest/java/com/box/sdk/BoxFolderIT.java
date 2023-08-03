@@ -13,8 +13,10 @@ import static com.box.sdk.UniqueTestFolder.getUniqueFolder;
 import static com.box.sdk.UniqueTestFolder.randomizeName;
 import static com.box.sdk.UniqueTestFolder.removeUniqueFolder;
 import static com.box.sdk.UniqueTestFolder.setupUniqeFolder;
+import static com.box.sdk.UniqueTestFolder.uploadFileToUniqueFolder;
 import static com.box.sdk.UniqueTestFolder.uploadFileToUniqueFolderWithSomeContent;
 import static com.box.sdk.UniqueTestFolder.uploadFileWithSomeContent;
+import static java.nio.charset.StandardCharsets.UTF_8;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.contains;
 import static org.hamcrest.Matchers.emptyOrNullString;
@@ -32,9 +34,13 @@ import static org.junit.Assert.fail;
 import com.box.sdk.BoxCollaboration.Role;
 import com.box.sdk.sharedlink.BoxSharedLinkRequest;
 import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.IOException;
 import java.io.InputStream;
+import java.io.PipedInputStream;
+import java.io.PipedOutputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.text.SimpleDateFormat;
@@ -48,7 +54,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.TimeZone;
 import java.util.UUID;
+import java.util.concurrent.Semaphore;
+import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.atomic.AtomicReference;
+import java.util.stream.IntStream;
 import org.hamcrest.Matchers;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -173,7 +182,7 @@ public class BoxFolderIT {
         BoxFile uploadedFile = null;
 
         try {
-            uploadedFile = uploadFileToUniqueFolderWithSomeContent(api, "Test File.txt");
+            uploadedFile = uploadFileToUniqueFolderWithSomeContent(api, randomizeName("Test File"));
 
             assertThat(rootFolder, hasItem(Matchers.<BoxItem.Info>hasProperty("ID", equalTo(uploadedFile.getID()))));
         } finally {
@@ -192,7 +201,7 @@ public class BoxFolderIT {
 
         try {
 
-            final String fileContent = "Test file";
+            final String fileContent = randomizeName("Test file");
             uploadedFile = rootFolder.uploadFile(outputStream -> {
                 outputStream.write(fileContent.getBytes());
                 callbackWasCalled.set(true);
@@ -755,6 +764,142 @@ public class BoxFolderIT {
         } finally {
             this.deleteFolder(childFolder);
         }
+    }
+
+    @Test
+    public void uploadFileVersionInSeparateThreadsSucceeds() throws IOException, InterruptedException {
+        BoxAPIConnection api = jwtApiForServiceAccount();
+        Semaphore semaphore = new Semaphore(0);
+
+        PipedOutputStream outputStream = new PipedOutputStream();
+        PipedInputStream inputStream = new PipedInputStream();
+        outputStream.connect(inputStream);
+
+        String fileContent = "This is only a test";
+        final BoxFile uploadedFile = uploadFileToUniqueFolder(api, randomizeName("Test File"), fileContent);
+
+        new Thread(
+            () -> {
+                try {
+                    new BoxFile(api, uploadedFile.getID()).download(outputStream);
+                } finally {
+                    try {
+                        outputStream.close();
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
+                    }
+                }
+            }).start();
+
+        new Thread(
+            () -> {
+                new BoxFile(api, uploadedFile.getID()).uploadNewVersion(inputStream);
+                try {
+                    inputStream.close();
+                    semaphore.release();
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+            }).start();
+
+
+        semaphore.acquire();
+        ByteArrayOutputStream output = new ByteArrayOutputStream();
+        new BoxFile(api, uploadedFile.getID()).download(output);
+        assertThat(output.toString(), is(fileContent));
+    }
+
+    @Test
+    public void uploadFileVersionWithProgressInSeparateThreadsSucceeds() throws IOException, InterruptedException {
+        BoxAPIConnection api = jwtApiForServiceAccount();
+        Semaphore semaphore = new Semaphore(0);
+
+        PipedOutputStream outputStream = new PipedOutputStream();
+        PipedInputStream inputStream = new PipedInputStream();
+        outputStream.connect(inputStream);
+        AtomicLong bytesUploaded = new AtomicLong(0);
+        ProgressListener progressListener = (numBytes, totalBytes) -> bytesUploaded.set(numBytes);
+
+        String fileContent = "This is only a test";
+        long fileSize = fileContent.getBytes(UTF_8).length;
+
+        final BoxFile uploadedFile = uploadFileToUniqueFolder(api, randomizeName("Test File"), fileContent);
+
+        new Thread(
+            () -> {
+                try {
+                    new BoxFile(api, uploadedFile.getID()).download(outputStream);
+                } finally {
+                    semaphore.release();
+                }
+            }).start();
+
+        new Thread(
+            () -> {
+                new BoxFile(api, uploadedFile.getID())
+                    .uploadNewVersion(inputStream, new Date(), fileSize, progressListener);
+                semaphore.release();
+            }).start();
+
+
+        semaphore.acquire(2);
+        ByteArrayOutputStream output = new ByteArrayOutputStream();
+        new BoxFile(api, uploadedFile.getID()).download(output);
+        assertThat(output.toString(), is(fileContent));
+        assertThat(bytesUploaded.get(), is(fileSize));
+    }
+
+    @Test
+    public void uploadFileInSeparateThreadSucceeds() throws IOException, InterruptedException {
+        BoxAPIConnection api = jwtApiForServiceAccount();
+        Semaphore semaphore = new Semaphore(0);
+
+        PipedOutputStream outputStream = new PipedOutputStream();
+        PipedInputStream inputStream = new PipedInputStream();
+        outputStream.connect(inputStream);
+
+        String fileContent = "Test";
+        byte[] bytes = fileContent.getBytes(UTF_8);
+
+        AtomicReference<String> uploadedFileId = new AtomicReference<>();
+
+        new Thread(
+            () -> {
+                IntStream.range(0, bytes.length)
+                    .forEach(i -> {
+                        try {
+                            outputStream.write(bytes[i]);
+                            Thread.sleep(100);
+                        } catch (InterruptedException | IOException e) {
+                            throw new RuntimeException(e);
+                        }
+                    });
+                try {
+                    outputStream.close();
+                    semaphore.release();
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+            }).start();
+
+        new Thread(
+            () -> {
+                BoxFile.Info uploadedFile = getUniqueFolder(api)
+                    .uploadFile(inputStream, randomizeName("dynamic_upload"));
+                uploadedFileId.set(uploadedFile.getID());
+                try {
+                    inputStream.close();
+                    semaphore.release();
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+            }).start();
+
+
+        semaphore.acquire(2);
+        ByteArrayOutputStream output = new ByteArrayOutputStream();
+        new BoxFile(api, uploadedFileId.get()).download(output);
+        assertThat(output.toString(), is(fileContent));
     }
 
     private Collection<String> getNames(Iterable<BoxItem.Info> page) {

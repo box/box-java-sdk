@@ -3,7 +3,6 @@ package com.box.sdk;
 import static com.box.sdk.AbstractBoxMultipartRequest.BUFFER_SIZE;
 
 import java.io.ByteArrayInputStream;
-import java.io.IOException;
 import java.util.Random;
 import java.util.concurrent.atomic.AtomicInteger;
 import okhttp3.MediaType;
@@ -15,7 +14,7 @@ import org.junit.Test;
 public class RequestBodyFromStreamTest {
 
     @Test
-    public void reportCorrectProgressWhenFileIsEmpty() throws IOException {
+    public void reportCorrectProgressWhenFileIsEmpty() {
         ByteArrayInputStream inputStream = new ByteArrayInputStream(new byte[]{});
         ProgressListener progressListener = (numBytes, totalBytes) -> {
             MatcherAssert.assertThat(numBytes, Matchers.is((long) 0));
@@ -23,13 +22,17 @@ public class RequestBodyFromStreamTest {
         };
 
         RequestBodyFromStream request = new RequestBodyFromStream(
-            inputStream, MediaType.parse("application/json"), progressListener
+            inputStream,
+            MediaType.parse("application/json"),
+            progressListener,
+            0
         );
 
         request.writeTo(new Buffer());
     }
+
     @Test
-    public void reportCorrectProgressWhenFileSizeIfLessThanBuffer() throws IOException {
+    public void reportCorrectProgressWhenFileSizeIfLessThanBuffer() {
         int howManyBytes = 1000;
         ByteArrayInputStream inputStream = new ByteArrayInputStream(generateBytes(howManyBytes));
         ProgressListener progressListener = (numBytes, totalBytes) -> {
@@ -38,14 +41,17 @@ public class RequestBodyFromStreamTest {
         };
 
         RequestBodyFromStream request = new RequestBodyFromStream(
-            inputStream, MediaType.parse("application/json"), progressListener
+            inputStream,
+            MediaType.parse("application/json"),
+            progressListener,
+            howManyBytes
         );
 
         request.writeTo(new Buffer());
     }
 
     @Test
-    public void reportCorrectProgressWhenFileSizeIfEqualToBuffer() throws IOException {
+    public void reportCorrectProgressWhenFileSizeIfEqualToBuffer() {
         int howManyBytes = BUFFER_SIZE;
         ByteArrayInputStream inputStream = new ByteArrayInputStream(generateBytes(howManyBytes));
         ProgressListener progressListener = (numBytes, totalBytes) -> {
@@ -54,14 +60,17 @@ public class RequestBodyFromStreamTest {
         };
 
         RequestBodyFromStream request = new RequestBodyFromStream(
-            inputStream, MediaType.parse("application/json"), progressListener
+            inputStream,
+            MediaType.parse("application/json"),
+            progressListener,
+            howManyBytes
         );
 
         request.writeTo(new Buffer());
     }
 
     @Test
-    public void reportCorrectProgressWhenFileSizeIfGreaterThanBuffer() throws IOException {
+    public void reportCorrectProgressWhenFileSizeIfGreaterThanBuffer() {
         int howManyBytes = BUFFER_SIZE + 1000;
         ByteArrayInputStream inputStream = new ByteArrayInputStream(generateBytes(howManyBytes));
         AtomicInteger counter = new AtomicInteger(0);
@@ -76,7 +85,10 @@ public class RequestBodyFromStreamTest {
         };
 
         RequestBodyFromStream request = new RequestBodyFromStream(
-            inputStream, MediaType.parse("application/json"), progressListener
+            inputStream,
+            MediaType.parse("application/json"),
+            progressListener,
+            howManyBytes
         );
 
         request.writeTo(new Buffer());

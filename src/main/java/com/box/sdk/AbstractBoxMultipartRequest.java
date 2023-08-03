@@ -24,7 +24,7 @@ abstract class AbstractBoxMultipartRequest extends BoxAPIRequest {
     private final Map<String, String> fields = new HashMap<>();
     private InputStream inputStream;
     private String filename;
-    private long fileSize;
+    private long fileSize = -1;
     private UploadFileCallback callback;
 
     AbstractBoxMultipartRequest(BoxAPIConnection api, URL url) {
@@ -48,7 +48,9 @@ abstract class AbstractBoxMultipartRequest extends BoxAPIRequest {
      *
      * @param inputStream a stream containing the file contents.
      * @param filename    the name of the file.
-     * @param fileSize    the size of the file.
+     * @param fileSize    the size of the file. If the file content is coming from the dynamic stream,
+     *                    and it's full size cannot be determined on starting upload use fizeSize=-1
+     *                    or use {@link AbstractBoxMultipartRequest#setFile(InputStream, String)}
      */
     public void setFile(InputStream inputStream, String filename, long fileSize) {
         this.setFile(inputStream, filename);
@@ -151,7 +153,9 @@ abstract class AbstractBoxMultipartRequest extends BoxAPIRequest {
 
     private RequestBody getBody(ProgressListener progressListener) {
         if (this.callback == null) {
-            return new RequestBodyFromStream(this.inputStream, getPartContentType(filename), progressListener);
+            return new RequestBodyFromStream(
+                this.inputStream, getPartContentType(filename), progressListener, fileSize
+            );
         } else {
             return new RequestBodyFromCallback(this.callback, getPartContentType(filename));
         }
