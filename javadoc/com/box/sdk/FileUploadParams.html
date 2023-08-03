@@ -388,8 +388,9 @@ extends <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html
 <ul class="blockList">
 <li class="blockList">
 <h4>getSize</h4>
-<pre>public&nbsp;long&nbsp;<a href="../../../src-html/com/box/sdk/FileUploadParams.html#line.129">getSize</a>()</pre>
-<div class="block">Gets the size of the file's content used for monitoring the upload's progress.</div>
+<pre>public&nbsp;long&nbsp;<a href="../../../src-html/com/box/sdk/FileUploadParams.html#line.130">getSize</a>()</pre>
+<div class="block">Gets the size of the file's content used for monitoring the upload's progress.
+ If the size cannot be determined value will be -1.</div>
 <dl>
 <dt><span class="returnLabel">Returns:</span></dt>
 <dd>the size of the file's content.</dd>
@@ -402,8 +403,11 @@ extends <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html
 <ul class="blockList">
 <li class="blockList">
 <h4>setSize</h4>
-<pre>public&nbsp;<a href="../../../com/box/sdk/FileUploadParams.html" title="class in com.box.sdk">FileUploadParams</a>&nbsp;<a href="../../../src-html/com/box/sdk/FileUploadParams.html#line.139">setSize</a>(long&nbsp;size)</pre>
-<div class="block">Sets the size of the file content used for monitoring the upload's progress.</div>
+<pre>public&nbsp;<a href="../../../com/box/sdk/FileUploadParams.html" title="class in com.box.sdk">FileUploadParams</a>&nbsp;<a href="../../../src-html/com/box/sdk/FileUploadParams.html#line.143">setSize</a>(long&nbsp;size)</pre>
+<div class="block">Sets the size of the file content used for monitoring the upload's progress.
+ When the content is coming from a dynamic source - other thread reading value
+ set size to -1 to tell SDK that file size cannot be determined. Usefull
+ when encuntering problems with writing different size of bytes than assumed.</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
 <dd><code>size</code> - the size of the file's content.</dd>
@@ -418,7 +422,7 @@ extends <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html
 <ul class="blockList">
 <li class="blockList">
 <h4>getProgressListener</h4>
-<pre>public&nbsp;<a href="../../../com/box/sdk/ProgressListener.html" title="interface in com.box.sdk">ProgressListener</a>&nbsp;<a href="../../../src-html/com/box/sdk/FileUploadParams.html#line.149">getProgressListener</a>()</pre>
+<pre>public&nbsp;<a href="../../../com/box/sdk/ProgressListener.html" title="interface in com.box.sdk">ProgressListener</a>&nbsp;<a href="../../../src-html/com/box/sdk/FileUploadParams.html#line.153">getProgressListener</a>()</pre>
 <div class="block">Gets the ProgressListener that will be used for monitoring the upload's progress.</div>
 <dl>
 <dt><span class="returnLabel">Returns:</span></dt>
@@ -432,7 +436,7 @@ extends <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html
 <ul class="blockList">
 <li class="blockList">
 <h4>setProgressListener</h4>
-<pre>public&nbsp;<a href="../../../com/box/sdk/FileUploadParams.html" title="class in com.box.sdk">FileUploadParams</a>&nbsp;<a href="../../../src-html/com/box/sdk/FileUploadParams.html#line.159">setProgressListener</a>(<a href="../../../com/box/sdk/ProgressListener.html" title="interface in com.box.sdk">ProgressListener</a>&nbsp;listener)</pre>
+<pre>public&nbsp;<a href="../../../com/box/sdk/FileUploadParams.html" title="class in com.box.sdk">FileUploadParams</a>&nbsp;<a href="../../../src-html/com/box/sdk/FileUploadParams.html#line.163">setProgressListener</a>(<a href="../../../com/box/sdk/ProgressListener.html" title="interface in com.box.sdk">ProgressListener</a>&nbsp;listener)</pre>
 <div class="block">Sets the ProgressListener that will be used for monitoring the upload's progress.</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
@@ -448,7 +452,7 @@ extends <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html
 <ul class="blockList">
 <li class="blockList">
 <h4>getSHA1</h4>
-<pre>public&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;<a href="../../../src-html/com/box/sdk/FileUploadParams.html#line.169">getSHA1</a>()</pre>
+<pre>public&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;<a href="../../../src-html/com/box/sdk/FileUploadParams.html#line.173">getSHA1</a>()</pre>
 <div class="block">Gets the file's SHA-1 hash.</div>
 <dl>
 <dt><span class="returnLabel">Returns:</span></dt>
@@ -462,7 +466,7 @@ extends <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html
 <ul class="blockList">
 <li class="blockList">
 <h4>setSHA1</h4>
-<pre>public&nbsp;<a href="../../../com/box/sdk/FileUploadParams.html" title="class in com.box.sdk">FileUploadParams</a>&nbsp;<a href="../../../src-html/com/box/sdk/FileUploadParams.html#line.179">setSHA1</a>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;sha1)</pre>
+<pre>public&nbsp;<a href="../../../com/box/sdk/FileUploadParams.html" title="class in com.box.sdk">FileUploadParams</a>&nbsp;<a href="../../../src-html/com/box/sdk/FileUploadParams.html#line.183">setSHA1</a>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;sha1)</pre>
 <div class="block">Set the SHA-1 hash of the file to ensure it is not corrupted during the upload.</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
@@ -478,7 +482,7 @@ extends <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html
 <ul class="blockList">
 <li class="blockList">
 <h4>getDescription</h4>
-<pre>public&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;<a href="../../../src-html/com/box/sdk/FileUploadParams.html#line.189">getDescription</a>()</pre>
+<pre>public&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;<a href="../../../src-html/com/box/sdk/FileUploadParams.html#line.193">getDescription</a>()</pre>
 <div class="block">Gets the file's description set for uploading.</div>
 <dl>
 <dt><span class="returnLabel">Returns:</span></dt>
@@ -492,7 +496,7 @@ extends <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html
 <ul class="blockListLast">
 <li class="blockList">
 <h4>setDescription</h4>
-<pre>public&nbsp;<a href="../../../com/box/sdk/FileUploadParams.html" title="class in com.box.sdk">FileUploadParams</a>&nbsp;<a href="../../../src-html/com/box/sdk/FileUploadParams.html#line.199">setDescription</a>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;description)</pre>
+<pre>public&nbsp;<a href="../../../com/box/sdk/FileUploadParams.html" title="class in com.box.sdk">FileUploadParams</a>&nbsp;<a href="../../../src-html/com/box/sdk/FileUploadParams.html#line.203">setDescription</a>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;description)</pre>
 <div class="block">Sets the file description during the file upload.</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
