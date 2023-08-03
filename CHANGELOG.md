@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [4.2.1](https://github.com/box/box-java-sdk/compare/v4.2.0...v4.2.1) (2023-08-03)
+
+
+### Bug Fixes:
+
+* Fixed upload when data are coming from a dynamic source ([#1189](https://github.com/box/box-java-sdk/issues/1189)) ([77b39f2](https://github.com/box/box-java-sdk/commit/77b39f2645d53bdab0ade23b637c211ea070fcf5)), closes [#1183](https://github.com/box/box-java-sdk/issues/1183) [#1190](https://github.com/box/box-java-sdk/issues/1190)
+
 ## [4.2.0](https://github.com/box/box-java-sdk/compare/v4.1.2...v4.2.0) (2023-06-21)
 
 
