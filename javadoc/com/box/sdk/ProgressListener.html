@@ -87,9 +87,11 @@ var activeTableTab = "activeTableTab";
 <ul class="blockListLast">
 <li class="blockList">
 <h4>onProgressChanged</h4>
-<pre>void&nbsp;<a href="../../../src-html/com/box/sdk/ProgressListener.html#line.14">onProgressChanged</a>(long&nbsp;numBytes,
+<pre>void&nbsp;<a href="../../../src-html/com/box/sdk/ProgressListener.html#line.16">onProgressChanged</a>(long&nbsp;numBytes,
                        long&nbsp;totalBytes)</pre>
-<div class="block">Invoked when the progress of the API call changes.</div>
+<div class="block">Invoked when the progress of the API call changes.
+ In case of file uploads which are coming from a dynamic stream the file size cannot be determined and
+ total bytes will be reported as -1.</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
 <dd><code>numBytes</code> - the number of bytes completed.</dd>
