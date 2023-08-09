@@ -191,8 +191,7 @@ public class BoxCollaborationTest {
 
         JsonObject updateBody = new JsonObject()
             .add("role", BoxCollaboration.Role.VIEWER.toJSONString())
-            .add("expires_at", BoxDateFormat.format(expiresAt))
-            .add("is_access_only", true);
+            .add("expires_at", BoxDateFormat.format(expiresAt));
 
         wireMockRule.stubFor(WireMock.post(WireMock.urlPathEqualTo(createCollaborationURL))
             .withRequestBody(WireMock.equalToJson(createBody.toString()))
