@@ -22,7 +22,8 @@
       },
       "role": "editor",
       "acknowledged_at": null,
-      "item": null
+      "item": null,
+      "is_access_only": false
     }
   ],
   "limit": 100,

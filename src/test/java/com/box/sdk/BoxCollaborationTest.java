@@ -4,8 +4,7 @@ package com.box.sdk;
 import static com.box.sdk.http.ContentType.APPLICATION_JSON;
 import static com.github.tomakehurst.wiremock.core.WireMockConfiguration.wireMockConfig;
 import static java.lang.String.format;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.*;
 
 import com.eclipsesource.json.JsonObject;
 import com.github.tomakehurst.wiremock.client.WireMock;
@@ -187,11 +186,13 @@ public class BoxCollaborationTest {
             .add("item", folder)
             .add("role", BoxCollaboration.Role.EDITOR.toJSONString())
             .add("can_view_path", false)
-            .add("expires_at", BoxDateFormat.format(expiresAt));
+            .add("expires_at", BoxDateFormat.format(expiresAt))
+            .add("is_access_only", false);
 
         JsonObject updateBody = new JsonObject()
             .add("role", BoxCollaboration.Role.VIEWER.toJSONString())
-            .add("expires_at", BoxDateFormat.format(expiresAt));
+            .add("expires_at", BoxDateFormat.format(expiresAt))
+            .add("is_access_only", true);
 
         wireMockRule.stubFor(WireMock.post(WireMock.urlPathEqualTo(createCollaborationURL))
             .withRequestBody(WireMock.equalToJson(createBody.toString()))
@@ -211,7 +212,7 @@ public class BoxCollaborationTest {
                 .withBody(editResult)));
 
         BoxCollaboration.Info collabInfo = BoxCollaboration.create(this.api, user, folder, BoxCollaboration.Role.EDITOR,
-            false, false, expiresAt);
+            false, false, expiresAt, false);
 
         assertEquals(BoxCollaboration.Status.ACCEPTED, collabInfo.getStatus());
         assertEquals(BoxCollaboration.Role.EDITOR, collabInfo.getRole());
@@ -219,6 +220,8 @@ public class BoxCollaborationTest {
         assertEquals(collabID, collabInfo.getID());
         assertEquals(itemName, collabInfo.getItem().getName());
         assertEquals(expiresAt, collabInfo.getExpiresAt());
+        assertFalse(collabInfo.getIsAccessOnly());
+
 
         BoxCollaboration collaboration = new BoxCollaboration(this.api, collabID);
         collabInfo.setRole(BoxCollaboration.Role.VIEWER);
@@ -254,6 +257,7 @@ public class BoxCollaborationTest {
         assertEquals(createdByEmail, collabInfo.getCreatedBy().getLogin());
         assertEquals(collabItemID, collabInfo.getItem().getID());
         assertEquals(collabItemName, collabInfo.getItem().getName());
+        assertFalse(collabInfo.getIsAccessOnly());
     }
 
     @Test
