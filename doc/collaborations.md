@@ -52,8 +52,25 @@ BoxFolder folder = new BoxFolder(api, "folder-id");
 folder.collaborate(group, BoxCollaboration.Role.EDITOR);
 ```
 
+You can also create a collaboration with all fields specified in a
+[`BoxCollaboration.Info`][box-collaboration-info] object by using [`BoxCollaboration.create(BoxAPIConnection api, JsonObject accessibleBy, JsonObject item, BoxCollaboration.Role role, Boolean notify, Boolean canViewPath, Date expiresAt, Boolean isAccessOnly)`][collaborate3]
+
+```java
+JsonObject user = new JsonObject()
+    .add("login", "login@box.com")
+    .add("type", "user");
+JsonObject file = new JsonObject()
+    .add("id", "123456")
+    .add("type", "file");
+
+BoxCollaboration.Role role = BoxCollaboration.Role.VIEWER;
+BoxCollaboration.Info collabInfo = BoxCollaboration.create(api, user, file, role,
+    false, false, null, true);
+```
+
 [collaborate1]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxFolder.html#collaborate-com.box.sdk.BoxCollaborator-com.box.sdk.BoxCollaboration.Role-
 [collaborate2]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxFolder.html#collaborate-java.lang.String-com.box.sdk.BoxCollaboration.Role-
+[collaborate3]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxCollaboration.html#create-com.box.sdk.BoxAPIConnection-com.eclipsesource.json.JsonObject-com.eclipsesource.json.JsonObject-com.box.sdk.BoxCollaboration.Role-java.lang.Boolean-java.lang.Boolean-java.util.Date-java.lang.Boolean-
 
 Edit a Collaboration
 --------------------
