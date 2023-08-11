@@ -16,6 +16,7 @@ import java.io.InputStream;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Date;
 import java.util.EnumSet;
 import java.util.Iterator;
 import java.util.List;
@@ -148,7 +149,7 @@ public class BoxFolder extends BoxItem implements Iterable<BoxItem.Info> {
             throw new IllegalArgumentException("The given collaborator is of an unknown type.");
         }
 
-        return this.collaborate(accessibleByField, role, null, null);
+        return this.collaborate(accessibleByField, role, null, null, null, null);
     }
 
     /**
@@ -164,7 +165,37 @@ public class BoxFolder extends BoxItem implements Iterable<BoxItem.Info> {
         accessibleByField.add("login", email);
         accessibleByField.add("type", "user");
 
-        return this.collaborate(accessibleByField, role, null, null);
+        return this.collaborate(accessibleByField, role, null, null, null, null);
+    }
+
+    /**
+     * Adds a collaborator to this folder.
+     *
+     * @param collaborator the collaborator to add.
+     * @param role         the role of the collaborator.
+     * @param notify       the user/group should receive email notification of the collaboration or not.
+     * @param canViewPath  the view path collaboration feature is enabled or not.
+     *                     View path collaborations allow the invitee to see the entire ancestral path to the associated
+     *                     folder. The user will not gain privileges in any ancestral folder.
+     * @param expiresAt    when the collaboration should expire.
+     * @param isAccessOnly whether the collaboration is access only or not.
+     * @return info about the new collaboration.
+     */
+    public BoxCollaboration.Info collaborate(BoxCollaborator collaborator, BoxCollaboration.Role role,
+                                             Boolean notify, Boolean canViewPath,
+                                             Date expiresAt, Boolean isAccessOnly) {
+        JsonObject accessibleByField = new JsonObject();
+        accessibleByField.add("id", collaborator.getID());
+
+        if (collaborator instanceof BoxUser) {
+            accessibleByField.add("type", "user");
+        } else if (collaborator instanceof BoxGroup) {
+            accessibleByField.add("type", "group");
+        } else {
+            throw new IllegalArgumentException("The given collaborator is of an unknown type.");
+        }
+
+        return this.collaborate(accessibleByField, role, notify, canViewPath, expiresAt, isAccessOnly);
     }
 
     /**
@@ -180,18 +211,31 @@ public class BoxFolder extends BoxItem implements Iterable<BoxItem.Info> {
      */
     public BoxCollaboration.Info collaborate(BoxCollaborator collaborator, BoxCollaboration.Role role,
                                              Boolean notify, Boolean canViewPath) {
+        return this.collaborate(collaborator, role, notify, canViewPath, null, null);
+    }
+
+    /**
+     * Adds a collaborator to this folder. An email will be sent to the collaborator if they don't already have a Box
+     * account.
+     *
+     * @param email       the email address of the collaborator to add.
+     * @param role        the role of the collaborator.
+     * @param notify      the user/group should receive email notification of the collaboration or not.
+     * @param canViewPath the view path collaboration feature is enabled or not.
+     *                    View path collaborations allow the invitee to see the entire ancestral path to the associated
+     *                    folder. The user will not gain privileges in any ancestral folder.
+     * @param expiresAt    when the collaboration should expire.
+     * @param isAccessOnly whether the collaboration is access only or not.
+     * @return info about the new collaboration.
+     */
+    public BoxCollaboration.Info collaborate(String email, BoxCollaboration.Role role,
+                                             Boolean notify, Boolean canViewPath,
+                                             Date expiresAt, Boolean isAccessOnly) {
         JsonObject accessibleByField = new JsonObject();
-        accessibleByField.add("id", collaborator.getID());
+        accessibleByField.add("login", email);
+        accessibleByField.add("type", "user");
 
-        if (collaborator instanceof BoxUser) {
-            accessibleByField.add("type", "user");
-        } else if (collaborator instanceof BoxGroup) {
-            accessibleByField.add("type", "group");
-        } else {
-            throw new IllegalArgumentException("The given collaborator is of an unknown type.");
-        }
-
-        return this.collaborate(accessibleByField, role, notify, canViewPath);
+        return this.collaborate(accessibleByField, role, notify, canViewPath, expiresAt, isAccessOnly);
     }
 
     /**
@@ -208,21 +252,19 @@ public class BoxFolder extends BoxItem implements Iterable<BoxItem.Info> {
      */
     public BoxCollaboration.Info collaborate(String email, BoxCollaboration.Role role,
                                              Boolean notify, Boolean canViewPath) {
-        JsonObject accessibleByField = new JsonObject();
-        accessibleByField.add("login", email);
-        accessibleByField.add("type", "user");
-
-        return this.collaborate(accessibleByField, role, notify, canViewPath);
+        return this.collaborate(email, role, notify, canViewPath, null, null);
     }
 
     private BoxCollaboration.Info collaborate(JsonObject accessibleByField, BoxCollaboration.Role role,
-                                              Boolean notify, Boolean canViewPath) {
+                                              Boolean notify, Boolean canViewPath,
+                                              Date expiresAt, Boolean isAccessOnly) {
 
         JsonObject itemField = new JsonObject();
         itemField.add("id", this.getID());
         itemField.add("type", "folder");
 
-        return BoxCollaboration.create(this.getAPI(), accessibleByField, itemField, role, notify, canViewPath);
+        return BoxCollaboration.create(this.getAPI(), accessibleByField, itemField, role, notify, canViewPath,
+                expiresAt, isAccessOnly);
     }
 
     /**

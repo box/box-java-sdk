@@ -1389,13 +1389,42 @@ public class BoxFile extends BoxItem {
     }
 
     private BoxCollaboration.Info collaborate(JsonObject accessibleByField, BoxCollaboration.Role role,
-                                              Boolean notify, Boolean canViewPath) {
+                                              Boolean notify, Boolean canViewPath, Date expiresAt,
+                                              Boolean isAccessOnly) {
 
         JsonObject itemField = new JsonObject();
         itemField.add("id", this.getID());
         itemField.add("type", "file");
 
-        return BoxCollaboration.create(this.getAPI(), accessibleByField, itemField, role, notify, canViewPath);
+        return BoxCollaboration.create(this.getAPI(), accessibleByField, itemField, role, notify, canViewPath,
+                expiresAt, isAccessOnly);
+    }
+
+    /**
+     * Adds a collaborator to this file.
+     *
+     * @param collaborator the collaborator to add.
+     * @param role         the role of the collaborator.
+     * @param notify       determines if the user (or all the users in the group) will receive email notifications.
+     * @param canViewPath  whether view path collaboration feature is enabled or not.
+     * @param expiresAt    when the collaboration should expire.
+     * @param isAccessOnly whether the collaboration is access only or not.
+     * @return info about the new collaboration.
+     */
+    public BoxCollaboration.Info collaborate(BoxCollaborator collaborator, BoxCollaboration.Role role,
+                                             Boolean notify, Boolean canViewPath,
+                                             Date expiresAt, Boolean isAccessOnly) {
+        JsonObject accessibleByField = new JsonObject();
+        accessibleByField.add("id", collaborator.getID());
+
+        if (collaborator instanceof BoxUser) {
+            accessibleByField.add("type", "user");
+        } else if (collaborator instanceof BoxGroup) {
+            accessibleByField.add("type", "group");
+        } else {
+            throw new IllegalArgumentException("The given collaborator is of an unknown type.");
+        }
+        return this.collaborate(accessibleByField, role, notify, canViewPath, expiresAt, isAccessOnly);
     }
 
     /**
@@ -1409,17 +1438,29 @@ public class BoxFile extends BoxItem {
      */
     public BoxCollaboration.Info collaborate(BoxCollaborator collaborator, BoxCollaboration.Role role,
                                              Boolean notify, Boolean canViewPath) {
-        JsonObject accessibleByField = new JsonObject();
-        accessibleByField.add("id", collaborator.getID());
+        return this.collaborate(collaborator, role, notify, canViewPath, null, null);
+    }
 
-        if (collaborator instanceof BoxUser) {
-            accessibleByField.add("type", "user");
-        } else if (collaborator instanceof BoxGroup) {
-            accessibleByField.add("type", "group");
-        } else {
-            throw new IllegalArgumentException("The given collaborator is of an unknown type.");
-        }
-        return this.collaborate(accessibleByField, role, notify, canViewPath);
+    /**
+     * Adds a collaborator to this folder. An email will be sent to the collaborator if they don't already have a Box
+     * account.
+     *
+     * @param email       the email address of the collaborator to add.
+     * @param role        the role of the collaborator.
+     * @param notify      determines if the user (or all the users in the group) will receive email notifications.
+     * @param canViewPath whether view path collaboration feature is enabled or not.
+     * @param expiresAt    when the collaboration should expire.
+     * @param isAccessOnly whether the collaboration is access only or not.
+     * @return info about the new collaboration.
+     */
+    public BoxCollaboration.Info collaborate(String email, BoxCollaboration.Role role,
+                                             Boolean notify, Boolean canViewPath,
+                                             Date expiresAt, Boolean isAccessOnly) {
+        JsonObject accessibleByField = new JsonObject();
+        accessibleByField.add("login", email);
+        accessibleByField.add("type", "user");
+
+        return this.collaborate(accessibleByField, role, notify, canViewPath, expiresAt, isAccessOnly);
     }
 
     /**
@@ -1434,11 +1475,7 @@ public class BoxFile extends BoxItem {
      */
     public BoxCollaboration.Info collaborate(String email, BoxCollaboration.Role role,
                                              Boolean notify, Boolean canViewPath) {
-        JsonObject accessibleByField = new JsonObject();
-        accessibleByField.add("login", email);
-        accessibleByField.add("type", "user");
-
-        return this.collaborate(accessibleByField, role, notify, canViewPath);
+        return this.collaborate(email, role, notify, canViewPath, null, null);
     }
 
     /**

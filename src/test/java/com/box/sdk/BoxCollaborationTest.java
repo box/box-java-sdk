@@ -42,8 +42,9 @@ public class BoxCollaborationTest {
 
         BoxUser collaborator = new BoxUser(this.api, "1111");
         BoxFile file = new BoxFile(this.api, "12345");
+        Date expiresAt = new Date(1586289090000L);
         BoxCollaboration.Info collabInfo = file.collaborate(
-            collaborator, BoxCollaboration.Role.EDITOR, false, false
+            collaborator, BoxCollaboration.Role.EDITOR, false, false, expiresAt, true
         );
 
         assertFalse(collabInfo.getCanViewPath());
@@ -52,6 +53,8 @@ public class BoxCollaborationTest {
         assertEquals(BoxFile.Info.class, collabInfo.getItem().getClass());
         assertEquals(BoxCollaboration.Role.EDITOR, collabInfo.getRole());
         assertEquals(BoxCollaboration.Status.ACCEPTED, collabInfo.getStatus());
+        assertEquals(expiresAt.getTime(), collabInfo.getExpiresAt().getTime());
+        assertTrue(collabInfo.getIsAccessOnly());
     }
 
     @Test
