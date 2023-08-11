@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [4.3.0](https://github.com/box/box-java-sdk/compare/v4.2.1...v4.3.0) (2023-08-11)
+
+
+### New Features and Enhancements:
+
+* Support access only collaboration ([#1193](https://github.com/box/box-java-sdk/issues/1193)) ([664c01f](https://github.com/box/box-java-sdk/commit/664c01f80ca0647645c60920eb0ef1f9353a619f))
+
 ### [4.2.1](https://github.com/box/box-java-sdk/compare/v4.2.0...v4.2.1) (2023-08-03)
 
 
