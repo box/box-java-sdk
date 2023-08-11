@@ -408,8 +408,28 @@ BoxCollaboration.Info collabInfo = folder.collaborate(collaborator,
     BoxCollaboration.Role.EDITOR);
 ```
 
+You can also create a collaboration with all properties set at once by using the
+[`collaborate(BoxCollaborator user, BoxCollaboration.Role role, Boolean notify, Boolean canViewPath, Date expiresAt, Boolean isAccessOnly)`][collaborate3] method.
+
+The `notify` parameter will determine if the user or group will receive an
+email notification when being added as a collaborator.  This option is only
+available to enterprise administrators.
+ 
+The `canViewPath` parameter allows the invitee to see the entire list of ancestor
+folders of the associated file. The user will not gain privileges in any ancestor
+folder, but will be able to see the whole path to that file in the owner's account.
+
+The `expiresAt` parameter allows the owner to set a date-time in the future when
+the collaboration should expire.
+
+The `isAccessOnly` parameter allows the owner to set the collaboration to be
+access only collaboration.
+
+The `notify`, `canViewPath`, `expiresAt` and `isAccessOnly` parameters can be left as `null`.
+
 [collaborate]: https://box.github.io/box-java-sdk/javadoc/com/box/sdk/BoxFolder.html#collaborate-java.lang.String-com.box.sdk.BoxCollaboration.Role-
 [collaborate2]: https://box.github.io/box-java-sdk/javadoc/com/box/sdk/BoxFolder.html#collaborate-com.box.sdk.BoxCollaborator-com.box.sdk.BoxCollaboration.Role-
+[collaborate3]: https://box.github.io/box-java-sdk/javadoc/com/box/sdk/BoxFolder.html#collaborate-com.box.sdk.BoxCollaborator-com.box.sdk.BoxCollaboration.Role-java.lang.Boolean-java.lang.Boolean-java.util.Date-java.lang.Boolean-
 
 Get All Collaborations for a Folder
 -----------------------------------

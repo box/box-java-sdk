@@ -29,6 +29,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -1591,5 +1592,43 @@ public class BoxFolderTest {
                 .withStatus(200)));
 
         new BoxFolder(this.api, folderId).rename("New Name");
+    }
+
+    @Test
+    public void collaborateWithOptionalParamsSendsCorrectRequest() {
+
+        final String folderId = "983745";
+        final String collaboratorLogin = "boxer@example.com";
+        final BoxCollaboration.Role collaboratorRole = BoxCollaboration.Role.VIEWER;
+
+        BoxAPIConnection api = new BoxAPIConnectionForTests("");
+        api.setRequestInterceptor(new JSONRequestInterceptor() {
+            @Override
+            public BoxJSONResponse onJSONRequest(BoxJSONRequest request, JsonObject body) {
+                assertEquals(
+                    "https://api.box.com/2.0/collaborations?notify=true",
+                    request.getUrl().toString());
+                assertEquals("POST", request.getMethod());
+
+                assertEquals(folderId, body.get("item").asObject().get("id").asString());
+                assertEquals("folder", body.get("item").asObject().get("type").asString());
+                assertEquals(collaboratorLogin, body.get("accessible_by").asObject().get("login").asString());
+                assertEquals("user", body.get("accessible_by").asObject().get("type").asString());
+                assertEquals(collaboratorRole.toJSONString(), body.get("role").asString());
+                assertEquals("2020-04-07T19:51:30Z", body.get("expires_at").asString());
+                assertTrue(body.get("is_access_only").asBoolean());
+
+                return new BoxJSONResponse() {
+                    @Override
+                    public String getJSON() {
+                        return "{\"type\":\"collaboration\",\"id\":\"98763245\"}";
+                    }
+                };
+            }
+        });
+
+        BoxFolder folder = new BoxFolder(api, folderId);
+        Date expiresAt = new Date(1586289090000L);
+        folder.collaborate(collaboratorLogin, collaboratorRole, true, true, expiresAt, true);
     }
 }

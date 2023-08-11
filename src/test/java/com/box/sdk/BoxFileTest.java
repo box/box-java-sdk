@@ -36,6 +36,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Date;
 import java.util.concurrent.atomic.AtomicInteger;
 import org.junit.Before;
 import org.junit.Rule;
@@ -118,6 +119,8 @@ public class BoxFileTest {
                 assertEquals(collaboratorLogin, body.get("accessible_by").asObject().get("login").asString());
                 assertEquals("user", body.get("accessible_by").asObject().get("type").asString());
                 assertEquals(collaboratorRole.toJSONString(), body.get("role").asString());
+                assertEquals("2020-04-07T19:51:30Z", body.get("expires_at").asString());
+                assertTrue(body.get("is_access_only").asBoolean());
 
                 return new BoxJSONResponse() {
                     @Override
@@ -129,7 +132,8 @@ public class BoxFileTest {
         });
 
         BoxFile file = new BoxFile(api, fileID);
-        file.collaborate(collaboratorLogin, collaboratorRole, true, true);
+        Date expiresAt = new Date(1586289090000L);
+        file.collaborate(collaboratorLogin, collaboratorRole, true, true, expiresAt, true);
     }
 
     @Test

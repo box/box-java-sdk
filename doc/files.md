@@ -731,7 +731,7 @@ Add a Collaborator
 ------------------
 
 You can invite another person to collaborate on a file by email with
-[`collaborate(String emailAddress, BoxCollaboration.Role role, Boolean notify, Boolean canViewPath)`][share-a-file].
+[`collaborate(String emailAddress, BoxCollaboration.Role role, Boolean notify, Boolean canViewPath, Date expiresAt, Boolean isAccessOnly)`][share-a-file].
  
 The `notify` parameter will determine if the user or group will receive an
 email notification when being added as a collaborator.  This option is only
@@ -741,7 +741,13 @@ The `canViewPath` parameter allows the invitee to see the entire list of ancesto
 folders of the associated file. The user will not gain privileges in any ancestor
 folder, but will be able to see the whole path to that file in the owner's account.
 
-Both the `notify` and `canViewPath` parameters can be left as `null`.
+The `expiresAt` parameter allows the owner to set a date-time in the future when
+the collaboration should expire.
+
+The `isAccessOnly` parameter allows the owner to set the collaboration to be
+access only collaboration.
+
+The `notify`, `canViewPath`, `expiresAt` and `isAccessOnly` parameters can be left as `null`.
  
 ```java
 BoxFile file = new BoxFile(api, "id");
@@ -750,7 +756,7 @@ BoxCollaboration.Info collabInfo = file.collaborate("testuser@example.com", BoxC
  
 Alternatively, if you know the user's ID, you can invite them directly
 without needing to know their email address with the
-[`collaborate(BoxCollaborator user, BoxCollaboration.Role role, Boolean notify, Boolean canViewPath)`][share-a-file-userID]
+[`collaborate(BoxCollaborator user, BoxCollaboration.Role role, Boolean notify, Boolean canViewPath, Date expiresAt, Boolean isAccessOnly)`][share-a-file-userID]
  
 ```java
 BoxUser collaborator = new BoxUser(api, "user-id");
@@ -758,8 +764,8 @@ BoxFile file = new BoxFile(api, "file-id");
 BoxCollaboration.Info collabInfo = file.collaborate(collaborator, BoxCollaboration.Role.EDITOR, true, true);
 ```
  
-[share-a-file]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxFile.html#collaborate-java.lang.String-com.box.sdk.BoxCollaboration.Role-java.lang.Boolean-java.lang.Boolean-
-[share-a-file-userID]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxFile.html#collaborate-com.box.sdk.BoxCollaborator-com.box.sdk.BoxCollaboration.Role-java.lang.Boolean-java.lang.Boolean-
+[share-a-file]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxFile.html#collaborate-java.lang.String-com.box.sdk.BoxCollaboration.Role-java.lang.Boolean-java.lang.Boolean-java.lang.String-java.util.Date-java.lang.Boolean-
+[share-a-file-userID]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxFile.html#collaborate-com.box.sdk.BoxCollaborator-com.box.sdk.BoxCollaboration.Role-java.lang.Boolean-java.lang.Boolean-java.lang.String-java.util.Date-java.lang.Boolean-
 
 
 Get an Embed Link

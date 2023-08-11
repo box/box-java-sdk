@@ -25,7 +25,7 @@ public class BoxCollaboration extends BoxResource {
      */
     public static final String[] ALL_FIELDS = {"type", "id", "item", "accessible_by", "role", "expires_at",
         "can_view_path", "status", "acknowledged_at", "created_by",
-        "created_at", "modified_at"};
+        "created_at", "modified_at", "is_access_only"};
 
     /**
      * Collaborations URL Template.
@@ -67,7 +67,7 @@ public class BoxCollaboration extends BoxResource {
      */
     protected static BoxCollaboration.Info create(BoxAPIConnection api, JsonObject accessibleBy, JsonObject item,
                                                   BoxCollaboration.Role role, Boolean notify, Boolean canViewPath) {
-        return create(api, accessibleBy, item, role, notify, canViewPath, null);
+        return create(api, accessibleBy, item, role, notify, canViewPath, null, null);
     }
 
     /**
@@ -91,6 +91,32 @@ public class BoxCollaboration extends BoxResource {
         Boolean canViewPath,
         Date expiresAt
     ) {
+        return create(api, accessibleBy, item, role, notify, canViewPath, expiresAt, null);
+    }
+
+    /**
+     * Create a new collaboration object.
+     *
+     * @param api          the API connection used to make the request.
+     * @param accessibleBy the JSON object describing who should be collaborated.
+     * @param item         the JSON object describing which item to collaborate.
+     * @param role         the role to give the collaborators.
+     * @param notify       the user/group should receive email notification of the collaboration or not.
+     * @param canViewPath  the view path collaboration feature is enabled or not.
+     * @param expiresAt    the date the collaboration expires
+     * @param isAccessOnly the collaboration is an access only collaboration or not.
+     * @return info about the new collaboration.
+     */
+    protected static BoxCollaboration.Info create(
+        BoxAPIConnection api,
+        JsonObject accessibleBy,
+        JsonObject item,
+        BoxCollaboration.Role role,
+        Boolean notify,
+        Boolean canViewPath,
+        Date expiresAt,
+        Boolean isAccessOnly
+    ) {
 
         String queryString = "";
         if (notify != null) {
@@ -112,6 +138,9 @@ public class BoxCollaboration extends BoxResource {
         }
         if (expiresAt != null) {
             requestJSON.add("expires_at", BoxDateFormat.format(expiresAt));
+        }
+        if (isAccessOnly != null) {
+            requestJSON.add("is_access_only", isAccessOnly);
         }
 
         BoxJSONRequest request = new BoxJSONRequest(api, url, "POST");
@@ -364,6 +393,7 @@ public class BoxCollaboration extends BoxResource {
         private BoxItem.Info item;
         private String inviteEmail;
         private boolean canViewPath;
+        private boolean isAccessOnly;
 
         /**
          * Constructs an empty Info object.
@@ -451,6 +481,18 @@ public class BoxCollaboration extends BoxResource {
         public void setCanViewPath(boolean canViewState) {
             this.canViewPath = canViewState;
             this.addPendingChange("can_view_path", canViewState);
+        }
+
+        /**
+         * Gets a boolean indicator weather "is access only" feature is enabled or not. This field is read only.
+         * It is used to indicate whether a collaboration is an Access Only Collaboration (AOC).
+         * When set to true, it separates access from interest by hiding collaborated items from the All Files page
+         * and the ALF stream.
+         * This means that users who have been granted access through AOCs will not see these items in their
+         * regular file view.
+         */
+        public boolean getIsAccessOnly() {
+            return this.isAccessOnly;
         }
 
         /**
@@ -582,6 +624,9 @@ public class BoxCollaboration extends BoxResource {
                         break;
                     case "can_view_path":
                         this.canViewPath = value.asBoolean();
+                        break;
+                    case "is_access_only":
+                        this.isAccessOnly = value.asBoolean();
                         break;
                     case "invite_email":
                         this.inviteEmail = value.asString();

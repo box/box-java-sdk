@@ -25,5 +25,6 @@
     "sequence_id": "2",
     "etag": "2",
     "name": "Ball Valve Diagram"
-  }
+  },
+  "is_access_only": false
 }

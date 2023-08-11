@@ -2,7 +2,6 @@ package com.box.sdk;
 
 import static com.box.sdk.BoxApiProvider.jwtApiForServiceAccount;
 import static com.box.sdk.BoxCollaborationAllowlist.AllowlistDirection.INBOUND;
-import static com.box.sdk.CleanupTools.deleteFile;
 import static com.box.sdk.CleanupTools.deleteFolder;
 import static com.box.sdk.UniqueTestFolder.getUniqueFolder;
 import static com.box.sdk.UniqueTestFolder.removeUniqueFolder;
@@ -12,7 +11,10 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
+import com.eclipsesource.json.JsonObject;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -47,6 +49,7 @@ public class BoxCollaborationIT {
             BoxCollaboration.Info collabInfo = folder.collaborate(collaboratorLogin, originalRole);
 
             assertThat(collabInfo.getRole(), is(equalTo(originalRole)));
+            assertNotNull(collabInfo.getIsAccessOnly());
 
             BoxCollaboration collab = collabInfo.getResource();
             collabInfo.setRole(newRole);
@@ -149,7 +152,7 @@ public class BoxCollaborationIT {
 
             assertEquals(2, numCollabs);
         } finally {
-            deleteFile(uploadedFile);
+            CleanupTools.deleteFile(uploadedFile);
             if (allowList != null) {
                 allowList.delete();
             }
@@ -167,4 +170,29 @@ public class BoxCollaborationIT {
         }
     }
 
+    @Test
+    public void singleFileCollabWithAccessOnlySucceeds() {
+        HashMap<String, BoxCollaboration.Info> collabsMap = new HashMap<>();
+        BoxAPIConnection api = jwtApiForServiceAccount();
+        String fileName = "[singleFileCollabSucceeds] Test File.txt";
+        BoxFile uploadedFile = null;
+        try {
+            uploadedFile = uploadFileToUniqueFolderWithSomeContent(api, fileName);
+            JsonObject user = new JsonObject()
+                    .add("login", TestConfig.getCollaborator())
+                    .add("type", "user");
+            JsonObject file = new JsonObject()
+                    .add("id", uploadedFile.getID())
+                    .add("type", "file");
+
+            BoxCollaboration.Role originalRole = BoxCollaboration.Role.VIEWER;
+            BoxCollaboration.Info collabInfo = BoxCollaboration.create(api, user, file, originalRole,
+                    false, false, null, true);
+
+            assertThat(collabInfo.getRole(), is(equalTo(originalRole)));
+            assertTrue(collabInfo.getIsAccessOnly());
+        } finally {
+            CleanupTools.deleteFile(uploadedFile);
+        }
+    }
 }
