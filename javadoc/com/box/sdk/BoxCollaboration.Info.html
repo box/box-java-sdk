@@ -18,7 +18,7 @@
     catch(err) {
     }
 //-->
-var methods = {"i0":10,"i1":10,"i2":10,"i3":10,"i4":10,"i5":10,"i6":10,"i7":10,"i8":10,"i9":10,"i10":10,"i11":10,"i12":10,"i13":10,"i14":10,"i15":10,"i16":10};
+var methods = {"i0":10,"i1":10,"i2":10,"i3":10,"i4":10,"i5":10,"i6":10,"i7":10,"i8":10,"i9":10,"i10":10,"i11":10,"i12":10,"i13":10,"i14":10,"i15":10,"i16":10,"i17":10};
 var tabs = {65535:["t0","All Methods"],2:["t2","Instance Methods"],8:["t4","Concrete Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
@@ -61,7 +61,7 @@ var activeTableTab = "activeTableTab";
 </dl>
 <hr>
 <br>
-<pre>public class <a href="../../../src-html/com/box/sdk/BoxCollaboration.html#line.355">BoxCollaboration.Info</a>
+<pre>public class <a href="../../../src-html/com/box/sdk/BoxCollaboration.html#line.384">BoxCollaboration.Info</a>
 extends <a href="../../../com/box/sdk/BoxResource.Info.html" title="class in com.box.sdk">BoxResource.Info</a></pre>
 <div class="block">Contains information about a BoxCollaboration.</div>
 </li>
@@ -149,60 +149,66 @@ extends <a href="../../../com/box/sdk/BoxResource.Info.html" title="class in com
 </td>
 </tr>
 <tr id="i7" class="rowColor">
+<td class="colFirst"><code>boolean</code></td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../com/box/sdk/BoxCollaboration.Info.html#getIsAccessOnly--">getIsAccessOnly</a></span>()</code>
+<div class="block">Gets a boolean indicator weather "is access only" feature is enabled or not.</div>
+</td>
+</tr>
+<tr id="i8" class="altColor">
 <td class="colFirst"><code><a href="../../../com/box/sdk/BoxItem.Info.html" title="class in com.box.sdk">BoxItem.Info</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../com/box/sdk/BoxCollaboration.Info.html#getItem--">getItem</a></span>()</code>
 <div class="block">Gets the folder the collaboration is related to.</div>
 </td>
 </tr>
-<tr id="i8" class="altColor">
+<tr id="i9" class="rowColor">
 <td class="colFirst"><code><a href="https://docs.oracle.com/javase/8/docs/api/java/util/Date.html?is-external=true" title="class or interface in java.util">Date</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../com/box/sdk/BoxCollaboration.Info.html#getModifiedAt--">getModifiedAt</a></span>()</code>
 <div class="block">Gets the time the collaboration was last modified.</div>
 </td>
 </tr>
-<tr id="i9" class="rowColor">
+<tr id="i10" class="altColor">
 <td class="colFirst"><code><a href="../../../com/box/sdk/BoxCollaboration.html" title="class in com.box.sdk">BoxCollaboration</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../com/box/sdk/BoxCollaboration.Info.html#getResource--">getResource</a></span>()</code>
 <div class="block">Gets the resource associated with this Info.</div>
 </td>
 </tr>
-<tr id="i10" class="altColor">
+<tr id="i11" class="rowColor">
 <td class="colFirst"><code><a href="../../../com/box/sdk/BoxCollaboration.Role.html" title="enum in com.box.sdk">BoxCollaboration.Role</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../com/box/sdk/BoxCollaboration.Info.html#getRole--">getRole</a></span>()</code>
 <div class="block">Gets the level of access the collaborator has.</div>
 </td>
 </tr>
-<tr id="i11" class="rowColor">
+<tr id="i12" class="altColor">
 <td class="colFirst"><code><a href="../../../com/box/sdk/BoxCollaboration.Status.html" title="enum in com.box.sdk">BoxCollaboration.Status</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../com/box/sdk/BoxCollaboration.Info.html#getStatus--">getStatus</a></span>()</code>
 <div class="block">Gets the status of the collaboration.</div>
 </td>
 </tr>
-<tr id="i12" class="altColor">
+<tr id="i13" class="rowColor">
 <td class="colFirst"><code>protected void</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../com/box/sdk/BoxCollaboration.Info.html#parseJSONMember-com.eclipsesource.json.JsonObject.Member-">parseJSONMember</a></span>(JsonObject.Member&nbsp;member)</code>
 <div class="block">Invoked with a JSON member whenever this object is updated or created from a JSON object.</div>
 </td>
 </tr>
-<tr id="i13" class="rowColor">
+<tr id="i14" class="altColor">
 <td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../com/box/sdk/BoxCollaboration.Info.html#setCanViewPath-boolean-">setCanViewPath</a></span>(boolean&nbsp;canViewState)</code>
 <div class="block">Sets the permission for "view path collaboration" feature.</div>
 </td>
 </tr>
-<tr id="i14" class="altColor">
+<tr id="i15" class="rowColor">
 <td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../com/box/sdk/BoxCollaboration.Info.html#setExpiresAt-java.util.Date-">setExpiresAt</a></span>(<a href="https://docs.oracle.com/javase/8/docs/api/java/util/Date.html?is-external=true" title="class or interface in java.util">Date</a>&nbsp;expiresAt)</code>
 <div class="block">Set the time the collaboration will expire.</div>
 </td>
 </tr>
-<tr id="i15" class="rowColor">
+<tr id="i16" class="altColor">
 <td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../com/box/sdk/BoxCollaboration.Info.html#setRole-com.box.sdk.BoxCollaboration.Role-">setRole</a></span>(<a href="../../../com/box/sdk/BoxCollaboration.Role.html" title="enum in com.box.sdk">BoxCollaboration.Role</a>&nbsp;role)</code>
 <div class="block">Sets the level of access the collaborator has.</div>
 </td>
 </tr>
-<tr id="i16" class="altColor">
+<tr id="i17" class="rowColor">
 <td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../com/box/sdk/BoxCollaboration.Info.html#setStatus-com.box.sdk.BoxCollaboration.Status-">setStatus</a></span>(<a href="../../../com/box/sdk/BoxCollaboration.Status.html" title="enum in com.box.sdk">BoxCollaboration.Status</a>&nbsp;status)</code>
 <div class="block">Sets the status of the collaboration in order to accept or reject the collaboration if it's pending.</div>
@@ -250,7 +256,7 @@ extends <a href="../../../com/box/sdk/BoxResource.Info.html" title="class in com
 <ul class="blockList">
 <li class="blockList">
 <h4>Info</h4>
-<pre>public&nbsp;<a href="../../../src-html/com/box/sdk/BoxCollaboration.Info.html#line.371">Info</a>()</pre>
+<pre>public&nbsp;<a href="../../../src-html/com/box/sdk/BoxCollaboration.Info.html#line.401">Info</a>()</pre>
 <div class="block">Constructs an empty Info object.</div>
 </li>
 </ul>
@@ -260,7 +266,7 @@ extends <a href="../../../com/box/sdk/BoxResource.Info.html" title="class in com
 <ul class="blockListLast">
 <li class="blockList">
 <h4>Info</h4>
-<pre>public&nbsp;<a href="../../../src-html/com/box/sdk/BoxCollaboration.Info.html#line.380">Info</a>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;json)</pre>
+<pre>public&nbsp;<a href="../../../src-html/com/box/sdk/BoxCollaboration.Info.html#line.410">Info</a>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;json)</pre>
 <div class="block">Constructs an Info object by parsing information from a JSON string.</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
@@ -282,7 +288,7 @@ extends <a href="../../../com/box/sdk/BoxResource.Info.html" title="class in com
 <ul class="blockList">
 <li class="blockList">
 <h4>getCreatedBy</h4>
-<pre>public&nbsp;<a href="../../../com/box/sdk/BoxUser.Info.html" title="class in com.box.sdk">BoxUser.Info</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxCollaboration.Info.html#line.393">getCreatedBy</a>()</pre>
+<pre>public&nbsp;<a href="../../../com/box/sdk/BoxUser.Info.html" title="class in com.box.sdk">BoxUser.Info</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxCollaboration.Info.html#line.423">getCreatedBy</a>()</pre>
 <div class="block">Gets the user who created the collaboration.</div>
 <dl>
 <dt><span class="returnLabel">Returns:</span></dt>
@@ -296,7 +302,7 @@ extends <a href="../../../com/box/sdk/BoxResource.Info.html" title="class in com
 <ul class="blockList">
 <li class="blockList">
 <h4>getCreatedAt</h4>
-<pre>public&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/util/Date.html?is-external=true" title="class or interface in java.util">Date</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxCollaboration.Info.html#line.402">getCreatedAt</a>()</pre>
+<pre>public&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/util/Date.html?is-external=true" title="class or interface in java.util">Date</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxCollaboration.Info.html#line.432">getCreatedAt</a>()</pre>
 <div class="block">Gets the time the collaboration was created.</div>
 <dl>
 <dt><span class="returnLabel">Returns:</span></dt>
@@ -310,7 +316,7 @@ extends <a href="../../../com/box/sdk/BoxResource.Info.html" title="class in com
 <ul class="blockList">
 <li class="blockList">
 <h4>getModifiedAt</h4>
-<pre>public&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/util/Date.html?is-external=true" title="class or interface in java.util">Date</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxCollaboration.Info.html#line.411">getModifiedAt</a>()</pre>
+<pre>public&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/util/Date.html?is-external=true" title="class or interface in java.util">Date</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxCollaboration.Info.html#line.441">getModifiedAt</a>()</pre>
 <div class="block">Gets the time the collaboration was last modified.</div>
 <dl>
 <dt><span class="returnLabel">Returns:</span></dt>
@@ -324,7 +330,7 @@ extends <a href="../../../com/box/sdk/BoxResource.Info.html" title="class in com
 <ul class="blockList">
 <li class="blockList">
 <h4>getExpiresAt</h4>
-<pre>public&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/util/Date.html?is-external=true" title="class or interface in java.util">Date</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxCollaboration.Info.html#line.420">getExpiresAt</a>()</pre>
+<pre>public&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/util/Date.html?is-external=true" title="class or interface in java.util">Date</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxCollaboration.Info.html#line.450">getExpiresAt</a>()</pre>
 <div class="block">Gets the time the collaboration will expire.</div>
 <dl>
 <dt><span class="returnLabel">Returns:</span></dt>
@@ -338,7 +344,7 @@ extends <a href="../../../com/box/sdk/BoxResource.Info.html" title="class in com
 <ul class="blockList">
 <li class="blockList">
 <h4>setExpiresAt</h4>
-<pre>public&nbsp;void&nbsp;<a href="../../../src-html/com/box/sdk/BoxCollaboration.Info.html#line.429">setExpiresAt</a>(<a href="https://docs.oracle.com/javase/8/docs/api/java/util/Date.html?is-external=true" title="class or interface in java.util">Date</a>&nbsp;expiresAt)</pre>
+<pre>public&nbsp;void&nbsp;<a href="../../../src-html/com/box/sdk/BoxCollaboration.Info.html#line.459">setExpiresAt</a>(<a href="https://docs.oracle.com/javase/8/docs/api/java/util/Date.html?is-external=true" title="class or interface in java.util">Date</a>&nbsp;expiresAt)</pre>
 <div class="block">Set the time the collaboration will expire.</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
@@ -352,7 +358,7 @@ extends <a href="../../../com/box/sdk/BoxResource.Info.html" title="class in com
 <ul class="blockList">
 <li class="blockList">
 <h4>getCanViewPath</h4>
-<pre>public&nbsp;boolean&nbsp;<a href="../../../src-html/com/box/sdk/BoxCollaboration.Info.html#line.441">getCanViewPath</a>()</pre>
+<pre>public&nbsp;boolean&nbsp;<a href="../../../src-html/com/box/sdk/BoxCollaboration.Info.html#line.471">getCanViewPath</a>()</pre>
 <div class="block">Gets a boolean indicator whether "view path collaboration" feature is enabled or not.
  When set to true this allows the invitee to see the entire parent path to the item.
  It is important to note that this does not grant privileges in any parent folder.</div>
@@ -368,7 +374,7 @@ extends <a href="../../../com/box/sdk/BoxResource.Info.html" title="class in com
 <ul class="blockList">
 <li class="blockList">
 <h4>setCanViewPath</h4>
-<pre>public&nbsp;void&nbsp;<a href="../../../src-html/com/box/sdk/BoxCollaboration.Info.html#line.451">setCanViewPath</a>(boolean&nbsp;canViewState)</pre>
+<pre>public&nbsp;void&nbsp;<a href="../../../src-html/com/box/sdk/BoxCollaboration.Info.html#line.481">setCanViewPath</a>(boolean&nbsp;canViewState)</pre>
 <div class="block">Sets the permission for "view path collaboration" feature. When set to true this allows
  the invitee to to see the entire parent path to the item</div>
 <dl>
@@ -377,13 +383,28 @@ extends <a href="../../../com/box/sdk/BoxResource.Info.html" title="class in com
 </dl>
 </li>
 </ul>
+<a name="getIsAccessOnly--">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>getIsAccessOnly</h4>
+<pre>public&nbsp;boolean&nbsp;<a href="../../../src-html/com/box/sdk/BoxCollaboration.Info.html#line.494">getIsAccessOnly</a>()</pre>
+<div class="block">Gets a boolean indicator weather "is access only" feature is enabled or not. This field is read only.
+ It is used to indicate whether a collaboration is an Access Only Collaboration (AOC).
+ When set to true, it separates access from interest by hiding collaborated items from the All Files page
+ and the ALF stream.
+ This means that users who have been granted access through AOCs will not see these items in their
+ regular file view.</div>
+</li>
+</ul>
 <a name="getInviteEmail--">
 <!--   -->
 </a>
 <ul class="blockList">
 <li class="blockList">
 <h4>getInviteEmail</h4>
-<pre>public&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxCollaboration.Info.html#line.461">getInviteEmail</a>()</pre>
+<pre>public&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxCollaboration.Info.html#line.503">getInviteEmail</a>()</pre>
 <div class="block">The email address used to invite an un-registered collaborator, if they are not a registered user.</div>
 <dl>
 <dt><span class="returnLabel">Returns:</span></dt>
@@ -397,7 +418,7 @@ extends <a href="../../../com/box/sdk/BoxResource.Info.html" title="class in com
 <ul class="blockList">
 <li class="blockList">
 <h4>getStatus</h4>
-<pre>public&nbsp;<a href="../../../com/box/sdk/BoxCollaboration.Status.html" title="enum in com.box.sdk">BoxCollaboration.Status</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxCollaboration.Info.html#line.470">getStatus</a>()</pre>
+<pre>public&nbsp;<a href="../../../com/box/sdk/BoxCollaboration.Status.html" title="enum in com.box.sdk">BoxCollaboration.Status</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxCollaboration.Info.html#line.512">getStatus</a>()</pre>
 <div class="block">Gets the status of the collaboration.</div>
 <dl>
 <dt><span class="returnLabel">Returns:</span></dt>
@@ -411,7 +432,7 @@ extends <a href="../../../com/box/sdk/BoxResource.Info.html" title="class in com
 <ul class="blockList">
 <li class="blockList">
 <h4>setStatus</h4>
-<pre>public&nbsp;void&nbsp;<a href="../../../src-html/com/box/sdk/BoxCollaboration.Info.html#line.479">setStatus</a>(<a href="../../../com/box/sdk/BoxCollaboration.Status.html" title="enum in com.box.sdk">BoxCollaboration.Status</a>&nbsp;status)</pre>
+<pre>public&nbsp;void&nbsp;<a href="../../../src-html/com/box/sdk/BoxCollaboration.Info.html#line.521">setStatus</a>(<a href="../../../com/box/sdk/BoxCollaboration.Status.html" title="enum in com.box.sdk">BoxCollaboration.Status</a>&nbsp;status)</pre>
 <div class="block">Sets the status of the collaboration in order to accept or reject the collaboration if it's pending.</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
@@ -425,7 +446,7 @@ extends <a href="../../../com/box/sdk/BoxResource.Info.html" title="class in com
 <ul class="blockList">
 <li class="blockList">
 <h4>getAccessibleBy</h4>
-<pre>public&nbsp;<a href="../../../com/box/sdk/BoxCollaborator.Info.html" title="class in com.box.sdk">BoxCollaborator.Info</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxCollaboration.Info.html#line.489">getAccessibleBy</a>()</pre>
+<pre>public&nbsp;<a href="../../../com/box/sdk/BoxCollaborator.Info.html" title="class in com.box.sdk">BoxCollaborator.Info</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxCollaboration.Info.html#line.531">getAccessibleBy</a>()</pre>
 <div class="block">Gets the collaborator who this collaboration applies to.</div>
 <dl>
 <dt><span class="returnLabel">Returns:</span></dt>
@@ -439,7 +460,7 @@ extends <a href="../../../com/box/sdk/BoxResource.Info.html" title="class in com
 <ul class="blockList">
 <li class="blockList">
 <h4>getRole</h4>
-<pre>public&nbsp;<a href="../../../com/box/sdk/BoxCollaboration.Role.html" title="enum in com.box.sdk">BoxCollaboration.Role</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxCollaboration.Info.html#line.498">getRole</a>()</pre>
+<pre>public&nbsp;<a href="../../../com/box/sdk/BoxCollaboration.Role.html" title="enum in com.box.sdk">BoxCollaboration.Role</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxCollaboration.Info.html#line.540">getRole</a>()</pre>
 <div class="block">Gets the level of access the collaborator has.</div>
 <dl>
 <dt><span class="returnLabel">Returns:</span></dt>
@@ -453,7 +474,7 @@ extends <a href="../../../com/box/sdk/BoxResource.Info.html" title="class in com
 <ul class="blockList">
 <li class="blockList">
 <h4>setRole</h4>
-<pre>public&nbsp;void&nbsp;<a href="../../../src-html/com/box/sdk/BoxCollaboration.Info.html#line.507">setRole</a>(<a href="../../../com/box/sdk/BoxCollaboration.Role.html" title="enum in com.box.sdk">BoxCollaboration.Role</a>&nbsp;role)</pre>
+<pre>public&nbsp;void&nbsp;<a href="../../../src-html/com/box/sdk/BoxCollaboration.Info.html#line.549">setRole</a>(<a href="../../../com/box/sdk/BoxCollaboration.Role.html" title="enum in com.box.sdk">BoxCollaboration.Role</a>&nbsp;role)</pre>
 <div class="block">Sets the level of access the collaborator has.</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
@@ -467,7 +488,7 @@ extends <a href="../../../com/box/sdk/BoxResource.Info.html" title="class in com
 <ul class="blockList">
 <li class="blockList">
 <h4>getAcknowledgedAt</h4>
-<pre>public&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/util/Date.html?is-external=true" title="class or interface in java.util">Date</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxCollaboration.Info.html#line.517">getAcknowledgedAt</a>()</pre>
+<pre>public&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/util/Date.html?is-external=true" title="class or interface in java.util">Date</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxCollaboration.Info.html#line.559">getAcknowledgedAt</a>()</pre>
 <div class="block">Gets the time the collaboration's status was changed.</div>
 <dl>
 <dt><span class="returnLabel">Returns:</span></dt>
@@ -481,7 +502,7 @@ extends <a href="../../../com/box/sdk/BoxResource.Info.html" title="class in com
 <ul class="blockList">
 <li class="blockList">
 <h4>getItem</h4>
-<pre>public&nbsp;<a href="../../../com/box/sdk/BoxItem.Info.html" title="class in com.box.sdk">BoxItem.Info</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxCollaboration.Info.html#line.526">getItem</a>()</pre>
+<pre>public&nbsp;<a href="../../../com/box/sdk/BoxItem.Info.html" title="class in com.box.sdk">BoxItem.Info</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxCollaboration.Info.html#line.568">getItem</a>()</pre>
 <div class="block">Gets the folder the collaboration is related to.</div>
 <dl>
 <dt><span class="returnLabel">Returns:</span></dt>
@@ -495,7 +516,7 @@ extends <a href="../../../com/box/sdk/BoxResource.Info.html" title="class in com
 <ul class="blockList">
 <li class="blockList">
 <h4>getResource</h4>
-<pre>public&nbsp;<a href="../../../com/box/sdk/BoxCollaboration.html" title="class in com.box.sdk">BoxCollaboration</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxCollaboration.Info.html#line.531">getResource</a>()</pre>
+<pre>public&nbsp;<a href="../../../com/box/sdk/BoxCollaboration.html" title="class in com.box.sdk">BoxCollaboration</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxCollaboration.Info.html#line.573">getResource</a>()</pre>
 <div class="block"><span class="descfrmTypeLabel">Description copied from class:&nbsp;<code><a href="../../../com/box/sdk/BoxResource.Info.html#getResource--">BoxResource.Info</a></code></span></div>
 <div class="block">Gets the resource associated with this Info.</div>
 <dl>
@@ -512,7 +533,7 @@ extends <a href="../../../com/box/sdk/BoxResource.Info.html" title="class in com
 <ul class="blockListLast">
 <li class="blockList">
 <h4>parseJSONMember</h4>
-<pre>protected&nbsp;void&nbsp;<a href="../../../src-html/com/box/sdk/BoxCollaboration.Info.html#line.537">parseJSONMember</a>(JsonObject.Member&nbsp;member)</pre>
+<pre>protected&nbsp;void&nbsp;<a href="../../../src-html/com/box/sdk/BoxCollaboration.Info.html#line.579">parseJSONMember</a>(JsonObject.Member&nbsp;member)</pre>
 <div class="block"><span class="descfrmTypeLabel">Description copied from class:&nbsp;<code><a href="../../../com/box/sdk/BoxJSONObject.html#parseJSONMember-com.eclipsesource.json.JsonObject.Member-">BoxJSONObject</a></code></span></div>
 <div class="block">Invoked with a JSON member whenever this object is updated or created from a JSON object.
 
