@@ -25,6 +25,7 @@ public class BoxSignRequestCreateParams {
     private String externalId;
     private String redirectUrl;
     private String declinedRedirectUrl;
+    private String templateId;
 
     /**
      * Gets the flag indicating if the sender should be taken into the builder flow to prepare the document.
@@ -297,6 +298,26 @@ public class BoxSignRequestCreateParams {
     }
 
     /**
+     * Gets the Sign Template ID of the Sign Request.
+     *
+     * @return template id.
+     */
+    public String getTemplateId() {
+        return this.templateId;
+    }
+
+    /**
+     * Sets the Sign Template ID will be use to create the sign request.
+     *
+     * @param templateId for this sign request.
+     * @return this BoxSignRequestCreateParams object for chaining.
+     */
+    public BoxSignRequestCreateParams setTemplateId(String templateId) {
+        this.templateId = templateId;
+        return this;
+    }
+
+    /**
      * Used to append BoxSignRequestCreateParams to request.
      *
      * @param requestJSON request in json to append data to.
@@ -315,6 +336,7 @@ public class BoxSignRequestCreateParams {
         JsonUtils.addIfNotNull(requestJSON, "external_id", this.externalId);
         JsonUtils.addIfNotNull(requestJSON, "redirect_url", this.redirectUrl);
         JsonUtils.addIfNotNull(requestJSON, "declined_redirect_url", this.declinedRedirectUrl);
+        JsonUtils.addIfNotNull(requestJSON, "template_id", this.templateId);
 
         if (this.prefillTags != null) {
             JsonArray prefillTagsJSON = new JsonArray();

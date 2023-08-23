@@ -41,6 +41,7 @@ public class BoxSignRequestTest {
         final String signerEmail = "example@gmail.com";
         final String signRequestId = "12345";
         final BoxSignRequestInputContentType contentType = BoxSignRequestInputContentType.Checkbox;
+        final String templateId = "93153068-5420-467b-b8ef-aaaaaaaaaaa";
 
         final String prepareUrl = "https://prepareurl.com";
         final String redirectUrl = "https://box.com/redirect_url";
@@ -67,6 +68,7 @@ public class BoxSignRequestTest {
         String parentFolderId = "55555";
 
         BoxSignRequestCreateParams params = new BoxSignRequestCreateParams();
+        params.setTemplateId(templateId);
         params.setPrefillTags(Collections.singletonList(new BoxSignRequestPrefillTag("id", "text")));
         BoxSignRequest.Info signRequestInfo = BoxSignRequest.createSignRequest(this.api, files,
             signers, parentFolderId, params);
@@ -85,6 +87,8 @@ public class BoxSignRequestTest {
         assertEquals(signerEmail, signer.getEmail());
         assertEquals(signRequestId, signRequestInfo.getID());
         assertEquals(contentType, input.getContentType());
+        assertEquals(templateId, signRequestInfo.getTemplateId());
+
     }
 
     @Test
@@ -101,6 +105,8 @@ public class BoxSignRequestTest {
 
         final String signerRedirectUrl = "https://box.com/redirect_url_signer_1";
         final String signerDeclinedRedirectUrl = "https://box.com/declined_redirect_url_signer_1";
+
+        final String templateId = "93153068-5420-467b-b8ef-aaaaaaaaaaa";
 
         final String requestUrl = "/2.0/sign_requests/" + signRequestId;
 
@@ -128,6 +134,7 @@ public class BoxSignRequestTest {
         assertEquals(signerEmail, signer.getEmail());
         assertEquals(signRequestId, signRequestInfo.getID());
         assertEquals(contentType, input.getContentType());
+        assertEquals(templateId, signRequestInfo.getTemplateId());
     }
 
     @Test
@@ -144,6 +151,7 @@ public class BoxSignRequestTest {
 
         final String signerRedirectUrl = "https://box.com/redirect_url_signer_1";
         final String signerDeclinedRedirectUrl = "https://box.com/declined_redirect_url_signer_1";
+        final String templateId = "93153068-5420-467b-b8ef-aaaaaaaaaaa";
 
         final String requestUrl = "/2.0/sign_requests";
 
@@ -171,6 +179,7 @@ public class BoxSignRequestTest {
         assertEquals(signerEmail, signer.getEmail());
         assertEquals(signRequestId, firstSignRequest.getID());
         assertEquals(contentType, input.getContentType());
+        assertEquals(templateId, firstSignRequest.getTemplateId());
     }
 
     @Test
