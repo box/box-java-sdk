@@ -21,7 +21,7 @@ will return an iterable that will page through all the Sign Templates.
 
 The static
 [`getAll(BoxAPIConnection api, int limit)`][get-all-sign-templates-with-limit]
-method offers `limit` parameters.  The `limit` parameter specifies the maximum number of items to be returned in a single response.
+method offers `limit` parameter.  The `limit` parameter specifies the maximum number of items to be returned in a single response.
 
 <!-- sample get_sign_templates -->
 ```java
@@ -32,12 +32,12 @@ for (BoxSignTemplate.Info signTemplateInfo : signTemplates) {
 ```
 
 [get-all-sign-templates]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxSignTemplate.html#getAll-com.box.sdk.BoxAPIConnection-
-[get-all-sign-templates-with-limit]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxSignTemplate.html#getAll-int-
+[get-all-sign-templates-with-limit]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxSignTemplate.html#getAll-com.box.sdk.BoxAPIConnection-int-
 
 Get Sign Template by ID
 ------------------------
 
-Calling [`getInfo()`][get-sign-template-info] will return a [`BoxSignTemplate.Info`][box-sign-template-info] object
+Calling [`getInfo()`][get-sign-template-by-id] will return a [`BoxSignTemplate.Info`][box-sign-template-info] object
 containing information about the Sign Template.
 
 
