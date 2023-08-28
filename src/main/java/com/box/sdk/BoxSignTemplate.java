@@ -98,6 +98,7 @@ public class BoxSignTemplate extends BoxResource {
         private BoxSignTemplateAdditionalInfo additionalInfo;
         private boolean areEmailSettingsLocked;
         private boolean areFieldsLocked;
+        private boolean areOptionsLocked;
         private boolean areFilesLocked;
         private boolean areRecipientsLocked;
         private BoxSignTemplateCustomBranding customBranding;
@@ -170,6 +171,13 @@ public class BoxSignTemplate extends BoxResource {
         public boolean getAreFieldsLocked() {
             return this.areFieldsLocked;
         }
+
+        /**
+         * Gets weather the templates input options are editable or not.
+         *
+         * @return true if the options are editable; otherwise false.
+         */
+        public boolean getAreOptionsLocked() { return this.areOptionsLocked; }
 
         /**
          * Gets whether the template document options are editable or not,
@@ -293,6 +301,8 @@ public class BoxSignTemplate extends BoxResource {
                     case "are_fields_locked":
                         this.areFieldsLocked = value.asBoolean();
                         break;
+                    case "are_options_locked":
+                        this.areOptionsLocked = value.asBoolean();
                     case "are_files_locked":
                         this.areFilesLocked = value.asBoolean();
                         break;
