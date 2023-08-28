@@ -177,7 +177,9 @@ public class BoxSignTemplate extends BoxResource {
          *
          * @return true if the options are editable; otherwise false.
          */
-        public boolean getAreOptionsLocked() { return this.areOptionsLocked; }
+        public boolean getAreOptionsLocked() {
+            return this.areOptionsLocked;
+        }
 
         /**
          * Gets whether the template document options are editable or not,
@@ -303,6 +305,7 @@ public class BoxSignTemplate extends BoxResource {
                         break;
                     case "are_options_locked":
                         this.areOptionsLocked = value.asBoolean();
+                        break;
                     case "are_files_locked":
                         this.areFilesLocked = value.asBoolean();
                         break;
