@@ -299,7 +299,17 @@ public class BoxSignRequest extends BoxResource {
         /**
          * Expired status.
          */
-        Expired("expired");
+        Expired("expired"),
+
+        /**
+         * Finalizing status.
+         */
+        Finalizing("finalizing"),
+
+        /**
+         * Error finalizing status.
+         */
+        ErrorFinalizing("error_finalizing");
 
         private final String jsonValue;
 
@@ -308,26 +318,32 @@ public class BoxSignRequest extends BoxResource {
         }
 
         static BoxSignRequestStatus fromJSONString(String jsonValue) {
-            if ("converting".equals(jsonValue)) {
-                return Converting;
-            } else if ("created".equals(jsonValue)) {
-                return Created;
-            } else if ("sent".equals(jsonValue)) {
-                return Sent;
-            } else if ("viewed".equals(jsonValue)) {
-                return Viewed;
-            } else if ("signed".equals(jsonValue)) {
-                return Signed;
-            } else if ("cancelled".equals(jsonValue)) {
-                return Cancelled;
-            } else if ("declined".equals(jsonValue)) {
-                return Declined;
-            } else if ("error_converting".equals(jsonValue)) {
-                return ErrorConverting;
-            } else if ("error_sending".equals(jsonValue)) {
-                return ErrorSending;
-            } else if ("expired".equals(jsonValue)) {
-                return Expired;
+            switch (jsonValue) {
+                case "converting":
+                    return Converting;
+                case "created":
+                    return Created;
+                case "sent":
+                    return Sent;
+                case "viewed":
+                    return Viewed;
+                case "signed":
+                    return Signed;
+                case "cancelled":
+                    return Cancelled;
+                case "declined":
+                    return Declined;
+                case "error_converting":
+                    return ErrorConverting;
+                case "error_sending":
+                    return ErrorSending;
+                case "expired":
+                    return Expired;
+                case "finalizing":
+                    return Finalizing;
+                case "error_finalizing":
+                    return ErrorFinalizing;
+                default:
             }
             throw new IllegalArgumentException("The provided JSON value isn't a valid BoxSignRequestStatus value.");
         }
@@ -359,6 +375,7 @@ public class BoxSignRequest extends BoxResource {
         private Date autoExpireAt;
         private String redirectUrl;
         private String declinedRedirectUrl;
+        private String templateId;
 
         /**
          * Constructs an empty Info object.
@@ -579,6 +596,15 @@ public class BoxSignRequest extends BoxResource {
         }
 
         /**
+         * Gets the id of the template that was used to create this sign request.
+         *
+         * @return sign template id.
+         */
+        public String getTemplateId() {
+            return this.templateId;
+        }
+
+        /**
          * {@inheritDoc}
          */
         @Override
@@ -679,6 +705,9 @@ public class BoxSignRequest extends BoxResource {
                         break;
                     case "declined_redirect_url":
                         this.declinedRedirectUrl = value.asString();
+                        break;
+                    case "template_id":
+                        this.templateId = value.asString();
                         break;
                     default:
                 }
