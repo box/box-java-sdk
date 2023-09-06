@@ -1,7 +1,5 @@
 package com.box.sdk;
 
-import static java.lang.String.format;
-
 import java.util.List;
 
 
