@@ -108,7 +108,7 @@ public class BoxSignTemplate extends BoxResource {
         private String name;
         private BoxFolder.Info parentFolder;
         private BoxSignTemplateReadySignLink readySignLink;
-        private List<BoxSignRequestSigner> signers;
+        private List<BoxSignTemplateSigner> signers;
         private List<BoxFile.Info> sourceFiles;
 
         /**
@@ -271,7 +271,7 @@ public class BoxSignTemplate extends BoxResource {
          *
          * @return the signers for this Sign Template.
          */
-        public List<BoxSignRequestSigner> getSigners() {
+        public List<BoxSignTemplateSigner> getSigners() {
             return this.signers;
         }
 
@@ -383,11 +383,11 @@ public class BoxSignTemplate extends BoxResource {
             return files;
         }
 
-        private List<BoxSignRequestSigner> parseSigners(JsonValue signersArray) {
-            List<BoxSignRequestSigner> signers = new ArrayList<BoxSignRequestSigner>();
+        private List<BoxSignTemplateSigner> parseSigners(JsonValue signersArray) {
+            List<BoxSignTemplateSigner> signers = new ArrayList<BoxSignTemplateSigner>();
             for (JsonValue signerJSON : signersArray.asArray()) {
                 JsonObject signerObj = signerJSON.asObject();
-                signers.add(new BoxSignRequestSigner(signerObj, getAPI()));
+                signers.add(new BoxSignTemplateSigner(signerObj, getAPI()));
             }
             return signers;
         }
@@ -409,213 +409,6 @@ public class BoxSignTemplate extends BoxResource {
             String url = readySignLinkJSON.get("url").asString();
             return new BoxSignTemplateReadySignLink(folderID, instructions, isActive,
                 isNofiticationDisabled, name, url);
-        }
-
-        /**
-         * Box Sign Template additional information on which fields are required
-         * and which fields are not editable.
-         */
-        public class BoxSignTemplateAdditionalInfo {
-            private final List<String> nonEditable;
-            private final BoxSignTemplateAdditionalInfoRequired required;
-
-            public BoxSignTemplateAdditionalInfo(List<String> nonEditable,
-                                                 BoxSignTemplateAdditionalInfoRequired required) {
-                this.nonEditable = nonEditable;
-                this.required = required;
-            }
-
-            /**
-             * Get non-editable fields.
-             *
-             * @return list of non-editable fields.\
-             */
-            public List<String> getNonEditable() {
-                return this.nonEditable;
-            }
-
-            /**
-             * Gets the required fields.
-             *
-             * @return the required fields.
-             */
-            public BoxSignTemplateAdditionalInfoRequired getRequired() {
-                return this.required;
-            }
-        }
-
-        /**
-         * Box Sign Template additional information on which fields are required.
-         */
-        public class BoxSignTemplateAdditionalInfoRequired {
-            private final List<List<String>> signers;
-
-            /**
-             * Constructs a BoxSignTemplateAdditionalInfoRequired object with the provided list of signers.
-             */
-            public BoxSignTemplateAdditionalInfoRequired(List<List<String>> signers) {
-                this.signers = signers;
-            }
-
-            /**
-             * Gets the required signer fields.
-             *
-             * @return the required signer fields.
-             */
-            public List<List<String>> getSigners() {
-                return this.signers;
-            }
-        }
-
-        /**
-         * Custom branding applied to notifications and signature requests.
-         */
-        public class BoxSignTemplateCustomBranding {
-            private final String brandingColor;
-            private final String companyName;
-            private final String emailFooterText;
-            private final String logoUri;
-
-            /**
-             * Constructs a BoxSignTemplateCustomBranding object with the provided information.
-             *
-             * @param brandingColor   the branding color.
-             * @param companyName     the company name.
-             * @param emailFooterText the email footer text.
-             * @param logoUri         the logo URI.
-             */
-            public BoxSignTemplateCustomBranding(String brandingColor, String companyName, String emailFooterText,
-                                                 String logoUri) {
-                this.brandingColor = brandingColor;
-                this.companyName = companyName;
-                this.emailFooterText = emailFooterText;
-                this.logoUri = logoUri;
-            }
-
-            /**
-             * Gets the branding color.
-             *
-             * @return the branding color.
-             */
-            public String getBrandingColor() {
-                return this.brandingColor;
-            }
-
-            /**
-             * Gets the company name.
-             *
-             * @return the company name.
-             */
-            public String getCompanyName() {
-                return this.companyName;
-            }
-
-            /**
-             * Gets the email footer text.
-             *
-             * @return the email footer text.
-             */
-            public String getEmailFooterText() {
-                return this.emailFooterText;
-            }
-
-            /**
-             * Gets the logo URI.
-             *
-             * @return the logo URI.
-             */
-            public String getLogoUri() {
-                return this.logoUri;
-            }
-        }
-
-        /**
-         * Box's ready-sign link feature enables you to create a link to a signature request that you've created from a template.
-         * Use this link when you want to post a signature request on a public form — such as an email,
-         * social media post, or web page — without knowing who the signers will be.
-         * Note: The ready-sign link feature is limited to Enterprise Plus customers and not available to Box Verified Enterprises.
-         */
-        public class BoxSignTemplateReadySignLink {
-            private final String folderID;
-            private final String instructions;
-            private final boolean isActive;
-            private final boolean isNofiticationDisabled;
-            private final String name;
-            private final String url;
-
-            /**
-             * Constructs a BoxSignTemplateReadySignLink object with the provided information.
-             *
-             * @param folderID               the folder ID.
-             * @param instructions           the instructions.
-             * @param isActive               whether the link is active or not.
-             * @param isNofiticationDisabled whether the notification is disabled or not.
-             * @param name                   the name.
-             * @param url                    the URL.
-             */
-            public BoxSignTemplateReadySignLink(String folderID, String instructions, boolean isActive,
-                                                boolean isNofiticationDisabled, String name, String url) {
-                this.folderID = folderID;
-                this.instructions = instructions;
-                this.isActive = isActive;
-                this.isNofiticationDisabled = isNofiticationDisabled;
-                this.name = name;
-                this.url = url;
-            }
-
-            /**
-             * Gets the folder ID.
-             *
-             * @return the folder ID.
-             */
-            public String getFolderID() {
-                return this.folderID;
-            }
-
-            /**
-             * Gets the instructions.
-             *
-             * @return the instructions.
-             */
-            public String getInstructions() {
-                return this.instructions;
-            }
-
-            /**
-             * Gets whether the link is active or not.
-             *
-             * @return true if the link is active; otherwise false.
-             */
-            public boolean getIsActive() {
-                return this.isActive;
-            }
-
-            /**
-             * Gets whether the notification is disabled or not.
-             *
-             * @return true if the notification is disabled; otherwise false.
-             */
-            public boolean getIsNofiticationDisabled() {
-                return this.isNofiticationDisabled;
-            }
-
-            /**
-             * Gets the name of the ready-sign link.
-             *
-             * @return the name.
-             */
-            public String getName() {
-                return this.name;
-            }
-
-            /**
-             * Gets the URL of the ready-sign link.
-             *
-             * @return the URL.
-             */
-            public String getUrl() {
-                return this.url;
-            }
         }
     }
 }
