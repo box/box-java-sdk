@@ -10,7 +10,7 @@
         "sequence_id": "0",
         "name": "My Sign Requests"
     },
-    "auto_expire_days": null,
+    "auto_expire_days": 30,
     "source_files": [
         {
             "id": "1234567890",
@@ -25,14 +25,14 @@
             }
         }
     ],
-    "are_email_settings_locked": false,
-    "are_fields_locked": false,
-    "are_files_locked": false,
+    "are_email_settings_locked": true,
+    "are_fields_locked": true,
+    "are_files_locked": true,
     "are_options_locked": false,
     "are_recipients_locked": false,
     "signers": [
         {
-            "email": "",
+            "email": "user1@mail.com",
             "label": "",
             "public_id": "18K8KAAA",
             "role": "final_copy_reader",
@@ -41,7 +41,7 @@
             "inputs": []
         },
         {
-            "email": "",
+            "email": "user2@mail.com",
             "label": "",
             "public_id": "13XQXAAA",
             "role": "signer",
@@ -82,7 +82,12 @@
         "is_notification_disabled": true,
         "is_active": true
     },
-    "custom_branding": null,
+    "custom_branding": {
+        "company_name": "Corporation inc.",
+        "logo_uri": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAA\nAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNk+A\n8AAQUBAScY42YAAAAASUVORK5CYII=",
+        "branding_color": "9E5E6F",
+        "email_footer_text": "Contact email email@mail.com"
+    },
     "days_valid": 0,
     "additional_info": {
         "non_editable": [],
