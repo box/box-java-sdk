@@ -46,6 +46,7 @@ public class BoxSignRequestTest {
         final String prepareUrl = "https://prepareurl.com";
         final String redirectUrl = "https://box.com/redirect_url";
         final String declinedRedirectUrl = "https://box.com/declined_redirect_url";
+        final String iframeableEmedUrl = "https://app.box.com/embed/sign/document/gfhr4222-a331-494b-808b-79bc7f3992a3/f14d7098-a331-494b-808b-79bc7f3992a4";
 
         final String signerRedirectUrl = "https://box.com/redirect_url_signer_1";
         final String signerDeclinedRedirectUrl = "https://box.com/declined_redirect_url_signer_1";
@@ -63,6 +64,7 @@ public class BoxSignRequestTest {
 
         List<BoxSignRequestSigner> signers = new ArrayList<>();
         BoxSignRequestSigner newSigner = new BoxSignRequestSigner("signer@mail.com");
+        newSigner.setEmbedUrlExternalUserId("1234");
         signers.add(newSigner);
 
         String parentFolderId = "55555";
@@ -77,6 +79,7 @@ public class BoxSignRequestTest {
         BoxSignRequestSigner signer = signRequestInfo.getSigners().get(0);
         BoxSignerInput input = signer.getInputs().get(0);
         assertEquals(signerRedirectUrl, signer.getRedirectUrl());
+        assertEquals(iframeableEmedUrl, signer.getIframeableEmedUrl());
         assertEquals(signerDeclinedRedirectUrl, signer.getDeclinedRedirectUrl());
 
         assertEquals(prepareUrl, signRequestInfo.getPrepareUrl());
@@ -102,6 +105,7 @@ public class BoxSignRequestTest {
         final String prepareUrl = "https://prepareurl.com";
         final String redirectUrl = "https://box.com/redirect_url";
         final String declinedRedirectUrl = "https://box.com/declined_redirect_url";
+        final String iframeableEmedUrl = "https://app.box.com/embed/sign/document/gfhr4222-a331-494b-808b-79bc7f3992a3/f14d7098-a331-494b-808b-79bc7f3992a4";
 
         final String signerRedirectUrl = "https://box.com/redirect_url_signer_1";
         final String signerDeclinedRedirectUrl = "https://box.com/declined_redirect_url_signer_1";
@@ -125,6 +129,7 @@ public class BoxSignRequestTest {
         BoxSignerInput input = signer.getInputs().get(0);
         assertEquals(signerRedirectUrl, signer.getRedirectUrl());
         assertEquals(signerDeclinedRedirectUrl, signer.getDeclinedRedirectUrl());
+        assertEquals(iframeableEmedUrl, signer.getIframeableEmedUrl());
 
         assertEquals(prepareUrl, signRequestInfo.getPrepareUrl());
         assertEquals(redirectUrl, signRequestInfo.getRedirectUrl());
@@ -148,6 +153,7 @@ public class BoxSignRequestTest {
         final String prepareUrl = "https://prepareurl.com";
         final String redirectUrl = "https://box.com/redirect_url";
         final String declinedRedirectUrl = "https://box.com/declined_redirect_url";
+        final String iframeableEmedUrl = "https://app.box.com/embed/sign/document/gfhr4222-a331-494b-808b-79bc7f3992a3/f14d7098-a331-494b-808b-79bc7f3992a4";
 
         final String signerRedirectUrl = "https://box.com/redirect_url_signer_1";
         final String signerDeclinedRedirectUrl = "https://box.com/declined_redirect_url_signer_1";
@@ -170,6 +176,7 @@ public class BoxSignRequestTest {
         BoxSignerInput input = signer.getInputs().get(0);
         assertEquals(signerRedirectUrl, signer.getRedirectUrl());
         assertEquals(signerDeclinedRedirectUrl, signer.getDeclinedRedirectUrl());
+        assertEquals(iframeableEmedUrl, signer.getIframeableEmedUrl());
 
         assertEquals(prepareUrl, firstSignRequest.getPrepareUrl());
         assertEquals(redirectUrl, firstSignRequest.getRedirectUrl());

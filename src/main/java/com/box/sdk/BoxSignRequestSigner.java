@@ -25,6 +25,7 @@ public class BoxSignRequestSigner extends BoxJSONObject {
     private String embedUrl;
     private String redirectUrl;
     private String declinedRedirectUrl;
+    private String iframeableEmedUrl;
     private BoxAPIConnection api;
 
     /**
@@ -248,6 +249,30 @@ public class BoxSignRequestSigner extends BoxJSONObject {
     }
 
     /**
+     * Gets the URL designed for signing documents within an HTML iframe tag.
+     * It will be returned in the response only if the embedUrlExternalUserId parameter was passed
+     * in the create sign request call.
+     *
+     * @return url for signing documents within an HTML iframe tag.
+     */
+    public String getIframeableEmedUrl() {
+        return this.iframeableEmedUrl;
+    }
+
+    /**
+     * Sets the URL designed for signing documents within an HTML iframe tag.
+     * It will be returned in the response only if the embedUrlExternalUserId parameter was passed
+     * in the create sign request call.
+     *
+     * @param iframeableEmedUrl url for signing documents within an HTML iframe tag.
+     * @return this BoxSignRequestSigner object for chaining.
+     */
+    public BoxSignRequestSigner setIframeableEmedUrl(String iframeableEmedUrl) {
+        this.iframeableEmedUrl = iframeableEmedUrl;
+        return this;
+    }
+
+    /**
      * {@inheritDoc}
      */
     @Override
@@ -297,6 +322,9 @@ public class BoxSignRequestSigner extends BoxJSONObject {
                     break;
                 case "declined_redirect_url":
                     this.declinedRedirectUrl = value.asString();
+                    break;
+                case "iframeable_embed_url":
+                    this.iframeableEmedUrl = value.asString();
                     break;
                 default:
                     return;
