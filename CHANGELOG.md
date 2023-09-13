@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [4.5.0](https://github.com/box/box-java-sdk/compare/v4.4.0...v4.5.0) (2023-09-13)
+
+
+### New Features and Enhancements:
+
+* Add `iframeable_embed_url` field to `BoxSignRequestSigner` class ([#1202](https://github.com/box/box-java-sdk/issues/1202)) ([2e931d8](https://github.com/box/box-java-sdk/commit/2e931d8c36694a665d1c6315d3bf2d226929b713))
+
+### Bug Fixes:
+
+* `SharedLinkAPIConnection` uses request interceptor ([#1203](https://github.com/box/box-java-sdk/issues/1203)) ([b2b6a1d](https://github.com/box/box-java-sdk/commit/b2b6a1dba316ba50a1e011250c320fca156c6708)), closes [#1200](https://github.com/box/box-java-sdk/issues/1200)
+* Update sign template missing enum ([#1201](https://github.com/box/box-java-sdk/issues/1201)) ([fcb6657](https://github.com/box/box-java-sdk/commit/fcb6657bb2375e32c3fb0f861e7ecaeb84503f2c))
+
 ## [4.4.0](https://github.com/box/box-java-sdk/compare/v4.3.0...v4.4.0) (2023-08-29)
 
 
