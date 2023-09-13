@@ -140,6 +140,11 @@ public class SharedLinkAPIConnection extends BoxAPIConnection {
         this.wrappedConnection.unlockAccessToken();
     }
 
+    @Override
+    public RequestInterceptor getRequestInterceptor() {
+        return this.wrappedConnection.getRequestInterceptor();
+    }
+
     /**
      * Gets the shared link used for accessing shared items.
      *
