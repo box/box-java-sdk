@@ -1261,6 +1261,14 @@ public class BoxAPIConnection {
         }
     }
 
+    protected X509TrustManager getTrustManager() {
+        return trustManager;
+    }
+
+    protected HostnameVerifier getHostnameVerifier() {
+        return hostnameVerifier;
+    }
+
     /**
      * Used to categorize the types of resource links.
      */
