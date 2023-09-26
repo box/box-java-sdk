@@ -149,11 +149,15 @@ public class BoxAPIResponse implements Closeable {
         }
         ResponseBody responseBody = response.body();
         if (responseBody.contentLength() == 0 || responseBody.contentType() == null) {
-            return new BoxAPIResponse(response.code(),
-                response.request().method(),
-                response.request().url().toString(),
-                response.headers().toMultimap()
-            );
+            try {
+                return new BoxAPIResponse(response.code(),
+                        response.request().method(),
+                        response.request().url().toString(),
+                        response.headers().toMultimap()
+                );
+            } finally {
+                responseBody.close();
+            }
         }
         if (responseBody != null && responseBody.contentType() != null) {
             if (responseBody.contentType().toString().contains(APPLICATION_JSON)) {
@@ -170,6 +174,8 @@ public class BoxAPIResponse implements Closeable {
                     throw new BoxAPIException(format("Error parsing JSON:\n%s", bodyAsString), e);
                 } catch (IOException e) {
                     throw new RuntimeException("Error getting response to string", e);
+                } finally {
+                    responseBody.close();
                 }
             }
         }
