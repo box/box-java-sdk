@@ -226,4 +226,37 @@ public class BoxSearchParametersTest {
         assertTrue(isCleared);
         assertNull(searchParams.getSort());
     }
+
+    @Test
+    public void shouldCorrectlySetAndGetDeleterUserIdsAndDeletedRange() {
+        BoxSearchParameters searchParams = new BoxSearchParameters();
+        searchParams.setQuery("Test Query");
+
+        searchParams.setTrashContent("trashed_only");
+
+        List<String> deleterUserIds = new ArrayList<>();
+        deleterUserIds.add("123");
+        deleterUserIds.add("456");
+        searchParams.setDeleterUserIds(deleterUserIds);
+
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssX");
+        sdf.setTimeZone(TimeZone.getTimeZone("UTC"));
+        String deletedFromDateString = "2016-01-01T00:00:00Z";
+        String deletedToDateString = "2016-04-01T00:00:00Z";
+
+        try {
+            Date deletedFromDate = sdf.parse(deletedFromDateString);
+            Date deletedToDate = sdf.parse(deletedToDateString);
+            DateRange deletedRange = new DateRange(deletedFromDate, deletedToDate);
+            searchParams.setDeletedRange(deletedRange);
+        } catch (ParseException e) { /* no op */ }
+
+        QueryStringBuilder queryParams = searchParams.getQueryParameters();
+
+        assertEquals(
+            "?query=Test+Query&trash_content=trashed_only&deleter_user_ids=123%2C456"
+            + "&deleted_range=2016-01-01T00%3A00%3A00Z%2C2016-04-01T00%3A00%3A00Z",
+            queryParams.toString()
+        );
+    }
 }
