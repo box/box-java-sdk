@@ -27,7 +27,8 @@ public class BoxSearchParameters {
     private BoxMetadataFilter metadataFilter;
     private String sort;
     private String direction;
-    private Boolean includeRecentSharedLinks;
+    private List<String> deleterUserIds;
+    private DateRange deletedRange;
 
     /**
      * Creates a Box Search Parameters Objects without query set, specific for Metadata Only Searches.
@@ -65,6 +66,8 @@ public class BoxSearchParameters {
         this.metadataFilter = null;
         this.sort = null;
         this.direction = null;
+        this.deleterUserIds = null;
+        this.deletedRange = null;
         return true;
     }
 
@@ -339,6 +342,46 @@ public class BoxSearchParameters {
     }
 
     /**
+     * Limits the search results to items that were deleted by the given list of users, defined as a list of comma separated user IDs.
+     * The trash_content parameter needs to be set to trashed_only.
+     *
+     * @return deleterUserIds.
+     */
+    public List<String> getDeleterUserIds() {
+        return this.deleterUserIds;
+    }
+
+    /**
+     * Limits the search results to items that were deleted by the given list of users, defined as a list of comma separated user IDs.
+     * The trash_content parameter needs to be set to trashed_only.
+     *
+     * @param deleterUserIds a list of user ids.
+     */
+    public void setDeleterUserIds(List<String> deleterUserIds) {
+        this.deleterUserIds = deleterUserIds;
+    }
+
+    /**
+     * Limits the search results to items that were deleted within the given date range.
+     * The trash_content parameter needs to be set to trashed_only.
+     *
+     * @return deletedRange.
+     */
+    public DateRange getDeletedRange() {
+        return this.deletedRange;
+    }
+
+    /**
+     * Limits the search results to items that were deleted within the given date range.
+     * The trash_content parameter needs to be set to trashed_only.
+     *
+     * @param deletedRange a date range.
+     */
+    public void setDeletedRange(DateRange deletedRange) {
+        this.deletedRange = deletedRange;
+    }
+
+    /**
      * Checks String to see if the parameter is null.
      *
      * @param paramValue Object that will be checked if null.
@@ -464,6 +507,14 @@ public class BoxSearchParameters {
         //Direction
         if (!this.isNullOrEmpty(this.direction)) {
             builder.appendParam("direction", this.direction);
+        }
+        //Deleter User Ids
+        if (!this.isNullOrEmpty(this.deleterUserIds)) {
+            builder.appendParam("deleter_user_ids", this.listToCSV(this.deleterUserIds));
+        }
+        //Deleted Range
+        if ((this.deletedRange != null)) {
+            builder.appendParam("deleted_range", this.deletedRange.buildRangeString());
         }
 
         return builder;
