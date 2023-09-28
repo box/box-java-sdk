@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [4.6.0](https://github.com/box/box-java-sdk/compare/v4.5.0...v4.6.0) (2023-09-28)
+
+
+### New Features and Enhancements:
+
+* Support search deleted filters ([#1207](https://github.com/box/box-java-sdk/issues/1207)) ([5e0e9ed](https://github.com/box/box-java-sdk/commit/5e0e9ed9aea2818da6fba0d562b56987c4948aaa))
+
+### Bug Fixes:
+
+* Added protected accessors for trust manager and hostname verifier. ([#1206](https://github.com/box/box-java-sdk/issues/1206)) ([0c79d17](https://github.com/box/box-java-sdk/commit/0c79d1754bffeb3f0487e10d55d716ba1cbed1aa))
+* fix not closing response body ([#1208](https://github.com/box/box-java-sdk/issues/1208)) ([ab5e170](https://github.com/box/box-java-sdk/commit/ab5e1702934607b258802b33f3663af3e9c56027))
+
 ## [4.5.0](https://github.com/box/box-java-sdk/compare/v4.4.0...v4.5.0) (2023-09-13)
 
 
