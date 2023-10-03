@@ -34,7 +34,7 @@ You can run tests from command line:
 ```
 just remember that you need environment variables exported in previous step to be accessible. 
 
-## Usefull help classes
+## Useful help classes
 
 ### BoxApiProvider
 To obtain new API connection configured with provided JWT configuration use `BoxApiProvider`
@@ -83,7 +83,7 @@ Retry.retry(
 );
 ```
 
-## Putting this all toghether
+## Putting this all together
 
 Here is a sample test that uses some of the utility classes shown above:
 
