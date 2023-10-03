@@ -32,7 +32,7 @@ You can run tests from command line:
 ```bash
 ./gradlew integrationTest
 ```
-just remember that you needx environment variables exported in previous step to be accessible. 
+just remember that you need environment variables exported in previous step to be accessible. 
 
 ## Useful help classes
 
