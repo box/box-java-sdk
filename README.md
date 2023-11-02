@@ -55,8 +55,8 @@ If you are developing application for Android visit our [Android guide](doc/andr
 
 1. [minimal-json v0.9.5](https://github.com/ralfstx/minimal-json)
    Maven: `com.eclipsesource.minimal-json:minimal-json:0.9.5`
-2. [jose4j v0.9.0](https://bitbucket.org/b_c/jose4j/wiki/Home)
-   Maven: `org.bitbucket.b_c:jose4j:0.9.0`
+2. [jose4j v0.9.3](https://bitbucket.org/b_c/jose4j/wiki/Home)
+   Maven: `org.bitbucket.b_c:jose4j:0.9.3`
 3. [bouncycastle bcprov-jdk15on v1.57](https://mvnrepository.com/artifact/org.bouncycastle/bcprov-jdk15on/1.57)
    Maven: `org.bouncycastle:bcprov-jdk15on:1.57`
 4. [bouncycastle bcpkix-jdk15on v1.57](https://mvnrepository.com/artifact/org.bouncycastle/bcprov-jdk15on/1.57)
