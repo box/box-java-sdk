@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [4.6.1](https://github.com/box/box-java-sdk/compare/v4.6.0...v4.6.1) (2023-11-02)
+
+
+### Dependency Upgrades:
+
+* Bumped `org.bitbucket.b_c:jose4j:0.9.3` ([#1212](https://github.com/box/box-java-sdk/issues/1212)) ([f522a56](https://github.com/box/box-java-sdk/commit/f522a5660f3522b11a0516774ba0cca69db3ec31))
+
 ## [4.6.0](https://github.com/box/box-java-sdk/compare/v4.5.0...v4.6.0) (2023-09-28)
 
 
