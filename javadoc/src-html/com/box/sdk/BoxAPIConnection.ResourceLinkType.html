@@ -92,7 +92,7 @@
 <span class="sourceLineNo">084</span>    private static final String BOX_NOTIFICATIONS_HEADER = "Box-Notifications";<a name="line.84"></a>
 <span class="sourceLineNo">085</span><a name="line.85"></a>
 <span class="sourceLineNo">086</span>    private static final String JAVA_VERSION = System.getProperty("java.version");<a name="line.86"></a>
-<span class="sourceLineNo">087</span>    private static final String SDK_VERSION = "4.5.0";<a name="line.87"></a>
+<span class="sourceLineNo">087</span>    private static final String SDK_VERSION = "4.6.1";<a name="line.87"></a>
 <span class="sourceLineNo">088</span><a name="line.88"></a>
 <span class="sourceLineNo">089</span>    /**<a name="line.89"></a>
 <span class="sourceLineNo">090</span>     * The amount of buffer time, in milliseconds, to use when determining if an access token should be refreshed. For<a name="line.90"></a>
@@ -1269,28 +1269,36 @@
 <span class="sourceLineNo">1261</span>        }<a name="line.1261"></a>
 <span class="sourceLineNo">1262</span>    }<a name="line.1262"></a>
 <span class="sourceLineNo">1263</span><a name="line.1263"></a>
-<span class="sourceLineNo">1264</span>    /**<a name="line.1264"></a>
-<span class="sourceLineNo">1265</span>     * Used to categorize the types of resource links.<a name="line.1265"></a>
-<span class="sourceLineNo">1266</span>     */<a name="line.1266"></a>
-<span class="sourceLineNo">1267</span>    protected enum ResourceLinkType {<a name="line.1267"></a>
-<span class="sourceLineNo">1268</span>        /**<a name="line.1268"></a>
-<span class="sourceLineNo">1269</span>         * Catch-all default for resource links that are unknown.<a name="line.1269"></a>
-<span class="sourceLineNo">1270</span>         */<a name="line.1270"></a>
-<span class="sourceLineNo">1271</span>        Unknown,<a name="line.1271"></a>
-<span class="sourceLineNo">1272</span><a name="line.1272"></a>
-<span class="sourceLineNo">1273</span>        /**<a name="line.1273"></a>
-<span class="sourceLineNo">1274</span>         * Resource URLs that point to an API endipoint such as https://api.box.com/2.0/files/:file_id.<a name="line.1274"></a>
-<span class="sourceLineNo">1275</span>         */<a name="line.1275"></a>
-<span class="sourceLineNo">1276</span>        APIEndpoint,<a name="line.1276"></a>
-<span class="sourceLineNo">1277</span><a name="line.1277"></a>
-<span class="sourceLineNo">1278</span>        /**<a name="line.1278"></a>
-<span class="sourceLineNo">1279</span>         * Resource URLs that point to a resource that has been shared<a name="line.1279"></a>
-<span class="sourceLineNo">1280</span>         * such as https://example.box.com/s/qwertyuiop1234567890asdfghjk<a name="line.1280"></a>
-<span class="sourceLineNo">1281</span>         * or https://example.app.box.com/notes/0987654321?s=zxcvbnm1234567890asdfghjk.<a name="line.1281"></a>
-<span class="sourceLineNo">1282</span>         */<a name="line.1282"></a>
-<span class="sourceLineNo">1283</span>        SharedLink<a name="line.1283"></a>
-<span class="sourceLineNo">1284</span>    }<a name="line.1284"></a>
-<span class="sourceLineNo">1285</span>}<a name="line.1285"></a>
+<span class="sourceLineNo">1264</span>    protected X509TrustManager getTrustManager() {<a name="line.1264"></a>
+<span class="sourceLineNo">1265</span>        return trustManager;<a name="line.1265"></a>
+<span class="sourceLineNo">1266</span>    }<a name="line.1266"></a>
+<span class="sourceLineNo">1267</span><a name="line.1267"></a>
+<span class="sourceLineNo">1268</span>    protected HostnameVerifier getHostnameVerifier() {<a name="line.1268"></a>
+<span class="sourceLineNo">1269</span>        return hostnameVerifier;<a name="line.1269"></a>
+<span class="sourceLineNo">1270</span>    }<a name="line.1270"></a>
+<span class="sourceLineNo">1271</span><a name="line.1271"></a>
+<span class="sourceLineNo">1272</span>    /**<a name="line.1272"></a>
+<span class="sourceLineNo">1273</span>     * Used to categorize the types of resource links.<a name="line.1273"></a>
+<span class="sourceLineNo">1274</span>     */<a name="line.1274"></a>
+<span class="sourceLineNo">1275</span>    protected enum ResourceLinkType {<a name="line.1275"></a>
+<span class="sourceLineNo">1276</span>        /**<a name="line.1276"></a>
+<span class="sourceLineNo">1277</span>         * Catch-all default for resource links that are unknown.<a name="line.1277"></a>
+<span class="sourceLineNo">1278</span>         */<a name="line.1278"></a>
+<span class="sourceLineNo">1279</span>        Unknown,<a name="line.1279"></a>
+<span class="sourceLineNo">1280</span><a name="line.1280"></a>
+<span class="sourceLineNo">1281</span>        /**<a name="line.1281"></a>
+<span class="sourceLineNo">1282</span>         * Resource URLs that point to an API endipoint such as https://api.box.com/2.0/files/:file_id.<a name="line.1282"></a>
+<span class="sourceLineNo">1283</span>         */<a name="line.1283"></a>
+<span class="sourceLineNo">1284</span>        APIEndpoint,<a name="line.1284"></a>
+<span class="sourceLineNo">1285</span><a name="line.1285"></a>
+<span class="sourceLineNo">1286</span>        /**<a name="line.1286"></a>
+<span class="sourceLineNo">1287</span>         * Resource URLs that point to a resource that has been shared<a name="line.1287"></a>
+<span class="sourceLineNo">1288</span>         * such as https://example.box.com/s/qwertyuiop1234567890asdfghjk<a name="line.1288"></a>
+<span class="sourceLineNo">1289</span>         * or https://example.app.box.com/notes/0987654321?s=zxcvbnm1234567890asdfghjk.<a name="line.1289"></a>
+<span class="sourceLineNo">1290</span>         */<a name="line.1290"></a>
+<span class="sourceLineNo">1291</span>        SharedLink<a name="line.1291"></a>
+<span class="sourceLineNo">1292</span>    }<a name="line.1292"></a>
+<span class="sourceLineNo">1293</span>}<a name="line.1293"></a>
 
 
 

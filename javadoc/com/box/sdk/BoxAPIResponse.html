@@ -264,7 +264,7 @@ implements <a href="https://docs.oracle.com/javase/8/docs/api/java/io/Closeable.
 <ul class="blockList">
 <li class="blockList">
 <h4>getResponseCode</h4>
-<pre>public&nbsp;int&nbsp;<a href="../../../src-html/com/box/sdk/BoxAPIResponse.html#line.191">getResponseCode</a>()</pre>
+<pre>public&nbsp;int&nbsp;<a href="../../../src-html/com/box/sdk/BoxAPIResponse.html#line.197">getResponseCode</a>()</pre>
 <div class="block">Gets the response code returned by the API.</div>
 <dl>
 <dt><span class="returnLabel">Returns:</span></dt>
@@ -278,7 +278,7 @@ implements <a href="https://docs.oracle.com/javase/8/docs/api/java/io/Closeable.
 <ul class="blockList">
 <li class="blockList">
 <h4>getContentLength</h4>
-<pre>public&nbsp;long&nbsp;<a href="../../../src-html/com/box/sdk/BoxAPIResponse.html#line.200">getContentLength</a>()</pre>
+<pre>public&nbsp;long&nbsp;<a href="../../../src-html/com/box/sdk/BoxAPIResponse.html#line.206">getContentLength</a>()</pre>
 <div class="block">Gets the length of this response's body as indicated by the "Content-Length" header.</div>
 <dl>
 <dt><span class="returnLabel">Returns:</span></dt>
@@ -292,7 +292,7 @@ implements <a href="https://docs.oracle.com/javase/8/docs/api/java/io/Closeable.
 <ul class="blockList">
 <li class="blockList">
 <h4>getHeaderField</h4>
-<pre>public&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxAPIResponse.html#line.210">getHeaderField</a>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;fieldName)</pre>
+<pre>public&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxAPIResponse.html#line.216">getHeaderField</a>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;fieldName)</pre>
 <div class="block">Gets the value of the given header field.</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
@@ -308,7 +308,7 @@ implements <a href="https://docs.oracle.com/javase/8/docs/api/java/io/Closeable.
 <ul class="blockList">
 <li class="blockList">
 <h4>getBody</h4>
-<pre>public&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/io/InputStream.html?is-external=true" title="class or interface in java.io">InputStream</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxAPIResponse.html#line.219">getBody</a>()</pre>
+<pre>public&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/io/InputStream.html?is-external=true" title="class or interface in java.io">InputStream</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxAPIResponse.html#line.225">getBody</a>()</pre>
 <div class="block">Gets an InputStream for reading this response's body.</div>
 <dl>
 <dt><span class="returnLabel">Returns:</span></dt>
@@ -322,7 +322,7 @@ implements <a href="https://docs.oracle.com/javase/8/docs/api/java/io/Closeable.
 <ul class="blockList">
 <li class="blockList">
 <h4>getBody</h4>
-<pre>public&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/io/InputStream.html?is-external=true" title="class or interface in java.io">InputStream</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxAPIResponse.html#line.229">getBody</a>(<a href="../../../com/box/sdk/ProgressListener.html" title="interface in com.box.sdk">ProgressListener</a>&nbsp;listener)</pre>
+<pre>public&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/io/InputStream.html?is-external=true" title="class or interface in java.io">InputStream</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxAPIResponse.html#line.235">getBody</a>(<a href="../../../com/box/sdk/ProgressListener.html" title="interface in com.box.sdk">ProgressListener</a>&nbsp;listener)</pre>
 <div class="block">Gets an InputStream for reading this response's body which will report its read progress to a ProgressListener.</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
@@ -338,7 +338,7 @@ implements <a href="https://docs.oracle.com/javase/8/docs/api/java/io/Closeable.
 <ul class="blockList">
 <li class="blockList">
 <h4>disconnect</h4>
-<pre>public&nbsp;void&nbsp;<a href="../../../src-html/com/box/sdk/BoxAPIResponse.html#line.244">disconnect</a>()</pre>
+<pre>public&nbsp;void&nbsp;<a href="../../../src-html/com/box/sdk/BoxAPIResponse.html#line.250">disconnect</a>()</pre>
 <div class="block">Disconnects this response from the server and frees up any network resources. The body of this response can no
  longer be read after it has been disconnected.</div>
 </li>
@@ -349,7 +349,7 @@ implements <a href="https://docs.oracle.com/javase/8/docs/api/java/io/Closeable.
 <ul class="blockList">
 <li class="blockList">
 <h4>getHeaders</h4>
-<pre>public&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/util/Map.html?is-external=true" title="class or interface in java.util">Map</a>&lt;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>,<a href="https://docs.oracle.com/javase/8/docs/api/java/util/List.html?is-external=true" title="class or interface in java.util">List</a>&lt;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&gt;&gt;&nbsp;<a href="../../../src-html/com/box/sdk/BoxAPIResponse.html#line.251">getHeaders</a>()</pre>
+<pre>public&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/util/Map.html?is-external=true" title="class or interface in java.util">Map</a>&lt;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>,<a href="https://docs.oracle.com/javase/8/docs/api/java/util/List.html?is-external=true" title="class or interface in java.util">List</a>&lt;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&gt;&gt;&nbsp;<a href="../../../src-html/com/box/sdk/BoxAPIResponse.html#line.257">getHeaders</a>()</pre>
 <dl>
 <dt><span class="returnLabel">Returns:</span></dt>
 <dd>A Map containg headers on this Box API Response.</dd>
@@ -362,7 +362,7 @@ implements <a href="https://docs.oracle.com/javase/8/docs/api/java/io/Closeable.
 <ul class="blockList">
 <li class="blockList">
 <h4>toString</h4>
-<pre>public&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxAPIResponse.html#line.256">toString</a>()</pre>
+<pre>public&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxAPIResponse.html#line.262">toString</a>()</pre>
 <dl>
 <dt><span class="overrideSpecifyLabel">Overrides:</span></dt>
 <dd><code><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html?is-external=true#toString--" title="class or interface in java.lang">toString</a></code>&nbsp;in class&nbsp;<code><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html?is-external=true" title="class or interface in java.lang">Object</a></code></dd>
@@ -375,7 +375,7 @@ implements <a href="https://docs.oracle.com/javase/8/docs/api/java/io/Closeable.
 <ul class="blockList">
 <li class="blockList">
 <h4>close</h4>
-<pre>public&nbsp;void&nbsp;<a href="../../../src-html/com/box/sdk/BoxAPIResponse.html#line.281">close</a>()</pre>
+<pre>public&nbsp;void&nbsp;<a href="../../../src-html/com/box/sdk/BoxAPIResponse.html#line.287">close</a>()</pre>
 <dl>
 <dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
 <dd><code><a href="https://docs.oracle.com/javase/8/docs/api/java/io/Closeable.html?is-external=true#close--" title="class or interface in java.io">close</a></code>&nbsp;in interface&nbsp;<code><a href="https://docs.oracle.com/javase/8/docs/api/java/io/Closeable.html?is-external=true" title="class or interface in java.io">Closeable</a></code></dd>
@@ -390,7 +390,7 @@ implements <a href="https://docs.oracle.com/javase/8/docs/api/java/io/Closeable.
 <ul class="blockList">
 <li class="blockList">
 <h4>bodyToString</h4>
-<pre>protected&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxAPIResponse.html#line.304">bodyToString</a>()</pre>
+<pre>protected&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxAPIResponse.html#line.310">bodyToString</a>()</pre>
 <div class="block">Returns a string representation of this response's body. This method is used when logging this response's body.
  By default, it returns an empty string (to avoid accidentally logging binary data) unless the response contained
  an error message.</div>
@@ -406,7 +406,7 @@ implements <a href="https://docs.oracle.com/javase/8/docs/api/java/io/Closeable.
 <ul class="blockList">
 <li class="blockList">
 <h4>getRequestMethod</h4>
-<pre>protected&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxAPIResponse.html#line.323">getRequestMethod</a>()</pre>
+<pre>protected&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxAPIResponse.html#line.329">getRequestMethod</a>()</pre>
 </li>
 </ul>
 <a name="getRequestUrl--">
@@ -415,7 +415,7 @@ implements <a href="https://docs.oracle.com/javase/8/docs/api/java/io/Closeable.
 <ul class="blockListLast">
 <li class="blockList">
 <h4>getRequestUrl</h4>
-<pre>protected&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxAPIResponse.html#line.327">getRequestUrl</a>()</pre>
+<pre>protected&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxAPIResponse.html#line.333">getRequestUrl</a>()</pre>
 </li>
 </ul>
 </li>
