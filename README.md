@@ -325,6 +325,16 @@ Maven example:
 </dependencies>
 ```
 
+### Bouncycastle BadPaddingException for JWT auth
+
+As of October 2023, RSA keypairs generated on the Developer Console (refer to the [Generate a keypair guide](https://developer.box.com/guides/authentication/jwt/jwt-setup/#generate-a-keypair-recommended))
+are no longer compatible with Bouncy Castle version 1.57, which is utilized in the Box Java SDK. 
+Attempting to use a JWT configuration downloaded from the Developer Console results in a
+`javax.crypto.BadPaddingException: pad block corrupted` error.
+While we continue our efforts to address this issue, two possible workarounds are available:
+1. Override the Bouncy Castle library version with a newer one, following the steps described above.
+2. Manually generate a keypair using OpenSSL version 1.0.x and add the Public Key to the Developer Console.
+   The [manually add keypair guide](https://developer.box.com/guides/authentication/jwt/jwt-setup/#manually-add-keypair) provides assistance in this process.
 
 ## Copyright and License
 
