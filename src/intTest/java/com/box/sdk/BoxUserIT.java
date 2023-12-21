@@ -42,7 +42,7 @@ public class BoxUserIT {
     public static void cleanup() {
         BoxAPIConnection api = jwtApiForServiceAccount();
         for (BoxUser.Info user : BoxUser.getAllEnterpriseUsers(api, NEW_USER_LOGIN)) {
-            user.getResource().delete(false, false);
+            user.getResource().delete(false, true);
         }
         Logger.getLogger(OkHttpClient.class.getName()).setLevel(Level.FINE);
     }

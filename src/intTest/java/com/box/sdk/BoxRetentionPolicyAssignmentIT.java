@@ -75,7 +75,7 @@ public class BoxRetentionPolicyAssignmentIT {
                         .filter(f -> f.getID().equals(boxFile.getID()))
                         .collect(Collectors.toList());
                 assertTrue(matchingFileWithRetention2.isEmpty());
-            }, 3, 1000);
+            }, 5, 2000);
         } finally {
             //cleanup
             deleteFolder(folder.getResource());
@@ -123,7 +123,7 @@ public class BoxRetentionPolicyAssignmentIT {
                         .filter(f -> f.getID().equals(boxFile.getID()))
                         .collect(Collectors.toList());
                 assertTrue(matchingFileWithRetention2.isEmpty());
-            }, 3, 1000);
+            }, 5, 2000);
         } finally {
             //cleanup
             deleteFolder(folder);

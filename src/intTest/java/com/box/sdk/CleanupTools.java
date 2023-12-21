@@ -41,4 +41,10 @@ final class CleanupTools {
             group.delete();
         }
     }
+
+    static void deleteUser(BoxUser user) {
+        if (user != null) {
+            user.delete(false, false);
+        }
+    }
 }

@@ -2,6 +2,7 @@ package com.box.sdk;
 
 import static com.box.sdk.BoxApiProvider.jwtApiForServiceAccount;
 import static com.box.sdk.CleanupTools.removeAllowedDomains;
+import static com.box.sdk.UniqueTestFolder.randomizeName;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.not;
@@ -15,7 +16,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 public class BoxCollaborationAllowlistIT {
-    private static final String DOMAIN_NAME = "test14.com";
+    private static final String DOMAIN_NAME = randomizeName("test") + ".com";
 
     @Before
     public void beforeClass() {
