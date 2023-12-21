@@ -47,7 +47,7 @@ public class BoxSignRequestIT {
         BoxAPIConnection api = jwtApiForServiceAccount();
         BoxFolder uniqueFolder = getUniqueFolder(api);
         String fileName = "file_to_sign.pdf";
-        String file2Name = "file2_to_sign.pdf";
+        String file2Name = "file_to_sign2.pdf";
         BoxFile file = null;
         BoxFile file2 = null;
         BoxFolder signedFileFolder = null;
