@@ -26,6 +26,7 @@ public class BoxSignRequestSigner extends BoxJSONObject {
     private String redirectUrl;
     private String declinedRedirectUrl;
     private String iframeableEmedUrl;
+    private String signerGroupId;
     private BoxAPIConnection api;
 
     /**
@@ -273,6 +274,28 @@ public class BoxSignRequestSigner extends BoxJSONObject {
     }
 
     /**
+     * Gets the signer group id. It is sufficient for only one signer from the group to sign the document.
+     *
+     * @return id of the group to which the sign request will be sent.
+     */
+    public String getSignerGroupId() {
+        return this.signerGroupId;
+    }
+
+    /**
+     * Sets the group id. If specified, signers sharing the same group ID will be assigned to the same input.
+     * The group ID can be any string value, but it must be consistent across all signers.
+     * It is sufficient for only one signer from the group to sign the document.
+     *
+     * @param signerGroupId id of the group to which the sign request will be sent
+     * @return this BoxSignRequestSigner object for chaining.
+     */
+    public BoxSignRequestSigner setSignerGroupId(String signerGroupId) {
+        this.signerGroupId = signerGroupId;
+        return this;
+    }
+
+    /**
      * {@inheritDoc}
      */
     @Override
@@ -326,6 +349,9 @@ public class BoxSignRequestSigner extends BoxJSONObject {
                 case "iframeable_embed_url":
                     this.iframeableEmedUrl = value.asString();
                     break;
+                case "signer_group_id":
+                    this.signerGroupId = value.asString();
+                    break;
                 default:
                     return;
             }
@@ -348,6 +374,7 @@ public class BoxSignRequestSigner extends BoxJSONObject {
         JsonUtils.addIfNotNull(jsonObj, "embed_url_external_user_id", this.embedUrlExternalUserId);
         JsonUtils.addIfNotNull(jsonObj, "redirect_url", this.redirectUrl);
         JsonUtils.addIfNotNull(jsonObj, "declined_redirect_url", this.declinedRedirectUrl);
+        JsonUtils.addIfNotNull(jsonObj, "signer_group_id", this.signerGroupId);
         return jsonObj;
     }
 

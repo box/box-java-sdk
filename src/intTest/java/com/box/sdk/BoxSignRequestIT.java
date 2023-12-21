@@ -3,6 +3,7 @@ package com.box.sdk;
 import static com.box.sdk.BoxApiProvider.jwtApiForServiceAccount;
 import static com.box.sdk.CleanupTools.deleteFile;
 import static com.box.sdk.CleanupTools.deleteFolder;
+import static com.box.sdk.CleanupTools.deleteUser;
 import static com.box.sdk.Retry.retry;
 import static com.box.sdk.UniqueTestFolder.getUniqueFolder;
 import static com.box.sdk.UniqueTestFolder.removeUniqueFolder;
@@ -10,12 +11,15 @@ import static com.box.sdk.UniqueTestFolder.setupUniqeFolder;
 import static com.box.sdk.UniqueTestFolder.uploadSampleFileToUniqueFolder;
 import static java.time.ZoneOffset.UTC;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicReference;
@@ -143,6 +147,80 @@ public class BoxSignRequestIT {
             }
             deleteFile(file);
             deleteFile(file2);
+            deleteFolder(signedFileFolder);
+        }
+    }
+
+    @Test
+    public void createignRequestForGroup() throws InterruptedException {
+        // Test Setup
+        BoxAPIConnection api = jwtApiForServiceAccount();
+        BoxFolder uniqueFolder = getUniqueFolder(api);
+        BoxFile file = null;
+        BoxFolder signedFileFolder = null;
+        BoxUser groupMemberUser1 = null;
+        BoxUser groupMemberUser2 = null;
+        String userName1 = "login1+" + Calendar.getInstance().getTimeInMillis() + "@boz.com";
+        String userName2 = "login2+" + Calendar.getInstance().getTimeInMillis() + "@boz.com";
+        AtomicReference<BoxSignRequest.Info> signRequestInfoCancel = new AtomicReference<>();
+        String signerGroupName = "GroupName";
+
+        try {
+            groupMemberUser1 = BoxUser.createEnterpriseUser(api, userName1, "userName1").getResource();
+            groupMemberUser2 = BoxUser.createEnterpriseUser(api, userName2, "userName2").getResource();
+
+            file = uploadSampleFileToUniqueFolder(api, "file_to_sign.pdf");
+            List<BoxSignRequestFile> files = Collections.singletonList(new BoxSignRequestFile(file.getID()));
+
+            List<BoxSignRequestSigner> signers = new ArrayList<>();
+            signers.add(new BoxSignRequestSigner(userName1).setSignerGroupId(signerGroupName));
+            signers.add(new BoxSignRequestSigner(userName2).setSignerGroupId(signerGroupName));
+
+            signedFileFolder = uniqueFolder.createFolder("Folder - signRequestGroupIntegrationTest").getResource();
+
+            // Do Create
+            BoxSignRequest.Info signRequestInfoCreate = BoxSignRequest
+                    .createSignRequest(api, files, signers, signedFileFolder.getID());
+
+            String signRequestIdCreate = signRequestInfoCreate.getID();
+            List<BoxSignRequestSigner> createdSigners = signRequestInfoCreate.getSigners();
+            BoxSignRequestSigner createdSigner1 = createdSigners.get(1);
+            BoxSignRequestSigner createdSigner2 = createdSigners.get(2);
+
+            // Test Create
+            assertNotNull(signRequestInfoCreate.getID());
+            assertEquals(createdSigners.size(), 3);
+            assertEquals(createdSigner1.getSignerGroupId(), createdSigner2.getSignerGroupId());
+            assertNotEquals(createdSigner1.getSignerGroupId(), signerGroupName);
+
+            // Do Get by ID
+            BoxSignRequest signRequestGetByID = new BoxSignRequest(api, signRequestIdCreate);
+
+            List<BoxSignRequestSigner> signersGet = signRequestGetByID.getInfo().getSigners();
+            BoxSignRequestSigner signer1Get = signersGet.get(1);
+            BoxSignRequestSigner signer2Get = createdSigners.get(2);
+
+            // Test Get
+            assertNotNull(signRequestInfoCreate.getID());
+            assertEquals(signersGet.size(), 3);
+            assertEquals(signer1Get.getSignerGroupId(), signer2Get.getSignerGroupId());
+            assertEquals(signer1Get.getSignerGroupId(), createdSigner1.getSignerGroupId());
+
+            retry(() -> signRequestInfoCancel.set(signRequestGetByID.cancel()), 5, 1000);
+
+        } finally {
+            deleteUser(groupMemberUser1);
+            deleteUser(groupMemberUser2);
+
+            if (signRequestInfoCancel.get() != null) {
+                // Clean up
+                List<BoxFile.Info> signRequestFiles = signRequestInfoCancel.get().getSignFiles().getFiles();
+                for (BoxFile.Info signRequestFile : signRequestFiles) {
+                    BoxFile fileToDelete = new BoxFile(api, signRequestFile.getID());
+                    fileToDelete.delete();
+                }
+            }
+            deleteFile(file);
             deleteFolder(signedFileFolder);
         }
     }

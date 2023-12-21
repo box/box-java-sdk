@@ -18,6 +18,7 @@ public class BoxSignTemplateSigner extends BoxJSONObject {
     private Boolean isInPerson;
     private int order;
     private BoxSignRequestSignerRole role;
+    private String signerGroupId;
     private BoxAPIConnection api;
 
     /**
@@ -31,11 +32,27 @@ public class BoxSignTemplateSigner extends BoxJSONObject {
      */
     public BoxSignTemplateSigner(String email, List<BoxSignTemplateSignerInput> inputs, Boolean isInPerson,
                                  int order, BoxSignRequestSignerRole role) {
+        this(email, inputs, isInPerson, order, role, null);
+    }
+
+    /**
+     * Constructs a BoxSignTemplateSigner object with the provided information.
+     *
+     * @param email          the email.
+     * @param inputs         the inputs.
+     * @param isInPerson     whether the signer is in person or not.
+     * @param order          the order.
+     * @param role           the role.
+     * @param signerGroupId  the signer group id.
+     */
+    public BoxSignTemplateSigner(String email, List<BoxSignTemplateSignerInput> inputs, Boolean isInPerson,
+                                 int order, BoxSignRequestSignerRole role, String signerGroupId) {
         this.email = email;
         this.inputs = inputs;
         this.isInPerson = isInPerson;
         this.order = order;
         this.role = role;
+        this.signerGroupId = signerGroupId;
     }
 
     /**
@@ -95,6 +112,15 @@ public class BoxSignTemplateSigner extends BoxJSONObject {
     }
 
     /**
+     * Gets the signer group id. It is sufficient for only one signer from the group to sign the document.
+     *
+     * @return the id of the group signer.
+     */
+    public String getSignerGroupId() {
+        return this.signerGroupId;
+    }
+
+    /**
      * {@inheritDoc}
      */
     @Override
@@ -120,6 +146,9 @@ public class BoxSignTemplateSigner extends BoxJSONObject {
                     break;
                 case "role":
                     this.role = BoxSignRequestSignerRole.fromJSONString(value.asString());
+                    break;
+                case "signer_group_id":
+                    this.signerGroupId = value.asString();
                     break;
                 default:
                     return;
