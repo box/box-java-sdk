@@ -46,8 +46,8 @@ public class BoxSignRequestIT {
         // Test Setup
         BoxAPIConnection api = jwtApiForServiceAccount();
         BoxFolder uniqueFolder = getUniqueFolder(api);
-        String fileName = randomizeName("file_to_sign") + ".pdf";
-        String file2Name = randomizeName("file2_to_sign") + ".pdf";
+        String fileName = "file_to_sign.pdf";
+        String file2Name = "file2_to_sign.pdf";
         BoxFile file = null;
         BoxFile file2 = null;
         BoxFolder signedFileFolder = null;
