@@ -6,6 +6,7 @@ import static com.box.sdk.CleanupTools.deleteFolder;
 import static com.box.sdk.CleanupTools.deleteUser;
 import static com.box.sdk.Retry.retry;
 import static com.box.sdk.UniqueTestFolder.getUniqueFolder;
+import static com.box.sdk.UniqueTestFolder.randomizeName;
 import static com.box.sdk.UniqueTestFolder.removeUniqueFolder;
 import static com.box.sdk.UniqueTestFolder.setupUniqeFolder;
 import static com.box.sdk.UniqueTestFolder.uploadSampleFileToUniqueFolder;
@@ -18,7 +19,6 @@ import static org.junit.Assert.assertTrue;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
@@ -46,8 +46,8 @@ public class BoxSignRequestIT {
         // Test Setup
         BoxAPIConnection api = jwtApiForServiceAccount();
         BoxFolder uniqueFolder = getUniqueFolder(api);
-        String fileName = "file_to_sign.pdf";
-        String file2Name = "file_to_sign2.pdf";
+        String fileName = randomizeName("file_to_sign") + ".pdf";
+        String file2Name = randomizeName("file2_to_sign") + ".pdf";
         BoxFile file = null;
         BoxFile file2 = null;
         BoxFolder signedFileFolder = null;
@@ -160,10 +160,10 @@ public class BoxSignRequestIT {
         BoxFolder signedFileFolder = null;
         BoxUser groupMemberUser1 = null;
         BoxUser groupMemberUser2 = null;
-        String userName1 = "login1+" + Calendar.getInstance().getTimeInMillis() + "@boz.com";
-        String userName2 = "login2+" + Calendar.getInstance().getTimeInMillis() + "@boz.com";
+        String userName1 = randomizeName("login1") + "@boz.com";
+        String userName2 = randomizeName("login2") + "@boz.com";
         AtomicReference<BoxSignRequest.Info> signRequestInfoCancel = new AtomicReference<>();
-        String signerGroupName = "GroupName";
+        String signerGroupName = randomizeName("GroupName");
 
         try {
             groupMemberUser1 = BoxUser.createEnterpriseUser(api, userName1, "userName1").getResource();
