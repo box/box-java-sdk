@@ -109,38 +109,6 @@ updates.add(new MetadataTemplate.FieldOperation(addCategoryFieldJSON));
 MetadataTemplate.updateMetadataTemplate(api, Metadata.ENTERPRISE_METADATA_SCOPE, Metadata.CLASSIFICATION_TEMPLATE_KEY, updates);
 ```
 
-Delete a classification
------------------------
-
-To remove an existing classification, call the
-[`updateMetadataTemplate`][update-metadata-template]
-method with the an operation to remove the existing classification from the metadata template. 
-
-<!-- sample put_metadata_templates_enterprise_securityClassification-6VMVochwUWo_schema delete -->
-```java
-List<MetadataTemplate.FieldOperation> updates = new ArrayList<MetadataTemplate.FieldOperation>();
-
-String update = "{\n  op: \"removeEnumOption\",\n  fieldKey: \"Box__Security__Classification__Key\",\n  enumOptionKey: \"Sensitive\"\n}";
-
-updates.add(new MetadataTemplate.FieldOperation(addCategoryFieldJSON));
-
-MetadataTemplate.updateMetadataTemplate(api, Metadata.ENTERPRISE_METADATA_SCOPE, Metadata.CLASSIFICATION_TEMPLATE_KEY, updates);
-```
-
-Delete all classifications
---------------------------
-
-To remove all classifications in an enterprise, call the
-[`deleteMetadataTemplate`][delete-metadata-template]
-method with the an name of the classification metadata template. 
-
-<!-- sample delete_metadata_templates_enterprise_securityClassification-6VMVochwUWo_schema -->
-```java
-MetadataTemplate.deleteMetadataTemplate(api, Metadata.ENTERPRISE_METADATA_SCOPE, Metadata.CLASSIFICATION_TEMPLATE_KEY);
-```
-
-[delete-metadata-template]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/MetadataTemplate.html#deleteMetadataTemplate-com.box.sdk.BoxAPIConnection-java.lang.String-java.lang.String-
-
 Add classification to file
 --------------------------
 
