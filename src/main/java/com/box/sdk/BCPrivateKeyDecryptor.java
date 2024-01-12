@@ -3,7 +3,9 @@ package com.box.sdk;
 import java.io.IOException;
 import java.io.StringReader;
 import java.security.PrivateKey;
+import java.security.Security;
 import org.bouncycastle.asn1.pkcs.PrivateKeyInfo;
+import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.bouncycastle.openssl.PEMDecryptorProvider;
 import org.bouncycastle.openssl.PEMEncryptedKeyPair;
 import org.bouncycastle.openssl.PEMKeyPair;
@@ -18,6 +20,11 @@ import org.bouncycastle.pkcs.PKCSException;
 
 
 public class BCPrivateKeyDecryptor implements IPrivateKeyDecryptor {
+
+    public BCPrivateKeyDecryptor() {
+        Security.addProvider(new BouncyCastleProvider());
+    }
+
     @Override
     public PrivateKey decryptPrivateKey(String encryptedPrivateKey, String passphrase) {
         PrivateKey decryptedPrivateKey;

@@ -1,8 +1,5 @@
 package com.box.sdk;
 
-import java.security.Security;
-import org.bouncycastle.jce.provider.BouncyCastleProvider;
-
 /**
  * Contains the encryption preferences for JWT assertion.
  */
@@ -14,9 +11,6 @@ public class JWTEncryptionPreferences {
     private EncryptionAlgorithm encryptionAlgorithm;
     private IPrivateKeyDecryptor privateKeyDecryptor = new BCPrivateKeyDecryptor();
 
-    public JWTEncryptionPreferences() {
-        Security.addProvider(new BouncyCastleProvider());
-    }
 
     /**
      * Returns the ID for public key for validating the JWT signature.
