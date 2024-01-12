@@ -14,7 +14,7 @@ public class JWTEncryptionPreferences {
     private EncryptionAlgorithm encryptionAlgorithm;
     private IPrivateKeyDecryptor privateKeyDecryptor = new BCPrivateKeyDecryptor();
 
-    static {
+    public JWTEncryptionPreferences() {
         Security.addProvider(new BouncyCastleProvider());
     }
 
