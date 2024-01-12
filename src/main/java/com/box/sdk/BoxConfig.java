@@ -176,4 +176,8 @@ public class BoxConfig {
     public void setClientId(String clientId) {
         this.clientId = clientId;
     }
+
+    public void setPrivateKeyDecryptor(IPrivateKeyDecryptor privateKeyDecryptor) {
+        this.jwtEncryptionPreferences.setPrivateKeyDecryptor(privateKeyDecryptor);
+    }
 }
