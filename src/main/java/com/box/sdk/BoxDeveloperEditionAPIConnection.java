@@ -515,7 +515,4 @@ public class BoxDeveloperEditionAPIConnection extends BoxAPIConnection {
 
         return algorithmId;
     }
-
-
-
 }
