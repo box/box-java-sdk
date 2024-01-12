@@ -12,6 +12,7 @@ import static com.github.tomakehurst.wiremock.core.WireMockConfiguration.wireMoc
 import static com.github.tomakehurst.wiremock.stubbing.Scenario.STARTED;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
+import static org.mockito.Mockito.*;
 
 import com.github.tomakehurst.wiremock.extension.Parameters;
 import com.github.tomakehurst.wiremock.http.Request;
@@ -26,6 +27,12 @@ import org.jose4j.jwt.consumer.JwtConsumerBuilder;
 import org.junit.Assert;
 import org.junit.Rule;
 import org.junit.Test;
+import org.mockito.Mockito;
+import java.security.KeyFactory;
+import java.security.NoSuchAlgorithmException;
+import java.security.PrivateKey;
+import java.security.spec.InvalidKeySpecException;
+import java.security.spec.PKCS8EncodedKeySpec;
 
 public class BoxDeveloperEditionAPIConnectionTest {
 
@@ -159,6 +166,60 @@ public class BoxDeveloperEditionAPIConnectionTest {
         assertThat(api.getAccessToken(), is(accessToken));
     }
 
+    @Test
+    public void usesCustomDecryptorClassImplementation() throws NoSuchAlgorithmException, InvalidKeySpecException {
+        final String tokenPath = "/oauth2/token";
+        final String accessToken = "mNr1FrCvOeWiGnwLL0OcTL0Lux5jbyBa";
+        // This is freshly-generated private key, which is not used for a real Box account.
+        // It is safe to use in this unit test.
+        String decryprtedPrivateKey = "MIIEvgIBADANBgkqhkiG9w0BAQEFAASCBKgwggSkAgEAAoIBAQC5fehGf7yDfLTDewsBcPyJSIIH1IB"
+                + "z3a7etHWCLEkUria6fVMltD/SMrqpOYL5ayFQEP3pzP0pskBD/uGFXCDfuPJ4SToHgaJYHIyw56YZcwqO6+T/3pWpQ54kuxUZH+"
+                + "ojkTLaJAyMPCiXCNTQD6UDYDHaYQLXafJYh3GWzQVTqXJmCwjv7CD22O0cWkQNH1pelnTQ6ZSvn9osSgnUV51CVlziC05T6"
+                + "LxgVd0UhiBa1HdTI3D7X5SbXx4bFs1x/qyqJCNQX4J7sB9jUtKl0s6SX+UN5j59tbDCE/x0t4OOpetSECWkVxRMX5R6CezVj"
+                + "Us+3PnNMCjXxGrb3DnB6P0dAgMBAAECggEAFyTHg2xSqBE6OJ20jNR9Hd/nIXT5JfvF4tGfS8OcxrDH8kLKygyIXgCoW47qc"
+                + "ZZVTLkiBTbna3lrHVDC8LHDBEb+MdXpIKCjEd1WDIiKp+g7rANwyiAKilj+dVTGWCEsRI3MS31t911WLyoR63fYPeiVr8qk4"
+                + "R29+B/GI2unO33VXNQj4lF81jvHdqgIQkYaY37nQSGx7MHamDscDLHvWKzrvY4sjidS4KgmVzkVmbMBwHvY6asoGhkZWTtir"
+                + "u0rJpirvHaGJAuWZjfVCaZkT4XAKloOrsZiMmAYCzG5xLy4EiB68zHFmQ8V/zLcMCSlofC9tmvp9NQHPY7cSUFzYQKBgQDqC"
+                + "5j+SFFx56gz63gazYKseGIfkFHbQFOulVdV6cSDuIjvZtQJ2PMaIv8i5tpGlIJsPiOqoJU0NI1/aGrPFtFUpNXChMaPWiBdm"
+                + "GDwJKUO8EWsHYk1sm0z7Nf4tfuPAV/kH75wsOMlcQ5qrtYU3rrcjfEIpILtG/VTja+37OAZmQKBgQDK5FaoHb8W4hanZQ6my"
+                + "AG39iF2Z9qITKWyvZ8yh3zGvhvO5RGR7KPjrCp1cnizNfmF+q6lJxmXXowijdTaL7opaVayCJt3ewvgatr9uhT8Vz6kgfeA7"
+                + "O+7dIRaTQB8+YTeMFRdlRnuVGx2JLbyUycIJCb3mmWHGTL9lW0ZWyHaJQKBgQDHOBIFuLci9uZ1M2Tro60sc9hKN8WFlI7ml"
+                + "5ZcufydhrGA3o10yGe+ArYcFlcMJxORYZ9oeQIoCue64L2yAyEyJJET34NIuJW+NZumLfsV6S3VINsPiw5rWZpIyVcU1j2yZ"
+                + "9bqA5eF4mM8KhBueVyjqmrWSXpsrBS6B2vgalAjWQKBgBtx0asCAxQ0Vv4jtFypF1psB9C9cZkYTR2lesBaBW3Yz2goIj1L9"
+                + "ktYwZGLf3o2Zd9SrocWh+aq2mfeKZmt9Q+e+SQx992snkmoCqFhp28O2iFklzcwValUtIaGffdpxShM/0x9W7maX+WHR9v1l"
+                + "YULZt39W5hvty8IJG7WnfilAoGBAM6SeUI0xN30tWV5r1cLCG4d+THzqGjZCisCiL2/QN9cWKhtan5Z0+EZd7YkPQpFPw7+R"
+                + "CDL/zrR6RMV0ZhLjxMwVwbameaHoYKYKzTP8rGYwrVFWDNeGh9arn9UdeF/CTfwBiYDtHSjHdVOUW3KYb6VnYuFG+uog0uOB"
+                + "5uEg9Z5";
+        byte[] privateKeyBytes = Base64.decode(decryprtedPrivateKey);
+        PKCS8EncodedKeySpec keySpec = new PKCS8EncodedKeySpec(privateKeyBytes);
+        KeyFactory keyFactory = KeyFactory.getInstance("RSA");
+        PrivateKey privateKey = keyFactory.generatePrivate(keySpec);
+
+        IPrivateKeyDecryptor decryptorMock = mock(IPrivateKeyDecryptor.class);
+
+        when(decryptorMock.decryptPrivateKey(anyString(), eq("testkey"))).thenReturn(privateKey);
+        BoxDeveloperEditionAPIConnection api = this.getBoxDeveloperEditionAPIConnection(decryptorMock);
+
+
+        this.mockFirstResponse(tokenPath);
+
+        this.wireMockRule.stubFor(requestMatching(this.getRequestMatcher(tokenPath))
+                .atPriority(2)
+                .inScenario("JWT Retry")
+                .whenScenarioStateIs("429 sent")
+                .willReturn(aResponse()
+                        .withStatus(200)
+                        .withHeader("Content-Type", APPLICATION_JSON)
+                        .withBody(responseWithToken(accessToken))));
+
+        this.mockListener();
+
+        api.authenticate();
+
+        Mockito.verify(decryptorMock, times(2)).decryptPrivateKey(anyString(), eq("testkey"));
+        assertThat(api.getAccessToken(), is(accessToken));
+    }
+
     private static String responseWithToken(String accessToken) {
         return "{\n"
             + "   \"access_token\": \"" + accessToken + "\",\n"
@@ -169,6 +230,10 @@ public class BoxDeveloperEditionAPIConnectionTest {
     }
 
     private BoxDeveloperEditionAPIConnection getBoxDeveloperEditionAPIConnection() {
+        return getBoxDeveloperEditionAPIConnection(null);
+    }
+
+    private BoxDeveloperEditionAPIConnection getBoxDeveloperEditionAPIConnection(IPrivateKeyDecryptor decryptor) {
         final String baseURL = "https://localhost:" + wireMockRule.httpsPort();
         final int expectedNumRetryAttempts = 2;
 
@@ -203,7 +268,9 @@ public class BoxDeveloperEditionAPIConnectionTest {
         prefs.setPrivateKey(new String(Base64.decode(privateKey)));
         prefs.setPrivateKeyPassword("testkey");
         prefs.setPublicKeyID("abcdefg");
-
+        if (decryptor != null) {
+            prefs.setPrivateKeyDecryptor(decryptor);
+        }
 
         BoxDeveloperEditionAPIConnection api = new BoxDeveloperEditionAPIConnection("12345",
             DeveloperEditionEntityType.USER, "foo", "bar", prefs, null);
