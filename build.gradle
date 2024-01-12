@@ -51,18 +51,8 @@ configurations {
 dependencies {
     implementation "com.eclipsesource.minimal-json:minimal-json:0.9.5"
     implementation "org.bitbucket.b_c:jose4j:0.9.4"
-    implementation("org.bouncycastle:bcprov-jdk15on") {
-        version {
-            strictly("1.57")
-        }
-        because "v1.57 is compatible with org.bouncycastle:bc-fips:1.0.2.1 which is needed for FIPS compliance purposes"
-    }
-    implementation("org.bouncycastle:bcpkix-jdk15on") {
-        version {
-            strictly("1.57")
-        }
-        because "v1.57 is compatible with org.bouncycastle:bc-fips:1.0.2.1 which is needed for FIPS compliance purposes"
-    }
+    implementation "org.bouncycastle:bcprov-jdk15on:1.70"
+    implementation "org.bouncycastle:bcpkix-jdk15on:1.70"
     implementation "com.squareup.okhttp3:okhttp:4.10.0"
     testsCommonImplementation "junit:junit:4.13.2"
     testsCommonImplementation "org.hamcrest:hamcrest-library:2.2"

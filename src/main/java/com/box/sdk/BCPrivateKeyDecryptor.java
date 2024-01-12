@@ -18,15 +18,21 @@ import org.bouncycastle.operator.OperatorCreationException;
 import org.bouncycastle.pkcs.PKCS8EncryptedPrivateKeyInfo;
 import org.bouncycastle.pkcs.PKCSException;
 
-
+/**
+ * The default implementation of `IPrivateKeyDecryptor`, which uses Bouncy Castle library to decrypt the private key.
+ */
 public class BCPrivateKeyDecryptor implements IPrivateKeyDecryptor {
 
-    public BCPrivateKeyDecryptor() {
-        Security.addProvider(new BouncyCastleProvider());
-    }
-
+    /**
+     * Decrypts private key with provided passphrase using Bouncy Castle library
+     *
+     * @param encryptedPrivateKey Encoded private key string.
+     * @param passphrase Private key passphrase.
+     * @return java.security.PrivateKey instance representing decrypted private key.
+     */
     @Override
     public PrivateKey decryptPrivateKey(String encryptedPrivateKey, String passphrase) {
+        Security.addProvider(new BouncyCastleProvider());
         PrivateKey decryptedPrivateKey;
         try {
             PEMParser keyReader = new PEMParser(new StringReader(encryptedPrivateKey));
@@ -43,7 +49,8 @@ public class BCPrivateKeyDecryptor implements IPrivateKeyDecryptor {
                 PrivateKeyInfo keyInfo = ((PEMKeyPair) keyPair).getPrivateKeyInfo();
                 decryptedPrivateKey = (new JcaPEMKeyConverter()).getPrivateKey(keyInfo);
             } else if (keyPair instanceof PKCS8EncryptedPrivateKeyInfo) {
-                InputDecryptorProvider pkcs8Prov = new JceOpenSSLPKCS8DecryptorProviderBuilder().setProvider("BC")
+                InputDecryptorProvider pkcs8Prov = new JceOpenSSLPKCS8DecryptorProviderBuilder()
+                        .setProvider("BC")
                         .build(passphrase.toCharArray());
                 PrivateKeyInfo keyInfo = ((PKCS8EncryptedPrivateKeyInfo) keyPair).decryptPrivateKeyInfo(pkcs8Prov);
                 decryptedPrivateKey = (new JcaPEMKeyConverter()).getPrivateKey(keyInfo);

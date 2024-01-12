@@ -265,21 +265,35 @@ Javadocs are generated when `gradle javadoc` is run and can be found in
 
 ## FIPS 140-2 Compliance
 
-The Box Java SDK uses libraries (`org.bouncycastle:bcpkix-jdk15on:1.57` and `org.bouncycastle:bcprov-jdk15on:1.57`) that are compatible with FIPS 140-2 validated cryptographic libraries (`org.bouncycastle:bc-fips:1.0.2.1`).
+To generate a Json Web Signature used for retrieving tokens in the JWT authentication method, the Box Java SDK decrypts an encrypted private key.
+For this purpose, Box Java SDK uses libraries (`org.bouncycastle:bcpkix-jdk15on:1.70` and `org.bouncycastle:bcprov-jdk15on:1.70`)
+that are NOT compatible with FIPS 140-2 validated cryptographic library (`org.bouncycastle:bc-fips`).
 
-### Vulnerabilities in Bouncycastle libraries
-In Box Java SDK we are using:
- - `org.bouncycastle:bcpkix-jdk15on:1.57`
- - `org.bouncycastle:bcprov-jdk15on:1.57`
+There are two ways of ensuring that decryption operation is FIPS compiant.
 
-There are some moderate vulnerabilities reported against those versions:
+1. You can privide a custom implementation of the `IPrivateKeyDecryptor` interface, 
+which performs the decryption opertation using FIPS-certified library of your choice. The interface requires the
+implementation of just one method:
+```java
+PrivateKey decryptPrivateKey(String encryptedPrivateKey, String passphrase);
+```
+After implementing the custom decryptor, you need to set your custom decryptor class in the Box Config. 
+Below is an example of setting up a `BoxDeveloperEditionAPIConnection` with a config file and the custom decryptor.  
+```java
+Reader reader = new FileReader(JWT_CONFIG_PATH);
+BoxConfig boxConfig = BoxConfig.readFrom(reader);
+boxConfig.setPrivateKeyDecryptor(customDecryptor)
+BoxDeveloperEditionAPIConnection api = BoxDeveloperEditionAPIConnection.getAppEnterpriseConnection(boxConfig);
+```
+
+2. Alternative method is to override the Bouncy Castle libraries to the v.1.57 version, 
+which are compatible with the FIPS 140-2 validated cryptographic library (`org.bouncycastle:bc-fips`).
+
+NOTE: This solution is not recommended as Bouncy Castle v.1.57 has some moderate vulnerabilities reported against those versions, including:
  - [CVE-2020-26939](https://github.com/advisories/GHSA-72m5-fvvv-55m6) - Observable Differences in Behavior to Error Inputs in Bouncy Castle
  - [CVE-2020-15522](https://github.com/advisories/GHSA-6xx3-rg99-gc3p) - Timing based private key exposure in Bouncy Castle
 
-We cannot upgrade those libraries as they are working with [FIPS 140-2 certified](https://csrc.nist.gov/projects/cryptographic-module-validation-program/certificate/3514)
-cryptographic module. Some of our customers require certified cryptography module and our SDK must work with it.
-
-If you want to use modern `bcpkix-jdk15on` and `bcprov-jdk15on` than you can exclude them while importing Java Box SDK and provide you own versions:
+Furthermore,using Bouncy Castle v.1.57 may lead to [Bouncycastle BadPaddingException for JWT auth](#bouncycastle-badPaddingException-for-jWT-auth).
 
 Gradle example
 ```groovy
@@ -287,8 +301,8 @@ implementation('com.box:box-java-sdk:x.y.z') {
    exclude group: 'org.bouncycastle', module: 'bcprov-jdk15on'
    exclude group: 'org.bouncycastle', module: 'bcpkix-jdk15on'
 }
-runtimeOnly('org.bouncycastle:bcprov-jdk15on:1.70')
-runtimeOnly('org.bouncycastle:bcpkix-jdk15on:1.70')
+runtimeOnly('org.bouncycastle:bcprov-jdk15on:1.57')
+runtimeOnly('org.bouncycastle:bcpkix-jdk15on:1.57')
 ```
 
 Maven example:
@@ -313,13 +327,13 @@ Maven example:
    <dependency>
       <groupId>org.bouncycastle</groupId>
       <artifactId>bcprov-jdk15on</artifactId>
-      <version>1.70</version>
+      <version>1.57</version>
       <scope>runtime</scope>
    </dependency>
    <dependency>
       <groupId>org.bouncycastle</groupId>
       <artifactId>bcpkix-jdk15on</artifactId>
-      <version>1.70</version>
+      <version>1.57</version>
       <scope>runtime</scope>
    </dependency>
 </dependencies>
@@ -328,11 +342,11 @@ Maven example:
 ### Bouncycastle BadPaddingException for JWT auth
 
 As of October 2023, RSA keypairs generated on the Developer Console (refer to the [Generate a keypair guide](https://developer.box.com/guides/authentication/jwt/jwt-setup/#generate-a-keypair-recommended))
-are no longer compatible with Bouncy Castle version 1.57, which is utilized in the Box Java SDK. 
+are no longer compatible with Bouncy Castle version 1.57, which was utilized in the Box Java SDK up to v4.6.1. 
 Attempting to use a JWT configuration downloaded from the Developer Console results in a
 `javax.crypto.BadPaddingException: pad block corrupted` error.
-While we continue our efforts to address this issue, two possible workarounds are available:
-1. Override the Bouncy Castle library version with a newer one, following the steps described above.
+Prossible solutions:
+1. Upgrade to the v4.7.0 of Box Java SDK, which uses newer version of the Bouncy Castle library. (recommended)
 2. Manually generate a keypair using OpenSSL version 1.0.x and add the Public Key to the Developer Console.
    The [manually add keypair guide](https://developer.box.com/guides/authentication/jwt/jwt-setup/#manually-add-keypair) provides assistance in this process.
 
