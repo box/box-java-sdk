@@ -172,7 +172,7 @@ public class BoxDeveloperEditionAPIConnectionTest {
         final String accessToken = "mNr1FrCvOeWiGnwLL0OcTL0Lux5jbyBa";
         // This is freshly-generated private key, which is not used for a real Box account.
         // It is safe to use in this unit test.
-        String decryprtedPrivateKey = "MIIEvgIBADANBgkqhkiG9w0BAQEFAASCBKgwggSkAgEAAoIBAQC5fehGf7yDfLTDewsBcPyJSIIH1IB"
+        String decryptedPrivateKey = "MIIEvgIBADANBgkqhkiG9w0BAQEFAASCBKgwggSkAgEAAoIBAQC5fehGf7yDfLTDewsBcPyJSIIH1IB"
                 + "z3a7etHWCLEkUria6fVMltD/SMrqpOYL5ayFQEP3pzP0pskBD/uGFXCDfuPJ4SToHgaJYHIyw56YZcwqO6+T/3pWpQ54kuxUZH+"
                 + "ojkTLaJAyMPCiXCNTQD6UDYDHaYQLXafJYh3GWzQVTqXJmCwjv7CD22O0cWkQNH1pelnTQ6ZSvn9osSgnUV51CVlziC05T6"
                 + "LxgVd0UhiBa1HdTI3D7X5SbXx4bFs1x/qyqJCNQX4J7sB9jUtKl0s6SX+UN5j59tbDCE/x0t4OOpetSECWkVxRMX5R6CezVj"
@@ -190,7 +190,7 @@ public class BoxDeveloperEditionAPIConnectionTest {
                 + "YULZt39W5hvty8IJG7WnfilAoGBAM6SeUI0xN30tWV5r1cLCG4d+THzqGjZCisCiL2/QN9cWKhtan5Z0+EZd7YkPQpFPw7+R"
                 + "CDL/zrR6RMV0ZhLjxMwVwbameaHoYKYKzTP8rGYwrVFWDNeGh9arn9UdeF/CTfwBiYDtHSjHdVOUW3KYb6VnYuFG+uog0uOB"
                 + "5uEg9Z5";
-        byte[] privateKeyBytes = Base64.decode(decryprtedPrivateKey);
+        byte[] privateKeyBytes = Base64.decode(decryptedPrivateKey);
         PKCS8EncodedKeySpec keySpec = new PKCS8EncodedKeySpec(privateKeyBytes);
         KeyFactory keyFactory = KeyFactory.getInstance("RSA");
         PrivateKey privateKey = keyFactory.generatePrivate(keySpec);
@@ -199,7 +199,6 @@ public class BoxDeveloperEditionAPIConnectionTest {
 
         when(decryptorMock.decryptPrivateKey(anyString(), eq("testkey"))).thenReturn(privateKey);
         BoxDeveloperEditionAPIConnection api = this.getBoxDeveloperEditionAPIConnection(decryptorMock);
-
 
         this.mockFirstResponse(tokenPath);
 

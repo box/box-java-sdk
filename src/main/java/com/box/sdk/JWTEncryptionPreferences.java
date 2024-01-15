@@ -84,7 +84,7 @@ public class JWTEncryptionPreferences {
     }
 
     /**
-     * Gets a decrytor used for decrypting the private key.
+     * Gets a decryptor used for decrypting the private key.
      *
      * @return the decryptor used for decrypting the private key.
      */

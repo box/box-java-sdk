@@ -269,10 +269,10 @@ To generate a Json Web Signature used for retrieving tokens in the JWT authentic
 For this purpose, Box Java SDK uses libraries (`org.bouncycastle:bcpkix-jdk15on:1.70` and `org.bouncycastle:bcprov-jdk15on:1.70`)
 that are NOT compatible with FIPS 140-2 validated cryptographic library (`org.bouncycastle:bc-fips`).
 
-There are two ways of ensuring that decryption operation is FIPS compiant.
+There are two ways of ensuring that decryption operation is FIPS-compiant.
 
-1. You can privide a custom implementation of the `IPrivateKeyDecryptor` interface, 
-which performs the decryption opertation using FIPS-certified library of your choice. The interface requires the
+1. You can provide a custom implementation of the `IPrivateKeyDecryptor` interface, 
+which performs the decryption operation using FIPS-certified library of your choice. The interface requires the
 implementation of just one method:
 ```java
 PrivateKey decryptPrivateKey(String encryptedPrivateKey, String passphrase);
