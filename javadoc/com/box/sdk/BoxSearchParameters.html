@@ -18,7 +18,7 @@
     catch(err) {
     }
 //-->
-var methods = {"i0":10,"i1":10,"i2":10,"i3":10,"i4":10,"i5":10,"i6":10,"i7":10,"i8":10,"i9":10,"i10":10,"i11":10,"i12":10,"i13":10,"i14":10,"i15":10,"i16":10,"i17":10,"i18":10,"i19":10,"i20":10,"i21":10,"i22":10,"i23":10,"i24":10,"i25":10,"i26":10,"i27":10,"i28":10,"i29":10,"i30":10,"i31":10};
+var methods = {"i0":10,"i1":10,"i2":10,"i3":10,"i4":10,"i5":10,"i6":10,"i7":10,"i8":10,"i9":10,"i10":10,"i11":10,"i12":10,"i13":10,"i14":10,"i15":10,"i16":10,"i17":10,"i18":10,"i19":10,"i20":10,"i21":10,"i22":10,"i23":10,"i24":10,"i25":10,"i26":10,"i27":10,"i28":10,"i29":10,"i30":10,"i31":10,"i32":10,"i33":10,"i34":10,"i35":10};
 var tabs = {65535:["t0","All Methods"],2:["t2","Instance Methods"],8:["t4","Concrete Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
@@ -121,168 +121,192 @@ extends <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html
 </td>
 </tr>
 <tr id="i4" class="altColor">
+<td class="colFirst"><code><a href="../../../com/box/sdk/DateRange.html" title="class in com.box.sdk">DateRange</a></code></td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../com/box/sdk/BoxSearchParameters.html#getDeletedRange--">getDeletedRange</a></span>()</code>
+<div class="block">Limits the search results to items that were deleted within the given date range.</div>
+</td>
+</tr>
+<tr id="i5" class="rowColor">
+<td class="colFirst"><code><a href="https://docs.oracle.com/javase/8/docs/api/java/util/List.html?is-external=true" title="class or interface in java.util">List</a>&lt;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&gt;</code></td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../com/box/sdk/BoxSearchParameters.html#getDeleterUserIds--">getDeleterUserIds</a></span>()</code>
+<div class="block">Limits the search results to items that were deleted by the given list of users, defined as a list of comma separated user IDs.</div>
+</td>
+</tr>
+<tr id="i6" class="altColor">
 <td class="colFirst"><code><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../com/box/sdk/BoxSearchParameters.html#getDirection--">getDirection</a></span>()</code>
 <div class="block">Retrieves the sort direction for Box Search results.</div>
 </td>
 </tr>
-<tr id="i5" class="rowColor">
+<tr id="i7" class="rowColor">
 <td class="colFirst"><code><a href="https://docs.oracle.com/javase/8/docs/api/java/util/List.html?is-external=true" title="class or interface in java.util">List</a>&lt;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&gt;</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../com/box/sdk/BoxSearchParameters.html#getFields--">getFields</a></span>()</code>
 <div class="block">Get the existing fields that are used for the search criteria.</div>
 </td>
 </tr>
-<tr id="i6" class="altColor">
+<tr id="i8" class="altColor">
 <td class="colFirst"><code><a href="https://docs.oracle.com/javase/8/docs/api/java/util/List.html?is-external=true" title="class or interface in java.util">List</a>&lt;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&gt;</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../com/box/sdk/BoxSearchParameters.html#getFileExtensions--">getFileExtensions</a></span>()</code>
 <div class="block">Get file extension filter (jpg,docx).</div>
 </td>
 </tr>
-<tr id="i7" class="rowColor">
+<tr id="i9" class="rowColor">
 <td class="colFirst"><code><a href="../../../com/box/sdk/BoxMetadataFilter.html" title="class in com.box.sdk">BoxMetadataFilter</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../com/box/sdk/BoxSearchParameters.html#getMetadataFilter--">getMetadataFilter</a></span>()</code>
 <div class="block">Retrieve the existing BoxMetaDataFilter.</div>
 </td>
 </tr>
-<tr id="i8" class="altColor">
+<tr id="i10" class="altColor">
 <td class="colFirst"><code><a href="https://docs.oracle.com/javase/8/docs/api/java/util/List.html?is-external=true" title="class or interface in java.util">List</a>&lt;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&gt;</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../com/box/sdk/BoxSearchParameters.html#getOwnerUserIds--">getOwnerUserIds</a></span>()</code>
 <div class="block">Return the list of owner id's that are being applied as a search filter on the results.</div>
 </td>
 </tr>
-<tr id="i9" class="rowColor">
+<tr id="i11" class="rowColor">
 <td class="colFirst"><code><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../com/box/sdk/BoxSearchParameters.html#getQuery--">getQuery</a></span>()</code>
 <div class="block">Get existing query String that is being used.</div>
 </td>
 </tr>
-<tr id="i10" class="altColor">
+<tr id="i12" class="altColor">
 <td class="colFirst"><code>QueryStringBuilder</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../com/box/sdk/BoxSearchParameters.html#getQueryParameters--">getQueryParameters</a></span>()</code>
 <div class="block">Get the Query Paramaters to be used for search request.</div>
 </td>
 </tr>
-<tr id="i11" class="rowColor">
+<tr id="i13" class="rowColor">
 <td class="colFirst"><code><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../com/box/sdk/BoxSearchParameters.html#getScope--">getScope</a></span>()</code>
 <div class="block">Get the scope on which you want to search, ["enterprise","scope"].</div>
 </td>
 </tr>
-<tr id="i12" class="altColor">
+<tr id="i14" class="altColor">
 <td class="colFirst"><code><a href="../../../com/box/sdk/SizeRange.html" title="class in com.box.sdk">SizeRange</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../com/box/sdk/BoxSearchParameters.html#getSizeRange--">getSizeRange</a></span>()</code>
 <div class="block">Return the size range that is being used as a filter.</div>
 </td>
 </tr>
-<tr id="i13" class="rowColor">
+<tr id="i15" class="rowColor">
 <td class="colFirst"><code><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../com/box/sdk/BoxSearchParameters.html#getSort--">getSort</a></span>()</code>
 <div class="block">Retrieve the sort field for Box Search.</div>
 </td>
 </tr>
-<tr id="i14" class="altColor">
+<tr id="i16" class="altColor">
 <td class="colFirst"><code><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../com/box/sdk/BoxSearchParameters.html#getTrashContent--">getTrashContent</a></span>()</code>
 <div class="block">Return the specified trash search preference.</div>
 </td>
 </tr>
-<tr id="i15" class="rowColor">
+<tr id="i17" class="rowColor">
 <td class="colFirst"><code><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../com/box/sdk/BoxSearchParameters.html#getType--">getType</a></span>()</code>
 <div class="block">Return the type you want to return in your search.</div>
 </td>
 </tr>
-<tr id="i16" class="altColor">
+<tr id="i18" class="altColor">
 <td class="colFirst"><code><a href="../../../com/box/sdk/DateRange.html" title="class in com.box.sdk">DateRange</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../com/box/sdk/BoxSearchParameters.html#getUpdatedRange--">getUpdatedRange</a></span>()</code>
 <div class="block">Get the DateRange filter to specify the when a file was updated.</div>
 </td>
 </tr>
-<tr id="i17" class="rowColor">
+<tr id="i19" class="rowColor">
 <td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../com/box/sdk/BoxSearchParameters.html#setAncestorFolderIds-java.util.List-">setAncestorFolderIds</a></span>(<a href="https://docs.oracle.com/javase/8/docs/api/java/util/List.html?is-external=true" title="class or interface in java.util">List</a>&lt;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&gt;&nbsp;ancestorFolderIds)</code>
 <div class="block">Set the list of folder id's to be applied as a filter on the search filters.</div>
 </td>
 </tr>
-<tr id="i18" class="altColor">
+<tr id="i20" class="altColor">
 <td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../com/box/sdk/BoxSearchParameters.html#setContentTypes-java.util.List-">setContentTypes</a></span>(<a href="https://docs.oracle.com/javase/8/docs/api/java/util/List.html?is-external=true" title="class or interface in java.util">List</a>&lt;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&gt;&nbsp;contentTypes)</code>
 <div class="block">Set list of content types that will be used as a filters.</div>
 </td>
 </tr>
-<tr id="i19" class="rowColor">
+<tr id="i21" class="rowColor">
 <td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../com/box/sdk/BoxSearchParameters.html#setCreatedRange-com.box.sdk.DateRange-">setCreatedRange</a></span>(<a href="../../../com/box/sdk/DateRange.html" title="class in com.box.sdk">DateRange</a>&nbsp;createdRange)</code>
 <div class="block">Set the from DateRange filter to specify when a file was created.</div>
 </td>
 </tr>
-<tr id="i20" class="altColor">
+<tr id="i22" class="altColor">
+<td class="colFirst"><code>void</code></td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../com/box/sdk/BoxSearchParameters.html#setDeletedRange-com.box.sdk.DateRange-">setDeletedRange</a></span>(<a href="../../../com/box/sdk/DateRange.html" title="class in com.box.sdk">DateRange</a>&nbsp;deletedRange)</code>
+<div class="block">Limits the search results to items that were deleted within the given date range.</div>
+</td>
+</tr>
+<tr id="i23" class="rowColor">
+<td class="colFirst"><code>void</code></td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../com/box/sdk/BoxSearchParameters.html#setDeleterUserIds-java.util.List-">setDeleterUserIds</a></span>(<a href="https://docs.oracle.com/javase/8/docs/api/java/util/List.html?is-external=true" title="class or interface in java.util">List</a>&lt;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&gt;&nbsp;deleterUserIds)</code>
+<div class="block">Limits the search results to items that were deleted by the given list of users, defined as a list of comma separated user IDs.</div>
+</td>
+</tr>
+<tr id="i24" class="altColor">
 <td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../com/box/sdk/BoxSearchParameters.html#setDirection-java.lang.String-">setDirection</a></span>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;direction)</code>
 <div class="block">Set the direction of the sort for the Box Search results.</div>
 </td>
 </tr>
-<tr id="i21" class="rowColor">
+<tr id="i25" class="rowColor">
 <td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../com/box/sdk/BoxSearchParameters.html#setFields-java.util.List-">setFields</a></span>(<a href="https://docs.oracle.com/javase/8/docs/api/java/util/List.html?is-external=true" title="class or interface in java.util">List</a>&lt;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&gt;&nbsp;fields)</code>
 <div class="block">Set the existing fields that are used for the search criteria.</div>
 </td>
 </tr>
-<tr id="i22" class="altColor">
+<tr id="i26" class="altColor">
 <td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../com/box/sdk/BoxSearchParameters.html#setFileExtensions-java.util.List-">setFileExtensions</a></span>(<a href="https://docs.oracle.com/javase/8/docs/api/java/util/List.html?is-external=true" title="class or interface in java.util">List</a>&lt;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&gt;&nbsp;fileExtensions)</code>
 <div class="block">Set file extension by providing a list of strings [jpg,docx].</div>
 </td>
 </tr>
-<tr id="i23" class="rowColor">
+<tr id="i27" class="rowColor">
 <td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../com/box/sdk/BoxSearchParameters.html#setMetadataFilter-com.box.sdk.BoxMetadataFilter-">setMetadataFilter</a></span>(<a href="../../../com/box/sdk/BoxMetadataFilter.html" title="class in com.box.sdk">BoxMetadataFilter</a>&nbsp;metadataFilter)</code>
 <div class="block">Set the current list of Metadata Filters.</div>
 </td>
 </tr>
-<tr id="i24" class="altColor">
+<tr id="i28" class="altColor">
 <td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../com/box/sdk/BoxSearchParameters.html#setOwnerUserIds-java.util.List-">setOwnerUserIds</a></span>(<a href="https://docs.oracle.com/javase/8/docs/api/java/util/List.html?is-external=true" title="class or interface in java.util">List</a>&lt;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&gt;&nbsp;ownerUserIds)</code>
 <div class="block">Set the owner id's to be applied as a filter to restrict the results on specific file owners.</div>
 </td>
 </tr>
-<tr id="i25" class="rowColor">
+<tr id="i29" class="rowColor">
 <td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../com/box/sdk/BoxSearchParameters.html#setQuery-java.lang.String-">setQuery</a></span>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;query)</code>
 <div class="block">Set query string for that will be used to search.</div>
 </td>
 </tr>
-<tr id="i26" class="altColor">
+<tr id="i30" class="altColor">
 <td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../com/box/sdk/BoxSearchParameters.html#setScope-java.lang.String-">setScope</a></span>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;scope)</code>
 <div class="block">Set the scope for how you want to search, ["enterprise","scope"].</div>
 </td>
 </tr>
-<tr id="i27" class="rowColor">
+<tr id="i31" class="rowColor">
 <td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../com/box/sdk/BoxSearchParameters.html#setSizeRange-com.box.sdk.SizeRange-">setSizeRange</a></span>(<a href="../../../com/box/sdk/SizeRange.html" title="class in com.box.sdk">SizeRange</a>&nbsp;sizeRange)</code>
 <div class="block">Set the file size range for lower and upper bounds Bytes.</div>
 </td>
 </tr>
-<tr id="i28" class="altColor">
+<tr id="i32" class="altColor">
 <td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../com/box/sdk/BoxSearchParameters.html#setSort-java.lang.String-">setSort</a></span>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;sortBy)</code>
 <div class="block">Set the sort field for Box Search.</div>
 </td>
 </tr>
-<tr id="i29" class="rowColor">
+<tr id="i33" class="rowColor">
 <td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../com/box/sdk/BoxSearchParameters.html#setTrashContent-java.lang.String-">setTrashContent</a></span>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;trashContent)</code>
 <div class="block">Set trash filter.</div>
 </td>
 </tr>
-<tr id="i30" class="altColor">
+<tr id="i34" class="altColor">
 <td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../com/box/sdk/BoxSearchParameters.html#setType-java.lang.String-">setType</a></span>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;type)</code>
 <div class="block">Set the type you want to search for can be file, folder, or web_link.</div>
 </td>
 </tr>
-<tr id="i31" class="rowColor">
+<tr id="i35" class="rowColor">
 <td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../com/box/sdk/BoxSearchParameters.html#setUpdatedRange-com.box.sdk.DateRange-">setUpdatedRange</a></span>(<a href="../../../com/box/sdk/DateRange.html" title="class in com.box.sdk">DateRange</a>&nbsp;updatedRange)</code>
 <div class="block">Set the from DateRange filter to specify when a file was updated.</div>
@@ -316,7 +340,7 @@ extends <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html
 <ul class="blockList">
 <li class="blockList">
 <h4>BoxSearchParameters</h4>
-<pre>public&nbsp;<a href="../../../src-html/com/box/sdk/BoxSearchParameters.html#line.35">BoxSearchParameters</a>()</pre>
+<pre>public&nbsp;<a href="../../../src-html/com/box/sdk/BoxSearchParameters.html#line.36">BoxSearchParameters</a>()</pre>
 <div class="block">Creates a Box Search Parameters Objects without query set, specific for Metadata Only Searches.</div>
 </li>
 </ul>
@@ -326,7 +350,7 @@ extends <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html
 <ul class="blockListLast">
 <li class="blockList">
 <h4>BoxSearchParameters</h4>
-<pre>public&nbsp;<a href="../../../src-html/com/box/sdk/BoxSearchParameters.html#line.43">BoxSearchParameters</a>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;query)</pre>
+<pre>public&nbsp;<a href="../../../src-html/com/box/sdk/BoxSearchParameters.html#line.44">BoxSearchParameters</a>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;query)</pre>
 <div class="block">Creates a Box Search Parameters Objects with a query initiated.</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
@@ -348,7 +372,7 @@ extends <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html
 <ul class="blockList">
 <li class="blockList">
 <h4>clearParameters</h4>
-<pre>public&nbsp;boolean&nbsp;<a href="../../../src-html/com/box/sdk/BoxSearchParameters.html#line.52">clearParameters</a>()</pre>
+<pre>public&nbsp;boolean&nbsp;<a href="../../../src-html/com/box/sdk/BoxSearchParameters.html#line.53">clearParameters</a>()</pre>
 <div class="block">Clears the Parameters before performing a new search.</div>
 <dl>
 <dt><span class="returnLabel">Returns:</span></dt>
@@ -362,7 +386,7 @@ extends <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html
 <ul class="blockList">
 <li class="blockList">
 <h4>getQuery</h4>
-<pre>public&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxSearchParameters.html#line.76">getQuery</a>()</pre>
+<pre>public&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxSearchParameters.html#line.79">getQuery</a>()</pre>
 <div class="block">Get existing query String that is being used.</div>
 <dl>
 <dt><span class="returnLabel">Returns:</span></dt>
@@ -376,7 +400,7 @@ extends <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html
 <ul class="blockList">
 <li class="blockList">
 <h4>setQuery</h4>
-<pre>public&nbsp;void&nbsp;<a href="../../../src-html/com/box/sdk/BoxSearchParameters.html#line.85">setQuery</a>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;query)</pre>
+<pre>public&nbsp;void&nbsp;<a href="../../../src-html/com/box/sdk/BoxSearchParameters.html#line.88">setQuery</a>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;query)</pre>
 <div class="block">Set query string for that will be used to search.</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
@@ -390,7 +414,7 @@ extends <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html
 <ul class="blockList">
 <li class="blockList">
 <h4>getFields</h4>
-<pre>public&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/util/List.html?is-external=true" title="class or interface in java.util">List</a>&lt;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&gt;&nbsp;<a href="../../../src-html/com/box/sdk/BoxSearchParameters.html#line.94">getFields</a>()</pre>
+<pre>public&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/util/List.html?is-external=true" title="class or interface in java.util">List</a>&lt;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&gt;&nbsp;<a href="../../../src-html/com/box/sdk/BoxSearchParameters.html#line.97">getFields</a>()</pre>
 <div class="block">Get the existing fields that are used for the search criteria.</div>
 <dl>
 <dt><span class="returnLabel">Returns:</span></dt>
@@ -404,7 +428,7 @@ extends <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html
 <ul class="blockList">
 <li class="blockList">
 <h4>setFields</h4>
-<pre>public&nbsp;void&nbsp;<a href="../../../src-html/com/box/sdk/BoxSearchParameters.html#line.103">setFields</a>(<a href="https://docs.oracle.com/javase/8/docs/api/java/util/List.html?is-external=true" title="class or interface in java.util">List</a>&lt;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&gt;&nbsp;fields)</pre>
+<pre>public&nbsp;void&nbsp;<a href="../../../src-html/com/box/sdk/BoxSearchParameters.html#line.106">setFields</a>(<a href="https://docs.oracle.com/javase/8/docs/api/java/util/List.html?is-external=true" title="class or interface in java.util">List</a>&lt;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&gt;&nbsp;fields)</pre>
 <div class="block">Set the existing fields that are used for the search criteria.</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
@@ -418,7 +442,7 @@ extends <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html
 <ul class="blockList">
 <li class="blockList">
 <h4>getScope</h4>
-<pre>public&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxSearchParameters.html#line.112">getScope</a>()</pre>
+<pre>public&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxSearchParameters.html#line.115">getScope</a>()</pre>
 <div class="block">Get the scope on which you want to search, ["enterprise","scope"].</div>
 <dl>
 <dt><span class="returnLabel">Returns:</span></dt>
@@ -432,7 +456,7 @@ extends <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html
 <ul class="blockList">
 <li class="blockList">
 <h4>setScope</h4>
-<pre>public&nbsp;void&nbsp;<a href="../../../src-html/com/box/sdk/BoxSearchParameters.html#line.121">setScope</a>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;scope)</pre>
+<pre>public&nbsp;void&nbsp;<a href="../../../src-html/com/box/sdk/BoxSearchParameters.html#line.124">setScope</a>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;scope)</pre>
 <div class="block">Set the scope for how you want to search, ["enterprise","scope"].</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
@@ -446,7 +470,7 @@ extends <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html
 <ul class="blockList">
 <li class="blockList">
 <h4>getFileExtensions</h4>
-<pre>public&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/util/List.html?is-external=true" title="class or interface in java.util">List</a>&lt;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&gt;&nbsp;<a href="../../../src-html/com/box/sdk/BoxSearchParameters.html#line.130">getFileExtensions</a>()</pre>
+<pre>public&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/util/List.html?is-external=true" title="class or interface in java.util">List</a>&lt;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&gt;&nbsp;<a href="../../../src-html/com/box/sdk/BoxSearchParameters.html#line.133">getFileExtensions</a>()</pre>
 <div class="block">Get file extension filter (jpg,docx).</div>
 <dl>
 <dt><span class="returnLabel">Returns:</span></dt>
@@ -460,7 +484,7 @@ extends <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html
 <ul class="blockList">
 <li class="blockList">
 <h4>setFileExtensions</h4>
-<pre>public&nbsp;void&nbsp;<a href="../../../src-html/com/box/sdk/BoxSearchParameters.html#line.139">setFileExtensions</a>(<a href="https://docs.oracle.com/javase/8/docs/api/java/util/List.html?is-external=true" title="class or interface in java.util">List</a>&lt;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&gt;&nbsp;fileExtensions)</pre>
+<pre>public&nbsp;void&nbsp;<a href="../../../src-html/com/box/sdk/BoxSearchParameters.html#line.142">setFileExtensions</a>(<a href="https://docs.oracle.com/javase/8/docs/api/java/util/List.html?is-external=true" title="class or interface in java.util">List</a>&lt;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&gt;&nbsp;fileExtensions)</pre>
 <div class="block">Set file extension by providing a list of strings [jpg,docx].</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
@@ -474,7 +498,7 @@ extends <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html
 <ul class="blockList">
 <li class="blockList">
 <h4>getCreatedRange</h4>
-<pre>public&nbsp;<a href="../../../com/box/sdk/DateRange.html" title="class in com.box.sdk">DateRange</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxSearchParameters.html#line.148">getCreatedRange</a>()</pre>
+<pre>public&nbsp;<a href="../../../com/box/sdk/DateRange.html" title="class in com.box.sdk">DateRange</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxSearchParameters.html#line.151">getCreatedRange</a>()</pre>
 <div class="block">Get the DateRange filter to specify the when a file was created.</div>
 <dl>
 <dt><span class="returnLabel">Returns:</span></dt>
@@ -488,7 +512,7 @@ extends <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html
 <ul class="blockList">
 <li class="blockList">
 <h4>setCreatedRange</h4>
-<pre>public&nbsp;void&nbsp;<a href="../../../src-html/com/box/sdk/BoxSearchParameters.html#line.157">setCreatedRange</a>(<a href="../../../com/box/sdk/DateRange.html" title="class in com.box.sdk">DateRange</a>&nbsp;createdRange)</pre>
+<pre>public&nbsp;void&nbsp;<a href="../../../src-html/com/box/sdk/BoxSearchParameters.html#line.160">setCreatedRange</a>(<a href="../../../com/box/sdk/DateRange.html" title="class in com.box.sdk">DateRange</a>&nbsp;createdRange)</pre>
 <div class="block">Set the from DateRange filter to specify when a file was created.</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
@@ -502,7 +526,7 @@ extends <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html
 <ul class="blockList">
 <li class="blockList">
 <h4>getUpdatedRange</h4>
-<pre>public&nbsp;<a href="../../../com/box/sdk/DateRange.html" title="class in com.box.sdk">DateRange</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxSearchParameters.html#line.166">getUpdatedRange</a>()</pre>
+<pre>public&nbsp;<a href="../../../com/box/sdk/DateRange.html" title="class in com.box.sdk">DateRange</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxSearchParameters.html#line.169">getUpdatedRange</a>()</pre>
 <div class="block">Get the DateRange filter to specify the when a file was updated.</div>
 <dl>
 <dt><span class="returnLabel">Returns:</span></dt>
@@ -516,7 +540,7 @@ extends <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html
 <ul class="blockList">
 <li class="blockList">
 <h4>setUpdatedRange</h4>
-<pre>public&nbsp;void&nbsp;<a href="../../../src-html/com/box/sdk/BoxSearchParameters.html#line.175">setUpdatedRange</a>(<a href="../../../com/box/sdk/DateRange.html" title="class in com.box.sdk">DateRange</a>&nbsp;updatedRange)</pre>
+<pre>public&nbsp;void&nbsp;<a href="../../../src-html/com/box/sdk/BoxSearchParameters.html#line.178">setUpdatedRange</a>(<a href="../../../com/box/sdk/DateRange.html" title="class in com.box.sdk">DateRange</a>&nbsp;updatedRange)</pre>
 <div class="block">Set the from DateRange filter to specify when a file was updated.</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
@@ -530,7 +554,7 @@ extends <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html
 <ul class="blockList">
 <li class="blockList">
 <h4>getSizeRange</h4>
-<pre>public&nbsp;<a href="../../../com/box/sdk/SizeRange.html" title="class in com.box.sdk">SizeRange</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxSearchParameters.html#line.184">getSizeRange</a>()</pre>
+<pre>public&nbsp;<a href="../../../com/box/sdk/SizeRange.html" title="class in com.box.sdk">SizeRange</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxSearchParameters.html#line.187">getSizeRange</a>()</pre>
 <div class="block">Return the size range that is being used as a filter.</div>
 <dl>
 <dt><span class="returnLabel">Returns:</span></dt>
@@ -544,7 +568,7 @@ extends <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html
 <ul class="blockList">
 <li class="blockList">
 <h4>setSizeRange</h4>
-<pre>public&nbsp;void&nbsp;<a href="../../../src-html/com/box/sdk/BoxSearchParameters.html#line.193">setSizeRange</a>(<a href="../../../com/box/sdk/SizeRange.html" title="class in com.box.sdk">SizeRange</a>&nbsp;sizeRange)</pre>
+<pre>public&nbsp;void&nbsp;<a href="../../../src-html/com/box/sdk/BoxSearchParameters.html#line.196">setSizeRange</a>(<a href="../../../com/box/sdk/SizeRange.html" title="class in com.box.sdk">SizeRange</a>&nbsp;sizeRange)</pre>
 <div class="block">Set the file size range for lower and upper bounds Bytes.</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
@@ -558,7 +582,7 @@ extends <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html
 <ul class="blockList">
 <li class="blockList">
 <h4>getOwnerUserIds</h4>
-<pre>public&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/util/List.html?is-external=true" title="class or interface in java.util">List</a>&lt;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&gt;&nbsp;<a href="../../../src-html/com/box/sdk/BoxSearchParameters.html#line.202">getOwnerUserIds</a>()</pre>
+<pre>public&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/util/List.html?is-external=true" title="class or interface in java.util">List</a>&lt;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&gt;&nbsp;<a href="../../../src-html/com/box/sdk/BoxSearchParameters.html#line.205">getOwnerUserIds</a>()</pre>
 <div class="block">Return the list of owner id's that are being applied as a search filter on the results.</div>
 <dl>
 <dt><span class="returnLabel">Returns:</span></dt>
@@ -572,7 +596,7 @@ extends <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html
 <ul class="blockList">
 <li class="blockList">
 <h4>setOwnerUserIds</h4>
-<pre>public&nbsp;void&nbsp;<a href="../../../src-html/com/box/sdk/BoxSearchParameters.html#line.211">setOwnerUserIds</a>(<a href="https://docs.oracle.com/javase/8/docs/api/java/util/List.html?is-external=true" title="class or interface in java.util">List</a>&lt;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&gt;&nbsp;ownerUserIds)</pre>
+<pre>public&nbsp;void&nbsp;<a href="../../../src-html/com/box/sdk/BoxSearchParameters.html#line.214">setOwnerUserIds</a>(<a href="https://docs.oracle.com/javase/8/docs/api/java/util/List.html?is-external=true" title="class or interface in java.util">List</a>&lt;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&gt;&nbsp;ownerUserIds)</pre>
 <div class="block">Set the owner id's to be applied as a filter to restrict the results on specific file owners.</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
@@ -586,7 +610,7 @@ extends <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html
 <ul class="blockList">
 <li class="blockList">
 <h4>getAncestorFolderIds</h4>
-<pre>public&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/util/List.html?is-external=true" title="class or interface in java.util">List</a>&lt;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&gt;&nbsp;<a href="../../../src-html/com/box/sdk/BoxSearchParameters.html#line.220">getAncestorFolderIds</a>()</pre>
+<pre>public&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/util/List.html?is-external=true" title="class or interface in java.util">List</a>&lt;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&gt;&nbsp;<a href="../../../src-html/com/box/sdk/BoxSearchParameters.html#line.223">getAncestorFolderIds</a>()</pre>
 <div class="block">Return the list of folder ids that is currently being used as applied filter.</div>
 <dl>
 <dt><span class="returnLabel">Returns:</span></dt>
@@ -600,7 +624,7 @@ extends <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html
 <ul class="blockList">
 <li class="blockList">
 <h4>setAncestorFolderIds</h4>
-<pre>public&nbsp;void&nbsp;<a href="../../../src-html/com/box/sdk/BoxSearchParameters.html#line.229">setAncestorFolderIds</a>(<a href="https://docs.oracle.com/javase/8/docs/api/java/util/List.html?is-external=true" title="class or interface in java.util">List</a>&lt;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&gt;&nbsp;ancestorFolderIds)</pre>
+<pre>public&nbsp;void&nbsp;<a href="../../../src-html/com/box/sdk/BoxSearchParameters.html#line.232">setAncestorFolderIds</a>(<a href="https://docs.oracle.com/javase/8/docs/api/java/util/List.html?is-external=true" title="class or interface in java.util">List</a>&lt;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&gt;&nbsp;ancestorFolderIds)</pre>
 <div class="block">Set the list of folder id's to be applied as a filter on the search filters.</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
@@ -614,7 +638,7 @@ extends <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html
 <ul class="blockList">
 <li class="blockList">
 <h4>getContentTypes</h4>
-<pre>public&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/util/List.html?is-external=true" title="class or interface in java.util">List</a>&lt;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&gt;&nbsp;<a href="../../../src-html/com/box/sdk/BoxSearchParameters.html#line.238">getContentTypes</a>()</pre>
+<pre>public&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/util/List.html?is-external=true" title="class or interface in java.util">List</a>&lt;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&gt;&nbsp;<a href="../../../src-html/com/box/sdk/BoxSearchParameters.html#line.241">getContentTypes</a>()</pre>
 <div class="block">Return content types that or being applied as a filter (name,description,tags,file_content).</div>
 <dl>
 <dt><span class="returnLabel">Returns:</span></dt>
@@ -628,7 +652,7 @@ extends <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html
 <ul class="blockList">
 <li class="blockList">
 <h4>setContentTypes</h4>
-<pre>public&nbsp;void&nbsp;<a href="../../../src-html/com/box/sdk/BoxSearchParameters.html#line.247">setContentTypes</a>(<a href="https://docs.oracle.com/javase/8/docs/api/java/util/List.html?is-external=true" title="class or interface in java.util">List</a>&lt;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&gt;&nbsp;contentTypes)</pre>
+<pre>public&nbsp;void&nbsp;<a href="../../../src-html/com/box/sdk/BoxSearchParameters.html#line.250">setContentTypes</a>(<a href="https://docs.oracle.com/javase/8/docs/api/java/util/List.html?is-external=true" title="class or interface in java.util">List</a>&lt;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&gt;&nbsp;contentTypes)</pre>
 <div class="block">Set list of content types that will be used as a filters.</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
@@ -642,7 +666,7 @@ extends <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html
 <ul class="blockList">
 <li class="blockList">
 <h4>getType</h4>
-<pre>public&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxSearchParameters.html#line.256">getType</a>()</pre>
+<pre>public&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxSearchParameters.html#line.259">getType</a>()</pre>
 <div class="block">Return the type you want to return in your search.</div>
 <dl>
 <dt><span class="returnLabel">Returns:</span></dt>
@@ -656,7 +680,7 @@ extends <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html
 <ul class="blockList">
 <li class="blockList">
 <h4>setType</h4>
-<pre>public&nbsp;void&nbsp;<a href="../../../src-html/com/box/sdk/BoxSearchParameters.html#line.265">setType</a>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;type)</pre>
+<pre>public&nbsp;void&nbsp;<a href="../../../src-html/com/box/sdk/BoxSearchParameters.html#line.268">setType</a>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;type)</pre>
 <div class="block">Set the type you want to search for can be file, folder, or web_link.</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
@@ -670,7 +694,7 @@ extends <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html
 <ul class="blockList">
 <li class="blockList">
 <h4>getTrashContent</h4>
-<pre>public&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxSearchParameters.html#line.274">getTrashContent</a>()</pre>
+<pre>public&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxSearchParameters.html#line.277">getTrashContent</a>()</pre>
 <div class="block">Return the specified trash search preference.</div>
 <dl>
 <dt><span class="returnLabel">Returns:</span></dt>
@@ -684,7 +708,7 @@ extends <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html
 <ul class="blockList">
 <li class="blockList">
 <h4>setTrashContent</h4>
-<pre>public&nbsp;void&nbsp;<a href="../../../src-html/com/box/sdk/BoxSearchParameters.html#line.283">setTrashContent</a>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;trashContent)</pre>
+<pre>public&nbsp;void&nbsp;<a href="../../../src-html/com/box/sdk/BoxSearchParameters.html#line.286">setTrashContent</a>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;trashContent)</pre>
 <div class="block">Set trash filter. Can be trashed_only or non_trashed_only, without this parameter default to non_trashed_only.</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
@@ -698,7 +722,7 @@ extends <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html
 <ul class="blockList">
 <li class="blockList">
 <h4>getMetadataFilter</h4>
-<pre>public&nbsp;<a href="../../../com/box/sdk/BoxMetadataFilter.html" title="class in com.box.sdk">BoxMetadataFilter</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxSearchParameters.html#line.292">getMetadataFilter</a>()</pre>
+<pre>public&nbsp;<a href="../../../com/box/sdk/BoxMetadataFilter.html" title="class in com.box.sdk">BoxMetadataFilter</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxSearchParameters.html#line.295">getMetadataFilter</a>()</pre>
 <div class="block">Retrieve the existing BoxMetaDataFilter.</div>
 <dl>
 <dt><span class="returnLabel">Returns:</span></dt>
@@ -712,7 +736,7 @@ extends <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html
 <ul class="blockList">
 <li class="blockList">
 <h4>setMetadataFilter</h4>
-<pre>public&nbsp;void&nbsp;<a href="../../../src-html/com/box/sdk/BoxSearchParameters.html#line.301">setMetadataFilter</a>(<a href="../../../com/box/sdk/BoxMetadataFilter.html" title="class in com.box.sdk">BoxMetadataFilter</a>&nbsp;metadataFilter)</pre>
+<pre>public&nbsp;void&nbsp;<a href="../../../src-html/com/box/sdk/BoxSearchParameters.html#line.304">setMetadataFilter</a>(<a href="../../../com/box/sdk/BoxMetadataFilter.html" title="class in com.box.sdk">BoxMetadataFilter</a>&nbsp;metadataFilter)</pre>
 <div class="block">Set the current list of Metadata Filters.</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
@@ -726,7 +750,7 @@ extends <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html
 <ul class="blockList">
 <li class="blockList">
 <h4>getSort</h4>
-<pre>public&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxSearchParameters.html#line.310">getSort</a>()</pre>
+<pre>public&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxSearchParameters.html#line.313">getSort</a>()</pre>
 <div class="block">Retrieve the sort field for Box Search.</div>
 <dl>
 <dt><span class="returnLabel">Returns:</span></dt>
@@ -740,7 +764,7 @@ extends <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html
 <ul class="blockList">
 <li class="blockList">
 <h4>setSort</h4>
-<pre>public&nbsp;void&nbsp;<a href="../../../src-html/com/box/sdk/BoxSearchParameters.html#line.319">setSort</a>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;sortBy)</pre>
+<pre>public&nbsp;void&nbsp;<a href="../../../src-html/com/box/sdk/BoxSearchParameters.html#line.322">setSort</a>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;sortBy)</pre>
 <div class="block">Set the sort field for Box Search.</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
@@ -754,7 +778,7 @@ extends <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html
 <ul class="blockList">
 <li class="blockList">
 <h4>getDirection</h4>
-<pre>public&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxSearchParameters.html#line.328">getDirection</a>()</pre>
+<pre>public&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxSearchParameters.html#line.331">getDirection</a>()</pre>
 <div class="block">Retrieves the sort direction for Box Search results.</div>
 <dl>
 <dt><span class="returnLabel">Returns:</span></dt>
@@ -768,11 +792,71 @@ extends <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html
 <ul class="blockList">
 <li class="blockList">
 <h4>setDirection</h4>
-<pre>public&nbsp;void&nbsp;<a href="../../../src-html/com/box/sdk/BoxSearchParameters.html#line.337">setDirection</a>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;direction)</pre>
+<pre>public&nbsp;void&nbsp;<a href="../../../src-html/com/box/sdk/BoxSearchParameters.html#line.340">setDirection</a>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;direction)</pre>
 <div class="block">Set the direction of the sort for the Box Search results.</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
 <dd><code>direction</code> - can be DESC or ASC.</dd>
+</dl>
+</li>
+</ul>
+<a name="getDeleterUserIds--">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>getDeleterUserIds</h4>
+<pre>public&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/util/List.html?is-external=true" title="class or interface in java.util">List</a>&lt;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&gt;&nbsp;<a href="../../../src-html/com/box/sdk/BoxSearchParameters.html#line.350">getDeleterUserIds</a>()</pre>
+<div class="block">Limits the search results to items that were deleted by the given list of users, defined as a list of comma separated user IDs.
+ The trash_content parameter needs to be set to trashed_only.</div>
+<dl>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>deleterUserIds.</dd>
+</dl>
+</li>
+</ul>
+<a name="setDeleterUserIds-java.util.List-">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>setDeleterUserIds</h4>
+<pre>public&nbsp;void&nbsp;<a href="../../../src-html/com/box/sdk/BoxSearchParameters.html#line.360">setDeleterUserIds</a>(<a href="https://docs.oracle.com/javase/8/docs/api/java/util/List.html?is-external=true" title="class or interface in java.util">List</a>&lt;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&gt;&nbsp;deleterUserIds)</pre>
+<div class="block">Limits the search results to items that were deleted by the given list of users, defined as a list of comma separated user IDs.
+ The trash_content parameter needs to be set to trashed_only.</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>deleterUserIds</code> - a list of user ids.</dd>
+</dl>
+</li>
+</ul>
+<a name="getDeletedRange--">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>getDeletedRange</h4>
+<pre>public&nbsp;<a href="../../../com/box/sdk/DateRange.html" title="class in com.box.sdk">DateRange</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxSearchParameters.html#line.370">getDeletedRange</a>()</pre>
+<div class="block">Limits the search results to items that were deleted within the given date range.
+ The trash_content parameter needs to be set to trashed_only.</div>
+<dl>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>deletedRange.</dd>
+</dl>
+</li>
+</ul>
+<a name="setDeletedRange-com.box.sdk.DateRange-">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>setDeletedRange</h4>
+<pre>public&nbsp;void&nbsp;<a href="../../../src-html/com/box/sdk/BoxSearchParameters.html#line.380">setDeletedRange</a>(<a href="../../../com/box/sdk/DateRange.html" title="class in com.box.sdk">DateRange</a>&nbsp;deletedRange)</pre>
+<div class="block">Limits the search results to items that were deleted within the given date range.
+ The trash_content parameter needs to be set to trashed_only.</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>deletedRange</code> - a date range.</dd>
 </dl>
 </li>
 </ul>
@@ -782,7 +866,7 @@ extends <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html
 <ul class="blockListLast">
 <li class="blockList">
 <h4>getQueryParameters</h4>
-<pre>public&nbsp;QueryStringBuilder&nbsp;<a href="../../../src-html/com/box/sdk/BoxSearchParameters.html#line.399">getQueryParameters</a>()</pre>
+<pre>public&nbsp;QueryStringBuilder&nbsp;<a href="../../../src-html/com/box/sdk/BoxSearchParameters.html#line.442">getQueryParameters</a>()</pre>
 <div class="block">Get the Query Paramaters to be used for search request.</div>
 <dl>
 <dt><span class="returnLabel">Returns:</span></dt>

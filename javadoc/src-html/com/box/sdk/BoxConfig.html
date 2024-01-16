@@ -184,7 +184,16 @@
 <span class="sourceLineNo">176</span>    public void setClientId(String clientId) {<a name="line.176"></a>
 <span class="sourceLineNo">177</span>        this.clientId = clientId;<a name="line.177"></a>
 <span class="sourceLineNo">178</span>    }<a name="line.178"></a>
-<span class="sourceLineNo">179</span>}<a name="line.179"></a>
+<span class="sourceLineNo">179</span><a name="line.179"></a>
+<span class="sourceLineNo">180</span>    /**<a name="line.180"></a>
+<span class="sourceLineNo">181</span>     * Sets a custom decryptor used for decrypting the private key.<a name="line.181"></a>
+<span class="sourceLineNo">182</span>     *<a name="line.182"></a>
+<span class="sourceLineNo">183</span>     * @param privateKeyDecryptor privateKeyDecryptor the decryptor used for decrypting the private key.<a name="line.183"></a>
+<span class="sourceLineNo">184</span>     */<a name="line.184"></a>
+<span class="sourceLineNo">185</span>    public void setPrivateKeyDecryptor(IPrivateKeyDecryptor privateKeyDecryptor) {<a name="line.185"></a>
+<span class="sourceLineNo">186</span>        this.jwtEncryptionPreferences.setPrivateKeyDecryptor(privateKeyDecryptor);<a name="line.186"></a>
+<span class="sourceLineNo">187</span>    }<a name="line.187"></a>
+<span class="sourceLineNo">188</span>}<a name="line.188"></a>
 
 
 

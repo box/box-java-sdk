@@ -18,7 +18,7 @@
     catch(err) {
     }
 //-->
-var methods = {"i0":10,"i1":10,"i2":10,"i3":10,"i4":10,"i5":10,"i6":10,"i7":10};
+var methods = {"i0":10,"i1":10,"i2":10,"i3":10,"i4":10,"i5":10,"i6":10,"i7":10,"i8":10,"i9":10};
 var tabs = {65535:["t0","All Methods"],2:["t2","Instance Methods"],8:["t4","Concrete Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
@@ -98,36 +98,48 @@ extends <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html
 </td>
 </tr>
 <tr id="i2" class="altColor">
+<td class="colFirst"><code><a href="../../../com/box/sdk/IPrivateKeyDecryptor.html" title="interface in com.box.sdk">IPrivateKeyDecryptor</a></code></td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../com/box/sdk/JWTEncryptionPreferences.html#getPrivateKeyDecryptor--">getPrivateKeyDecryptor</a></span>()</code>
+<div class="block">Gets a decryptor used for decrypting the private key.</div>
+</td>
+</tr>
+<tr id="i3" class="rowColor">
 <td class="colFirst"><code><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../com/box/sdk/JWTEncryptionPreferences.html#getPrivateKeyPassword--">getPrivateKeyPassword</a></span>()</code>
 <div class="block">Returns the password for the private key.</div>
 </td>
 </tr>
-<tr id="i3" class="rowColor">
+<tr id="i4" class="altColor">
 <td class="colFirst"><code><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../com/box/sdk/JWTEncryptionPreferences.html#getPublicKeyID--">getPublicKeyID</a></span>()</code>
 <div class="block">Returns the ID for public key for validating the JWT signature.</div>
 </td>
 </tr>
-<tr id="i4" class="altColor">
+<tr id="i5" class="rowColor">
 <td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../com/box/sdk/JWTEncryptionPreferences.html#setEncryptionAlgorithm-com.box.sdk.EncryptionAlgorithm-">setEncryptionAlgorithm</a></span>(<a href="../../../com/box/sdk/EncryptionAlgorithm.html" title="enum in com.box.sdk">EncryptionAlgorithm</a>&nbsp;encryptionAlgorithm)</code>
 <div class="block">Sets the type of encryption algorithm for JWT.</div>
 </td>
 </tr>
-<tr id="i5" class="rowColor">
+<tr id="i6" class="altColor">
 <td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../com/box/sdk/JWTEncryptionPreferences.html#setPrivateKey-java.lang.String-">setPrivateKey</a></span>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;privateKey)</code>
 <div class="block">Sets the private key for generating the JWT signature.</div>
 </td>
 </tr>
-<tr id="i6" class="altColor">
+<tr id="i7" class="rowColor">
+<td class="colFirst"><code>void</code></td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../com/box/sdk/JWTEncryptionPreferences.html#setPrivateKeyDecryptor-com.box.sdk.IPrivateKeyDecryptor-">setPrivateKeyDecryptor</a></span>(<a href="../../../com/box/sdk/IPrivateKeyDecryptor.html" title="interface in com.box.sdk">IPrivateKeyDecryptor</a>&nbsp;privateKeyDecryptor)</code>
+<div class="block">Sets a custom decryptor used for decrypting the private key.</div>
+</td>
+</tr>
+<tr id="i8" class="altColor">
 <td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../com/box/sdk/JWTEncryptionPreferences.html#setPrivateKeyPassword-java.lang.String-">setPrivateKeyPassword</a></span>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;privateKeyPassword)</code>
 <div class="block">Sets the password for the private key.</div>
 </td>
 </tr>
-<tr id="i7" class="rowColor">
+<tr id="i9" class="rowColor">
 <td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../com/box/sdk/JWTEncryptionPreferences.html#setPublicKeyID-java.lang.String-">setPublicKeyID</a></span>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;publicKeyID)</code>
 <div class="block">Sets the ID for public key for validating the JWT signature.</div>
@@ -178,7 +190,7 @@ extends <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html
 <ul class="blockList">
 <li class="blockList">
 <h4>getPublicKeyID</h4>
-<pre>public&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;<a href="../../../src-html/com/box/sdk/JWTEncryptionPreferences.html#line.18">getPublicKeyID</a>()</pre>
+<pre>public&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;<a href="../../../src-html/com/box/sdk/JWTEncryptionPreferences.html#line.19">getPublicKeyID</a>()</pre>
 <div class="block">Returns the ID for public key for validating the JWT signature.</div>
 <dl>
 <dt><span class="returnLabel">Returns:</span></dt>
@@ -192,7 +204,7 @@ extends <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html
 <ul class="blockList">
 <li class="blockList">
 <h4>setPublicKeyID</h4>
-<pre>public&nbsp;void&nbsp;<a href="../../../src-html/com/box/sdk/JWTEncryptionPreferences.html#line.27">setPublicKeyID</a>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;publicKeyID)</pre>
+<pre>public&nbsp;void&nbsp;<a href="../../../src-html/com/box/sdk/JWTEncryptionPreferences.html#line.28">setPublicKeyID</a>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;publicKeyID)</pre>
 <div class="block">Sets the ID for public key for validating the JWT signature.</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
@@ -206,7 +218,7 @@ extends <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html
 <ul class="blockList">
 <li class="blockList">
 <h4>getPrivateKey</h4>
-<pre>public&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;<a href="../../../src-html/com/box/sdk/JWTEncryptionPreferences.html#line.36">getPrivateKey</a>()</pre>
+<pre>public&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;<a href="../../../src-html/com/box/sdk/JWTEncryptionPreferences.html#line.37">getPrivateKey</a>()</pre>
 <div class="block">Returns the private key for generating the JWT signature.</div>
 <dl>
 <dt><span class="returnLabel">Returns:</span></dt>
@@ -220,7 +232,7 @@ extends <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html
 <ul class="blockList">
 <li class="blockList">
 <h4>setPrivateKey</h4>
-<pre>public&nbsp;void&nbsp;<a href="../../../src-html/com/box/sdk/JWTEncryptionPreferences.html#line.45">setPrivateKey</a>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;privateKey)</pre>
+<pre>public&nbsp;void&nbsp;<a href="../../../src-html/com/box/sdk/JWTEncryptionPreferences.html#line.46">setPrivateKey</a>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;privateKey)</pre>
 <div class="block">Sets the private key for generating the JWT signature.</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
@@ -234,7 +246,7 @@ extends <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html
 <ul class="blockList">
 <li class="blockList">
 <h4>getPrivateKeyPassword</h4>
-<pre>public&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;<a href="../../../src-html/com/box/sdk/JWTEncryptionPreferences.html#line.54">getPrivateKeyPassword</a>()</pre>
+<pre>public&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;<a href="../../../src-html/com/box/sdk/JWTEncryptionPreferences.html#line.55">getPrivateKeyPassword</a>()</pre>
 <div class="block">Returns the password for the private key.</div>
 <dl>
 <dt><span class="returnLabel">Returns:</span></dt>
@@ -248,7 +260,7 @@ extends <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html
 <ul class="blockList">
 <li class="blockList">
 <h4>setPrivateKeyPassword</h4>
-<pre>public&nbsp;void&nbsp;<a href="../../../src-html/com/box/sdk/JWTEncryptionPreferences.html#line.63">setPrivateKeyPassword</a>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;privateKeyPassword)</pre>
+<pre>public&nbsp;void&nbsp;<a href="../../../src-html/com/box/sdk/JWTEncryptionPreferences.html#line.64">setPrivateKeyPassword</a>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;privateKeyPassword)</pre>
 <div class="block">Sets the password for the private key.</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
@@ -262,7 +274,7 @@ extends <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html
 <ul class="blockList">
 <li class="blockList">
 <h4>getEncryptionAlgorithm</h4>
-<pre>public&nbsp;<a href="../../../com/box/sdk/EncryptionAlgorithm.html" title="enum in com.box.sdk">EncryptionAlgorithm</a>&nbsp;<a href="../../../src-html/com/box/sdk/JWTEncryptionPreferences.html#line.72">getEncryptionAlgorithm</a>()</pre>
+<pre>public&nbsp;<a href="../../../com/box/sdk/EncryptionAlgorithm.html" title="enum in com.box.sdk">EncryptionAlgorithm</a>&nbsp;<a href="../../../src-html/com/box/sdk/JWTEncryptionPreferences.html#line.73">getEncryptionAlgorithm</a>()</pre>
 <div class="block">Returns the type of encryption algorithm for JWT.</div>
 <dl>
 <dt><span class="returnLabel">Returns:</span></dt>
@@ -273,14 +285,42 @@ extends <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html
 <a name="setEncryptionAlgorithm-com.box.sdk.EncryptionAlgorithm-">
 <!--   -->
 </a>
-<ul class="blockListLast">
+<ul class="blockList">
 <li class="blockList">
 <h4>setEncryptionAlgorithm</h4>
-<pre>public&nbsp;void&nbsp;<a href="../../../src-html/com/box/sdk/JWTEncryptionPreferences.html#line.81">setEncryptionAlgorithm</a>(<a href="../../../com/box/sdk/EncryptionAlgorithm.html" title="enum in com.box.sdk">EncryptionAlgorithm</a>&nbsp;encryptionAlgorithm)</pre>
+<pre>public&nbsp;void&nbsp;<a href="../../../src-html/com/box/sdk/JWTEncryptionPreferences.html#line.82">setEncryptionAlgorithm</a>(<a href="../../../com/box/sdk/EncryptionAlgorithm.html" title="enum in com.box.sdk">EncryptionAlgorithm</a>&nbsp;encryptionAlgorithm)</pre>
 <div class="block">Sets the type of encryption algorithm for JWT.</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
 <dd><code>encryptionAlgorithm</code> - the encryptionAlgorithm to set.</dd>
+</dl>
+</li>
+</ul>
+<a name="getPrivateKeyDecryptor--">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>getPrivateKeyDecryptor</h4>
+<pre>public&nbsp;<a href="../../../com/box/sdk/IPrivateKeyDecryptor.html" title="interface in com.box.sdk">IPrivateKeyDecryptor</a>&nbsp;<a href="../../../src-html/com/box/sdk/JWTEncryptionPreferences.html#line.91">getPrivateKeyDecryptor</a>()</pre>
+<div class="block">Gets a decryptor used for decrypting the private key.</div>
+<dl>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>the decryptor used for decrypting the private key.</dd>
+</dl>
+</li>
+</ul>
+<a name="setPrivateKeyDecryptor-com.box.sdk.IPrivateKeyDecryptor-">
+<!--   -->
+</a>
+<ul class="blockListLast">
+<li class="blockList">
+<h4>setPrivateKeyDecryptor</h4>
+<pre>public&nbsp;void&nbsp;<a href="../../../src-html/com/box/sdk/JWTEncryptionPreferences.html#line.100">setPrivateKeyDecryptor</a>(<a href="../../../com/box/sdk/IPrivateKeyDecryptor.html" title="interface in com.box.sdk">IPrivateKeyDecryptor</a>&nbsp;privateKeyDecryptor)</pre>
+<div class="block">Sets a custom decryptor used for decrypting the private key.</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>privateKeyDecryptor</code> - the decryptor used for decrypting the private key.</dd>
 </dl>
 </li>
 </ul>
