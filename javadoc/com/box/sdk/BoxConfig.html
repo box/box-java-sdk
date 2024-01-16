@@ -18,7 +18,7 @@
     catch(err) {
     }
 //-->
-var methods = {"i0":10,"i1":10,"i2":10,"i3":10,"i4":9,"i5":9,"i6":10,"i7":10,"i8":10,"i9":10};
+var methods = {"i0":10,"i1":10,"i2":10,"i3":10,"i4":9,"i5":9,"i6":10,"i7":10,"i8":10,"i9":10,"i10":10};
 var tabs = {65535:["t0","All Methods"],1:["t1","Static Methods"],2:["t2","Instance Methods"],8:["t4","Concrete Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
@@ -160,6 +160,12 @@ extends <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html
 <tr id="i9" class="rowColor">
 <td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../com/box/sdk/BoxConfig.html#setJWTEncryptionPreferences-com.box.sdk.JWTEncryptionPreferences-">setJWTEncryptionPreferences</a></span>(<a href="../../../com/box/sdk/JWTEncryptionPreferences.html" title="class in com.box.sdk">JWTEncryptionPreferences</a>&nbsp;jwtEncryptionPreferences)</code>&nbsp;</td>
+</tr>
+<tr id="i10" class="altColor">
+<td class="colFirst"><code>void</code></td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../com/box/sdk/BoxConfig.html#setPrivateKeyDecryptor-com.box.sdk.IPrivateKeyDecryptor-">setPrivateKeyDecryptor</a></span>(<a href="../../../com/box/sdk/IPrivateKeyDecryptor.html" title="interface in com.box.sdk">IPrivateKeyDecryptor</a>&nbsp;privateKeyDecryptor)</code>
+<div class="block">Sets a custom decryptor used for decrypting the private key.</div>
+</td>
 </tr>
 </table>
 <ul class="blockList">
@@ -407,13 +413,27 @@ extends <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html
 <a name="setClientId-java.lang.String-">
 <!--   -->
 </a>
-<ul class="blockListLast">
+<ul class="blockList">
 <li class="blockList">
 <h4>setClientId</h4>
 <pre>public&nbsp;void&nbsp;<a href="../../../src-html/com/box/sdk/BoxConfig.html#line.176">setClientId</a>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;clientId)</pre>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
 <dd><code>clientId</code> - client ID of the Application</dd>
+</dl>
+</li>
+</ul>
+<a name="setPrivateKeyDecryptor-com.box.sdk.IPrivateKeyDecryptor-">
+<!--   -->
+</a>
+<ul class="blockListLast">
+<li class="blockList">
+<h4>setPrivateKeyDecryptor</h4>
+<pre>public&nbsp;void&nbsp;<a href="../../../src-html/com/box/sdk/BoxConfig.html#line.185">setPrivateKeyDecryptor</a>(<a href="../../../com/box/sdk/IPrivateKeyDecryptor.html" title="interface in com.box.sdk">IPrivateKeyDecryptor</a>&nbsp;privateKeyDecryptor)</pre>
+<div class="block">Sets a custom decryptor used for decrypting the private key.</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>privateKeyDecryptor</code> - privateKeyDecryptor the decryptor used for decrypting the private key.</dd>
 </dl>
 </li>
 </ul>
