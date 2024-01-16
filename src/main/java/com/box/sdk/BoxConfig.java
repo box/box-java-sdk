@@ -176,4 +176,13 @@ public class BoxConfig {
     public void setClientId(String clientId) {
         this.clientId = clientId;
     }
+
+    /**
+     * Sets a custom decryptor used for decrypting the private key.
+     *
+     * @param privateKeyDecryptor privateKeyDecryptor the decryptor used for decrypting the private key.
+     */
+    public void setPrivateKeyDecryptor(IPrivateKeyDecryptor privateKeyDecryptor) {
+        this.jwtEncryptionPreferences.setPrivateKeyDecryptor(privateKeyDecryptor);
+    }
 }

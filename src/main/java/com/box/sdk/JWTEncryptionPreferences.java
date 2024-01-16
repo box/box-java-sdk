@@ -9,6 +9,7 @@ public class JWTEncryptionPreferences {
     private String privateKey;
     private String privateKeyPassword;
     private EncryptionAlgorithm encryptionAlgorithm;
+    private IPrivateKeyDecryptor privateKeyDecryptor = new BCPrivateKeyDecryptor();
 
     /**
      * Returns the ID for public key for validating the JWT signature.
@@ -80,5 +81,23 @@ public class JWTEncryptionPreferences {
      */
     public void setEncryptionAlgorithm(EncryptionAlgorithm encryptionAlgorithm) {
         this.encryptionAlgorithm = encryptionAlgorithm;
+    }
+
+    /**
+     * Gets a decryptor used for decrypting the private key.
+     *
+     * @return the decryptor used for decrypting the private key.
+     */
+    public IPrivateKeyDecryptor getPrivateKeyDecryptor() {
+        return privateKeyDecryptor;
+    }
+
+    /**
+     * Sets a custom decryptor used for decrypting the private key.
+     *
+     * @param privateKeyDecryptor the decryptor used for decrypting the private key.
+     */
+    public void setPrivateKeyDecryptor(IPrivateKeyDecryptor privateKeyDecryptor) {
+        this.privateKeyDecryptor = privateKeyDecryptor;
     }
 }
