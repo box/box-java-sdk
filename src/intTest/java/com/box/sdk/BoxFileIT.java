@@ -969,7 +969,6 @@ public class BoxFileIT {
     @Test
     public void uploadAndDownloadEmptyFileSucceeds() throws IOException {
         BoxAPIConnection api = jwtApiForServiceAccount();
-        BoxAPIConnection api = new BoxAPIConnection(accessToken);
         BoxFolder folder = getUniqueFolder(api);
         String fileName = "empty_file";
         URL fileURL = this.getClass().getResource("/sample-files/" + fileName);
