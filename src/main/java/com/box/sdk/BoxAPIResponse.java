@@ -148,7 +148,7 @@ public class BoxAPIResponse implements Closeable {
             );
         }
         ResponseBody responseBody = response.body();
-        if (responseBody.contentLength() == 0 || responseBody.contentType() == null) {
+        if (responseBody.contentType() == null) {
             try {
                 return new BoxAPIResponse(response.code(),
                         response.request().method(),

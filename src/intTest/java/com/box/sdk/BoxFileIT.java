@@ -966,6 +966,37 @@ public class BoxFileIT {
         }
     }
 
+    @Test
+    public void uploadAndDownloadEmptyFileSucceeds() throws IOException {
+        BoxAPIConnection api = jwtApiForServiceAccount();
+        BoxAPIConnection api = new BoxAPIConnection(accessToken);
+        BoxFolder folder = getUniqueFolder(api);
+        String fileName = "empty_file";
+        URL fileURL = this.getClass().getResource("/sample-files/" + fileName);
+        String filePath = URLDecoder.decode(fileURL.getFile(), "utf-8");
+        long fileSize = new File(filePath).length();
+        byte[] fileContent = readAllBytes(filePath);
+        BoxFile uploadedFile = null;
+        try {
+            InputStream uploadStream = Files.newInputStream(Paths.get(filePath));
+            ProgressListener mockUploadListener = mock(ProgressListener.class);
+            BoxFile.Info uploadedFileInfo = folder.uploadFile(
+                uploadStream, BoxFileIT.generateString(), fileSize, mockUploadListener
+            );
+            uploadedFile = uploadedFileInfo.getResource();
+
+            ByteArrayOutputStream downloadStream = new ByteArrayOutputStream();
+            uploadedFile.download(downloadStream);
+            byte[] downloadedFileContent = downloadStream.toByteArray();
+
+            assertThat(downloadedFileContent, is(equalTo(fileContent)));
+            assertThat(folder, hasItem(Matchers.<BoxItem.Info>hasProperty("ID", equalTo(uploadedFile.getID()))));
+        } finally {
+            deleteFile(uploadedFile);
+        }
+
+    }
+
     private byte[] readFileContent(String fileName) throws IOException {
         URL fileURL = this.getClass().getResource("/sample-files/" + fileName);
         String filePath = URLDecoder.decode(fileURL.getFile(), "utf-8");
