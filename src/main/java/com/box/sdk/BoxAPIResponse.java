@@ -148,19 +148,18 @@ public class BoxAPIResponse implements Closeable {
             );
         }
         ResponseBody responseBody = response.body();
-        if (responseBody.contentLength() == 0 || responseBody.contentType() == null) {
+        if (responseBody.contentType() == null) {
             try {
-                return new BoxAPIResponse(response.code(),
-                        response.request().method(),
-                        response.request().url().toString(),
-                        response.headers().toMultimap()
-                );
+                return emptyContentResponse(response);
             } finally {
                 responseBody.close();
             }
         }
         if (responseBody != null && responseBody.contentType() != null) {
             if (responseBody.contentType().toString().contains(APPLICATION_JSON)) {
+                if (responseBody.contentLength() == 0) {
+                    return emptyContentResponse(response);
+                }
                 String bodyAsString = "";
                 try {
                     bodyAsString = responseBody.string();
@@ -186,6 +185,14 @@ public class BoxAPIResponse implements Closeable {
             responseBody.byteStream(),
             Optional.ofNullable(responseBody.contentType()).map(MediaType::toString).orElse(null),
             responseBody.contentLength()
+        );
+    }
+
+    private static BoxAPIResponse emptyContentResponse(Response response) {
+        return new BoxAPIResponse(response.code(),
+            response.request().method(),
+            response.request().url().toString(),
+            response.headers().toMultimap()
         );
     }
 
