@@ -18,8 +18,8 @@ final class RetentionPolicyUtils {
         Iterable<BoxRetentionPolicy.Info> policies = BoxRetentionPolicy.getAll(api, "policy_name", "status",
             "can_owner_extend_retention");
         BoxRetentionPolicy.Info policy = StreamSupport.stream(policies.spliterator(), false)
-            .filter(p -> p.getPolicyName().startsWith(policyNamePrefix) &&
-                p.getStatus().equals(STATUS_ACTIVE) && p.getCanOwnerExtendRetention())
+            .filter(p -> p.getPolicyName().startsWith(policyNamePrefix)
+                && p.getStatus().equals(STATUS_ACTIVE) && p.getCanOwnerExtendRetention())
             .findFirst()
             .orElseGet(createPolicy);
         return (BoxRetentionPolicy) policy.getResource();
