@@ -15,9 +15,11 @@ final class RetentionPolicyUtils {
     static BoxRetentionPolicy findOrCreate(
         BoxAPIConnection api, String policyNamePrefix, Supplier<BoxRetentionPolicy.Info> createPolicy
     ) {
-        Iterable<BoxRetentionPolicy.Info> policies = BoxRetentionPolicy.getAll(api, "policy_name", "status");
+        Iterable<BoxRetentionPolicy.Info> policies = BoxRetentionPolicy.getAll(api, "policy_name", "status",
+            "can_owner_extend_retention");
         BoxRetentionPolicy.Info policy = StreamSupport.stream(policies.spliterator(), false)
-            .filter(p -> p.getPolicyName().startsWith(policyNamePrefix) && p.getStatus().equals(STATUS_ACTIVE))
+            .filter(p -> p.getPolicyName().startsWith(policyNamePrefix)
+                && p.getStatus().equals(STATUS_ACTIVE) && p.getCanOwnerExtendRetention())
             .findFirst()
             .orElseGet(createPolicy);
         return (BoxRetentionPolicy) policy.getResource();
@@ -33,9 +35,10 @@ final class RetentionPolicyUtils {
 
     static BoxRetentionPolicy.Info createModifiableFinitePolicy(BoxAPIConnection api) {
         RetentionPolicyParams optionalParams = new RetentionPolicyParams();
+        optionalParams.setCanOwnerExtendRetention(true);
         optionalParams.setRetentionType(RetentionPolicyParams.RetentionType.MODIFIABLE);
         return BoxRetentionPolicy.createFinitePolicy(
-                api, randomizeName("One day modifiable"), 1, PermanentlyDelete, optionalParams
+            api, randomizeName("One day modifiable"), 1, PermanentlyDelete, optionalParams
         );
     }
 }
