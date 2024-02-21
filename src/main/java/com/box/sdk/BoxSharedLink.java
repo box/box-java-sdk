@@ -269,6 +269,14 @@ public class BoxSharedLink extends BoxJSONObject {
         }
     }
 
+    public static String getSharedLinkHeaderValue(String sharedLink, String password) {
+        String boxAPIValue = "shared_link=" + sharedLink;
+        if (password != null) {
+            boxAPIValue += "&shared_link_password=" + password;
+        }
+        return boxAPIValue;
+    }
+
     /**
      * Enumerates the possible access levels that can be set on a shared link.
      */

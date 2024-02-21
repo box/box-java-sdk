@@ -64,12 +64,14 @@ public abstract class BoxItem extends BoxResource {
      * @return info about the shared item.
      */
     public static BoxItem.Info getSharedItem(BoxAPIConnection api, String sharedLink, String password) {
-        BoxAPIConnection newAPI = new SharedLinkAPIConnection(api, sharedLink, password);
-        URL url = SHARED_ITEM_URL_TEMPLATE.build(newAPI.getBaseURL());
-        BoxJSONRequest request = new BoxJSONRequest(newAPI, url, "GET");
+        URL url = SHARED_ITEM_URL_TEMPLATE.build(api.getBaseURL());
+        BoxJSONRequest request = new BoxJSONRequest(api, url, "GET");
+
+        request.addHeader("BoxApi", BoxSharedLink.getSharedLinkHeaderValue(sharedLink, password));
+
         try (BoxJSONResponse response = request.send()) {
             JsonObject json = Json.parse(response.getJSON()).asObject();
-            return (BoxItem.Info) BoxResource.parseInfo(newAPI, json);
+            return (BoxItem.Info) BoxResource.parseInfo(api, json);
         }
     }
 
