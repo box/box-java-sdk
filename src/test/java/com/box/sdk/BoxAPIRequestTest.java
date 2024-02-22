@@ -305,6 +305,7 @@ public class BoxAPIRequestTest {
 
         new BoxAPIRequest(api, boxMockUrl(), "GET").send();
         verify(1, getRequestedFor(urlEqualTo(modifiedPath)));
+        verify(0, getRequestedFor(urlEqualTo(initialPath)));
     }
 
     @Test
