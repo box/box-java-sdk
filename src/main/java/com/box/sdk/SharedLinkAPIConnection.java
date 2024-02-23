@@ -3,6 +3,7 @@ package com.box.sdk;
 /**
  * This API connection uses a shared link (along with an optional password) to authenticate with the Box API. It wraps a
  * preexisting BoxAPIConnection in order to provide additional access to items that are accessible with a shared link.
+ * @deprecated Use {@link BoxItem#getSharedItem(BoxAPIConnection, String, String)} instead
  */
 public class SharedLinkAPIConnection extends BoxAPIConnection {
     private final BoxAPIConnection wrappedConnection;

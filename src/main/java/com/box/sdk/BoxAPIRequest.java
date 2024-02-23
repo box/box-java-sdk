@@ -600,12 +600,10 @@ public class BoxAPIRequest {
 
         if (this.api instanceof SharedLinkAPIConnection) {
             SharedLinkAPIConnection sharedItemAPI = (SharedLinkAPIConnection) this.api;
-            String sharedLink = sharedItemAPI.getSharedLink();
-            String boxAPIValue = "shared_link=" + sharedLink;
-            String sharedLinkPassword = sharedItemAPI.getSharedLinkPassword();
-            if (sharedLinkPassword != null) {
-                boxAPIValue += "&shared_link_password=" + sharedLinkPassword;
-            }
+            String boxAPIValue = BoxSharedLink.getSharedLinkHeaderValue(
+                    sharedItemAPI.getSharedLink(),
+                    sharedItemAPI.getSharedLinkPassword()
+            );
             requestBuilder.addHeader("BoxApi", boxAPIValue);
         }
 
