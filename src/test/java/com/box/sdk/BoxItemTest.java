@@ -78,7 +78,7 @@ public class BoxItemTest {
     }
 
     @Test
-    public void shouldgetSharedItemWitPasswordAndUseBaseClient() {
+    public void shouldgetSharedItemWithPasswordAndUseBaseClient() {
         final String sharedLink = "https://app.box.com/s/kwio6b4ovt1264rnfbyqo1";
         final String password = "letmein";
         final String expectedSharedLinkHeaderValue = "shared_link=" + sharedLink + "&shared_link_password=" + password;
