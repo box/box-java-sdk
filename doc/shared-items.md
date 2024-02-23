@@ -28,18 +28,5 @@ String password = "foo";
 BoxItem.Info itemInfo = BoxItem.getSharedItem(api, sharedLink, password);
 ```
 
-If you already know the type and ID of the item you want to access, you can 
-manually construct a [`SharedLinkAPIConnection`][shared-link-api] and make
-API calls on the item directly.
-Note: `SharedLinkAPIConnection` is now deprecated. Please use `BoxItem.getSharedItem()` method instead.
-
-```java
-String sharedLink = "https://app.box.com/s/abcdefghijklmnopqrstuvwxyz123456";
-SharedLinkAPIConnection sharedLinkAPI = new SharedLinkAPIConnection(api, sharedLink);
-
-BoxFile sharedFile = new BoxFile(sharedLinkAPI, "file_id");
-BoxFile.Info sharedFileInfo = sharedFile.getInfo();
-```
-
 [get-shared-item]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxItem.html#getSharedItem-com.box.sdk.BoxAPIConnection-java.lang.String-
 [get-shared-item-password]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxItem.html#getSharedItem-com.box.sdk.BoxAPIConnection-java.lang.String-java.lang.String-
