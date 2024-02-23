@@ -288,6 +288,27 @@ public class BoxAPIRequestTest {
     }
 
     @Test
+    public void interceptorCanModifyRequestURL() {
+        String initialPath = "/";
+        String modifiedPath = "/2";
+
+        stubFor(get(urlEqualTo(initialPath))
+                .willReturn(aResponse().withStatus(404)));
+        stubFor(get(urlEqualTo(modifiedPath))
+                .willReturn(aResponse().withStatus(200).withBody("{\"foo\":\"bar\"}")));
+
+        BoxAPIConnection api = createConnectionWith(boxMockUrl().toString());
+        api.setRequestInterceptor(request -> {
+            request.setUrl(boxMockUrl(modifiedPath));
+            return null;
+        });
+
+        new BoxAPIRequest(api, boxMockUrl(), "GET").send();
+        verify(1, getRequestedFor(urlEqualTo(modifiedPath)));
+        verify(0, getRequestedFor(urlEqualTo(initialPath)));
+    }
+
+    @Test
     public void addsAuthenticationHeaderByDefault() {
         stubFor(get(urlEqualTo("/"))
             .willReturn(aResponse().withStatus(200).withBody("{\"foo\":\"bar\"}")));
@@ -330,6 +351,14 @@ public class BoxAPIRequestTest {
     private URL boxMockUrl() {
         try {
             return new URL(format("https://localhost:%d/", wireMockRule.httpsPort()));
+        } catch (MalformedURLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private URL boxMockUrl(String path) {
+        try {
+            return new URL(format("https://localhost:%d%s", wireMockRule.httpsPort(), path));
         } catch (MalformedURLException e) {
             throw new RuntimeException(e);
         }

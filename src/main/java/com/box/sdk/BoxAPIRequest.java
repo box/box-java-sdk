@@ -49,7 +49,7 @@ public class BoxAPIRequest {
     private final BoxAPIConnection api;
     private final List<RequestHeader> headers;
     private final String method;
-    private final URL url;
+    private URL url;
     private BackoffCounter backoffCounter;
     private int connectTimeout;
     private int readTimeout;
@@ -289,6 +289,14 @@ public class BoxAPIRequest {
      */
     public URL getUrl() {
         return this.url;
+    }
+
+    /**
+     * Sets the URL to the request.
+     *
+     */
+    public void setUrl(URL url) {
+        this.url = url;
     }
 
     /**
