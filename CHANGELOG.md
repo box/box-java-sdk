@@ -2,6 +2,19 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [4.8.0](https://github.com/box/box-java-sdk/compare/v4.7.0...v4.8.0) (2024-02-27)
+
+
+### New Features and Enhancements:
+
+* allow modifying `BoxAPIRequest` URL ([#1236](https://github.com/box/box-java-sdk/issues/1236)) ([eaea019](https://github.com/box/box-java-sdk/commit/eaea0193ab7e72b73746ea85806e62468825bbce))
+* Bumped `org.bouncycastle:bcprov-jdk18on:1.77` and `org.bouncycastle:bcpkix-jdk18on:1.77` ([#1237](https://github.com/box/box-java-sdk/issues/1237)) ([6c7fe7b](https://github.com/box/box-java-sdk/commit/6c7fe7b74dbfb34e729fcecf8a29a1d3a1ba596f)), closes [#1235](https://github.com/box/box-java-sdk/issues/1235)
+
+### Bug Fixes:
+
+* fix download for empty files ([#1231](https://github.com/box/box-java-sdk/issues/1231)) ([0e2230b](https://github.com/box/box-java-sdk/commit/0e2230b0be36f6bfb35f1d6b9dd4ba58e4d125ec))
+* stop using `SharedLinkAPIConnection` in `getSharedItem()` ([#1234](https://github.com/box/box-java-sdk/issues/1234)) ([9f9af8e](https://github.com/box/box-java-sdk/commit/9f9af8e22b4a38dc9a31a611ff1b962966bbd6b5))
+
 ## [4.7.0](https://github.com/box/box-java-sdk/compare/v4.6.1...v4.7.0) (2024-01-16)
 
 
