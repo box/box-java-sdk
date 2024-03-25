@@ -604,7 +604,7 @@ public class BoxFile extends BoxItem {
     }
 
     /**
-     * Gets any previous versions of this file. Note that only users with premium accounts will be able to retrieve
+     * Gets up to 1000 versions of this file. Note that only users with premium accounts will be able to retrieve
      * previous versions of their files. `fields` parameter is optional, if specified only requested fields will
      * be returned:
      * <pre>
@@ -619,22 +619,36 @@ public class BoxFile extends BoxItem {
      * @return a list of previous file versions.
      */
     public Collection<BoxFileVersion> getVersions(String... fields) {
-        URL url = VERSIONS_URL_TEMPLATE.build(this.getAPI().getBaseURL(), this.getID());
-        try {
-            if (fields.length > 0) {
-                QueryStringBuilder builder = new QueryStringBuilder(url.getQuery());
-                builder.appendParam("fields", fields);
-                url = builder.addToURL(url);
-            }
-        } catch (MalformedURLException e) {
-            throw new BoxAPIException("Couldn't append a query string to the provided URL.", e);
+        return getVersionsRange(0, BoxFileVersion.DEFAULT_LIMIT, fields);
+    }
+
+
+    /**
+     * Retrieves a specific range of versions of this file.
+     *
+     * @param offset the index of the first version of this file to retrieve.
+     * @param limit  the maximum number of versions to retrieve after the offset.
+     * @param fields the fields to retrieve.
+     * @return a partial collection containing the specified range of versions of this file.
+     */
+    public PartialCollection<BoxFileVersion> getVersionsRange(long offset, long limit, String... fields) {
+        QueryStringBuilder builder = new QueryStringBuilder()
+                .appendParam("limit", limit)
+                .appendParam("offset", offset);
+
+        if (fields.length > 0) {
+            builder.appendParam("fields", fields);
         }
+
+        URL url = VERSIONS_URL_TEMPLATE.buildWithQuery(this.getAPI().getBaseURL(), builder.toString(), this.getID());
         BoxJSONRequest request = new BoxJSONRequest(this.getAPI(), url, "GET");
         try (BoxJSONResponse response = request.send()) {
 
             JsonObject jsonObject = Json.parse(response.getJSON()).asObject();
+            String totalCountString = jsonObject.get("total_count").toString();
+            long fullSize = Double.valueOf(totalCountString).longValue();
+            PartialCollection<BoxFileVersion> versions = new PartialCollection<>(offset, limit, fullSize);
             JsonArray entries = jsonObject.get("entries").asArray();
-            Collection<BoxFileVersion> versions = new ArrayList<>();
             for (JsonValue entry : entries) {
                 versions.add(new BoxFileVersion(this.getAPI(), entry.asObject(), this.getID()));
             }

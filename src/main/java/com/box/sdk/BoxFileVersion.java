@@ -24,6 +24,11 @@ public class BoxFileVersion extends BoxResource {
      */
     public static final URLTemplate VERSION_URL_TEMPLATE = new URLTemplate("files/%s/versions/%s");
 
+    /**
+     * The default limit of entries per response.
+     */
+    public static final long DEFAULT_LIMIT = 1000;
+
     private String fileID;
 
     private String versionID;
