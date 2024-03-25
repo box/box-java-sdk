@@ -508,7 +508,8 @@ public class BoxFile extends BoxItem {
 
         List<Representation> reps = this.getInfoWithRepresentations(representationHint).getRepresentations();
         if (reps.size() < 1) {
-            throw new BoxAPIException("No matching representations found");
+            throw new BoxAPIException("No matching representations found for requested '" + representationHint
+                + "' hint");
         }
         Representation representation = reps.get(0);
         String repState = representation.getStatus().getState();
