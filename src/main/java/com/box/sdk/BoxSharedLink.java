@@ -217,6 +217,10 @@ public class BoxSharedLink extends BoxJSONObject {
      * @param permissions the new permissions for this shared link.
      */
     public void setPermissions(Permissions permissions) {
+        if (this.permissions != null && this.permissions.equals(permissions)) {
+            return;
+        }
+
         this.removeChildObject("permissions");
         this.permissions = permissions;
         this.addChildObject("permissions", permissions);

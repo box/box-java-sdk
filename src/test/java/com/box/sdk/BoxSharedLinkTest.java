@@ -34,7 +34,7 @@ public class BoxSharedLinkTest {
     }
 
     @Test
-    public void doStorePendingChangeWhenPermissionsNotChanged() {
+    public void doNotStorePendingChangeWhenPermissionsNotChanged() {
         BoxSharedLink link = new BoxSharedLink();
         link.setPermissions(permissions(true, false));
         link.removeChildObject("permissions");
@@ -42,8 +42,7 @@ public class BoxSharedLinkTest {
         link.setPermissions(this.permissions(true, false));
 
         assertThat(link.getPermissions(), is(permissions(true, false)));
-        assertThat(link.getPendingChangesAsJsonObject().toString(),
-            is("{\"permissions\":{\"can_download\":true,\"can_preview\":false}}"));
+        assertThat(link.getPendingChangesAsJsonObject(), is("{}"));
     }
 
     @Test
