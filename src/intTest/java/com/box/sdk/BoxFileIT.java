@@ -944,6 +944,21 @@ public class BoxFileIT {
     }
 
     @Test
+    public void createDefaultSharedLink() {
+        BoxAPIConnection api = jwtApiForServiceAccount();
+        BoxFile uploadedFile = null;
+        try {
+            uploadedFile = uploadFileToUniqueFolderWithSomeContent(api, "file_to_share.txt");
+            BoxSharedLinkRequest request = new BoxSharedLinkRequest();
+            uploadedFile.createSharedLink(request);
+            BoxSharedLink sharedLink = uploadedFile.getInfo().getSharedLink();
+            assertThat(sharedLink, is(notNullValue()));
+        } finally {
+            deleteFile(uploadedFile);
+        }
+    }
+
+    @Test
     public void setsAndRetrievesDispositionAt() throws ParseException {
         BoxAPIConnection api = jwtApiForServiceAccount();
         BoxFolder testFolder = null;

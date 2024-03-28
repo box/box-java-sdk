@@ -1034,6 +1034,30 @@ public class BoxFileTest {
     }
 
     @Test
+    public void createDefaultSharedLink() {
+        //given
+        BoxAPIConnection api = new BoxAPIConnectionForTests("");
+        api.setRequestInterceptor(
+            request -> {
+                //then
+                String requestString = request.bodyToString();
+                assertThat(requestString, is("{\"shared_link\":{}}"));
+                return new BoxJSONResponse() {
+                    @Override
+                    public String getJSON() {
+                        return "{}";
+                    }
+                };
+            }
+        );
+        BoxSharedLinkRequest sharedLink = new BoxSharedLinkRequest();
+
+        //when
+        BoxFile file = new BoxFile(api, "12345");
+        file.createSharedLink(sharedLink);
+    }
+
+    @Test
     public void setMetadataWorksWhenNoChangesSubmittedAndConflictOccured() {
         // given
         BoxAPIConnection api = new BoxAPIConnectionForTests("");
