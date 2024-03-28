@@ -1,7 +1,6 @@
 package com.box.sdk;
 
 import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.CoreMatchers.nullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertThrows;
 
@@ -35,7 +34,7 @@ public class BoxSharedLinkTest {
     }
 
     @Test
-    public void doNotStorePendingChangeWhenPermissionsNotChanged() {
+    public void doStorePendingChangeWhenPermissionsNotChanged() {
         BoxSharedLink link = new BoxSharedLink();
         link.setPermissions(permissions(true, false));
         link.removeChildObject("permissions");
@@ -43,7 +42,8 @@ public class BoxSharedLinkTest {
         link.setPermissions(this.permissions(true, false));
 
         assertThat(link.getPermissions(), is(permissions(true, false)));
-        assertThat(link.getPendingChangesAsJsonObject(), is(nullValue()));
+        assertThat(link.getPendingChangesAsJsonObject().toString(),
+            is("{\"permissions\":{\"can_download\":true,\"can_preview\":false}}"));
     }
 
     @Test
