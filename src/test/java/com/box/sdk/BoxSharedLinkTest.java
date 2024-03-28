@@ -42,7 +42,7 @@ public class BoxSharedLinkTest {
         link.setPermissions(this.permissions(true, false));
 
         assertThat(link.getPermissions(), is(permissions(true, false)));
-        assertThat(link.getPendingChangesAsJsonObject(), is("{}"));
+        assertThat(link.getPendingChangesAsJsonObject().toString(), is("{}"));
     }
 
     @Test
