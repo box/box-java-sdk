@@ -94,8 +94,8 @@ public final class UniqueTestFolder {
         return uploadFileWithContentToSpecifiedFolder(fileName, "Test file", folder);
     }
 
-    private static BoxFile uploadFileWithContentToSpecifiedFolder(
-        String fileName, String fileContent, BoxFolder folder
+    static BoxFile uploadFileWithContentToSpecifiedFolder(
+            String fileName, String fileContent, BoxFolder folder
     ) {
         byte[] fileBytes = fileContent.getBytes(StandardCharsets.UTF_8);
 
@@ -128,7 +128,7 @@ public final class UniqueTestFolder {
     ) {
         byte[] version1Bytes = version1Content.getBytes(StandardCharsets.UTF_8);
         byte[] version2Bytes = version2Content.getBytes(StandardCharsets.UTF_8);
-        long version2Size = version1Bytes.length;
+        long version2Size = version2Bytes.length;
 
         InputStream uploadStream = new ByteArrayInputStream(version1Bytes);
         BoxFile uploadedFile = folder.uploadFile(uploadStream, fileName).getResource();

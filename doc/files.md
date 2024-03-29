@@ -477,12 +477,24 @@ Get Previous Versions of a File
 -------------------------------
 
 For users with premium accounts, versions of a file can be retrieved with the
-[`getVersions()`][get-versions] method. It will return versions with all default fields set.
+[`getVersions()`][get-versions] method. By default, it will return up to 1000 file versions with all default fields set.
 
 <!-- sample get_files_id_versions -->
 ```java
 BoxFile file = new BoxFile(api, "id");
 Collection<BoxFileVersion> versions = file.getVersions();
+for (BoxFileVersion version : versions) {
+    System.out.format("SHA1 of \"%s\": %s\n", file.getInfo().getName(), version.getSha1());
+}
+```
+
+File versions can be retrieved with specified starting position with the
+[`getVersionsRange(long offset, long limit)`][get-versions-range] method.
+You can use the `limit` and `offset` parameters to page through the all available file versions.
+
+```java
+BoxFile file = new BoxFile(api, "id");
+Collection<BoxFileVersion> versions = file.getVersionsRange(1000, 2000);
 for (BoxFileVersion version : versions) {
     System.out.format("SHA1 of \"%s\": %s\n", file.getInfo().getName(), version.getSha1());
 }
