@@ -213,7 +213,7 @@ public abstract class BoxJSONObject {
      *
      * @return a JsonObject containing the pending changes.
      */
-    private JsonObject getPendingJSONObject() {
+    protected JsonObject getPendingJSONObject() {
         for (Map.Entry<String, BoxJSONObject> entry : this.children.entrySet()) {
             BoxJSONObject child = entry.getValue();
             JsonObject jsonObject = child.getPendingJSONObject();
