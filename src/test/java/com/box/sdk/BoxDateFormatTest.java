@@ -58,6 +58,14 @@ public class BoxDateFormatTest {
     }
 
     @Test
+    public void testParseWorksWithMilisecondsResolution() throws ParseException {
+
+        Date date = BoxDateFormat.parse("2019-04-06T22:58:49.123+01:00");
+        Date expectedDate = new Date(1554587929123L);
+        assertEquals(expectedDate, date);
+    }
+
+    @Test
     public void testFormatDateToDateOnlyString() {
         Date date = Date.from(LocalDateTime.of(2020, 5, 14, 10, 15, 12)
             .toInstant(ZoneOffset.UTC));
