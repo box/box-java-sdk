@@ -55,7 +55,7 @@ public class BoxAIIT {
                         BoxAI.Mode.SINGLE_ITEM_QA
                 );
                 assertThat(response.getAnswer(), containsString("Test file"));
-                assert response.getCreatedAt().after(new Date(System.currentTimeMillis()));
+                assert response.getCreatedAt().before(new Date(System.currentTimeMillis()));
                 assertThat(response.getCompletionReason(), equalTo("done"));
             }, 2, 2000);
 
@@ -90,7 +90,7 @@ public class BoxAIIT {
                         BoxAI.Mode.MULTIPLE_ITEM_QA
                 );
                 assertThat(response.getAnswer(), containsString("Test file"));
-                assert response.getCreatedAt().after(new Date(System.currentTimeMillis()));
+                assert response.getCreatedAt().before(new Date(System.currentTimeMillis()));
                 assertThat(response.getCompletionReason(), equalTo("done"));
             }, 2, 2000);
 
@@ -128,7 +128,7 @@ public class BoxAIIT {
                         dialogueHistory
                 );
                 assertThat(response.getAnswer(), containsString("name"));
-                assert response.getCreatedAt().after(new Date(System.currentTimeMillis()));
+                assert response.getCreatedAt().before(new Date(System.currentTimeMillis()));
                 assertThat(response.getCompletionReason(), equalTo("done"));
             }, 2, 2000);
 
