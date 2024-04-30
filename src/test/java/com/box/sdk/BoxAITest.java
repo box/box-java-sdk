@@ -34,7 +34,7 @@ public class BoxAITest {
     }
 
     @Test
-    public void testsendAIRequestSuccess() {
+    public void testSendAIRequestSuccess() {
         final String fileId = "12345";
         final String prompt = "What is the name of the file?";
 
@@ -59,7 +59,7 @@ public class BoxAITest {
     }
 
     @Test
-    public void testsendAITexGenRequestWithNoDialogueHistorySuccess() {
+    public void testSendAITexGenRequestWithNoDialogueHistorySuccess() {
         final String fileId = "12345";
         final String prompt = "What is the name of the file?";
 
@@ -83,7 +83,7 @@ public class BoxAITest {
     }
 
     @Test
-    public void testsendAITexGenRequestWithDialogueHistorySuccess() throws ParseException {
+    public void testSendAITexGenRequestWithDialogueHistorySuccess() throws ParseException {
         final String fileId = "12345";
         final String prompt = "What is the name of the file?";
 

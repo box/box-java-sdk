@@ -15,13 +15,13 @@ an answer based on the provided prompt and items.
 Send AI request
 --------------------------
 
-To send an AI request to get an answer call static
+To send an AI request, call static
 [`sendAIRequest(String prompt, List<BoxAIItem> items, Mode mode)`][send-ai-request] method.
 In the request you have to provide a prompt, a list of items that your prompt refers to and a mode of the request.
 There are two modes available: `SINGLE_ITEM_QA` and `MULTI_ITEM_QA`, which specifies if this request refers to
 for a single or multiple items.
 
-<!-- sample get_enterprises_id_device_pinners -->
+<!-- sample post_ai_ask -->
 ```java
 BoxAIResponse response = BoxAI.sendAIRequest(
     api,
@@ -39,12 +39,12 @@ It usually takes a few seconds for the file to be indexed and available for the 
 Send AI text generation request
 --------------
 
-To send an AI request to get an answer specifically focused on the creation of new text call static
+To send an AI request specifically focused on the creation of new text, call static
 [`sendAITextGenRequest(String prompt, List<BoxAIItem> items, List<BoxAIDialogueEntry> dialogueHistory)`][send-ai-text-gen-request] method.
-In the request you have to provide a prompt, a list of items that your prompt refers to and a dialogue history,
+In the request you have to provide a prompt, a list of items that your prompt refers to and optionally a dialogue history,
 which provides additional context to the LLM in generating the response.
 
-<!-- sample get_device_pinners_id -->
+<!-- sample post_ai_text_gen -->
 ```java
 List<BoxAIDialogueEntry> dialogueHistory = new ArrayList<>();
 dialogueHistory.add(

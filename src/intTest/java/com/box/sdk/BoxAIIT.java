@@ -69,30 +69,35 @@ public class BoxAIIT {
         BoxAPIConnection api = jwtApiForServiceAccount();
         String fileName1 = "[askAIMultipleItems] Test File.txt";
         BoxFile uploadedFile1 = uploadFileToUniqueFolder(api, fileName1, "Test file");
+
         try {
             String fileName2 = "[askAIMultipleItems] Weather forecast.txt";
             BoxFile uploadedFile2 = uploadFileToUniqueFolder(api, fileName2, "Test file");
 
-            BoxFile.Info uploadedFileInfo1 = uploadedFile1.getInfo();
-            BoxFile.Info uploadedFileInfo2 = uploadedFile2.getInfo();
+            try {
+                BoxFile.Info uploadedFileInfo1 = uploadedFile1.getInfo();
+                BoxFile.Info uploadedFileInfo2 = uploadedFile2.getInfo();
 
-            List<BoxAIItem> items = new ArrayList<>();
-            items.add(new BoxAIItem(uploadedFileInfo1.getID(), BoxAIItem.Type.FILE));
-            items.add(new BoxAIItem(uploadedFileInfo2.getID(), BoxAIItem.Type.FILE));
+                List<BoxAIItem> items = new ArrayList<>();
+                items.add(new BoxAIItem(uploadedFileInfo1.getID(), BoxAIItem.Type.FILE));
+                items.add(new BoxAIItem(uploadedFileInfo2.getID(), BoxAIItem.Type.FILE));
 
-            // When a file has been just uploaded, AI service may not be ready to return text response
-            // and 412 is returned
-            retry(() -> {
-                BoxAIResponse response = BoxAI.sendAIRequest(
-                        api,
-                        "What is the content of these files?",
-                        items,
-                        BoxAI.Mode.MULTIPLE_ITEM_QA
-                );
-                assertThat(response.getAnswer(), containsString("Test file"));
-                assert response.getCreatedAt().before(new Date(System.currentTimeMillis()));
-                assertThat(response.getCompletionReason(), equalTo("done"));
-            }, 2, 2000);
+                // When a file has been just uploaded, AI service may not be ready to return text response
+                // and 412 is returned
+                retry(() -> {
+                    BoxAIResponse response = BoxAI.sendAIRequest(
+                            api,
+                            "What is the content of these files?",
+                            items,
+                            BoxAI.Mode.MULTIPLE_ITEM_QA
+                    );
+                    assertThat(response.getAnswer(), containsString("Test file"));
+                    assert response.getCreatedAt().before(new Date(System.currentTimeMillis()));
+                    assertThat(response.getCompletionReason(), equalTo("done"));
+                }, 2, 2000);
+            } finally {
+                deleteFile(uploadedFile2);
+            }
 
         } finally {
             deleteFile(uploadedFile1);
