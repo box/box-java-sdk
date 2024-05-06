@@ -18,8 +18,8 @@
     catch(err) {
     }
 //-->
-var methods = {"i0":10,"i1":10,"i2":10,"i3":10,"i4":10,"i5":10,"i6":10,"i7":10,"i8":10,"i9":10,"i10":10,"i11":10,"i12":10,"i13":10,"i14":10,"i15":10,"i16":10,"i17":10,"i18":10,"i19":10};
-var tabs = {65535:["t0","All Methods"],2:["t2","Instance Methods"],8:["t4","Concrete Methods"]};
+var methods = {"i0":42,"i1":42,"i2":42,"i3":42,"i4":42,"i5":42,"i6":42,"i7":42,"i8":42,"i9":42,"i10":42,"i11":42,"i12":42,"i13":42,"i14":42,"i15":42,"i16":42,"i17":42,"i18":42,"i19":42};
+var tabs = {65535:["t0","All Methods"],2:["t2","Instance Methods"],8:["t4","Concrete Methods"],32:["t6","Deprecated Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
 var tableTab = "tableTab";
@@ -51,8 +51,11 @@ var activeTableTab = "activeTableTab";
 <ul class="blockList">
 <li class="blockList">
 <hr>
+<div class="block"><span class="deprecatedLabel">Deprecated.</span>&nbsp;
+<div class="block"><span class="deprecationComment">Use <a href="../../../com/box/sdk/BoxItem.html#getSharedItem-com.box.sdk.BoxAPIConnection-java.lang.String-java.lang.String-"><code>BoxItem.getSharedItem(BoxAPIConnection, String, String)</code></a> instead</span></div>
+</div>
 <br>
-<pre>public class <a href="../../../src-html/com/box/sdk/SharedLinkAPIConnection.html#line.7">SharedLinkAPIConnection</a>
+<pre>public class <a href="../../../src-html/com/box/sdk/SharedLinkAPIConnection.html#line.8">SharedLinkAPIConnection</a>
 extends <a href="../../../com/box/sdk/BoxAPIConnection.html" title="class in com.box.sdk">BoxAPIConnection</a></pre>
 <div class="block">This API connection uses a shared link (along with an optional password) to authenticate with the Box API. It wraps a
  preexisting BoxAPIConnection in order to provide additional access to items that are accessible with a shared link.</div>
@@ -105,12 +108,16 @@ extends <a href="../../../com/box/sdk/BoxAPIConnection.html" title="class in com
 </tr>
 <tr class="altColor">
 <td class="colOne"><code><span class="memberNameLink"><a href="../../../com/box/sdk/SharedLinkAPIConnection.html#SharedLinkAPIConnection-com.box.sdk.BoxAPIConnection-java.lang.String-">SharedLinkAPIConnection</a></span>(<a href="../../../com/box/sdk/BoxAPIConnection.html" title="class in com.box.sdk">BoxAPIConnection</a>&nbsp;connection,
-                       <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;sharedLink)</code>&nbsp;</td>
+                       <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;sharedLink)</code>
+<div class="block"><span class="deprecatedLabel">Deprecated.</span>&nbsp;</div>
+&nbsp;</td>
 </tr>
 <tr class="rowColor">
 <td class="colOne"><code><span class="memberNameLink"><a href="../../../com/box/sdk/SharedLinkAPIConnection.html#SharedLinkAPIConnection-com.box.sdk.BoxAPIConnection-java.lang.String-java.lang.String-">SharedLinkAPIConnection</a></span>(<a href="../../../com/box/sdk/BoxAPIConnection.html" title="class in com.box.sdk">BoxAPIConnection</a>&nbsp;connection,
                        <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;sharedLink,
-                       <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;sharedLinkPassword)</code>&nbsp;</td>
+                       <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;sharedLinkPassword)</code>
+<div class="block"><span class="deprecatedLabel">Deprecated.</span>&nbsp;</div>
+&nbsp;</td>
 </tr>
 </table>
 </li>
@@ -122,7 +129,7 @@ extends <a href="../../../com/box/sdk/BoxAPIConnection.html" title="class in com
 </a>
 <h3>Method Summary</h3>
 <table class="memberSummary" border="0" cellpadding="3" cellspacing="0" summary="Method Summary table, listing methods, and an explanation">
-<caption><span id="t0" class="activeTableTab"><span>All Methods</span><span class="tabEnd">&nbsp;</span></span><span id="t2" class="tableTab"><span><a href="javascript:show(2);">Instance Methods</a></span><span class="tabEnd">&nbsp;</span></span><span id="t4" class="tableTab"><span><a href="javascript:show(8);">Concrete Methods</a></span><span class="tabEnd">&nbsp;</span></span></caption>
+<caption><span id="t0" class="activeTableTab"><span>All Methods</span><span class="tabEnd">&nbsp;</span></span><span id="t2" class="tableTab"><span><a href="javascript:show(2);">Instance Methods</a></span><span class="tabEnd">&nbsp;</span></span><span id="t4" class="tableTab"><span><a href="javascript:show(8);">Concrete Methods</a></span><span class="tabEnd">&nbsp;</span></span><span id="t6" class="tableTab"><span><a href="javascript:show(32);">Deprecated Methods</a></span><span class="tabEnd">&nbsp;</span></span></caption>
 <tr>
 <th class="colFirst" scope="col">Modifier and Type</th>
 <th class="colLast" scope="col">Method and Description</th>
@@ -130,42 +137,49 @@ extends <a href="../../../com/box/sdk/BoxAPIConnection.html" title="class in com
 <tr id="i0" class="altColor">
 <td class="colFirst"><code>boolean</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../com/box/sdk/SharedLinkAPIConnection.html#canRefresh--">canRefresh</a></span>()</code>
+<div class="block"><span class="deprecatedLabel">Deprecated.</span>&nbsp;</div>
 <div class="block">Determines if this connection's access token can be refreshed.</div>
 </td>
 </tr>
 <tr id="i1" class="rowColor">
 <td class="colFirst"><code><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../com/box/sdk/SharedLinkAPIConnection.html#getAccessToken--">getAccessToken</a></span>()</code>
+<div class="block"><span class="deprecatedLabel">Deprecated.</span>&nbsp;</div>
 <div class="block">Gets an access token that can be used to authenticate an API request.</div>
 </td>
 </tr>
 <tr id="i2" class="altColor">
 <td class="colFirst"><code>boolean</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../com/box/sdk/SharedLinkAPIConnection.html#getAutoRefresh--">getAutoRefresh</a></span>()</code>
+<div class="block"><span class="deprecatedLabel">Deprecated.</span>&nbsp;</div>
 <div class="block">Gets whether or not automatic refreshing of this connection's access token is enabled.</div>
 </td>
 </tr>
 <tr id="i3" class="rowColor">
 <td class="colFirst"><code><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../com/box/sdk/SharedLinkAPIConnection.html#getBaseUploadURL--">getBaseUploadURL</a></span>()</code>
+<div class="block"><span class="deprecatedLabel">Deprecated.</span>&nbsp;</div>
 <div class="block">Gets the base upload URL that's used when performing file uploads to Box.</div>
 </td>
 </tr>
 <tr id="i4" class="altColor">
 <td class="colFirst"><code><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../com/box/sdk/SharedLinkAPIConnection.html#getBaseURL--">getBaseURL</a></span>()</code>
+<div class="block"><span class="deprecatedLabel">Deprecated.</span>&nbsp;</div>
 <div class="block">Gets the base URL that's used when sending requests to the Box API.</div>
 </td>
 </tr>
 <tr id="i5" class="rowColor">
 <td class="colFirst"><code>long</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../com/box/sdk/SharedLinkAPIConnection.html#getExpires--">getExpires</a></span>()</code>
+<div class="block"><span class="deprecatedLabel">Deprecated.</span>&nbsp;</div>
 <div class="block">Gets the amount of time for which this connection's access token is valid.</div>
 </td>
 </tr>
 <tr id="i6" class="altColor">
 <td class="colFirst"><code>int</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../com/box/sdk/SharedLinkAPIConnection.html#getMaxRetryAttempts--">getMaxRetryAttempts</a></span>()</code>
+<div class="block"><span class="deprecatedLabel">Deprecated.</span>&nbsp;</div>
 <div class="block">Gets the maximum number of times an API request will be retried after an error response
  is received.</div>
 </td>
@@ -173,66 +187,77 @@ extends <a href="../../../com/box/sdk/BoxAPIConnection.html" title="class in com
 <tr id="i7" class="rowColor">
 <td class="colFirst"><code><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../com/box/sdk/SharedLinkAPIConnection.html#getRefreshToken--">getRefreshToken</a></span>()</code>
+<div class="block"><span class="deprecatedLabel">Deprecated.</span>&nbsp;</div>
 <div class="block">Gets a refresh token that can be used to refresh an access token.</div>
 </td>
 </tr>
 <tr id="i8" class="altColor">
 <td class="colFirst"><code><a href="../../../com/box/sdk/RequestInterceptor.html" title="interface in com.box.sdk">RequestInterceptor</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../com/box/sdk/SharedLinkAPIConnection.html#getRequestInterceptor--">getRequestInterceptor</a></span>()</code>
+<div class="block"><span class="deprecatedLabel">Deprecated.</span>&nbsp;</div>
 <div class="block">Gets the RequestInterceptor associated with this API connection.</div>
 </td>
 </tr>
 <tr id="i9" class="rowColor">
 <td class="colFirst"><code><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../com/box/sdk/SharedLinkAPIConnection.html#getUserAgent--">getUserAgent</a></span>()</code>
+<div class="block"><span class="deprecatedLabel">Deprecated.</span>&nbsp;</div>
 <div class="block">Gets the user agent that's used when sending requests to the Box API.</div>
 </td>
 </tr>
 <tr id="i10" class="altColor">
 <td class="colFirst"><code>boolean</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../com/box/sdk/SharedLinkAPIConnection.html#needsRefresh--">needsRefresh</a></span>()</code>
+<div class="block"><span class="deprecatedLabel">Deprecated.</span>&nbsp;</div>
 <div class="block">Determines if this connection's access token has expired and needs to be refreshed.</div>
 </td>
 </tr>
 <tr id="i11" class="rowColor">
 <td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../com/box/sdk/SharedLinkAPIConnection.html#refresh--">refresh</a></span>()</code>
+<div class="block"><span class="deprecatedLabel">Deprecated.</span>&nbsp;</div>
 <div class="block">Refresh's this connection's access token using its refresh token.</div>
 </td>
 </tr>
 <tr id="i12" class="altColor">
 <td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../com/box/sdk/SharedLinkAPIConnection.html#setAccessToken-java.lang.String-">setAccessToken</a></span>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;accessToken)</code>
+<div class="block"><span class="deprecatedLabel">Deprecated.</span>&nbsp;</div>
 <div class="block">Sets the access token to use when authenticating API requests.</div>
 </td>
 </tr>
 <tr id="i13" class="rowColor">
 <td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../com/box/sdk/SharedLinkAPIConnection.html#setAutoRefresh-boolean-">setAutoRefresh</a></span>(boolean&nbsp;autoRefresh)</code>
+<div class="block"><span class="deprecatedLabel">Deprecated.</span>&nbsp;</div>
 <div class="block">Enables or disables automatic refreshing of this connection's access token.</div>
 </td>
 </tr>
 <tr id="i14" class="altColor">
 <td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../com/box/sdk/SharedLinkAPIConnection.html#setBaseUploadURL-java.lang.String-">setBaseUploadURL</a></span>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;baseUploadURL)</code>
+<div class="block"><span class="deprecatedLabel">Deprecated.</span>&nbsp;</div>
 <div class="block">Sets the base upload URL to be used when performing file uploads to Box.</div>
 </td>
 </tr>
 <tr id="i15" class="rowColor">
 <td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../com/box/sdk/SharedLinkAPIConnection.html#setBaseURL-java.lang.String-">setBaseURL</a></span>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;baseURL)</code>
+<div class="block"><span class="deprecatedLabel">Deprecated.</span>&nbsp;</div>
 <div class="block">Sets the base URL to be used when sending requests to the Box API.</div>
 </td>
 </tr>
 <tr id="i16" class="altColor">
 <td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../com/box/sdk/SharedLinkAPIConnection.html#setExpires-long-">setExpires</a></span>(long&nbsp;milliseconds)</code>
+<div class="block"><span class="deprecatedLabel">Deprecated.</span>&nbsp;</div>
 <div class="block">Sets the amount of time for which this connection's access token is valid before it must be refreshed.</div>
 </td>
 </tr>
 <tr id="i17" class="rowColor">
 <td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../com/box/sdk/SharedLinkAPIConnection.html#setMaxRetryAttempts-int-">setMaxRetryAttempts</a></span>(int&nbsp;attempts)</code>
+<div class="block"><span class="deprecatedLabel">Deprecated.</span>&nbsp;</div>
 <div class="block">Sets the maximum number of times an API request will be retried after an error response
  is received.</div>
 </td>
@@ -240,12 +265,14 @@ extends <a href="../../../com/box/sdk/BoxAPIConnection.html" title="class in com
 <tr id="i18" class="altColor">
 <td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../com/box/sdk/SharedLinkAPIConnection.html#setRefreshToken-java.lang.String-">setRefreshToken</a></span>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;refreshToken)</code>
+<div class="block"><span class="deprecatedLabel">Deprecated.</span>&nbsp;</div>
 <div class="block">Sets the refresh token to use when refreshing an access token.</div>
 </td>
 </tr>
 <tr id="i19" class="rowColor">
 <td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../com/box/sdk/SharedLinkAPIConnection.html#setUserAgent-java.lang.String-">setUserAgent</a></span>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;userAgent)</code>
+<div class="block"><span class="deprecatedLabel">Deprecated.</span>&nbsp;</div>
 <div class="block">Sets the user agent to be used when sending requests to the Box API.</div>
 </td>
 </tr>
@@ -284,8 +311,9 @@ extends <a href="../../../com/box/sdk/BoxAPIConnection.html" title="class in com
 <ul class="blockList">
 <li class="blockList">
 <h4>SharedLinkAPIConnection</h4>
-<pre>public&nbsp;<a href="../../../src-html/com/box/sdk/SharedLinkAPIConnection.html#line.12">SharedLinkAPIConnection</a>(<a href="../../../com/box/sdk/BoxAPIConnection.html" title="class in com.box.sdk">BoxAPIConnection</a>&nbsp;connection,
+<pre>public&nbsp;<a href="../../../src-html/com/box/sdk/SharedLinkAPIConnection.html#line.13">SharedLinkAPIConnection</a>(<a href="../../../com/box/sdk/BoxAPIConnection.html" title="class in com.box.sdk">BoxAPIConnection</a>&nbsp;connection,
                                <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;sharedLink)</pre>
+<div class="block"><span class="deprecatedLabel">Deprecated.</span>&nbsp;</div>
 </li>
 </ul>
 <a name="SharedLinkAPIConnection-com.box.sdk.BoxAPIConnection-java.lang.String-java.lang.String-">
@@ -294,9 +322,10 @@ extends <a href="../../../com/box/sdk/BoxAPIConnection.html" title="class in com
 <ul class="blockListLast">
 <li class="blockList">
 <h4>SharedLinkAPIConnection</h4>
-<pre>public&nbsp;<a href="../../../src-html/com/box/sdk/SharedLinkAPIConnection.html#line.16">SharedLinkAPIConnection</a>(<a href="../../../com/box/sdk/BoxAPIConnection.html" title="class in com.box.sdk">BoxAPIConnection</a>&nbsp;connection,
+<pre>public&nbsp;<a href="../../../src-html/com/box/sdk/SharedLinkAPIConnection.html#line.17">SharedLinkAPIConnection</a>(<a href="../../../com/box/sdk/BoxAPIConnection.html" title="class in com.box.sdk">BoxAPIConnection</a>&nbsp;connection,
                                <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;sharedLink,
                                <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;sharedLinkPassword)</pre>
+<div class="block"><span class="deprecatedLabel">Deprecated.</span>&nbsp;</div>
 </li>
 </ul>
 </li>
@@ -313,7 +342,8 @@ extends <a href="../../../com/box/sdk/BoxAPIConnection.html" title="class in com
 <ul class="blockList">
 <li class="blockList">
 <h4>getExpires</h4>
-<pre>public&nbsp;long&nbsp;<a href="../../../src-html/com/box/sdk/SharedLinkAPIConnection.html#line.27">getExpires</a>()</pre>
+<pre>public&nbsp;long&nbsp;<a href="../../../src-html/com/box/sdk/SharedLinkAPIConnection.html#line.28">getExpires</a>()</pre>
+<div class="block"><span class="deprecatedLabel">Deprecated.</span>&nbsp;</div>
 <div class="block"><span class="descfrmTypeLabel">Description copied from class:&nbsp;<code><a href="../../../com/box/sdk/BoxAPIConnection.html#getExpires--">BoxAPIConnection</a></code></span></div>
 <div class="block">Gets the amount of time for which this connection's access token is valid.</div>
 <dl>
@@ -330,7 +360,8 @@ extends <a href="../../../com/box/sdk/BoxAPIConnection.html" title="class in com
 <ul class="blockList">
 <li class="blockList">
 <h4>setExpires</h4>
-<pre>public&nbsp;void&nbsp;<a href="../../../src-html/com/box/sdk/SharedLinkAPIConnection.html#line.32">setExpires</a>(long&nbsp;milliseconds)</pre>
+<pre>public&nbsp;void&nbsp;<a href="../../../src-html/com/box/sdk/SharedLinkAPIConnection.html#line.33">setExpires</a>(long&nbsp;milliseconds)</pre>
+<div class="block"><span class="deprecatedLabel">Deprecated.</span>&nbsp;</div>
 <div class="block"><span class="descfrmTypeLabel">Description copied from class:&nbsp;<code><a href="../../../com/box/sdk/BoxAPIConnection.html#setExpires-long-">BoxAPIConnection</a></code></span></div>
 <div class="block">Sets the amount of time for which this connection's access token is valid before it must be refreshed.</div>
 <dl>
@@ -347,7 +378,8 @@ extends <a href="../../../com/box/sdk/BoxAPIConnection.html" title="class in com
 <ul class="blockList">
 <li class="blockList">
 <h4>getBaseURL</h4>
-<pre>public&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;<a href="../../../src-html/com/box/sdk/SharedLinkAPIConnection.html#line.37">getBaseURL</a>()</pre>
+<pre>public&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;<a href="../../../src-html/com/box/sdk/SharedLinkAPIConnection.html#line.38">getBaseURL</a>()</pre>
+<div class="block"><span class="deprecatedLabel">Deprecated.</span>&nbsp;</div>
 <div class="block"><span class="descfrmTypeLabel">Description copied from class:&nbsp;<code><a href="../../../com/box/sdk/BoxAPIConnection.html#getBaseURL--">BoxAPIConnection</a></code></span></div>
 <div class="block">Gets the base URL that's used when sending requests to the Box API.
  The URL is created from <a href="../../../com/box/sdk/BoxAPIConnection.html#baseURL"><code>BoxAPIConnection.baseURL</code></a> and <a href="../../../com/box/sdk/BoxAPIConnection.html#API_VERSION"><code>BoxAPIConnection.API_VERSION</code></a>.
@@ -366,7 +398,8 @@ extends <a href="../../../com/box/sdk/BoxAPIConnection.html" title="class in com
 <ul class="blockList">
 <li class="blockList">
 <h4>setBaseURL</h4>
-<pre>public&nbsp;void&nbsp;<a href="../../../src-html/com/box/sdk/SharedLinkAPIConnection.html#line.42">setBaseURL</a>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;baseURL)</pre>
+<pre>public&nbsp;void&nbsp;<a href="../../../src-html/com/box/sdk/SharedLinkAPIConnection.html#line.43">setBaseURL</a>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;baseURL)</pre>
+<div class="block"><span class="deprecatedLabel">Deprecated.</span>&nbsp;</div>
 <div class="block"><span class="descfrmTypeLabel">Description copied from class:&nbsp;<code><a href="../../../com/box/sdk/BoxAPIConnection.html#setBaseURL-java.lang.String-">BoxAPIConnection</a></code></span></div>
 <div class="block">Sets the base URL to be used when sending requests to the Box API. For example, the default base URL is
  "https://api.box.com/". This method changes how <a href="../../../com/box/sdk/BoxAPIConnection.html#getRevokeURL--"><code>BoxAPIConnection.getRevokeURL()</code></a>
@@ -385,7 +418,8 @@ extends <a href="../../../com/box/sdk/BoxAPIConnection.html" title="class in com
 <ul class="blockList">
 <li class="blockList">
 <h4>getBaseUploadURL</h4>
-<pre>public&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;<a href="../../../src-html/com/box/sdk/SharedLinkAPIConnection.html#line.47">getBaseUploadURL</a>()</pre>
+<pre>public&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;<a href="../../../src-html/com/box/sdk/SharedLinkAPIConnection.html#line.48">getBaseUploadURL</a>()</pre>
+<div class="block"><span class="deprecatedLabel">Deprecated.</span>&nbsp;</div>
 <div class="block"><span class="descfrmTypeLabel">Description copied from class:&nbsp;<code><a href="../../../com/box/sdk/BoxAPIConnection.html#getBaseUploadURL--">BoxAPIConnection</a></code></span></div>
 <div class="block">Gets the base upload URL that's used when performing file uploads to Box.
  The URL is created from <a href="../../../com/box/sdk/BoxAPIConnection.html#baseUploadURL"><code>BoxAPIConnection.baseUploadURL</code></a> and <a href="../../../com/box/sdk/BoxAPIConnection.html#API_VERSION"><code>BoxAPIConnection.API_VERSION</code></a>.</div>
@@ -403,7 +437,8 @@ extends <a href="../../../com/box/sdk/BoxAPIConnection.html" title="class in com
 <ul class="blockList">
 <li class="blockList">
 <h4>setBaseUploadURL</h4>
-<pre>public&nbsp;void&nbsp;<a href="../../../src-html/com/box/sdk/SharedLinkAPIConnection.html#line.52">setBaseUploadURL</a>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;baseUploadURL)</pre>
+<pre>public&nbsp;void&nbsp;<a href="../../../src-html/com/box/sdk/SharedLinkAPIConnection.html#line.53">setBaseUploadURL</a>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;baseUploadURL)</pre>
+<div class="block"><span class="deprecatedLabel">Deprecated.</span>&nbsp;</div>
 <div class="block"><span class="descfrmTypeLabel">Description copied from class:&nbsp;<code><a href="../../../com/box/sdk/BoxAPIConnection.html#setBaseUploadURL-java.lang.String-">BoxAPIConnection</a></code></span></div>
 <div class="block">Sets the base upload URL to be used when performing file uploads to Box.</div>
 <dl>
@@ -420,7 +455,8 @@ extends <a href="../../../com/box/sdk/BoxAPIConnection.html" title="class in com
 <ul class="blockList">
 <li class="blockList">
 <h4>getUserAgent</h4>
-<pre>public&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;<a href="../../../src-html/com/box/sdk/SharedLinkAPIConnection.html#line.57">getUserAgent</a>()</pre>
+<pre>public&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;<a href="../../../src-html/com/box/sdk/SharedLinkAPIConnection.html#line.58">getUserAgent</a>()</pre>
+<div class="block"><span class="deprecatedLabel">Deprecated.</span>&nbsp;</div>
 <div class="block"><span class="descfrmTypeLabel">Description copied from class:&nbsp;<code><a href="../../../com/box/sdk/BoxAPIConnection.html#getUserAgent--">BoxAPIConnection</a></code></span></div>
 <div class="block">Gets the user agent that's used when sending requests to the Box API.</div>
 <dl>
@@ -437,7 +473,8 @@ extends <a href="../../../com/box/sdk/BoxAPIConnection.html" title="class in com
 <ul class="blockList">
 <li class="blockList">
 <h4>setUserAgent</h4>
-<pre>public&nbsp;void&nbsp;<a href="../../../src-html/com/box/sdk/SharedLinkAPIConnection.html#line.62">setUserAgent</a>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;userAgent)</pre>
+<pre>public&nbsp;void&nbsp;<a href="../../../src-html/com/box/sdk/SharedLinkAPIConnection.html#line.63">setUserAgent</a>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;userAgent)</pre>
+<div class="block"><span class="deprecatedLabel">Deprecated.</span>&nbsp;</div>
 <div class="block"><span class="descfrmTypeLabel">Description copied from class:&nbsp;<code><a href="../../../com/box/sdk/BoxAPIConnection.html#setUserAgent-java.lang.String-">BoxAPIConnection</a></code></span></div>
 <div class="block">Sets the user agent to be used when sending requests to the Box API.</div>
 <dl>
@@ -454,7 +491,8 @@ extends <a href="../../../com/box/sdk/BoxAPIConnection.html" title="class in com
 <ul class="blockList">
 <li class="blockList">
 <h4>getAccessToken</h4>
-<pre>public&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;<a href="../../../src-html/com/box/sdk/SharedLinkAPIConnection.html#line.67">getAccessToken</a>()</pre>
+<pre>public&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;<a href="../../../src-html/com/box/sdk/SharedLinkAPIConnection.html#line.68">getAccessToken</a>()</pre>
+<div class="block"><span class="deprecatedLabel">Deprecated.</span>&nbsp;</div>
 <div class="block"><span class="descfrmTypeLabel">Description copied from class:&nbsp;<code><a href="../../../com/box/sdk/BoxAPIConnection.html#getAccessToken--">BoxAPIConnection</a></code></span></div>
 <div class="block">Gets an access token that can be used to authenticate an API request. This method will automatically refresh the
  access token if it has expired since the last call to <code>getAccessToken()</code>.</div>
@@ -472,7 +510,8 @@ extends <a href="../../../com/box/sdk/BoxAPIConnection.html" title="class in com
 <ul class="blockList">
 <li class="blockList">
 <h4>setAccessToken</h4>
-<pre>public&nbsp;void&nbsp;<a href="../../../src-html/com/box/sdk/SharedLinkAPIConnection.html#line.72">setAccessToken</a>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;accessToken)</pre>
+<pre>public&nbsp;void&nbsp;<a href="../../../src-html/com/box/sdk/SharedLinkAPIConnection.html#line.73">setAccessToken</a>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;accessToken)</pre>
+<div class="block"><span class="deprecatedLabel">Deprecated.</span>&nbsp;</div>
 <div class="block"><span class="descfrmTypeLabel">Description copied from class:&nbsp;<code><a href="../../../com/box/sdk/BoxAPIConnection.html#setAccessToken-java.lang.String-">BoxAPIConnection</a></code></span></div>
 <div class="block">Sets the access token to use when authenticating API requests.</div>
 <dl>
@@ -489,7 +528,8 @@ extends <a href="../../../com/box/sdk/BoxAPIConnection.html" title="class in com
 <ul class="blockList">
 <li class="blockList">
 <h4>getRefreshToken</h4>
-<pre>public&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;<a href="../../../src-html/com/box/sdk/SharedLinkAPIConnection.html#line.77">getRefreshToken</a>()</pre>
+<pre>public&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;<a href="../../../src-html/com/box/sdk/SharedLinkAPIConnection.html#line.78">getRefreshToken</a>()</pre>
+<div class="block"><span class="deprecatedLabel">Deprecated.</span>&nbsp;</div>
 <div class="block"><span class="descfrmTypeLabel">Description copied from class:&nbsp;<code><a href="../../../com/box/sdk/BoxAPIConnection.html#getRefreshToken--">BoxAPIConnection</a></code></span></div>
 <div class="block">Gets a refresh token that can be used to refresh an access token.</div>
 <dl>
@@ -506,7 +546,8 @@ extends <a href="../../../com/box/sdk/BoxAPIConnection.html" title="class in com
 <ul class="blockList">
 <li class="blockList">
 <h4>setRefreshToken</h4>
-<pre>public&nbsp;void&nbsp;<a href="../../../src-html/com/box/sdk/SharedLinkAPIConnection.html#line.82">setRefreshToken</a>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;refreshToken)</pre>
+<pre>public&nbsp;void&nbsp;<a href="../../../src-html/com/box/sdk/SharedLinkAPIConnection.html#line.83">setRefreshToken</a>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;refreshToken)</pre>
+<div class="block"><span class="deprecatedLabel">Deprecated.</span>&nbsp;</div>
 <div class="block"><span class="descfrmTypeLabel">Description copied from class:&nbsp;<code><a href="../../../com/box/sdk/BoxAPIConnection.html#setRefreshToken-java.lang.String-">BoxAPIConnection</a></code></span></div>
 <div class="block">Sets the refresh token to use when refreshing an access token.</div>
 <dl>
@@ -523,7 +564,8 @@ extends <a href="../../../com/box/sdk/BoxAPIConnection.html" title="class in com
 <ul class="blockList">
 <li class="blockList">
 <h4>getAutoRefresh</h4>
-<pre>public&nbsp;boolean&nbsp;<a href="../../../src-html/com/box/sdk/SharedLinkAPIConnection.html#line.87">getAutoRefresh</a>()</pre>
+<pre>public&nbsp;boolean&nbsp;<a href="../../../src-html/com/box/sdk/SharedLinkAPIConnection.html#line.88">getAutoRefresh</a>()</pre>
+<div class="block"><span class="deprecatedLabel">Deprecated.</span>&nbsp;</div>
 <div class="block"><span class="descfrmTypeLabel">Description copied from class:&nbsp;<code><a href="../../../com/box/sdk/BoxAPIConnection.html#getAutoRefresh--">BoxAPIConnection</a></code></span></div>
 <div class="block">Gets whether or not automatic refreshing of this connection's access token is enabled. Defaults to true.</div>
 <dl>
@@ -540,7 +582,8 @@ extends <a href="../../../com/box/sdk/BoxAPIConnection.html" title="class in com
 <ul class="blockList">
 <li class="blockList">
 <h4>setAutoRefresh</h4>
-<pre>public&nbsp;void&nbsp;<a href="../../../src-html/com/box/sdk/SharedLinkAPIConnection.html#line.92">setAutoRefresh</a>(boolean&nbsp;autoRefresh)</pre>
+<pre>public&nbsp;void&nbsp;<a href="../../../src-html/com/box/sdk/SharedLinkAPIConnection.html#line.93">setAutoRefresh</a>(boolean&nbsp;autoRefresh)</pre>
+<div class="block"><span class="deprecatedLabel">Deprecated.</span>&nbsp;</div>
 <div class="block"><span class="descfrmTypeLabel">Description copied from class:&nbsp;<code><a href="../../../com/box/sdk/BoxAPIConnection.html#setAutoRefresh-boolean-">BoxAPIConnection</a></code></span></div>
 <div class="block">Enables or disables automatic refreshing of this connection's access token. Defaults to true.</div>
 <dl>
@@ -557,7 +600,8 @@ extends <a href="../../../com/box/sdk/BoxAPIConnection.html" title="class in com
 <ul class="blockList">
 <li class="blockList">
 <h4>getMaxRetryAttempts</h4>
-<pre>public&nbsp;int&nbsp;<a href="../../../src-html/com/box/sdk/SharedLinkAPIConnection.html#line.103">getMaxRetryAttempts</a>()</pre>
+<pre>public&nbsp;int&nbsp;<a href="../../../src-html/com/box/sdk/SharedLinkAPIConnection.html#line.104">getMaxRetryAttempts</a>()</pre>
+<div class="block"><span class="deprecatedLabel">Deprecated.</span>&nbsp;</div>
 <div class="block">Gets the maximum number of times an API request will be retried after an error response
  is received.</div>
 <dl>
@@ -574,7 +618,8 @@ extends <a href="../../../com/box/sdk/BoxAPIConnection.html" title="class in com
 <ul class="blockList">
 <li class="blockList">
 <h4>setMaxRetryAttempts</h4>
-<pre>public&nbsp;void&nbsp;<a href="../../../src-html/com/box/sdk/SharedLinkAPIConnection.html#line.114">setMaxRetryAttempts</a>(int&nbsp;attempts)</pre>
+<pre>public&nbsp;void&nbsp;<a href="../../../src-html/com/box/sdk/SharedLinkAPIConnection.html#line.115">setMaxRetryAttempts</a>(int&nbsp;attempts)</pre>
+<div class="block"><span class="deprecatedLabel">Deprecated.</span>&nbsp;</div>
 <div class="block">Sets the maximum number of times an API request will be retried after an error response
  is received.</div>
 <dl>
@@ -591,7 +636,8 @@ extends <a href="../../../com/box/sdk/BoxAPIConnection.html" title="class in com
 <ul class="blockList">
 <li class="blockList">
 <h4>canRefresh</h4>
-<pre>public&nbsp;boolean&nbsp;<a href="../../../src-html/com/box/sdk/SharedLinkAPIConnection.html#line.119">canRefresh</a>()</pre>
+<pre>public&nbsp;boolean&nbsp;<a href="../../../src-html/com/box/sdk/SharedLinkAPIConnection.html#line.120">canRefresh</a>()</pre>
+<div class="block"><span class="deprecatedLabel">Deprecated.</span>&nbsp;</div>
 <div class="block"><span class="descfrmTypeLabel">Description copied from class:&nbsp;<code><a href="../../../com/box/sdk/BoxAPIConnection.html#canRefresh--">BoxAPIConnection</a></code></span></div>
 <div class="block">Determines if this connection's access token can be refreshed. An access token cannot be refreshed if a refresh
  token was never set.</div>
@@ -609,7 +655,8 @@ extends <a href="../../../com/box/sdk/BoxAPIConnection.html" title="class in com
 <ul class="blockList">
 <li class="blockList">
 <h4>needsRefresh</h4>
-<pre>public&nbsp;boolean&nbsp;<a href="../../../src-html/com/box/sdk/SharedLinkAPIConnection.html#line.124">needsRefresh</a>()</pre>
+<pre>public&nbsp;boolean&nbsp;<a href="../../../src-html/com/box/sdk/SharedLinkAPIConnection.html#line.125">needsRefresh</a>()</pre>
+<div class="block"><span class="deprecatedLabel">Deprecated.</span>&nbsp;</div>
 <div class="block"><span class="descfrmTypeLabel">Description copied from class:&nbsp;<code><a href="../../../com/box/sdk/BoxAPIConnection.html#needsRefresh--">BoxAPIConnection</a></code></span></div>
 <div class="block">Determines if this connection's access token has expired and needs to be refreshed.</div>
 <dl>
@@ -626,7 +673,8 @@ extends <a href="../../../com/box/sdk/BoxAPIConnection.html" title="class in com
 <ul class="blockList">
 <li class="blockList">
 <h4>refresh</h4>
-<pre>public&nbsp;void&nbsp;<a href="../../../src-html/com/box/sdk/SharedLinkAPIConnection.html#line.129">refresh</a>()</pre>
+<pre>public&nbsp;void&nbsp;<a href="../../../src-html/com/box/sdk/SharedLinkAPIConnection.html#line.130">refresh</a>()</pre>
+<div class="block"><span class="deprecatedLabel">Deprecated.</span>&nbsp;</div>
 <div class="block"><span class="descfrmTypeLabel">Description copied from class:&nbsp;<code><a href="../../../com/box/sdk/BoxAPIConnection.html#refresh--">BoxAPIConnection</a></code></span></div>
 <div class="block">Refresh's this connection's access token using its refresh token.</div>
 <dl>
@@ -641,7 +689,8 @@ extends <a href="../../../com/box/sdk/BoxAPIConnection.html" title="class in com
 <ul class="blockListLast">
 <li class="blockList">
 <h4>getRequestInterceptor</h4>
-<pre>public&nbsp;<a href="../../../com/box/sdk/RequestInterceptor.html" title="interface in com.box.sdk">RequestInterceptor</a>&nbsp;<a href="../../../src-html/com/box/sdk/SharedLinkAPIConnection.html#line.144">getRequestInterceptor</a>()</pre>
+<pre>public&nbsp;<a href="../../../com/box/sdk/RequestInterceptor.html" title="interface in com.box.sdk">RequestInterceptor</a>&nbsp;<a href="../../../src-html/com/box/sdk/SharedLinkAPIConnection.html#line.145">getRequestInterceptor</a>()</pre>
+<div class="block"><span class="deprecatedLabel">Deprecated.</span>&nbsp;</div>
 <div class="block"><span class="descfrmTypeLabel">Description copied from class:&nbsp;<code><a href="../../../com/box/sdk/BoxAPIConnection.html#getRequestInterceptor--">BoxAPIConnection</a></code></span></div>
 <div class="block">Gets the RequestInterceptor associated with this API connection.</div>
 <dl>

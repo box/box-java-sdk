@@ -56,7 +56,7 @@ var activeTableTab = "activeTableTab";
 </dl>
 <hr>
 <br>
-<pre>public static class <a href="../../../src-html/com/box/sdk/BoxSharedLink.html#line.310">BoxSharedLink.Permissions</a>
+<pre>public static class <a href="../../../src-html/com/box/sdk/BoxSharedLink.html#line.327">BoxSharedLink.Permissions</a>
 extends <a href="../../../com/box/sdk/BoxJSONObject.html" title="class in com.box.sdk">BoxJSONObject</a></pre>
 <div class="block">Contains permissions fields that can be set on a shared link.</div>
 </li>
@@ -155,7 +155,7 @@ extends <a href="../../../com/box/sdk/BoxJSONObject.html" title="class in com.bo
 <!--   -->
 </a>
 <h3>Methods inherited from class&nbsp;<a href="../../../com/box/sdk/BoxJSONObject.html" title="class in com.box.sdk">BoxJSONObject</a></h3>
-<code><a href="../../../com/box/sdk/BoxJSONObject.html#clearPendingChanges--">clearPendingChanges</a>, <a href="../../../com/box/sdk/BoxJSONObject.html#getJson--">getJson</a>, <a href="../../../com/box/sdk/BoxJSONObject.html#getPendingChanges--">getPendingChanges</a>, <a href="../../../com/box/sdk/BoxJSONObject.html#getPendingChangesAsJsonObject--">getPendingChangesAsJsonObject</a></code></li>
+<code><a href="../../../com/box/sdk/BoxJSONObject.html#clearPendingChanges--">clearPendingChanges</a>, <a href="../../../com/box/sdk/BoxJSONObject.html#getJson--">getJson</a>, <a href="../../../com/box/sdk/BoxJSONObject.html#getPendingChanges--">getPendingChanges</a>, <a href="../../../com/box/sdk/BoxJSONObject.html#getPendingChangesAsJsonObject--">getPendingChangesAsJsonObject</a>, <a href="../../../com/box/sdk/BoxJSONObject.html#getPendingJSONObject--">getPendingJSONObject</a></code></li>
 </ul>
 <ul class="blockList">
 <li class="blockList"><a name="methods.inherited.from.class.Object">
@@ -184,7 +184,7 @@ extends <a href="../../../com/box/sdk/BoxJSONObject.html" title="class in com.bo
 <ul class="blockList">
 <li class="blockList">
 <h4>Permissions</h4>
-<pre>public&nbsp;<a href="../../../src-html/com/box/sdk/BoxSharedLink.Permissions.html#line.318">Permissions</a>()</pre>
+<pre>public&nbsp;<a href="../../../src-html/com/box/sdk/BoxSharedLink.Permissions.html#line.335">Permissions</a>()</pre>
 <div class="block">Constructs a Permissions object with all permissions disabled.</div>
 </li>
 </ul>
@@ -194,7 +194,7 @@ extends <a href="../../../com/box/sdk/BoxJSONObject.html" title="class in com.bo
 <ul class="blockListLast">
 <li class="blockList">
 <h4>Permissions</h4>
-<pre>public&nbsp;<a href="../../../src-html/com/box/sdk/BoxSharedLink.Permissions.html#line.332">Permissions</a>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;json)</pre>
+<pre>public&nbsp;<a href="../../../src-html/com/box/sdk/BoxSharedLink.Permissions.html#line.349">Permissions</a>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;json)</pre>
 <div class="block">Constructs a Permissions object from a JSON string.</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
@@ -216,7 +216,7 @@ extends <a href="../../../com/box/sdk/BoxJSONObject.html" title="class in com.bo
 <ul class="blockList">
 <li class="blockList">
 <h4>getCanDownload</h4>
-<pre>public&nbsp;boolean&nbsp;<a href="../../../src-html/com/box/sdk/BoxSharedLink.Permissions.html#line.345">getCanDownload</a>()</pre>
+<pre>public&nbsp;boolean&nbsp;<a href="../../../src-html/com/box/sdk/BoxSharedLink.Permissions.html#line.362">getCanDownload</a>()</pre>
 <div class="block">Gets whether the shared link can be downloaded.</div>
 <dl>
 <dt><span class="returnLabel">Returns:</span></dt>
@@ -230,7 +230,7 @@ extends <a href="../../../com/box/sdk/BoxJSONObject.html" title="class in com.bo
 <ul class="blockList">
 <li class="blockList">
 <h4>setCanDownload</h4>
-<pre>public&nbsp;void&nbsp;<a href="../../../src-html/com/box/sdk/BoxSharedLink.Permissions.html#line.354">setCanDownload</a>(boolean&nbsp;enabled)</pre>
+<pre>public&nbsp;void&nbsp;<a href="../../../src-html/com/box/sdk/BoxSharedLink.Permissions.html#line.371">setCanDownload</a>(boolean&nbsp;enabled)</pre>
 <div class="block">Sets whether or not the shared link can be downloaded.</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
@@ -244,7 +244,7 @@ extends <a href="../../../com/box/sdk/BoxJSONObject.html" title="class in com.bo
 <ul class="blockList">
 <li class="blockList">
 <h4>getCanPreview</h4>
-<pre>public&nbsp;boolean&nbsp;<a href="../../../src-html/com/box/sdk/BoxSharedLink.Permissions.html#line.364">getCanPreview</a>()</pre>
+<pre>public&nbsp;boolean&nbsp;<a href="../../../src-html/com/box/sdk/BoxSharedLink.Permissions.html#line.381">getCanPreview</a>()</pre>
 <div class="block">Gets whether the shared link can be previewed.</div>
 <dl>
 <dt><span class="returnLabel">Returns:</span></dt>
@@ -258,7 +258,7 @@ extends <a href="../../../com/box/sdk/BoxJSONObject.html" title="class in com.bo
 <ul class="blockList">
 <li class="blockList">
 <h4>setCanPreview</h4>
-<pre>public&nbsp;void&nbsp;<a href="../../../src-html/com/box/sdk/BoxSharedLink.Permissions.html#line.373">setCanPreview</a>(boolean&nbsp;enabled)</pre>
+<pre>public&nbsp;void&nbsp;<a href="../../../src-html/com/box/sdk/BoxSharedLink.Permissions.html#line.390">setCanPreview</a>(boolean&nbsp;enabled)</pre>
 <div class="block">Sets whether the shared link can be previewed.</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
@@ -272,7 +272,7 @@ extends <a href="../../../com/box/sdk/BoxJSONObject.html" title="class in com.bo
 <ul class="blockList">
 <li class="blockList">
 <h4>getCanEdit</h4>
-<pre>public&nbsp;boolean&nbsp;<a href="../../../src-html/com/box/sdk/BoxSharedLink.Permissions.html#line.383">getCanEdit</a>()</pre>
+<pre>public&nbsp;boolean&nbsp;<a href="../../../src-html/com/box/sdk/BoxSharedLink.Permissions.html#line.400">getCanEdit</a>()</pre>
 <div class="block">Gets whether the shared link allows for editing of files.</div>
 <dl>
 <dt><span class="returnLabel">Returns:</span></dt>
@@ -286,7 +286,7 @@ extends <a href="../../../com/box/sdk/BoxJSONObject.html" title="class in com.bo
 <ul class="blockList">
 <li class="blockList">
 <h4>setCanEdit</h4>
-<pre>public&nbsp;void&nbsp;<a href="../../../src-html/com/box/sdk/BoxSharedLink.Permissions.html#line.393">setCanEdit</a>(boolean&nbsp;enabled)</pre>
+<pre>public&nbsp;void&nbsp;<a href="../../../src-html/com/box/sdk/BoxSharedLink.Permissions.html#line.410">setCanEdit</a>(boolean&nbsp;enabled)</pre>
 <div class="block">Sets whether the shared link allows for editing of files.
  For folders this value will always be set to false.</div>
 <dl>
@@ -301,7 +301,7 @@ extends <a href="../../../com/box/sdk/BoxJSONObject.html" title="class in com.bo
 <ul class="blockList">
 <li class="blockList">
 <h4>equals</h4>
-<pre>public&nbsp;boolean&nbsp;<a href="../../../src-html/com/box/sdk/BoxSharedLink.Permissions.html#line.414">equals</a>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html?is-external=true" title="class or interface in java.lang">Object</a>&nbsp;o)</pre>
+<pre>public&nbsp;boolean&nbsp;<a href="../../../src-html/com/box/sdk/BoxSharedLink.Permissions.html#line.431">equals</a>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html?is-external=true" title="class or interface in java.lang">Object</a>&nbsp;o)</pre>
 <dl>
 <dt><span class="overrideSpecifyLabel">Overrides:</span></dt>
 <dd><code><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html?is-external=true#equals-java.lang.Object-" title="class or interface in java.lang">equals</a></code>&nbsp;in class&nbsp;<code><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html?is-external=true" title="class or interface in java.lang">Object</a></code></dd>
@@ -314,7 +314,7 @@ extends <a href="../../../com/box/sdk/BoxJSONObject.html" title="class in com.bo
 <ul class="blockList">
 <li class="blockList">
 <h4>hashCode</h4>
-<pre>public&nbsp;int&nbsp;<a href="../../../src-html/com/box/sdk/BoxSharedLink.Permissions.html#line.430">hashCode</a>()</pre>
+<pre>public&nbsp;int&nbsp;<a href="../../../src-html/com/box/sdk/BoxSharedLink.Permissions.html#line.447">hashCode</a>()</pre>
 <dl>
 <dt><span class="overrideSpecifyLabel">Overrides:</span></dt>
 <dd><code><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html?is-external=true#hashCode--" title="class or interface in java.lang">hashCode</a></code>&nbsp;in class&nbsp;<code><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html?is-external=true" title="class or interface in java.lang">Object</a></code></dd>
@@ -327,7 +327,7 @@ extends <a href="../../../com/box/sdk/BoxJSONObject.html" title="class in com.bo
 <ul class="blockListLast">
 <li class="blockList">
 <h4>toString</h4>
-<pre>public&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxSharedLink.Permissions.html#line.438">toString</a>()</pre>
+<pre>public&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxSharedLink.Permissions.html#line.455">toString</a>()</pre>
 <dl>
 <dt><span class="overrideSpecifyLabel">Overrides:</span></dt>
 <dd><code><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html?is-external=true#toString--" title="class or interface in java.lang">toString</a></code>&nbsp;in class&nbsp;<code><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html?is-external=true" title="class or interface in java.lang">Object</a></code></dd>
