@@ -96,6 +96,12 @@ extends <a href="../../../com/box/sdk/BoxResource.html" title="class in com.box.
 </td>
 </tr>
 <tr class="rowColor">
+<td class="colFirst"><code>static long</code></td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../com/box/sdk/BoxFileVersion.html#DEFAULT_LIMIT">DEFAULT_LIMIT</a></span></code>
+<div class="block">The default limit of entries per response.</div>
+</td>
+</tr>
+<tr class="altColor">
 <td class="colFirst"><code>static <a href="../../../com/box/sdk/URLTemplate.html" title="class in com.box.sdk">URLTemplate</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../com/box/sdk/BoxFileVersion.html#VERSION_URL_TEMPLATE">VERSION_URL_TEMPLATE</a></span></code>
 <div class="block">Version URL Template.</div>
@@ -298,11 +304,25 @@ extends <a href="../../../com/box/sdk/BoxResource.html" title="class in com.box.
 <a name="VERSION_URL_TEMPLATE">
 <!--   -->
 </a>
-<ul class="blockListLast">
+<ul class="blockList">
 <li class="blockList">
 <h4>VERSION_URL_TEMPLATE</h4>
 <pre>public static final&nbsp;<a href="../../../com/box/sdk/URLTemplate.html" title="class in com.box.sdk">URLTemplate</a> <a href="../../../src-html/com/box/sdk/BoxFileVersion.html#line.25">VERSION_URL_TEMPLATE</a></pre>
 <div class="block">Version URL Template.</div>
+</li>
+</ul>
+<a name="DEFAULT_LIMIT">
+<!--   -->
+</a>
+<ul class="blockListLast">
+<li class="blockList">
+<h4>DEFAULT_LIMIT</h4>
+<pre>public static final&nbsp;long <a href="../../../src-html/com/box/sdk/BoxFileVersion.html#line.30">DEFAULT_LIMIT</a></pre>
+<div class="block">The default limit of entries per response.</div>
+<dl>
+<dt><span class="seeLabel">See Also:</span></dt>
+<dd><a href="../../../constant-values.html#com.box.sdk.BoxFileVersion.DEFAULT_LIMIT">Constant Field Values</a></dd>
+</dl>
 </li>
 </ul>
 </li>
@@ -319,7 +339,7 @@ extends <a href="../../../com/box/sdk/BoxResource.html" title="class in com.box.
 <ul class="blockListLast">
 <li class="blockList">
 <h4>BoxFileVersion</h4>
-<pre>public&nbsp;<a href="../../../src-html/com/box/sdk/BoxFileVersion.html#line.51">BoxFileVersion</a>(<a href="../../../com/box/sdk/BoxAPIConnection.html" title="class in com.box.sdk">BoxAPIConnection</a>&nbsp;api,
+<pre>public&nbsp;<a href="../../../src-html/com/box/sdk/BoxFileVersion.html#line.56">BoxFileVersion</a>(<a href="../../../com/box/sdk/BoxAPIConnection.html" title="class in com.box.sdk">BoxAPIConnection</a>&nbsp;api,
                       <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;json,
                       <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;fileID)</pre>
 <div class="block">Constructs a BoxFileVersion from a JSON string.</div>
@@ -345,7 +365,7 @@ extends <a href="../../../com/box/sdk/BoxResource.html" title="class in com.box.
 <ul class="blockList">
 <li class="blockList">
 <h4>getFileID</h4>
-<pre>public&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxFileVersion.html#line.123">getFileID</a>()</pre>
+<pre>public&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxFileVersion.html#line.128">getFileID</a>()</pre>
 <dl>
 <dt><span class="returnLabel">Returns:</span></dt>
 <dd>the file id this file version belongs to.</dd>
@@ -358,7 +378,7 @@ extends <a href="../../../com/box/sdk/BoxResource.html" title="class in com.box.
 <ul class="blockList">
 <li class="blockList">
 <h4>setFileID</h4>
-<pre>public&nbsp;void&nbsp;<a href="../../../src-html/com/box/sdk/BoxFileVersion.html#line.132">setFileID</a>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;fileID)</pre>
+<pre>public&nbsp;void&nbsp;<a href="../../../src-html/com/box/sdk/BoxFileVersion.html#line.137">setFileID</a>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;fileID)</pre>
 <div class="block">Used if no or wrong file id was set with constructor.</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
@@ -372,7 +392,7 @@ extends <a href="../../../com/box/sdk/BoxResource.html" title="class in com.box.
 <ul class="blockList">
 <li class="blockList">
 <h4>getVersionID</h4>
-<pre>public&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxFileVersion.html#line.141">getVersionID</a>()</pre>
+<pre>public&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxFileVersion.html#line.146">getVersionID</a>()</pre>
 <div class="block">Gets the version ID of this version of the file.</div>
 <dl>
 <dt><span class="returnLabel">Returns:</span></dt>
@@ -386,7 +406,7 @@ extends <a href="../../../com/box/sdk/BoxResource.html" title="class in com.box.
 <ul class="blockList">
 <li class="blockList">
 <h4>getSha1</h4>
-<pre>public&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxFileVersion.html#line.150">getSha1</a>()</pre>
+<pre>public&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxFileVersion.html#line.155">getSha1</a>()</pre>
 <div class="block">Gets the SHA1 hash of this version of the file.</div>
 <dl>
 <dt><span class="returnLabel">Returns:</span></dt>
@@ -400,7 +420,7 @@ extends <a href="../../../com/box/sdk/BoxResource.html" title="class in com.box.
 <ul class="blockList">
 <li class="blockList">
 <h4>getName</h4>
-<pre>public&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxFileVersion.html#line.159">getName</a>()</pre>
+<pre>public&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxFileVersion.html#line.164">getName</a>()</pre>
 <div class="block">Gets the name of this version of the file.</div>
 <dl>
 <dt><span class="returnLabel">Returns:</span></dt>
@@ -414,7 +434,7 @@ extends <a href="../../../com/box/sdk/BoxResource.html" title="class in com.box.
 <ul class="blockList">
 <li class="blockList">
 <h4>getSize</h4>
-<pre>public&nbsp;long&nbsp;<a href="../../../src-html/com/box/sdk/BoxFileVersion.html#line.168">getSize</a>()</pre>
+<pre>public&nbsp;long&nbsp;<a href="../../../src-html/com/box/sdk/BoxFileVersion.html#line.173">getSize</a>()</pre>
 <div class="block">Gets the size of this version of the file.</div>
 <dl>
 <dt><span class="returnLabel">Returns:</span></dt>
@@ -428,7 +448,7 @@ extends <a href="../../../com/box/sdk/BoxResource.html" title="class in com.box.
 <ul class="blockList">
 <li class="blockList">
 <h4>getCreatedAt</h4>
-<pre>public&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/util/Date.html?is-external=true" title="class or interface in java.util">Date</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxFileVersion.html#line.177">getCreatedAt</a>()</pre>
+<pre>public&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/util/Date.html?is-external=true" title="class or interface in java.util">Date</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxFileVersion.html#line.182">getCreatedAt</a>()</pre>
 <div class="block">Gets the time that this version of the file was created.</div>
 <dl>
 <dt><span class="returnLabel">Returns:</span></dt>
@@ -442,7 +462,7 @@ extends <a href="../../../com/box/sdk/BoxResource.html" title="class in com.box.
 <ul class="blockList">
 <li class="blockList">
 <h4>getUploaderDisplayName</h4>
-<pre>public&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxFileVersion.html#line.186">getUploaderDisplayName</a>()</pre>
+<pre>public&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxFileVersion.html#line.191">getUploaderDisplayName</a>()</pre>
 <div class="block">Gets the user's name at the time of upload.</div>
 <dl>
 <dt><span class="returnLabel">Returns:</span></dt>
@@ -456,7 +476,7 @@ extends <a href="../../../com/box/sdk/BoxResource.html" title="class in com.box.
 <ul class="blockList">
 <li class="blockList">
 <h4>getModifiedAt</h4>
-<pre>public&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/util/Date.html?is-external=true" title="class or interface in java.util">Date</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxFileVersion.html#line.195">getModifiedAt</a>()</pre>
+<pre>public&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/util/Date.html?is-external=true" title="class or interface in java.util">Date</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxFileVersion.html#line.200">getModifiedAt</a>()</pre>
 <div class="block">Gets the time that this version of the file was modified.</div>
 <dl>
 <dt><span class="returnLabel">Returns:</span></dt>
@@ -470,7 +490,7 @@ extends <a href="../../../com/box/sdk/BoxResource.html" title="class in com.box.
 <ul class="blockList">
 <li class="blockList">
 <h4>getTrashedAt</h4>
-<pre>public&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/util/Date.html?is-external=true" title="class or interface in java.util">Date</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxFileVersion.html#line.204">getTrashedAt</a>()</pre>
+<pre>public&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/util/Date.html?is-external=true" title="class or interface in java.util">Date</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxFileVersion.html#line.209">getTrashedAt</a>()</pre>
 <div class="block">Gets the time that this version of the file was deleted.</div>
 <dl>
 <dt><span class="returnLabel">Returns:</span></dt>
@@ -484,7 +504,7 @@ extends <a href="../../../com/box/sdk/BoxResource.html" title="class in com.box.
 <ul class="blockList">
 <li class="blockList">
 <h4>getTrashedBy</h4>
-<pre>public&nbsp;<a href="../../../com/box/sdk/BoxUser.Info.html" title="class in com.box.sdk">BoxUser.Info</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxFileVersion.html#line.213">getTrashedBy</a>()</pre>
+<pre>public&nbsp;<a href="../../../com/box/sdk/BoxUser.Info.html" title="class in com.box.sdk">BoxUser.Info</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxFileVersion.html#line.218">getTrashedBy</a>()</pre>
 <div class="block">Gets information about the user who trashed this version of the file.</div>
 <dl>
 <dt><span class="returnLabel">Returns:</span></dt>
@@ -498,7 +518,7 @@ extends <a href="../../../com/box/sdk/BoxResource.html" title="class in com.box.
 <ul class="blockList">
 <li class="blockList">
 <h4>getModifiedBy</h4>
-<pre>public&nbsp;<a href="../../../com/box/sdk/BoxUser.Info.html" title="class in com.box.sdk">BoxUser.Info</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxFileVersion.html#line.222">getModifiedBy</a>()</pre>
+<pre>public&nbsp;<a href="../../../com/box/sdk/BoxUser.Info.html" title="class in com.box.sdk">BoxUser.Info</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxFileVersion.html#line.227">getModifiedBy</a>()</pre>
 <div class="block">Gets information about the user who last modified this version of the file.</div>
 <dl>
 <dt><span class="returnLabel">Returns:</span></dt>
@@ -512,7 +532,7 @@ extends <a href="../../../com/box/sdk/BoxResource.html" title="class in com.box.
 <ul class="blockList">
 <li class="blockList">
 <h4>getRestoredAt</h4>
-<pre>public&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/util/Date.html?is-external=true" title="class or interface in java.util">Date</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxFileVersion.html#line.231">getRestoredAt</a>()</pre>
+<pre>public&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/util/Date.html?is-external=true" title="class or interface in java.util">Date</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxFileVersion.html#line.236">getRestoredAt</a>()</pre>
 <div class="block">Gets the time that this version of the file was restored.</div>
 <dl>
 <dt><span class="returnLabel">Returns:</span></dt>
@@ -526,7 +546,7 @@ extends <a href="../../../com/box/sdk/BoxResource.html" title="class in com.box.
 <ul class="blockList">
 <li class="blockList">
 <h4>getRestoredBy</h4>
-<pre>public&nbsp;<a href="../../../com/box/sdk/BoxUser.Info.html" title="class in com.box.sdk">BoxUser.Info</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxFileVersion.html#line.240">getRestoredBy</a>()</pre>
+<pre>public&nbsp;<a href="../../../com/box/sdk/BoxUser.Info.html" title="class in com.box.sdk">BoxUser.Info</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxFileVersion.html#line.245">getRestoredBy</a>()</pre>
 <div class="block">Gets information about the user who restored this version of the file.</div>
 <dl>
 <dt><span class="returnLabel">Returns:</span></dt>
@@ -540,7 +560,7 @@ extends <a href="../../../com/box/sdk/BoxResource.html" title="class in com.box.
 <ul class="blockList">
 <li class="blockList">
 <h4>getPurgedAt</h4>
-<pre>public&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/util/Date.html?is-external=true" title="class or interface in java.util">Date</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxFileVersion.html#line.249">getPurgedAt</a>()</pre>
+<pre>public&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/util/Date.html?is-external=true" title="class or interface in java.util">Date</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxFileVersion.html#line.254">getPurgedAt</a>()</pre>
 <div class="block">Gets the time that this version of the file was purged.</div>
 <dl>
 <dt><span class="returnLabel">Returns:</span></dt>
@@ -554,7 +574,7 @@ extends <a href="../../../com/box/sdk/BoxResource.html" title="class in com.box.
 <ul class="blockList">
 <li class="blockList">
 <h4>getVersionNumber</h4>
-<pre>public&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Long.html?is-external=true" title="class or interface in java.lang">Long</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxFileVersion.html#line.258">getVersionNumber</a>()</pre>
+<pre>public&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Long.html?is-external=true" title="class or interface in java.lang">Long</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxFileVersion.html#line.263">getVersionNumber</a>()</pre>
 <div class="block">Returns version number.</div>
 <dl>
 <dt><span class="returnLabel">Returns:</span></dt>
@@ -568,7 +588,7 @@ extends <a href="../../../com/box/sdk/BoxResource.html" title="class in com.box.
 <ul class="blockList">
 <li class="blockList">
 <h4>delete</h4>
-<pre>public&nbsp;void&nbsp;<a href="../../../src-html/com/box/sdk/BoxFileVersion.html#line.265">delete</a>()</pre>
+<pre>public&nbsp;void&nbsp;<a href="../../../src-html/com/box/sdk/BoxFileVersion.html#line.270">delete</a>()</pre>
 <div class="block">Deletes this version of the file.</div>
 </li>
 </ul>
@@ -578,7 +598,7 @@ extends <a href="../../../com/box/sdk/BoxResource.html" title="class in com.box.
 <ul class="blockList">
 <li class="blockList">
 <h4>download</h4>
-<pre>public&nbsp;void&nbsp;<a href="../../../src-html/com/box/sdk/BoxFileVersion.html#line.276">download</a>(<a href="https://docs.oracle.com/javase/8/docs/api/java/io/OutputStream.html?is-external=true" title="class or interface in java.io">OutputStream</a>&nbsp;output)</pre>
+<pre>public&nbsp;void&nbsp;<a href="../../../src-html/com/box/sdk/BoxFileVersion.html#line.281">download</a>(<a href="https://docs.oracle.com/javase/8/docs/api/java/io/OutputStream.html?is-external=true" title="class or interface in java.io">OutputStream</a>&nbsp;output)</pre>
 <div class="block">Downloads this version of the file to a given OutputStream.</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
@@ -592,7 +612,7 @@ extends <a href="../../../com/box/sdk/BoxResource.html" title="class in com.box.
 <ul class="blockList">
 <li class="blockList">
 <h4>download</h4>
-<pre>public&nbsp;void&nbsp;<a href="../../../src-html/com/box/sdk/BoxFileVersion.html#line.286">download</a>(<a href="https://docs.oracle.com/javase/8/docs/api/java/io/OutputStream.html?is-external=true" title="class or interface in java.io">OutputStream</a>&nbsp;output,
+<pre>public&nbsp;void&nbsp;<a href="../../../src-html/com/box/sdk/BoxFileVersion.html#line.291">download</a>(<a href="https://docs.oracle.com/javase/8/docs/api/java/io/OutputStream.html?is-external=true" title="class or interface in java.io">OutputStream</a>&nbsp;output,
                      <a href="../../../com/box/sdk/ProgressListener.html" title="interface in com.box.sdk">ProgressListener</a>&nbsp;listener)</pre>
 <div class="block">Downloads this version of the file to a given OutputStream while reporting the progress to a ProgressListener.</div>
 <dl>
@@ -608,7 +628,7 @@ extends <a href="../../../com/box/sdk/BoxResource.html" title="class in com.box.
 <ul class="blockListLast">
 <li class="blockList">
 <h4>promote</h4>
-<pre>public&nbsp;void&nbsp;<a href="../../../src-html/com/box/sdk/BoxFileVersion.html#line.295">promote</a>()</pre>
+<pre>public&nbsp;void&nbsp;<a href="../../../src-html/com/box/sdk/BoxFileVersion.html#line.300">promote</a>()</pre>
 <div class="block">Promotes this version of the file to be the latest version.</div>
 </li>
 </ul>

@@ -18,7 +18,7 @@
     catch(err) {
     }
 //-->
-var methods = {"i0":10,"i1":10,"i2":10,"i3":10};
+var methods = {"i0":10,"i1":10,"i2":10,"i3":10,"i4":10};
 var tabs = {65535:["t0","All Methods"],2:["t2","Instance Methods"],8:["t4","Concrete Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
@@ -47,7 +47,7 @@ var activeTableTab = "activeTableTab";
 <li class="blockList">
 <dl>
 <dt>Direct Known Subclasses:</dt>
-<dd><a href="../../../com/box/sdk/BoxClassification.html" title="class in com.box.sdk">BoxClassification</a>, <a href="../../../com/box/sdk/BoxEnterprise.html" title="class in com.box.sdk">BoxEnterprise</a>, <a href="../../../com/box/sdk/BoxFileUploadSession.Endpoints.html" title="class in com.box.sdk">BoxFileUploadSession.Endpoints</a>, <a href="../../../com/box/sdk/BoxFileUploadSessionPart.html" title="class in com.box.sdk">BoxFileUploadSessionPart</a>, <a href="../../../com/box/sdk/BoxFileUploadSessionPartList.html" title="class in com.box.sdk">BoxFileUploadSessionPartList</a>, <a href="../../../com/box/sdk/BoxLock.html" title="class in com.box.sdk">BoxLock</a>, <a href="../../../com/box/sdk/BoxMetadataQueryItem.html" title="class in com.box.sdk">BoxMetadataQueryItem</a>, <a href="../../../com/box/sdk/BoxNotificationEmail.html" title="class in com.box.sdk">BoxNotificationEmail</a>, <a href="../../../com/box/sdk/BoxRecentItem.html" title="class in com.box.sdk">BoxRecentItem</a>, <a href="../../../com/box/sdk/BoxResource.Info.html" title="class in com.box.sdk">BoxResource.Info</a>, <a href="../../../com/box/sdk/BoxSearchSharedLink.html" title="class in com.box.sdk">BoxSearchSharedLink</a>, <a href="../../../com/box/sdk/BoxSharedLink.html" title="class in com.box.sdk">BoxSharedLink</a>, <a href="../../../com/box/sdk/BoxSharedLink.Permissions.html" title="class in com.box.sdk">BoxSharedLink.Permissions</a>, <a href="../../../com/box/sdk/BoxSignRequestPrefillTag.html" title="class in com.box.sdk">BoxSignRequestPrefillTag</a>, <a href="../../../com/box/sdk/BoxSignRequestSigner.html" title="class in com.box.sdk">BoxSignRequestSigner</a>, <a href="../../../com/box/sdk/BoxSignRequestSigner.BoxSignerDecision.html" title="class in com.box.sdk">BoxSignRequestSigner.BoxSignerDecision</a>, <a href="../../../com/box/sdk/BoxSignRequestSigner.BoxSignerInput.html" title="class in com.box.sdk">BoxSignRequestSigner.BoxSignerInput</a>, <a href="../../../com/box/sdk/BoxSignTemplateSigner.html" title="class in com.box.sdk">BoxSignTemplateSigner</a>, <a href="../../../com/box/sdk/BoxSignTemplateSigner.BoxSignTemplateSignerInput.html" title="class in com.box.sdk">BoxSignTemplateSigner.BoxSignTemplateSignerInput</a>, <a href="../../../com/box/sdk/BoxUploadEmail.html" title="class in com.box.sdk">BoxUploadEmail</a>, <a href="../../../com/box/sdk/BoxWatermark.html" title="class in com.box.sdk">BoxWatermark</a>, <a href="../../../com/box/sdk/BoxZipConflict.html" title="class in com.box.sdk">BoxZipConflict</a>, <a href="../../../com/box/sdk/BoxZipConflictItem.html" title="class in com.box.sdk">BoxZipConflictItem</a>, <a href="../../../com/box/sdk/BoxZipDownloadStatus.html" title="class in com.box.sdk">BoxZipDownloadStatus</a>, <a href="../../../com/box/sdk/BoxZipInfo.html" title="class in com.box.sdk">BoxZipInfo</a>, <a href="../../../com/box/sdk/EmailAlias.html" title="class in com.box.sdk">EmailAlias</a>, <a href="../../../com/box/sdk/MetadataTemplate.html" title="class in com.box.sdk">MetadataTemplate</a>, <a href="../../../com/box/sdk/MetadataTemplate.Field.html" title="class in com.box.sdk">MetadataTemplate.Field</a>, <a href="../../../com/box/sdk/MetadataTemplate.FieldOperation.html" title="class in com.box.sdk">MetadataTemplate.FieldOperation</a>, <a href="../../../com/box/sdk/MetadataTemplate.Option.html" title="class in com.box.sdk">MetadataTemplate.Option</a>, <a href="../../../com/box/sdk/ScopedToken.html" title="class in com.box.sdk">ScopedToken</a></dd>
+<dd><a href="../../../com/box/sdk/BoxAIDialogueEntry.html" title="class in com.box.sdk">BoxAIDialogueEntry</a>, <a href="../../../com/box/sdk/BoxAIResponse.html" title="class in com.box.sdk">BoxAIResponse</a>, <a href="../../../com/box/sdk/BoxClassification.html" title="class in com.box.sdk">BoxClassification</a>, <a href="../../../com/box/sdk/BoxEnterprise.html" title="class in com.box.sdk">BoxEnterprise</a>, <a href="../../../com/box/sdk/BoxFileUploadSession.Endpoints.html" title="class in com.box.sdk">BoxFileUploadSession.Endpoints</a>, <a href="../../../com/box/sdk/BoxFileUploadSessionPart.html" title="class in com.box.sdk">BoxFileUploadSessionPart</a>, <a href="../../../com/box/sdk/BoxFileUploadSessionPartList.html" title="class in com.box.sdk">BoxFileUploadSessionPartList</a>, <a href="../../../com/box/sdk/BoxLock.html" title="class in com.box.sdk">BoxLock</a>, <a href="../../../com/box/sdk/BoxMetadataQueryItem.html" title="class in com.box.sdk">BoxMetadataQueryItem</a>, <a href="../../../com/box/sdk/BoxNotificationEmail.html" title="class in com.box.sdk">BoxNotificationEmail</a>, <a href="../../../com/box/sdk/BoxRecentItem.html" title="class in com.box.sdk">BoxRecentItem</a>, <a href="../../../com/box/sdk/BoxResource.Info.html" title="class in com.box.sdk">BoxResource.Info</a>, <a href="../../../com/box/sdk/BoxSearchSharedLink.html" title="class in com.box.sdk">BoxSearchSharedLink</a>, <a href="../../../com/box/sdk/BoxSharedLink.html" title="class in com.box.sdk">BoxSharedLink</a>, <a href="../../../com/box/sdk/BoxSharedLink.Permissions.html" title="class in com.box.sdk">BoxSharedLink.Permissions</a>, <a href="../../../com/box/sdk/BoxSignRequestPrefillTag.html" title="class in com.box.sdk">BoxSignRequestPrefillTag</a>, <a href="../../../com/box/sdk/BoxSignRequestSigner.html" title="class in com.box.sdk">BoxSignRequestSigner</a>, <a href="../../../com/box/sdk/BoxSignRequestSigner.BoxSignerDecision.html" title="class in com.box.sdk">BoxSignRequestSigner.BoxSignerDecision</a>, <a href="../../../com/box/sdk/BoxSignRequestSigner.BoxSignerInput.html" title="class in com.box.sdk">BoxSignRequestSigner.BoxSignerInput</a>, <a href="../../../com/box/sdk/BoxSignTemplateSigner.html" title="class in com.box.sdk">BoxSignTemplateSigner</a>, <a href="../../../com/box/sdk/BoxSignTemplateSigner.BoxSignTemplateSignerInput.html" title="class in com.box.sdk">BoxSignTemplateSigner.BoxSignTemplateSignerInput</a>, <a href="../../../com/box/sdk/BoxUploadEmail.html" title="class in com.box.sdk">BoxUploadEmail</a>, <a href="../../../com/box/sdk/BoxWatermark.html" title="class in com.box.sdk">BoxWatermark</a>, <a href="../../../com/box/sdk/BoxZipConflict.html" title="class in com.box.sdk">BoxZipConflict</a>, <a href="../../../com/box/sdk/BoxZipConflictItem.html" title="class in com.box.sdk">BoxZipConflictItem</a>, <a href="../../../com/box/sdk/BoxZipDownloadStatus.html" title="class in com.box.sdk">BoxZipDownloadStatus</a>, <a href="../../../com/box/sdk/BoxZipInfo.html" title="class in com.box.sdk">BoxZipInfo</a>, <a href="../../../com/box/sdk/EmailAlias.html" title="class in com.box.sdk">EmailAlias</a>, <a href="../../../com/box/sdk/MetadataTemplate.html" title="class in com.box.sdk">MetadataTemplate</a>, <a href="../../../com/box/sdk/MetadataTemplate.Field.html" title="class in com.box.sdk">MetadataTemplate.Field</a>, <a href="../../../com/box/sdk/MetadataTemplate.FieldOperation.html" title="class in com.box.sdk">MetadataTemplate.FieldOperation</a>, <a href="../../../com/box/sdk/MetadataTemplate.Option.html" title="class in com.box.sdk">MetadataTemplate.Option</a>, <a href="../../../com/box/sdk/ScopedToken.html" title="class in com.box.sdk">ScopedToken</a></dd>
 </dl>
 <hr>
 <br>
@@ -120,6 +120,12 @@ extends <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html
 <td class="colFirst"><code>JsonObject</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../com/box/sdk/BoxJSONObject.html#getPendingChangesAsJsonObject--">getPendingChangesAsJsonObject</a></span>()</code>
 <div class="block">Gets a JSON string containing any pending changes to this object that can be sent back to the Box API.</div>
+</td>
+</tr>
+<tr id="i4" class="altColor">
+<td class="colFirst"><code>protected JsonObject</code></td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../com/box/sdk/BoxJSONObject.html#getPendingJSONObject--">getPendingJSONObject</a></span>()</code>
+<div class="block">Gets a JsonObject containing any pending changes to this object that can be sent back to the Box API.</div>
 </td>
 </tr>
 </table>
@@ -211,6 +217,20 @@ extends <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html
 <dl>
 <dt><span class="returnLabel">Returns:</span></dt>
 <dd>a JSON string containing the pending changes.</dd>
+</dl>
+</li>
+</ul>
+<a name="getPendingJSONObject--">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>getPendingJSONObject</h4>
+<pre>protected&nbsp;JsonObject&nbsp;<a href="../../../src-html/com/box/sdk/BoxJSONObject.html#line.216">getPendingJSONObject</a>()</pre>
+<div class="block">Gets a JsonObject containing any pending changes to this object that can be sent back to the Box API.</div>
+<dl>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>a JsonObject containing the pending changes.</dd>
 </dl>
 </li>
 </ul>
