@@ -2,6 +2,19 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [4.9.0](https://github.com/box/box-java-sdk/compare/v4.8.0...v4.9.0) (2024-05-06)
+
+
+### New Features and Enhancements:
+
+* Support AI API ([#1243](https://github.com/box/box-java-sdk/issues/1243)) ([4e64f27](https://github.com/box/box-java-sdk/commit/4e64f27874fabf36f7fbf385ca4a60683f4a7670))
+* Support pagination of file versions ([#1240](https://github.com/box/box-java-sdk/issues/1240)) ([7e7af3f](https://github.com/box/box-java-sdk/commit/7e7af3f6e40a44522a7649817547846e3f633fc8))
+
+### Bug Fixes:
+
+* Support create empty shared link ([#1241](https://github.com/box/box-java-sdk/issues/1241)) ([0c86487](https://github.com/box/box-java-sdk/commit/0c86487848e5004a713873baffa2d9dcc63b1502))
+* Update exception message for get representation content ([#1239](https://github.com/box/box-java-sdk/issues/1239)) ([a608f9a](https://github.com/box/box-java-sdk/commit/a608f9a4350b723e9f07eaf00af45243737a17c9))
+
 ## [4.8.0](https://github.com/box/box-java-sdk/compare/v4.7.0...v4.8.0) (2024-02-27)
 
 

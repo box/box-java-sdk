@@ -232,6 +232,15 @@ public class BoxSharedLink extends BoxJSONObject {
     }
 
     @Override
+    protected JsonObject getPendingJSONObject() {
+        JsonObject result = super.getPendingJSONObject();
+        if (result == null) {
+            result = new JsonObject();
+        }
+        return result;
+    }
+
+    @Override
     void parseJSONMember(JsonObject.Member member) {
         JsonValue value = member.getValue();
         String memberName = member.getName();

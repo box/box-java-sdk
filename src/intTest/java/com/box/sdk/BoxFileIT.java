@@ -12,6 +12,7 @@ import static com.box.sdk.UniqueTestFolder.removeUniqueFolder;
 import static com.box.sdk.UniqueTestFolder.setupUniqeFolder;
 import static com.box.sdk.UniqueTestFolder.uploadFileToUniqueFolder;
 import static com.box.sdk.UniqueTestFolder.uploadFileToUniqueFolderWithSomeContent;
+import static com.box.sdk.UniqueTestFolder.uploadFileWithContentToSpecifiedFolder;
 import static com.box.sdk.UniqueTestFolder.uploadFileWithSomeContent;
 import static com.box.sdk.UniqueTestFolder.uploadSampleFileToUniqueFolder;
 import static com.box.sdk.UniqueTestFolder.uploadTwoFileVersionsToUniqueFolder;
@@ -493,6 +494,41 @@ public class BoxFileIT {
     }
 
     @Test
+    public void canPaginateOverListOfVersions() {
+        BoxFile uploadedFile = null;
+        String fileName = "[canPaginateOverListOfVersions] Multi-version File.txt";
+        try {
+            BoxAPIConnection api = jwtApiForServiceAccount();
+            BoxFolder uniqueFolder = getUniqueFolder(api);
+            uploadedFile = uploadFileWithContentToSpecifiedFolder(fileName, "Version 1", uniqueFolder);
+
+            byte[] fileBytes = "Version 2".getBytes(StandardCharsets.UTF_8);
+            uploadedFile.uploadNewVersion(
+                    new ByteArrayInputStream(fileBytes), null, fileBytes.length, mock(ProgressListener.class));
+
+            fileBytes = "Version 3".getBytes(StandardCharsets.UTF_8);
+            uploadedFile.uploadNewVersion(
+                    new ByteArrayInputStream(fileBytes), null, fileBytes.length, mock(ProgressListener.class));
+
+            Collection<BoxFileVersion> versionsPart1 = uploadedFile.getVersionsRange(0, 1);
+            assertThat(versionsPart1.size(), is(1));
+            BoxFileVersion boxFileVersion1 = versionsPart1.iterator().next();
+
+            Collection<BoxFileVersion> versionsPart2 = uploadedFile.getVersionsRange(1, 2);
+            assertThat(versionsPart2.size(), is(1));
+            BoxFileVersion boxFileVersion2 = versionsPart2.iterator().next();
+
+            Collection<BoxFileVersion> allVersions = uploadedFile.getVersionsRange(0, 10);
+            assertThat(allVersions.size(), is(2));
+            Iterator<BoxFileVersion> iterator = allVersions.iterator();
+            assertThat(iterator.next(), is(boxFileVersion1));
+            assertThat(iterator.next(), is(boxFileVersion2));
+        } finally {
+            deleteFile(uploadedFile);
+        }
+    }
+
+    @Test
     public void canListVersionsWithSpecificFields() {
         BoxFile uploadedFile = null;
         String fileName = "[canListVersionsWithSpecificFields] Multi-version File.txt";
@@ -938,6 +974,21 @@ public class BoxFileIT {
             assertThat(sharedLink.getPermissions().getCanDownload(), is(true));
             assertThat(sharedLink.getAccess(), is(OPEN));
             assertThat(sharedLink.getIsPasswordEnabled(), is(true));
+        } finally {
+            deleteFile(uploadedFile);
+        }
+    }
+
+    @Test
+    public void createDefaultSharedLink() {
+        BoxAPIConnection api = jwtApiForServiceAccount();
+        BoxFile uploadedFile = null;
+        try {
+            uploadedFile = uploadFileToUniqueFolderWithSomeContent(api, "file_to_share.txt");
+            BoxSharedLinkRequest request = new BoxSharedLinkRequest();
+            uploadedFile.createSharedLink(request);
+            BoxSharedLink sharedLink = uploadedFile.getInfo().getSharedLink();
+            assertThat(sharedLink, is(notNullValue()));
         } finally {
             deleteFile(uploadedFile);
         }

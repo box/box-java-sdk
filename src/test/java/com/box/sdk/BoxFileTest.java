@@ -1034,6 +1034,30 @@ public class BoxFileTest {
     }
 
     @Test
+    public void createDefaultSharedLink() {
+        //given
+        BoxAPIConnection api = new BoxAPIConnectionForTests("");
+        api.setRequestInterceptor(
+            request -> {
+                //then
+                String requestString = request.bodyToString();
+                assertThat(requestString, is("{\"shared_link\":{}}"));
+                return new BoxJSONResponse() {
+                    @Override
+                    public String getJSON() {
+                        return "{}";
+                    }
+                };
+            }
+        );
+        BoxSharedLinkRequest sharedLink = new BoxSharedLinkRequest();
+
+        //when
+        BoxFile file = new BoxFile(api, "12345");
+        file.createSharedLink(sharedLink);
+    }
+
+    @Test
     public void setMetadataWorksWhenNoChangesSubmittedAndConflictOccured() {
         // given
         BoxAPIConnection api = new BoxAPIConnectionForTests("");
@@ -1067,7 +1091,7 @@ public class BoxFileTest {
     }
 
     @Test
-    public void getVersionsWithSpecificFields() {
+    public void getVersionsWithSpecificFieldsAndDefaultLimit() {
         // given
         BoxAPIConnection api = new BoxAPIConnectionForTests("");
         BoxFile file = new BoxFile(api, "6543");
@@ -1077,11 +1101,11 @@ public class BoxFileTest {
             request -> {
                 try {
                     String query = URLDecoder.decode(request.getUrl().getQuery(), "UTF-8");
-                    assertThat(query, containsString("fields=name,version_number"));
+                    assertThat(query, containsString("limit=1000&offset=0&fields=name,version_number"));
                     return new BoxJSONResponse() {
                         @Override
                         public String getJSON() {
-                            return "{\"entries\": []}";
+                            return "{\"entries\": [], \"total_count\": 100}";
                         }
                     };
                 } catch (UnsupportedEncodingException e) {
@@ -1092,6 +1116,34 @@ public class BoxFileTest {
 
         // when
         file.getVersions("name", "version_number");
+    }
+
+    @Test
+    public void getVersionsWithLimitAndOffset() {
+        // given
+        BoxAPIConnection api = new BoxAPIConnectionForTests("");
+        BoxFile file = new BoxFile(api, "6543");
+
+        // then
+        api.setRequestInterceptor(
+                request -> {
+                    try {
+                        String query = URLDecoder.decode(request.getUrl().getQuery(), "UTF-8");
+                        assertThat(query, containsString("limit=10&offset=0&fields=name,version_number"));
+                        return new BoxJSONResponse() {
+                            @Override
+                            public String getJSON() {
+                                return "{\"entries\": [], \"total_count\": 100}";
+                            }
+                        };
+                    } catch (UnsupportedEncodingException e) {
+                        throw new RuntimeException(e);
+                    }
+                }
+        );
+
+        // when
+        file.getVersionsRange(0, 10, "name", "version_number");
     }
 
     @Test

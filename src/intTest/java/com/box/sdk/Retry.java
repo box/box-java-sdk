@@ -27,6 +27,9 @@ public final class Retry {
                 break;
             } catch (Exception e) {
                 retriesExecuted++;
+                if (retriesExecuted >= retries) {
+                    throw e;
+                }
                 LOGGER.debug(
                     format("Retrying [%d/%d] becasue of Exception '%s'", retriesExecuted, retries, e.getMessage())
                 );
