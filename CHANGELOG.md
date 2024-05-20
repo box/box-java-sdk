@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [4.9.1](https://github.com/box/box-java-sdk/compare/v4.9.0...v4.9.1) (2024-05-20)
+
+
+### Bug Fixes:
+
+* Bumped `org.bouncycastle:bcprov-jdk18on:1.78.1` and `org.bouncycastle:bcpkix-jdk18on:1.78.1` ([#1246](https://github.com/box/box-java-sdk/issues/1246)) ([0557bed](https://github.com/box/box-java-sdk/commit/0557bed2b65d1be717b64a612d74fca73ba21096))
+
 ## [4.9.0](https://github.com/box/box-java-sdk/compare/v4.8.0...v4.9.0) (2024-05-06)
 
 
