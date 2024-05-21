@@ -144,6 +144,23 @@ BoxFile.Info newFileInfo = rootFolder.uploadFile(stream, "My File.txt");
 stream.close();
 ```
 
+Note that using `FileInputStream` allows you to read the content of the file only once. 
+If the first upload attempt fails, the stream will become exhausted,
+and request retry with no content might be performed. To retry an upload, you would have to 
+create a new `FileInputStream` and call `uploadFile()` method again.
+
+If you want the SDK to automatically retry the upload in case of any error, you need to provide an 
+`InputStream` class that supports the `reset()` operation. For example, you can read all bytes from your file into
+a `ByteArrayInputStream` and then use it for the upload method. Be aware that this approach will load the whole file
+into memory, so it is not recommended for large files, as it can exhaust easily your memory.
+
+```java
+BoxFolder rootFolder = BoxFolder.getRootFolder(api);
+InputStream stream = new ByteArrayInputStream(Files.readAllBytes(new File(path).toPath()));
+BoxFile.Info newFileInfo = rootFolder.uploadFile(stream, "My File.txt");
+stream.close();
+```
+
 Upload progress can be tracked by providing the size of the file and a
 [`ProgressListener`][progress] to
 [`uploadFile(InputStream fileContents, String fileName, long fileSize, ProgressListener progress)`][upload2].

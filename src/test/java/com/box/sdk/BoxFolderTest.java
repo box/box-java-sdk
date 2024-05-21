@@ -8,6 +8,7 @@ import static com.box.sdk.http.ContentType.APPLICATION_JSON;
 import static com.box.sdk.http.ContentType.APPLICATION_JSON_PATCH;
 import static com.box.sdk.http.ContentType.APPLICATION_OCTET_STREAM;
 import static com.github.tomakehurst.wiremock.core.WireMockConfiguration.wireMockConfig;
+import static com.github.tomakehurst.wiremock.stubbing.Scenario.STARTED;
 import static java.lang.String.format;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
@@ -1253,6 +1254,40 @@ public class BoxFolderTest {
         BoxFile.Info file = folder.uploadFile(stream, fileName, fileDescription);
 
         assertEquals(fileDescription, file.getDescription());
+    }
+
+    @Test
+    public void testUploadFileSucceedsAfter500InTheFirstAttempt() throws IOException {
+        final String folderID = "12345";
+        final String fileURL = "/2.0/files/content";
+        final String fileContent = "Test file";
+        final String fileName = "Test File.txt";
+        InputStream stream = new ByteArrayInputStream(fileContent.getBytes(StandardCharsets.UTF_8));
+
+        String result = TestUtils.getFixture("BoxFile/CreateFileWithDescription201");
+
+        wireMockRule.stubFor(WireMock.post(WireMock.urlPathEqualTo(fileURL))
+                .inScenario("Retry Scenario")
+                .whenScenarioStateIs(STARTED)
+                .willReturn(WireMock.aResponse()
+                    .withStatus(500))
+                .willSetStateTo("Retry"));
+
+        wireMockRule.stubFor(WireMock.post(WireMock.urlPathEqualTo(fileURL))
+                .inScenario("Retry Scenario")
+                .whenScenarioStateIs("Retry")
+                .willReturn(WireMock.aResponse()
+                        .withHeader("Content-Type", APPLICATION_JSON_PATCH)
+                        .withBody(result)
+                        .withStatus(201))
+                .willSetStateTo("Success"));
+
+        BoxFolder folder = new BoxFolder(this.api, folderID);
+        BoxFile.Info file = folder.uploadFile(stream, fileName);
+
+        WireMock.verify(2, WireMock.postRequestedFor(WireMock.urlEqualTo("/2.0/files/content")));
+
+        assertEquals(fileName, file.getName());
     }
 
     @Test
