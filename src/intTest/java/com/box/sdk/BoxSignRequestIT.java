@@ -62,8 +62,16 @@ public class BoxSignRequestIT {
             files.add(new BoxSignRequestFile(file2.getID()));
 
             String signerEmail = "user@example.com";
+            Boolean signerLoginRequired = false;
+            String signerPassword = "password";
+            Boolean signerSuppressNotifications = false;
+            String signerVerficationPhoneNumber = "+16314578901";
+
             List<BoxSignRequestSigner> signers = new ArrayList<>();
-            BoxSignRequestSigner newSigner = new BoxSignRequestSigner(signerEmail).setInPerson(false);
+            BoxSignRequestSigner newSigner = new BoxSignRequestSigner(signerEmail).setInPerson(false)
+                .setLoginRequired(signerLoginRequired).setPassword(signerPassword)
+                .setSuppressNotifications(signerSuppressNotifications)
+                .setVerificationPhoneNumber(signerVerficationPhoneNumber);
             signers.add(newSigner);
 
             signedFileFolder = uniqueFolder.createFolder("Folder - signRequestIntegrationTest").getResource();
@@ -114,6 +122,9 @@ public class BoxSignRequestIT {
             assertEquals(file2.getID(), file2Info.getID());
             assertEquals(signerEmail, signer.getEmail());
             assertEquals(signRequestIdCreate, signRequestInfoGetByID.getID());
+            assertEquals(signerLoginRequired, signer.getLoginRequired());
+            assertEquals(signerSuppressNotifications, signer.getSuppressNotifications());
+            assertEquals(signerVerficationPhoneNumber, signer.getVerificationPhoneNumber());
 
             // Resend sign request
             retry(signRequestGetByID::resend, 5, 500);
@@ -152,7 +163,7 @@ public class BoxSignRequestIT {
     }
 
     @Test
-    public void createignRequestForGroup() throws InterruptedException {
+    public void createSignRequestForGroup() throws InterruptedException {
         // Test Setup
         BoxAPIConnection api = jwtApiForServiceAccount();
         BoxFolder uniqueFolder = getUniqueFolder(api);

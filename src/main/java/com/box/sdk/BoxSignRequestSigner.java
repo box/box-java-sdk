@@ -27,6 +27,10 @@ public class BoxSignRequestSigner extends BoxJSONObject {
     private String declinedRedirectUrl;
     private String iframeableEmedUrl;
     private String signerGroupId;
+    private Boolean loginRequired;
+    private String password;
+    private Boolean suppressNotifications;
+    private String verificationPhoneNumber;
     private BoxAPIConnection api;
 
     /**
@@ -296,6 +300,93 @@ public class BoxSignRequestSigner extends BoxJSONObject {
     }
 
     /**
+     * If set to true, signer will need to login to a Box account before signing the request.
+     * If the signer does not have an existing account, they will have an option to create a free Box account.
+     *
+     * @return true if login is required for the signer, otherwise false.
+     */
+    public Boolean getLoginRequired() {
+        return this.loginRequired;
+    }
+
+    /**
+     * If set to true, signer will need to login to a Box account before signing the request.
+     * If the signer does not have an existing account, they will have an option to create a free Box account.
+     *
+     * @param loginRequired indicates if login is required for the signer.
+     * @return this BoxSignRequestSigner object for chaining.
+     */
+    public BoxSignRequestSigner setLoginRequired(Boolean loginRequired) {
+        this.loginRequired = loginRequired;
+        return this;
+    }
+
+    /**
+     * If set, the signer is required to enter the password before they are able to sign a document.
+     * This field is write only.
+     *
+     * @return password required for the signer to access the sign request.
+     */
+    public String getPassword() {
+        return this.password;
+    }
+
+    /**
+     * Sets the password required for the signer to access the sign request.
+     *
+     * @param password required for the signer to access the sign request.
+     * @return this BoxSignRequestSigner object for chaining.
+     */
+    public BoxSignRequestSigner setPassword(String password) {
+        this.password = password;
+        return this;
+    }
+
+    /**
+     * Gets the flag that suppresses email notifications for the signer.
+     *
+     * @return true if email notifications are suppressed for the signer, otherwise false.
+     */
+    public Boolean getSuppressNotifications() {
+        return this.suppressNotifications;
+    }
+
+    /**
+     * Sets the flag that suppresses email notifications for the signer.
+     *
+     * @param suppressNotifications indicates if email notifications are suppressed for the signer.
+     * @return this BoxSignRequestSigner object for chaining.
+     */
+    public BoxSignRequestSigner setSuppressNotifications(Boolean suppressNotifications) {
+        this.suppressNotifications = suppressNotifications;
+        return this;
+    }
+
+    /**
+     * Gets the phone number used for verification.
+     * If set, this phone number is be used to verify the signer via two factor authentication
+     * before they are able to sign the document.
+     *
+     * @return phone number used for verification.
+     */
+    public String getVerificationPhoneNumber() {
+        return this.verificationPhoneNumber;
+    }
+
+    /**
+     * Sets the phone number used for verification.
+     * If set, this phone number is be used to verify the signer via two factor authentication
+     * before they are able to sign the document.
+     *
+     * @param verificationPhoneNumber phone number used for verification.
+     * @return this BoxSignRequestSigner object for chaining.
+     */
+    public BoxSignRequestSigner setVerificationPhoneNumber(String verificationPhoneNumber) {
+        this.verificationPhoneNumber = verificationPhoneNumber;
+        return this;
+    }
+
+    /**
      * {@inheritDoc}
      */
     @Override
@@ -352,6 +443,14 @@ public class BoxSignRequestSigner extends BoxJSONObject {
                 case "signer_group_id":
                     this.signerGroupId = value.asString();
                     break;
+                case "login_required":
+                    this.loginRequired = value.asBoolean();
+                    break;
+                case "suppress_notifications":
+                    this.suppressNotifications = value.asBoolean();
+                    break;
+                case "verification_phone_number":
+                    this.verificationPhoneNumber = value.asString();
                 default:
                     return;
             }
@@ -375,6 +474,10 @@ public class BoxSignRequestSigner extends BoxJSONObject {
         JsonUtils.addIfNotNull(jsonObj, "redirect_url", this.redirectUrl);
         JsonUtils.addIfNotNull(jsonObj, "declined_redirect_url", this.declinedRedirectUrl);
         JsonUtils.addIfNotNull(jsonObj, "signer_group_id", this.signerGroupId);
+        JsonUtils.addIfNotNull(jsonObj, "login_required", this.loginRequired);
+        JsonUtils.addIfNotNull(jsonObj, "password", this.password);
+        JsonUtils.addIfNotNull(jsonObj, "suppress_notifications", this.suppressNotifications);
+        JsonUtils.addIfNotNull(jsonObj, "verification_phone_number", this.verificationPhoneNumber);
         return jsonObj;
     }
 

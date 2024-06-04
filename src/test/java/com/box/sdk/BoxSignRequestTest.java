@@ -50,6 +50,10 @@ public class BoxSignRequestTest {
 
         final String signerRedirectUrl = "https://box.com/redirect_url_signer_1";
         final String signerDeclinedRedirectUrl = "https://box.com/declined_redirect_url_signer_1";
+        final Boolean signerLoginRequired = true;
+        final String signerPassword = "password";
+        final Boolean signerSuppressNotifications = true;
+        final String signerVerficationPhoneNumber = "1234567890";
 
         String result = TestUtils.getFixture("BoxSignRequest/CreateSignRequest200");
 
@@ -65,6 +69,10 @@ public class BoxSignRequestTest {
         List<BoxSignRequestSigner> signers = new ArrayList<>();
         BoxSignRequestSigner newSigner = new BoxSignRequestSigner("signer@mail.com");
         newSigner.setEmbedUrlExternalUserId("1234");
+        newSigner.setLoginRequired(signerLoginRequired);
+        newSigner.setPassword(signerPassword);
+        newSigner.setSuppressNotifications(signerSuppressNotifications);
+        newSigner.setVerificationPhoneNumber(signerVerficationPhoneNumber);
         signers.add(newSigner);
 
         String parentFolderId = "55555";
@@ -81,6 +89,9 @@ public class BoxSignRequestTest {
         assertEquals(signerRedirectUrl, signer.getRedirectUrl());
         assertEquals(iframeableEmedUrl, signer.getIframeableEmedUrl());
         assertEquals(signerDeclinedRedirectUrl, signer.getDeclinedRedirectUrl());
+        assertEquals(signerLoginRequired, signer.getLoginRequired());
+        assertEquals(signerSuppressNotifications, signer.getSuppressNotifications());
+        assertEquals(signerVerficationPhoneNumber, signer.getVerificationPhoneNumber());
 
         assertEquals(prepareUrl, signRequestInfo.getPrepareUrl());
         assertEquals(redirectUrl, signRequestInfo.getRedirectUrl());
@@ -109,6 +120,9 @@ public class BoxSignRequestTest {
 
         final String signerRedirectUrl = "https://box.com/redirect_url_signer_1";
         final String signerDeclinedRedirectUrl = "https://box.com/declined_redirect_url_signer_1";
+        final Boolean signerLoginRequired = true;
+        final Boolean signerSuppressNotifications = true;
+        final String signerVerficationPhoneNumber = "1234567890";
 
         final String templateId = "93153068-5420-467b-b8ef-aaaaaaaaaaa";
 
@@ -130,6 +144,9 @@ public class BoxSignRequestTest {
         assertEquals(signerRedirectUrl, signer.getRedirectUrl());
         assertEquals(signerDeclinedRedirectUrl, signer.getDeclinedRedirectUrl());
         assertEquals(iframeableEmedUrl, signer.getIframeableEmedUrl());
+        assertEquals(signerLoginRequired, signer.getLoginRequired());
+        assertEquals(signerSuppressNotifications, signer.getSuppressNotifications());
+        assertEquals(signerVerficationPhoneNumber, signer.getVerificationPhoneNumber());
 
         assertEquals(prepareUrl, signRequestInfo.getPrepareUrl());
         assertEquals(redirectUrl, signRequestInfo.getRedirectUrl());
