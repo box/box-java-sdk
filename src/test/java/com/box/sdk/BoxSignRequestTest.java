@@ -123,6 +123,7 @@ public class BoxSignRequestTest {
         final Boolean signerLoginRequired = true;
         final Boolean signerSuppressNotifications = true;
         final String signerVerficationPhoneNumber = "1234567890";
+        final String signerDecisionAdditionalInfo = "Requesting changes before signing.";
 
         final String templateId = "93153068-5420-467b-b8ef-aaaaaaaaaaa";
 
@@ -147,6 +148,7 @@ public class BoxSignRequestTest {
         assertEquals(signerLoginRequired, signer.getLoginRequired());
         assertEquals(signerSuppressNotifications, signer.getSuppressNotifications());
         assertEquals(signerVerficationPhoneNumber, signer.getVerificationPhoneNumber());
+        assertEquals(signerDecisionAdditionalInfo, signer.getSignerDecision().getAdditionalInfo());
 
         assertEquals(prepareUrl, signRequestInfo.getPrepareUrl());
         assertEquals(redirectUrl, signRequestInfo.getRedirectUrl());

@@ -17,7 +17,8 @@
       "has_viewed_document": true,
       "signer_decision": {
         "type": "signed",
-        "finalized_at": "2021-04-26T08:12:13.982Z"
+        "finalized_at": "2021-04-26T08:12:13.982Z",
+        "additional_info": "Requesting changes before signing."
       },
       "inputs": [
         {

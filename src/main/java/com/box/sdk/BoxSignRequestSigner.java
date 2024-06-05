@@ -657,6 +657,7 @@ public class BoxSignRequestSigner extends BoxJSONObject {
     public class BoxSignerDecision extends BoxJSONObject {
         private BoxSignRequestSignerDecisionType type;
         private Date finalizedAt;
+        private String additionalInfo;
 
         /**
          * Constructs a BoxSignerDecision object using an already parsed JSON object.
@@ -686,6 +687,15 @@ public class BoxSignRequestSigner extends BoxJSONObject {
         }
 
         /**
+         * Gets the additional info about the decision, such as the decline reason from the signer.
+         *
+         * @return additional information about the decision.
+         */
+        public String getAdditionalInfo() {
+            return this.additionalInfo;
+        }
+
+        /**
          * {@inheritDoc}
          */
         @Override
@@ -697,6 +707,8 @@ public class BoxSignRequestSigner extends BoxJSONObject {
                     this.type = BoxSignRequestSignerDecisionType.fromJSONString(value.asString());
                 } else if (memberName.equals("finalized_at")) {
                     this.finalizedAt = BoxDateFormat.parse(value.asString());
+                } else if (memberName.equals("additional_info")) {
+                    this.additionalInfo = value.asString();
                 }
             } catch (Exception e) {
                 throw new BoxDeserializationException(memberName, value.toString(), e);
