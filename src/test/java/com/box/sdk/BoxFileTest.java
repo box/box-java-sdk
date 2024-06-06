@@ -15,6 +15,7 @@ import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import com.box.sdk.sharedlink.BoxSharedLinkRequest;
 import com.eclipsesource.json.Json;
@@ -427,6 +428,91 @@ public class BoxFileTest {
         wireMockRule.stubFor(
             WireMock.get(WireMock.urlPathEqualTo(
                 "/2.0/internal_files/1030335435441/versions/1116437417841/representations/jpg_thumb_32x32/content/"
+                ))
+                .willReturn(WireMock.aResponse()
+                    .withHeader("Content-Type", "image/jpg")
+                    .withBody("This is a JPG")
+                    .withStatus(200))
+        );
+
+        BoxFile file = new BoxFile(this.api, fileID);
+        OutputStream output = new ByteArrayOutputStream();
+        file.getRepresentationContent("[jpg?dimensions=32x32]", output);
+        assertThat(output.toString(), equalTo("This is a JPG"));
+    }
+
+    @Test
+    public void testGetRepresentationContentThrowsWhenExceedingMaxRetries() {
+        final String fileID = "12345";
+        wireMockRule.stubFor(
+            WireMock.get(WireMock.urlPathEqualTo("/2.0/files/" + fileID))
+                .withQueryParam("fields", WireMock.equalTo("representations"))
+                .willReturn(WireMock.aResponse()
+                    .withHeader("Content-Type", APPLICATION_JSON)
+                    .withBody(getFixture("BoxFile/GetFileRepresentations200", wireMockRule.httpsPort()))
+                    .withStatus(200))
+        );
+        wireMockRule.stubFor(
+            WireMock.get(WireMock.urlPathEqualTo(
+                    "/2.0/internal_files/12345/versions/1116420931563/representations/jpg_thumb_32x32")
+                )
+                .willReturn(WireMock.aResponse()
+                    .withHeader("Content-Type", APPLICATION_JSON)
+                    .withBody(getFixture("BoxFile/GetFileRepresentation200WithPending", wireMockRule.httpsPort()))
+                    .withStatus(200))
+        );
+
+        try {
+            BoxFile file = new BoxFile(this.api, fileID);
+            OutputStream output = new ByteArrayOutputStream();
+            file.getRepresentationContent("[jpg?dimensions=32x32]", "", output, 5);
+            fail("getRepresentationContent did not fail with BoxAPIException due to pending status");
+            assertThat(output.toString(), equalTo("This is a JPG"));
+        } catch (BoxAPIException apiException) {
+            assertEquals(
+                apiException.getMessage(),
+                "Representation did non have a success status allowing it to be retrieved after 5 attempts"
+            );
+        }
+    }
+
+    @Test
+    public void testGetRepresentationContentSuccess() {
+        final String fileID = "12345";
+        wireMockRule.stubFor(
+            WireMock.get(WireMock.urlPathEqualTo("/2.0/files/" + fileID))
+                .withQueryParam("fields", WireMock.equalTo("representations"))
+                .willReturn(WireMock.aResponse()
+                    .withHeader("Content-Type", APPLICATION_JSON)
+                    .withBody(getFixture("BoxFile/GetFileRepresentations200", wireMockRule.httpsPort()))
+                    .withStatus(200))
+        );
+        wireMockRule.stubFor(
+            WireMock.get(WireMock.urlPathEqualTo(
+                    "/2.0/internal_files/12345/versions/1116420931563/representations/jpg_thumb_32x32")
+                )
+                .inScenario("Get file representation status info")
+                .willSetStateTo("pending status")
+                .willReturn(WireMock.aResponse()
+                    .withHeader("Content-Type", APPLICATION_JSON)
+                    .withBody(getFixture("BoxFile/GetFileRepresentation200WithPending", wireMockRule.httpsPort()))
+                    .withStatus(200))
+        );
+        wireMockRule.stubFor(
+            WireMock.get(WireMock.urlPathEqualTo(
+                    "/2.0/internal_files/12345/versions/1116420931563/representations/jpg_thumb_32x32")
+                )
+                .inScenario("Get file representation status info")
+                .whenScenarioStateIs("pending status")
+                .willReturn(WireMock.aResponse()
+                    .withHeader("Content-Type", APPLICATION_JSON)
+                    .withBody(getFixture("BoxFile/GetFileRepresentation200", wireMockRule.httpsPort()))
+                    .withStatus(200))
+        );
+
+        wireMockRule.stubFor(
+            WireMock.get(WireMock.urlPathEqualTo(
+                    "/2.0/internal_files/1030335435441/versions/1116437417841/representations/jpg_thumb_32x32/content/"
                 ))
                 .willReturn(WireMock.aResponse()
                     .withHeader("Content-Type", "image/jpg")

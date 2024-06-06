@@ -505,7 +505,23 @@ public class BoxFile extends BoxItem {
      * @see <a href=https://developer.box.com/reference#section-x-rep-hints-header>X-Rep-Hints Header</a>
      */
     public void getRepresentationContent(String representationHint, String assetPath, OutputStream output) {
+        this.getRepresentationContent(representationHint, assetPath, output, Integer.MAX_VALUE);
+    }
 
+    /**
+     * Fetches the contents of a file representation with asset path and writes them to the provided output stream.
+     *
+     * @param representationHint the X-Rep-Hints query for the representation to fetch.
+     * @param assetPath          the path of the asset for representations containing multiple files.
+     * @param output             the output stream to write the contents to.
+     * @param maxRetries         the maximum number of attempts to call the request for retrieving status information
+     *                           indicating whether the representation has been generated and is ready to fetch.
+     *                           If the number of attempts is exceeded, the method will throw a BoxApiException.
+     * @see <a href=https://developer.box.com/reference#section-x-rep-hints-header>X-Rep-Hints Header</a>
+     */
+    public void getRepresentationContent(
+        String representationHint, String assetPath, OutputStream output, int maxRetries
+    ) {
         List<Representation> reps = this.getInfoWithRepresentations(representationHint).getRepresentations();
         if (reps.size() < 1) {
             throw new BoxAPIException("No matching representations found for requested '" + representationHint
@@ -523,16 +539,27 @@ public class BoxFile extends BoxItem {
             case "none":
 
                 String repContentURLString = null;
-                while (repContentURLString == null) {
+                int attemptNumber = 0;
+                while (repContentURLString == null && attemptNumber < maxRetries) {
                     repContentURLString = this.pollRepInfo(representation.getInfo().getUrl());
                     try {
                         Thread.sleep(100);
                     } catch (InterruptedException e) {
                         throw new RuntimeException(e);
                     }
+                    attemptNumber++;
                 }
 
-                this.makeRepresentationContentRequest(repContentURLString, assetPath, output);
+                if (repContentURLString != null) {
+                    this.makeRepresentationContentRequest(repContentURLString, assetPath, output);
+                } else {
+                    throw new BoxAPIException(
+                        "Representation did non have a success status allowing it to be retrieved after "
+                            + maxRetries
+                            + " attempts"
+                    );
+                }
+
                 break;
             case "error":
                 throw new BoxAPIException("Representation had error status");
