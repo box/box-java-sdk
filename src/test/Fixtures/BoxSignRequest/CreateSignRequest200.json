@@ -17,7 +17,8 @@
       "has_viewed_document": true,
       "signer_decision": {
         "type": "signed",
-        "finalized_at": "2021-04-26T08:12:13.982Z"
+        "finalized_at": "2021-04-26T08:12:13.982Z",
+        "additional_info": "Requesting changes before signing."
       },
       "inputs": [
         {
@@ -33,7 +34,10 @@
       "embed_url": "https://example.com",
       "redirect_url": "https://box.com/redirect_url_signer_1",
       "declined_redirect_url": "https://box.com/declined_redirect_url_signer_1",
-      "iframeable_embed_url": "https://app.box.com/embed/sign/document/gfhr4222-a331-494b-808b-79bc7f3992a3/f14d7098-a331-494b-808b-79bc7f3992a4"
+      "iframeable_embed_url": "https://app.box.com/embed/sign/document/gfhr4222-a331-494b-808b-79bc7f3992a3/f14d7098-a331-494b-808b-79bc7f3992a4",
+      "suppress_notifications": true,
+      "login_required": true,
+      "verification_phone_number": "1234567890"
     }
   ],
   "source_files": [
