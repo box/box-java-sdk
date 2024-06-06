@@ -467,7 +467,6 @@ public class BoxFileTest {
             OutputStream output = new ByteArrayOutputStream();
             file.getRepresentationContent("[jpg?dimensions=32x32]", "", output, 5);
             fail("getRepresentationContent did not fail with BoxAPIException due to pending status");
-            assertThat(output.toString(), equalTo("This is a JPG"));
         } catch (BoxAPIException apiException) {
             assertEquals(
                 apiException.getMessage(),

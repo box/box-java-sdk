@@ -554,7 +554,7 @@ public class BoxFile extends BoxItem {
                     this.makeRepresentationContentRequest(repContentURLString, assetPath, output);
                 } else {
                     throw new BoxAPIException(
-                        "Representation did non have a success status allowing it to be retrieved after "
+                        "Representation did not have a success status allowing it to be retrieved after "
                             + maxRetries
                             + " attempts"
                     );
