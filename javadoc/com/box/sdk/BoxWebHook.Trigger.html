@@ -256,8 +256,28 @@ extends <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Enum.html?i
 </td>
 </tr>
 <tr class="rowColor">
+<td class="colOne"><code><span class="memberNameLink"><a href="../../../com/box/sdk/BoxWebHook.Trigger.html#SIGN_REQUEST_ERROR_FINALIZING">SIGN_REQUEST_ERROR_FINALIZING</a></span></code>
+<div class="block">Triggered when the signature request could not be processed.</div>
+</td>
+</tr>
+<tr class="altColor">
 <td class="colOne"><code><span class="memberNameLink"><a href="../../../com/box/sdk/BoxWebHook.Trigger.html#SIGN_REQUEST_EXPIRED">SIGN_REQUEST_EXPIRED</a></span></code>
 <div class="block">Triggered when <a href="../../../com/box/sdk/BoxFile.html" title="class in com.box.sdk"><code>BoxFile</code></a> is expired.</div>
+</td>
+</tr>
+<tr class="rowColor">
+<td class="colOne"><code><span class="memberNameLink"><a href="../../../com/box/sdk/BoxWebHook.Trigger.html#SIGN_REQUEST_SIGNATURE_REQUESTED">SIGN_REQUEST_SIGNATURE_REQUESTED</a></span></code>
+<div class="block">Triggered when the signature is requested from the signer.</div>
+</td>
+</tr>
+<tr class="altColor">
+<td class="colOne"><code><span class="memberNameLink"><a href="../../../com/box/sdk/BoxWebHook.Trigger.html#SIGN_REQUEST_SIGNER_EMAIL_BOUNCED">SIGN_REQUEST_SIGNER_EMAIL_BOUNCED</a></span></code>
+<div class="block">Triggered when a signer's email is bounced.</div>
+</td>
+</tr>
+<tr class="rowColor">
+<td class="colOne"><code><span class="memberNameLink"><a href="../../../com/box/sdk/BoxWebHook.Trigger.html#SIGN_REQUEST_SIGNER_SIGNED">SIGN_REQUEST_SIGNER_SIGNED</a></span></code>
+<div class="block">Triggered when the signature request is signed.</div>
 </td>
 </tr>
 <tr class="altColor">
@@ -727,11 +747,51 @@ the order they are declared.</div>
 <a name="SIGN_REQUEST_EXPIRED">
 <!--   -->
 </a>
-<ul class="blockListLast">
+<ul class="blockList">
 <li class="blockList">
 <h4>SIGN_REQUEST_EXPIRED</h4>
 <pre>public static final&nbsp;<a href="../../../com/box/sdk/BoxWebHook.Trigger.html" title="enum in com.box.sdk">BoxWebHook.Trigger</a> <a href="../../../src-html/com/box/sdk/BoxWebHook.Trigger.html#line.499">SIGN_REQUEST_EXPIRED</a></pre>
 <div class="block">Triggered when <a href="../../../com/box/sdk/BoxFile.html" title="class in com.box.sdk"><code>BoxFile</code></a> is expired.</div>
+</li>
+</ul>
+<a name="SIGN_REQUEST_SIGNER_EMAIL_BOUNCED">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>SIGN_REQUEST_SIGNER_EMAIL_BOUNCED</h4>
+<pre>public static final&nbsp;<a href="../../../com/box/sdk/BoxWebHook.Trigger.html" title="enum in com.box.sdk">BoxWebHook.Trigger</a> <a href="../../../src-html/com/box/sdk/BoxWebHook.Trigger.html#line.504">SIGN_REQUEST_SIGNER_EMAIL_BOUNCED</a></pre>
+<div class="block">Triggered when a signer's email is bounced.</div>
+</li>
+</ul>
+<a name="SIGN_REQUEST_SIGNER_SIGNED">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>SIGN_REQUEST_SIGNER_SIGNED</h4>
+<pre>public static final&nbsp;<a href="../../../com/box/sdk/BoxWebHook.Trigger.html" title="enum in com.box.sdk">BoxWebHook.Trigger</a> <a href="../../../src-html/com/box/sdk/BoxWebHook.Trigger.html#line.509">SIGN_REQUEST_SIGNER_SIGNED</a></pre>
+<div class="block">Triggered when the signature request is signed.</div>
+</li>
+</ul>
+<a name="SIGN_REQUEST_SIGNATURE_REQUESTED">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>SIGN_REQUEST_SIGNATURE_REQUESTED</h4>
+<pre>public static final&nbsp;<a href="../../../com/box/sdk/BoxWebHook.Trigger.html" title="enum in com.box.sdk">BoxWebHook.Trigger</a> <a href="../../../src-html/com/box/sdk/BoxWebHook.Trigger.html#line.514">SIGN_REQUEST_SIGNATURE_REQUESTED</a></pre>
+<div class="block">Triggered when the signature is requested from the signer.</div>
+</li>
+</ul>
+<a name="SIGN_REQUEST_ERROR_FINALIZING">
+<!--   -->
+</a>
+<ul class="blockListLast">
+<li class="blockList">
+<h4>SIGN_REQUEST_ERROR_FINALIZING</h4>
+<pre>public static final&nbsp;<a href="../../../com/box/sdk/BoxWebHook.Trigger.html" title="enum in com.box.sdk">BoxWebHook.Trigger</a> <a href="../../../src-html/com/box/sdk/BoxWebHook.Trigger.html#line.519">SIGN_REQUEST_ERROR_FINALIZING</a></pre>
+<div class="block">Triggered when the signature request could not be processed.</div>
 </li>
 </ul>
 </li>
@@ -790,7 +850,7 @@ not permitted.)</div>
 <ul class="blockList">
 <li class="blockList">
 <h4>fromValue</h4>
-<pre>public static&nbsp;<a href="../../../com/box/sdk/BoxWebHook.Trigger.html" title="enum in com.box.sdk">BoxWebHook.Trigger</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxWebHook.Trigger.html#line.527">fromValue</a>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;value)</pre>
+<pre>public static&nbsp;<a href="../../../com/box/sdk/BoxWebHook.Trigger.html" title="enum in com.box.sdk">BoxWebHook.Trigger</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxWebHook.Trigger.html#line.547">fromValue</a>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;value)</pre>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
 <dd><code>value</code> - value to get the Trigger enum value for</dd>
@@ -805,7 +865,7 @@ not permitted.)</div>
 <ul class="blockList">
 <li class="blockList">
 <h4>getValue</h4>
-<pre>public&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxWebHook.Trigger.html#line.539">getValue</a>()</pre>
+<pre>public&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxWebHook.Trigger.html#line.559">getValue</a>()</pre>
 <dl>
 <dt><span class="returnLabel">Returns:</span></dt>
 <dd><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang"><code>String</code></a> representation for <a href="../../../com/box/sdk/BoxWebHook.Trigger.html" title="enum in com.box.sdk"><code>BoxWebHook.Trigger</code></a>.</dd>
@@ -818,7 +878,7 @@ not permitted.)</div>
 <ul class="blockListLast">
 <li class="blockList">
 <h4>getTypes</h4>
-<pre>public&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>[]&nbsp;<a href="../../../src-html/com/box/sdk/BoxWebHook.Trigger.html#line.546">getTypes</a>()</pre>
+<pre>public&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>[]&nbsp;<a href="../../../src-html/com/box/sdk/BoxWebHook.Trigger.html#line.566">getTypes</a>()</pre>
 <dl>
 <dt><span class="returnLabel">Returns:</span></dt>
 <dd>Supported types for a web-hook.</dd>
