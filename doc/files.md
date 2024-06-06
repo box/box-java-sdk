@@ -1078,4 +1078,19 @@ BoxFile file = new BoxFile(api, "12345");
 file.getRepresentationContent("[png?dimensions=1024x1024]", "1.png", output);
 ```
 
+Generating a representation for the selected file is an asynchronous operation and may take some time. 
+Therefore, by default, the `getRepresentationContent` method periodically checks the status of the generated file and downloads it when it is ready. 
+With the `maxRetries` parameter in [`getRepresentationContent(String representationHint, String assetPath, OutputStream output, int maxRetries)`][get-rep-content-overloaded], you can define 
+the number of status checks for the generated file, which will be performed at intervals of 100 ms. 
+
+If this number is exceeded, a `BoxApiException` will be thrown.
+
+```java
+FileOutputStream output = new FileOutputStream("/path/to/file.png");
+BoxFile file = new BoxFile(api, "12345");
+file.getRepresentationContent("[png?dimensions=1024x1024]", "1.png", output, 10);
+```
+
+
 [get-rep-content]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxFile.html#getRepresentationContent-java.lang.String-java.lang.String-java.io.OutputStream-
+[get-rep-content-overloaded]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxFile.html#getRepresentationContent-java.lang.String-java.lang.String-java.io.OutputStream-int-
