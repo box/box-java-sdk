@@ -470,7 +470,7 @@ public class BoxFileTest {
         } catch (BoxAPIException apiException) {
             assertEquals(
                 apiException.getMessage(),
-                "Representation did non have a success status allowing it to be retrieved after 5 attempts"
+                "Representation did not have a success status allowing it to be retrieved after 5 attempts"
             );
         }
     }
