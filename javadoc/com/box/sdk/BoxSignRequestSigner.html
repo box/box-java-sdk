@@ -18,7 +18,7 @@
     catch(err) {
     }
 //-->
-var methods = {"i0":10,"i1":10,"i2":10,"i3":10,"i4":10,"i5":10,"i6":10,"i7":10,"i8":10,"i9":10,"i10":10,"i11":10,"i12":10,"i13":10,"i14":10,"i15":10,"i16":10,"i17":10,"i18":10,"i19":10,"i20":10,"i21":10,"i22":10,"i23":10,"i24":10};
+var methods = {"i0":10,"i1":10,"i2":10,"i3":10,"i4":10,"i5":10,"i6":10,"i7":10,"i8":10,"i9":10,"i10":10,"i11":10,"i12":10,"i13":10,"i14":10,"i15":10,"i16":10,"i17":10,"i18":10,"i19":10,"i20":10,"i21":10,"i22":10,"i23":10,"i24":10,"i25":10,"i26":10,"i27":10,"i28":10,"i29":10,"i30":10,"i31":10,"i32":10};
 var tabs = {65535:["t0","All Methods"],2:["t2","Instance Methods"],8:["t4","Concrete Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
@@ -211,88 +211,136 @@ extends <a href="../../../com/box/sdk/BoxJSONObject.html" title="class in com.bo
 </td>
 </tr>
 <tr id="i11" class="rowColor">
+<td class="colFirst"><code><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Boolean.html?is-external=true" title="class or interface in java.lang">Boolean</a></code></td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../com/box/sdk/BoxSignRequestSigner.html#getLoginRequired--">getLoginRequired</a></span>()</code>
+<div class="block">If set to true, signer will need to login to a Box account before signing the request.</div>
+</td>
+</tr>
+<tr id="i12" class="altColor">
 <td class="colFirst"><code>int</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../com/box/sdk/BoxSignRequestSigner.html#getOrder--">getOrder</a></span>()</code>
 <div class="block">Gets the order of signer.</div>
 </td>
 </tr>
-<tr id="i12" class="altColor">
+<tr id="i13" class="rowColor">
+<td class="colFirst"><code><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a></code></td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../com/box/sdk/BoxSignRequestSigner.html#getPassword--">getPassword</a></span>()</code>
+<div class="block">If set, the signer is required to enter the password before they are able to sign a document.</div>
+</td>
+</tr>
+<tr id="i14" class="altColor">
 <td class="colFirst"><code><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../com/box/sdk/BoxSignRequestSigner.html#getRedirectUrl--">getRedirectUrl</a></span>()</code>
 <div class="block">Gets the redirect url for the signer.</div>
 </td>
 </tr>
-<tr id="i13" class="rowColor">
+<tr id="i15" class="rowColor">
 <td class="colFirst"><code><a href="../../../com/box/sdk/BoxSignRequestSignerRole.html" title="enum in com.box.sdk">BoxSignRequestSignerRole</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../com/box/sdk/BoxSignRequestSigner.html#getRole--">getRole</a></span>()</code>
 <div class="block">Gets the role of the signer.</div>
 </td>
 </tr>
-<tr id="i14" class="altColor">
+<tr id="i16" class="altColor">
 <td class="colFirst"><code><a href="../../../com/box/sdk/BoxSignRequestSigner.BoxSignerDecision.html" title="class in com.box.sdk">BoxSignRequestSigner.BoxSignerDecision</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../com/box/sdk/BoxSignRequestSigner.html#getSignerDecision--">getSignerDecision</a></span>()</code>
 <div class="block">Gets the final decision made by signer.</div>
 </td>
 </tr>
-<tr id="i15" class="rowColor">
+<tr id="i17" class="rowColor">
 <td class="colFirst"><code><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../com/box/sdk/BoxSignRequestSigner.html#getSignerGroupId--">getSignerGroupId</a></span>()</code>
 <div class="block">Gets the signer group id.</div>
 </td>
 </tr>
-<tr id="i16" class="altColor">
+<tr id="i18" class="altColor">
+<td class="colFirst"><code><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Boolean.html?is-external=true" title="class or interface in java.lang">Boolean</a></code></td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../com/box/sdk/BoxSignRequestSigner.html#getSuppressNotifications--">getSuppressNotifications</a></span>()</code>
+<div class="block">Gets the flag that suppresses email notifications for the signer.</div>
+</td>
+</tr>
+<tr id="i19" class="rowColor">
+<td class="colFirst"><code><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a></code></td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../com/box/sdk/BoxSignRequestSigner.html#getVerificationPhoneNumber--">getVerificationPhoneNumber</a></span>()</code>
+<div class="block">Gets the phone number used for verification.</div>
+</td>
+</tr>
+<tr id="i20" class="altColor">
 <td class="colFirst"><code><a href="../../../com/box/sdk/BoxSignRequestSigner.html" title="class in com.box.sdk">BoxSignRequestSigner</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../com/box/sdk/BoxSignRequestSigner.html#setDeclinedRedirectUrl-java.lang.String-">setDeclinedRedirectUrl</a></span>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;declinedRedirectUrl)</code>
 <div class="block">Sets the declined redirect url for the signer.</div>
 </td>
 </tr>
-<tr id="i17" class="rowColor">
+<tr id="i21" class="rowColor">
 <td class="colFirst"><code><a href="../../../com/box/sdk/BoxSignRequestSigner.html" title="class in com.box.sdk">BoxSignRequestSigner</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../com/box/sdk/BoxSignRequestSigner.html#setEmail-java.lang.String-">setEmail</a></span>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;email)</code>
 <div class="block">Sets the email address of the signer.</div>
 </td>
 </tr>
-<tr id="i18" class="altColor">
+<tr id="i22" class="altColor">
 <td class="colFirst"><code><a href="../../../com/box/sdk/BoxSignRequestSigner.html" title="class in com.box.sdk">BoxSignRequestSigner</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../com/box/sdk/BoxSignRequestSigner.html#setEmbedUrlExternalUserId-java.lang.String-">setEmbedUrlExternalUserId</a></span>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;embedUrlExternalUserId)</code>
 <div class="block">Sets the user id for this signer in external application responsible
  for authentication when accessing the embed url.</div>
 </td>
 </tr>
-<tr id="i19" class="rowColor">
+<tr id="i23" class="rowColor">
 <td class="colFirst"><code><a href="../../../com/box/sdk/BoxSignRequestSigner.html" title="class in com.box.sdk">BoxSignRequestSigner</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../com/box/sdk/BoxSignRequestSigner.html#setIframeableEmedUrl-java.lang.String-">setIframeableEmedUrl</a></span>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;iframeableEmedUrl)</code>
 <div class="block">Sets the URL designed for signing documents within an HTML iframe tag.</div>
 </td>
 </tr>
-<tr id="i20" class="altColor">
+<tr id="i24" class="altColor">
 <td class="colFirst"><code><a href="../../../com/box/sdk/BoxSignRequestSigner.html" title="class in com.box.sdk">BoxSignRequestSigner</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../com/box/sdk/BoxSignRequestSigner.html#setInPerson-java.lang.Boolean-">setInPerson</a></span>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Boolean.html?is-external=true" title="class or interface in java.lang">Boolean</a>&nbsp;isInPerson)</code>
 <div class="block">Sets the flag that is used in combination with an embed url for a the sender.</div>
 </td>
 </tr>
-<tr id="i21" class="rowColor">
+<tr id="i25" class="rowColor">
+<td class="colFirst"><code><a href="../../../com/box/sdk/BoxSignRequestSigner.html" title="class in com.box.sdk">BoxSignRequestSigner</a></code></td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../com/box/sdk/BoxSignRequestSigner.html#setLoginRequired-java.lang.Boolean-">setLoginRequired</a></span>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Boolean.html?is-external=true" title="class or interface in java.lang">Boolean</a>&nbsp;loginRequired)</code>
+<div class="block">If set to true, signer will need to login to a Box account before signing the request.</div>
+</td>
+</tr>
+<tr id="i26" class="altColor">
 <td class="colFirst"><code><a href="../../../com/box/sdk/BoxSignRequestSigner.html" title="class in com.box.sdk">BoxSignRequestSigner</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../com/box/sdk/BoxSignRequestSigner.html#setOrder-java.lang.Integer-">setOrder</a></span>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Integer.html?is-external=true" title="class or interface in java.lang">Integer</a>&nbsp;order)</code>
 <div class="block">Sets the order of signer.</div>
 </td>
 </tr>
-<tr id="i22" class="altColor">
+<tr id="i27" class="rowColor">
+<td class="colFirst"><code><a href="../../../com/box/sdk/BoxSignRequestSigner.html" title="class in com.box.sdk">BoxSignRequestSigner</a></code></td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../com/box/sdk/BoxSignRequestSigner.html#setPassword-java.lang.String-">setPassword</a></span>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;password)</code>
+<div class="block">Sets the password required for the signer to access the sign request.</div>
+</td>
+</tr>
+<tr id="i28" class="altColor">
 <td class="colFirst"><code><a href="../../../com/box/sdk/BoxSignRequestSigner.html" title="class in com.box.sdk">BoxSignRequestSigner</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../com/box/sdk/BoxSignRequestSigner.html#setRedirectUrl-java.lang.String-">setRedirectUrl</a></span>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;redirectUrl)</code>
 <div class="block">Sets the redirect url for the signer.</div>
 </td>
 </tr>
-<tr id="i23" class="rowColor">
+<tr id="i29" class="rowColor">
 <td class="colFirst"><code><a href="../../../com/box/sdk/BoxSignRequestSigner.html" title="class in com.box.sdk">BoxSignRequestSigner</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../com/box/sdk/BoxSignRequestSigner.html#setRole-com.box.sdk.BoxSignRequestSignerRole-">setRole</a></span>(<a href="../../../com/box/sdk/BoxSignRequestSignerRole.html" title="enum in com.box.sdk">BoxSignRequestSignerRole</a>&nbsp;role)</code>
 <div class="block">Sets the role of the signer.</div>
 </td>
 </tr>
-<tr id="i24" class="altColor">
+<tr id="i30" class="altColor">
 <td class="colFirst"><code><a href="../../../com/box/sdk/BoxSignRequestSigner.html" title="class in com.box.sdk">BoxSignRequestSigner</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../com/box/sdk/BoxSignRequestSigner.html#setSignerGroupId-java.lang.String-">setSignerGroupId</a></span>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;signerGroupId)</code>
 <div class="block">Sets the group id.</div>
+</td>
+</tr>
+<tr id="i31" class="rowColor">
+<td class="colFirst"><code><a href="../../../com/box/sdk/BoxSignRequestSigner.html" title="class in com.box.sdk">BoxSignRequestSigner</a></code></td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../com/box/sdk/BoxSignRequestSigner.html#setSuppressNotifications-java.lang.Boolean-">setSuppressNotifications</a></span>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Boolean.html?is-external=true" title="class or interface in java.lang">Boolean</a>&nbsp;suppressNotifications)</code>
+<div class="block">Sets the flag that suppresses email notifications for the signer.</div>
+</td>
+</tr>
+<tr id="i32" class="altColor">
+<td class="colFirst"><code><a href="../../../com/box/sdk/BoxSignRequestSigner.html" title="class in com.box.sdk">BoxSignRequestSigner</a></code></td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../com/box/sdk/BoxSignRequestSigner.html#setVerificationPhoneNumber-java.lang.String-">setVerificationPhoneNumber</a></span>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;verificationPhoneNumber)</code>
+<div class="block">Sets the phone number used for verification.</div>
 </td>
 </tr>
 </table>
@@ -330,7 +378,7 @@ extends <a href="../../../com/box/sdk/BoxJSONObject.html" title="class in com.bo
 <ul class="blockList">
 <li class="blockList">
 <h4>BoxSignRequestSigner</h4>
-<pre>public&nbsp;<a href="../../../src-html/com/box/sdk/BoxSignRequestSigner.html#line.37">BoxSignRequestSigner</a>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;email)</pre>
+<pre>public&nbsp;<a href="../../../src-html/com/box/sdk/BoxSignRequestSigner.html#line.41">BoxSignRequestSigner</a>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;email)</pre>
 <div class="block">Constructs a BoxSignRequestSigner with an email.</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
@@ -344,7 +392,7 @@ extends <a href="../../../com/box/sdk/BoxJSONObject.html" title="class in com.bo
 <ul class="blockListLast">
 <li class="blockList">
 <h4>BoxSignRequestSigner</h4>
-<pre>public&nbsp;<a href="../../../src-html/com/box/sdk/BoxSignRequestSigner.html#line.47">BoxSignRequestSigner</a>(JsonObject&nbsp;jsonObject,
+<pre>public&nbsp;<a href="../../../src-html/com/box/sdk/BoxSignRequestSigner.html#line.51">BoxSignRequestSigner</a>(JsonObject&nbsp;jsonObject,
                             <a href="../../../com/box/sdk/BoxAPIConnection.html" title="class in com.box.sdk">BoxAPIConnection</a>&nbsp;api)</pre>
 <div class="block">Construct a BoxSignRequestSigner.</div>
 <dl>
@@ -368,7 +416,7 @@ extends <a href="../../../com/box/sdk/BoxJSONObject.html" title="class in com.bo
 <ul class="blockList">
 <li class="blockList">
 <h4>getEmail</h4>
-<pre>public&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxSignRequestSigner.html#line.57">getEmail</a>()</pre>
+<pre>public&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxSignRequestSigner.html#line.61">getEmail</a>()</pre>
 <div class="block">Gets the email address of the signer.</div>
 <dl>
 <dt><span class="returnLabel">Returns:</span></dt>
@@ -382,7 +430,7 @@ extends <a href="../../../com/box/sdk/BoxJSONObject.html" title="class in com.bo
 <ul class="blockList">
 <li class="blockList">
 <h4>setEmail</h4>
-<pre>public&nbsp;<a href="../../../com/box/sdk/BoxSignRequestSigner.html" title="class in com.box.sdk">BoxSignRequestSigner</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxSignRequestSigner.html#line.67">setEmail</a>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;email)</pre>
+<pre>public&nbsp;<a href="../../../com/box/sdk/BoxSignRequestSigner.html" title="class in com.box.sdk">BoxSignRequestSigner</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxSignRequestSigner.html#line.71">setEmail</a>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;email)</pre>
 <div class="block">Sets the email address of the signer.</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
@@ -398,7 +446,7 @@ extends <a href="../../../com/box/sdk/BoxJSONObject.html" title="class in com.bo
 <ul class="blockList">
 <li class="blockList">
 <h4>getRole</h4>
-<pre>public&nbsp;<a href="../../../com/box/sdk/BoxSignRequestSignerRole.html" title="enum in com.box.sdk">BoxSignRequestSignerRole</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxSignRequestSigner.html#line.77">getRole</a>()</pre>
+<pre>public&nbsp;<a href="../../../com/box/sdk/BoxSignRequestSignerRole.html" title="enum in com.box.sdk">BoxSignRequestSignerRole</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxSignRequestSigner.html#line.81">getRole</a>()</pre>
 <div class="block">Gets the role of the signer.</div>
 <dl>
 <dt><span class="returnLabel">Returns:</span></dt>
@@ -412,7 +460,7 @@ extends <a href="../../../com/box/sdk/BoxJSONObject.html" title="class in com.bo
 <ul class="blockList">
 <li class="blockList">
 <h4>setRole</h4>
-<pre>public&nbsp;<a href="../../../com/box/sdk/BoxSignRequestSigner.html" title="class in com.box.sdk">BoxSignRequestSigner</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxSignRequestSigner.html#line.87">setRole</a>(<a href="../../../com/box/sdk/BoxSignRequestSignerRole.html" title="enum in com.box.sdk">BoxSignRequestSignerRole</a>&nbsp;role)</pre>
+<pre>public&nbsp;<a href="../../../com/box/sdk/BoxSignRequestSigner.html" title="class in com.box.sdk">BoxSignRequestSigner</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxSignRequestSigner.html#line.91">setRole</a>(<a href="../../../com/box/sdk/BoxSignRequestSignerRole.html" title="enum in com.box.sdk">BoxSignRequestSignerRole</a>&nbsp;role)</pre>
 <div class="block">Sets the role of the signer. If role is not set it's FinalCopyReader by default.</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
@@ -428,7 +476,7 @@ extends <a href="../../../com/box/sdk/BoxJSONObject.html" title="class in com.bo
 <ul class="blockList">
 <li class="blockList">
 <h4>getIsInPerson</h4>
-<pre>public&nbsp;boolean&nbsp;<a href="../../../src-html/com/box/sdk/BoxSignRequestSigner.html#line.98">getIsInPerson</a>()</pre>
+<pre>public&nbsp;boolean&nbsp;<a href="../../../src-html/com/box/sdk/BoxSignRequestSigner.html#line.102">getIsInPerson</a>()</pre>
 <div class="block">Gets the flag that when used in combination with an embed url on the sender. After the sender signs,
  they will be redirected to the next InPerson signer.</div>
 <dl>
@@ -443,7 +491,7 @@ extends <a href="../../../com/box/sdk/BoxJSONObject.html" title="class in com.bo
 <ul class="blockList">
 <li class="blockList">
 <h4>getOrder</h4>
-<pre>public&nbsp;int&nbsp;<a href="../../../src-html/com/box/sdk/BoxSignRequestSigner.html#line.107">getOrder</a>()</pre>
+<pre>public&nbsp;int&nbsp;<a href="../../../src-html/com/box/sdk/BoxSignRequestSigner.html#line.111">getOrder</a>()</pre>
 <div class="block">Gets the order of signer.</div>
 <dl>
 <dt><span class="returnLabel">Returns:</span></dt>
@@ -457,7 +505,7 @@ extends <a href="../../../com/box/sdk/BoxJSONObject.html" title="class in com.bo
 <ul class="blockList">
 <li class="blockList">
 <h4>setOrder</h4>
-<pre>public&nbsp;<a href="../../../com/box/sdk/BoxSignRequestSigner.html" title="class in com.box.sdk">BoxSignRequestSigner</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxSignRequestSigner.html#line.117">setOrder</a>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Integer.html?is-external=true" title="class or interface in java.lang">Integer</a>&nbsp;order)</pre>
+<pre>public&nbsp;<a href="../../../com/box/sdk/BoxSignRequestSigner.html" title="class in com.box.sdk">BoxSignRequestSigner</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxSignRequestSigner.html#line.121">setOrder</a>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Integer.html?is-external=true" title="class or interface in java.lang">Integer</a>&nbsp;order)</pre>
 <div class="block">Sets the order of signer.</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
@@ -473,7 +521,7 @@ extends <a href="../../../com/box/sdk/BoxJSONObject.html" title="class in com.bo
 <ul class="blockList">
 <li class="blockList">
 <h4>getEmbedUrlExternalUserId</h4>
-<pre>public&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxSignRequestSigner.html#line.128">getEmbedUrlExternalUserId</a>()</pre>
+<pre>public&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxSignRequestSigner.html#line.132">getEmbedUrlExternalUserId</a>()</pre>
 <div class="block">Gets the user id for this signer in external application responsible
  for authentication when accessing the embed url.</div>
 <dl>
@@ -488,7 +536,7 @@ extends <a href="../../../com/box/sdk/BoxJSONObject.html" title="class in com.bo
 <ul class="blockList">
 <li class="blockList">
 <h4>setEmbedUrlExternalUserId</h4>
-<pre>public&nbsp;<a href="../../../com/box/sdk/BoxSignRequestSigner.html" title="class in com.box.sdk">BoxSignRequestSigner</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxSignRequestSigner.html#line.140">setEmbedUrlExternalUserId</a>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;embedUrlExternalUserId)</pre>
+<pre>public&nbsp;<a href="../../../com/box/sdk/BoxSignRequestSigner.html" title="class in com.box.sdk">BoxSignRequestSigner</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxSignRequestSigner.html#line.144">setEmbedUrlExternalUserId</a>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;embedUrlExternalUserId)</pre>
 <div class="block">Sets the user id for this signer in external application responsible
  for authentication when accessing the embed url.</div>
 <dl>
@@ -506,7 +554,7 @@ extends <a href="../../../com/box/sdk/BoxJSONObject.html" title="class in com.bo
 <ul class="blockList">
 <li class="blockList">
 <h4>getHasViewedEmail</h4>
-<pre>public&nbsp;boolean&nbsp;<a href="../../../src-html/com/box/sdk/BoxSignRequestSigner.html#line.150">getHasViewedEmail</a>()</pre>
+<pre>public&nbsp;boolean&nbsp;<a href="../../../src-html/com/box/sdk/BoxSignRequestSigner.html#line.154">getHasViewedEmail</a>()</pre>
 <div class="block">Gets the flag indicating if signer has viewed the sign request email.</div>
 <dl>
 <dt><span class="returnLabel">Returns:</span></dt>
@@ -520,7 +568,7 @@ extends <a href="../../../com/box/sdk/BoxJSONObject.html" title="class in com.bo
 <ul class="blockList">
 <li class="blockList">
 <h4>getHasViewedDocument</h4>
-<pre>public&nbsp;boolean&nbsp;<a href="../../../src-html/com/box/sdk/BoxSignRequestSigner.html#line.159">getHasViewedDocument</a>()</pre>
+<pre>public&nbsp;boolean&nbsp;<a href="../../../src-html/com/box/sdk/BoxSignRequestSigner.html#line.163">getHasViewedDocument</a>()</pre>
 <div class="block">Gets the flag indicating if signer has viewed the document.</div>
 <dl>
 <dt><span class="returnLabel">Returns:</span></dt>
@@ -534,7 +582,7 @@ extends <a href="../../../com/box/sdk/BoxJSONObject.html" title="class in com.bo
 <ul class="blockList">
 <li class="blockList">
 <h4>getSignerDecision</h4>
-<pre>public&nbsp;<a href="../../../com/box/sdk/BoxSignRequestSigner.BoxSignerDecision.html" title="class in com.box.sdk">BoxSignRequestSigner.BoxSignerDecision</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxSignRequestSigner.html#line.168">getSignerDecision</a>()</pre>
+<pre>public&nbsp;<a href="../../../com/box/sdk/BoxSignRequestSigner.BoxSignerDecision.html" title="class in com.box.sdk">BoxSignRequestSigner.BoxSignerDecision</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxSignRequestSigner.html#line.172">getSignerDecision</a>()</pre>
 <div class="block">Gets the final decision made by signer.</div>
 <dl>
 <dt><span class="returnLabel">Returns:</span></dt>
@@ -548,7 +596,7 @@ extends <a href="../../../com/box/sdk/BoxJSONObject.html" title="class in com.bo
 <ul class="blockList">
 <li class="blockList">
 <h4>getInputs</h4>
-<pre>public&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/util/List.html?is-external=true" title="class or interface in java.util">List</a>&lt;<a href="../../../com/box/sdk/BoxSignRequestSigner.BoxSignerInput.html" title="class in com.box.sdk">BoxSignRequestSigner.BoxSignerInput</a>&gt;&nbsp;<a href="../../../src-html/com/box/sdk/BoxSignRequestSigner.html#line.177">getInputs</a>()</pre>
+<pre>public&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/util/List.html?is-external=true" title="class or interface in java.util">List</a>&lt;<a href="../../../com/box/sdk/BoxSignRequestSigner.BoxSignerInput.html" title="class in com.box.sdk">BoxSignRequestSigner.BoxSignerInput</a>&gt;&nbsp;<a href="../../../src-html/com/box/sdk/BoxSignRequestSigner.html#line.181">getInputs</a>()</pre>
 <div class="block">Gets the inputs created by a signer on a sign request.</div>
 <dl>
 <dt><span class="returnLabel">Returns:</span></dt>
@@ -562,7 +610,7 @@ extends <a href="../../../com/box/sdk/BoxJSONObject.html" title="class in com.bo
 <ul class="blockList">
 <li class="blockList">
 <h4>getEmbedUrl</h4>
-<pre>public&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxSignRequestSigner.html#line.186">getEmbedUrl</a>()</pre>
+<pre>public&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxSignRequestSigner.html#line.190">getEmbedUrl</a>()</pre>
 <div class="block">Gets the url to direct signer to for signing.</div>
 <dl>
 <dt><span class="returnLabel">Returns:</span></dt>
@@ -576,7 +624,7 @@ extends <a href="../../../com/box/sdk/BoxJSONObject.html" title="class in com.bo
 <ul class="blockList">
 <li class="blockList">
 <h4>getInPerson</h4>
-<pre>public&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Boolean.html?is-external=true" title="class or interface in java.lang">Boolean</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxSignRequestSigner.html#line.196">getInPerson</a>()</pre>
+<pre>public&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Boolean.html?is-external=true" title="class or interface in java.lang">Boolean</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxSignRequestSigner.html#line.200">getInPerson</a>()</pre>
 <div class="block">Gets the flag that is used in combination with an embed url for a the sender. After the sender signs,
  they will be redirected to the next InPerson signer.</div>
 <dl>
@@ -591,7 +639,7 @@ extends <a href="../../../com/box/sdk/BoxJSONObject.html" title="class in com.bo
 <ul class="blockList">
 <li class="blockList">
 <h4>setInPerson</h4>
-<pre>public&nbsp;<a href="../../../com/box/sdk/BoxSignRequestSigner.html" title="class in com.box.sdk">BoxSignRequestSigner</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxSignRequestSigner.html#line.207">setInPerson</a>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Boolean.html?is-external=true" title="class or interface in java.lang">Boolean</a>&nbsp;isInPerson)</pre>
+<pre>public&nbsp;<a href="../../../com/box/sdk/BoxSignRequestSigner.html" title="class in com.box.sdk">BoxSignRequestSigner</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxSignRequestSigner.html#line.211">setInPerson</a>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Boolean.html?is-external=true" title="class or interface in java.lang">Boolean</a>&nbsp;isInPerson)</pre>
 <div class="block">Sets the flag that is used in combination with an embed url for a the sender. After the sender signs,
  they will be redirected to the next InPerson signer.</div>
 <dl>
@@ -608,7 +656,7 @@ extends <a href="../../../com/box/sdk/BoxJSONObject.html" title="class in com.bo
 <ul class="blockList">
 <li class="blockList">
 <h4>getRedirectUrl</h4>
-<pre>public&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxSignRequestSigner.html#line.217">getRedirectUrl</a>()</pre>
+<pre>public&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxSignRequestSigner.html#line.221">getRedirectUrl</a>()</pre>
 <div class="block">Gets the redirect url for the signer.</div>
 <dl>
 <dt><span class="returnLabel">Returns:</span></dt>
@@ -622,7 +670,7 @@ extends <a href="../../../com/box/sdk/BoxJSONObject.html" title="class in com.bo
 <ul class="blockList">
 <li class="blockList">
 <h4>setRedirectUrl</h4>
-<pre>public&nbsp;<a href="../../../com/box/sdk/BoxSignRequestSigner.html" title="class in com.box.sdk">BoxSignRequestSigner</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxSignRequestSigner.html#line.227">setRedirectUrl</a>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;redirectUrl)</pre>
+<pre>public&nbsp;<a href="../../../com/box/sdk/BoxSignRequestSigner.html" title="class in com.box.sdk">BoxSignRequestSigner</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxSignRequestSigner.html#line.231">setRedirectUrl</a>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;redirectUrl)</pre>
 <div class="block">Sets the redirect url for the signer.</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
@@ -638,7 +686,7 @@ extends <a href="../../../com/box/sdk/BoxJSONObject.html" title="class in com.bo
 <ul class="blockList">
 <li class="blockList">
 <h4>getDeclinedRedirectUrl</h4>
-<pre>public&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxSignRequestSigner.html#line.237">getDeclinedRedirectUrl</a>()</pre>
+<pre>public&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxSignRequestSigner.html#line.241">getDeclinedRedirectUrl</a>()</pre>
 <div class="block">Gets the declined redirect url for the signer.</div>
 <dl>
 <dt><span class="returnLabel">Returns:</span></dt>
@@ -652,7 +700,7 @@ extends <a href="../../../com/box/sdk/BoxJSONObject.html" title="class in com.bo
 <ul class="blockList">
 <li class="blockList">
 <h4>setDeclinedRedirectUrl</h4>
-<pre>public&nbsp;<a href="../../../com/box/sdk/BoxSignRequestSigner.html" title="class in com.box.sdk">BoxSignRequestSigner</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxSignRequestSigner.html#line.247">setDeclinedRedirectUrl</a>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;declinedRedirectUrl)</pre>
+<pre>public&nbsp;<a href="../../../com/box/sdk/BoxSignRequestSigner.html" title="class in com.box.sdk">BoxSignRequestSigner</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxSignRequestSigner.html#line.251">setDeclinedRedirectUrl</a>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;declinedRedirectUrl)</pre>
 <div class="block">Sets the declined redirect url for the signer.</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
@@ -668,7 +716,7 @@ extends <a href="../../../com/box/sdk/BoxJSONObject.html" title="class in com.bo
 <ul class="blockList">
 <li class="blockList">
 <h4>getIframeableEmedUrl</h4>
-<pre>public&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxSignRequestSigner.html#line.259">getIframeableEmedUrl</a>()</pre>
+<pre>public&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxSignRequestSigner.html#line.263">getIframeableEmedUrl</a>()</pre>
 <div class="block">Gets the URL designed for signing documents within an HTML iframe tag.
  It will be returned in the response only if the embedUrlExternalUserId parameter was passed
  in the create sign request call.</div>
@@ -684,7 +732,7 @@ extends <a href="../../../com/box/sdk/BoxJSONObject.html" title="class in com.bo
 <ul class="blockList">
 <li class="blockList">
 <h4>setIframeableEmedUrl</h4>
-<pre>public&nbsp;<a href="../../../com/box/sdk/BoxSignRequestSigner.html" title="class in com.box.sdk">BoxSignRequestSigner</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxSignRequestSigner.html#line.271">setIframeableEmedUrl</a>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;iframeableEmedUrl)</pre>
+<pre>public&nbsp;<a href="../../../com/box/sdk/BoxSignRequestSigner.html" title="class in com.box.sdk">BoxSignRequestSigner</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxSignRequestSigner.html#line.275">setIframeableEmedUrl</a>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;iframeableEmedUrl)</pre>
 <div class="block">Sets the URL designed for signing documents within an HTML iframe tag.
  It will be returned in the response only if the embedUrlExternalUserId parameter was passed
  in the create sign request call.</div>
@@ -702,7 +750,7 @@ extends <a href="../../../com/box/sdk/BoxJSONObject.html" title="class in com.bo
 <ul class="blockList">
 <li class="blockList">
 <h4>getSignerGroupId</h4>
-<pre>public&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxSignRequestSigner.html#line.281">getSignerGroupId</a>()</pre>
+<pre>public&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxSignRequestSigner.html#line.285">getSignerGroupId</a>()</pre>
 <div class="block">Gets the signer group id. It is sufficient for only one signer from the group to sign the document.</div>
 <dl>
 <dt><span class="returnLabel">Returns:</span></dt>
@@ -716,7 +764,7 @@ extends <a href="../../../com/box/sdk/BoxJSONObject.html" title="class in com.bo
 <ul class="blockList">
 <li class="blockList">
 <h4>setSignerGroupId</h4>
-<pre>public&nbsp;<a href="../../../com/box/sdk/BoxSignRequestSigner.html" title="class in com.box.sdk">BoxSignRequestSigner</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxSignRequestSigner.html#line.293">setSignerGroupId</a>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;signerGroupId)</pre>
+<pre>public&nbsp;<a href="../../../com/box/sdk/BoxSignRequestSigner.html" title="class in com.box.sdk">BoxSignRequestSigner</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxSignRequestSigner.html#line.297">setSignerGroupId</a>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;signerGroupId)</pre>
 <div class="block">Sets the group id. If specified, signers sharing the same group ID will be assigned to the same input.
  The group ID can be any string value, but it must be consistent across all signers.
  It is sufficient for only one signer from the group to sign the document.</div>
@@ -728,13 +776,140 @@ extends <a href="../../../com/box/sdk/BoxJSONObject.html" title="class in com.bo
 </dl>
 </li>
 </ul>
+<a name="getLoginRequired--">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>getLoginRequired</h4>
+<pre>public&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Boolean.html?is-external=true" title="class or interface in java.lang">Boolean</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxSignRequestSigner.html#line.308">getLoginRequired</a>()</pre>
+<div class="block">If set to true, signer will need to login to a Box account before signing the request.
+ If the signer does not have an existing account, they will have an option to create a free Box account.</div>
+<dl>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>true if login is required for the signer, otherwise false.</dd>
+</dl>
+</li>
+</ul>
+<a name="setLoginRequired-java.lang.Boolean-">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>setLoginRequired</h4>
+<pre>public&nbsp;<a href="../../../com/box/sdk/BoxSignRequestSigner.html" title="class in com.box.sdk">BoxSignRequestSigner</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxSignRequestSigner.html#line.319">setLoginRequired</a>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Boolean.html?is-external=true" title="class or interface in java.lang">Boolean</a>&nbsp;loginRequired)</pre>
+<div class="block">If set to true, signer will need to login to a Box account before signing the request.
+ If the signer does not have an existing account, they will have an option to create a free Box account.</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>loginRequired</code> - indicates if login is required for the signer.</dd>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>this BoxSignRequestSigner object for chaining.</dd>
+</dl>
+</li>
+</ul>
+<a name="getPassword--">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>getPassword</h4>
+<pre>public&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxSignRequestSigner.html#line.330">getPassword</a>()</pre>
+<div class="block">If set, the signer is required to enter the password before they are able to sign a document.
+ This field is write only.</div>
+<dl>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>password required for the signer to access the sign request.</dd>
+</dl>
+</li>
+</ul>
+<a name="setPassword-java.lang.String-">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>setPassword</h4>
+<pre>public&nbsp;<a href="../../../com/box/sdk/BoxSignRequestSigner.html" title="class in com.box.sdk">BoxSignRequestSigner</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxSignRequestSigner.html#line.340">setPassword</a>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;password)</pre>
+<div class="block">Sets the password required for the signer to access the sign request.</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>password</code> - required for the signer to access the sign request.</dd>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>this BoxSignRequestSigner object for chaining.</dd>
+</dl>
+</li>
+</ul>
+<a name="getSuppressNotifications--">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>getSuppressNotifications</h4>
+<pre>public&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Boolean.html?is-external=true" title="class or interface in java.lang">Boolean</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxSignRequestSigner.html#line.350">getSuppressNotifications</a>()</pre>
+<div class="block">Gets the flag that suppresses email notifications for the signer.</div>
+<dl>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>true if email notifications are suppressed for the signer, otherwise false.</dd>
+</dl>
+</li>
+</ul>
+<a name="setSuppressNotifications-java.lang.Boolean-">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>setSuppressNotifications</h4>
+<pre>public&nbsp;<a href="../../../com/box/sdk/BoxSignRequestSigner.html" title="class in com.box.sdk">BoxSignRequestSigner</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxSignRequestSigner.html#line.360">setSuppressNotifications</a>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Boolean.html?is-external=true" title="class or interface in java.lang">Boolean</a>&nbsp;suppressNotifications)</pre>
+<div class="block">Sets the flag that suppresses email notifications for the signer.</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>suppressNotifications</code> - indicates if email notifications are suppressed for the signer.</dd>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>this BoxSignRequestSigner object for chaining.</dd>
+</dl>
+</li>
+</ul>
+<a name="getVerificationPhoneNumber--">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>getVerificationPhoneNumber</h4>
+<pre>public&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxSignRequestSigner.html#line.372">getVerificationPhoneNumber</a>()</pre>
+<div class="block">Gets the phone number used for verification.
+ If set, this phone number is be used to verify the signer via two factor authentication
+ before they are able to sign the document.</div>
+<dl>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>phone number used for verification.</dd>
+</dl>
+</li>
+</ul>
+<a name="setVerificationPhoneNumber-java.lang.String-">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>setVerificationPhoneNumber</h4>
+<pre>public&nbsp;<a href="../../../com/box/sdk/BoxSignRequestSigner.html" title="class in com.box.sdk">BoxSignRequestSigner</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxSignRequestSigner.html#line.384">setVerificationPhoneNumber</a>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;verificationPhoneNumber)</pre>
+<div class="block">Sets the phone number used for verification.
+ If set, this phone number is be used to verify the signer via two factor authentication
+ before they are able to sign the document.</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>verificationPhoneNumber</code> - phone number used for verification.</dd>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>this BoxSignRequestSigner object for chaining.</dd>
+</dl>
+</li>
+</ul>
 <a name="getJSONObject--">
 <!--   -->
 </a>
 <ul class="blockListLast">
 <li class="blockList">
 <h4>getJSONObject</h4>
-<pre>public&nbsp;JsonObject&nbsp;<a href="../../../src-html/com/box/sdk/BoxSignRequestSigner.html#line.368">getJSONObject</a>()</pre>
+<pre>public&nbsp;JsonObject&nbsp;<a href="../../../src-html/com/box/sdk/BoxSignRequestSigner.html#line.467">getJSONObject</a>()</pre>
 <div class="block">Gets a JSON object representing this class.</div>
 <dl>
 <dt><span class="returnLabel">Returns:</span></dt>

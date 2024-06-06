@@ -18,7 +18,7 @@
     catch(err) {
     }
 //-->
-var methods = {"i0":10,"i1":10};
+var methods = {"i0":10,"i1":10,"i2":10};
 var tabs = {65535:["t0","All Methods"],2:["t2","Instance Methods"],8:["t4","Concrete Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
@@ -56,7 +56,7 @@ var activeTableTab = "activeTableTab";
 </dl>
 <hr>
 <br>
-<pre>public class <a href="../../../src-html/com/box/sdk/BoxSignRequestSigner.html#line.554">BoxSignRequestSigner.BoxSignerDecision</a>
+<pre>public class <a href="../../../src-html/com/box/sdk/BoxSignRequestSigner.html#line.657">BoxSignRequestSigner.BoxSignerDecision</a>
 extends <a href="../../../com/box/sdk/BoxJSONObject.html" title="class in com.box.sdk">BoxJSONObject</a></pre>
 <div class="block">Represents a final decision made by signer (type and time the decision was made).</div>
 </li>
@@ -97,12 +97,18 @@ extends <a href="../../../com/box/sdk/BoxJSONObject.html" title="class in com.bo
 <th class="colLast" scope="col">Method and Description</th>
 </tr>
 <tr id="i0" class="altColor">
+<td class="colFirst"><code><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a></code></td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../com/box/sdk/BoxSignRequestSigner.BoxSignerDecision.html#getAdditionalInfo--">getAdditionalInfo</a></span>()</code>
+<div class="block">Gets the additional info about the decision, such as the decline reason from the signer.</div>
+</td>
+</tr>
+<tr id="i1" class="rowColor">
 <td class="colFirst"><code><a href="https://docs.oracle.com/javase/8/docs/api/java/util/Date.html?is-external=true" title="class or interface in java.util">Date</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../com/box/sdk/BoxSignRequestSigner.BoxSignerDecision.html#getFinalizedAt--">getFinalizedAt</a></span>()</code>
 <div class="block">Gets the date/time that the decision was made.</div>
 </td>
 </tr>
-<tr id="i1" class="rowColor">
+<tr id="i2" class="altColor">
 <td class="colFirst"><code><a href="../../../com/box/sdk/BoxSignRequestSigner.BoxSignRequestSignerDecisionType.html" title="enum in com.box.sdk">BoxSignRequestSigner.BoxSignRequestSignerDecisionType</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../com/box/sdk/BoxSignRequestSigner.BoxSignerDecision.html#getType--">getType</a></span>()</code>
 <div class="block">Gets the type of decision made by signer.</div>
@@ -143,7 +149,7 @@ extends <a href="../../../com/box/sdk/BoxJSONObject.html" title="class in com.bo
 <ul class="blockListLast">
 <li class="blockList">
 <h4>BoxSignerDecision</h4>
-<pre>public&nbsp;<a href="../../../src-html/com/box/sdk/BoxSignRequestSigner.BoxSignerDecision.html#line.563">BoxSignerDecision</a>(JsonObject&nbsp;jsonObject)</pre>
+<pre>public&nbsp;<a href="../../../src-html/com/box/sdk/BoxSignRequestSigner.BoxSignerDecision.html#line.667">BoxSignerDecision</a>(JsonObject&nbsp;jsonObject)</pre>
 <div class="block">Constructs a BoxSignerDecision object using an already parsed JSON object.</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
@@ -165,7 +171,7 @@ extends <a href="../../../com/box/sdk/BoxJSONObject.html" title="class in com.bo
 <ul class="blockList">
 <li class="blockList">
 <h4>getType</h4>
-<pre>public&nbsp;<a href="../../../com/box/sdk/BoxSignRequestSigner.BoxSignRequestSignerDecisionType.html" title="enum in com.box.sdk">BoxSignRequestSigner.BoxSignRequestSignerDecisionType</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxSignRequestSigner.BoxSignerDecision.html#line.572">getType</a>()</pre>
+<pre>public&nbsp;<a href="../../../com/box/sdk/BoxSignRequestSigner.BoxSignRequestSignerDecisionType.html" title="enum in com.box.sdk">BoxSignRequestSigner.BoxSignRequestSignerDecisionType</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxSignRequestSigner.BoxSignerDecision.html#line.676">getType</a>()</pre>
 <div class="block">Gets the type of decision made by signer.</div>
 <dl>
 <dt><span class="returnLabel">Returns:</span></dt>
@@ -176,14 +182,28 @@ extends <a href="../../../com/box/sdk/BoxJSONObject.html" title="class in com.bo
 <a name="getFinalizedAt--">
 <!--   -->
 </a>
-<ul class="blockListLast">
+<ul class="blockList">
 <li class="blockList">
 <h4>getFinalizedAt</h4>
-<pre>public&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/util/Date.html?is-external=true" title="class or interface in java.util">Date</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxSignRequestSigner.BoxSignerDecision.html#line.581">getFinalizedAt</a>()</pre>
+<pre>public&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/util/Date.html?is-external=true" title="class or interface in java.util">Date</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxSignRequestSigner.BoxSignerDecision.html#line.685">getFinalizedAt</a>()</pre>
 <div class="block">Gets the date/time that the decision was made.</div>
 <dl>
 <dt><span class="returnLabel">Returns:</span></dt>
 <dd>date/time that the decision was made.</dd>
+</dl>
+</li>
+</ul>
+<a name="getAdditionalInfo--">
+<!--   -->
+</a>
+<ul class="blockListLast">
+<li class="blockList">
+<h4>getAdditionalInfo</h4>
+<pre>public&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxSignRequestSigner.BoxSignerDecision.html#line.694">getAdditionalInfo</a>()</pre>
+<div class="block">Gets the additional info about the decision, such as the decline reason from the signer.</div>
+<dl>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>additional information about the decision.</dd>
 </dl>
 </li>
 </ul>
