@@ -497,6 +497,26 @@ public class BoxWebHook extends BoxResource {
          * Triggered when {@link BoxFile} is expired.
          */
         SIGN_REQUEST_EXPIRED("SIGN_REQUEST.EXPIRED",
+            BoxResource.getResourceType(BoxFolder.class), BoxResource.getResourceType(BoxFile.class)),
+        /**
+         * Triggered when a signer's email is bounced.
+         */
+        SIGN_REQUEST_SIGNER_EMAIL_BOUNCED("SIGN_REQUEST.SIGNER_EMAIL_BOUNCED",
+            BoxResource.getResourceType(BoxFolder.class), BoxResource.getResourceType(BoxFile.class)),
+        /**
+         * Triggered when the signature request is signed.
+         */
+        SIGN_REQUEST_SIGNER_SIGNED("SIGN_REQUEST.SIGNER_SIGNED",
+            BoxResource.getResourceType(BoxFolder.class), BoxResource.getResourceType(BoxFile.class)),
+        /**
+         * Triggered when the signature is requested from the signer.
+         */
+        SIGN_REQUEST_SIGNATURE_REQUESTED("SIGN_REQUEST.SIGNATURE_REQUESTED",
+            BoxResource.getResourceType(BoxFolder.class), BoxResource.getResourceType(BoxFile.class)),
+        /**
+         * Triggered when the signature request could not be processed.
+         */
+        SIGN_REQUEST_ERROR_FINALIZING("SIGN_REQUEST.ERROR_FINALIZING",
             BoxResource.getResourceType(BoxFolder.class), BoxResource.getResourceType(BoxFile.class));
 
         /**
