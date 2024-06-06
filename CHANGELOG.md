@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [4.10.0](https://github.com/box/box-java-sdk/compare/v4.9.1...v4.10.0) (2024-06-06)
+
+
+### New Features and Enhancements:
+
+* Overload the `getRepresentationContent` method with a `maxRetries` parameter ([#1251](https://github.com/box/box-java-sdk/issues/1251)) ([d26bd4f](https://github.com/box/box-java-sdk/commit/d26bd4f5a141150a372159bc3867abbbbdda1406))
+* Support `login_required`, `password`, `suppress_nofitications`, `verification_phone_number` and `additional_info` fields in sign request ([#1250](https://github.com/box/box-java-sdk/issues/1250)) ([3ee55b3](https://github.com/box/box-java-sdk/commit/3ee55b3613c5f5fa92cdd4a17c0cb3e2cc86a9a4))
+
 ### [4.9.1](https://github.com/box/box-java-sdk/compare/v4.9.0...v4.9.1) (2024-05-20)
 
 
