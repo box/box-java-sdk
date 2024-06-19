@@ -394,6 +394,16 @@ public class MetadataTemplate extends BoxJSONObject {
                 fieldObj.add("copyInstanceOnItemCopy", copyInstanceOnItemCopy);
             }
 
+            StaticConfig staticConfig = field.getStaticConfig();
+            if (staticConfig != null) {
+                JsonObject staticConfigObj = new JsonObject();
+                JsonObject classification = staticConfig.getClassification();
+                if (classification != null) {
+                    staticConfigObj.add("classification", classification);
+                }
+                fieldObj.add("staticConfig", staticConfigObj);
+            }
+
             jsonObject.add("data", fieldObj);
         }
 
@@ -734,6 +744,71 @@ public class MetadataTemplate extends BoxJSONObject {
     }
 
     /**
+     * Class contains information about the static configuration for the classification.
+     */
+    public static class StaticConfig extends BoxJSONObject {
+        private JsonObject classification;
+
+        /**
+         * Constructs an empty static configuration.
+         */
+        public StaticConfig() {
+            super();
+        }
+
+        /**
+         * Constructs a static configuration from a JSON string.
+         *
+         * @param json the json encoded metadate template field.
+         */
+        public StaticConfig(String json) {
+            super(json);
+        }
+
+        /** Constructs a static configuration from a JSON object.
+         *
+         * @param jsonObject the json encoded metadate template field.
+         */
+        StaticConfig(JsonObject jsonObject) {
+            super(jsonObject);
+        }
+
+        /**
+         * Gets the classification of the static configuration.
+         *
+         * @return the classification of the static configuration.
+         */
+        public JsonObject getClassification() {
+            return this.classification;
+        }
+
+        /**
+         * Sets the classification of the static configuration.
+         *
+         * @param classification the classification of the static configuration.
+         */
+        public void setClassification(JsonObject classification) {
+            this.classification = classification;
+        }
+
+        /**
+         * {@inheritDoc}
+         */
+        @Override
+        void parseJSONMember(JsonObject.Member member) {
+            JsonValue value = member.getValue();
+            String memberName = member.getName();
+            switch (memberName) {
+                case "classification":
+                    this.classification = value.asObject();
+                    break;
+                default:
+                    break;
+            }
+        }
+    }
+
+    /**
      * Class contains information about the metadata template field.
      */
     public static class Field extends BoxJSONObject {
@@ -777,6 +852,11 @@ public class MetadataTemplate extends BoxJSONObject {
          * @see #getCopyInstanceOnItemCopy()
          */
         private Boolean copyInstanceOnItemCopy;
+
+        /**
+         * @see #getStaticConfig()
+         */
+        private StaticConfig staticConfig;
 
         /**
          * Constructs an empty metadata template.
@@ -966,6 +1046,24 @@ public class MetadataTemplate extends BoxJSONObject {
         }
 
         /**
+         * Gets static configuration for the classification.
+         *
+         * @return static configuration for the classification.
+         */
+        public StaticConfig getStaticConfig() {
+            return this.staticConfig;
+        }
+
+        /**
+         * Sets static configuration for the classification.
+         *
+         * @param staticConfig static configuration for the classification.
+         */
+        public void setStaticConfig(StaticConfig staticConfig) {
+            this.staticConfig = staticConfig;
+        }
+
+        /**
          * {@inheritDoc}
          */
         @Override
@@ -1000,6 +1098,9 @@ public class MetadataTemplate extends BoxJSONObject {
                 case "copyInstanceOnItemCopy":
                     this.copyInstanceOnItemCopy = value.asBoolean();
                     break;
+                case "staticConfig":
+                    this.staticConfig = new StaticConfig(value.asObject());
+                    break;
                 default:
                     break;
             }
@@ -1018,6 +1119,10 @@ public class MetadataTemplate extends BoxJSONObject {
          * @see #getKey()
          */
         private String key;
+        /**
+         * @see #getStaticConfig()
+         */
+        private StaticConfig staticConfig;
 
         /**
          * Constructs an empty metadata template.
@@ -1063,16 +1168,33 @@ public class MetadataTemplate extends BoxJSONObject {
         }
 
         /**
+         * Gets static configuration for the classification.
+         *
+         * @return static configuration for the classification.
+         */
+        public StaticConfig getStaticConfig() {
+            return this.staticConfig;
+        }
+
+        /**
          * {@inheritDoc}
          */
         @Override
         void parseJSONMember(JsonObject.Member member) {
             JsonValue value = member.getValue();
             String memberName = member.getName();
-            if (memberName.equals("id")) {
-                this.id = value.asString();
-            } else if (memberName.equals("key")) {
-                this.key = value.asString();
+            switch (memberName) {
+                case "id":
+                    this.id = value.asString();
+                    break;
+                case "key":
+                    this.key = value.asString();
+                    break;
+                case "staticConfig":
+                    this.staticConfig = new StaticConfig(value.asObject());
+                    break;
+                default:
+                    break;
             }
         }
     }

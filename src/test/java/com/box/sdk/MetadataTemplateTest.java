@@ -208,6 +208,56 @@ public class MetadataTemplateTest {
     }
 
     @Test
+    public void testUpdateMetadataTemplateWithStaticConfigReturnsCorrectly() {
+        final String metadataTemplateURL = "/2.0/metadata_templates/enterprise/documentFlow03/schema";
+        String result = TestUtils.getFixture("BoxMetadataTemplate/UpdateMetadataTemplateWithStaticConfig200");
+
+        JsonObject classificationObject = new JsonObject();
+        classificationObject.add("classificationDefinition", "Sensitive information");
+        classificationObject.add("colorID", 4);
+
+        JsonObject staticConfigObject = new JsonObject();
+        staticConfigObject.add("classification", classificationObject);
+
+        JsonObject dataObject = new JsonObject();
+        dataObject.add("key", "Classified");
+        dataObject.add("staticConfig", staticConfigObject);
+
+        JsonObject editOperation = new JsonObject();
+        editOperation.add("op", "editTemplate");
+        editOperation.add("data", dataObject);
+
+        JsonArray body = new JsonArray();
+        body.add(editOperation);
+
+        wireMockRule.stubFor(WireMock.put(WireMock.urlPathEqualTo(metadataTemplateURL))
+            .withRequestBody(WireMock.equalToJson(body.toString()))
+            .willReturn(WireMock.aResponse()
+                .withHeader("Content-Type", APPLICATION_JSON)
+                .withBody(result)));
+
+        List<MetadataTemplate.FieldOperation> fieldOperations = new ArrayList<>();
+
+        MetadataTemplate.FieldOperation editTemplate = new MetadataTemplate.FieldOperation();
+        editTemplate.setOp(MetadataTemplate.Operation.editTemplate);
+
+        MetadataTemplate.Field staticConfigField = new MetadataTemplate.Field();
+        MetadataTemplate.StaticConfig staticConfig = new MetadataTemplate.StaticConfig();
+        staticConfig.setClassification(classificationObject);
+        staticConfigField.setKey("Classified");
+        staticConfigField.setStaticConfig(staticConfig);
+        editTemplate.setData(staticConfigField);
+
+        fieldOperations.add(editTemplate);
+        MetadataTemplate template = MetadataTemplate.updateMetadataTemplate(this.api, "enterprise",
+            "documentFlow03", fieldOperations);
+        MetadataTemplate.Option option = template.getFields().get(0).getOptionsObjects().get(0);
+        assertEquals("Top Seret", option
+            .getStaticConfig().getClassification().getString("classificationDefinition", "null"));
+        assertEquals(4, option.getStaticConfig().getClassification().getInt("colorID", 0));
+    }
+
+    @Test
     public void testExecuteMetadataQueryWithFields() {
         final String metadataQueryURL = "/2.0/metadata_queries/execute_read";
 
