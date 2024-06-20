@@ -23,13 +23,8 @@ public class BoxClassificationTemplateIT {
         classification.setIsHidden(false);
 
         List<String> options = new ArrayList<String>();
-        options.add("top_secret");
-
-        classification.setOptions(new ArrayList<String>() {
-            {
-                add("sensitive");
-            }
-        });
+        options.add("sensitive");
+        classification.setOptions(options);
 
         List<MetadataTemplate.Field> fields = new ArrayList<MetadataTemplate.Field>();
         fields.add(classification);
