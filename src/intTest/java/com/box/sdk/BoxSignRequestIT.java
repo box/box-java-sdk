@@ -98,8 +98,13 @@ public class BoxSignRequestIT {
 
             // Test Create
             assertNotNull(signRequestInfoCreate.getPrepareUrl());
-            assertEquals(file.getID(), fileInfoCreate.getID());
-            assertEquals(file2.getID(), file2InfoCreate.getID());
+            // The order of the files in the response is not guaranteed
+            if (file.getID().equals(fileInfoCreate.getID())) {
+                assertEquals(file2.getID(), file2InfoCreate.getID());
+            } else {
+                assertEquals(file.getID(), file2InfoCreate.getID());
+                assertEquals(file2.getID(), fileInfoCreate.getID());
+            }
             assertEquals(signerEmail, signerCreate.getEmail());
             assertNotNull(signRequestInfoCreate.getID());
 
@@ -118,8 +123,13 @@ public class BoxSignRequestIT {
             BoxSignRequestSigner signer = signRequestInfoGetByID.getSigners().get(1);
 
             // Test Get by ID
-            assertEquals(file.getID(), fileInfo.getID());
-            assertEquals(file2.getID(), file2Info.getID());
+            // The order of the files in the response is not guaranteed
+            if (file.getID().equals(fileInfo.getID())) {
+                assertEquals(file2.getID(), file2Info.getID());
+            } else {
+                assertEquals(file.getID(), file2Info.getID());
+                assertEquals(file2.getID(), fileInfo.getID());
+            }
             assertEquals(signerEmail, signer.getEmail());
             assertEquals(signRequestIdCreate, signRequestInfoGetByID.getID());
             assertEquals(signerLoginRequired, signer.getLoginRequired());

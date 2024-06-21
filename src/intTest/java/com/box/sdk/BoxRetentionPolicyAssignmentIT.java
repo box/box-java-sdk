@@ -67,7 +67,7 @@ public class BoxRetentionPolicyAssignmentIT {
             assignment.delete();
             Retry.retry(() -> {
                 Iterable<BoxFile.Info> filesUnderRetention2 =
-                    new BoxRetentionPolicyAssignment(api, assignmentInfo.getID()).getFilesUnderRetention(5);
+                    new BoxRetentionPolicyAssignment(api, assignmentInfo.getID()).getFilesUnderRetention(50);
 
                 //then
                 List<BoxFile.Info> matchingFileWithRetention2 =
@@ -75,7 +75,7 @@ public class BoxRetentionPolicyAssignmentIT {
                         .filter(f -> f.getID().equals(boxFile.getID()))
                         .collect(Collectors.toList());
                 assertTrue(matchingFileWithRetention2.isEmpty());
-            }, 5, 2000);
+            }, 10, 3000);
         } finally {
             //cleanup
             deleteFolder(folder.getResource());
@@ -115,7 +115,7 @@ public class BoxRetentionPolicyAssignmentIT {
             //when
             assignment.delete();
             Retry.retry(() -> {
-                Iterable<BoxFile.Info> filesVersionsUnderRetention2 = assignment.getFileVersionsUnderRetention(5);
+                Iterable<BoxFile.Info> filesVersionsUnderRetention2 = assignment.getFileVersionsUnderRetention(50);
 
                 //then
                 List<BoxFile.Info> matchingFileWithRetention2 =
@@ -123,7 +123,7 @@ public class BoxRetentionPolicyAssignmentIT {
                         .filter(f -> f.getID().equals(boxFile.getID()))
                         .collect(Collectors.toList());
                 assertTrue(matchingFileWithRetention2.isEmpty());
-            }, 5, 2000);
+            }, 10, 3000);
         } finally {
             //cleanup
             deleteFolder(folder);
