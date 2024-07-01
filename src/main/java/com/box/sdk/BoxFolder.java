@@ -1745,30 +1745,10 @@ public class BoxFolder extends BoxItem implements Iterable<BoxItem.Info> {
                     continue;
                 }
 
-                switch (member.getName()) {
-                    case "can_download":
-                        permissions.add(Permission.CAN_DOWNLOAD);
-                        break;
-                    case "can_upload":
-                        permissions.add(Permission.CAN_UPLOAD);
-                        break;
-                    case "can_rename":
-                        permissions.add(Permission.CAN_RENAME);
-                        break;
-                    case "can_delete":
-                        permissions.add(Permission.CAN_DELETE);
-                        break;
-                    case "can_share":
-                        permissions.add(Permission.CAN_SHARE);
-                        break;
-                    case "can_invite_collaborator":
-                        permissions.add(Permission.CAN_INVITE_COLLABORATOR);
-                        break;
-                    case "can_set_share_access":
-                        permissions.add(Permission.CAN_SET_SHARE_ACCESS);
-                        break;
-                    default:
-                        break;
+                try {
+                    permissions.add(BoxFolder.Permission.fromJSONValue(member.getName()));
+                } catch (IllegalArgumentException ignored) {
+                    // If the permission is not recognized, we ignore it.
                 }
             }
 

@@ -107,5 +107,14 @@
     "definition": "Content that should not be shared outside the company.",
     "name": "Top Secret"
   },
-  "is_accessible_via_shared_link": true
+  "is_accessible_via_shared_link": true,
+  "permissions": {
+    "can_delete": true,
+    "can_download": true,
+    "can_invite_collaborator": true,
+    "can_rename": true,
+    "can_set_share_access": true,
+    "can_share": true,
+    "can_upload": true
+  }
 }

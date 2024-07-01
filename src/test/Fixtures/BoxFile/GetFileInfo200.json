@@ -76,5 +76,19 @@
     "name": "Top Secret"
   },
   "disposition_at": "2012-12-12T18:53:43Z",
-  "is_accessible_via_shared_link": true
+  "is_accessible_via_shared_link": true,
+  "permissions": {
+    "can_annotate": true,
+    "can_comment": true,
+    "can_delete": true,
+    "can_download": true,
+    "can_invite_collaborator": true,
+    "can_preview": true,
+    "can_rename": true,
+    "can_set_share_access": true,
+    "can_share": true,
+    "can_upload": true,
+    "can_view_annotations_all": true,
+    "can_view_annotations_self": true
+  }
 }

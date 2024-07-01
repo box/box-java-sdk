@@ -291,6 +291,7 @@ public class BoxFileIT {
             assertThat(uploadedFileInfo.getItemStatus(), is(equalTo("active")));
             assertThat(uploadedFileInfo.getVersion(), not(nullValue()));
             assertThat(uploadedFileInfo.getVersion().getVersionID(), not(nullValue()));
+            assertThat(uploadedFileInfo.getPermissions(), hasItem(BoxFile.Permission.CAN_INVITE_COLLABORATOR));
         } finally {
             deleteFile(uploadedFile);
         }
