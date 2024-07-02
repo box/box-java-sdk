@@ -31,6 +31,7 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
+import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -488,6 +489,7 @@ public class BoxFolderTest {
         assertEquals(ownedByUserLogin, rootFolderInfo.getOwnedBy().getLogin());
         assertEquals(modifiedByLogin, rootFolderInfo.getModifiedBy().getLogin());
         assertEquals(modifiedByName, rootFolderInfo.getModifiedBy().getName());
+        assertEquals(rootFolderInfo.getPermissions(), EnumSet.allOf(BoxFolder.Permission.class));
     }
 
     @Test

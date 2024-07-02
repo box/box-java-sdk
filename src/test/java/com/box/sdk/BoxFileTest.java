@@ -34,6 +34,7 @@ import java.net.URLDecoder;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -179,6 +180,7 @@ public class BoxFileTest {
         assertTrue(info.getHasCollaborations());
         assertEquals(info.getDispositionAt(), BoxDateFormat.parse("2012-12-12T18:53:43Z"));
         assertTrue(info.getIsAccessibleViaSharedLink());
+        assertEquals(info.getPermissions(), EnumSet.allOf(BoxFile.Permission.class));
     }
 
     @Test(expected = BoxDeserializationException.class)
