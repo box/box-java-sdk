@@ -29,6 +29,7 @@ import javax.net.ssl.SSLContext;
 import javax.net.ssl.TrustManager;
 import javax.net.ssl.X509TrustManager;
 import okhttp3.Authenticator;
+import okhttp3.Call;
 import okhttp3.Credentials;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
@@ -1253,9 +1254,13 @@ public class BoxAPIConnection {
         return executeOnClient(noRedirectsHttpClient, request);
     }
 
+    protected Call createNewCall(OkHttpClient httpClient, Request request) {
+        return httpClient.newCall(request);
+    }
+
     private Response executeOnClient(OkHttpClient httpClient, Request request) {
         try {
-            return httpClient.newCall(request).execute();
+            return createNewCall(httpClient, request).execute();
         } catch (IOException e) {
             throw new BoxAPIException("Couldn't connect to the Box API due to a network error. Request\n" + request, e);
         }
