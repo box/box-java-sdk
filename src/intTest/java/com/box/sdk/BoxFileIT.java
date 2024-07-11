@@ -58,14 +58,8 @@ import java.security.MessageDigest;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Collection;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+
 import org.hamcrest.Matchers;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -142,6 +136,31 @@ public class BoxFileIT {
             }, 5, 100);
         } finally {
             deleteFile(file);
+        }
+    }
+
+    @Test
+    public void uploadFileStramSucceeds(){
+        BoxAPIConnection api = jwtApiForServiceAccount();
+        BoxFolder folder = getUniqueFolder(api);
+
+        byte[] fileContent = new byte[10000];
+        new Random().nextBytes(fileContent);
+
+        BoxFile uploadedFile = null;
+        try {
+            InputStream uploadStream =  new ByteArrayInputStream(fileContent);
+            BoxFile.Info uploadedFileInfo = folder.uploadFile(uploadStream, BoxFileIT.generateString());
+            uploadedFile = uploadedFileInfo.getResource();
+
+            ByteArrayOutputStream downloadStream = new ByteArrayOutputStream();
+            uploadedFile.download(downloadStream);
+            byte[] downloadedFileContent = downloadStream.toByteArray();
+
+            assertThat(downloadedFileContent, is(equalTo(fileContent)));
+            assertThat(folder, hasItem(Matchers.<BoxItem.Info>hasProperty("ID", equalTo(uploadedFile.getID()))));
+        } finally {
+            deleteFile(uploadedFile);
         }
     }
 
