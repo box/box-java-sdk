@@ -290,3 +290,39 @@ BoxAPIConnection api = new BoxAPIConnection(...);
 X509TrustManager trustManager = ...
 api.configureSslCertificatesValidation(trustManager, BoxAPIConnection.DEFAULT_HOSTNAME_VERIFIER);
 ```
+
+# Instrumenation of OpenTelemetry
+
+OpenTelemetry is an observability framework and toolkit for creating and managing telemetry data, such as traces,
+metrics, and logs. The Box Java SDK can be instrumented with OpenTelemetry to collect telemetry data about the
+requests made by the SDK.  
+
+To start, add the [opentelemetry-okhttp-3.0](https://mvnrepository.com/artifact/io.opentelemetry.instrumentation/opentelemetry-okhttp-3.0) dependency to your project.
+Next, create a custom class that extends BoxAPIConnection and integrates telemetry in the overridden `createNewCall` method.
+Here's an example implementation:
+```java
+public class BoxAPIConnectionWithTelemetry extends BoxAPIConnection {
+
+    private OkHttpTelemetry telemetry;
+
+    public BoxCustomConnection(String accessToken) {
+        super(accessToken);
+    }
+
+    /**
+     * Add required constructors
+     */
+
+    public void setTelemetry(OpenTelemetry openTelemetry) {
+        this.telemetry = OkHttpTelemetry.builder(openTelemetry).build();
+    }
+
+    protected Call createNewCall(OkHttpClient httpClient, Request request) {
+        return this.telemetry.newCallFactory(httpClient).newCall(request);
+    }
+}
+
+```
+
+Please note that you should not modify either `httpClient` or `request` parameters in the createNewCall method.
+Altering these parameters can discard the BoxAPIConnection configuration and lead to unexpected behavior.
