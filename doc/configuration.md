@@ -306,7 +306,7 @@ public class BoxAPIConnectionWithTelemetry extends BoxAPIConnection {
 
     private OkHttpTelemetry telemetry;
 
-    public BoxCustomConnection(String accessToken) {
+    public BoxAPIConnectionWithTelemetry(String accessToken) {
         super(accessToken);
     }
 
