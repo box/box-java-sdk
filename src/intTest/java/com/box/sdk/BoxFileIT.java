@@ -147,7 +147,7 @@ public class BoxFileIT {
     }
 
     @Test
-    public void uploadFileStramSucceeds() {
+    public void uploadFileStreamSucceeds() {
         BoxAPIConnection api = jwtApiForServiceAccount();
         BoxFolder folder = getUniqueFolder(api);
 
