@@ -14,6 +14,7 @@
     - [Token URL](#token-url-deprecated)
     - [Revoke URL](#revoke-url-deprecated)
 - [SSL configuration](#ssl-configuration)
+- [Instrumenation of OpenTelemetry](#instrumenation-of-opentelemetry)
 
 # Proxy configuration
 
@@ -181,7 +182,7 @@ api.setReadTimeout(readTimeout);
 
 default value is `0` which mean API waits forever to read data from connection.
 
-## URLs configuration
+# URLs configuration
 
 ### Base URL
 The default base URL used for making API calls to Box can be changed by calling `BoxAPIConnection#setBaseURL(String)` 
