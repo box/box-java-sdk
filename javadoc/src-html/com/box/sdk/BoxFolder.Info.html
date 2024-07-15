@@ -1753,55 +1753,35 @@
 <span class="sourceLineNo">1745</span>                    continue;<a name="line.1745"></a>
 <span class="sourceLineNo">1746</span>                }<a name="line.1746"></a>
 <span class="sourceLineNo">1747</span><a name="line.1747"></a>
-<span class="sourceLineNo">1748</span>                switch (member.getName()) {<a name="line.1748"></a>
-<span class="sourceLineNo">1749</span>                    case "can_download":<a name="line.1749"></a>
-<span class="sourceLineNo">1750</span>                        permissions.add(Permission.CAN_DOWNLOAD);<a name="line.1750"></a>
-<span class="sourceLineNo">1751</span>                        break;<a name="line.1751"></a>
-<span class="sourceLineNo">1752</span>                    case "can_upload":<a name="line.1752"></a>
-<span class="sourceLineNo">1753</span>                        permissions.add(Permission.CAN_UPLOAD);<a name="line.1753"></a>
-<span class="sourceLineNo">1754</span>                        break;<a name="line.1754"></a>
-<span class="sourceLineNo">1755</span>                    case "can_rename":<a name="line.1755"></a>
-<span class="sourceLineNo">1756</span>                        permissions.add(Permission.CAN_RENAME);<a name="line.1756"></a>
-<span class="sourceLineNo">1757</span>                        break;<a name="line.1757"></a>
-<span class="sourceLineNo">1758</span>                    case "can_delete":<a name="line.1758"></a>
-<span class="sourceLineNo">1759</span>                        permissions.add(Permission.CAN_DELETE);<a name="line.1759"></a>
-<span class="sourceLineNo">1760</span>                        break;<a name="line.1760"></a>
-<span class="sourceLineNo">1761</span>                    case "can_share":<a name="line.1761"></a>
-<span class="sourceLineNo">1762</span>                        permissions.add(Permission.CAN_SHARE);<a name="line.1762"></a>
-<span class="sourceLineNo">1763</span>                        break;<a name="line.1763"></a>
-<span class="sourceLineNo">1764</span>                    case "can_invite_collaborator":<a name="line.1764"></a>
-<span class="sourceLineNo">1765</span>                        permissions.add(Permission.CAN_INVITE_COLLABORATOR);<a name="line.1765"></a>
-<span class="sourceLineNo">1766</span>                        break;<a name="line.1766"></a>
-<span class="sourceLineNo">1767</span>                    case "can_set_share_access":<a name="line.1767"></a>
-<span class="sourceLineNo">1768</span>                        permissions.add(Permission.CAN_SET_SHARE_ACCESS);<a name="line.1768"></a>
-<span class="sourceLineNo">1769</span>                        break;<a name="line.1769"></a>
-<span class="sourceLineNo">1770</span>                    default:<a name="line.1770"></a>
-<span class="sourceLineNo">1771</span>                        break;<a name="line.1771"></a>
-<span class="sourceLineNo">1772</span>                }<a name="line.1772"></a>
-<span class="sourceLineNo">1773</span>            }<a name="line.1773"></a>
-<span class="sourceLineNo">1774</span><a name="line.1774"></a>
-<span class="sourceLineNo">1775</span>            return permissions;<a name="line.1775"></a>
-<span class="sourceLineNo">1776</span>        }<a name="line.1776"></a>
-<span class="sourceLineNo">1777</span><a name="line.1777"></a>
-<span class="sourceLineNo">1778</span>        private List&lt;String&gt; parseSharedLinkAccessLevels(JsonArray jsonArray) {<a name="line.1778"></a>
-<span class="sourceLineNo">1779</span>            List&lt;String&gt; accessLevels = new ArrayList&lt;&gt;(jsonArray.size());<a name="line.1779"></a>
-<span class="sourceLineNo">1780</span>            for (JsonValue value : jsonArray) {<a name="line.1780"></a>
-<span class="sourceLineNo">1781</span>                accessLevels.add(value.asString());<a name="line.1781"></a>
-<span class="sourceLineNo">1782</span>            }<a name="line.1782"></a>
-<span class="sourceLineNo">1783</span><a name="line.1783"></a>
-<span class="sourceLineNo">1784</span>            return accessLevels;<a name="line.1784"></a>
-<span class="sourceLineNo">1785</span>        }<a name="line.1785"></a>
-<span class="sourceLineNo">1786</span><a name="line.1786"></a>
-<span class="sourceLineNo">1787</span>        private List&lt;String&gt; parseAllowedInviteeRoles(JsonArray jsonArray) {<a name="line.1787"></a>
-<span class="sourceLineNo">1788</span>            List&lt;String&gt; roles = new ArrayList&lt;&gt;(jsonArray.size());<a name="line.1788"></a>
-<span class="sourceLineNo">1789</span>            for (JsonValue value : jsonArray) {<a name="line.1789"></a>
-<span class="sourceLineNo">1790</span>                roles.add(value.asString());<a name="line.1790"></a>
-<span class="sourceLineNo">1791</span>            }<a name="line.1791"></a>
-<span class="sourceLineNo">1792</span><a name="line.1792"></a>
-<span class="sourceLineNo">1793</span>            return roles;<a name="line.1793"></a>
-<span class="sourceLineNo">1794</span>        }<a name="line.1794"></a>
-<span class="sourceLineNo">1795</span>    }<a name="line.1795"></a>
-<span class="sourceLineNo">1796</span>}<a name="line.1796"></a>
+<span class="sourceLineNo">1748</span>                try {<a name="line.1748"></a>
+<span class="sourceLineNo">1749</span>                    permissions.add(BoxFolder.Permission.fromJSONValue(member.getName()));<a name="line.1749"></a>
+<span class="sourceLineNo">1750</span>                } catch (IllegalArgumentException ignored) {<a name="line.1750"></a>
+<span class="sourceLineNo">1751</span>                    // If the permission is not recognized, we ignore it.<a name="line.1751"></a>
+<span class="sourceLineNo">1752</span>                }<a name="line.1752"></a>
+<span class="sourceLineNo">1753</span>            }<a name="line.1753"></a>
+<span class="sourceLineNo">1754</span><a name="line.1754"></a>
+<span class="sourceLineNo">1755</span>            return permissions;<a name="line.1755"></a>
+<span class="sourceLineNo">1756</span>        }<a name="line.1756"></a>
+<span class="sourceLineNo">1757</span><a name="line.1757"></a>
+<span class="sourceLineNo">1758</span>        private List&lt;String&gt; parseSharedLinkAccessLevels(JsonArray jsonArray) {<a name="line.1758"></a>
+<span class="sourceLineNo">1759</span>            List&lt;String&gt; accessLevels = new ArrayList&lt;&gt;(jsonArray.size());<a name="line.1759"></a>
+<span class="sourceLineNo">1760</span>            for (JsonValue value : jsonArray) {<a name="line.1760"></a>
+<span class="sourceLineNo">1761</span>                accessLevels.add(value.asString());<a name="line.1761"></a>
+<span class="sourceLineNo">1762</span>            }<a name="line.1762"></a>
+<span class="sourceLineNo">1763</span><a name="line.1763"></a>
+<span class="sourceLineNo">1764</span>            return accessLevels;<a name="line.1764"></a>
+<span class="sourceLineNo">1765</span>        }<a name="line.1765"></a>
+<span class="sourceLineNo">1766</span><a name="line.1766"></a>
+<span class="sourceLineNo">1767</span>        private List&lt;String&gt; parseAllowedInviteeRoles(JsonArray jsonArray) {<a name="line.1767"></a>
+<span class="sourceLineNo">1768</span>            List&lt;String&gt; roles = new ArrayList&lt;&gt;(jsonArray.size());<a name="line.1768"></a>
+<span class="sourceLineNo">1769</span>            for (JsonValue value : jsonArray) {<a name="line.1769"></a>
+<span class="sourceLineNo">1770</span>                roles.add(value.asString());<a name="line.1770"></a>
+<span class="sourceLineNo">1771</span>            }<a name="line.1771"></a>
+<span class="sourceLineNo">1772</span><a name="line.1772"></a>
+<span class="sourceLineNo">1773</span>            return roles;<a name="line.1773"></a>
+<span class="sourceLineNo">1774</span>        }<a name="line.1774"></a>
+<span class="sourceLineNo">1775</span>    }<a name="line.1775"></a>
+<span class="sourceLineNo">1776</span>}<a name="line.1776"></a>
 
 
 
