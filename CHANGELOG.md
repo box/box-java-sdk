@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [4.11.0](https://github.com/box/box-java-sdk/compare/v4.10.0...v4.11.0) (2024-07-15)
+
+
+### New Features and Enhancements:
+
+* Allow overriding creation of OkHttp Call ([#1257](https://github.com/box/box-java-sdk/issues/1257)) ([bd6fde6](https://github.com/box/box-java-sdk/commit/bd6fde6689bebe6cb5889c91214db68e08a4ec8b))
+
+### Bug Fixes:
+
+* Add missing fields when update classification template ([#1255](https://github.com/box/box-java-sdk/issues/1255)) ([f17f817](https://github.com/box/box-java-sdk/commit/f17f817bde5a412358bf3de8e489ed080715ec4b))
+* Fix deserializing permissions for `BoxFile` and `BoxFolder` ([#1256](https://github.com/box/box-java-sdk/issues/1256)) ([f088448](https://github.com/box/box-java-sdk/commit/f08844889800a01f7c78941036f6228502fca8b0))
+
 ## [4.10.0](https://github.com/box/box-java-sdk/compare/v4.9.1...v4.10.0) (2024-06-06)
 
 
