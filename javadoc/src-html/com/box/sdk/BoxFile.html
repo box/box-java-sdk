@@ -1972,53 +1972,31 @@
 <span class="sourceLineNo">1964</span>                if (value.isNull() || !value.asBoolean()) {<a name="line.1964"></a>
 <span class="sourceLineNo">1965</span>                    continue;<a name="line.1965"></a>
 <span class="sourceLineNo">1966</span>                }<a name="line.1966"></a>
-<span class="sourceLineNo">1967</span><a name="line.1967"></a>
-<span class="sourceLineNo">1968</span>                switch (member.getName()) {<a name="line.1968"></a>
-<span class="sourceLineNo">1969</span>                    case "can_download":<a name="line.1969"></a>
-<span class="sourceLineNo">1970</span>                        permissions.add(Permission.CAN_DOWNLOAD);<a name="line.1970"></a>
-<span class="sourceLineNo">1971</span>                        break;<a name="line.1971"></a>
-<span class="sourceLineNo">1972</span>                    case "can_upload":<a name="line.1972"></a>
-<span class="sourceLineNo">1973</span>                        permissions.add(Permission.CAN_UPLOAD);<a name="line.1973"></a>
-<span class="sourceLineNo">1974</span>                        break;<a name="line.1974"></a>
-<span class="sourceLineNo">1975</span>                    case "can_rename":<a name="line.1975"></a>
-<span class="sourceLineNo">1976</span>                        permissions.add(Permission.CAN_RENAME);<a name="line.1976"></a>
-<span class="sourceLineNo">1977</span>                        break;<a name="line.1977"></a>
-<span class="sourceLineNo">1978</span>                    case "can_delete":<a name="line.1978"></a>
-<span class="sourceLineNo">1979</span>                        permissions.add(Permission.CAN_DELETE);<a name="line.1979"></a>
-<span class="sourceLineNo">1980</span>                        break;<a name="line.1980"></a>
-<span class="sourceLineNo">1981</span>                    case "can_share":<a name="line.1981"></a>
-<span class="sourceLineNo">1982</span>                        permissions.add(Permission.CAN_SHARE);<a name="line.1982"></a>
-<span class="sourceLineNo">1983</span>                        break;<a name="line.1983"></a>
-<span class="sourceLineNo">1984</span>                    case "can_set_share_access":<a name="line.1984"></a>
-<span class="sourceLineNo">1985</span>                        permissions.add(Permission.CAN_SET_SHARE_ACCESS);<a name="line.1985"></a>
-<span class="sourceLineNo">1986</span>                        break;<a name="line.1986"></a>
-<span class="sourceLineNo">1987</span>                    case "can_preview":<a name="line.1987"></a>
-<span class="sourceLineNo">1988</span>                        permissions.add(Permission.CAN_PREVIEW);<a name="line.1988"></a>
-<span class="sourceLineNo">1989</span>                        break;<a name="line.1989"></a>
-<span class="sourceLineNo">1990</span>                    case "can_comment":<a name="line.1990"></a>
-<span class="sourceLineNo">1991</span>                        permissions.add(Permission.CAN_COMMENT);<a name="line.1991"></a>
-<span class="sourceLineNo">1992</span>                        break;<a name="line.1992"></a>
-<span class="sourceLineNo">1993</span>                }<a name="line.1993"></a>
-<span class="sourceLineNo">1994</span>            }<a name="line.1994"></a>
-<span class="sourceLineNo">1995</span><a name="line.1995"></a>
-<span class="sourceLineNo">1996</span>            return permissions;<a name="line.1996"></a>
-<span class="sourceLineNo">1997</span>        }<a name="line.1997"></a>
-<span class="sourceLineNo">1998</span><a name="line.1998"></a>
-<span class="sourceLineNo">1999</span>        private BoxFileVersion parseFileVersion(JsonObject jsonObject) {<a name="line.1999"></a>
-<span class="sourceLineNo">2000</span>            return new BoxFileVersion(BoxFile.this.getAPI(), jsonObject, BoxFile.this.getID());<a name="line.2000"></a>
-<span class="sourceLineNo">2001</span>        }<a name="line.2001"></a>
-<span class="sourceLineNo">2002</span><a name="line.2002"></a>
-<span class="sourceLineNo">2003</span>        private List&lt;String&gt; parseAllowedInviteeRoles(JsonArray jsonArray) {<a name="line.2003"></a>
-<span class="sourceLineNo">2004</span>            List&lt;String&gt; roles = new ArrayList&lt;&gt;(jsonArray.size());<a name="line.2004"></a>
-<span class="sourceLineNo">2005</span>            for (JsonValue value : jsonArray) {<a name="line.2005"></a>
-<span class="sourceLineNo">2006</span>                roles.add(value.asString());<a name="line.2006"></a>
-<span class="sourceLineNo">2007</span>            }<a name="line.2007"></a>
-<span class="sourceLineNo">2008</span><a name="line.2008"></a>
-<span class="sourceLineNo">2009</span>            return roles;<a name="line.2009"></a>
-<span class="sourceLineNo">2010</span>        }<a name="line.2010"></a>
-<span class="sourceLineNo">2011</span>    }<a name="line.2011"></a>
-<span class="sourceLineNo">2012</span><a name="line.2012"></a>
-<span class="sourceLineNo">2013</span>}<a name="line.2013"></a>
+<span class="sourceLineNo">1967</span>                try {<a name="line.1967"></a>
+<span class="sourceLineNo">1968</span>                    permissions.add(Permission.fromJSONValue(member.getName()));<a name="line.1968"></a>
+<span class="sourceLineNo">1969</span>                } catch (IllegalArgumentException ignored) {<a name="line.1969"></a>
+<span class="sourceLineNo">1970</span>                    // If the permission is not recognized, we ignore it.<a name="line.1970"></a>
+<span class="sourceLineNo">1971</span>                }<a name="line.1971"></a>
+<span class="sourceLineNo">1972</span>            }<a name="line.1972"></a>
+<span class="sourceLineNo">1973</span><a name="line.1973"></a>
+<span class="sourceLineNo">1974</span>            return permissions;<a name="line.1974"></a>
+<span class="sourceLineNo">1975</span>        }<a name="line.1975"></a>
+<span class="sourceLineNo">1976</span><a name="line.1976"></a>
+<span class="sourceLineNo">1977</span>        private BoxFileVersion parseFileVersion(JsonObject jsonObject) {<a name="line.1977"></a>
+<span class="sourceLineNo">1978</span>            return new BoxFileVersion(BoxFile.this.getAPI(), jsonObject, BoxFile.this.getID());<a name="line.1978"></a>
+<span class="sourceLineNo">1979</span>        }<a name="line.1979"></a>
+<span class="sourceLineNo">1980</span><a name="line.1980"></a>
+<span class="sourceLineNo">1981</span>        private List&lt;String&gt; parseAllowedInviteeRoles(JsonArray jsonArray) {<a name="line.1981"></a>
+<span class="sourceLineNo">1982</span>            List&lt;String&gt; roles = new ArrayList&lt;&gt;(jsonArray.size());<a name="line.1982"></a>
+<span class="sourceLineNo">1983</span>            for (JsonValue value : jsonArray) {<a name="line.1983"></a>
+<span class="sourceLineNo">1984</span>                roles.add(value.asString());<a name="line.1984"></a>
+<span class="sourceLineNo">1985</span>            }<a name="line.1985"></a>
+<span class="sourceLineNo">1986</span><a name="line.1986"></a>
+<span class="sourceLineNo">1987</span>            return roles;<a name="line.1987"></a>
+<span class="sourceLineNo">1988</span>        }<a name="line.1988"></a>
+<span class="sourceLineNo">1989</span>    }<a name="line.1989"></a>
+<span class="sourceLineNo">1990</span><a name="line.1990"></a>
+<span class="sourceLineNo">1991</span>}<a name="line.1991"></a>
 
 
 
