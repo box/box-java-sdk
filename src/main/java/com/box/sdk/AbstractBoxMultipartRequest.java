@@ -141,13 +141,14 @@ abstract class AbstractBoxMultipartRequest extends BoxAPIRequest {
     protected void writeMethodWithBody(Request.Builder requestBuilder, ProgressListener progressListener) {
         MultipartBody.Builder bodyBuilder =
             new MultipartBody.Builder()
-                .setType(MultipartBody.FORM)
-                .addFormDataPart(
-                    getPartName(),
-                    filename,
-                    getBody(progressListener)
-                );
+                .setType(MultipartBody.FORM);
+        // Attributes should go first
         this.fields.forEach(bodyBuilder::addFormDataPart);
+        // File should go second
+        bodyBuilder.addFormDataPart(
+                getPartName(),
+                filename,
+                getBody(progressListener));
         requestBuilder.post(bodyBuilder.build());
     }
 

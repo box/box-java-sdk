@@ -25,6 +25,8 @@ import com.eclipsesource.json.JsonObject;
 import com.github.tomakehurst.wiremock.client.WireMock;
 import com.github.tomakehurst.wiremock.junit.WireMockRule;
 import com.github.tomakehurst.wiremock.matching.EqualToJsonPattern;
+import com.github.tomakehurst.wiremock.matching.EqualToPattern;
+import com.github.tomakehurst.wiremock.matching.MultipartValuePatternBuilder;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -1233,6 +1235,43 @@ public class BoxFolderTest {
         folder.deleteClassification();
 
         WireMock.verify(1, WireMock.deleteRequestedFor(WireMock.urlPathEqualTo(metadataURL)));
+    }
+
+    @Test
+    public void testUploadFileWithCorrectMultipartOrder() {
+        final String folderID = "0";
+        final String fileURL = "/2.0/files/content";
+        final String fileContent = "Test file";
+        final String fileName = "Test File.txt";
+        final String fileDescription = "Test Description";
+        InputStream stream = new ByteArrayInputStream(fileContent.getBytes(StandardCharsets.UTF_8));
+        final String expectedAttributesJson =
+                "{\"name\":\"Test File.txt\",\"parent\":{\"id\": \"0\"},\"description\":\"Test Description\"}";
+
+        String result = TestUtils.getFixture("BoxFile/CreateFileWithDescription201");
+
+        wireMockRule.stubFor(WireMock.post(WireMock.urlPathEqualTo(fileURL))
+                .withRequestBody(WireMock.matching(".*attributes.*file.*")) // Check that attributes comes before file
+                .withMultipartRequestBody(
+                        new MultipartValuePatternBuilder()
+                                .withName("attributes")
+                                .withBody(new EqualToJsonPattern(expectedAttributesJson, false, false))
+                ).withMultipartRequestBody(
+                        new MultipartValuePatternBuilder()
+                                .withName("file")
+                                .withBody(new EqualToPattern(fileContent))
+                )
+                .willReturn(WireMock.aResponse()
+                        .withHeader("Content-Type", APPLICATION_JSON_PATCH)
+                        .withBody(result)
+                        .withStatus(201)));
+
+        BoxFolder folder = new BoxFolder(this.api, folderID);
+        BoxFile.Info file = folder.uploadFile(stream, fileName, fileDescription);
+
+        assertEquals(fileDescription, file.getDescription());
+        assertEquals(folderID, file.getParent().getID());
+        assertEquals(fileName, file.getName());
     }
 
     @Test
