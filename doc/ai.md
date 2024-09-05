@@ -7,8 +7,10 @@ an answer based on the provided prompt and items.
 <!-- START doctoc generated TOC please keep comment here to allow auto update -->
 <!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
 
-- [Send AI request](#send-ai-request)
-- [Send AI text generation request](#send-ai-text-generation-request)
+- [AI](#ai)
+  - [Send AI request](#send-ai-request)
+  - [Send AI text generation request](#send-ai-text-generation-request)
+  - [Get AI Agent default configuration](#get-ai-agent-default-configuration)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
@@ -26,15 +28,17 @@ for a single or multiple items.
 BoxAIResponse response = BoxAI.sendAIRequest(
     api,
     "What is the content of the file?",
-    Collections.singletonList("123456", BoxAIItem.Type.FILE)),
+    Collections.singletonList("123456", BoxAIItem.Type.FILE),
     BoxAI.Mode.SINGLE_ITEM_QA
 );
 ```
 
+You can also provide a list of dialogue history entries to provide additional context to the LLM in generating the response, AI Agent configuration and flag to indicate whether citations should be returned.
+
 NOTE: The AI endpoint may return a 412 status code if you use for your request a file which has just been updated to the box.
 It usually takes a few seconds for the file to be indexed and available for the AI endpoint.
 
-[send-ai-request]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxAI.html#sendAIRequest-com.box.sdk.BoxAPIConnection-java.lang.String-
+[send-ai-request]: https://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxAI.html#sendAIRequest-com.box.sdk.BoxAPIConnection-java.lang.String-java.util.List-com.box.sdk.BoxAI.Mode-
 
 Send AI text generation request
 --------------
@@ -62,4 +66,25 @@ BoxAIResponse response = BoxAI.sendAITextGenRequest(
 );
 ```
 
-[send-ai-text-gen-request]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxAI.html#sendAITextGenRequest-com.box.sdk.BoxAPIConnection-java.lang.String-
+You can also provide an AI Agent configuration to customize the behavior of the AI response generation.
+
+[send-ai-text-gen-request]: https://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxAI.html#sendAITextGenRequest-com.box.sdk.BoxAPIConnection-java.lang.String-java.util.List-java.util.List-
+
+Get AI Agent default configuration
+--------------------------
+
+To get the default configuration of the AI Agent, call static
+[`getAiAgentDefaultConfig(BoxAPIConnection api, BoxAIAgent.Mode mode, String language, String model)`][get-ai-agent-default-config] method.
+In the request you have to provide the mode of the AI Agent, the language and the model, with the model is required while the language and mode are optional.
+
+<!-- sample get_ai_agent_default -->
+```java
+BoxAIAgentConfig config = BoxAI.getAiAgentDefaultConfig(
+    api,
+    BoxAIAgent.Mode.ASK,
+    "en",
+    "openai__gpt_3_5_turbo"
+);
+```
+
+[get-ai-agent-default-config]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxAI.html#getAiAgentDefaultConfig-com.box.sdk.BoxAPIConnection-com.box.sdk.ai.BoxAIAgent.Mode-java.lang.String-java.lang.String-

@@ -18,6 +18,10 @@ public final class BoxAI {
      * Text gen AI url.
      */
     public static final URLTemplate SEND_AI_TEXT_GEN_REQUEST_URL = new URLTemplate("ai/text_gen");
+    /**
+     * AI agent default config url.
+     */
+    public static final URLTemplate AI_AGENT_DEFAULT_CONFIG_URL = new URLTemplate("ai_agent_default");
 
     private BoxAI() {
     }
@@ -25,13 +29,20 @@ public final class BoxAI {
     /**
      * Sends an AI request to supported LLMs and returns an answer specifically focused
      * on the user's question given the provided items.
-     * @param api the API connection to be used by the created user.
+     *
+     * @param api    the API connection to be used by the created user.
      * @param prompt The prompt provided by the client to be answered by the LLM.
-     * @param items The items to be processed by the LLM, currently only files are supported.
-     * @param mode The mode specifies if this request is for a single or multiple items.
+     * @param items  The items to be processed by the LLM, currently only files are supported.
+     * @param mode   The mode specifies if this request is for a single or multiple items.
      * @return The response from the AI.
      */
     public static BoxAIResponse sendAIRequest(BoxAPIConnection api, String prompt, List<BoxAIItem> items, Mode mode) {
+        return sendAIRequest(api, prompt, items, mode, null, null, null);
+    }
+
+    public static BoxAIResponse sendAIRequest(BoxAPIConnection api, String prompt, List<BoxAIItem> items, Mode mode,
+                                              List<BoxAIDialogueEntry> dialogueHistory, BoxAIAgentAsk agent,
+                                              Boolean includeCitations) {
         URL url = SEND_AI_REQUEST_URL.build(api.getBaseURL());
         JsonObject requestJSON = new JsonObject();
         requestJSON.add("mode", mode.toString());
@@ -42,6 +53,20 @@ public final class BoxAI {
             itemsJSON.add(item.getJSONObject());
         }
         requestJSON.add("items", itemsJSON);
+
+        if (dialogueHistory != null) {
+            JsonArray dialogueHistoryJSON = new JsonArray();
+            for (BoxAIDialogueEntry dialogueEntry : dialogueHistory) {
+                dialogueHistoryJSON.add(dialogueEntry.getJSONObject());
+            }
+            requestJSON.add("dialogue_history", dialogueHistoryJSON);
+        }
+        if (agent != null) {
+            requestJSON.add("ai_agent", agent.getJSONObject());
+        }
+        if (includeCitations != null) {
+            requestJSON.add("include_citations", includeCitations);
+        }
 
         BoxJSONRequest req = new BoxJSONRequest(api, url, HttpMethod.POST);
         req.setBody(requestJSON.toString());
@@ -54,9 +79,10 @@ public final class BoxAI {
 
     /**
      * Sends an AI request to supported LLMs and returns an answer specifically focused on the creation of new text.
-     * @param api the API connection to be used by the created user.
+     *
+     * @param api    the API connection to be used by the created user.
      * @param prompt The prompt provided by the client to be answered by the LLM.
-     * @param items The items to be processed by the LLM, currently only files are supported.
+     * @param items  The items to be processed by the LLM, currently only files are supported.
      * @return The response from the AI.
      */
     public static BoxAIResponse sendAITextGenRequest(BoxAPIConnection api, String prompt, List<BoxAIItem> items) {
@@ -65,16 +91,22 @@ public final class BoxAI {
 
     /**
      * Sends an AI request to supported LLMs and returns an answer specifically focused on the creation of new text.
-     * @param api the API connection to be used by the created user.
-     * @param prompt The prompt provided by the client to be answered by the LLM.
-     * @param items The items to be processed by the LLM, currently only files are supported.
+     *
+     * @param api             the API connection to be used by the created user.
+     * @param prompt          The prompt provided by the client to be answered by the LLM.
+     * @param items           The items to be processed by the LLM, currently only files are supported.
      * @param dialogueHistory The history of prompts and answers previously passed to the LLM.
      *                        This provides additional context to the LLM in generating the response.
      * @return The response from the AI.
      */
-    public static BoxAIResponse sendAITextGenRequest(
-            BoxAPIConnection api, String prompt, List<BoxAIItem> items, List<BoxAIDialogueEntry> dialogueHistory
-    ) {
+    public static BoxAIResponse sendAITextGenRequest(BoxAPIConnection api, String prompt, List<BoxAIItem> items,
+                                                     List<BoxAIDialogueEntry> dialogueHistory) {
+        return sendAITextGenRequest(api, prompt, items, dialogueHistory, null);
+    }
+
+    public static BoxAIResponse sendAITextGenRequest(BoxAPIConnection api, String prompt, List<BoxAIItem> items,
+                                                     List<BoxAIDialogueEntry> dialogueHistory,
+                                                     BoxAIAgentTextGen agent) {
         URL url = SEND_AI_TEXT_GEN_REQUEST_URL.build(api.getBaseURL());
         JsonObject requestJSON = new JsonObject();
         requestJSON.add("prompt", prompt);
@@ -93,12 +125,56 @@ public final class BoxAI {
             requestJSON.add("dialogue_history", dialogueHistoryJSON);
         }
 
+        if (agent != null) {
+            requestJSON.add("ai_agent", agent.getJSONObject());
+        }
+
         BoxJSONRequest req = new BoxJSONRequest(api, url, HttpMethod.POST);
         req.setBody(requestJSON.toString());
 
         try (BoxJSONResponse response = req.send()) {
             JsonObject responseJSON = Json.parse(response.getJSON()).asObject();
             return new BoxAIResponse(responseJSON);
+        }
+    }
+
+    /**
+     * Get the default AI Agent use for the given mode.
+     *
+     * @param api  The API connection to be used by the created user.
+     * @param mode The mode to filter the agent config to return.
+     * @return A successful response including the default agent configuration.
+     */
+    public static BoxAIAgent getAiAgentDefaultConfig(BoxAPIConnection api, BoxAIAgent.Mode mode) {
+        return getAiAgentDefaultConfig(api, mode, null, null);
+    }
+
+    /**
+     * Get the default AI Agent use for the given mode.
+     *
+     * @param api      The API connection to be used by the created user.
+     * @param mode     The mode to filter the agent config to return.
+     * @param language The language to filter the agent config to return.
+     * @param model    The model to filter the agent config to return.
+     * @return A successful response including the default agent configuration.
+     */
+    public static BoxAIAgent getAiAgentDefaultConfig(BoxAPIConnection api,
+                                                     BoxAIAgent.Mode mode,
+                                                     String language,
+                                                     String model) {
+        QueryStringBuilder builder = new QueryStringBuilder();
+        builder.appendParam("mode", mode.toString());
+        if (language != null) {
+            builder.appendParam("language", language);
+        }
+        if (model != null) {
+            builder.appendParam("model", model);
+        }
+        URL url = AI_AGENT_DEFAULT_CONFIG_URL.buildWithQuery(api.getBaseURL(), builder.toString());
+        BoxAPIRequest req = new BoxAPIRequest(api, url, HttpMethod.GET);
+        try (BoxJSONResponse response = (BoxJSONResponse) req.send()) {
+            JsonObject responseJSON = Json.parse(response.getJSON()).asObject();
+            return BoxAIAgent.parse(responseJSON);
         }
     }
 

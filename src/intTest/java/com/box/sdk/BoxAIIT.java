@@ -141,4 +141,55 @@ public class BoxAIIT {
             deleteFile(uploadedFile);
         }
     }
+
+    @Test
+    public void getAIAgentDefaultConfiguration() {
+        BoxAPIConnection api = jwtApiForServiceAccount();
+        BoxAIAgent agent = BoxAI.getAiAgentDefaultConfig(api, BoxAIAgent.Mode.ASK,
+            "en", "openai__gpt_3_5_turbo");
+        BoxAIAgentAsk askAgent = (BoxAIAgentAsk) agent;
+
+        assertThat(askAgent.getType(), is(equalTo(BoxAIAgentAsk.TYPE)));
+        assertThat(askAgent.getBasicText().getModel(), is(equalTo("openai__gpt_3_5_turbo")));
+
+        BoxAIAgent agent2 = BoxAI.getAiAgentDefaultConfig(api, BoxAIAgent.Mode.TEXT_GEN,
+            "en", "openai__gpt_3_5_turbo");
+        BoxAIAgentTextGen textGenAgent = (BoxAIAgentTextGen) agent2;
+
+        assertThat(textGenAgent.getType(), is(equalTo(BoxAIAgentTextGen.TYPE)));
+        assertThat(textGenAgent.getBasicGen().getModel(), is(equalTo("openai__gpt_3_5_turbo")));
+    }
+
+    @Test
+    public void askAISingleItemWithAgent() throws InterruptedException {
+        BoxAPIConnection api = jwtApiForServiceAccount();
+        String fileName = "[askAISingleItem] Test File.txt";
+        BoxFile uploadedFile = uploadFileToUniqueFolder(api, fileName, "Test file");
+        BoxAIAgent agent = BoxAI.getAiAgentDefaultConfig(api, BoxAIAgent.Mode.ASK,
+            "en", "openai__gpt_3_5_turbo_16k");
+        BoxAIAgentAsk askAgent = (BoxAIAgentAsk) agent;
+
+        try {
+            BoxFile.Info uploadedFileInfo = uploadedFile.getInfo();
+            // When a file has been just uploaded, AI service may not be ready to return text response
+            // and 412 is returned
+            retry(() -> {
+                BoxAIResponse response = BoxAI.sendAIRequest(
+                    api,
+                    "What is the name of the file?",
+                    Collections.singletonList(new BoxAIItem(uploadedFileInfo.getID(), BoxAIItem.Type.FILE)),
+                    BoxAI.Mode.SINGLE_ITEM_QA,
+                    null,
+                    askAgent,
+                    true
+                );
+                assertThat(response.getAnswer(), containsString("Test file"));
+                assert response.getCreatedAt().before(new Date(System.currentTimeMillis()));
+                assertThat(response.getCompletionReason(), equalTo("done"));
+            }, 2, 2000);
+
+        } finally {
+            deleteFile(uploadedFile);
+        }
+    }
 }
