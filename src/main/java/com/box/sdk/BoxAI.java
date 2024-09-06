@@ -40,6 +40,20 @@ public final class BoxAI {
         return sendAIRequest(api, prompt, items, mode, null, null, null);
     }
 
+    /**
+     * Sends an AI request to supported LLMs and returns an answer specifically focused
+     * on the user's question given the provided items.
+     *
+     * @param api             the API connection to be used by the created user.
+     * @param prompt          The prompt provided by the client to be answered by the LLM.
+     * @param items           The items to be processed by the LLM, currently only files are supported.
+     * @param mode            The mode specifies if this request is for a single or multiple items.
+     * @param dialogueHistory The history of prompts and answers previously passed to the LLM.
+     *                        This provides additional context to the LLM in generating the response.
+     * @param agent           The AI agent configuration to be used for the request.
+     * @param includeCitations Whether to include citations in the response.
+     * @return The response from the AI.
+     */
     public static BoxAIResponse sendAIRequest(BoxAPIConnection api, String prompt, List<BoxAIItem> items, Mode mode,
                                               List<BoxAIDialogueEntry> dialogueHistory, BoxAIAgentAsk agent,
                                               Boolean includeCitations) {
@@ -104,6 +118,17 @@ public final class BoxAI {
         return sendAITextGenRequest(api, prompt, items, dialogueHistory, null);
     }
 
+    /**
+     * Sends an AI request to supported LLMs and returns an answer specifically focused on the creation of new text.
+     *
+     * @param api             the API connection to be used by the created user.
+     * @param prompt          The prompt provided by the client to be answered by the LLM.
+     * @param items           The items to be processed by the LLM, currently only files are supported.
+     * @param dialogueHistory The history of prompts and answers previously passed to the LLM.
+     *                        This provides additional context to the LLM in generating the response.
+     * @param agent           The AI agent configuration to be used for the request.
+     * @return The response from the AI.
+     */
     public static BoxAIResponse sendAITextGenRequest(BoxAPIConnection api, String prompt, List<BoxAIItem> items,
                                                      List<BoxAIDialogueEntry> dialogueHistory,
                                                      BoxAIAgentTextGen agent) {
