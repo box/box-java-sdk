@@ -92,4 +92,26 @@ public class JsonUtils {
             jsonObject.add(propertyName, BoxDateFormat.format(propertyValue));
         }
     }
+
+    /**
+     * Add JsonObject property to json object if it's not null.
+     *
+     * @param jsonObject    json object that the key/value will be added to.
+     * @param propertyName  name of the property in json (key).
+     * @param propertyValue value of the property.
+     */
+    public static void addIfNotNull(JsonObject jsonObject, String propertyName, JsonObject propertyValue) {
+        if (propertyValue != null) {
+            jsonObject.add(propertyName, propertyValue);
+        }
+    }
+
+    /**
+     * Add double property to json object if it's not null.
+     */
+    public static void addIfNotNull(JsonObject jsonObject, String propertyName, Double propertyValue) {
+        if (propertyValue != null) {
+            jsonObject.add(propertyName, propertyValue);
+        }
+    }
 }

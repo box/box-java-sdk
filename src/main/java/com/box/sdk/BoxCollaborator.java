@@ -185,18 +185,27 @@ public abstract class BoxCollaborator extends BoxResource {
 
             try {
 
-                if (name.equals("type")) {
-                    this.type = CollaboratorType.fromJSONValue(value.asString());
-                } else if (name.equals("name")) {
-                    this.name = value.asString();
-                } else if (name.equals("created_at")) {
-                    this.createdAt = BoxDateFormat.parse(value.asString());
-                } else if (name.equals("modified_at")) {
-                    this.modifiedAt = BoxDateFormat.parse(value.asString());
-                } else if (name.equals("login")) {
-                    this.login = value.asString();
-                } else if (name.equals("group_type")) {
-                    this.groupType = GroupType.fromJSONValue(value.asString());
+                switch (name) {
+                    case "type":
+                        this.type = CollaboratorType.fromJSONValue(value.asString());
+                        break;
+                    case "name":
+                        this.name = value.asString();
+                        break;
+                    case "created_at":
+                        this.createdAt = BoxDateFormat.parse(value.asString());
+                        break;
+                    case "modified_at":
+                        this.modifiedAt = BoxDateFormat.parse(value.asString());
+                        break;
+                    case "login":
+                        this.login = value.asString();
+                        break;
+                    case "group_type":
+                        this.groupType = GroupType.fromJSONValue(value.asString());
+                        break;
+                    default:
+                        break;
                 }
             } catch (Exception e) {
                 throw new BoxDeserializationException(name, value.toString(), e);

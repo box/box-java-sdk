@@ -8,7 +8,6 @@ import java.util.Date;
  * Represents an entry of the history of prompts and answers previously passed to the LLM.
  * This provides additional context to the LLM in generating the response.
  */
-@BoxResourceType("file_version")
 public class BoxAIDialogueEntry extends BoxJSONObject {
     private String prompt;
     private String answer;
