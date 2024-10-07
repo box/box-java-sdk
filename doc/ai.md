@@ -88,3 +88,49 @@ BoxAIAgentConfig config = BoxAI.getAiAgentDefaultConfig(
 ```
 
 [get-ai-agent-default-config]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxAI.html#getAiAgentDefaultConfig-com.box.sdk.BoxAPIConnection-com.box.sdk.ai.BoxAIAgent.Mode-java.lang.String-java.lang.String-
+
+Extract metadata freeform
+--------------------------
+
+To send an AI request to supported Large Language Models (LLMs) and extracts metadata in form of key-value pairs, call static
+[` extractMetadataFreeform(BoxAPIConnection api, String prompt, List<BoxAIItem> items, BoxAIAgentExtract agent)`][extract-metadata-freeform] method.
+In the request you have to provide a prompt, a list of items that your prompt refers to and an optional agent configuration.
+
+<!-- sample post_ai_extract -->
+```java
+BoxAIAgent agent = BoxAI.getAiAgentDefaultConfig(api, BoxAIAgent.Mode.EXTRACT, "en-US", null);
+BoxAIAgentExtract agentExtract = (BoxAIAgentExtract) agent;
+
+BoxAIResponse response = BoxAI.extractMetadataFreeform(
+    api,
+    "What is the content of the file?",
+    Collections.singletonList(new BoxAIItem("123456", BoxAIItem.Type.FILE)),
+    agentExtract
+);
+```
+
+[extract-metadata-freeform]: https://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxAI.html#extractMetadataFreeform-com.box.sdk.BoxAPIConnection-java.lang.String-java.util.List-com.box.sdk.ai.BoxAIAgentExtract-
+
+Extract metadata structured
+--------------------------
+
+Sends an AI request to supported Large Language Models (LLMs) and returns extracted metadata as a set of key-value pairs. For this request, you need to use an already defined metadata template or a define a schema yourself. 
+To send an AI request to extract metadata from files, call static
+[`extractMetadataStructured extractMetadataStructured(BoxAPIConnection api, List<BoxAIItem> items, BoxAIExtractMetadataTemplate template, List<BoxAIExtractField> fields, BoxAIAgentExtractStructured agent)`][extract-metadata-structured] method.
+
+<!-- sample post_ai_extract_structured -->
+```java
+BoxAIAgent agent = BoxAI.getAiAgentDefaultConfig(api, BoxAIAgent.Mode.EXTRACT_STRUCTURED, "en-US", null);
+BoxAIAgentExtractStructured agentExtractStructured = (BoxAIAgentExtractStructured) agent;
+BoxAIExtractMetadataTemplate template = new BoxAIExtractMetadataTemplate("templateKey", "enterprise");
+
+JsonObject result = BoxAI.extractMetadataStructured(
+    api,
+    Collections.singletonList(new BoxAIItem("123456", BoxAIItem.Type.FILE)),
+    template,
+    null,
+    agentExtractStructured
+);
+```
+
+[extract-metadata-structured]: https://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxAI.html#extractMetadataStructured-com.box.sdk.BoxAPIConnection-java.util.List-com.box.sdk.ai.BoxAIExtractMetadataTemplate-java.util.List-com.box.sdk.ai.BoxAIAgentExtractStructured-

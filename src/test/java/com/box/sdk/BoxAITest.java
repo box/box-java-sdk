@@ -1,6 +1,7 @@
 package com.box.sdk;
 
 import com.eclipsesource.json.Json;
+import com.eclipsesource.json.JsonArray;
 import com.eclipsesource.json.JsonObject;
 import com.github.tomakehurst.wiremock.client.WireMock;
 import com.github.tomakehurst.wiremock.junit.WireMockRule;
@@ -235,5 +236,131 @@ public class BoxAITest {
 
         JsonObject jsonResult = Json.parse(result).asObject();
         assertThat(agent.getJSONObject().toString(), equalTo(jsonResult.toString()));
+    }
+
+    @Test
+    public void testGetAIAgentDefaultConfigExtractSuccess() {
+        String result = TestUtils.getFixture("BoxAI/GetAIAgentDefaultConfigExtract200");
+        String urlPath = "/2.0/ai_agent_default";
+
+        wireMockRule.stubFor(WireMock.get(WireMock.urlPathEqualTo(urlPath))
+            .willReturn(WireMock.aResponse()
+                .withHeader("Content-Type", APPLICATION_JSON)
+                .withBody(result)));
+
+        BoxAIAgent agent = BoxAI.getAiAgentDefaultConfig(api, BoxAIAgent.Mode.EXTRACT,
+            "en", "openai__gpt_3_5_turbo");
+        BoxAIAgentExtract agentExtract = (BoxAIAgentExtract) agent;
+
+        assertThat(agent.getType(), equalTo("ai_agent_extract"));
+        assertThat(agentExtract.getBasicText().getModel(), equalTo("azure__openai__gpt_3_5_turbo_16k"));
+
+        JsonObject jsonResult = Json.parse(result).asObject();
+        assertThat(agent.getJSONObject().toString(), equalTo(jsonResult.toString()));
+    }
+
+    @Test
+    public void testGetAIAgentDefaultConfigExtractStructuredSuccess() {
+        String result = TestUtils.getFixture("BoxAI/GetAIAgentDefaultConfigExtractStructured200");
+        String urlPath = "/2.0/ai_agent_default";
+
+        wireMockRule.stubFor(WireMock.get(WireMock.urlPathEqualTo(urlPath))
+            .willReturn(WireMock.aResponse()
+                .withHeader("Content-Type", APPLICATION_JSON)
+                .withBody(result)));
+
+        BoxAIAgent agent = BoxAI.getAiAgentDefaultConfig(api, BoxAIAgent.Mode.EXTRACT_STRUCTURED,
+            "en", "openai__gpt_3_5_turbo");
+        BoxAIAgentExtractStructured agentExtract = (BoxAIAgentExtractStructured) agent;
+
+        assertThat(agent.getType(), equalTo("ai_agent_extract_structured"));
+        assertThat(agentExtract.getBasicText().getModel(), equalTo("azure__openai__gpt_3_5_turbo_16k"));
+
+        JsonObject jsonResult = Json.parse(result).asObject();
+        assertThat(agent.getJSONObject().toString(), equalTo(jsonResult.toString()));
+    }
+
+    @Test
+    public void testExtractMetadataFreeformSuccess() {
+        String agentString = TestUtils.getFixture("BoxAI/GetAIAgentDefaultConfigExtract200");
+        final String fileId = "12345";
+        final String prompt = "Extract data related to contract conditions";
+        final BoxAIAgentExtract agent = new BoxAIAgentExtract(Json.parse(agentString).asObject());
+        JsonObject expectedRequestBody = new JsonObject();
+        expectedRequestBody.add("prompt", prompt);
+        expectedRequestBody.add("items", new JsonArray().add(new JsonObject()
+            .add("type", "file")
+            .add("id", fileId)));
+        expectedRequestBody.add("ai_agent", agent.getJSONObject());
+
+        String result = TestUtils.getFixture("BoxAI/ExtractMetadataFreeform200");
+        wireMockRule.stubFor(WireMock.post(WireMock.urlPathEqualTo("/2.0/ai/extract"))
+            .withRequestBody(WireMock.equalToJson(
+                expectedRequestBody.toString()
+            ))
+            .willReturn(WireMock.aResponse()
+                .withHeader("Content-Type", APPLICATION_JSON)
+                .withBody(result)));
+
+        BoxAIResponse response = BoxAI.extractMetadataFreeform(
+            api,
+            prompt,
+            Collections.singletonList(new BoxAIItem(fileId, BoxAIItem.Type.FILE)),
+            agent
+        );
+
+        assertThat(response.getAnswer(), equalTo("Public APIs are important because of key and important reasons."));
+        assertThat(response.getCreatedAt(), equalTo(new Date(1355338423123L)));
+        assertThat(response.getCompletionReason(), equalTo("done"));
+    }
+
+    @Test
+    public void testExtractMetadataStructuredSuccess() {
+        String agentString = TestUtils.getFixture("BoxAI/GetAIAgentDefaultConfigExtractStructured200");
+        final String fileId = "12345";
+        final BoxAIExtractMetadataTemplate template = new BoxAIExtractMetadataTemplate("templateId", "enterprise");
+        final List<BoxAIItem> items = Collections.singletonList(new BoxAIItem(fileId, BoxAIItem.Type.FILE));
+        final String result = TestUtils.getFixture("BoxAI/ExtractMetadataStructured200");
+        final BoxAIAgentExtractStructured agent = new BoxAIAgentExtractStructured(Json.parse(agentString).asObject());
+        final BoxAIExtractField field = new BoxAIExtractField(
+                "text",
+                "The name of the file",
+                "Name",
+                "name",
+                new ArrayList<String>() {{
+                    add("option 1");
+                    add("option 2");
+                }},
+                "What is the name of the file?");
+
+        final JsonObject expectedRequestBody = new JsonObject()
+            .add("items", new JsonArray().add(new JsonObject()
+                .add("type", "file")
+                .add("id", fileId)))
+            .add("metadata_template", new JsonObject()
+                .add("type", "metadata_template")
+                .add("template_key", template.getTemplateKey())
+                .add("scope", template.getScope()))
+            .add("ai_agent", agent.getJSONObject())
+            .add("fields", new JsonArray().add(field.getJSONObject()));
+
+        wireMockRule.stubFor(WireMock.post(WireMock.urlPathEqualTo("/2.0/ai/extract_structured"))
+            .withRequestBody(WireMock.equalToJson(
+                expectedRequestBody.toString()
+            ))
+            .willReturn(WireMock.aResponse()
+                .withHeader("Content-Type", APPLICATION_JSON)
+                .withBody(result)));
+
+        JsonObject response = BoxAI.extractMetadataStructured(
+            api,
+            items,
+            template,
+            Collections.singletonList(field),
+            agent
+        );
+
+        assertThat(response, equalTo(Json.parse(result).asObject()));
+        assertThat(response.get("firstName").asString(), equalTo("John"));
     }
 }

@@ -17,12 +17,12 @@ public class BoxAIAgentLLMEndpointParamsOpenAI extends BoxAIAgentLLMEndpointPara
      * Number between -2.0 and 2.0. Positive values penalize new tokens based on their existing frequency in the text
      * so far, decreasing the model's likelihood to repeat the same line verbatim.
      */
-    private double frequencyPenalty;
+    private Double frequencyPenalty;
     /**
      * Number between -2.0 and 2.0. Positive values penalize new tokens based on whether they appear in the text so far,
      * increasing the model's likelihood to talk about new topics.
      */
-    private double presencePenalty;
+    private Double presencePenalty;
     /**
      * Up to 4 sequences where the API will stop generating further tokens.
      */
@@ -32,13 +32,13 @@ public class BoxAIAgentLLMEndpointParamsOpenAI extends BoxAIAgentLLMEndpointPara
      * while lower values like 0.2 will make it more focused and deterministic.
      * We generally recommend altering this or top_p but not both.
      */
-    private double temperature;
+    private Double temperature;
     /**
      * An alternative to sampling with temperature, called nucleus sampling, where the model considers the results of
      * the tokens with top_p probability mass. So 0.1 means only the tokens comprising the top 10% probability mass
      * are considered. We generally recommend altering this or temperature but not both.
      */
-    private double topP;
+    private Double topP;
 
     /**
      * Constructs an AI agent with default settings.
@@ -54,11 +54,11 @@ public class BoxAIAgentLLMEndpointParamsOpenAI extends BoxAIAgentLLMEndpointPara
      *             the tokens with top_p probability mass. So 0.1 means only the tokens comprising the top 10% probability mass
      *             are considered. We generally recommend altering this or temperature but not both.
      */
-    public BoxAIAgentLLMEndpointParamsOpenAI(double frequencyPenalty,
-                                             double presencePenalty,
+    public BoxAIAgentLLMEndpointParamsOpenAI(Double frequencyPenalty,
+                                             Double presencePenalty,
                                              String stop,
-                                             double temperature,
-                                             double topP) {
+                                             Double temperature,
+                                             Double topP) {
         super(TYPE);
         this.frequencyPenalty = frequencyPenalty;
         this.presencePenalty = presencePenalty;
@@ -79,7 +79,7 @@ public class BoxAIAgentLLMEndpointParamsOpenAI extends BoxAIAgentLLMEndpointPara
      * Gets the frequency penalty.
      * @return The frequency penalty.
      */
-    public double getFrequencyPenalty() {
+    public Double getFrequencyPenalty() {
         return frequencyPenalty;
     }
 
@@ -87,7 +87,7 @@ public class BoxAIAgentLLMEndpointParamsOpenAI extends BoxAIAgentLLMEndpointPara
      * Sets the frequency penalty.
      * @param frequencyPenalty The frequency penalty.
      */
-    public void setFrequencyPenalty(double frequencyPenalty) {
+    public void setFrequencyPenalty(Double frequencyPenalty) {
         this.frequencyPenalty = frequencyPenalty;
     }
 
@@ -95,7 +95,7 @@ public class BoxAIAgentLLMEndpointParamsOpenAI extends BoxAIAgentLLMEndpointPara
      * Gets the presence penalty.
      * @return The presence penalty.
      */
-    public double getPresencePenalty() {
+    public Double getPresencePenalty() {
         return presencePenalty;
     }
 
@@ -103,7 +103,7 @@ public class BoxAIAgentLLMEndpointParamsOpenAI extends BoxAIAgentLLMEndpointPara
      * Sets the presence penalty.
      * @param presencePenalty The presence penalty.
      */
-    public void setPresencePenalty(double presencePenalty) {
+    public void setPresencePenalty(Double presencePenalty) {
         this.presencePenalty = presencePenalty;
     }
 
@@ -127,7 +127,7 @@ public class BoxAIAgentLLMEndpointParamsOpenAI extends BoxAIAgentLLMEndpointPara
      * Gets the temperature.
      * @return The temperature.
      */
-    public double getTemperature() {
+    public Double getTemperature() {
         return temperature;
     }
 
@@ -135,7 +135,7 @@ public class BoxAIAgentLLMEndpointParamsOpenAI extends BoxAIAgentLLMEndpointPara
      * Sets the temperature.
      * @param temperature The temperature.
      */
-    public void setTemperature(double temperature) {
+    public void setTemperature(Double temperature) {
         this.temperature = temperature;
     }
 
@@ -143,7 +143,7 @@ public class BoxAIAgentLLMEndpointParamsOpenAI extends BoxAIAgentLLMEndpointPara
      * Gets the top-P.
      * @return The top-P.
      */
-    public double getTopP() {
+    public Double getTopP() {
         return topP;
     }
 
@@ -151,7 +151,7 @@ public class BoxAIAgentLLMEndpointParamsOpenAI extends BoxAIAgentLLMEndpointPara
      * Sets the top-P.
      * @param topP The top-P.
      */
-    public void setTopP(double topP) {
+    public void setTopP(Double topP) {
         this.topP = topP;
     }
 
