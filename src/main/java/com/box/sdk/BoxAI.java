@@ -22,6 +22,14 @@ public final class BoxAI {
      * AI agent default config url.
      */
     public static final URLTemplate AI_AGENT_DEFAULT_CONFIG_URL = new URLTemplate("ai_agent_default");
+    /**
+     * AI extract metadata freeform url.
+     */
+    public static final URLTemplate EXTRACT_METADATA_FREEFORM_URL = new URLTemplate("ai/extract");
+    /**
+     * AI extract metadata structured url.
+     */
+    public static final URLTemplate EXTRACT_METADATA_STRUCTURED_URL = new URLTemplate("ai/extract_structured");
 
     private BoxAI() {
     }
@@ -237,6 +245,79 @@ public final class BoxAI {
 
         public String toString() {
             return this.mode;
+        }
+    }
+
+    /**
+     * Sends an AI request to supported Large Language Models (LLMs) and extracts metadata in form of key-value pairs.
+     * Freeform metadata extraction does not require any metadata template setup before sending the request.
+     *
+     * @param api    the API connection to be used by the created user.
+     * @param prompt The prompt provided by the client to be answered by the LLM.
+     * @param items  The items to be processed by the LLM, currently only files are supported.
+     * @param agent  The AI agent configuration to be used for the request.
+     * @return The response from the AI.
+     */
+    public static BoxAIResponse extractMetadataFreeform(BoxAPIConnection api,
+                                                        String prompt,
+                                                        List<BoxAIItem> items,
+                                                        BoxAIAgentExtract agent) {
+        URL url = EXTRACT_METADATA_FREEFORM_URL.build(api.getBaseURL());
+
+        JsonObject requestJSON = new JsonObject();
+        JsonArray itemsJSON = new JsonArray();
+        for (BoxAIItem item : items) {
+            itemsJSON.add(item.getJSONObject());
+        }
+        requestJSON.add("items", itemsJSON);
+        requestJSON.add("prompt", prompt);
+        if (agent != null) {
+            requestJSON.add("ai_agent", agent.getJSONObject());
+        }
+
+        BoxJSONRequest req = new BoxJSONRequest(api, url, HttpMethod.POST);
+        req.setBody(requestJSON.toString());
+
+        try (BoxJSONResponse response = req.send()) {
+            JsonObject responseJSON = Json.parse(response.getJSON()).asObject();
+            return new BoxAIResponse(responseJSON);
+        }
+    }
+
+    public static JsonObject extractMetadataStructured(BoxAPIConnection api, List<BoxAIItem> items,
+                                                       BoxAIExtractMetadataTemplate template,
+                                                       List<BoxAIExtractField> fields,
+                                                       BoxAIAgentExtractStructured agent) {
+        URL url = EXTRACT_METADATA_STRUCTURED_URL.build(api.getBaseURL());
+
+        JsonObject requestJSON = new JsonObject();
+        JsonArray itemsJSON = new JsonArray();
+        for (BoxAIItem item : items) {
+            itemsJSON.add(item.getJSONObject());
+        }
+        requestJSON.add("items", itemsJSON);
+
+        if (template != null) {
+            requestJSON.add("metadata_template", template.getJSONObject());
+        }
+
+        if (fields != null) {
+            JsonArray fieldsJSON = new JsonArray();
+            for (BoxAIExtractField field : fields) {
+                fieldsJSON.add(field.getJSONObject());
+            }
+            requestJSON.add("fields", fieldsJSON);
+        }
+
+        if (agent != null) {
+            requestJSON.add("ai_agent", agent.getJSONObject());
+        }
+
+        BoxJSONRequest req = new BoxJSONRequest(api, url, HttpMethod.POST);
+        req.setBody(requestJSON.toString());
+
+        try (BoxJSONResponse response = req.send()) {
+            return Json.parse(response.getJSON()).asObject();
         }
     }
 }

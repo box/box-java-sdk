@@ -11,6 +11,8 @@ import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
 
+import com.eclipsesource.json.Json;
+import com.eclipsesource.json.JsonObject;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -49,10 +51,10 @@ public class BoxAIIT {
             // and 412 is returned
             retry(() -> {
                 BoxAIResponse response = BoxAI.sendAIRequest(
-                        api,
-                        "What is the name of the file?",
-                        Collections.singletonList(new BoxAIItem(uploadedFileInfo.getID(), BoxAIItem.Type.FILE)),
-                        BoxAI.Mode.SINGLE_ITEM_QA
+                    api,
+                    "What is the name of the file?",
+                    Collections.singletonList(new BoxAIItem(uploadedFileInfo.getID(), BoxAIItem.Type.FILE)),
+                    BoxAI.Mode.SINGLE_ITEM_QA
                 );
                 assertThat(response.getAnswer(), containsString("Test file"));
                 assert response.getCreatedAt().before(new Date(System.currentTimeMillis()));
@@ -86,10 +88,10 @@ public class BoxAIIT {
                 // and 412 is returned
                 retry(() -> {
                     BoxAIResponse response = BoxAI.sendAIRequest(
-                            api,
-                            "What is the content of these files?",
-                            items,
-                            BoxAI.Mode.MULTIPLE_ITEM_QA
+                        api,
+                        "What is the content of these files?",
+                        items,
+                        BoxAI.Mode.MULTIPLE_ITEM_QA
                     );
                     assertThat(response.getAnswer(), containsString("Test file"));
                     assert response.getCreatedAt().before(new Date(System.currentTimeMillis()));
@@ -111,7 +113,7 @@ public class BoxAIIT {
         Date date1 = BoxDateFormat.parse("2013-05-16T15:27:57-07:00");
         Date date2 = BoxDateFormat.parse("2013-05-16T15:26:57-07:00");
 
-        BoxFile uploadedFile =  uploadFileToUniqueFolder(api, fileName, "Test file");
+        BoxFile uploadedFile = uploadFileToUniqueFolder(api, fileName, "Test file");
         try {
             // When a file has been just uploaded, AI service may not be ready to return text response
             // and 412 is returned
@@ -121,16 +123,16 @@ public class BoxAIIT {
 
                 List<BoxAIDialogueEntry> dialogueHistory = new ArrayList<>();
                 dialogueHistory.add(
-                        new BoxAIDialogueEntry("What is the name of the file?", "Test file", date1)
+                    new BoxAIDialogueEntry("What is the name of the file?", "Test file", date1)
                 );
                 dialogueHistory.add(
-                        new BoxAIDialogueEntry("What is the size of the file?", "10kb", date2)
+                    new BoxAIDialogueEntry("What is the size of the file?", "10kb", date2)
                 );
                 BoxAIResponse response = BoxAI.sendAITextGenRequest(
-                        api,
-                        "What is the name of the file?",
-                        Collections.singletonList(new BoxAIItem(uploadedFileInfo.getID(), BoxAIItem.Type.FILE)),
-                        dialogueHistory
+                    api,
+                    "What is the name of the file?",
+                    Collections.singletonList(new BoxAIItem(uploadedFileInfo.getID(), BoxAIItem.Type.FILE)),
+                    dialogueHistory
                 );
                 assertThat(response.getAnswer(), containsString("name"));
                 assert response.getCreatedAt().before(new Date(System.currentTimeMillis()));
@@ -190,6 +192,145 @@ public class BoxAIIT {
 
         } finally {
             deleteFile(uploadedFile);
+        }
+    }
+
+    @Test
+    public void aiExtract() throws InterruptedException {
+        BoxAPIConnection api = jwtApiForServiceAccount();
+        BoxAIAgent agent = BoxAI.getAiAgentDefaultConfig(api, BoxAIAgent.Mode.EXTRACT, "en-US", null);
+        BoxAIAgentExtract agentExtract = (BoxAIAgentExtract) agent;
+
+        BoxFile uploadedFile = uploadFileToUniqueFolder(api, "[aiExtract] Test File.txt",
+            "My name is John Doe. I live in San Francisco. I was born in 1990. I work at Box.");
+
+        try {
+            // When a file has been just uploaded, AI service may not be ready to return text response
+            // and 412 is returned
+            retry(() -> {
+                BoxAIResponse response = BoxAI.extractMetadataFreeform(api,
+                    "firstName, lastName, location, yearOfBirth, company",
+                    Collections.singletonList(new BoxAIItem(uploadedFile.getID(), BoxAIItem.Type.FILE)),
+                    agentExtract);
+                assertThat(response.getAnswer(), containsString("John"));
+                assertThat(response.getCompletionReason(), equalTo("done"));
+            }, 2, 2000);
+        } finally {
+            deleteFile(uploadedFile);
+        }
+    }
+
+    @Test
+    public void aiExtractStructuredWithFields() throws InterruptedException {
+        BoxAPIConnection api = jwtApiForServiceAccount();
+        BoxAIAgent agent = BoxAI.getAiAgentDefaultConfig(api, BoxAIAgent.Mode.EXTRACT_STRUCTURED, "en-US", null);
+        BoxAIAgentExtractStructured agentExtractStructured = (BoxAIAgentExtractStructured) agent;
+
+        BoxFile uploadedFile = uploadFileToUniqueFolder(api, "[aiExtractStructuredWithFields] Test File.txt",
+            "My name is John Doe. I was born in 4th July 1990. I am 34 years old. My hobby is guitar and books.");
+
+        try {
+            // When a file has been just uploaded, AI service may not be ready to return text response
+            // and 412 is returned
+            retry(() -> {
+                JsonObject response = BoxAI.extractMetadataStructured(api,
+                    Collections.singletonList(new BoxAIItem(uploadedFile.getID(), BoxAIItem.Type.FILE)),
+                    null,
+                    new ArrayList<BoxAIExtractField>() {{
+                            add(new BoxAIExtractField("string",
+                                "Person first name",
+                                "First name",
+                                "firstName",
+                                null,
+                                "What is the your first name?"));
+                            add(new BoxAIExtractField("string",
+                                "Person last name", "Last name", "lastName", null, "What is the your last name?"));
+                            add(new BoxAIExtractField("date",
+                                "Person date of birth",
+                                "Birth date",
+                                "dateOfBirth",
+                                null,
+                                "What is the date of your birth?"));
+                            add(new BoxAIExtractField("float",
+                                "Person age",
+                                "Age",
+                                "age",
+                                null,
+                                "How old are you?"));
+                            add(new BoxAIExtractField("multiSelect",
+                                "Person hobby",
+                                "Hobby",
+                                "hobby",
+                                new ArrayList<String>() {{
+                                        add("guitar");
+                                        add("books");
+                                    }},
+                                "What is your hobby?"));
+                        }},
+                    agentExtractStructured);
+                assertThat(response.get("firstName").asString(), is(equalTo("John")));
+                assertThat(response.get("lastName").asString(), is(equalTo("Doe")));
+                assertThat(response.get("dateOfBirth").asString(), is(equalTo("1990-07-04")));
+                assertThat(response.get("age").asInt(), is(equalTo(34)));
+                assertThat(response.get("hobby").asArray().get(0).asString(), is(equalTo("guitar")));
+                assertThat(response.get("hobby").asArray().get(1).asString(), is(equalTo("books")));
+            }, 2, 2000);
+        } finally {
+            deleteFile(uploadedFile);
+        }
+    }
+
+    @Test
+    public void aiExtractStructuredWithMetadataTemplate() throws InterruptedException {
+        BoxAPIConnection api = jwtApiForServiceAccount();
+        BoxAIAgent agent = BoxAI.getAiAgentDefaultConfig(api, BoxAIAgent.Mode.EXTRACT_STRUCTURED, "en-US", null);
+        BoxAIAgentExtractStructured agentExtractStructured = (BoxAIAgentExtractStructured) agent;
+
+        BoxFile uploadedFile = uploadFileToUniqueFolder(api, "[aiExtractStructuredWithMetadataTemplate] Test File.txt",
+            "My name is John Doe. I was born in 4th July 1990. I am 34 years old. My hobby is guitar and books.");
+        String templateKey = "key" + java.util.UUID.randomUUID().toString();
+        MetadataTemplate template = MetadataTemplate.createMetadataTemplate(api,
+            "enterprise",
+            templateKey,
+            templateKey,
+            false,
+            new ArrayList<MetadataTemplate.Field>() {{
+                    add(new MetadataTemplate.Field(Json.parse(
+                        "{\"key\":\"firstName\",\"displayName\":\"First name\","
+                            + "\"description\":\"Person first name\",\"type\":\"string\"}").asObject()));
+                    add(new MetadataTemplate.Field(Json.parse(
+                        "{\"key\":\"lastName\",\"displayName\":\"Last name\","
+                            + "\"description\":\"Person last name\",\"type\":\"string\"}").asObject()));
+                    add(new MetadataTemplate.Field(Json.parse(
+                        "{\"key\":\"dateOfBirth\",\"displayName\":\"Birth date\","
+                            + "\"description\":\"Person date of birth\",\"type\":\"date\"}").asObject()));
+                    add(new MetadataTemplate.Field(Json.parse(
+                        "{\"key\":\"age\",\"displayName\":\"Age\","
+                            + "\"description\":\"Person age\",\"type\":\"float\"}").asObject()));
+                    add(new MetadataTemplate.Field(Json.parse(
+                        "{\"key\":\"hobby\",\"displayName\":\"Hobby\","
+                            + "\"description\":\"Person hobby\",\"type\":\"multiSelect\"}").asObject()));
+                }});
+
+        try {
+            // When a file has been just uploaded, AI service may not be ready to return text response
+            // and 412 is returned
+            retry(() -> {
+                JsonObject response = BoxAI.extractMetadataStructured(api,
+                    Collections.singletonList(new BoxAIItem(uploadedFile.getID(), BoxAIItem.Type.FILE)),
+                    new BoxAIExtractMetadataTemplate(templateKey, "enterprise"),
+                    null,
+                    agentExtractStructured);
+                assertThat(response.get("firstName").asString(), is(equalTo("John")));
+                assertThat(response.get("lastName").asString(), is(equalTo("Doe")));
+                assertThat(response.get("dateOfBirth").asString(), is(equalTo("1990-07-04")));
+                assertThat(response.get("age").asInt(), is(equalTo(34)));
+                assertThat(response.get("hobby").asArray().get(0).asString(), is(equalTo("guitar")));
+                assertThat(response.get("hobby").asArray().get(1).asString(), is(equalTo("books")));
+            }, 2, 2000);
+        } finally {
+            deleteFile(uploadedFile);
+            MetadataTemplate.deleteMetadataTemplate(api, template.getScope(), template.getTemplateKey());
         }
     }
 }

@@ -17,20 +17,20 @@ public class BoxAIAgentLLMEndpointParamsGoogle extends BoxAIAgentLLMEndpointPara
      * The temperature is used for sampling during response generation, which occurs when top-P and top-K are applied.
      * Temperature controls the degree of randomness in token selection.
      */
-    private double temperature;
+    private Double temperature;
     /**
      * Top-K changes how the model selects tokens for output.
      * A top-K of 1 means the next selected token is the most probable among all tokens in the model's vocabulary
      * (also called greedy decoding), while a top-K of 3 means that the next token is selected from among the three
      * most probable tokens by using temperature.
      */
-    private int topK;
+    private Integer topK;
     /**
      * Top-P changes how the model selects tokens for output.
      * Tokens are selected from the most (see top-K) to least probable until the sum of their probabilities equals the
      * top-P value.
      */
-    private double topP;
+    private Double topP;
 
     /**
      * Constructs an AI agent with default settings.
@@ -44,7 +44,7 @@ public class BoxAIAgentLLMEndpointParamsGoogle extends BoxAIAgentLLMEndpointPara
      *             Tokens are selected from the most (see top-K) to least probable until the sum of their probabilities equals the
      *             top-P value.
      */
-    public BoxAIAgentLLMEndpointParamsGoogle(double temperature, int topK, double topP) {
+    public BoxAIAgentLLMEndpointParamsGoogle(Double temperature, Integer topK, Double topP) {
         super(TYPE);
         this.temperature = temperature;
         this.topK = topK;
@@ -63,7 +63,7 @@ public class BoxAIAgentLLMEndpointParamsGoogle extends BoxAIAgentLLMEndpointPara
      * Gets the temperature used for sampling during response generation, which occurs when top-P and top-K are applied.
      * @return The temperature used for sampling during response generation, which occurs when top-P and top-K are applied.
      */
-    public double getTemperature() {
+    public Double getTemperature() {
         return temperature;
     }
 
@@ -71,7 +71,7 @@ public class BoxAIAgentLLMEndpointParamsGoogle extends BoxAIAgentLLMEndpointPara
      * Sets the temperature used for sampling during response generation, which occurs when top-P and top-K are applied.
      * @param temperature The temperature used for sampling during response generation, which occurs when top-P and top-K are applied.
      */
-    public void setTemperature(double temperature) {
+    public void setTemperature(Double temperature) {
         this.temperature = temperature;
     }
 
@@ -79,7 +79,7 @@ public class BoxAIAgentLLMEndpointParamsGoogle extends BoxAIAgentLLMEndpointPara
      * Gets the top-K value.
      * @return The top-K value.
      */
-    public int getTopK() {
+    public Integer getTopK() {
         return topK;
     }
 
@@ -87,7 +87,7 @@ public class BoxAIAgentLLMEndpointParamsGoogle extends BoxAIAgentLLMEndpointPara
      * Sets the top-K value.
      * @param topK The top-K value.
      */
-    public void setTopK(int topK) {
+    public void setTopK(Integer topK) {
         this.topK = topK;
     }
 
@@ -95,7 +95,7 @@ public class BoxAIAgentLLMEndpointParamsGoogle extends BoxAIAgentLLMEndpointPara
      * Gets the top-P value.
      * @return The top-P value.
      */
-    public double getTopP() {
+    public Double getTopP() {
         return topP;
     }
 
@@ -103,7 +103,7 @@ public class BoxAIAgentLLMEndpointParamsGoogle extends BoxAIAgentLLMEndpointPara
      * Sets the top-P value.
      * @param topP The top-P value.
      */
-    public void setTopP(double topP) {
+    public void setTopP(Double topP) {
         this.topP = topP;
     }
 
