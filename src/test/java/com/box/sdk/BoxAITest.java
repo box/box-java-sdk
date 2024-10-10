@@ -327,9 +327,9 @@ public class BoxAITest {
                 "The name of the file",
                 "Name",
                 "name",
-                new ArrayList<String>() {{
-                    add("option 1");
-                    add("option 2");
+                new ArrayList<BoxAIExtractFieldOption>() {{
+                    add(new BoxAIExtractFieldOption("option 1"));
+                    add(new BoxAIExtractFieldOption("option 2"));
                 }},
                 "What is the name of the file?");
 
@@ -352,7 +352,7 @@ public class BoxAITest {
                 .withHeader("Content-Type", APPLICATION_JSON)
                 .withBody(result)));
 
-        JsonObject response = BoxAI.extractMetadataStructured(
+        BoxAIExtractStructuredResponse response = BoxAI.extractMetadataStructured(
             api,
             items,
             template,
@@ -361,6 +361,6 @@ public class BoxAITest {
         );
 
         assertThat(response, equalTo(Json.parse(result).asObject()));
-        assertThat(response.get("firstName").asString(), equalTo("John"));
+        assertThat(response.getSourceJson().get("firstName").asString(), equalTo("John"));
     }
 }

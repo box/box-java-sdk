@@ -233,7 +233,7 @@ public class BoxAIIT {
             // When a file has been just uploaded, AI service may not be ready to return text response
             // and 412 is returned
             retry(() -> {
-                JsonObject response = BoxAI.extractMetadataStructured(api,
+                BoxAIExtractStructuredResponse response = BoxAI.extractMetadataStructured(api,
                     Collections.singletonList(new BoxAIItem(uploadedFile.getID(), BoxAIItem.Type.FILE)),
                     null,
                     new ArrayList<BoxAIExtractField>() {{
@@ -261,19 +261,20 @@ public class BoxAIIT {
                                 "Person hobby",
                                 "Hobby",
                                 "hobby",
-                                new ArrayList<String>() {{
-                                        add("guitar");
-                                        add("books");
+                                new ArrayList<BoxAIExtractFieldOption>() {{
+                                        add(new BoxAIExtractFieldOption("guitar"));
+                                        add(new BoxAIExtractFieldOption("books"));
                                     }},
                                 "What is your hobby?"));
                         }},
                     agentExtractStructured);
-                assertThat(response.get("firstName").asString(), is(equalTo("John")));
-                assertThat(response.get("lastName").asString(), is(equalTo("Doe")));
-                assertThat(response.get("dateOfBirth").asString(), is(equalTo("1990-07-04")));
-                assertThat(response.get("age").asInt(), is(equalTo(34)));
-                assertThat(response.get("hobby").asArray().get(0).asString(), is(equalTo("guitar")));
-                assertThat(response.get("hobby").asArray().get(1).asString(), is(equalTo("books")));
+                JsonObject sourceJson = response.getSourceJson();
+                assertThat(sourceJson.get("firstName").asString(), is(equalTo("John")));
+                assertThat(sourceJson.get("lastName").asString(), is(equalTo("Doe")));
+                assertThat(sourceJson.get("dateOfBirth").asString(), is(equalTo("1990-07-04")));
+                assertThat(sourceJson.get("age").asInt(), is(equalTo(34)));
+                assertThat(sourceJson.get("hobby").asArray().get(0).asString(), is(equalTo("guitar")));
+                assertThat(sourceJson.get("hobby").asArray().get(1).asString(), is(equalTo("books")));
             }, 2, 2000);
         } finally {
             deleteFile(uploadedFile);
@@ -316,17 +317,18 @@ public class BoxAIIT {
             // When a file has been just uploaded, AI service may not be ready to return text response
             // and 412 is returned
             retry(() -> {
-                JsonObject response = BoxAI.extractMetadataStructured(api,
+                BoxAIExtractStructuredResponse response = BoxAI.extractMetadataStructured(api,
                     Collections.singletonList(new BoxAIItem(uploadedFile.getID(), BoxAIItem.Type.FILE)),
                     new BoxAIExtractMetadataTemplate(templateKey, "enterprise"),
                     null,
                     agentExtractStructured);
-                assertThat(response.get("firstName").asString(), is(equalTo("John")));
-                assertThat(response.get("lastName").asString(), is(equalTo("Doe")));
-                assertThat(response.get("dateOfBirth").asString(), is(equalTo("1990-07-04")));
-                assertThat(response.get("age").asInt(), is(equalTo(34)));
-                assertThat(response.get("hobby").asArray().get(0).asString(), is(equalTo("guitar")));
-                assertThat(response.get("hobby").asArray().get(1).asString(), is(equalTo("books")));
+                JsonObject sourceJson = response.getSourceJson();
+                assertThat(sourceJson.get("firstName").asString(), is(equalTo("John")));
+                assertThat(sourceJson.get("lastName").asString(), is(equalTo("Doe")));
+                assertThat(sourceJson.get("dateOfBirth").asString(), is(equalTo("1990-07-04")));
+                assertThat(sourceJson.get("age").asInt(), is(equalTo(34)));
+                assertThat(sourceJson.get("hobby").asArray().get(0).asString(), is(equalTo("guitar")));
+                assertThat(sourceJson.get("hobby").asArray().get(1).asString(), is(equalTo("books")));
             }, 2, 2000);
         } finally {
             deleteFile(uploadedFile);

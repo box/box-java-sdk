@@ -284,7 +284,7 @@ public final class BoxAI {
         }
     }
 
-    public static JsonObject extractMetadataStructured(BoxAPIConnection api, List<BoxAIItem> items,
+    public static BoxAIExtractStructuredResponse extractMetadataStructured(BoxAPIConnection api, List<BoxAIItem> items,
                                                        BoxAIExtractMetadataTemplate template,
                                                        List<BoxAIExtractField> fields,
                                                        BoxAIAgentExtractStructured agent) {
@@ -317,7 +317,7 @@ public final class BoxAI {
         req.setBody(requestJSON.toString());
 
         try (BoxJSONResponse response = req.send()) {
-            return Json.parse(response.getJSON()).asObject();
+            return new BoxAIExtractStructuredResponse(response.getJSON());
         }
     }
 }

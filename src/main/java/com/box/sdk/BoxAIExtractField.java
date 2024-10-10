@@ -26,7 +26,7 @@ public class BoxAIExtractField extends BoxJSONObject {
      * A list of options for this field.
      * This is most often used in combination with the enum and multiSelect field types.
      */
-    private List<String> options;
+    private List<BoxAIExtractFieldOption> options;
     /**
      * The prompt of the field.
      */
@@ -45,7 +45,7 @@ public class BoxAIExtractField extends BoxJSONObject {
     public BoxAIExtractField(String type,
                              String description,
                              String displayName,
-                             String key, List<String> options,
+                             String key, List<BoxAIExtractFieldOption> options,
                              String prompt) {
         this.type = type;
         this.description = description;
@@ -63,8 +63,8 @@ public class BoxAIExtractField extends BoxJSONObject {
         JsonUtils.addIfNotNull(jsonObject, "key", this.key);
         if (this.options != null) {
             JsonArray options = new JsonArray();
-            for (String option : this.options) {
-                options.add(new JsonObject().add("key", option));
+            for (BoxAIExtractFieldOption option : this.options) {
+                options.add(option.getJSONObject());
             }
             jsonObject.add("options", options);
         }
