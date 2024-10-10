@@ -8,7 +8,7 @@ public class BoxAIExtractFieldOption extends BoxJSONObject {
     /**
      * A unique identifier for the option.
      */
-    final String key;
+    private final String key;
 
     /**
      * Constructs a BoxAIExtractFieldOption object with a given key.
