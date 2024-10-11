@@ -315,23 +315,13 @@ public class BoxAITest {
     }
 
     @Test
-    public void testExtractMetadataStructuredSuccess() {
+    public void testExtractMetadataStructuredWithTemplateSuccess() {
         String agentString = TestUtils.getFixture("BoxAI/GetAIAgentDefaultConfigExtractStructured200");
         final String fileId = "12345";
         final BoxAIExtractMetadataTemplate template = new BoxAIExtractMetadataTemplate("templateId", "enterprise");
         final List<BoxAIItem> items = Collections.singletonList(new BoxAIItem(fileId, BoxAIItem.Type.FILE));
         final String result = TestUtils.getFixture("BoxAI/ExtractMetadataStructured200");
         final BoxAIAgentExtractStructured agent = new BoxAIAgentExtractStructured(Json.parse(agentString).asObject());
-        final BoxAIExtractField field = new BoxAIExtractField(
-                "text",
-                "The name of the file",
-                "Name",
-                "name",
-                new ArrayList<BoxAIExtractFieldOption>() {{
-                    add(new BoxAIExtractFieldOption("option 1"));
-                    add(new BoxAIExtractFieldOption("option 2"));
-                }},
-                "What is the name of the file?");
 
         final JsonObject expectedRequestBody = new JsonObject()
             .add("items", new JsonArray().add(new JsonObject()
@@ -341,6 +331,49 @@ public class BoxAITest {
                 .add("type", "metadata_template")
                 .add("template_key", template.getTemplateKey())
                 .add("scope", template.getScope()))
+            .add("ai_agent", agent.getJSONObject());
+
+        wireMockRule.stubFor(WireMock.post(WireMock.urlPathEqualTo("/2.0/ai/extract_structured"))
+            .withRequestBody(WireMock.equalToJson(
+                expectedRequestBody.toString()
+            ))
+            .willReturn(WireMock.aResponse()
+                .withHeader("Content-Type", APPLICATION_JSON)
+                .withBody(result)));
+
+        BoxAIExtractStructuredResponse response = BoxAI.extractMetadataStructured(
+            api,
+            items,
+            template,
+            agent
+        );
+
+        assertThat(response.getSourceJson(), equalTo(Json.parse(result).asObject()));
+        assertThat(response.getSourceJson().get("firstName").asString(), equalTo("John"));
+    }
+
+    @Test
+    public void testExtractMetadataStructuredWithFieldSuccess() {
+        String agentString = TestUtils.getFixture("BoxAI/GetAIAgentDefaultConfigExtractStructured200");
+        final String fileId = "12345";
+        final List<BoxAIItem> items = Collections.singletonList(new BoxAIItem(fileId, BoxAIItem.Type.FILE));
+        final String result = TestUtils.getFixture("BoxAI/ExtractMetadataStructured200");
+        final BoxAIAgentExtractStructured agent = new BoxAIAgentExtractStructured(Json.parse(agentString).asObject());
+        final BoxAIExtractField field = new BoxAIExtractField(
+            "text",
+            "The name of the file",
+            "Name",
+            "name",
+            new ArrayList<BoxAIExtractFieldOption>() {{
+                add(new BoxAIExtractFieldOption("option 1"));
+                add(new BoxAIExtractFieldOption("option 2"));
+            }},
+            "What is the name of the file?");
+
+        final JsonObject expectedRequestBody = new JsonObject()
+            .add("items", new JsonArray().add(new JsonObject()
+                .add("type", "file")
+                .add("id", fileId)))
             .add("ai_agent", agent.getJSONObject())
             .add("fields", new JsonArray().add(field.getJSONObject()));
 
@@ -355,7 +388,6 @@ public class BoxAITest {
         BoxAIExtractStructuredResponse response = BoxAI.extractMetadataStructured(
             api,
             items,
-            template,
             Collections.singletonList(field),
             agent
         );

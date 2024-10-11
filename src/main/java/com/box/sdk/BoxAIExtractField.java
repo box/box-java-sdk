@@ -33,6 +33,13 @@ public class BoxAIExtractField extends BoxJSONObject {
     private String prompt;
 
     /**
+     * Constructs a BoxAIExtractField object with a given key.
+     */
+    public BoxAIExtractField(String key) {
+        this.key = key;
+    }
+
+    /**
      * Constructs a BoxAIExtractField object with a given type, description, display name, key, options, and prompt.
      *
      * @param type        the type of the field.

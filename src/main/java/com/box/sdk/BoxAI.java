@@ -255,6 +255,21 @@ public final class BoxAI {
      * @param api    the API connection to be used by the created user.
      * @param prompt The prompt provided by the client to be answered by the LLM.
      * @param items  The items to be processed by the LLM, currently only files are supported.
+     * @return The response from the AI.
+     */
+    public static BoxAIResponse extractMetadataFreeform(BoxAPIConnection api,
+                                                        String prompt,
+                                                        List<BoxAIItem> items) {
+        return extractMetadataFreeform(api, prompt, items, null);
+    }
+
+    /**
+     * Sends an AI request to supported Large Language Models (LLMs) and extracts metadata in form of key-value pairs.
+     * Freeform metadata extraction does not require any metadata template setup before sending the request.
+     *
+     * @param api    the API connection to be used by the created user.
+     * @param prompt The prompt provided by the client to be answered by the LLM.
+     * @param items  The items to be processed by the LLM, currently only files are supported.
      * @param agent  The AI agent configuration to be used for the request.
      * @return The response from the AI.
      */
@@ -284,7 +299,83 @@ public final class BoxAI {
         }
     }
 
+    /**
+     * Sends an AI request to supported Large Language Models (LLMs) and returns extracted metadata as a set of
+     * key-value pairs. For this request, you need to use an already defined metadata template or a define a
+     * schema yourself.
+     *
+     * @param api     The API connection to be used by the created user.
+     * @param items  The items to be processed by the LLM, currently only files are supported.
+     * @param template The metadata template to be used for the request.
+     * @return The response from the AI.
+     */
     public static BoxAIExtractStructuredResponse extractMetadataStructured(BoxAPIConnection api, List<BoxAIItem> items,
+                                                       BoxAIExtractMetadataTemplate template) {
+        return extractMetadataStructured(api, items, template, null, null);
+    }
+
+    /**
+     * Sends an AI request to supported Large Language Models (LLMs) and returns extracted metadata as a set of
+     * key-value pairs. For this request, you need to use an already defined metadata template or a define a
+     * schema yourself.
+     *
+     * @param api     The API connection to be used by the created user.
+     * @param items  The items to be processed by the LLM, currently only files are supported.
+     * @param template The metadata template to be used for the request.
+     * @param agent The AI agent configuration to be used for the request.
+     * @return The response from the AI.
+     */
+    public static BoxAIExtractStructuredResponse extractMetadataStructured(BoxAPIConnection api, List<BoxAIItem> items,
+                                                       BoxAIExtractMetadataTemplate template,
+                                                       BoxAIAgentExtractStructured agent) {
+        return extractMetadataStructured(api, items, template, null, agent);
+    }
+
+    /**
+     * Sends an AI request to supported Large Language Models (LLMs) and returns extracted metadata as a set of
+     * key-value pairs. For this request, you need to use an already defined metadata template or a define a
+     * schema yourself.
+     *
+     * @param api     The API connection to be used by the created user.
+     * @param items  The items to be processed by the LLM, currently only files are supported.
+     * @param fields The fields to be extracted from the items.
+     * @return The response from the AI.
+     */
+    public static BoxAIExtractStructuredResponse extractMetadataStructured(BoxAPIConnection api, List<BoxAIItem> items,
+                                                       List<BoxAIExtractField> fields) {
+        return extractMetadataStructured(api, items, null, fields, null);
+    }
+
+    /**
+     * Sends an AI request to supported Large Language Models (LLMs) and returns extracted metadata as a set of
+     * key-value pairs. For this request, you need to use an already defined metadata template or a define a
+     * schema yourself.
+     *
+     * @param api     The API connection to be used by the created user.
+     * @param items  The items to be processed by the LLM, currently only files are supported.
+     * @param fields The fields to be extracted from the items.
+     * @param agent The AI agent configuration to be used for the request.
+     * @return The response from the AI.
+     */
+    public static BoxAIExtractStructuredResponse extractMetadataStructured(BoxAPIConnection api, List<BoxAIItem> items,
+                                                       List<BoxAIExtractField> fields,
+                                                       BoxAIAgentExtractStructured agent) {
+        return extractMetadataStructured(api, items, null, fields, agent);
+    }
+
+    /**
+     * Sends an AI request to supported Large Language Models (LLMs) and returns extracted metadata as a set of
+     * key-value pairs. For this request, you need to use an already defined metadata template or a define a
+     * schema yourself.
+     *
+     * @param api     The API connection to be used by the created user.
+     * @param items  The items to be processed by the LLM, currently only files are supported.
+     * @param template The metadata template to be used for the request.
+     * @param fields The fields to be extracted from the items.
+     * @param agent The AI agent configuration to be used for the request.
+     * @return The response from the AI.
+     */
+    private static BoxAIExtractStructuredResponse extractMetadataStructured(BoxAPIConnection api, List<BoxAIItem> items,
                                                        BoxAIExtractMetadataTemplate template,
                                                        List<BoxAIExtractField> fields,
                                                        BoxAIAgentExtractStructured agent) {

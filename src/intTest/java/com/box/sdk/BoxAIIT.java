@@ -235,16 +235,9 @@ public class BoxAIIT {
             retry(() -> {
                 BoxAIExtractStructuredResponse response = BoxAI.extractMetadataStructured(api,
                     Collections.singletonList(new BoxAIItem(uploadedFile.getID(), BoxAIItem.Type.FILE)),
-                    null,
                     new ArrayList<BoxAIExtractField>() {{
-                            add(new BoxAIExtractField("string",
-                                "Person first name",
-                                "First name",
-                                "firstName",
-                                null,
-                                "What is the your first name?"));
-                            add(new BoxAIExtractField("string",
-                                "Person last name", "Last name", "lastName", null, "What is the your last name?"));
+                            add(new BoxAIExtractField("firstName"));
+                            add(new BoxAIExtractField("lastName"));
                             add(new BoxAIExtractField("date",
                                 "Person date of birth",
                                 "Birth date",
@@ -320,7 +313,6 @@ public class BoxAIIT {
                 BoxAIExtractStructuredResponse response = BoxAI.extractMetadataStructured(api,
                     Collections.singletonList(new BoxAIItem(uploadedFile.getID(), BoxAIItem.Type.FILE)),
                     new BoxAIExtractMetadataTemplate(templateKey, "enterprise"),
-                    null,
                     agentExtractStructured);
                 JsonObject sourceJson = response.getSourceJson();
                 assertThat(sourceJson.get("firstName").asString(), is(equalTo("John")));
