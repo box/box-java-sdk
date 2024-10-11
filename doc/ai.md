@@ -128,7 +128,7 @@ BoxAIExtractStructuredResponse result = BoxAI.extractMetadataStructured(
 JsonObject sourceJson = result.getSourceJson();
 ```
 
-To send an AI request to extract metadata from files with a custom fields, call static
+To send an AI request to extract metadata from files with custom fields, call static
 [`extractMetadataStructured extractMetadataStructured(BoxAPIConnection api, List<BoxAIItem> items, List<BoxAIExtractField> fields)`][extract-metadata-structured-fields] method.
 
 <!-- sample post_ai_extract_structured_fields -->
