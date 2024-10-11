@@ -360,7 +360,7 @@ public class BoxAITest {
             agent
         );
 
-        assertThat(response, equalTo(Json.parse(result).asObject()));
+        assertThat(response.getSourceJson(), equalTo(Json.parse(result).asObject()));
         assertThat(response.getSourceJson().get("firstName").asString(), equalTo("John"));
     }
 }
