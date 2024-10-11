@@ -95,19 +95,16 @@ Extract metadata freeform
 --------------------------
 
 To send an AI request to supported Large Language Models (LLMs) and extract metadata in form of key-value pairs, call static
-[` extractMetadataFreeform(BoxAPIConnection api, String prompt, List<BoxAIItem> items, BoxAIAgentExtract agent)`][extract-metadata-freeform] method.
+[`extractMetadataFreeform(BoxAPIConnection api, String prompt, List<BoxAIItem> items, BoxAIAgentExtract agent)`][extract-metadata-freeform] method.
 In the request you have to provide a prompt, a list of items that your prompt refers to and an optional agent configuration.
 
 <!-- sample post_ai_extract -->
 ```java
-BoxAIAgent agent = BoxAI.getAiAgentDefaultConfig(api, BoxAIAgent.Mode.EXTRACT, "en-US", null);
-BoxAIAgentExtract agentExtract = (BoxAIAgentExtract) agent;
-
 BoxAIResponse response = BoxAI.extractMetadataFreeform(
     api,
-    "What is the content of the file?",
+    "firstName, lastName, location, yearOfBirth, company",
     Collections.singletonList(new BoxAIItem("123456", BoxAIItem.Type.FILE)),
-    agentExtract
+    agent
 );
 ```
 
@@ -122,16 +119,13 @@ To send an AI request to extract metadata from files, call static
 
 <!-- sample post_ai_extract_structured -->
 ```java
-BoxAIAgent agent = BoxAI.getAiAgentDefaultConfig(api, BoxAIAgent.Mode.EXTRACT_STRUCTURED, "en-US", null);
-BoxAIAgentExtractStructured agentExtractStructured = (BoxAIAgentExtractStructured) agent;
 BoxAIExtractMetadataTemplate template = new BoxAIExtractMetadataTemplate("templateKey", "enterprise");
-
 BoxAIExtractStructuredResponse result = BoxAI.extractMetadataStructured(
     api,
     Collections.singletonList(new BoxAIItem("123456", BoxAIItem.Type.FILE)),
     template,
     null,
-    agentExtractStructured
+    agent
 );
 JsonObject sourceJson = result.getSourceJson();
 ```
