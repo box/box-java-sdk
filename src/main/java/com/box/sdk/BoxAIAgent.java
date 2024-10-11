@@ -6,14 +6,14 @@ import com.eclipsesource.json.JsonValue;
 public abstract class BoxAIAgent extends BoxJSONObject {
     /**
      * The type of the AI agent.
-     * Value can be "ai_agent_ask" or "ai_agent_text_gen".
+     * Value can be "ai_agent_ask" or "ai_agent_text_gen", "ai_agent_extract", "ai_agent_extract_structured".
      */
     private String type;
 
     /**
      * Constructs an AI agent with default settings.
      * @param type The type of the AI agent.
-     *            Value can be "ai_agent_ask" or "ai_agent_text_gen".
+     *            Value can be "ai_agent_ask", "ai_agent_text_gen", "ai_agent_extract", "ai_agent_extract_structured".
      */
     public BoxAIAgent(String type) {
         super();
@@ -38,6 +38,10 @@ public abstract class BoxAIAgent extends BoxJSONObject {
             return new BoxAIAgentAsk(jsonObject);
         } else if (type.equals(BoxAIAgentTextGen.TYPE)) {
             return new BoxAIAgentTextGen(jsonObject);
+        } else if (type.equals(BoxAIAgentExtract.TYPE)) {
+            return new BoxAIAgentExtract(jsonObject);
+        } else if (type.equals(BoxAIAgentExtractStructured.TYPE)) {
+            return new BoxAIAgentExtractStructured(jsonObject);
         } else {
             throw new IllegalArgumentException("Invalid AI agent type: " + type);
         }
@@ -86,7 +90,16 @@ public abstract class BoxAIAgent extends BoxJSONObject {
         /**
          * The type of AI agent used for generating text.
          */
-        TEXT_GEN("text_gen");
+        TEXT_GEN("text_gen"),
+        /**
+         * The type of AI agent used for extracting metadata freeform.
+         */
+        EXTRACT("extract"),
+        /**
+         * The type of AI agent used for extracting metadata structured.
+         */
+        EXTRACT_STRUCTURED("extract_structured");
+
 
         private final String value;
 
@@ -99,6 +112,10 @@ public abstract class BoxAIAgent extends BoxJSONObject {
                 return ASK;
             } else if (value.equals("text_gen")) {
                 return TEXT_GEN;
+            } else if (value.equals("extract")) {
+                return EXTRACT;
+            } else if (value.equals("extract_structured")) {
+                return EXTRACT_STRUCTURED;
             } else {
                 throw new IllegalArgumentException("Invalid AI agent mode: " + value);
             }
