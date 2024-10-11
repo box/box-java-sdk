@@ -365,9 +365,9 @@ public class BoxAITest {
             "Name",
             "name",
             new ArrayList<BoxAIExtractFieldOption>() {{
-                add(new BoxAIExtractFieldOption("option 1"));
-                add(new BoxAIExtractFieldOption("option 2"));
-            }},
+                    add(new BoxAIExtractFieldOption("option 1"));
+                    add(new BoxAIExtractFieldOption("option 2"));
+                }},
             "What is the name of the file?");
 
         final JsonObject expectedRequestBody = new JsonObject()
