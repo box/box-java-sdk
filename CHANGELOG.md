@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [4.12.0](https://github.com/box/box-java-sdk/compare/v4.11.1...v4.12.0) (2024-10-17)
+
+
+### New Features and Enhancements:
+
+* Support AI Agent ([#1265](https://github.com/box/box-java-sdk/issues/1265)) ([3cb2c7c](https://github.com/box/box-java-sdk/commit/3cb2c7c275761a24be9403a6a2b41d0725ba8d9b))
+* Support AI extract and AI extract structured ([#1266](https://github.com/box/box-java-sdk/issues/1266)) ([7ba90b9](https://github.com/box/box-java-sdk/commit/7ba90b96070a32b3e2ac60e5c55bd04d0a5973c0))
+
 ### [4.11.1](https://github.com/box/box-java-sdk/compare/v4.11.0...v4.11.1) (2024-07-16)
 
 
