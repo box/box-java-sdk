@@ -632,6 +632,27 @@ public class BoxFile extends BoxItem {
     }
 
     /**
+     * Retrieve a specific file version.
+     *
+     * @param fileVersionID the ID of the file version to retrieve.
+     * @param fields   the optional fields to retrieve.
+     * @return a specific file version.
+     */
+    public BoxFileVersion getVersionByID(String fileVersionID, String... fields) {
+        URL url = BoxFileVersion.VERSION_URL_TEMPLATE.build(this.getAPI().getBaseURL(), this.getID(), fileVersionID);
+        if (fields.length > 0) {
+            String queryString = new QueryStringBuilder().appendParam("fields", fields).toString();
+            url = BoxFileVersion.VERSION_URL_TEMPLATE.buildWithQuery(this.getAPI().getBaseURL(), queryString, this.getID(), fileVersionID);
+        }
+
+        BoxJSONRequest request = new BoxJSONRequest(this.getAPI(), url, "GET");
+        try (BoxJSONResponse response = request.send()) {
+            JsonObject jsonObject = Json.parse(response.getJSON()).asObject();
+            return new BoxFileVersion(this.getAPI(), jsonObject, this.getID());
+        }
+    }
+
+    /**
      * Gets up to 1000 versions of this file. Note that only users with premium accounts will be able to retrieve
      * previous versions of their files. `fields` parameter is optional, if specified only requested fields will
      * be returned:
