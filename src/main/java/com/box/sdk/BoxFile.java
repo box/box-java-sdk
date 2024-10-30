@@ -354,6 +354,7 @@ public class BoxFile extends BoxItem {
 
     /**
      * Can be used to override the URL used for file download.
+     *
      * @return URL for file downalod
      */
     protected URL getDownloadUrl() {
@@ -635,14 +636,19 @@ public class BoxFile extends BoxItem {
      * Retrieve a specific file version.
      *
      * @param fileVersionID the ID of the file version to retrieve.
-     * @param fields   the optional fields to retrieve.
+     * @param fields        the optional fields to retrieve.
      * @return a specific file version.
      */
     public BoxFileVersion getVersionByID(String fileVersionID, String... fields) {
         URL url = BoxFileVersion.VERSION_URL_TEMPLATE.build(this.getAPI().getBaseURL(), this.getID(), fileVersionID);
         if (fields.length > 0) {
             String queryString = new QueryStringBuilder().appendParam("fields", fields).toString();
-            url = BoxFileVersion.VERSION_URL_TEMPLATE.buildWithQuery(this.getAPI().getBaseURL(), queryString, this.getID(), fileVersionID);
+            url = BoxFileVersion.VERSION_URL_TEMPLATE.buildWithQuery(
+                this.getAPI().getBaseURL(),
+                queryString,
+                this.getID(),
+                fileVersionID
+            );
         }
 
         BoxJSONRequest request = new BoxJSONRequest(this.getAPI(), url, "GET");
@@ -682,8 +688,8 @@ public class BoxFile extends BoxItem {
      */
     public PartialCollection<BoxFileVersion> getVersionsRange(long offset, long limit, String... fields) {
         QueryStringBuilder builder = new QueryStringBuilder()
-                .appendParam("limit", limit)
-                .appendParam("offset", offset);
+            .appendParam("limit", limit)
+            .appendParam("offset", offset);
 
         if (fields.length > 0) {
             builder.appendParam("fields", fields);
@@ -1460,7 +1466,7 @@ public class BoxFile extends BoxItem {
         itemField.add("type", "file");
 
         return BoxCollaboration.create(this.getAPI(), accessibleByField, itemField, role, notify, canViewPath,
-                expiresAt, isAccessOnly);
+            expiresAt, isAccessOnly);
     }
 
     /**
@@ -1508,10 +1514,10 @@ public class BoxFile extends BoxItem {
      * Adds a collaborator to this folder. An email will be sent to the collaborator if they don't already have a Box
      * account.
      *
-     * @param email       the email address of the collaborator to add.
-     * @param role        the role of the collaborator.
-     * @param notify      determines if the user (or all the users in the group) will receive email notifications.
-     * @param canViewPath whether view path collaboration feature is enabled or not.
+     * @param email        the email address of the collaborator to add.
+     * @param role         the role of the collaborator.
+     * @param notify       determines if the user (or all the users in the group) will receive email notifications.
+     * @param canViewPath  whether view path collaboration feature is enabled or not.
      * @param expiresAt    when the collaboration should expire.
      * @param isAccessOnly whether the collaboration is access only or not.
      * @return info about the new collaboration.
