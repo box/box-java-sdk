@@ -433,6 +433,27 @@ public class BoxFileIT {
     }
 
     @Test
+    public void getVersionSucceeds() {
+        BoxAPIConnection api = jwtApiForServiceAccount();
+        String fileName = "[getVersionByIdSucceeds] Multi-version File.txt";
+        BoxFile uploadedFile = null;
+        try {
+            uploadedFile = uploadFileToUniqueFolder(api, fileName, "Test file");
+            uploadedFile.uploadNewVersion(this.getFileContent("Version 2"));
+
+            Collection<BoxFileVersion> versions = uploadedFile.getVersions();
+            BoxFileVersion versionFromGetVersions = versions.iterator().next();
+
+            BoxFileVersion versionFromGetById = uploadedFile.getVersionByID(versionFromGetVersions.getID());
+
+            assertThat(versionFromGetVersions.getVersionID(), equalTo(versionFromGetById.getVersionID()));
+            assertThat(versionFromGetVersions.getFileID(), equalTo(versionFromGetById.getFileID()));
+        } finally {
+            deleteFile(uploadedFile);
+        }
+    }
+
+    @Test
     public void deleteVersionSucceeds() {
         BoxAPIConnection api = jwtApiForServiceAccount();
         String fileName = "[deleteVersionSucceeds] Multi-version File.txt";

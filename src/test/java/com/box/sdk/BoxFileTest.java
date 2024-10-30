@@ -420,7 +420,7 @@ public class BoxFileTest {
         );
         wireMockRule.stubFor(
             WireMock.get(WireMock.urlPathEqualTo(
-                "/2.0/internal_files/12345/versions/1116420931563/representations/jpg_thumb_32x32")
+                    "/2.0/internal_files/12345/versions/1116420931563/representations/jpg_thumb_32x32")
                 )
                 .willReturn(WireMock.aResponse()
                     .withHeader("Content-Type", APPLICATION_JSON)
@@ -429,7 +429,7 @@ public class BoxFileTest {
         );
         wireMockRule.stubFor(
             WireMock.get(WireMock.urlPathEqualTo(
-                "/2.0/internal_files/1030335435441/versions/1116437417841/representations/jpg_thumb_32x32/content/"
+                    "/2.0/internal_files/1030335435441/versions/1116437417841/representations/jpg_thumb_32x32/content/"
                 ))
                 .willReturn(WireMock.aResponse()
                     .withHeader("Content-Type", "image/jpg")
@@ -525,6 +525,26 @@ public class BoxFileTest {
         OutputStream output = new ByteArrayOutputStream();
         file.getRepresentationContent("[jpg?dimensions=32x32]", output);
         assertThat(output.toString(), equalTo("This is a JPG"));
+    }
+
+    @Test
+    public void testGetFileVersionByIdSucceeds() {
+        final String versionID = "12345";
+        final String fileID = "1111";
+        final String versionURL = "/2.0/files/" + fileID + "/versions/" + versionID;
+
+        String versionResult = getFixture("BoxFile/GetFileVersion200");
+
+        wireMockRule.stubFor(WireMock.get(WireMock.urlPathEqualTo(versionURL))
+            .willReturn(WireMock.aResponse()
+                .withHeader("Content-Type", APPLICATION_JSON)
+                .withBody(versionResult)));
+
+        BoxFile file = new BoxFile(this.api, fileID);
+        BoxFileVersion version = file.getVersionByID(versionID);
+
+        assertEquals(versionID, version.getVersionID());
+        assertEquals(fileID, version.getFileID());
     }
 
     @Test
@@ -1213,20 +1233,20 @@ public class BoxFileTest {
 
         // then
         api.setRequestInterceptor(
-                request -> {
-                    try {
-                        String query = URLDecoder.decode(request.getUrl().getQuery(), "UTF-8");
-                        assertThat(query, containsString("limit=10&offset=0&fields=name,version_number"));
-                        return new BoxJSONResponse() {
-                            @Override
-                            public String getJSON() {
-                                return "{\"entries\": [], \"total_count\": 100}";
-                            }
-                        };
-                    } catch (UnsupportedEncodingException e) {
-                        throw new RuntimeException(e);
-                    }
+            request -> {
+                try {
+                    String query = URLDecoder.decode(request.getUrl().getQuery(), "UTF-8");
+                    assertThat(query, containsString("limit=10&offset=0&fields=name,version_number"));
+                    return new BoxJSONResponse() {
+                        @Override
+                        public String getJSON() {
+                            return "{\"entries\": [], \"total_count\": 100}";
+                        }
+                    };
+                } catch (UnsupportedEncodingException e) {
+                    throw new RuntimeException(e);
                 }
+            }
         );
 
         // when
