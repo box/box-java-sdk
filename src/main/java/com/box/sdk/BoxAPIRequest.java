@@ -591,23 +591,23 @@ public class BoxAPIRequest {
         if (this.shouldAuthenticate) {
             requestBuilder.addHeader(HttpHeaders.AUTHORIZATION, "Bearer " + this.api.lockAccessToken());
         }
-        requestBuilder.addHeader("User-Agent", this.api.getUserAgent());
-        requestBuilder.addHeader("X-Box-UA", this.api.getBoxUAHeader());
-        headers.forEach(h -> {
-            requestBuilder.removeHeader(h.getKey());
-            requestBuilder.addHeader(h.getKey(), h.getValue());
-        });
-
-        if (this.api instanceof SharedLinkAPIConnection) {
-            SharedLinkAPIConnection sharedItemAPI = (SharedLinkAPIConnection) this.api;
-            String boxAPIValue = BoxSharedLink.getSharedLinkHeaderValue(
-                    sharedItemAPI.getSharedLink(),
-                    sharedItemAPI.getSharedLinkPassword()
-            );
-            requestBuilder.addHeader("BoxApi", boxAPIValue);
-        }
-
         try {
+            requestBuilder.addHeader("User-Agent", this.api.getUserAgent());
+            requestBuilder.addHeader("X-Box-UA", this.api.getBoxUAHeader());
+            headers.forEach(h -> {
+                requestBuilder.removeHeader(h.getKey());
+                requestBuilder.addHeader(h.getKey(), h.getValue());
+            });
+
+            if (this.api instanceof SharedLinkAPIConnection) {
+                SharedLinkAPIConnection sharedItemAPI = (SharedLinkAPIConnection) this.api;
+                String boxAPIValue = BoxSharedLink.getSharedLinkHeaderValue(
+                        sharedItemAPI.getSharedLink(),
+                        sharedItemAPI.getSharedLinkPassword()
+                );
+                requestBuilder.addHeader("BoxApi", boxAPIValue);
+            }
+
             long start = System.currentTimeMillis();
             writeMethodWithBody(requestBuilder, listener);
             Request request = requestBuilder.build();
