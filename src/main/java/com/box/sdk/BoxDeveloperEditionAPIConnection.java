@@ -446,7 +446,10 @@ public class BoxDeveloperEditionAPIConnection extends BoxAPIConnection {
             this.entityType.toString(), this.entityID);
     }
 
-    private void tryRestoreUsingAccessTokenCache() {
+    /**
+     * Tries to restore the connection using the access token cache.
+     */
+    public void tryRestoreUsingAccessTokenCache() {
         if (this.accessTokenCache == null) {
             //no cache specified so force authentication
             this.authenticate();
