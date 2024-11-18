@@ -22,6 +22,7 @@ file's contents, upload new versions, and perform other common file operations
 - [Copy a File](#copy-a-file)
 - [Delete a File](#delete-a-file)
 - [Get Previous Versions of a File](#get-previous-versions-of-a-file)
+- [Get Previous Version of a File by ID](#get-previous-version-of-a-file-by-id)
 - [Upload a New Version of a File](#upload-a-new-version-of-a-file)
 - [Download a Previous Version of a File](#download-a-previous-version-of-a-file)
 - [Promote a Previous Version of a File](#promote-a-previous-version-of-a-file)
@@ -530,6 +531,22 @@ You can find a list of available fields at [`BoxFile.ALL_VERSION_FIELDS`][versio
 
 [get-versions]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxFile.html#getVersions--
 [versions-fields]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxFile.html#ALL_VERSION_FIELDS--
+
+
+Get Previous Version of a File by ID
+-----------------------------------
+
+A specific previous version of a file can be retrieved by calling
+[`getVersionByID(String versionId)`][get-version].
+
+<!-- sample get_files_id_versions_id -->
+```java
+BoxFile file = new BoxFile(api, "id");
+String versionId = "12345";
+BoxFileVersion version = file.getVersionByID(versionId);
+```
+
+[get-version]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxFile.html#getVersionByID-java.lang.String-java.lang.String...-
 
 Upload a New Version of a File
 ------------------------------
