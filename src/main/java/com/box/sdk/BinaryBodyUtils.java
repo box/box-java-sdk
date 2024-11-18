@@ -47,6 +47,28 @@ final class BinaryBodyUtils {
     }
 
     /**
+     * Writes response body bytes to output stream. After all closes the input stream.
+     *
+     * @param response Response that is going to be written.
+     * @param output   Output stream.
+     * @param listener Listener that will be notified on writing response. Can be null.
+     */
+
+    static void writeStreamWithContentLength(BoxAPIResponse response, OutputStream output, ProgressListener listener) {
+        try {
+            InputStream input;
+            if (listener != null) {
+                input = response.getBody(listener);
+            } else {
+                input = response.getBody();
+            }
+            writeStreamTo(input, output, response.getContentLength());
+        } finally {
+            response.close();
+        }
+    }
+
+    /**
      * Writes content of input stream to provided output. Method is NOT closing input stream.
      *
      * @param input  Input that will be read.
@@ -68,6 +90,33 @@ final class BinaryBodyUtils {
                 output.close();
             } catch (IOException e) {
                 throw new RuntimeException(e);
+            }
+        }
+    }
+
+    static void writeStreamTo(InputStream input, OutputStream output, long expectedLength) {
+        long totalBytesRead = 0;
+        if (expectedLength < 0) {
+            throw new RuntimeException("No Data bytes in stream");
+        }
+        try {
+            byte[] buffer = new byte[8192];
+            for (int n = input.read(buffer); n != -1; n = input.read(buffer)) {
+                output.write(buffer, 0, n);
+                totalBytesRead += n;  // Track the total bytes read
+            }
+            if (totalBytesRead != expectedLength) {
+                throw new IOException("Stream ended prematurely. Expected " + expectedLength
+                        + " bytes, but read " + totalBytesRead + " bytes.");
+            }
+        } catch (IOException e) {
+            throw new RuntimeException("Error during streaming: " + e.getMessage(), e);
+        } finally {
+            try {
+                input.close();
+                output.close();
+            } catch (IOException closeException) {
+                throw new RuntimeException("IOException during stream close", closeException);
             }
         }
     }

@@ -1,6 +1,7 @@
 package com.box.sdk;
 
 import static com.box.sdk.BinaryBodyUtils.writeStream;
+import static com.box.sdk.BinaryBodyUtils.writeStreamWithContentLength;
 import static com.box.sdk.http.ContentType.APPLICATION_JSON;
 import static com.box.sdk.http.ContentType.APPLICATION_JSON_PATCH;
 import static com.eclipsesource.json.Json.NULL;
@@ -602,7 +603,7 @@ public class BoxFile extends BoxItem {
             URL repURL = new URL(representationURLTemplate.replace("{+asset_path}", assetPath));
             BoxAPIRequest repContentReq = new BoxAPIRequest(this.getAPI(), repURL, HttpMethod.GET);
             BoxAPIResponse response = repContentReq.send();
-            writeStream(response, output);
+            writeStreamWithContentLength(response, output, null);
         } catch (MalformedURLException ex) {
 
             throw new BoxAPIException("Could not generate representation content URL");

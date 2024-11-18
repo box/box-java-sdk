@@ -433,6 +433,7 @@ public class BoxFileTest {
                 ))
                 .willReturn(WireMock.aResponse()
                     .withHeader("Content-Type", "image/jpg")
+                    .withHeader("Content-Length", String.valueOf(13))
                     .withBody("This is a JPG")
                     .withStatus(200))
         );
@@ -517,6 +518,7 @@ public class BoxFileTest {
                 ))
                 .willReturn(WireMock.aResponse()
                     .withHeader("Content-Type", "image/jpg")
+                    .withHeader("Content-Length", String.valueOf(13))
                     .withBody("This is a JPG")
                     .withStatus(200))
         );
