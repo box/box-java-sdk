@@ -533,7 +533,12 @@ public class BoxAPIConnection {
             }
         }
 
-        return this.accessToken;
+        this.refreshLock.readLock().lock();
+        try {
+            return this.accessToken;
+        } finally {
+            this.refreshLock.readLock().unlock();
+        }
     }
 
     /**
@@ -760,10 +765,13 @@ public class BoxAPIConnection {
         boolean needsRefresh;
 
         this.refreshLock.readLock().lock();
-        long now = System.currentTimeMillis();
-        long tokenDuration = (now - this.lastRefresh);
-        needsRefresh = (tokenDuration >= this.expires - REFRESH_EPSILON);
-        this.refreshLock.readLock().unlock();
+        try {
+            long now = System.currentTimeMillis();
+            long tokenDuration = (now - this.lastRefresh);
+            needsRefresh = (tokenDuration >= this.expires - REFRESH_EPSILON);
+        } finally {
+            this.refreshLock.readLock().unlock();
+        }
 
         return needsRefresh;
     }
@@ -775,37 +783,32 @@ public class BoxAPIConnection {
      */
     public void refresh() {
         this.refreshLock.writeLock().lock();
-
-        if (!this.canRefresh()) {
-            this.refreshLock.writeLock().unlock();
-            throw new IllegalStateException("The BoxAPIConnection cannot be refreshed because it doesn't have a "
-                + "refresh token.");
-        }
-
-        URL url;
         try {
-            url = new URL(getTokenURL());
-        } catch (MalformedURLException e) {
-            this.refreshLock.writeLock().unlock();
-            assert false : "An invalid refresh URL indicates a bug in the SDK.";
-            throw new RuntimeException("An invalid refresh URL indicates a bug in the SDK.", e);
-        }
+            if (!this.canRefresh()) {
+                throw new IllegalStateException("The BoxAPIConnection cannot be refreshed because it doesn't have a "
+                        + "refresh token.");
+            }
 
-        BoxAPIRequest request = createTokenRequest(url);
+            URL url;
+            try {
+                url = new URL(getTokenURL());
+            } catch (MalformedURLException e) {
+                assert false : "An invalid refresh URL indicates a bug in the SDK.";
+                throw new RuntimeException("An invalid refresh URL indicates a bug in the SDK.", e);
+            }
 
-        String json;
-        try (BoxAPIResponse boxAPIResponse = request.send()) {
-            BoxJSONResponse response = (BoxJSONResponse) boxAPIResponse;
-            json = response.getJSON();
-        } catch (BoxAPIException e) {
-            this.refreshLock.writeLock().unlock();
-            this.notifyError(e);
-            throw e;
-        }
+            BoxAPIRequest request = createTokenRequest(url);
 
-        try {
+            String json;
+            try (BoxAPIResponse boxAPIResponse = request.send()) {
+                BoxJSONResponse response = (BoxJSONResponse) boxAPIResponse;
+                json = response.getJSON();
+            } catch (BoxAPIException e) {
+                this.notifyError(e);
+                throw e;
+            }
+
             extractTokens(Json.parse(json).asObject());
-
             this.notifyRefresh();
         } finally {
             this.refreshLock.writeLock().unlock();
