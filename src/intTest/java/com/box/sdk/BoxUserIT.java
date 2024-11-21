@@ -23,6 +23,7 @@ import java.net.URL;
 import java.net.URLDecoder;
 import java.util.Calendar;
 import java.util.Collection;
+import java.util.UUID;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import okhttp3.OkHttpClient;
@@ -35,8 +36,8 @@ import org.junit.Test;
  */
 public class BoxUserIT {
 
-    private static final String NEW_USER_LOGIN = "login2@boz.com";
-    private static final String NEW_USER_NAME = "non-empty name";
+    private static final String NEW_USER_LOGIN = UUID.randomUUID() + "@boz.com";
+    private static final String NEW_USER_NAME = UUID.randomUUID().toString();
 
     @BeforeClass
     public static void cleanup() {
