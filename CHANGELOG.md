@@ -2,6 +2,19 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [4.13.0](https://github.com/box/box-java-sdk/compare/v4.12.0...v4.13.0) (2024-11-21)
+
+
+### New Features and Enhancements:
+
+* Enforce exact byte reading from `Content-Length` header for `BoxFile` representation ([#1274](https://github.com/box/box-java-sdk/issues/1274)) ([0b45cdb](https://github.com/box/box-java-sdk/commit/0b45cdb74c21996d1dfea505d25430a1fa9ee730))
+* Expose `getVersionByID` method on `BoxFile` ([#1268](https://github.com/box/box-java-sdk/issues/1268)) ([6ea70f7](https://github.com/box/box-java-sdk/commit/6ea70f79ad39dd9a427ee574b5536d0ab1e3a9a4))
+* make `tryRestoreUsingAccessTokenCache` in Box API connection public ([#1272](https://github.com/box/box-java-sdk/issues/1272)) ([50f5a61](https://github.com/box/box-java-sdk/commit/50f5a61184bd1a17a17e811536166f9f8e081a13))
+
+### Bug Fixes:
+
+* Fix `accessToken` locking mechanism ([#1270](https://github.com/box/box-java-sdk/issues/1270)) ([5eb4c93](https://github.com/box/box-java-sdk/commit/5eb4c93bd3653b28dc7def747779d008369f486a))
+
 ## [4.12.0](https://github.com/box/box-java-sdk/compare/v4.11.1...v4.12.0) (2024-10-17)
 
 
