@@ -603,7 +603,7 @@ public class BoxFile extends BoxItem {
             URL repURL = new URL(representationURLTemplate.replace("{+asset_path}", assetPath));
             BoxAPIRequest repContentReq = new BoxAPIRequest(this.getAPI(), repURL, HttpMethod.GET);
             BoxAPIResponse response = repContentReq.send();
-            writeStreamWithContentLength(response, output, null);
+            writeStreamWithContentLength(response, output);
         } catch (MalformedURLException ex) {
 
             throw new BoxAPIException("Could not generate representation content URL");
