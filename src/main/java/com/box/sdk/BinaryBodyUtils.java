@@ -51,6 +51,17 @@ final class BinaryBodyUtils {
      *
      * @param response Response that is going to be written.
      * @param output   Output stream.
+     */
+
+    static void writeStreamWithContentLength(BoxAPIResponse response, OutputStream output) {
+        writeStreamWithContentLength(response, output, null);
+    }
+
+    /**
+     * Writes response body bytes to output stream. After all closes the input stream.
+     *
+     * @param response Response that is going to be written.
+     * @param output   Output stream.
      * @param listener Listener that will be notified on writing response. Can be null.
      */
 
@@ -97,10 +108,10 @@ final class BinaryBodyUtils {
     static void writeStreamTo(InputStream input, OutputStream output, long expectedLength) {
         long totalBytesRead = 0;
         if (expectedLength < 0) {
-            throw new RuntimeException("No Data bytes in stream");
+            throw new RuntimeException("Expected content length should not be negative: " + expectedLength);
         }
         try {
-            byte[] buffer = new byte[8192];
+            byte[] buffer = new byte[BUFFER_SIZE];
             for (int n = input.read(buffer); n != -1; n = input.read(buffer)) {
                 output.write(buffer, 0, n);
                 totalBytesRead += n;  // Track the total bytes read
