@@ -80,7 +80,7 @@ final class BinaryBodyUtils {
     }
 
     /**
-     * Writes content of input stream to provided output. Method is NOT closing input stream.
+     * Writes content of input stream to provided output.
      *
      * @param input  Input that will be read.
      * @param output Output stream.
@@ -104,6 +104,15 @@ final class BinaryBodyUtils {
             }
         }
     }
+
+    /**
+     * Writes the content of the input stream to the provided output stream, ensuring the exact number of bytes specified
+     * by the expected length is written. If the stream ends prematurely an exception is thrown.
+     *
+     * @param input          The input stream to be read.
+     * @param output         The output stream where data will be written.
+     * @param expectedLength The expected number of bytes to be transferred.
+     */
 
     static void writeStreamTo(InputStream input, OutputStream output, long expectedLength) {
         long totalBytesRead = 0;
