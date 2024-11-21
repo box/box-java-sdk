@@ -18,7 +18,7 @@
     catch(err) {
     }
 //-->
-var methods = {"i0":9,"i1":9,"i2":9};
+var methods = {"i0":9,"i1":9,"i2":9,"i3":9,"i4":9,"i5":9,"i6":9,"i7":9,"i8":9,"i9":9,"i10":9,"i11":9,"i12":9};
 var tabs = {65535:["t0","All Methods"],1:["t1","Static Methods"],8:["t4","Concrete Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
@@ -88,11 +88,29 @@ extends <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html
 </tr>
 <tr class="altColor">
 <td class="colFirst"><code>static <a href="../../../com/box/sdk/URLTemplate.html" title="class in com.box.sdk">URLTemplate</a></code></td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../com/box/sdk/BoxAI.html#AI_AGENT_DEFAULT_CONFIG_URL">AI_AGENT_DEFAULT_CONFIG_URL</a></span></code>
+<div class="block">AI agent default config url.</div>
+</td>
+</tr>
+<tr class="rowColor">
+<td class="colFirst"><code>static <a href="../../../com/box/sdk/URLTemplate.html" title="class in com.box.sdk">URLTemplate</a></code></td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../com/box/sdk/BoxAI.html#EXTRACT_METADATA_FREEFORM_URL">EXTRACT_METADATA_FREEFORM_URL</a></span></code>
+<div class="block">AI extract metadata freeform url.</div>
+</td>
+</tr>
+<tr class="altColor">
+<td class="colFirst"><code>static <a href="../../../com/box/sdk/URLTemplate.html" title="class in com.box.sdk">URLTemplate</a></code></td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../com/box/sdk/BoxAI.html#EXTRACT_METADATA_STRUCTURED_URL">EXTRACT_METADATA_STRUCTURED_URL</a></span></code>
+<div class="block">AI extract metadata structured url.</div>
+</td>
+</tr>
+<tr class="rowColor">
+<td class="colFirst"><code>static <a href="../../../com/box/sdk/URLTemplate.html" title="class in com.box.sdk">URLTemplate</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../com/box/sdk/BoxAI.html#SEND_AI_REQUEST_URL">SEND_AI_REQUEST_URL</a></span></code>
 <div class="block">Ask AI url.</div>
 </td>
 </tr>
-<tr class="rowColor">
+<tr class="altColor">
 <td class="colFirst"><code>static <a href="../../../com/box/sdk/URLTemplate.html" title="class in com.box.sdk">URLTemplate</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../com/box/sdk/BoxAI.html#SEND_AI_TEXT_GEN_REQUEST_URL">SEND_AI_TEXT_GEN_REQUEST_URL</a></span></code>
 <div class="block">Text gen AI url.</div>
@@ -115,6 +133,77 @@ extends <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html
 </tr>
 <tr id="i0" class="altColor">
 <td class="colFirst"><code>static <a href="../../../com/box/sdk/BoxAIResponse.html" title="class in com.box.sdk">BoxAIResponse</a></code></td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../com/box/sdk/BoxAI.html#extractMetadataFreeform-com.box.sdk.BoxAPIConnection-java.lang.String-java.util.List-">extractMetadataFreeform</a></span>(<a href="../../../com/box/sdk/BoxAPIConnection.html" title="class in com.box.sdk">BoxAPIConnection</a>&nbsp;api,
+                       <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;prompt,
+                       <a href="https://docs.oracle.com/javase/8/docs/api/java/util/List.html?is-external=true" title="class or interface in java.util">List</a>&lt;<a href="../../../com/box/sdk/BoxAIItem.html" title="class in com.box.sdk">BoxAIItem</a>&gt;&nbsp;items)</code>
+<div class="block">Sends an AI request to supported Large Language Models (LLMs) and extracts metadata in form of key-value pairs.</div>
+</td>
+</tr>
+<tr id="i1" class="rowColor">
+<td class="colFirst"><code>static <a href="../../../com/box/sdk/BoxAIResponse.html" title="class in com.box.sdk">BoxAIResponse</a></code></td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../com/box/sdk/BoxAI.html#extractMetadataFreeform-com.box.sdk.BoxAPIConnection-java.lang.String-java.util.List-com.box.sdk.BoxAIAgentExtract-">extractMetadataFreeform</a></span>(<a href="../../../com/box/sdk/BoxAPIConnection.html" title="class in com.box.sdk">BoxAPIConnection</a>&nbsp;api,
+                       <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;prompt,
+                       <a href="https://docs.oracle.com/javase/8/docs/api/java/util/List.html?is-external=true" title="class or interface in java.util">List</a>&lt;<a href="../../../com/box/sdk/BoxAIItem.html" title="class in com.box.sdk">BoxAIItem</a>&gt;&nbsp;items,
+                       <a href="../../../com/box/sdk/BoxAIAgentExtract.html" title="class in com.box.sdk">BoxAIAgentExtract</a>&nbsp;agent)</code>
+<div class="block">Sends an AI request to supported Large Language Models (LLMs) and extracts metadata in form of key-value pairs.</div>
+</td>
+</tr>
+<tr id="i2" class="altColor">
+<td class="colFirst"><code>static <a href="../../../com/box/sdk/BoxAIExtractStructuredResponse.html" title="class in com.box.sdk">BoxAIExtractStructuredResponse</a></code></td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../com/box/sdk/BoxAI.html#extractMetadataStructured-com.box.sdk.BoxAPIConnection-java.util.List-com.box.sdk.BoxAIExtractMetadataTemplate-">extractMetadataStructured</a></span>(<a href="../../../com/box/sdk/BoxAPIConnection.html" title="class in com.box.sdk">BoxAPIConnection</a>&nbsp;api,
+                         <a href="https://docs.oracle.com/javase/8/docs/api/java/util/List.html?is-external=true" title="class or interface in java.util">List</a>&lt;<a href="../../../com/box/sdk/BoxAIItem.html" title="class in com.box.sdk">BoxAIItem</a>&gt;&nbsp;items,
+                         <a href="../../../com/box/sdk/BoxAIExtractMetadataTemplate.html" title="class in com.box.sdk">BoxAIExtractMetadataTemplate</a>&nbsp;template)</code>
+<div class="block">Sends an AI request to supported Large Language Models (LLMs) and returns extracted metadata as a set of
+ key-value pairs.</div>
+</td>
+</tr>
+<tr id="i3" class="rowColor">
+<td class="colFirst"><code>static <a href="../../../com/box/sdk/BoxAIExtractStructuredResponse.html" title="class in com.box.sdk">BoxAIExtractStructuredResponse</a></code></td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../com/box/sdk/BoxAI.html#extractMetadataStructured-com.box.sdk.BoxAPIConnection-java.util.List-com.box.sdk.BoxAIExtractMetadataTemplate-com.box.sdk.BoxAIAgentExtractStructured-">extractMetadataStructured</a></span>(<a href="../../../com/box/sdk/BoxAPIConnection.html" title="class in com.box.sdk">BoxAPIConnection</a>&nbsp;api,
+                         <a href="https://docs.oracle.com/javase/8/docs/api/java/util/List.html?is-external=true" title="class or interface in java.util">List</a>&lt;<a href="../../../com/box/sdk/BoxAIItem.html" title="class in com.box.sdk">BoxAIItem</a>&gt;&nbsp;items,
+                         <a href="../../../com/box/sdk/BoxAIExtractMetadataTemplate.html" title="class in com.box.sdk">BoxAIExtractMetadataTemplate</a>&nbsp;template,
+                         <a href="../../../com/box/sdk/BoxAIAgentExtractStructured.html" title="class in com.box.sdk">BoxAIAgentExtractStructured</a>&nbsp;agent)</code>
+<div class="block">Sends an AI request to supported Large Language Models (LLMs) and returns extracted metadata as a set of
+ key-value pairs.</div>
+</td>
+</tr>
+<tr id="i4" class="altColor">
+<td class="colFirst"><code>static <a href="../../../com/box/sdk/BoxAIExtractStructuredResponse.html" title="class in com.box.sdk">BoxAIExtractStructuredResponse</a></code></td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../com/box/sdk/BoxAI.html#extractMetadataStructured-com.box.sdk.BoxAPIConnection-java.util.List-java.util.List-">extractMetadataStructured</a></span>(<a href="../../../com/box/sdk/BoxAPIConnection.html" title="class in com.box.sdk">BoxAPIConnection</a>&nbsp;api,
+                         <a href="https://docs.oracle.com/javase/8/docs/api/java/util/List.html?is-external=true" title="class or interface in java.util">List</a>&lt;<a href="../../../com/box/sdk/BoxAIItem.html" title="class in com.box.sdk">BoxAIItem</a>&gt;&nbsp;items,
+                         <a href="https://docs.oracle.com/javase/8/docs/api/java/util/List.html?is-external=true" title="class or interface in java.util">List</a>&lt;<a href="../../../com/box/sdk/BoxAIExtractField.html" title="class in com.box.sdk">BoxAIExtractField</a>&gt;&nbsp;fields)</code>
+<div class="block">Sends an AI request to supported Large Language Models (LLMs) and returns extracted metadata as a set of
+ key-value pairs.</div>
+</td>
+</tr>
+<tr id="i5" class="rowColor">
+<td class="colFirst"><code>static <a href="../../../com/box/sdk/BoxAIExtractStructuredResponse.html" title="class in com.box.sdk">BoxAIExtractStructuredResponse</a></code></td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../com/box/sdk/BoxAI.html#extractMetadataStructured-com.box.sdk.BoxAPIConnection-java.util.List-java.util.List-com.box.sdk.BoxAIAgentExtractStructured-">extractMetadataStructured</a></span>(<a href="../../../com/box/sdk/BoxAPIConnection.html" title="class in com.box.sdk">BoxAPIConnection</a>&nbsp;api,
+                         <a href="https://docs.oracle.com/javase/8/docs/api/java/util/List.html?is-external=true" title="class or interface in java.util">List</a>&lt;<a href="../../../com/box/sdk/BoxAIItem.html" title="class in com.box.sdk">BoxAIItem</a>&gt;&nbsp;items,
+                         <a href="https://docs.oracle.com/javase/8/docs/api/java/util/List.html?is-external=true" title="class or interface in java.util">List</a>&lt;<a href="../../../com/box/sdk/BoxAIExtractField.html" title="class in com.box.sdk">BoxAIExtractField</a>&gt;&nbsp;fields,
+                         <a href="../../../com/box/sdk/BoxAIAgentExtractStructured.html" title="class in com.box.sdk">BoxAIAgentExtractStructured</a>&nbsp;agent)</code>
+<div class="block">Sends an AI request to supported Large Language Models (LLMs) and returns extracted metadata as a set of
+ key-value pairs.</div>
+</td>
+</tr>
+<tr id="i6" class="altColor">
+<td class="colFirst"><code>static <a href="../../../com/box/sdk/BoxAIAgent.html" title="class in com.box.sdk">BoxAIAgent</a></code></td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../com/box/sdk/BoxAI.html#getAiAgentDefaultConfig-com.box.sdk.BoxAPIConnection-com.box.sdk.BoxAIAgent.Mode-">getAiAgentDefaultConfig</a></span>(<a href="../../../com/box/sdk/BoxAPIConnection.html" title="class in com.box.sdk">BoxAPIConnection</a>&nbsp;api,
+                       <a href="../../../com/box/sdk/BoxAIAgent.Mode.html" title="enum in com.box.sdk">BoxAIAgent.Mode</a>&nbsp;mode)</code>
+<div class="block">Get the default AI Agent use for the given mode.</div>
+</td>
+</tr>
+<tr id="i7" class="rowColor">
+<td class="colFirst"><code>static <a href="../../../com/box/sdk/BoxAIAgent.html" title="class in com.box.sdk">BoxAIAgent</a></code></td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../com/box/sdk/BoxAI.html#getAiAgentDefaultConfig-com.box.sdk.BoxAPIConnection-com.box.sdk.BoxAIAgent.Mode-java.lang.String-java.lang.String-">getAiAgentDefaultConfig</a></span>(<a href="../../../com/box/sdk/BoxAPIConnection.html" title="class in com.box.sdk">BoxAPIConnection</a>&nbsp;api,
+                       <a href="../../../com/box/sdk/BoxAIAgent.Mode.html" title="enum in com.box.sdk">BoxAIAgent.Mode</a>&nbsp;mode,
+                       <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;language,
+                       <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;model)</code>
+<div class="block">Get the default AI Agent use for the given mode.</div>
+</td>
+</tr>
+<tr id="i8" class="altColor">
+<td class="colFirst"><code>static <a href="../../../com/box/sdk/BoxAIResponse.html" title="class in com.box.sdk">BoxAIResponse</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../com/box/sdk/BoxAI.html#sendAIRequest-com.box.sdk.BoxAPIConnection-java.lang.String-java.util.List-com.box.sdk.BoxAI.Mode-">sendAIRequest</a></span>(<a href="../../../com/box/sdk/BoxAPIConnection.html" title="class in com.box.sdk">BoxAPIConnection</a>&nbsp;api,
              <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;prompt,
              <a href="https://docs.oracle.com/javase/8/docs/api/java/util/List.html?is-external=true" title="class or interface in java.util">List</a>&lt;<a href="../../../com/box/sdk/BoxAIItem.html" title="class in com.box.sdk">BoxAIItem</a>&gt;&nbsp;items,
@@ -123,7 +212,20 @@ extends <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html
  on the user's question given the provided items.</div>
 </td>
 </tr>
-<tr id="i1" class="rowColor">
+<tr id="i9" class="rowColor">
+<td class="colFirst"><code>static <a href="../../../com/box/sdk/BoxAIResponse.html" title="class in com.box.sdk">BoxAIResponse</a></code></td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../com/box/sdk/BoxAI.html#sendAIRequest-com.box.sdk.BoxAPIConnection-java.lang.String-java.util.List-com.box.sdk.BoxAI.Mode-java.util.List-com.box.sdk.BoxAIAgentAsk-java.lang.Boolean-">sendAIRequest</a></span>(<a href="../../../com/box/sdk/BoxAPIConnection.html" title="class in com.box.sdk">BoxAPIConnection</a>&nbsp;api,
+             <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;prompt,
+             <a href="https://docs.oracle.com/javase/8/docs/api/java/util/List.html?is-external=true" title="class or interface in java.util">List</a>&lt;<a href="../../../com/box/sdk/BoxAIItem.html" title="class in com.box.sdk">BoxAIItem</a>&gt;&nbsp;items,
+             <a href="../../../com/box/sdk/BoxAI.Mode.html" title="enum in com.box.sdk">BoxAI.Mode</a>&nbsp;mode,
+             <a href="https://docs.oracle.com/javase/8/docs/api/java/util/List.html?is-external=true" title="class or interface in java.util">List</a>&lt;<a href="../../../com/box/sdk/BoxAIDialogueEntry.html" title="class in com.box.sdk">BoxAIDialogueEntry</a>&gt;&nbsp;dialogueHistory,
+             <a href="../../../com/box/sdk/BoxAIAgentAsk.html" title="class in com.box.sdk">BoxAIAgentAsk</a>&nbsp;agent,
+             <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Boolean.html?is-external=true" title="class or interface in java.lang">Boolean</a>&nbsp;includeCitations)</code>
+<div class="block">Sends an AI request to supported LLMs and returns an answer specifically focused
+ on the user's question given the provided items.</div>
+</td>
+</tr>
+<tr id="i10" class="altColor">
 <td class="colFirst"><code>static <a href="../../../com/box/sdk/BoxAIResponse.html" title="class in com.box.sdk">BoxAIResponse</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../com/box/sdk/BoxAI.html#sendAITextGenRequest-com.box.sdk.BoxAPIConnection-java.lang.String-java.util.List-">sendAITextGenRequest</a></span>(<a href="../../../com/box/sdk/BoxAPIConnection.html" title="class in com.box.sdk">BoxAPIConnection</a>&nbsp;api,
                     <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;prompt,
@@ -131,12 +233,22 @@ extends <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html
 <div class="block">Sends an AI request to supported LLMs and returns an answer specifically focused on the creation of new text.</div>
 </td>
 </tr>
-<tr id="i2" class="altColor">
+<tr id="i11" class="rowColor">
 <td class="colFirst"><code>static <a href="../../../com/box/sdk/BoxAIResponse.html" title="class in com.box.sdk">BoxAIResponse</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../com/box/sdk/BoxAI.html#sendAITextGenRequest-com.box.sdk.BoxAPIConnection-java.lang.String-java.util.List-java.util.List-">sendAITextGenRequest</a></span>(<a href="../../../com/box/sdk/BoxAPIConnection.html" title="class in com.box.sdk">BoxAPIConnection</a>&nbsp;api,
                     <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;prompt,
                     <a href="https://docs.oracle.com/javase/8/docs/api/java/util/List.html?is-external=true" title="class or interface in java.util">List</a>&lt;<a href="../../../com/box/sdk/BoxAIItem.html" title="class in com.box.sdk">BoxAIItem</a>&gt;&nbsp;items,
                     <a href="https://docs.oracle.com/javase/8/docs/api/java/util/List.html?is-external=true" title="class or interface in java.util">List</a>&lt;<a href="../../../com/box/sdk/BoxAIDialogueEntry.html" title="class in com.box.sdk">BoxAIDialogueEntry</a>&gt;&nbsp;dialogueHistory)</code>
+<div class="block">Sends an AI request to supported LLMs and returns an answer specifically focused on the creation of new text.</div>
+</td>
+</tr>
+<tr id="i12" class="altColor">
+<td class="colFirst"><code>static <a href="../../../com/box/sdk/BoxAIResponse.html" title="class in com.box.sdk">BoxAIResponse</a></code></td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../com/box/sdk/BoxAI.html#sendAITextGenRequest-com.box.sdk.BoxAPIConnection-java.lang.String-java.util.List-java.util.List-com.box.sdk.BoxAIAgentTextGen-">sendAITextGenRequest</a></span>(<a href="../../../com/box/sdk/BoxAPIConnection.html" title="class in com.box.sdk">BoxAPIConnection</a>&nbsp;api,
+                    <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;prompt,
+                    <a href="https://docs.oracle.com/javase/8/docs/api/java/util/List.html?is-external=true" title="class or interface in java.util">List</a>&lt;<a href="../../../com/box/sdk/BoxAIItem.html" title="class in com.box.sdk">BoxAIItem</a>&gt;&nbsp;items,
+                    <a href="https://docs.oracle.com/javase/8/docs/api/java/util/List.html?is-external=true" title="class or interface in java.util">List</a>&lt;<a href="../../../com/box/sdk/BoxAIDialogueEntry.html" title="class in com.box.sdk">BoxAIDialogueEntry</a>&gt;&nbsp;dialogueHistory,
+                    <a href="../../../com/box/sdk/BoxAIAgentTextGen.html" title="class in com.box.sdk">BoxAIAgentTextGen</a>&nbsp;agent)</code>
 <div class="block">Sends an AI request to supported LLMs and returns an answer specifically focused on the creation of new text.</div>
 </td>
 </tr>
@@ -175,11 +287,41 @@ extends <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html
 <a name="SEND_AI_TEXT_GEN_REQUEST_URL">
 <!--   -->
 </a>
-<ul class="blockListLast">
+<ul class="blockList">
 <li class="blockList">
 <h4>SEND_AI_TEXT_GEN_REQUEST_URL</h4>
 <pre>public static final&nbsp;<a href="../../../com/box/sdk/URLTemplate.html" title="class in com.box.sdk">URLTemplate</a> <a href="../../../src-html/com/box/sdk/BoxAI.html#line.20">SEND_AI_TEXT_GEN_REQUEST_URL</a></pre>
 <div class="block">Text gen AI url.</div>
+</li>
+</ul>
+<a name="AI_AGENT_DEFAULT_CONFIG_URL">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>AI_AGENT_DEFAULT_CONFIG_URL</h4>
+<pre>public static final&nbsp;<a href="../../../com/box/sdk/URLTemplate.html" title="class in com.box.sdk">URLTemplate</a> <a href="../../../src-html/com/box/sdk/BoxAI.html#line.24">AI_AGENT_DEFAULT_CONFIG_URL</a></pre>
+<div class="block">AI agent default config url.</div>
+</li>
+</ul>
+<a name="EXTRACT_METADATA_FREEFORM_URL">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>EXTRACT_METADATA_FREEFORM_URL</h4>
+<pre>public static final&nbsp;<a href="../../../com/box/sdk/URLTemplate.html" title="class in com.box.sdk">URLTemplate</a> <a href="../../../src-html/com/box/sdk/BoxAI.html#line.28">EXTRACT_METADATA_FREEFORM_URL</a></pre>
+<div class="block">AI extract metadata freeform url.</div>
+</li>
+</ul>
+<a name="EXTRACT_METADATA_STRUCTURED_URL">
+<!--   -->
+</a>
+<ul class="blockListLast">
+<li class="blockList">
+<h4>EXTRACT_METADATA_STRUCTURED_URL</h4>
+<pre>public static final&nbsp;<a href="../../../com/box/sdk/URLTemplate.html" title="class in com.box.sdk">URLTemplate</a> <a href="../../../src-html/com/box/sdk/BoxAI.html#line.32">EXTRACT_METADATA_STRUCTURED_URL</a></pre>
+<div class="block">AI extract metadata structured url.</div>
 </li>
 </ul>
 </li>
@@ -196,7 +338,7 @@ extends <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html
 <ul class="blockList">
 <li class="blockList">
 <h4>sendAIRequest</h4>
-<pre>public static&nbsp;<a href="../../../com/box/sdk/BoxAIResponse.html" title="class in com.box.sdk">BoxAIResponse</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxAI.html#line.34">sendAIRequest</a>(<a href="../../../com/box/sdk/BoxAPIConnection.html" title="class in com.box.sdk">BoxAPIConnection</a>&nbsp;api,
+<pre>public static&nbsp;<a href="../../../com/box/sdk/BoxAIResponse.html" title="class in com.box.sdk">BoxAIResponse</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxAI.html#line.47">sendAIRequest</a>(<a href="../../../com/box/sdk/BoxAPIConnection.html" title="class in com.box.sdk">BoxAPIConnection</a>&nbsp;api,
                                           <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;prompt,
                                           <a href="https://docs.oracle.com/javase/8/docs/api/java/util/List.html?is-external=true" title="class or interface in java.util">List</a>&lt;<a href="../../../com/box/sdk/BoxAIItem.html" title="class in com.box.sdk">BoxAIItem</a>&gt;&nbsp;items,
                                           <a href="../../../com/box/sdk/BoxAI.Mode.html" title="enum in com.box.sdk">BoxAI.Mode</a>&nbsp;mode)</pre>
@@ -213,13 +355,43 @@ extends <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html
 </dl>
 </li>
 </ul>
+<a name="sendAIRequest-com.box.sdk.BoxAPIConnection-java.lang.String-java.util.List-com.box.sdk.BoxAI.Mode-java.util.List-com.box.sdk.BoxAIAgentAsk-java.lang.Boolean-">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>sendAIRequest</h4>
+<pre>public static&nbsp;<a href="../../../com/box/sdk/BoxAIResponse.html" title="class in com.box.sdk">BoxAIResponse</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxAI.html#line.65">sendAIRequest</a>(<a href="../../../com/box/sdk/BoxAPIConnection.html" title="class in com.box.sdk">BoxAPIConnection</a>&nbsp;api,
+                                          <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;prompt,
+                                          <a href="https://docs.oracle.com/javase/8/docs/api/java/util/List.html?is-external=true" title="class or interface in java.util">List</a>&lt;<a href="../../../com/box/sdk/BoxAIItem.html" title="class in com.box.sdk">BoxAIItem</a>&gt;&nbsp;items,
+                                          <a href="../../../com/box/sdk/BoxAI.Mode.html" title="enum in com.box.sdk">BoxAI.Mode</a>&nbsp;mode,
+                                          <a href="https://docs.oracle.com/javase/8/docs/api/java/util/List.html?is-external=true" title="class or interface in java.util">List</a>&lt;<a href="../../../com/box/sdk/BoxAIDialogueEntry.html" title="class in com.box.sdk">BoxAIDialogueEntry</a>&gt;&nbsp;dialogueHistory,
+                                          <a href="../../../com/box/sdk/BoxAIAgentAsk.html" title="class in com.box.sdk">BoxAIAgentAsk</a>&nbsp;agent,
+                                          <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Boolean.html?is-external=true" title="class or interface in java.lang">Boolean</a>&nbsp;includeCitations)</pre>
+<div class="block">Sends an AI request to supported LLMs and returns an answer specifically focused
+ on the user's question given the provided items.</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>api</code> - the API connection to be used by the created user.</dd>
+<dd><code>prompt</code> - The prompt provided by the client to be answered by the LLM.</dd>
+<dd><code>items</code> - The items to be processed by the LLM, currently only files are supported.</dd>
+<dd><code>mode</code> - The mode specifies if this request is for a single or multiple items.</dd>
+<dd><code>dialogueHistory</code> - The history of prompts and answers previously passed to the LLM.
+                        This provides additional context to the LLM in generating the response.</dd>
+<dd><code>agent</code> - The AI agent configuration to be used for the request.</dd>
+<dd><code>includeCitations</code> - Whether to include citations in the response.</dd>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>The response from the AI.</dd>
+</dl>
+</li>
+</ul>
 <a name="sendAITextGenRequest-com.box.sdk.BoxAPIConnection-java.lang.String-java.util.List-">
 <!--   -->
 </a>
 <ul class="blockList">
 <li class="blockList">
 <h4>sendAITextGenRequest</h4>
-<pre>public static&nbsp;<a href="../../../com/box/sdk/BoxAIResponse.html" title="class in com.box.sdk">BoxAIResponse</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxAI.html#line.62">sendAITextGenRequest</a>(<a href="../../../com/box/sdk/BoxAPIConnection.html" title="class in com.box.sdk">BoxAPIConnection</a>&nbsp;api,
+<pre>public static&nbsp;<a href="../../../com/box/sdk/BoxAIResponse.html" title="class in com.box.sdk">BoxAIResponse</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxAI.html#line.110">sendAITextGenRequest</a>(<a href="../../../com/box/sdk/BoxAPIConnection.html" title="class in com.box.sdk">BoxAPIConnection</a>&nbsp;api,
                                                  <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;prompt,
                                                  <a href="https://docs.oracle.com/javase/8/docs/api/java/util/List.html?is-external=true" title="class or interface in java.util">List</a>&lt;<a href="../../../com/box/sdk/BoxAIItem.html" title="class in com.box.sdk">BoxAIItem</a>&gt;&nbsp;items)</pre>
 <div class="block">Sends an AI request to supported LLMs and returns an answer specifically focused on the creation of new text.</div>
@@ -236,10 +408,10 @@ extends <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html
 <a name="sendAITextGenRequest-com.box.sdk.BoxAPIConnection-java.lang.String-java.util.List-java.util.List-">
 <!--   -->
 </a>
-<ul class="blockListLast">
+<ul class="blockList">
 <li class="blockList">
 <h4>sendAITextGenRequest</h4>
-<pre>public static&nbsp;<a href="../../../com/box/sdk/BoxAIResponse.html" title="class in com.box.sdk">BoxAIResponse</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxAI.html#line.75">sendAITextGenRequest</a>(<a href="../../../com/box/sdk/BoxAPIConnection.html" title="class in com.box.sdk">BoxAPIConnection</a>&nbsp;api,
+<pre>public static&nbsp;<a href="../../../com/box/sdk/BoxAIResponse.html" title="class in com.box.sdk">BoxAIResponse</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxAI.html#line.124">sendAITextGenRequest</a>(<a href="../../../com/box/sdk/BoxAPIConnection.html" title="class in com.box.sdk">BoxAPIConnection</a>&nbsp;api,
                                                  <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;prompt,
                                                  <a href="https://docs.oracle.com/javase/8/docs/api/java/util/List.html?is-external=true" title="class or interface in java.util">List</a>&lt;<a href="../../../com/box/sdk/BoxAIItem.html" title="class in com.box.sdk">BoxAIItem</a>&gt;&nbsp;items,
                                                  <a href="https://docs.oracle.com/javase/8/docs/api/java/util/List.html?is-external=true" title="class or interface in java.util">List</a>&lt;<a href="../../../com/box/sdk/BoxAIDialogueEntry.html" title="class in com.box.sdk">BoxAIDialogueEntry</a>&gt;&nbsp;dialogueHistory)</pre>
@@ -251,6 +423,207 @@ extends <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html
 <dd><code>items</code> - The items to be processed by the LLM, currently only files are supported.</dd>
 <dd><code>dialogueHistory</code> - The history of prompts and answers previously passed to the LLM.
                         This provides additional context to the LLM in generating the response.</dd>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>The response from the AI.</dd>
+</dl>
+</li>
+</ul>
+<a name="sendAITextGenRequest-com.box.sdk.BoxAPIConnection-java.lang.String-java.util.List-java.util.List-com.box.sdk.BoxAIAgentTextGen-">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>sendAITextGenRequest</h4>
+<pre>public static&nbsp;<a href="../../../com/box/sdk/BoxAIResponse.html" title="class in com.box.sdk">BoxAIResponse</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxAI.html#line.140">sendAITextGenRequest</a>(<a href="../../../com/box/sdk/BoxAPIConnection.html" title="class in com.box.sdk">BoxAPIConnection</a>&nbsp;api,
+                                                 <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;prompt,
+                                                 <a href="https://docs.oracle.com/javase/8/docs/api/java/util/List.html?is-external=true" title="class or interface in java.util">List</a>&lt;<a href="../../../com/box/sdk/BoxAIItem.html" title="class in com.box.sdk">BoxAIItem</a>&gt;&nbsp;items,
+                                                 <a href="https://docs.oracle.com/javase/8/docs/api/java/util/List.html?is-external=true" title="class or interface in java.util">List</a>&lt;<a href="../../../com/box/sdk/BoxAIDialogueEntry.html" title="class in com.box.sdk">BoxAIDialogueEntry</a>&gt;&nbsp;dialogueHistory,
+                                                 <a href="../../../com/box/sdk/BoxAIAgentTextGen.html" title="class in com.box.sdk">BoxAIAgentTextGen</a>&nbsp;agent)</pre>
+<div class="block">Sends an AI request to supported LLMs and returns an answer specifically focused on the creation of new text.</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>api</code> - the API connection to be used by the created user.</dd>
+<dd><code>prompt</code> - The prompt provided by the client to be answered by the LLM.</dd>
+<dd><code>items</code> - The items to be processed by the LLM, currently only files are supported.</dd>
+<dd><code>dialogueHistory</code> - The history of prompts and answers previously passed to the LLM.
+                        This provides additional context to the LLM in generating the response.</dd>
+<dd><code>agent</code> - The AI agent configuration to be used for the request.</dd>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>The response from the AI.</dd>
+</dl>
+</li>
+</ul>
+<a name="getAiAgentDefaultConfig-com.box.sdk.BoxAPIConnection-com.box.sdk.BoxAIAgent.Mode-">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>getAiAgentDefaultConfig</h4>
+<pre>public static&nbsp;<a href="../../../com/box/sdk/BoxAIAgent.html" title="class in com.box.sdk">BoxAIAgent</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxAI.html#line.181">getAiAgentDefaultConfig</a>(<a href="../../../com/box/sdk/BoxAPIConnection.html" title="class in com.box.sdk">BoxAPIConnection</a>&nbsp;api,
+                                                 <a href="../../../com/box/sdk/BoxAIAgent.Mode.html" title="enum in com.box.sdk">BoxAIAgent.Mode</a>&nbsp;mode)</pre>
+<div class="block">Get the default AI Agent use for the given mode.</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>api</code> - The API connection to be used by the created user.</dd>
+<dd><code>mode</code> - The mode to filter the agent config to return.</dd>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>A successful response including the default agent configuration.</dd>
+</dl>
+</li>
+</ul>
+<a name="getAiAgentDefaultConfig-com.box.sdk.BoxAPIConnection-com.box.sdk.BoxAIAgent.Mode-java.lang.String-java.lang.String-">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>getAiAgentDefaultConfig</h4>
+<pre>public static&nbsp;<a href="../../../com/box/sdk/BoxAIAgent.html" title="class in com.box.sdk">BoxAIAgent</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxAI.html#line.194">getAiAgentDefaultConfig</a>(<a href="../../../com/box/sdk/BoxAPIConnection.html" title="class in com.box.sdk">BoxAPIConnection</a>&nbsp;api,
+                                                 <a href="../../../com/box/sdk/BoxAIAgent.Mode.html" title="enum in com.box.sdk">BoxAIAgent.Mode</a>&nbsp;mode,
+                                                 <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;language,
+                                                 <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;model)</pre>
+<div class="block">Get the default AI Agent use for the given mode.</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>api</code> - The API connection to be used by the created user.</dd>
+<dd><code>mode</code> - The mode to filter the agent config to return.</dd>
+<dd><code>language</code> - The language to filter the agent config to return.</dd>
+<dd><code>model</code> - The model to filter the agent config to return.</dd>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>A successful response including the default agent configuration.</dd>
+</dl>
+</li>
+</ul>
+<a name="extractMetadataFreeform-com.box.sdk.BoxAPIConnection-java.lang.String-java.util.List-">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>extractMetadataFreeform</h4>
+<pre>public static&nbsp;<a href="../../../com/box/sdk/BoxAIResponse.html" title="class in com.box.sdk">BoxAIResponse</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxAI.html#line.260">extractMetadataFreeform</a>(<a href="../../../com/box/sdk/BoxAPIConnection.html" title="class in com.box.sdk">BoxAPIConnection</a>&nbsp;api,
+                                                    <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;prompt,
+                                                    <a href="https://docs.oracle.com/javase/8/docs/api/java/util/List.html?is-external=true" title="class or interface in java.util">List</a>&lt;<a href="../../../com/box/sdk/BoxAIItem.html" title="class in com.box.sdk">BoxAIItem</a>&gt;&nbsp;items)</pre>
+<div class="block">Sends an AI request to supported Large Language Models (LLMs) and extracts metadata in form of key-value pairs.
+ Freeform metadata extraction does not require any metadata template setup before sending the request.</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>api</code> - the API connection to be used by the created user.</dd>
+<dd><code>prompt</code> - The prompt provided by the client to be answered by the LLM.</dd>
+<dd><code>items</code> - The items to be processed by the LLM, currently only files are supported.</dd>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>The response from the AI.</dd>
+</dl>
+</li>
+</ul>
+<a name="extractMetadataFreeform-com.box.sdk.BoxAPIConnection-java.lang.String-java.util.List-com.box.sdk.BoxAIAgentExtract-">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>extractMetadataFreeform</h4>
+<pre>public static&nbsp;<a href="../../../com/box/sdk/BoxAIResponse.html" title="class in com.box.sdk">BoxAIResponse</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxAI.html#line.276">extractMetadataFreeform</a>(<a href="../../../com/box/sdk/BoxAPIConnection.html" title="class in com.box.sdk">BoxAPIConnection</a>&nbsp;api,
+                                                    <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;prompt,
+                                                    <a href="https://docs.oracle.com/javase/8/docs/api/java/util/List.html?is-external=true" title="class or interface in java.util">List</a>&lt;<a href="../../../com/box/sdk/BoxAIItem.html" title="class in com.box.sdk">BoxAIItem</a>&gt;&nbsp;items,
+                                                    <a href="../../../com/box/sdk/BoxAIAgentExtract.html" title="class in com.box.sdk">BoxAIAgentExtract</a>&nbsp;agent)</pre>
+<div class="block">Sends an AI request to supported Large Language Models (LLMs) and extracts metadata in form of key-value pairs.
+ Freeform metadata extraction does not require any metadata template setup before sending the request.</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>api</code> - the API connection to be used by the created user.</dd>
+<dd><code>prompt</code> - The prompt provided by the client to be answered by the LLM.</dd>
+<dd><code>items</code> - The items to be processed by the LLM, currently only files are supported.</dd>
+<dd><code>agent</code> - The AI agent configuration to be used for the request.</dd>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>The response from the AI.</dd>
+</dl>
+</li>
+</ul>
+<a name="extractMetadataStructured-com.box.sdk.BoxAPIConnection-java.util.List-com.box.sdk.BoxAIExtractMetadataTemplate-">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>extractMetadataStructured</h4>
+<pre>public static&nbsp;<a href="../../../com/box/sdk/BoxAIExtractStructuredResponse.html" title="class in com.box.sdk">BoxAIExtractStructuredResponse</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxAI.html#line.312">extractMetadataStructured</a>(<a href="../../../com/box/sdk/BoxAPIConnection.html" title="class in com.box.sdk">BoxAPIConnection</a>&nbsp;api,
+                                                                       <a href="https://docs.oracle.com/javase/8/docs/api/java/util/List.html?is-external=true" title="class or interface in java.util">List</a>&lt;<a href="../../../com/box/sdk/BoxAIItem.html" title="class in com.box.sdk">BoxAIItem</a>&gt;&nbsp;items,
+                                                                       <a href="../../../com/box/sdk/BoxAIExtractMetadataTemplate.html" title="class in com.box.sdk">BoxAIExtractMetadataTemplate</a>&nbsp;template)</pre>
+<div class="block">Sends an AI request to supported Large Language Models (LLMs) and returns extracted metadata as a set of
+ key-value pairs. For this request, you need to use an already defined metadata template or a define a
+ schema yourself.</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>api</code> - The API connection to be used by the created user.</dd>
+<dd><code>items</code> - The items to be processed by the LLM, currently only files are supported.</dd>
+<dd><code>template</code> - The metadata template to be used for the request.</dd>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>The response from the AI.</dd>
+</dl>
+</li>
+</ul>
+<a name="extractMetadataStructured-com.box.sdk.BoxAPIConnection-java.util.List-com.box.sdk.BoxAIExtractMetadataTemplate-com.box.sdk.BoxAIAgentExtractStructured-">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>extractMetadataStructured</h4>
+<pre>public static&nbsp;<a href="../../../com/box/sdk/BoxAIExtractStructuredResponse.html" title="class in com.box.sdk">BoxAIExtractStructuredResponse</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxAI.html#line.328">extractMetadataStructured</a>(<a href="../../../com/box/sdk/BoxAPIConnection.html" title="class in com.box.sdk">BoxAPIConnection</a>&nbsp;api,
+                                                                       <a href="https://docs.oracle.com/javase/8/docs/api/java/util/List.html?is-external=true" title="class or interface in java.util">List</a>&lt;<a href="../../../com/box/sdk/BoxAIItem.html" title="class in com.box.sdk">BoxAIItem</a>&gt;&nbsp;items,
+                                                                       <a href="../../../com/box/sdk/BoxAIExtractMetadataTemplate.html" title="class in com.box.sdk">BoxAIExtractMetadataTemplate</a>&nbsp;template,
+                                                                       <a href="../../../com/box/sdk/BoxAIAgentExtractStructured.html" title="class in com.box.sdk">BoxAIAgentExtractStructured</a>&nbsp;agent)</pre>
+<div class="block">Sends an AI request to supported Large Language Models (LLMs) and returns extracted metadata as a set of
+ key-value pairs. For this request, you need to use an already defined metadata template or a define a
+ schema yourself.</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>api</code> - The API connection to be used by the created user.</dd>
+<dd><code>items</code> - The items to be processed by the LLM, currently only files are supported.</dd>
+<dd><code>template</code> - The metadata template to be used for the request.</dd>
+<dd><code>agent</code> - The AI agent configuration to be used for the request.</dd>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>The response from the AI.</dd>
+</dl>
+</li>
+</ul>
+<a name="extractMetadataStructured-com.box.sdk.BoxAPIConnection-java.util.List-java.util.List-">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>extractMetadataStructured</h4>
+<pre>public static&nbsp;<a href="../../../com/box/sdk/BoxAIExtractStructuredResponse.html" title="class in com.box.sdk">BoxAIExtractStructuredResponse</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxAI.html#line.344">extractMetadataStructured</a>(<a href="../../../com/box/sdk/BoxAPIConnection.html" title="class in com.box.sdk">BoxAPIConnection</a>&nbsp;api,
+                                                                       <a href="https://docs.oracle.com/javase/8/docs/api/java/util/List.html?is-external=true" title="class or interface in java.util">List</a>&lt;<a href="../../../com/box/sdk/BoxAIItem.html" title="class in com.box.sdk">BoxAIItem</a>&gt;&nbsp;items,
+                                                                       <a href="https://docs.oracle.com/javase/8/docs/api/java/util/List.html?is-external=true" title="class or interface in java.util">List</a>&lt;<a href="../../../com/box/sdk/BoxAIExtractField.html" title="class in com.box.sdk">BoxAIExtractField</a>&gt;&nbsp;fields)</pre>
+<div class="block">Sends an AI request to supported Large Language Models (LLMs) and returns extracted metadata as a set of
+ key-value pairs. For this request, you need to use an already defined metadata template or a define a
+ schema yourself.</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>api</code> - The API connection to be used by the created user.</dd>
+<dd><code>items</code> - The items to be processed by the LLM, currently only files are supported.</dd>
+<dd><code>fields</code> - The fields to be extracted from the items.</dd>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>The response from the AI.</dd>
+</dl>
+</li>
+</ul>
+<a name="extractMetadataStructured-com.box.sdk.BoxAPIConnection-java.util.List-java.util.List-com.box.sdk.BoxAIAgentExtractStructured-">
+<!--   -->
+</a>
+<ul class="blockListLast">
+<li class="blockList">
+<h4>extractMetadataStructured</h4>
+<pre>public static&nbsp;<a href="../../../com/box/sdk/BoxAIExtractStructuredResponse.html" title="class in com.box.sdk">BoxAIExtractStructuredResponse</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxAI.html#line.360">extractMetadataStructured</a>(<a href="../../../com/box/sdk/BoxAPIConnection.html" title="class in com.box.sdk">BoxAPIConnection</a>&nbsp;api,
+                                                                       <a href="https://docs.oracle.com/javase/8/docs/api/java/util/List.html?is-external=true" title="class or interface in java.util">List</a>&lt;<a href="../../../com/box/sdk/BoxAIItem.html" title="class in com.box.sdk">BoxAIItem</a>&gt;&nbsp;items,
+                                                                       <a href="https://docs.oracle.com/javase/8/docs/api/java/util/List.html?is-external=true" title="class or interface in java.util">List</a>&lt;<a href="../../../com/box/sdk/BoxAIExtractField.html" title="class in com.box.sdk">BoxAIExtractField</a>&gt;&nbsp;fields,
+                                                                       <a href="../../../com/box/sdk/BoxAIAgentExtractStructured.html" title="class in com.box.sdk">BoxAIAgentExtractStructured</a>&nbsp;agent)</pre>
+<div class="block">Sends an AI request to supported Large Language Models (LLMs) and returns extracted metadata as a set of
+ key-value pairs. For this request, you need to use an already defined metadata template or a define a
+ schema yourself.</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>api</code> - The API connection to be used by the created user.</dd>
+<dd><code>items</code> - The items to be processed by the LLM, currently only files are supported.</dd>
+<dd><code>fields</code> - The fields to be extracted from the items.</dd>
+<dd><code>agent</code> - The AI agent configuration to be used for the request.</dd>
 <dt><span class="returnLabel">Returns:</span></dt>
 <dd>The response from the AI.</dd>
 </dl>

@@ -454,76 +454,79 @@
 <span class="sourceLineNo">446</span>            this.entityType.toString(), this.entityID);<a name="line.446"></a>
 <span class="sourceLineNo">447</span>    }<a name="line.447"></a>
 <span class="sourceLineNo">448</span><a name="line.448"></a>
-<span class="sourceLineNo">449</span>    private void tryRestoreUsingAccessTokenCache() {<a name="line.449"></a>
-<span class="sourceLineNo">450</span>        if (this.accessTokenCache == null) {<a name="line.450"></a>
-<span class="sourceLineNo">451</span>            //no cache specified so force authentication<a name="line.451"></a>
-<span class="sourceLineNo">452</span>            this.authenticate();<a name="line.452"></a>
-<span class="sourceLineNo">453</span>        } else {<a name="line.453"></a>
-<span class="sourceLineNo">454</span>            String cachedTokenInfo = this.accessTokenCache.get(this.getAccessTokenCacheKey());<a name="line.454"></a>
-<span class="sourceLineNo">455</span>            if (cachedTokenInfo == null) {<a name="line.455"></a>
-<span class="sourceLineNo">456</span>                //not found; probably first time for this client config so authenticate; info will then be cached<a name="line.456"></a>
-<span class="sourceLineNo">457</span>                this.authenticate();<a name="line.457"></a>
-<span class="sourceLineNo">458</span>            } else {<a name="line.458"></a>
-<span class="sourceLineNo">459</span>                //pull access token cache info; authentication will occur as needed (if token is expired)<a name="line.459"></a>
-<span class="sourceLineNo">460</span>                JsonObject json = Json.parse(cachedTokenInfo).asObject();<a name="line.460"></a>
-<span class="sourceLineNo">461</span>                this.setAccessToken(json.get("accessToken").asString());<a name="line.461"></a>
-<span class="sourceLineNo">462</span>                this.setLastRefresh(json.get("lastRefresh").asLong());<a name="line.462"></a>
-<span class="sourceLineNo">463</span>                this.setExpires(json.get("expires").asLong());<a name="line.463"></a>
-<span class="sourceLineNo">464</span>            }<a name="line.464"></a>
-<span class="sourceLineNo">465</span>        }<a name="line.465"></a>
-<span class="sourceLineNo">466</span>    }<a name="line.466"></a>
-<span class="sourceLineNo">467</span><a name="line.467"></a>
-<span class="sourceLineNo">468</span>    private String constructJWTAssertion(NumericDate now) {<a name="line.468"></a>
-<span class="sourceLineNo">469</span>        JwtClaims claims = new JwtClaims();<a name="line.469"></a>
-<span class="sourceLineNo">470</span>        claims.setIssuer(this.getClientID());<a name="line.470"></a>
-<span class="sourceLineNo">471</span>        claims.setAudience(JWT_AUDIENCE);<a name="line.471"></a>
-<span class="sourceLineNo">472</span>        if (now == null) {<a name="line.472"></a>
-<span class="sourceLineNo">473</span>            claims.setExpirationTimeMinutesInTheFuture(0.5f);<a name="line.473"></a>
-<span class="sourceLineNo">474</span>        } else {<a name="line.474"></a>
-<span class="sourceLineNo">475</span>            now.addSeconds(30L);<a name="line.475"></a>
-<span class="sourceLineNo">476</span>            claims.setExpirationTime(now);<a name="line.476"></a>
-<span class="sourceLineNo">477</span>        }<a name="line.477"></a>
-<span class="sourceLineNo">478</span>        claims.setSubject(this.entityID);<a name="line.478"></a>
-<span class="sourceLineNo">479</span>        claims.setClaim("box_sub_type", this.entityType.toString());<a name="line.479"></a>
-<span class="sourceLineNo">480</span>        claims.setGeneratedJwtId(64);<a name="line.480"></a>
-<span class="sourceLineNo">481</span><a name="line.481"></a>
-<span class="sourceLineNo">482</span>        JsonWebSignature jws = new JsonWebSignature();<a name="line.482"></a>
-<span class="sourceLineNo">483</span>        jws.setPayload(claims.toJson());<a name="line.483"></a>
-<span class="sourceLineNo">484</span>        jws.setKey(this.privateKeyDecryptor.decryptPrivateKey(this.privateKey, this.privateKeyPassword));<a name="line.484"></a>
-<span class="sourceLineNo">485</span>        jws.setAlgorithmHeaderValue(this.getAlgorithmIdentifier());<a name="line.485"></a>
-<span class="sourceLineNo">486</span>        jws.setHeader("typ", "JWT");<a name="line.486"></a>
-<span class="sourceLineNo">487</span>        if ((this.publicKeyID != null) &amp;&amp; !this.publicKeyID.isEmpty()) {<a name="line.487"></a>
-<span class="sourceLineNo">488</span>            jws.setHeader("kid", this.publicKeyID);<a name="line.488"></a>
-<span class="sourceLineNo">489</span>        }<a name="line.489"></a>
-<span class="sourceLineNo">490</span><a name="line.490"></a>
-<span class="sourceLineNo">491</span>        String assertion;<a name="line.491"></a>
-<span class="sourceLineNo">492</span><a name="line.492"></a>
-<span class="sourceLineNo">493</span>        try {<a name="line.493"></a>
-<span class="sourceLineNo">494</span>            assertion = jws.getCompactSerialization();<a name="line.494"></a>
-<span class="sourceLineNo">495</span>        } catch (JoseException e) {<a name="line.495"></a>
-<span class="sourceLineNo">496</span>            throw new BoxAPIException("Error serializing JSON Web Token assertion.", e);<a name="line.496"></a>
-<span class="sourceLineNo">497</span>        }<a name="line.497"></a>
-<span class="sourceLineNo">498</span><a name="line.498"></a>
-<span class="sourceLineNo">499</span>        return assertion;<a name="line.499"></a>
-<span class="sourceLineNo">500</span>    }<a name="line.500"></a>
+<span class="sourceLineNo">449</span>    /**<a name="line.449"></a>
+<span class="sourceLineNo">450</span>     * Tries to restore the connection using the access token cache.<a name="line.450"></a>
+<span class="sourceLineNo">451</span>     */<a name="line.451"></a>
+<span class="sourceLineNo">452</span>    public void tryRestoreUsingAccessTokenCache() {<a name="line.452"></a>
+<span class="sourceLineNo">453</span>        if (this.accessTokenCache == null) {<a name="line.453"></a>
+<span class="sourceLineNo">454</span>            //no cache specified so force authentication<a name="line.454"></a>
+<span class="sourceLineNo">455</span>            this.authenticate();<a name="line.455"></a>
+<span class="sourceLineNo">456</span>        } else {<a name="line.456"></a>
+<span class="sourceLineNo">457</span>            String cachedTokenInfo = this.accessTokenCache.get(this.getAccessTokenCacheKey());<a name="line.457"></a>
+<span class="sourceLineNo">458</span>            if (cachedTokenInfo == null) {<a name="line.458"></a>
+<span class="sourceLineNo">459</span>                //not found; probably first time for this client config so authenticate; info will then be cached<a name="line.459"></a>
+<span class="sourceLineNo">460</span>                this.authenticate();<a name="line.460"></a>
+<span class="sourceLineNo">461</span>            } else {<a name="line.461"></a>
+<span class="sourceLineNo">462</span>                //pull access token cache info; authentication will occur as needed (if token is expired)<a name="line.462"></a>
+<span class="sourceLineNo">463</span>                JsonObject json = Json.parse(cachedTokenInfo).asObject();<a name="line.463"></a>
+<span class="sourceLineNo">464</span>                this.setAccessToken(json.get("accessToken").asString());<a name="line.464"></a>
+<span class="sourceLineNo">465</span>                this.setLastRefresh(json.get("lastRefresh").asLong());<a name="line.465"></a>
+<span class="sourceLineNo">466</span>                this.setExpires(json.get("expires").asLong());<a name="line.466"></a>
+<span class="sourceLineNo">467</span>            }<a name="line.467"></a>
+<span class="sourceLineNo">468</span>        }<a name="line.468"></a>
+<span class="sourceLineNo">469</span>    }<a name="line.469"></a>
+<span class="sourceLineNo">470</span><a name="line.470"></a>
+<span class="sourceLineNo">471</span>    private String constructJWTAssertion(NumericDate now) {<a name="line.471"></a>
+<span class="sourceLineNo">472</span>        JwtClaims claims = new JwtClaims();<a name="line.472"></a>
+<span class="sourceLineNo">473</span>        claims.setIssuer(this.getClientID());<a name="line.473"></a>
+<span class="sourceLineNo">474</span>        claims.setAudience(JWT_AUDIENCE);<a name="line.474"></a>
+<span class="sourceLineNo">475</span>        if (now == null) {<a name="line.475"></a>
+<span class="sourceLineNo">476</span>            claims.setExpirationTimeMinutesInTheFuture(0.5f);<a name="line.476"></a>
+<span class="sourceLineNo">477</span>        } else {<a name="line.477"></a>
+<span class="sourceLineNo">478</span>            now.addSeconds(30L);<a name="line.478"></a>
+<span class="sourceLineNo">479</span>            claims.setExpirationTime(now);<a name="line.479"></a>
+<span class="sourceLineNo">480</span>        }<a name="line.480"></a>
+<span class="sourceLineNo">481</span>        claims.setSubject(this.entityID);<a name="line.481"></a>
+<span class="sourceLineNo">482</span>        claims.setClaim("box_sub_type", this.entityType.toString());<a name="line.482"></a>
+<span class="sourceLineNo">483</span>        claims.setGeneratedJwtId(64);<a name="line.483"></a>
+<span class="sourceLineNo">484</span><a name="line.484"></a>
+<span class="sourceLineNo">485</span>        JsonWebSignature jws = new JsonWebSignature();<a name="line.485"></a>
+<span class="sourceLineNo">486</span>        jws.setPayload(claims.toJson());<a name="line.486"></a>
+<span class="sourceLineNo">487</span>        jws.setKey(this.privateKeyDecryptor.decryptPrivateKey(this.privateKey, this.privateKeyPassword));<a name="line.487"></a>
+<span class="sourceLineNo">488</span>        jws.setAlgorithmHeaderValue(this.getAlgorithmIdentifier());<a name="line.488"></a>
+<span class="sourceLineNo">489</span>        jws.setHeader("typ", "JWT");<a name="line.489"></a>
+<span class="sourceLineNo">490</span>        if ((this.publicKeyID != null) &amp;&amp; !this.publicKeyID.isEmpty()) {<a name="line.490"></a>
+<span class="sourceLineNo">491</span>            jws.setHeader("kid", this.publicKeyID);<a name="line.491"></a>
+<span class="sourceLineNo">492</span>        }<a name="line.492"></a>
+<span class="sourceLineNo">493</span><a name="line.493"></a>
+<span class="sourceLineNo">494</span>        String assertion;<a name="line.494"></a>
+<span class="sourceLineNo">495</span><a name="line.495"></a>
+<span class="sourceLineNo">496</span>        try {<a name="line.496"></a>
+<span class="sourceLineNo">497</span>            assertion = jws.getCompactSerialization();<a name="line.497"></a>
+<span class="sourceLineNo">498</span>        } catch (JoseException e) {<a name="line.498"></a>
+<span class="sourceLineNo">499</span>            throw new BoxAPIException("Error serializing JSON Web Token assertion.", e);<a name="line.499"></a>
+<span class="sourceLineNo">500</span>        }<a name="line.500"></a>
 <span class="sourceLineNo">501</span><a name="line.501"></a>
-<span class="sourceLineNo">502</span>    private String getAlgorithmIdentifier() {<a name="line.502"></a>
-<span class="sourceLineNo">503</span>        String algorithmId = AlgorithmIdentifiers.RSA_USING_SHA256;<a name="line.503"></a>
-<span class="sourceLineNo">504</span>        switch (this.encryptionAlgorithm) {<a name="line.504"></a>
-<span class="sourceLineNo">505</span>            case RSA_SHA_384:<a name="line.505"></a>
-<span class="sourceLineNo">506</span>                algorithmId = AlgorithmIdentifiers.RSA_USING_SHA384;<a name="line.506"></a>
-<span class="sourceLineNo">507</span>                break;<a name="line.507"></a>
-<span class="sourceLineNo">508</span>            case RSA_SHA_512:<a name="line.508"></a>
-<span class="sourceLineNo">509</span>                algorithmId = AlgorithmIdentifiers.RSA_USING_SHA512;<a name="line.509"></a>
+<span class="sourceLineNo">502</span>        return assertion;<a name="line.502"></a>
+<span class="sourceLineNo">503</span>    }<a name="line.503"></a>
+<span class="sourceLineNo">504</span><a name="line.504"></a>
+<span class="sourceLineNo">505</span>    private String getAlgorithmIdentifier() {<a name="line.505"></a>
+<span class="sourceLineNo">506</span>        String algorithmId = AlgorithmIdentifiers.RSA_USING_SHA256;<a name="line.506"></a>
+<span class="sourceLineNo">507</span>        switch (this.encryptionAlgorithm) {<a name="line.507"></a>
+<span class="sourceLineNo">508</span>            case RSA_SHA_384:<a name="line.508"></a>
+<span class="sourceLineNo">509</span>                algorithmId = AlgorithmIdentifiers.RSA_USING_SHA384;<a name="line.509"></a>
 <span class="sourceLineNo">510</span>                break;<a name="line.510"></a>
-<span class="sourceLineNo">511</span>            case RSA_SHA_256:<a name="line.511"></a>
-<span class="sourceLineNo">512</span>            default:<a name="line.512"></a>
+<span class="sourceLineNo">511</span>            case RSA_SHA_512:<a name="line.511"></a>
+<span class="sourceLineNo">512</span>                algorithmId = AlgorithmIdentifiers.RSA_USING_SHA512;<a name="line.512"></a>
 <span class="sourceLineNo">513</span>                break;<a name="line.513"></a>
-<span class="sourceLineNo">514</span>        }<a name="line.514"></a>
-<span class="sourceLineNo">515</span><a name="line.515"></a>
-<span class="sourceLineNo">516</span>        return algorithmId;<a name="line.516"></a>
-<span class="sourceLineNo">517</span>    }<a name="line.517"></a>
-<span class="sourceLineNo">518</span>}<a name="line.518"></a>
+<span class="sourceLineNo">514</span>            case RSA_SHA_256:<a name="line.514"></a>
+<span class="sourceLineNo">515</span>            default:<a name="line.515"></a>
+<span class="sourceLineNo">516</span>                break;<a name="line.516"></a>
+<span class="sourceLineNo">517</span>        }<a name="line.517"></a>
+<span class="sourceLineNo">518</span><a name="line.518"></a>
+<span class="sourceLineNo">519</span>        return algorithmId;<a name="line.519"></a>
+<span class="sourceLineNo">520</span>    }<a name="line.520"></a>
+<span class="sourceLineNo">521</span>}<a name="line.521"></a>
 
 
 

@@ -193,25 +193,34 @@
 <span class="sourceLineNo">185</span><a name="line.185"></a>
 <span class="sourceLineNo">186</span>            try {<a name="line.186"></a>
 <span class="sourceLineNo">187</span><a name="line.187"></a>
-<span class="sourceLineNo">188</span>                if (name.equals("type")) {<a name="line.188"></a>
-<span class="sourceLineNo">189</span>                    this.type = CollaboratorType.fromJSONValue(value.asString());<a name="line.189"></a>
-<span class="sourceLineNo">190</span>                } else if (name.equals("name")) {<a name="line.190"></a>
-<span class="sourceLineNo">191</span>                    this.name = value.asString();<a name="line.191"></a>
-<span class="sourceLineNo">192</span>                } else if (name.equals("created_at")) {<a name="line.192"></a>
-<span class="sourceLineNo">193</span>                    this.createdAt = BoxDateFormat.parse(value.asString());<a name="line.193"></a>
-<span class="sourceLineNo">194</span>                } else if (name.equals("modified_at")) {<a name="line.194"></a>
-<span class="sourceLineNo">195</span>                    this.modifiedAt = BoxDateFormat.parse(value.asString());<a name="line.195"></a>
-<span class="sourceLineNo">196</span>                } else if (name.equals("login")) {<a name="line.196"></a>
-<span class="sourceLineNo">197</span>                    this.login = value.asString();<a name="line.197"></a>
-<span class="sourceLineNo">198</span>                } else if (name.equals("group_type")) {<a name="line.198"></a>
-<span class="sourceLineNo">199</span>                    this.groupType = GroupType.fromJSONValue(value.asString());<a name="line.199"></a>
-<span class="sourceLineNo">200</span>                }<a name="line.200"></a>
-<span class="sourceLineNo">201</span>            } catch (Exception e) {<a name="line.201"></a>
-<span class="sourceLineNo">202</span>                throw new BoxDeserializationException(name, value.toString(), e);<a name="line.202"></a>
-<span class="sourceLineNo">203</span>            }<a name="line.203"></a>
-<span class="sourceLineNo">204</span>        }<a name="line.204"></a>
-<span class="sourceLineNo">205</span>    }<a name="line.205"></a>
-<span class="sourceLineNo">206</span>}<a name="line.206"></a>
+<span class="sourceLineNo">188</span>                switch (name) {<a name="line.188"></a>
+<span class="sourceLineNo">189</span>                    case "type":<a name="line.189"></a>
+<span class="sourceLineNo">190</span>                        this.type = CollaboratorType.fromJSONValue(value.asString());<a name="line.190"></a>
+<span class="sourceLineNo">191</span>                        break;<a name="line.191"></a>
+<span class="sourceLineNo">192</span>                    case "name":<a name="line.192"></a>
+<span class="sourceLineNo">193</span>                        this.name = value.asString();<a name="line.193"></a>
+<span class="sourceLineNo">194</span>                        break;<a name="line.194"></a>
+<span class="sourceLineNo">195</span>                    case "created_at":<a name="line.195"></a>
+<span class="sourceLineNo">196</span>                        this.createdAt = BoxDateFormat.parse(value.asString());<a name="line.196"></a>
+<span class="sourceLineNo">197</span>                        break;<a name="line.197"></a>
+<span class="sourceLineNo">198</span>                    case "modified_at":<a name="line.198"></a>
+<span class="sourceLineNo">199</span>                        this.modifiedAt = BoxDateFormat.parse(value.asString());<a name="line.199"></a>
+<span class="sourceLineNo">200</span>                        break;<a name="line.200"></a>
+<span class="sourceLineNo">201</span>                    case "login":<a name="line.201"></a>
+<span class="sourceLineNo">202</span>                        this.login = value.asString();<a name="line.202"></a>
+<span class="sourceLineNo">203</span>                        break;<a name="line.203"></a>
+<span class="sourceLineNo">204</span>                    case "group_type":<a name="line.204"></a>
+<span class="sourceLineNo">205</span>                        this.groupType = GroupType.fromJSONValue(value.asString());<a name="line.205"></a>
+<span class="sourceLineNo">206</span>                        break;<a name="line.206"></a>
+<span class="sourceLineNo">207</span>                    default:<a name="line.207"></a>
+<span class="sourceLineNo">208</span>                        break;<a name="line.208"></a>
+<span class="sourceLineNo">209</span>                }<a name="line.209"></a>
+<span class="sourceLineNo">210</span>            } catch (Exception e) {<a name="line.210"></a>
+<span class="sourceLineNo">211</span>                throw new BoxDeserializationException(name, value.toString(), e);<a name="line.211"></a>
+<span class="sourceLineNo">212</span>            }<a name="line.212"></a>
+<span class="sourceLineNo">213</span>        }<a name="line.213"></a>
+<span class="sourceLineNo">214</span>    }<a name="line.214"></a>
+<span class="sourceLineNo">215</span>}<a name="line.215"></a>
 
 
 
