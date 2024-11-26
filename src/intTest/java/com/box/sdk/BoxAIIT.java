@@ -317,7 +317,7 @@ public class BoxAIIT {
                 JsonObject sourceJson = response.getSourceJson();
                 assertThat(sourceJson.get("firstName").asString(), is(equalTo("John")));
                 assertThat(sourceJson.get("lastName").asString(), is(equalTo("Doe")));
-                assertThat(sourceJson.get("dateOfBirth").asString(), is(equalTo("1990-07-04")));
+                assertThat(sourceJson.get("dateOfBirth").asString(), is(equalTo("1990-07-04T00:00:00Z")));
                 assertThat(sourceJson.get("age").asInt(), is(equalTo(34)));
                 assertThat(sourceJson.get("hobby").asArray().get(0).asString(), is(equalTo("guitar")));
                 assertThat(sourceJson.get("hobby").asArray().get(1).asString(), is(equalTo("books")));
