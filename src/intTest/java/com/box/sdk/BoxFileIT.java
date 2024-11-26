@@ -147,6 +147,27 @@ public class BoxFileIT {
     }
 
     @Test
+    public void getRepresentationContentWithExtractedTextSucceeds() throws InterruptedException {
+        BoxAPIConnection api = jwtApiForServiceAccount();
+        String fileName = "text.pdf";
+        BoxFile file = null;
+        try {
+            file = uploadSampleFileToUniqueFolder(api, fileName);
+            final String fileId = file.getID();
+            String representationHint = "[extracted_text]";
+            ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+            Retry.retry(() -> {
+                new BoxFile(api, fileId).getRepresentationContent(representationHint, outputStream);
+                byte[] downloadedRepresentationContent = outputStream.toByteArray();
+                String text = new String(downloadedRepresentationContent, StandardCharsets.UTF_8);
+                assertTrue(text.contains("Lorem ipsum"));
+            }, 5, 100);
+        } finally {
+            deleteFile(file);
+        }
+    }
+
+    @Test
     public void uploadFileStreamSucceeds() {
         BoxAPIConnection api = jwtApiForServiceAccount();
         BoxFolder folder = getUniqueFolder(api);
@@ -156,7 +177,7 @@ public class BoxFileIT {
 
         BoxFile uploadedFile = null;
         try {
-            InputStream uploadStream =  new ByteArrayInputStream(fileContent);
+            InputStream uploadStream = new ByteArrayInputStream(fileContent);
             BoxFile.Info uploadedFileInfo = folder.uploadFile(uploadStream, BoxFileIT.generateString());
             uploadedFile = uploadedFileInfo.getResource();
 
@@ -552,11 +573,11 @@ public class BoxFileIT {
 
             byte[] fileBytes = "Version 2".getBytes(StandardCharsets.UTF_8);
             uploadedFile.uploadNewVersion(
-                    new ByteArrayInputStream(fileBytes), null, fileBytes.length, mock(ProgressListener.class));
+                new ByteArrayInputStream(fileBytes), null, fileBytes.length, mock(ProgressListener.class));
 
             fileBytes = "Version 3".getBytes(StandardCharsets.UTF_8);
             uploadedFile.uploadNewVersion(
-                    new ByteArrayInputStream(fileBytes), null, fileBytes.length, mock(ProgressListener.class));
+                new ByteArrayInputStream(fileBytes), null, fileBytes.length, mock(ProgressListener.class));
 
             Collection<BoxFileVersion> versionsPart1 = uploadedFile.getVersionsRange(0, 1);
             assertThat(versionsPart1.size(), is(1));

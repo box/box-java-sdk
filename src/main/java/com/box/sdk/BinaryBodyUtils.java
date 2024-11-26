@@ -9,6 +9,7 @@ import java.io.OutputStream;
  */
 final class BinaryBodyUtils {
     private static final int BUFFER_SIZE = 8192;
+    private static final String X_ORIGINAL_CONTENT_LENGTH = "X-Original-Content-Length";
 
     private BinaryBodyUtils() {
         // utility class has no public constructor
@@ -73,10 +74,34 @@ final class BinaryBodyUtils {
             } else {
                 input = response.getBody();
             }
-            writeStreamTo(input, output, response.getContentLength());
+            writeStreamTo(input, output, getContentLengthFromAPIResponse(response));
         } finally {
             response.close();
         }
+    }
+
+    /**
+     * Get the content length from the API response.
+     * In some cases, the Content-Length is not provided in the response headers.
+     * This could happen when getting the content representation for a compressed data.
+     * In that case the API will switch to chunk mode and provide the length in the "X-Original-Content-Length" header.
+     *
+     * @param response API response.
+     * @return Content length.
+     */
+    private static long getContentLengthFromAPIResponse(BoxAPIResponse response) {
+        long length = response.getContentLength();
+        try {
+            if (length == -1 && response.getHeaders().containsKey(X_ORIGINAL_CONTENT_LENGTH)) {
+                length = Integer.parseInt(response.getHeaders().get(X_ORIGINAL_CONTENT_LENGTH).get(0));
+            }
+        } catch (NumberFormatException e) {
+            throw new RuntimeException(
+                "Invalid content length: " + response.getHeaders().get("X-Original-Content-Length"
+                ).get(0));
+        }
+
+        return length;
     }
 
     /**
@@ -127,7 +152,7 @@ final class BinaryBodyUtils {
             }
             if (totalBytesRead != expectedLength) {
                 throw new IOException("Stream ended prematurely. Expected " + expectedLength
-                        + " bytes, but read " + totalBytesRead + " bytes.");
+                    + " bytes, but read " + totalBytesRead + " bytes.");
             }
         } catch (IOException e) {
             throw new RuntimeException("Error during streaming: " + e.getMessage(), e);
