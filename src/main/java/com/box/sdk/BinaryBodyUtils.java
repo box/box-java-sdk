@@ -1,5 +1,6 @@
 package com.box.sdk;
 
+import com.box.sdk.http.HttpHeaders;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -91,14 +92,20 @@ final class BinaryBodyUtils {
      */
     private static long getContentLengthFromAPIResponse(BoxAPIResponse response) {
         long length = response.getContentLength();
-        try {
-            if (length == -1 && response.getHeaders().containsKey(X_ORIGINAL_CONTENT_LENGTH)) {
-                length = Integer.parseInt(response.getHeaders().get(X_ORIGINAL_CONTENT_LENGTH).get(0));
+        if (length == -1) {
+            try {
+                if (response.getHeaders().containsKey(HttpHeaders.CONTENT_LENGTH)) {
+                    length = Integer.parseInt(response.getHeaders().get(HttpHeaders.CONTENT_LENGTH).get(0));
+                } else if (response.getHeaders().containsKey(X_ORIGINAL_CONTENT_LENGTH)) {
+                    length = Integer.parseInt(response.getHeaders().get(X_ORIGINAL_CONTENT_LENGTH).get(0));
+                }
+            } catch (NumberFormatException e) {
+                String headerValue = response.getHeaders().containsKey(HttpHeaders.CONTENT_LENGTH)
+                    ? response.getHeaders().get(HttpHeaders.CONTENT_LENGTH).get(0)
+                    : response.getHeaders().get(X_ORIGINAL_CONTENT_LENGTH).get(0);
+                throw new RuntimeException(
+                    "Invalid content length: " + headerValue);
             }
-        } catch (NumberFormatException e) {
-            throw new RuntimeException(
-                "Invalid content length: " + response.getHeaders().get("X-Original-Content-Length"
-                ).get(0));
         }
 
         return length;
