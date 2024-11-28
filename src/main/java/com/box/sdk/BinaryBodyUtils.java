@@ -10,7 +10,6 @@ import java.io.OutputStream;
  */
 final class BinaryBodyUtils {
     private static final int BUFFER_SIZE = 8192;
-    private static final String X_ORIGINAL_CONTENT_LENGTH = "X-Original-Content-Length";
 
     private BinaryBodyUtils() {
         // utility class has no public constructor
@@ -93,18 +92,19 @@ final class BinaryBodyUtils {
     private static long getContentLengthFromAPIResponse(BoxAPIResponse response) {
         long length = response.getContentLength();
         if (length == -1) {
-            try {
-                if (response.getHeaders().containsKey(HttpHeaders.CONTENT_LENGTH)) {
-                    length = Integer.parseInt(response.getHeaders().get(HttpHeaders.CONTENT_LENGTH).get(0));
-                } else if (response.getHeaders().containsKey(X_ORIGINAL_CONTENT_LENGTH)) {
-                    length = Integer.parseInt(response.getHeaders().get(X_ORIGINAL_CONTENT_LENGTH).get(0));
+            String headerValue = null;
+            if (response.getHeaders().containsKey(HttpHeaders.CONTENT_LENGTH)) {
+                headerValue = response.getHeaders().get(HttpHeaders.CONTENT_LENGTH).get(0);
+            } else if (response.getHeaders().containsKey(HttpHeaders.X_ORIGINAL_CONTENT_LENGTH)) {
+                headerValue = response.getHeaders().get(HttpHeaders.X_ORIGINAL_CONTENT_LENGTH).get(0);
+            }
+
+            if (headerValue != null) {
+                try {
+                    length = Integer.parseInt(headerValue);
+                } catch (NumberFormatException e) {
+                    throw new RuntimeException("Invalid content length: " + headerValue);
                 }
-            } catch (NumberFormatException e) {
-                String headerValue = response.getHeaders().containsKey(HttpHeaders.CONTENT_LENGTH)
-                    ? response.getHeaders().get(HttpHeaders.CONTENT_LENGTH).get(0)
-                    : response.getHeaders().get(X_ORIGINAL_CONTENT_LENGTH).get(0);
-                throw new RuntimeException(
-                    "Invalid content length: " + headerValue);
             }
         }
 
@@ -158,8 +158,8 @@ final class BinaryBodyUtils {
                 totalBytesRead += n;  // Track the total bytes read
             }
             if (totalBytesRead != expectedLength) {
-                throw new IOException("Stream ended prematurely. Expected " + expectedLength
-                    + " bytes, but read " + totalBytesRead + " bytes.");
+                throw new IOException("Stream ended prematurely. Expected "
+                    + expectedLength + " bytes, but read " + totalBytesRead + " bytes.");
             }
         } catch (IOException e) {
             throw new RuntimeException("Error during streaming: " + e.getMessage(), e);
