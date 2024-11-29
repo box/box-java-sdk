@@ -1,5 +1,6 @@
 package com.box.sdk;
 
+import com.box.sdk.http.HttpHeaders;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -73,10 +74,41 @@ final class BinaryBodyUtils {
             } else {
                 input = response.getBody();
             }
-            writeStreamTo(input, output, response.getContentLength());
+            writeStreamTo(input, output, getContentLengthFromAPIResponse(response));
         } finally {
             response.close();
         }
+    }
+
+    /**
+     * Get the content length from the API response.
+     * In some cases, the Content-Length is not provided in the response headers.
+     * This could happen when getting the content representation for a compressed data.
+     * In that case the API will switch to chunk mode and provide the length in the "X-Original-Content-Length" header.
+     *
+     * @param response API response.
+     * @return Content length.
+     */
+    private static long getContentLengthFromAPIResponse(BoxAPIResponse response) {
+        long length = response.getContentLength();
+        if (length == -1) {
+            String headerValue = null;
+            if (response.getHeaders().containsKey(HttpHeaders.CONTENT_LENGTH)) {
+                headerValue = response.getHeaders().get(HttpHeaders.CONTENT_LENGTH).get(0);
+            } else if (response.getHeaders().containsKey(HttpHeaders.X_ORIGINAL_CONTENT_LENGTH)) {
+                headerValue = response.getHeaders().get(HttpHeaders.X_ORIGINAL_CONTENT_LENGTH).get(0);
+            }
+
+            if (headerValue != null) {
+                try {
+                    length = Integer.parseInt(headerValue);
+                } catch (NumberFormatException e) {
+                    throw new RuntimeException("Invalid content length: " + headerValue);
+                }
+            }
+        }
+
+        return length;
     }
 
     /**
@@ -126,8 +158,8 @@ final class BinaryBodyUtils {
                 totalBytesRead += n;  // Track the total bytes read
             }
             if (totalBytesRead != expectedLength) {
-                throw new IOException("Stream ended prematurely. Expected " + expectedLength
-                        + " bytes, but read " + totalBytesRead + " bytes.");
+                throw new IOException("Stream ended prematurely. Expected "
+                    + expectedLength + " bytes, but read " + totalBytesRead + " bytes.");
             }
         } catch (IOException e) {
             throw new RuntimeException("Error during streaming: " + e.getMessage(), e);
