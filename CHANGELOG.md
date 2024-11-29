@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [4.13.1](https://github.com/box/box-java-sdk/compare/v4.13.0...v4.13.1) (2024-11-29)
+
+
+### Bug Fixes:
+
+* Correctly calculate `Content-Length` when reading from a stream ([#1277](https://github.com/box/box-java-sdk/issues/1277)) ([b1d5371](https://github.com/box/box-java-sdk/commit/b1d5371491abe1729a95eb9dc39d375135c8681d))
+
 ## [4.13.0](https://github.com/box/box-java-sdk/compare/v4.12.0...v4.13.0) (2024-11-21)
 
 
