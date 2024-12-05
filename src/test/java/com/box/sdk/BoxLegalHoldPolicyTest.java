@@ -190,7 +190,7 @@ public class BoxLegalHoldPolicyTest {
     }
 
     @Test
-    public void testCreateOngoingWithSTartDateNewLegalHoldPolicySucceedsAndSendsCorrectJson() throws ParseException {
+    public void testCreateOngoingWithStartDateNewLegalHoldPolicySucceedsAndSendsCorrectJson() throws ParseException {
         final String legalHoldsURL = "/2.0/legal_hold_policies";
         final String policyID = "11111";
         final String createdByID = "33333";
