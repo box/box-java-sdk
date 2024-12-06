@@ -189,6 +189,47 @@ public class BoxLegalHoldPolicyTest {
         Assert.assertTrue(policyInfo.getIsOngoing());
     }
 
+    @Test
+    public void testCreateOngoingWithStartDateNewLegalHoldPolicySucceedsAndSendsCorrectJson() throws ParseException {
+        final String legalHoldsURL = "/2.0/legal_hold_policies";
+        final String policyID = "11111";
+        final String createdByID = "33333";
+        final String createdByName = "Test User";
+        final String createdByLogin = "testuser@example.com";
+        final String policyName = "Trial Documents";
+        final String description = "This is a description.";
+        final String startTimeString = "2018-04-25T23:37:05Z";
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssX");
+        final Date startTime = dateFormat.parse("2018-04-25T16:37:05-07:00");
+
+        JsonObject policyObject = new JsonObject()
+                .add("policy_name", policyName)
+                .add("is_ongoing", true)
+                .add("description", description)
+                .add("filter_started_at", startTimeString);
+
+        String result = TestUtils.getFixture("BoxLegalHold/PostOngoingWithStartDateLegalHoldPolicies201");
+
+        wireMockRule.stubFor(WireMock.post(WireMock.urlPathEqualTo(legalHoldsURL))
+                .withRequestBody(WireMock.equalToJson(policyObject.toString()))
+                .willReturn(WireMock.aResponse()
+                        .withHeader("Content-Type", APPLICATION_JSON)
+                        .withBody(result)));
+
+        BoxLegalHoldPolicy.Info policyInfo = BoxLegalHoldPolicy.createOngoing(
+                this.api, policyName, description, startTime
+        );
+
+        Assert.assertEquals(policyID, policyInfo.getID());
+        Assert.assertEquals(createdByID, policyInfo.getCreatedBy().getID());
+        Assert.assertEquals(createdByName, policyInfo.getCreatedBy().getName());
+        Assert.assertEquals(createdByLogin, policyInfo.getCreatedBy().getLogin());
+        Assert.assertEquals(policyName, policyInfo.getPolicyName());
+        Assert.assertEquals(description, policyInfo.getDescription());
+        Assert.assertEquals(startTime, policyInfo.getFilterStartedAt());
+        Assert.assertTrue(policyInfo.getIsOngoing());
+    }
+
 
     @Test
     public void testUpdateLegalHoldPolicySucceedsAndSendsCorrectJson() {

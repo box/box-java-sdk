@@ -101,13 +101,32 @@ public class BoxLegalHoldPolicy extends BoxResource {
      * @return information about the Legal Hold Policy created.
      */
     public static BoxLegalHoldPolicy.Info createOngoing(BoxAPIConnection api, String name, String description) {
+        return createOngoing(api, name, description, null);
+    }
+
+
+    /**
+     * Creates a new ongoing Legal Hold Policy.
+     *
+     * @param api         the API connection to be used by the resource.
+     * @param name        the name of Legal Hold Policy.
+     * @param description the description of Legal Hold Policy.
+     * @param filterStartedAt optional date filter applies to Custodian assignments only.
+     * @return information about the Legal Hold Policy created.
+     */
+    public static BoxLegalHoldPolicy.Info createOngoing(
+            BoxAPIConnection api, String name, String description, Date filterStartedAt
+    ) {
         URL url = ALL_LEGAL_HOLD_URL_TEMPLATE.build(api.getBaseURL());
         BoxJSONRequest request = new BoxJSONRequest(api, url, "POST");
         JsonObject requestJSON = new JsonObject()
-            .add("policy_name", name)
-            .add("is_ongoing", true);
+                .add("policy_name", name)
+                .add("is_ongoing", true);
         if (description != null) {
             requestJSON.add("description", description);
+        }
+        if (filterStartedAt != null) {
+            requestJSON.add("filter_started_at", BoxDateFormat.format(filterStartedAt));
         }
         request.setBody(requestJSON.toString());
         try (BoxJSONResponse response = request.send()) {

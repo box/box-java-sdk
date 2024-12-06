@@ -11,6 +11,7 @@ import org.junit.Test;
 
 import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
@@ -364,10 +365,10 @@ public class BoxAITest {
             "The name of the file",
             "Name",
             "name",
-            new ArrayList<BoxAIExtractFieldOption>() {{
-                    add(new BoxAIExtractFieldOption("option 1"));
-                    add(new BoxAIExtractFieldOption("option 2"));
-                }},
+                Arrays.asList(
+                    new BoxAIExtractFieldOption("option 1"),
+                    new BoxAIExtractFieldOption("option 2")
+                ),
             "What is the name of the file?");
 
         final JsonObject expectedRequestBody = new JsonObject()
