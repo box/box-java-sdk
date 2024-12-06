@@ -11,6 +11,11 @@ public final class HttpHeaders {
     public static final String CONTENT_LENGTH = "Content-Length";
 
     /**
+     * HTTP header key X-Original-Content-Length.
+     */
+    public static final String X_ORIGINAL_CONTENT_LENGTH = "X-Original-Content-Length";
+
+    /**
      * HTTP header key Content-Type.
      */
     public static final String CONTENT_TYPE = "Content-Type";
