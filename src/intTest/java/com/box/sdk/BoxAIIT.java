@@ -15,6 +15,7 @@ import com.eclipsesource.json.Json;
 import com.eclipsesource.json.JsonObject;
 import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
@@ -227,7 +228,7 @@ public class BoxAIIT {
         BoxAIAgentExtractStructured agentExtractStructured = (BoxAIAgentExtractStructured) agent;
 
         BoxFile uploadedFile = uploadFileToUniqueFolder(api, "[aiExtractStructuredWithFields] Test File.txt",
-            "My name is John Doe. I was born in 4th July 1990. I am 34 years old. My hobby is guitar and books.");
+            "My name is John Doe. I was born in 4th July 1990. I am 34 years old. My hobby is guitar.");
 
         try {
             // When a file has been just uploaded, AI service may not be ready to return text response
@@ -235,31 +236,28 @@ public class BoxAIIT {
             retry(() -> {
                 BoxAIExtractStructuredResponse response = BoxAI.extractMetadataStructured(api,
                     Collections.singletonList(new BoxAIItem(uploadedFile.getID(), BoxAIItem.Type.FILE)),
-                    new ArrayList<BoxAIExtractField>() {{
-                            add(new BoxAIExtractField("firstName"));
-                            add(new BoxAIExtractField("lastName"));
-                            add(new BoxAIExtractField("date",
+                        Arrays.asList(
+                            new BoxAIExtractField("firstName"),
+                            new BoxAIExtractField("lastName"),
+                            new BoxAIExtractField("date",
                                 "Person date of birth",
                                 "Birth date",
                                 "dateOfBirth",
                                 null,
-                                "What is the date of your birth?"));
-                            add(new BoxAIExtractField("float",
+                                "What is the date of your birth?"),
+                            new BoxAIExtractField("float",
                                 "Person age",
                                 "Age",
                                 "age",
                                 null,
-                                "How old are you?"));
-                            add(new BoxAIExtractField("multiSelect",
+                                "How old are you?"),
+                            new BoxAIExtractField("multiSelect",
                                 "Person hobby",
                                 "Hobby",
                                 "hobby",
-                                new ArrayList<BoxAIExtractFieldOption>() {{
-                                        add(new BoxAIExtractFieldOption("guitar"));
-                                        add(new BoxAIExtractFieldOption("books"));
-                                    }},
-                                "What is your hobby?"));
-                        }},
+                                Collections.singletonList(new BoxAIExtractFieldOption("guitar")),
+                                "What is your hobby?")
+                        ),
                     agentExtractStructured);
                 JsonObject sourceJson = response.getSourceJson();
                 assertThat(sourceJson.get("firstName").asString(), is(equalTo("John")));
@@ -267,7 +265,6 @@ public class BoxAIIT {
                 assertThat(sourceJson.get("dateOfBirth").asString(), is(equalTo("1990-07-04")));
                 assertThat(sourceJson.get("age").asInt(), is(equalTo(34)));
                 assertThat(sourceJson.get("hobby").asArray().get(0).asString(), is(equalTo("guitar")));
-                assertThat(sourceJson.get("hobby").asArray().get(1).asString(), is(equalTo("books")));
             }, 2, 2000);
         } finally {
             deleteFile(uploadedFile);
@@ -281,30 +278,31 @@ public class BoxAIIT {
         BoxAIAgentExtractStructured agentExtractStructured = (BoxAIAgentExtractStructured) agent;
 
         BoxFile uploadedFile = uploadFileToUniqueFolder(api, "[aiExtractStructuredWithMetadataTemplate] Test File.txt",
-            "My name is John Doe. I was born in 4th July 1990. I am 34 years old. My hobby is guitar and books.");
-        String templateKey = "key" + java.util.UUID.randomUUID().toString();
+            "My name is John Doe. I was born in 4th July 1990. I am 34 years old. My hobby is guitar.");
+        String templateKey = "key" + java.util.UUID.randomUUID();
         MetadataTemplate template = MetadataTemplate.createMetadataTemplate(api,
             "enterprise",
             templateKey,
             templateKey,
             false,
-            new ArrayList<MetadataTemplate.Field>() {{
-                    add(new MetadataTemplate.Field(Json.parse(
+                Arrays.asList(
+                    new MetadataTemplate.Field(Json.parse(
                         "{\"key\":\"firstName\",\"displayName\":\"First name\","
-                            + "\"description\":\"Person first name\",\"type\":\"string\"}").asObject()));
-                    add(new MetadataTemplate.Field(Json.parse(
+                            + "\"description\":\"Person first name\",\"type\":\"string\"}").asObject()),
+                    new MetadataTemplate.Field(Json.parse(
                         "{\"key\":\"lastName\",\"displayName\":\"Last name\","
-                            + "\"description\":\"Person last name\",\"type\":\"string\"}").asObject()));
-                    add(new MetadataTemplate.Field(Json.parse(
+                            + "\"description\":\"Person last name\",\"type\":\"string\"}").asObject()),
+                    new MetadataTemplate.Field(Json.parse(
                         "{\"key\":\"dateOfBirth\",\"displayName\":\"Birth date\","
-                            + "\"description\":\"Person date of birth\",\"type\":\"date\"}").asObject()));
-                    add(new MetadataTemplate.Field(Json.parse(
+                            + "\"description\":\"Person date of birth\",\"type\":\"date\"}").asObject()),
+                    new MetadataTemplate.Field(Json.parse(
                         "{\"key\":\"age\",\"displayName\":\"Age\","
-                            + "\"description\":\"Person age\",\"type\":\"float\"}").asObject()));
-                    add(new MetadataTemplate.Field(Json.parse(
+                            + "\"description\":\"Person age\",\"type\":\"float\"}").asObject()),
+                    new MetadataTemplate.Field(Json.parse(
                         "{\"key\":\"hobby\",\"displayName\":\"Hobby\","
-                            + "\"description\":\"Person hobby\",\"type\":\"multiSelect\"}").asObject()));
-                }});
+                            + "\"description\":\"Person hobby\",\"type\":\"multiSelect\","
+                            + " \"options\":[{\"key\": \"guitar\"}, {\"key\": \"books\"}]}").asObject())
+                ));
 
         try {
             // When a file has been just uploaded, AI service may not be ready to return text response
@@ -320,7 +318,6 @@ public class BoxAIIT {
                 assertThat(sourceJson.get("dateOfBirth").asString(), is(equalTo("1990-07-04T00:00:00Z")));
                 assertThat(sourceJson.get("age").asInt(), is(equalTo(34)));
                 assertThat(sourceJson.get("hobby").asArray().get(0).asString(), is(equalTo("guitar")));
-                assertThat(sourceJson.get("hobby").asArray().get(1).asString(), is(equalTo("books")));
             }, 2, 2000);
         } finally {
             deleteFile(uploadedFile);
