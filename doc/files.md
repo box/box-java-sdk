@@ -682,7 +682,7 @@ BoxItem.Info itemInfo = BoxItem.getSharedItem(api, sharedLink, password);
 [get-shared-item]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxItem.html#getSharedItem-com.box.sdk.BoxAPIConnection-java.lang.String-
 [get-shared-item-password]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxItem.html#getSharedItem-com.box.sdk.BoxAPIConnection-java.lang.String-java.lang.String-
 
-Download File for Shared Link
+Download File from Shared Link
 ---------------
 
 A file can be downloaded via a shared link
@@ -716,8 +716,9 @@ BoxFile.downloadFromSharedLink(api, stream, sharedLink, password, new ProgressLi
 });
 stream.close();
 ```
-[download-from-shared-link-password]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxFile.html#createSharedLink-com.box.sdk.sharedlink.BoxSharedLinkRequest-
-[download-from-shared-link-password-progress]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxFile.html#createSharedLink-com.box.sdk.sharedlink.BoxSharedLinkRequest-
+[download-from-shared-link]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxFile.html#downloadFromSharedLink-com.box.sdk.BoxAPIConnection-java.io.OutputStream-java.lang.String-
+[download-from-shared-link-password]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxFile.html#downloadFromSharedLink-com.box.sdk.BoxAPIConnection-java.io.OutputStream-java.lang.String-java.lang.String-
+[download-from-shared-link-password-progress]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxFile.html#downloadFromSharedLink-com.box.sdk.BoxAPIConnection-java.io.OutputStream-java.lang.String-java.lang.String-com.box.sdk.ProgressListener-
 
 Create a Shared Link
 --------------------
