@@ -29,6 +29,7 @@ file's contents, upload new versions, and perform other common file operations
 - [Lock a File](#lock-a-file)
 - [Unlock a File](#unlock-a-file)
 - [Find File for Shared Link](#find-file-for-shared-link)
+- [Download File for Shared Link](#download-file-for-shared-link)
 - [Create a Shared Link](#create-a-shared-link)
 - [Get a Shared Link](#get-a-shared-link)
 - [Update a Shared Link](#update-a-shared-link)
@@ -681,6 +682,44 @@ BoxItem.Info itemInfo = BoxItem.getSharedItem(api, sharedLink, password);
 [get-shared-item]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxItem.html#getSharedItem-com.box.sdk.BoxAPIConnection-java.lang.String-
 [get-shared-item-password]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxItem.html#getSharedItem-com.box.sdk.BoxAPIConnection-java.lang.String-java.lang.String-
 
+Download File from Shared Link
+---------------
+
+A file can be downloaded via a shared link
+by calling [`downloadFromSharedLink(BoxAPIConnection api, OutputStream output, String sharedLink)`][download-from-shared-link]
+and providing an `OutputStream` where the file's contents will be written and shared link of the file.
+
+If the shared link is password-protected, call 
+[`downloadFromSharedLink(BoxAPIConnection api, OutputStream output, String sharedLink, String password)`][download-from-shared-link-password]
+method.
+
+```java
+FileOutputStream stream = new FileOutputStream("My File.txt");
+String sharedLink = "https://cloud.box.com/s/12339wbq4c7y2xd3drg4j9j9wer3ptt6n";
+String password = "Secret123@";
+BoxFile.downloadFromSharedLink(api, stream, sharedLink, password);
+stream.close();
+```
+
+Download progress can be tracked by providing a [`ProgressListener`][progress]
+to [` downloadFromSharedLink(BoxAPIConnection api, OutputStream output, String sharedLink, String password, ProgressListener listener)`][download-from-shared-link-password-progress].
+The `ProgressListener` will then receive progress updates as the download
+completes.
+
+```java
+FileOutputStream stream = new FileOutputStream("My File.txt");
+// Provide a ProgressListener to monitor the progress of the download.
+BoxFile.downloadFromSharedLink(api, stream, sharedLink, password, new ProgressListener() {
+    public void onProgressChanged(long numBytes, long totalBytes) {
+        double percentComplete = numBytes / totalBytes;
+    }
+});
+stream.close();
+```
+[download-from-shared-link]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxFile.html#downloadFromSharedLink-com.box.sdk.BoxAPIConnection-java.io.OutputStream-java.lang.String-
+[download-from-shared-link-password]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxFile.html#downloadFromSharedLink-com.box.sdk.BoxAPIConnection-java.io.OutputStream-java.lang.String-java.lang.String-
+[download-from-shared-link-password-progress]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxFile.html#downloadFromSharedLink-com.box.sdk.BoxAPIConnection-java.io.OutputStream-java.lang.String-java.lang.String-com.box.sdk.ProgressListener-
+
 Create a Shared Link
 --------------------
 
@@ -719,9 +758,9 @@ Retrieve the shared link for a file by calling
 <!-- sample get_files_id get_shared_link -->
 ```java
 BoxFile file = new BoxFile(api, "id");
-BoxFile.Info info = file.getInfo()
-BoxSharedLink link = info.getSharedLink()
-String url = link.getUrl()
+BoxFile.Info info = file.getInfo();
+BoxSharedLink link = info.getSharedLink();
+String url = link.getUrl();
 ```
 
 [get-shared-link]: http://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxItem.Info.html#getSharedLink--

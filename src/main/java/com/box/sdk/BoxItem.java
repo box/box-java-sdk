@@ -60,11 +60,18 @@ public abstract class BoxItem extends BoxResource {
      *
      * @param api        the API connection to be used by the shared item.
      * @param sharedLink the shared link to the item.
-     * @param password   the password for the shared link.
+     * @param password   the password for the shared link. Use `null` if shared link has no password.
+     * @param fields     the fields to retrieve.
      * @return info about the shared item.
      */
-    public static BoxItem.Info getSharedItem(BoxAPIConnection api, String sharedLink, String password) {
-        URL url = SHARED_ITEM_URL_TEMPLATE.build(api.getBaseURL());
+    public static BoxItem.Info getSharedItem(
+            BoxAPIConnection api, String sharedLink, String password, String... fields
+    ) {
+        QueryStringBuilder builder = new QueryStringBuilder();
+        if (fields.length > 0) {
+            builder.appendParam("fields", fields);
+        }
+        URL url = SHARED_ITEM_URL_TEMPLATE.buildWithQuery(api.getBaseURL(), builder.toString());
         BoxJSONRequest request = new BoxJSONRequest(api, url, "GET");
 
         request.addHeader("BoxApi", BoxSharedLink.getSharedLinkHeaderValue(sharedLink, password));
@@ -213,6 +220,7 @@ public abstract class BoxItem extends BoxResource {
         private String itemStatus;
         private Date expiresAt;
         private Set<BoxCollection.Info> collections;
+        private String downloadUrl;
 
         /**
          * Constructs an empty Info object.
@@ -492,6 +500,14 @@ public abstract class BoxItem extends BoxResource {
             return this.collections;
         }
 
+        /***
+         * Gets URL that can be used to download the file.
+         * @return
+         */
+        public String getDownloadUrl() {
+            return this.downloadUrl;
+        }
+
         /**
          * Sets the collections that this item belongs to.
          *
@@ -612,6 +628,9 @@ public abstract class BoxItem extends BoxResource {
                             BoxCollection.Info collectionInfo = collection.new Info(jsonObject);
                             this.collections.add(collectionInfo);
                         }
+                        break;
+                    case "download_url":
+                        this.downloadUrl = value.asString();
                         break;
                     default:
                         break;
