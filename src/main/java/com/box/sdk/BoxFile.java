@@ -313,6 +313,67 @@ public class BoxFile extends BoxItem {
     }
 
     /**
+     * Downloads the content of the file to a given OutputStream using the provided shared link.
+     * @param api the API connection to be used to get download URL of the file.
+     * @param output the stream to where the file will be written.
+     * @param sharedLink the shared link of the file.
+     */
+    public static void downloadFromSharedLink(BoxAPIConnection api, OutputStream output, String sharedLink) {
+        downloadFromSharedLink(api, output, sharedLink, null, null);
+    }
+
+    /**
+     * Downloads the content of the file to a given OutputStream using the provided shared link.
+     * @param api the API connection to be used to get download URL of the file.
+     * @param output the stream to where the file will be written.
+     * @param sharedLink the shared link of the file.
+     * @param password the password for the shared link.
+     */
+    public static void downloadFromSharedLink(
+            BoxAPIConnection api, OutputStream output, String sharedLink, String password
+    ) {
+        downloadFromSharedLink(api, output, sharedLink, password, null);
+    }
+
+    /**
+     * Downloads the content of the file to a given OutputStream using the provided shared link.
+     * @param api the API connection to be used to get download URL of the file.
+     * @param output the stream to where the file will be written.
+     * @param sharedLink the shared link of the file.
+     * @param listener a listener for monitoring the download's progress.
+     */
+    public static void downloadFromSharedLink(
+            BoxAPIConnection api, OutputStream output, String sharedLink, ProgressListener listener
+    ) {
+        downloadFromSharedLink(api, output, sharedLink, null, listener);
+    }
+
+    /**
+     * Downloads the content of the file to a given OutputStream using the provided shared link.
+     * @param api the API connection to be used to get download URL of the file.
+     * @param output the stream to where the file will be written.
+     * @param sharedLink the shared link of the file.
+     * @param password the password for the shared link.
+     * @param listener a listener for monitoring the download's progress.
+     */
+    public static void downloadFromSharedLink(
+            BoxAPIConnection api, OutputStream output, String sharedLink, String password, ProgressListener listener
+    ) {
+        BoxItem.Info item = BoxItem.getSharedItem(api, sharedLink, password, "download_url");
+        URL url;
+        try {
+            url = new URL(item.getDownloadUrl());
+        } catch (MalformedURLException e) {
+            throw new RuntimeException(
+                    String.format("Invalid download URL %s for shared link %s", item.getDownloadUrl(), sharedLink), e
+            );
+        }
+        BoxAPIRequest request = new BoxAPIRequest(api, url, "GET");
+        BoxAPIResponse response = request.send();
+        writeStream(response, output, listener);
+    }
+
+    /**
      * Downloads a part of this file's contents, starting at specified byte offset.
      *
      * @param output the stream to where the file will be written.

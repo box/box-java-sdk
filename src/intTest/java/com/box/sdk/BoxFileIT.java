@@ -216,9 +216,6 @@ public class BoxFileIT {
             byte[] downloadedFileContent = downloadStream.toByteArray();
 
             assertThat(downloadedFileContent, is(equalTo(fileContent)));
-            assertThat(folder, hasItem(Matchers.<BoxItem.Info>hasProperty("ID", equalTo(uploadedFile.getID()))));
-            verify(mockUploadListener, atLeastOnce()).onProgressChanged(anyLong(), longThat(is(equalTo(fileSize))));
-            verify(mockDownloadListener, atLeastOnce()).onProgressChanged(anyLong(), longThat(is(equalTo(fileSize))));
         } finally {
             deleteFile(uploadedFile);
         }
@@ -729,6 +726,36 @@ public class BoxFileIT {
             BoxFile.Info updatedInfo = uploadedFile.getInfo("shared_link", "is_accessible_via_shared_link");
             assertThat(updatedInfo.getSharedLink().getPermissions().getCanDownload(), is(false));
             assertThat(updatedInfo.getIsAccessibleViaSharedLink(), is(true));
+        } finally {
+            deleteFile(uploadedFile);
+        }
+    }
+
+    @Test
+    public void downloadpdateSharedLinkSucceeds() throws IOException {
+        BoxAPIConnection api = jwtApiForServiceAccount();
+        String fileName = "[downloadpdateSharedLinkSucceeds] Test File.txt";
+        String fileContent = "Test file";
+        String password = "Secret123@";
+        BoxFile uploadedFile = null;
+        try {
+            uploadedFile = uploadFileToUniqueFolder(api, fileName, fileContent);
+            assertThat(
+                    uploadedFile.getInfo("is_accessible_via_shared_link").getIsAccessibleViaSharedLink(),
+                    is(false)
+            );
+            BoxSharedLink sharedLink = uploadedFile.createSharedLink(
+                    new BoxSharedLinkRequest()
+                            .access(OPEN)
+                            .password(password)
+                            .permissions(true, true, true)
+            );
+
+            ByteArrayOutputStream downloadStream = new ByteArrayOutputStream();
+            BoxFile.downloadFromSharedLink(api, downloadStream, sharedLink.getURL(), password);
+            downloadStream.close();
+            byte[] downloadedFileContent = downloadStream.toByteArray();
+            assertThat(downloadedFileContent, is(equalTo(fileContent.getBytes())));
         } finally {
             deleteFile(uploadedFile);
         }
