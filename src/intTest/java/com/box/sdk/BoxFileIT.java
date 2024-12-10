@@ -216,6 +216,9 @@ public class BoxFileIT {
             byte[] downloadedFileContent = downloadStream.toByteArray();
 
             assertThat(downloadedFileContent, is(equalTo(fileContent)));
+            assertThat(folder, hasItem(Matchers.<BoxItem.Info>hasProperty("ID", equalTo(uploadedFile.getID()))));
+            verify(mockUploadListener, atLeastOnce()).onProgressChanged(anyLong(), longThat(is(equalTo(fileSize))));
+            verify(mockDownloadListener, atLeastOnce()).onProgressChanged(anyLong(), longThat(is(equalTo(fileSize))));
         } finally {
             deleteFile(uploadedFile);
         }
