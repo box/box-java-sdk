@@ -359,16 +359,14 @@ public class BoxFile extends BoxItem {
     public static void downloadFromSharedLink(
             BoxAPIConnection api, OutputStream output, String sharedLink, String password, ProgressListener listener
     ) {
-        BoxItem.Info item = BoxItem.getSharedItem(api, sharedLink, password, "download_url");
-        URL url;
-        try {
-            url = new URL(item.getDownloadUrl());
-        } catch (MalformedURLException e) {
-            throw new RuntimeException(
-                    String.format("Invalid download URL %s for shared link %s", item.getDownloadUrl(), sharedLink), e
-            );
+        BoxItem.Info item = BoxItem.getSharedItem(api, sharedLink, password, "id");
+        if (!(item instanceof BoxFile.Info)) {
+            throw new BoxAPIException("The shared link provided is not a shared link for a file.");
         }
+        BoxFile sharedFile = new BoxFile(api, item.getID());
+        URL url = sharedFile.getDownloadUrl();
         BoxAPIRequest request = new BoxAPIRequest(api, url, "GET");
+        request.addHeader("BoxApi", BoxSharedLink.getSharedLinkHeaderValue(sharedLink, password));
         BoxAPIResponse response = request.send();
         writeStream(response, output, listener);
     }
