@@ -735,6 +735,36 @@ public class BoxFileIT {
     }
 
     @Test
+    public void downloadpdateSharedLinkSucceeds() throws IOException {
+        BoxAPIConnection api = jwtApiForServiceAccount();
+        String fileName = "[downloadpdateSharedLinkSucceeds] Test File.txt";
+        String fileContent = "Test file";
+        String password = "Secret123@";
+        BoxFile uploadedFile = null;
+        try {
+            uploadedFile = uploadFileToUniqueFolder(api, fileName, fileContent);
+            assertThat(
+                    uploadedFile.getInfo("is_accessible_via_shared_link").getIsAccessibleViaSharedLink(),
+                    is(false)
+            );
+            BoxSharedLink sharedLink = uploadedFile.createSharedLink(
+                    new BoxSharedLinkRequest()
+                            .access(OPEN)
+                            .password(password)
+                            .permissions(true, true, true)
+            );
+
+            ByteArrayOutputStream downloadStream = new ByteArrayOutputStream();
+            BoxFile.downloadFromSharedLink(api, downloadStream, sharedLink.getURL(), password);
+            downloadStream.close();
+            byte[] downloadedFileContent = downloadStream.toByteArray();
+            assertThat(downloadedFileContent, is(equalTo(fileContent.getBytes())));
+        } finally {
+            deleteFile(uploadedFile);
+        }
+    }
+
+    @Test
     public void createEditableSharedLinkSucceeds() {
         BoxAPIConnection api = jwtApiForServiceAccount();
         String fileName = "[createEditableSharedLinkSucceeds] Test File.txt";

@@ -5,6 +5,9 @@ import static com.box.sdk.TestUtils.getFixture;
 import static com.box.sdk.http.ContentType.APPLICATION_JSON;
 import static com.box.sdk.http.ContentType.APPLICATION_JSON_PATCH;
 import static com.box.sdk.http.ContentType.APPLICATION_OCTET_STREAM;
+import static com.github.tomakehurst.wiremock.client.WireMock.getRequestedFor;
+import static com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo;
+import static com.github.tomakehurst.wiremock.client.WireMock.verify;
 import static com.github.tomakehurst.wiremock.core.WireMockConfiguration.wireMockConfig;
 import static java.lang.String.format;
 import static java.nio.charset.StandardCharsets.UTF_8;
@@ -12,6 +15,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
+import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
@@ -726,6 +730,103 @@ public class BoxFileTest {
         );
         assertTrue(sharedLink.getIsPasswordEnabled());
         assertTrue(sharedLink.getPermissions().getCanEdit());
+    }
+
+    @Test
+    public void testDownloadFromSharedLinkWithPassword() {
+        final String sharedItemsURL = "/2.0/shared_items";
+        final String fileContentURL = "/2.0/files/12345/content";
+        final String sharedLink = "https://app.box.com/s/abcdef123456";
+        final String password = "password";
+        final byte[] fileContent = "This is a test file content".getBytes();
+        final String expectedSharedLinkHeaderValue = "shared_link=" + sharedLink + "&shared_link_password=" + password;
+        final String expectedDownloadPath = "/shared/static/rh935iit6ewrmw0unyul.jpeg";
+        final String expectedDownloadUrl = format("https://localhost:%d%s", wireMockRule.httpsPort(), expectedDownloadPath);
+
+        String sharedItemsResponse = "{ \"type\": \"file\", \"id\": \"12345\" }";
+
+        wireMockRule.stubFor(WireMock.get(WireMock.urlPathEqualTo(sharedItemsURL))
+                .willReturn(WireMock.aResponse()
+                        .withHeader("Content-Type", APPLICATION_JSON)
+                        .withBody(sharedItemsResponse)));
+
+        wireMockRule.stubFor(WireMock.get(WireMock.urlPathEqualTo(fileContentURL))
+                .withHeader("boxapi", WireMock.equalTo(expectedSharedLinkHeaderValue))
+                .willReturn(WireMock.aResponse()
+                        .withStatus(302)
+                        .withHeader("Location", expectedDownloadUrl)));
+
+        wireMockRule.stubFor(WireMock.get(WireMock.urlPathEqualTo(expectedDownloadPath))
+            .willReturn(WireMock.aResponse()
+                .withHeader("Content-Type", "application/octet-stream")
+                .withBody(fileContent)));
+
+
+        ByteArrayOutputStream output = new ByteArrayOutputStream();
+        BoxFile.downloadFromSharedLink(api, output, sharedLink, password);
+
+        verify(1, getRequestedFor(
+                urlEqualTo("/2.0/shared_items?fields=id")).
+                withHeader("BoxApi", WireMock.equalTo(expectedSharedLinkHeaderValue)));
+
+        verify(1, getRequestedFor(urlEqualTo(fileContentURL)).
+            withHeader("boxapi", WireMock.equalTo(expectedSharedLinkHeaderValue)));
+
+        verify(1, getRequestedFor(urlEqualTo(expectedDownloadPath)));
+
+        assertArrayEquals(fileContent, output.toByteArray());
+    }
+
+    @Test
+    public void testDownloadFromSharedLinkWithProgressListener() {
+        final String sharedItemsURL = "/2.0/shared_items";
+        final String fileContentURL = "/2.0/files/12345/content";
+        final String sharedLink = "https://app.box.com/s/abcdef123456";
+        final byte[] fileContent = "This is a test file content".getBytes();
+        final String expectedSharedLinkHeaderValue = "shared_link=" + sharedLink;
+        final String expectedDownloadPath = "/shared/static/rh935iit6ewrmw0unyul.jpeg";
+        final String expectedDownloadUrl = format(
+                "https://localhost:%d%s", wireMockRule.httpsPort(), expectedDownloadPath
+        );
+
+        String sharedItemsResponse = format(
+                "{ \"download_url\": \"%s\", \"type\": \"file\", \"id\": \"12345\" }",
+                expectedDownloadUrl
+        );
+
+        wireMockRule.stubFor(WireMock.get(WireMock.urlPathEqualTo(sharedItemsURL))
+                .willReturn(WireMock.aResponse()
+                        .withHeader("Content-Type", APPLICATION_JSON)
+                        .withBody(sharedItemsResponse)));
+
+        wireMockRule.stubFor(WireMock.get(WireMock.urlPathEqualTo(fileContentURL))
+            .withHeader("boxapi", WireMock.equalTo(expectedSharedLinkHeaderValue))
+            .willReturn(WireMock.aResponse()
+                .withStatus(302)
+                .withHeader("Location", expectedDownloadUrl)));
+
+        wireMockRule.stubFor(WireMock.get(WireMock.urlPathEqualTo(expectedDownloadPath))
+                .willReturn(WireMock.aResponse()
+                        .withHeader("Content-Type", "application/octet-stream")
+                        .withBody(fileContent)));
+
+
+        ByteArrayOutputStream output = new ByteArrayOutputStream();
+        ProgressListener listener = (numBytes, totalBytes) -> {
+            // Implement progress listener logic if needed
+        };
+        BoxFile.downloadFromSharedLink(api, output, sharedLink, listener);
+
+        verify(1, getRequestedFor(
+                urlEqualTo("/2.0/shared_items?fields=id")).
+                withHeader("BoxApi", WireMock.equalTo(expectedSharedLinkHeaderValue)));
+
+        verify(1, getRequestedFor(urlEqualTo(fileContentURL)).
+                withHeader("boxapi", WireMock.equalTo(expectedSharedLinkHeaderValue)));
+
+        verify(1, getRequestedFor(urlEqualTo(expectedDownloadPath)));
+
+        assertArrayEquals(fileContent, output.toByteArray());
     }
 
     @Test
