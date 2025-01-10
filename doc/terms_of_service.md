@@ -2,19 +2,20 @@ Terms of Service
 ================
 
 Terms of Service allows Box Admins to configure a custom Terms of Service for end users to
-accept/re-accept/decline for custom applications
+accept/re-accept/decline for platform applications
 
 <!-- START doctoc generated TOC please keep comment here to allow auto update -->
 <!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
 
 
-- [Create a Terms of Service](#create-a-terms-of-service)
-- [Edit a Terms of Service](#edit-a-terms-of-service)
-- [Get a Terms of Service](#get-a-terms-of-service)
-- [Get All Terms of Services](#get-all-terms-of-services)
-- [Accept or Decline a Terms of Service for New User](#accept-or-decline-a-terms-of-service-for-new-user)
-- [Accept or Decline a Terms of Service for Existing User](#accept-or-decline-a-terms-of-service-for-existing-user)
-- [Get User Status on a Terms of Service](#get-user-status-on-a-terms-of-service)
+- [Terms of Service](#terms-of-service)
+  - [Create a Terms of Service](#create-a-terms-of-service)
+  - [Edit a Terms of Service](#edit-a-terms-of-service)
+  - [Get a Terms of Service](#get-a-terms-of-service)
+  - [Get All Terms of Services](#get-all-terms-of-services)
+  - [Accept or Decline a Terms of Service for New User](#accept-or-decline-a-terms-of-service-for-new-user)
+  - [Accept or Decline a Terms of Service for Existing User](#accept-or-decline-a-terms-of-service-for-existing-user)
+  - [Get User Status on a Terms of Service](#get-user-status-on-a-terms-of-service)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
