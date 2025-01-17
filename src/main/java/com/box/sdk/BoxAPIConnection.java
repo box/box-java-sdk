@@ -34,6 +34,7 @@ import okhttp3.Credentials;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
+import okhttp3.Headers;
 
 /**
  * Represents an authenticated connection to the Box API.
@@ -1265,7 +1266,7 @@ public class BoxAPIConnection {
         try {
             return createNewCall(httpClient, request).execute();
         } catch (IOException e) {
-            throw new BoxAPIException("Couldn't connect to the Box API due to a network error. Request\n" + request, e);
+            throw new BoxAPIException("Couldn't connect to the Box API due to a network error. Request\n" + toSanitizedRequest(request), e);
         }
     }
 
@@ -1297,5 +1298,13 @@ public class BoxAPIConnection {
          * or https://example.app.box.com/notes/0987654321?s=zxcvbnm1234567890asdfghjk.
          */
         SharedLink
+    }
+
+    private Request toSanitizedRequest(Request originalRequest) {
+        Headers sanitizedHeaders = BoxSensitiveDataSanitizer.sanitizeHeaders(originalRequest.headers());
+
+        return originalRequest.newBuilder()
+            .headers(sanitizedHeaders)
+            .build();
     }
 }
