@@ -1,20 +1,14 @@
 package com.box.sdk;
 
-import static com.github.tomakehurst.wiremock.core.WireMockConfiguration.wireMockConfig;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
-import com.github.tomakehurst.wiremock.junit.WireMockRule;
 import java.util.HashMap;
 import java.util.Map;
 
 import okhttp3.Headers;
-import org.junit.Rule;
 import org.junit.Test;
 
 public class BoxSensitiveDataSanitizerTest {
-	@Rule
-	public WireMockRule wireMockRule = new WireMockRule(wireMockConfig().dynamicHttpsPort().httpDisabled(true));
-
 	@Test
 	public void removeSensitiveDataFromHeaders() {
 		Map<String, String> headersMap = new HashMap<>();
