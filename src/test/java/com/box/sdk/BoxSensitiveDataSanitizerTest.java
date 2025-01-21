@@ -72,4 +72,17 @@ public class BoxSensitiveDataSanitizerTest {
 
         assertThat(sanitizedHeaders.size(), is(0));
     }
+
+    @Test
+    public void sanitizeAddedKeys() {
+        Map<String, String> headersMap = new HashMap<>();
+        headersMap.put("x-auth", "token");
+
+        Headers headers = Headers.of(headersMap);
+        BoxSensitiveDataSanitizer.addKeyToSanitize("x-auth");
+        Headers sanitizedHeaders = BoxSensitiveDataSanitizer.sanitizeHeaders(headers);
+
+        assertThat(sanitizedHeaders.size(), is(1));
+        assertThat(sanitizedHeaders.get("x-auth"), is("[REDACTED]"));
+    }
 }
