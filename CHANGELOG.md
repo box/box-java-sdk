@@ -11,7 +11,7 @@ All notable changes to this project will be documented in this file. See [standa
 
 ### Bug Fixes:
 
-* remove sensitive data when `BoxAPIException` logs request ([#1284](https://github.com/box/box-java-sdk/issues/1284)) ([f1e226f](https://github.com/box/box-java-sdk/commit/f1e226f710c301202acff067ef34687ddbb57b7b))
+* Remove sensitive data when `BoxAPIException` logs request ([#1284](https://github.com/box/box-java-sdk/issues/1284)) ([f1e226f](https://github.com/box/box-java-sdk/commit/f1e226f710c301202acff067ef34687ddbb57b7b))
 * Support creating ongoing Legal Hold policy with start date ([#1281](https://github.com/box/box-java-sdk/issues/1281)) ([d9564e2](https://github.com/box/box-java-sdk/commit/d9564e2e86ea110af933ca3dd0f728111d7140ae))
 
 ### [4.13.1](https://github.com/box/box-java-sdk/compare/v4.13.0...v4.13.1) (2024-11-29)
