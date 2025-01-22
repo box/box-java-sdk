@@ -18,7 +18,7 @@
     catch(err) {
     }
 //-->
-var methods = {"i0":10,"i1":10,"i2":10,"i3":10,"i4":10,"i5":10,"i6":10,"i7":10,"i8":10,"i9":10,"i10":10,"i11":10,"i12":10,"i13":10,"i14":10,"i15":10,"i16":10,"i17":10,"i18":10,"i19":10,"i20":10,"i21":10,"i22":10,"i23":10,"i24":10,"i25":10,"i26":10,"i27":10,"i28":10};
+var methods = {"i0":10,"i1":10,"i2":10,"i3":10,"i4":10,"i5":10,"i6":10,"i7":10,"i8":10,"i9":10,"i10":10,"i11":10,"i12":10,"i13":10,"i14":10,"i15":10,"i16":10,"i17":10,"i18":10,"i19":10,"i20":10,"i21":10,"i22":10,"i23":10,"i24":10,"i25":10,"i26":10,"i27":10,"i28":10,"i29":10};
 var tabs = {65535:["t0","All Methods"],2:["t2","Instance Methods"],8:["t4","Concrete Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
@@ -65,7 +65,7 @@ var activeTableTab = "activeTableTab";
 </dl>
 <hr>
 <br>
-<pre>public abstract class <a href="../../../src-html/com/box/sdk/BoxItem.html#line.193">BoxItem.Info</a>
+<pre>public abstract class <a href="../../../src-html/com/box/sdk/BoxItem.html#line.200">BoxItem.Info</a>
 extends <a href="../../../com/box/sdk/BoxResource.Info.html" title="class in com.box.sdk">BoxResource.Info</a></pre>
 <div class="block">Contains information about a BoxItem.</div>
 </li>
@@ -148,137 +148,143 @@ extends <a href="../../../com/box/sdk/BoxResource.Info.html" title="class in com
 </tr>
 <tr id="i6" class="altColor">
 <td class="colFirst"><code><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a></code></td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../com/box/sdk/BoxItem.Info.html#getDownloadUrl--">getDownloadUrl</a></span>()</code>
+<div class="block">Gets URL that can be used to download the file.</div>
+</td>
+</tr>
+<tr id="i7" class="rowColor">
+<td class="colFirst"><code><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../com/box/sdk/BoxItem.Info.html#getEtag--">getEtag</a></span>()</code>
 <div class="block">Gets a unique string identifying the version of the item.</div>
 </td>
 </tr>
-<tr id="i7" class="rowColor">
+<tr id="i8" class="altColor">
 <td class="colFirst"><code><a href="https://docs.oracle.com/javase/8/docs/api/java/util/Date.html?is-external=true" title="class or interface in java.util">Date</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../com/box/sdk/BoxItem.Info.html#getExpiresAt--">getExpiresAt</a></span>()</code>
 <div class="block">Gets the expires at time for this item.</div>
 </td>
 </tr>
-<tr id="i8" class="altColor">
+<tr id="i9" class="rowColor">
 <td class="colFirst"><code><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../com/box/sdk/BoxItem.Info.html#getItemStatus--">getItemStatus</a></span>()</code>
 <div class="block">Gets the status of the item.</div>
 </td>
 </tr>
-<tr id="i9" class="rowColor">
+<tr id="i10" class="altColor">
 <td class="colFirst"><code><a href="https://docs.oracle.com/javase/8/docs/api/java/util/Date.html?is-external=true" title="class or interface in java.util">Date</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../com/box/sdk/BoxItem.Info.html#getModifiedAt--">getModifiedAt</a></span>()</code>
 <div class="block">Gets the time the item was last modified.</div>
 </td>
 </tr>
-<tr id="i10" class="altColor">
+<tr id="i11" class="rowColor">
 <td class="colFirst"><code><a href="../../../com/box/sdk/BoxUser.Info.html" title="class in com.box.sdk">BoxUser.Info</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../com/box/sdk/BoxItem.Info.html#getModifiedBy--">getModifiedBy</a></span>()</code>
 <div class="block">Gets info about the user who last modified the item.</div>
 </td>
 </tr>
-<tr id="i11" class="rowColor">
+<tr id="i12" class="altColor">
 <td class="colFirst"><code><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../com/box/sdk/BoxItem.Info.html#getName--">getName</a></span>()</code>
 <div class="block">Gets the name of the item.</div>
 </td>
 </tr>
-<tr id="i12" class="altColor">
+<tr id="i13" class="rowColor">
 <td class="colFirst"><code><a href="../../../com/box/sdk/BoxUser.Info.html" title="class in com.box.sdk">BoxUser.Info</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../com/box/sdk/BoxItem.Info.html#getOwnedBy--">getOwnedBy</a></span>()</code>
 <div class="block">Gets info about the user who owns the item.</div>
 </td>
 </tr>
-<tr id="i13" class="rowColor">
+<tr id="i14" class="altColor">
 <td class="colFirst"><code><a href="../../../com/box/sdk/BoxFolder.Info.html" title="class in com.box.sdk">BoxFolder.Info</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../com/box/sdk/BoxItem.Info.html#getParent--">getParent</a></span>()</code>
 <div class="block">Gets info about the parent folder of the item.</div>
 </td>
 </tr>
-<tr id="i14" class="altColor">
+<tr id="i15" class="rowColor">
 <td class="colFirst"><code><a href="https://docs.oracle.com/javase/8/docs/api/java/util/List.html?is-external=true" title="class or interface in java.util">List</a>&lt;<a href="../../../com/box/sdk/BoxFolder.Info.html" title="class in com.box.sdk">BoxFolder.Info</a>&gt;</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../com/box/sdk/BoxItem.Info.html#getPathCollection--">getPathCollection</a></span>()</code>
 <div class="block">Gets the path of folders to the item, starting at the root.</div>
 </td>
 </tr>
-<tr id="i15" class="rowColor">
+<tr id="i16" class="altColor">
 <td class="colFirst"><code><a href="https://docs.oracle.com/javase/8/docs/api/java/util/Date.html?is-external=true" title="class or interface in java.util">Date</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../com/box/sdk/BoxItem.Info.html#getPurgedAt--">getPurgedAt</a></span>()</code>
 <div class="block">Gets the time that the item was purged from the trash.</div>
 </td>
 </tr>
-<tr id="i16" class="altColor">
+<tr id="i17" class="rowColor">
 <td class="colFirst"><code><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../com/box/sdk/BoxItem.Info.html#getSequenceID--">getSequenceID</a></span>()</code>
 <div class="block">Gets a unique ID for use with the <a href="../../../com/box/sdk/EventStream.html" title="class in com.box.sdk"><code>EventStream</code></a>.</div>
 </td>
 </tr>
-<tr id="i17" class="rowColor">
+<tr id="i18" class="altColor">
 <td class="colFirst"><code><a href="../../../com/box/sdk/BoxSharedLink.html" title="class in com.box.sdk">BoxSharedLink</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../com/box/sdk/BoxItem.Info.html#getSharedLink--">getSharedLink</a></span>()</code>
 <div class="block">Gets the shared link for the item.</div>
 </td>
 </tr>
-<tr id="i18" class="altColor">
+<tr id="i19" class="rowColor">
 <td class="colFirst"><code>long</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../com/box/sdk/BoxItem.Info.html#getSize--">getSize</a></span>()</code>
 <div class="block">Gets the size of the item in bytes.</div>
 </td>
 </tr>
-<tr id="i19" class="rowColor">
+<tr id="i20" class="altColor">
 <td class="colFirst"><code><a href="https://docs.oracle.com/javase/8/docs/api/java/util/List.html?is-external=true" title="class or interface in java.util">List</a>&lt;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&gt;</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../com/box/sdk/BoxItem.Info.html#getTags--">getTags</a></span>()</code>
 <div class="block">Gets a list of all the tags applied to the item.</div>
 </td>
 </tr>
-<tr id="i20" class="altColor">
+<tr id="i21" class="rowColor">
 <td class="colFirst"><code><a href="https://docs.oracle.com/javase/8/docs/api/java/util/Date.html?is-external=true" title="class or interface in java.util">Date</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../com/box/sdk/BoxItem.Info.html#getTrashedAt--">getTrashedAt</a></span>()</code>
 <div class="block">Gets the time that the item was trashed.</div>
 </td>
 </tr>
-<tr id="i21" class="rowColor">
+<tr id="i22" class="altColor">
 <td class="colFirst"><code><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../com/box/sdk/BoxItem.Info.html#getType--">getType</a></span>()</code>
 <div class="block">Gets the item type.</div>
 </td>
 </tr>
-<tr id="i22" class="altColor">
+<tr id="i23" class="rowColor">
 <td class="colFirst"><code>protected void</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../com/box/sdk/BoxItem.Info.html#parseJSONMember-com.eclipsesource.json.JsonObject.Member-">parseJSONMember</a></span>(JsonObject.Member&nbsp;member)</code>
 <div class="block">Invoked with a JSON member whenever this object is updated or created from a JSON object.</div>
 </td>
 </tr>
-<tr id="i23" class="rowColor">
+<tr id="i24" class="altColor">
 <td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../com/box/sdk/BoxItem.Info.html#removeSharedLink--">removeSharedLink</a></span>()</code>
 <div class="block">Removes the shared link for the item.</div>
 </td>
 </tr>
-<tr id="i24" class="altColor">
+<tr id="i25" class="rowColor">
 <td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../com/box/sdk/BoxItem.Info.html#setCollections-java.lang.Iterable-">setCollections</a></span>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Iterable.html?is-external=true" title="class or interface in java.lang">Iterable</a>&lt;<a href="../../../com/box/sdk/BoxCollection.html" title="class in com.box.sdk">BoxCollection</a>&gt;&nbsp;collections)</code>
 <div class="block">Sets the collections that this item belongs to.</div>
 </td>
 </tr>
-<tr id="i25" class="rowColor">
+<tr id="i26" class="altColor">
 <td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../com/box/sdk/BoxItem.Info.html#setDescription-java.lang.String-">setDescription</a></span>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;description)</code>
 <div class="block">Sets the description of the item.</div>
 </td>
 </tr>
-<tr id="i26" class="altColor">
+<tr id="i27" class="rowColor">
 <td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../com/box/sdk/BoxItem.Info.html#setName-java.lang.String-">setName</a></span>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;name)</code>
 <div class="block">Sets the name of the item.</div>
 </td>
 </tr>
-<tr id="i27" class="rowColor">
+<tr id="i28" class="altColor">
 <td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../com/box/sdk/BoxItem.Info.html#setSharedLink-com.box.sdk.BoxSharedLink-">setSharedLink</a></span>(<a href="../../../com/box/sdk/BoxSharedLink.html" title="class in com.box.sdk">BoxSharedLink</a>&nbsp;sharedLink)</code>
 <div class="block">Sets a shared link for the item.</div>
 </td>
 </tr>
-<tr id="i28" class="altColor">
+<tr id="i29" class="rowColor">
 <td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../com/box/sdk/BoxItem.Info.html#setTags-java.util.List-">setTags</a></span>(<a href="https://docs.oracle.com/javase/8/docs/api/java/util/List.html?is-external=true" title="class or interface in java.util">List</a>&lt;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&gt;&nbsp;tags)</code>
 <div class="block">Sets the tags for an item.</div>
@@ -326,7 +332,7 @@ extends <a href="../../../com/box/sdk/BoxResource.Info.html" title="class in com
 <ul class="blockList">
 <li class="blockList">
 <h4>Info</h4>
-<pre>public&nbsp;<a href="../../../src-html/com/box/sdk/BoxItem.Info.html#line.220">Info</a>()</pre>
+<pre>public&nbsp;<a href="../../../src-html/com/box/sdk/BoxItem.Info.html#line.228">Info</a>()</pre>
 <div class="block">Constructs an empty Info object.</div>
 </li>
 </ul>
@@ -336,7 +342,7 @@ extends <a href="../../../com/box/sdk/BoxResource.Info.html" title="class in com
 <ul class="blockListLast">
 <li class="blockList">
 <h4>Info</h4>
-<pre>public&nbsp;<a href="../../../src-html/com/box/sdk/BoxItem.Info.html#line.229">Info</a>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;json)</pre>
+<pre>public&nbsp;<a href="../../../src-html/com/box/sdk/BoxItem.Info.html#line.237">Info</a>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;json)</pre>
 <div class="block">Constructs an Info object by parsing information from a JSON string.</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
@@ -358,7 +364,7 @@ extends <a href="../../../com/box/sdk/BoxResource.Info.html" title="class in com
 <ul class="blockList">
 <li class="blockList">
 <h4>getType</h4>
-<pre>public&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxItem.Info.html#line.247">getType</a>()</pre>
+<pre>public&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxItem.Info.html#line.255">getType</a>()</pre>
 <div class="block">Gets the item type.</div>
 <dl>
 <dt><span class="returnLabel">Returns:</span></dt>
@@ -372,7 +378,7 @@ extends <a href="../../../com/box/sdk/BoxResource.Info.html" title="class in com
 <ul class="blockList">
 <li class="blockList">
 <h4>getEtag</h4>
-<pre>public&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxItem.Info.html#line.256">getEtag</a>()</pre>
+<pre>public&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxItem.Info.html#line.264">getEtag</a>()</pre>
 <div class="block">Gets a unique string identifying the version of the item.</div>
 <dl>
 <dt><span class="returnLabel">Returns:</span></dt>
@@ -386,7 +392,7 @@ extends <a href="../../../com/box/sdk/BoxResource.Info.html" title="class in com
 <ul class="blockList">
 <li class="blockList">
 <h4>getName</h4>
-<pre>public&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxItem.Info.html#line.265">getName</a>()</pre>
+<pre>public&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxItem.Info.html#line.273">getName</a>()</pre>
 <div class="block">Gets the name of the item.</div>
 <dl>
 <dt><span class="returnLabel">Returns:</span></dt>
@@ -400,7 +406,7 @@ extends <a href="../../../com/box/sdk/BoxResource.Info.html" title="class in com
 <ul class="blockList">
 <li class="blockList">
 <h4>setName</h4>
-<pre>public&nbsp;void&nbsp;<a href="../../../src-html/com/box/sdk/BoxItem.Info.html#line.274">setName</a>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;name)</pre>
+<pre>public&nbsp;void&nbsp;<a href="../../../src-html/com/box/sdk/BoxItem.Info.html#line.282">setName</a>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;name)</pre>
 <div class="block">Sets the name of the item.</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
@@ -414,7 +420,7 @@ extends <a href="../../../com/box/sdk/BoxResource.Info.html" title="class in com
 <ul class="blockList">
 <li class="blockList">
 <h4>getCreatedAt</h4>
-<pre>public&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/util/Date.html?is-external=true" title="class or interface in java.util">Date</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxItem.Info.html#line.284">getCreatedAt</a>()</pre>
+<pre>public&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/util/Date.html?is-external=true" title="class or interface in java.util">Date</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxItem.Info.html#line.292">getCreatedAt</a>()</pre>
 <div class="block">Gets the time the item was created.</div>
 <dl>
 <dt><span class="returnLabel">Returns:</span></dt>
@@ -428,7 +434,7 @@ extends <a href="../../../com/box/sdk/BoxResource.Info.html" title="class in com
 <ul class="blockList">
 <li class="blockList">
 <h4>getModifiedAt</h4>
-<pre>public&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/util/Date.html?is-external=true" title="class or interface in java.util">Date</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxItem.Info.html#line.293">getModifiedAt</a>()</pre>
+<pre>public&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/util/Date.html?is-external=true" title="class or interface in java.util">Date</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxItem.Info.html#line.301">getModifiedAt</a>()</pre>
 <div class="block">Gets the time the item was last modified.</div>
 <dl>
 <dt><span class="returnLabel">Returns:</span></dt>
@@ -442,7 +448,7 @@ extends <a href="../../../com/box/sdk/BoxResource.Info.html" title="class in com
 <ul class="blockList">
 <li class="blockList">
 <h4>getDescription</h4>
-<pre>public&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxItem.Info.html#line.302">getDescription</a>()</pre>
+<pre>public&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxItem.Info.html#line.310">getDescription</a>()</pre>
 <div class="block">Gets the description of the item.</div>
 <dl>
 <dt><span class="returnLabel">Returns:</span></dt>
@@ -456,7 +462,7 @@ extends <a href="../../../com/box/sdk/BoxResource.Info.html" title="class in com
 <ul class="blockList">
 <li class="blockList">
 <h4>setDescription</h4>
-<pre>public&nbsp;void&nbsp;<a href="../../../src-html/com/box/sdk/BoxItem.Info.html#line.311">setDescription</a>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;description)</pre>
+<pre>public&nbsp;void&nbsp;<a href="../../../src-html/com/box/sdk/BoxItem.Info.html#line.319">setDescription</a>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;description)</pre>
 <div class="block">Sets the description of the item.</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
@@ -470,7 +476,7 @@ extends <a href="../../../com/box/sdk/BoxResource.Info.html" title="class in com
 <ul class="blockList">
 <li class="blockList">
 <h4>getSize</h4>
-<pre>public&nbsp;long&nbsp;<a href="../../../src-html/com/box/sdk/BoxItem.Info.html#line.321">getSize</a>()</pre>
+<pre>public&nbsp;long&nbsp;<a href="../../../src-html/com/box/sdk/BoxItem.Info.html#line.329">getSize</a>()</pre>
 <div class="block">Gets the size of the item in bytes.</div>
 <dl>
 <dt><span class="returnLabel">Returns:</span></dt>
@@ -484,7 +490,7 @@ extends <a href="../../../com/box/sdk/BoxResource.Info.html" title="class in com
 <ul class="blockList">
 <li class="blockList">
 <h4>getPathCollection</h4>
-<pre>public&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/util/List.html?is-external=true" title="class or interface in java.util">List</a>&lt;<a href="../../../com/box/sdk/BoxFolder.Info.html" title="class in com.box.sdk">BoxFolder.Info</a>&gt;&nbsp;<a href="../../../src-html/com/box/sdk/BoxItem.Info.html#line.330">getPathCollection</a>()</pre>
+<pre>public&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/util/List.html?is-external=true" title="class or interface in java.util">List</a>&lt;<a href="../../../com/box/sdk/BoxFolder.Info.html" title="class in com.box.sdk">BoxFolder.Info</a>&gt;&nbsp;<a href="../../../src-html/com/box/sdk/BoxItem.Info.html#line.338">getPathCollection</a>()</pre>
 <div class="block">Gets the path of folders to the item, starting at the root.</div>
 <dl>
 <dt><span class="returnLabel">Returns:</span></dt>
@@ -498,7 +504,7 @@ extends <a href="../../../com/box/sdk/BoxResource.Info.html" title="class in com
 <ul class="blockList">
 <li class="blockList">
 <h4>getCreatedBy</h4>
-<pre>public&nbsp;<a href="../../../com/box/sdk/BoxUser.Info.html" title="class in com.box.sdk">BoxUser.Info</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxItem.Info.html#line.339">getCreatedBy</a>()</pre>
+<pre>public&nbsp;<a href="../../../com/box/sdk/BoxUser.Info.html" title="class in com.box.sdk">BoxUser.Info</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxItem.Info.html#line.347">getCreatedBy</a>()</pre>
 <div class="block">Gets info about the user who created the item.</div>
 <dl>
 <dt><span class="returnLabel">Returns:</span></dt>
@@ -512,7 +518,7 @@ extends <a href="../../../com/box/sdk/BoxResource.Info.html" title="class in com
 <ul class="blockList">
 <li class="blockList">
 <h4>getModifiedBy</h4>
-<pre>public&nbsp;<a href="../../../com/box/sdk/BoxUser.Info.html" title="class in com.box.sdk">BoxUser.Info</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxItem.Info.html#line.348">getModifiedBy</a>()</pre>
+<pre>public&nbsp;<a href="../../../com/box/sdk/BoxUser.Info.html" title="class in com.box.sdk">BoxUser.Info</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxItem.Info.html#line.356">getModifiedBy</a>()</pre>
 <div class="block">Gets info about the user who last modified the item.</div>
 <dl>
 <dt><span class="returnLabel">Returns:</span></dt>
@@ -526,7 +532,7 @@ extends <a href="../../../com/box/sdk/BoxResource.Info.html" title="class in com
 <ul class="blockList">
 <li class="blockList">
 <h4>getTrashedAt</h4>
-<pre>public&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/util/Date.html?is-external=true" title="class or interface in java.util">Date</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxItem.Info.html#line.357">getTrashedAt</a>()</pre>
+<pre>public&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/util/Date.html?is-external=true" title="class or interface in java.util">Date</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxItem.Info.html#line.365">getTrashedAt</a>()</pre>
 <div class="block">Gets the time that the item was trashed.</div>
 <dl>
 <dt><span class="returnLabel">Returns:</span></dt>
@@ -540,7 +546,7 @@ extends <a href="../../../com/box/sdk/BoxResource.Info.html" title="class in com
 <ul class="blockList">
 <li class="blockList">
 <h4>getPurgedAt</h4>
-<pre>public&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/util/Date.html?is-external=true" title="class or interface in java.util">Date</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxItem.Info.html#line.366">getPurgedAt</a>()</pre>
+<pre>public&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/util/Date.html?is-external=true" title="class or interface in java.util">Date</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxItem.Info.html#line.374">getPurgedAt</a>()</pre>
 <div class="block">Gets the time that the item was purged from the trash.</div>
 <dl>
 <dt><span class="returnLabel">Returns:</span></dt>
@@ -554,7 +560,7 @@ extends <a href="../../../com/box/sdk/BoxResource.Info.html" title="class in com
 <ul class="blockList">
 <li class="blockList">
 <h4>getContentCreatedAt</h4>
-<pre>public&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/util/Date.html?is-external=true" title="class or interface in java.util">Date</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxItem.Info.html#line.375">getContentCreatedAt</a>()</pre>
+<pre>public&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/util/Date.html?is-external=true" title="class or interface in java.util">Date</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxItem.Info.html#line.383">getContentCreatedAt</a>()</pre>
 <div class="block">Gets the time that the item was created according to the uploader.</div>
 <dl>
 <dt><span class="returnLabel">Returns:</span></dt>
@@ -568,7 +574,7 @@ extends <a href="../../../com/box/sdk/BoxResource.Info.html" title="class in com
 <ul class="blockList">
 <li class="blockList">
 <h4>getContentModifiedAt</h4>
-<pre>public&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/util/Date.html?is-external=true" title="class or interface in java.util">Date</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxItem.Info.html#line.384">getContentModifiedAt</a>()</pre>
+<pre>public&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/util/Date.html?is-external=true" title="class or interface in java.util">Date</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxItem.Info.html#line.392">getContentModifiedAt</a>()</pre>
 <div class="block">Gets the time that the item was last modified according to the uploader.</div>
 <dl>
 <dt><span class="returnLabel">Returns:</span></dt>
@@ -582,7 +588,7 @@ extends <a href="../../../com/box/sdk/BoxResource.Info.html" title="class in com
 <ul class="blockList">
 <li class="blockList">
 <h4>getExpiresAt</h4>
-<pre>public&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/util/Date.html?is-external=true" title="class or interface in java.util">Date</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxItem.Info.html#line.393">getExpiresAt</a>()</pre>
+<pre>public&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/util/Date.html?is-external=true" title="class or interface in java.util">Date</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxItem.Info.html#line.401">getExpiresAt</a>()</pre>
 <div class="block">Gets the expires at time for this item.</div>
 <dl>
 <dt><span class="returnLabel">Returns:</span></dt>
@@ -596,7 +602,7 @@ extends <a href="../../../com/box/sdk/BoxResource.Info.html" title="class in com
 <ul class="blockList">
 <li class="blockList">
 <h4>getOwnedBy</h4>
-<pre>public&nbsp;<a href="../../../com/box/sdk/BoxUser.Info.html" title="class in com.box.sdk">BoxUser.Info</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxItem.Info.html#line.402">getOwnedBy</a>()</pre>
+<pre>public&nbsp;<a href="../../../com/box/sdk/BoxUser.Info.html" title="class in com.box.sdk">BoxUser.Info</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxItem.Info.html#line.410">getOwnedBy</a>()</pre>
 <div class="block">Gets info about the user who owns the item.</div>
 <dl>
 <dt><span class="returnLabel">Returns:</span></dt>
@@ -610,7 +616,7 @@ extends <a href="../../../com/box/sdk/BoxResource.Info.html" title="class in com
 <ul class="blockList">
 <li class="blockList">
 <h4>getSharedLink</h4>
-<pre>public&nbsp;<a href="../../../com/box/sdk/BoxSharedLink.html" title="class in com.box.sdk">BoxSharedLink</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxItem.Info.html#line.411">getSharedLink</a>()</pre>
+<pre>public&nbsp;<a href="../../../com/box/sdk/BoxSharedLink.html" title="class in com.box.sdk">BoxSharedLink</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxItem.Info.html#line.419">getSharedLink</a>()</pre>
 <div class="block">Gets the shared link for the item.</div>
 <dl>
 <dt><span class="returnLabel">Returns:</span></dt>
@@ -624,7 +630,7 @@ extends <a href="../../../com/box/sdk/BoxResource.Info.html" title="class in com
 <ul class="blockList">
 <li class="blockList">
 <h4>setSharedLink</h4>
-<pre>public&nbsp;void&nbsp;<a href="../../../src-html/com/box/sdk/BoxItem.Info.html#line.420">setSharedLink</a>(<a href="../../../com/box/sdk/BoxSharedLink.html" title="class in com.box.sdk">BoxSharedLink</a>&nbsp;sharedLink)</pre>
+<pre>public&nbsp;void&nbsp;<a href="../../../src-html/com/box/sdk/BoxItem.Info.html#line.428">setSharedLink</a>(<a href="../../../com/box/sdk/BoxSharedLink.html" title="class in com.box.sdk">BoxSharedLink</a>&nbsp;sharedLink)</pre>
 <div class="block">Sets a shared link for the item.</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
@@ -638,7 +644,7 @@ extends <a href="../../../com/box/sdk/BoxResource.Info.html" title="class in com
 <ul class="blockList">
 <li class="blockList">
 <h4>removeSharedLink</h4>
-<pre>public&nbsp;void&nbsp;<a href="../../../src-html/com/box/sdk/BoxItem.Info.html#line.429">removeSharedLink</a>()</pre>
+<pre>public&nbsp;void&nbsp;<a href="../../../src-html/com/box/sdk/BoxItem.Info.html#line.437">removeSharedLink</a>()</pre>
 <div class="block">Removes the shared link for the item.</div>
 </li>
 </ul>
@@ -648,7 +654,7 @@ extends <a href="../../../com/box/sdk/BoxResource.Info.html" title="class in com
 <ul class="blockList">
 <li class="blockList">
 <h4>getSequenceID</h4>
-<pre>public&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxItem.Info.html#line.438">getSequenceID</a>()</pre>
+<pre>public&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxItem.Info.html#line.446">getSequenceID</a>()</pre>
 <div class="block">Gets a unique ID for use with the <a href="../../../com/box/sdk/EventStream.html" title="class in com.box.sdk"><code>EventStream</code></a>.</div>
 <dl>
 <dt><span class="returnLabel">Returns:</span></dt>
@@ -662,7 +668,7 @@ extends <a href="../../../com/box/sdk/BoxResource.Info.html" title="class in com
 <ul class="blockList">
 <li class="blockList">
 <h4>getTags</h4>
-<pre>public&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/util/List.html?is-external=true" title="class or interface in java.util">List</a>&lt;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&gt;&nbsp;<a href="../../../src-html/com/box/sdk/BoxItem.Info.html#line.450">getTags</a>()</pre>
+<pre>public&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/util/List.html?is-external=true" title="class or interface in java.util">List</a>&lt;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&gt;&nbsp;<a href="../../../src-html/com/box/sdk/BoxItem.Info.html#line.458">getTags</a>()</pre>
 <div class="block">Gets a list of all the tags applied to the item.
 
  <p>Note that this field isn't populated by default and must be specified as a field parameter when getting
@@ -679,7 +685,7 @@ extends <a href="../../../com/box/sdk/BoxResource.Info.html" title="class in com
 <ul class="blockList">
 <li class="blockList">
 <h4>setTags</h4>
-<pre>public&nbsp;void&nbsp;<a href="../../../src-html/com/box/sdk/BoxItem.Info.html#line.459">setTags</a>(<a href="https://docs.oracle.com/javase/8/docs/api/java/util/List.html?is-external=true" title="class or interface in java.util">List</a>&lt;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&gt;&nbsp;tags)</pre>
+<pre>public&nbsp;void&nbsp;<a href="../../../src-html/com/box/sdk/BoxItem.Info.html#line.467">setTags</a>(<a href="https://docs.oracle.com/javase/8/docs/api/java/util/List.html?is-external=true" title="class or interface in java.util">List</a>&lt;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&gt;&nbsp;tags)</pre>
 <div class="block">Sets the tags for an item.</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
@@ -693,7 +699,7 @@ extends <a href="../../../com/box/sdk/BoxResource.Info.html" title="class in com
 <ul class="blockList">
 <li class="blockList">
 <h4>getParent</h4>
-<pre>public&nbsp;<a href="../../../com/box/sdk/BoxFolder.Info.html" title="class in com.box.sdk">BoxFolder.Info</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxItem.Info.html#line.473">getParent</a>()</pre>
+<pre>public&nbsp;<a href="../../../com/box/sdk/BoxFolder.Info.html" title="class in com.box.sdk">BoxFolder.Info</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxItem.Info.html#line.481">getParent</a>()</pre>
 <div class="block">Gets info about the parent folder of the item.</div>
 <dl>
 <dt><span class="returnLabel">Returns:</span></dt>
@@ -707,7 +713,7 @@ extends <a href="../../../com/box/sdk/BoxResource.Info.html" title="class in com
 <ul class="blockList">
 <li class="blockList">
 <h4>getItemStatus</h4>
-<pre>public&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxItem.Info.html#line.482">getItemStatus</a>()</pre>
+<pre>public&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxItem.Info.html#line.490">getItemStatus</a>()</pre>
 <div class="block">Gets the status of the item.</div>
 <dl>
 <dt><span class="returnLabel">Returns:</span></dt>
@@ -721,11 +727,24 @@ extends <a href="../../../com/box/sdk/BoxResource.Info.html" title="class in com
 <ul class="blockList">
 <li class="blockList">
 <h4>getCollections</h4>
-<pre>public&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Iterable.html?is-external=true" title="class or interface in java.lang">Iterable</a>&lt;<a href="../../../com/box/sdk/BoxCollection.Info.html" title="class in com.box.sdk">BoxCollection.Info</a>&gt;&nbsp;<a href="../../../src-html/com/box/sdk/BoxItem.Info.html#line.491">getCollections</a>()</pre>
+<pre>public&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Iterable.html?is-external=true" title="class or interface in java.lang">Iterable</a>&lt;<a href="../../../com/box/sdk/BoxCollection.Info.html" title="class in com.box.sdk">BoxCollection.Info</a>&gt;&nbsp;<a href="../../../src-html/com/box/sdk/BoxItem.Info.html#line.499">getCollections</a>()</pre>
 <div class="block">Gets info about the collections that this item belongs to.</div>
 <dl>
 <dt><span class="returnLabel">Returns:</span></dt>
 <dd>info about the collections that this item belongs to.</dd>
+</dl>
+</li>
+</ul>
+<a name="getDownloadUrl--">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>getDownloadUrl</h4>
+<pre>public&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxItem.Info.html#line.507">getDownloadUrl</a>()</pre>
+<div class="block">Gets URL that can be used to download the file.</div>
+<dl>
+<dt><span class="returnLabel">Returns:</span></dt>
 </dl>
 </li>
 </ul>
@@ -735,7 +754,7 @@ extends <a href="../../../com/box/sdk/BoxResource.Info.html" title="class in com
 <ul class="blockList">
 <li class="blockList">
 <h4>setCollections</h4>
-<pre>public&nbsp;void&nbsp;<a href="../../../src-html/com/box/sdk/BoxItem.Info.html#line.500">setCollections</a>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Iterable.html?is-external=true" title="class or interface in java.lang">Iterable</a>&lt;<a href="../../../com/box/sdk/BoxCollection.html" title="class in com.box.sdk">BoxCollection</a>&gt;&nbsp;collections)</pre>
+<pre>public&nbsp;void&nbsp;<a href="../../../src-html/com/box/sdk/BoxItem.Info.html#line.516">setCollections</a>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Iterable.html?is-external=true" title="class or interface in java.lang">Iterable</a>&lt;<a href="../../../com/box/sdk/BoxCollection.html" title="class in com.box.sdk">BoxCollection</a>&gt;&nbsp;collections)</pre>
 <div class="block">Sets the collections that this item belongs to.</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
@@ -749,7 +768,7 @@ extends <a href="../../../com/box/sdk/BoxResource.Info.html" title="class in com
 <ul class="blockListLast">
 <li class="blockList">
 <h4>parseJSONMember</h4>
-<pre>protected&nbsp;void&nbsp;<a href="../../../src-html/com/box/sdk/BoxItem.Info.html#line.518">parseJSONMember</a>(JsonObject.Member&nbsp;member)</pre>
+<pre>protected&nbsp;void&nbsp;<a href="../../../src-html/com/box/sdk/BoxItem.Info.html#line.534">parseJSONMember</a>(JsonObject.Member&nbsp;member)</pre>
 <div class="block"><span class="descfrmTypeLabel">Description copied from class:&nbsp;<code><a href="../../../com/box/sdk/BoxJSONObject.html#parseJSONMember-com.eclipsesource.json.JsonObject.Member-">BoxJSONObject</a></code></span></div>
 <div class="block">Invoked with a JSON member whenever this object is updated or created from a JSON object.
 

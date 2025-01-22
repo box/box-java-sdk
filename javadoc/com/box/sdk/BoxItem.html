@@ -190,9 +190,10 @@ extends <a href="../../../com/box/sdk/BoxResource.html" title="class in com.box.
 </tr>
 <tr id="i6" class="altColor">
 <td class="colFirst"><code>static <a href="../../../com/box/sdk/BoxItem.Info.html" title="class in com.box.sdk">BoxItem.Info</a></code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../com/box/sdk/BoxItem.html#getSharedItem-com.box.sdk.BoxAPIConnection-java.lang.String-java.lang.String-">getSharedItem</a></span>(<a href="../../../com/box/sdk/BoxAPIConnection.html" title="class in com.box.sdk">BoxAPIConnection</a>&nbsp;api,
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../com/box/sdk/BoxItem.html#getSharedItem-com.box.sdk.BoxAPIConnection-java.lang.String-java.lang.String-java.lang.String...-">getSharedItem</a></span>(<a href="../../../com/box/sdk/BoxAPIConnection.html" title="class in com.box.sdk">BoxAPIConnection</a>&nbsp;api,
              <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;sharedLink,
-             <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;password)</code>
+             <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;password,
+             <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>...&nbsp;fields)</code>
 <div class="block">Gets an item that was shared with a password-protected shared link.</div>
 </td>
 </tr>
@@ -337,21 +338,23 @@ extends <a href="../../../com/box/sdk/BoxResource.html" title="class in com.box.
 </dl>
 </li>
 </ul>
-<a name="getSharedItem-com.box.sdk.BoxAPIConnection-java.lang.String-java.lang.String-">
+<a name="getSharedItem-com.box.sdk.BoxAPIConnection-java.lang.String-java.lang.String-java.lang.String...-">
 <!--   -->
 </a>
 <ul class="blockList">
 <li class="blockList">
 <h4>getSharedItem</h4>
-<pre>public static&nbsp;<a href="../../../com/box/sdk/BoxItem.Info.html" title="class in com.box.sdk">BoxItem.Info</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxItem.html#line.66">getSharedItem</a>(<a href="../../../com/box/sdk/BoxAPIConnection.html" title="class in com.box.sdk">BoxAPIConnection</a>&nbsp;api,
+<pre>public static&nbsp;<a href="../../../com/box/sdk/BoxItem.Info.html" title="class in com.box.sdk">BoxItem.Info</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxItem.html#line.67">getSharedItem</a>(<a href="../../../com/box/sdk/BoxAPIConnection.html" title="class in com.box.sdk">BoxAPIConnection</a>&nbsp;api,
                                          <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;sharedLink,
-                                         <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;password)</pre>
+                                         <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;password,
+                                         <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>...&nbsp;fields)</pre>
 <div class="block">Gets an item that was shared with a password-protected shared link.</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
 <dd><code>api</code> - the API connection to be used by the shared item.</dd>
 <dd><code>sharedLink</code> - the shared link to the item.</dd>
-<dd><code>password</code> - the password for the shared link.</dd>
+<dd><code>password</code> - the password for the shared link. Use `null` if shared link has no password.</dd>
+<dd><code>fields</code> - the fields to retrieve.</dd>
 <dt><span class="returnLabel">Returns:</span></dt>
 <dd>info about the shared item.</dd>
 </dl>
@@ -363,7 +366,7 @@ extends <a href="../../../com/box/sdk/BoxResource.html" title="class in com.box.
 <ul class="blockList">
 <li class="blockList">
 <h4>getItemURL</h4>
-<pre>protected&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/net/URL.html?is-external=true" title="class or interface in java.net">URL</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxItem.html#line.81">getItemURL</a>()</pre>
+<pre>protected&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/net/URL.html?is-external=true" title="class or interface in java.net">URL</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxItem.html#line.88">getItemURL</a>()</pre>
 <dl>
 <dt><span class="returnLabel">Returns:</span></dt>
 <dd>URL for the current object, constructed as base URL pus an item specifier.</dd>
@@ -376,7 +379,7 @@ extends <a href="../../../com/box/sdk/BoxResource.html" title="class in com.box.
 <ul class="blockList">
 <li class="blockList">
 <h4>getWatermark</h4>
-<pre>protected&nbsp;<a href="../../../com/box/sdk/BoxWatermark.html" title="class in com.box.sdk">BoxWatermark</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxItem.html#line.93">getWatermark</a>(<a href="../../../com/box/sdk/URLTemplate.html" title="class in com.box.sdk">URLTemplate</a>&nbsp;itemUrl,
+<pre>protected&nbsp;<a href="../../../com/box/sdk/BoxWatermark.html" title="class in com.box.sdk">BoxWatermark</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxItem.html#line.100">getWatermark</a>(<a href="../../../com/box/sdk/URLTemplate.html" title="class in com.box.sdk">URLTemplate</a>&nbsp;itemUrl,
                                     <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>...&nbsp;fields)</pre>
 <div class="block">Used to retrieve the watermark for the item.
  If the item does not have a watermark applied to it, a 404 Not Found will be returned by API.</div>
@@ -395,7 +398,7 @@ extends <a href="../../../com/box/sdk/BoxResource.html" title="class in com.box.
 <ul class="blockList">
 <li class="blockList">
 <h4>applyWatermark</h4>
-<pre>protected&nbsp;<a href="../../../com/box/sdk/BoxWatermark.html" title="class in com.box.sdk">BoxWatermark</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxItem.html#line.113">applyWatermark</a>(<a href="../../../com/box/sdk/URLTemplate.html" title="class in com.box.sdk">URLTemplate</a>&nbsp;itemUrl,
+<pre>protected&nbsp;<a href="../../../com/box/sdk/BoxWatermark.html" title="class in com.box.sdk">BoxWatermark</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxItem.html#line.120">applyWatermark</a>(<a href="../../../com/box/sdk/URLTemplate.html" title="class in com.box.sdk">URLTemplate</a>&nbsp;itemUrl,
                                       <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;imprint)</pre>
 <div class="block">Used to apply or update the watermark for the item.</div>
 <dl>
@@ -413,7 +416,7 @@ extends <a href="../../../com/box/sdk/BoxResource.html" title="class in com.box.
 <ul class="blockList">
 <li class="blockList">
 <h4>removeWatermark</h4>
-<pre>protected&nbsp;void&nbsp;<a href="../../../src-html/com/box/sdk/BoxItem.html#line.132">removeWatermark</a>(<a href="../../../com/box/sdk/URLTemplate.html" title="class in com.box.sdk">URLTemplate</a>&nbsp;itemUrl)</pre>
+<pre>protected&nbsp;void&nbsp;<a href="../../../src-html/com/box/sdk/BoxItem.html#line.139">removeWatermark</a>(<a href="../../../com/box/sdk/URLTemplate.html" title="class in com.box.sdk">URLTemplate</a>&nbsp;itemUrl)</pre>
 <div class="block">Removes a watermark from the item.
  If the item did not have a watermark applied to it, a 404 Not Found will be returned by API.</div>
 <dl>
@@ -428,7 +431,7 @@ extends <a href="../../../com/box/sdk/BoxResource.html" title="class in com.box.
 <ul class="blockList">
 <li class="blockList">
 <h4>copy</h4>
-<pre>public abstract&nbsp;<a href="../../../com/box/sdk/BoxItem.Info.html" title="class in com.box.sdk">BoxItem.Info</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxItem.html#line.145">copy</a>(<a href="../../../com/box/sdk/BoxFolder.html" title="class in com.box.sdk">BoxFolder</a>&nbsp;destination)</pre>
+<pre>public abstract&nbsp;<a href="../../../com/box/sdk/BoxItem.Info.html" title="class in com.box.sdk">BoxItem.Info</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxItem.html#line.152">copy</a>(<a href="../../../com/box/sdk/BoxFolder.html" title="class in com.box.sdk">BoxFolder</a>&nbsp;destination)</pre>
 <div class="block">Copies this item to another folder.</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
@@ -444,7 +447,7 @@ extends <a href="../../../com/box/sdk/BoxResource.html" title="class in com.box.
 <ul class="blockList">
 <li class="blockList">
 <h4>copy</h4>
-<pre>public abstract&nbsp;<a href="../../../com/box/sdk/BoxItem.Info.html" title="class in com.box.sdk">BoxItem.Info</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxItem.html#line.155">copy</a>(<a href="../../../com/box/sdk/BoxFolder.html" title="class in com.box.sdk">BoxFolder</a>&nbsp;destination,
+<pre>public abstract&nbsp;<a href="../../../com/box/sdk/BoxItem.Info.html" title="class in com.box.sdk">BoxItem.Info</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxItem.html#line.162">copy</a>(<a href="../../../com/box/sdk/BoxFolder.html" title="class in com.box.sdk">BoxFolder</a>&nbsp;destination,
                                   <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;newName)</pre>
 <div class="block">Copies this item to another folder and gives it a new name. If the destination is the same folder as the item's
  current parent, then newName must be a new, unique name.</div>
@@ -463,7 +466,7 @@ extends <a href="../../../com/box/sdk/BoxResource.html" title="class in com.box.
 <ul class="blockList">
 <li class="blockList">
 <h4>move</h4>
-<pre>public abstract&nbsp;<a href="../../../com/box/sdk/BoxItem.Info.html" title="class in com.box.sdk">BoxItem.Info</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxItem.html#line.163">move</a>(<a href="../../../com/box/sdk/BoxFolder.html" title="class in com.box.sdk">BoxFolder</a>&nbsp;destination)</pre>
+<pre>public abstract&nbsp;<a href="../../../com/box/sdk/BoxItem.Info.html" title="class in com.box.sdk">BoxItem.Info</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxItem.html#line.170">move</a>(<a href="../../../com/box/sdk/BoxFolder.html" title="class in com.box.sdk">BoxFolder</a>&nbsp;destination)</pre>
 <div class="block">Moves this item to another folder.</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
@@ -479,7 +482,7 @@ extends <a href="../../../com/box/sdk/BoxResource.html" title="class in com.box.
 <ul class="blockList">
 <li class="blockList">
 <h4>move</h4>
-<pre>public abstract&nbsp;<a href="../../../com/box/sdk/BoxItem.Info.html" title="class in com.box.sdk">BoxItem.Info</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxItem.html#line.172">move</a>(<a href="../../../com/box/sdk/BoxFolder.html" title="class in com.box.sdk">BoxFolder</a>&nbsp;destination,
+<pre>public abstract&nbsp;<a href="../../../com/box/sdk/BoxItem.Info.html" title="class in com.box.sdk">BoxItem.Info</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxItem.html#line.179">move</a>(<a href="../../../com/box/sdk/BoxFolder.html" title="class in com.box.sdk">BoxFolder</a>&nbsp;destination,
                                   <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;newName)</pre>
 <div class="block">Moves this item to another folder and gives it a new name.</div>
 <dl>
@@ -497,7 +500,7 @@ extends <a href="../../../com/box/sdk/BoxResource.html" title="class in com.box.
 <ul class="blockList">
 <li class="blockList">
 <h4>getInfo</h4>
-<pre>public abstract&nbsp;<a href="../../../com/box/sdk/BoxItem.Info.html" title="class in com.box.sdk">BoxItem.Info</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxItem.html#line.180">getInfo</a>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>...&nbsp;fields)</pre>
+<pre>public abstract&nbsp;<a href="../../../com/box/sdk/BoxItem.Info.html" title="class in com.box.sdk">BoxItem.Info</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxItem.html#line.187">getInfo</a>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>...&nbsp;fields)</pre>
 <div class="block">Gets information about this item that's limited to a list of specified fields.</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
@@ -513,7 +516,7 @@ extends <a href="../../../com/box/sdk/BoxResource.html" title="class in com.box.
 <ul class="blockListLast">
 <li class="blockList">
 <h4>setCollections</h4>
-<pre>public abstract&nbsp;<a href="../../../com/box/sdk/BoxItem.Info.html" title="class in com.box.sdk">BoxItem.Info</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxItem.html#line.188">setCollections</a>(<a href="../../../com/box/sdk/BoxCollection.html" title="class in com.box.sdk">BoxCollection</a>...&nbsp;collections)</pre>
+<pre>public abstract&nbsp;<a href="../../../com/box/sdk/BoxItem.Info.html" title="class in com.box.sdk">BoxItem.Info</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxItem.html#line.195">setCollections</a>(<a href="../../../com/box/sdk/BoxCollection.html" title="class in com.box.sdk">BoxCollection</a>...&nbsp;collections)</pre>
 <div class="block">Sets the collections that this item belongs to.</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
