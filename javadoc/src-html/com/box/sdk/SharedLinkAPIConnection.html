@@ -11,7 +11,7 @@
 <span class="sourceLineNo">003</span>/**<a name="line.3"></a>
 <span class="sourceLineNo">004</span> * This API connection uses a shared link (along with an optional password) to authenticate with the Box API. It wraps a<a name="line.4"></a>
 <span class="sourceLineNo">005</span> * preexisting BoxAPIConnection in order to provide additional access to items that are accessible with a shared link.<a name="line.5"></a>
-<span class="sourceLineNo">006</span> * @deprecated Use {@link BoxItem#getSharedItem(BoxAPIConnection, String, String)} instead<a name="line.6"></a>
+<span class="sourceLineNo">006</span> * @deprecated Use {@link BoxItem#getSharedItem(BoxAPIConnection, String, String, String...)} instead<a name="line.6"></a>
 <span class="sourceLineNo">007</span> */<a name="line.7"></a>
 <span class="sourceLineNo">008</span>public class SharedLinkAPIConnection extends BoxAPIConnection {<a name="line.8"></a>
 <span class="sourceLineNo">009</span>    private final BoxAPIConnection wrappedConnection;<a name="line.9"></a>
