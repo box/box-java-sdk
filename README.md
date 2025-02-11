@@ -231,6 +231,9 @@ $ ./gradlew integrationTest
 
 You can find guides and tutorials in the `doc` directory.
 
+## Compression Support
+The SDK supports both gzip and zstd compression for API requests. Compression is handled automatically based on server capabilities.
+
 * [BUILD ON BOX PLATFORM](https://developer.box.com/guides/getting-started/)
 * [Javadocs](http://box.github.io/box-java-sdk/javadoc/com/box/sdk/package-summary.html)
 * [Overview](https://github.com/box/box-java-sdk/blob/v4.14.0/doc/overview.md)

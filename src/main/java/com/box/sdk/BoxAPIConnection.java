@@ -237,6 +237,7 @@ public class BoxAPIConnection {
             }
         }
         builder = modifyHttpClientBuilder(builder);
+        builder.addInterceptor(new ZstdInterceptor());
 
         this.httpClient = builder.build();
         this.noRedirectsHttpClient = new OkHttpClient.Builder(httpClient)
