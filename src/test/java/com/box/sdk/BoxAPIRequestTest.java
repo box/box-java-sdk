@@ -356,7 +356,7 @@ public class BoxAPIRequestTest {
         BoxAPIConnection api = createConnectionWith(boxMockUrl().toString());
         BoxAPIRequest request = new BoxAPIRequest(api, boxMockUrl(), "GET");
         String jsonString = "{\"foo\":\"bar\"}";
-        
+
         stubFor(get(urlEqualTo("/")).willReturn(
             aResponse()
                 .withStatus(200)

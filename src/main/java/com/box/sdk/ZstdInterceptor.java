@@ -1,31 +1,35 @@
 package com.box.sdk;
 
 import com.github.luben.zstd.ZstdInputStream;
-import java.util.List;
-import okhttp3.*;
 import java.io.ByteArrayOutputStream;
-
 import java.io.IOException;
+import okhttp3.Interceptor;
+import okhttp3.Request;
+import okhttp3.Response;
+import okhttp3.ResponseBody;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * Interceptor that adds zstd compression support to API requests.
  * This interceptor adds zstd to the Accept-Encoding header and handles decompression of zstd responses.
  */
 public class ZstdInterceptor implements Interceptor {
+    @NotNull
     @Override
     public Response intercept(Chain chain) throws IOException {
         Request request = chain.request();
 
         // Add zstd to the Accept-Encoding header
         String acceptEncoding;
-        List<String> acceptEncodingHeaders = request.headers("Accept-Encoding");
-        if (acceptEncodingHeaders.isEmpty()) {
+        String acceptEncodingHeader = request.header("Accept-Encoding");
+        if (acceptEncodingHeader == null) {
             acceptEncoding = "zstd";
         } else {
-            acceptEncoding = acceptEncodingHeaders.get(0) + ", zstd";
+            acceptEncoding = acceptEncodingHeader + ", zstd";
         }
 
         Request compressedRequest = request.newBuilder()
+            .removeHeader("Accept-Encoding")
             .addHeader("Accept-Encoding", acceptEncoding)
             .build();
 
@@ -55,13 +59,13 @@ public class ZstdInterceptor implements Interceptor {
 
         // Create a new response body that serves the buffered content
         ResponseBody decompressedBody = ResponseBody.create(
-            originalBody.contentType(),
-            decompressedBytes
+            decompressedBytes,
+            originalBody.contentType()
         );
 
         return response.newBuilder()
             .body(decompressedBody)
-            .removeHeader("Content-Encoding")
+            .removeHeader("X-Content-Encoding")
             .removeHeader("Content-Length")
             .build();
     }

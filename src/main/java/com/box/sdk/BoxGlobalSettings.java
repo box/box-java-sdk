@@ -7,6 +7,7 @@ public final class BoxGlobalSettings {
     private static int connectTimeout = 0;
     private static int readTimeout = 0;
     private static int maxRetryAttempts = BoxAPIConnection.DEFAULT_MAX_RETRIES;
+    private static boolean useZstdCompression = true;
 
     private BoxGlobalSettings() {
     }
@@ -66,5 +67,21 @@ public final class BoxGlobalSettings {
      */
     public static void setMaxRetryAttempts(int attempts) {
         BoxGlobalSettings.maxRetryAttempts = attempts;
+    }
+
+    /*
+     * Returns the global settings for using Zstd compression.
+     * @return true if Zstd compression is enabled, false otherwise
+     */
+    public static boolean getUseZstdCompression() {
+        return useZstdCompression;
+    }
+
+    /*
+     * Sets the global settings for using Zstd compression.
+     * @param useZstdCompression true to enable Zstd compression, false otherwise
+     */
+    public static void setUseZstdCompression(boolean useZstdCompression) {
+        BoxGlobalSettings.useZstdCompression = useZstdCompression;
     }
 }

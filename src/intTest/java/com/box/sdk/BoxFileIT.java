@@ -226,6 +226,50 @@ public class BoxFileIT {
     }
 
     @Test
+    public void uploadAndDownloadFileUseZstdSucceeds() throws IOException {
+        BoxAPIConnection api = jwtApiForServiceAccount();
+        api.setUseZstdCompression(true);
+
+        String fileName = "smalltest.pdf";
+        URL fileURL = this.getClass().getResource("/sample-files/" + fileName);
+        String filePath = URLDecoder.decode(fileURL.getFile(), "utf-8");
+        byte[] fileContent = readAllBytes(filePath);
+        BoxFile file = null;
+        try {
+            file = uploadSampleFileToUniqueFolder(api, fileName);
+            ByteArrayOutputStream downloadStream = new ByteArrayOutputStream();
+            ProgressListener mockDownloadListener = mock(ProgressListener.class);
+            file.download(downloadStream, mockDownloadListener);
+            byte[] downloadedFileContent = downloadStream.toByteArray();
+            assertThat(downloadedFileContent, is(equalTo(fileContent)));
+        } finally {
+            deleteFile(file);
+        }
+    }
+
+    @Test
+    public void uploadAndDownloadFileDisabledZstdSucceeds() throws IOException {
+        BoxAPIConnection api = jwtApiForServiceAccount();
+        api.setUseZstdCompression(false);
+
+        String fileName = "smalltest.pdf";
+        URL fileURL = this.getClass().getResource("/sample-files/" + fileName);
+        String filePath = URLDecoder.decode(fileURL.getFile(), "utf-8");
+        byte[] fileContent = readAllBytes(filePath);
+        BoxFile file = null;
+        try {
+            file = uploadSampleFileToUniqueFolder(api, fileName);
+            ByteArrayOutputStream downloadStream = new ByteArrayOutputStream();
+            ProgressListener mockDownloadListener = mock(ProgressListener.class);
+            file.download(downloadStream, mockDownloadListener);
+            byte[] downloadedFileContent = downloadStream.toByteArray();
+            assertThat(downloadedFileContent, is(equalTo(fileContent)));
+        } finally {
+            deleteFile(file);
+        }
+    }
+
+    @Test
     public void downloadFileRangeSucceeds() throws IOException {
         BoxAPIConnection api = jwtApiForServiceAccount();
         String fileName = "red_100x100.png";
