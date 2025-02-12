@@ -43,7 +43,7 @@ public class BoxFolder extends BoxItem implements Iterable<BoxItem.Info> {
         "item_status", "item_collection", "sync_state", "has_collaborations", "permissions", "tags",
         "can_non_owners_invite", "collections", "watermark_info", "metadata", "is_externally_owned",
         "is_collaboration_restricted_to_enterprise", "allowed_shared_link_access_levels", "allowed_invitee_roles",
-        "is_accessible_via_shared_link"
+        "is_accessible_via_shared_link", "can_non_owners_view_collaborators"
     };
     /**
      * Create Folder URL Template.
@@ -1467,6 +1467,7 @@ public class BoxFolder extends BoxItem implements Iterable<BoxItem.Info> {
         private BoxClassification classification;
 
         private boolean isAccessibleViaSharedLink;
+        private boolean canNonOwnersViewCollaborators;
 
         /**
          * Constructs an empty Info object.
@@ -1668,6 +1669,29 @@ public class BoxFolder extends BoxItem implements Iterable<BoxItem.Info> {
             return this.isAccessibleViaSharedLink;
         }
 
+        /**
+         * Returns the flag indicating if collaborators who are not owners of this folder
+         * are restricted from viewing other collaborations on this folder.
+         *
+         * @return boolean flag indicating if collaborators who are not owners of this folder
+         * are restricted from viewing other collaborations on this folder.
+         */
+        public boolean getCanNonOwnersViewCollaborators() {
+            return this.canNonOwnersViewCollaborators;
+        }
+
+        /**
+         * Sets whether collaborators who are not owners of this folder
+         * are restricted from viewing other collaborations on this folder.
+         *
+         * @param canNonOwnersViewCollaborators indicates if collaborators who are not owners of this folder
+         * are restricted from viewing other collaborations on this folderr.
+         */
+        public void setCanNonOwnersViewCollaborators(boolean canNonOwnersViewCollaborators) {
+            this.canNonOwnersViewCollaborators = canNonOwnersViewCollaborators;
+            this.addPendingChange("can_non_owners_view_collaborators", canNonOwnersViewCollaborators);
+        }
+
 
         @Override
         public BoxFolder getResource() {
@@ -1728,6 +1752,9 @@ public class BoxFolder extends BoxItem implements Iterable<BoxItem.Info> {
                         break;
                     case "is_accessible_via_shared_link":
                         this.isAccessibleViaSharedLink = value.asBoolean();
+                        break;
+                    case "can_non_owners_view_collaborators":
+                        this.canNonOwnersViewCollaborators = value.asBoolean();
                         break;
                     default:
                         break;

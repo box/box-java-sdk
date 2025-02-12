@@ -116,5 +116,6 @@
     "can_set_share_access": true,
     "can_share": true,
     "can_upload": true
-  }
+  },
+  "can_non_owners_view_collaborators": true
 }
