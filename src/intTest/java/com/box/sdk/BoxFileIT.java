@@ -1,7 +1,9 @@
 package com.box.sdk;
 
+import static com.box.sdk.BinaryBodyUtils.writeStream;
 import static com.box.sdk.BoxApiProvider.jwtApiForServiceAccount;
 import static com.box.sdk.BoxFile.ALL_VERSION_FIELDS;
+import static com.box.sdk.BoxFile.CONTENT_URL_TEMPLATE;
 import static com.box.sdk.BoxRetentionPolicyAssignment.createAssignmentToFolder;
 import static com.box.sdk.BoxSharedLink.Access.OPEN;
 import static com.box.sdk.CleanupTools.deleteFile;
@@ -237,10 +239,17 @@ public class BoxFileIT {
         BoxFile file = null;
         try {
             file = uploadSampleFileToUniqueFolder(api, fileName);
+
             ByteArrayOutputStream downloadStream = new ByteArrayOutputStream();
             ProgressListener mockDownloadListener = mock(ProgressListener.class);
-            file.download(downloadStream, mockDownloadListener);
+
+            URL url = CONTENT_URL_TEMPLATE.build(api.getBaseURL(), file.getID());
+            BoxAPIRequest request = new BoxAPIRequest(api, url, "GET");
+            BoxAPIResponse response = request.send();
+            writeStream(response, downloadStream, mockDownloadListener);
+
             byte[] downloadedFileContent = downloadStream.toByteArray();
+            assertThat(response.getHeaders().get("X-Content-Encoding").get(0), is(equalTo("zstd")));
             assertThat(downloadedFileContent, is(equalTo(fileContent)));
         } finally {
             deleteFile(file);
@@ -259,10 +268,17 @@ public class BoxFileIT {
         BoxFile file = null;
         try {
             file = uploadSampleFileToUniqueFolder(api, fileName);
+
             ByteArrayOutputStream downloadStream = new ByteArrayOutputStream();
             ProgressListener mockDownloadListener = mock(ProgressListener.class);
-            file.download(downloadStream, mockDownloadListener);
+
+            URL url = CONTENT_URL_TEMPLATE.build(api.getBaseURL(), file.getID());
+            BoxAPIRequest request = new BoxAPIRequest(api, url, "GET");
+            BoxAPIResponse response = request.send();
+            writeStream(response, downloadStream, mockDownloadListener);
+
             byte[] downloadedFileContent = downloadStream.toByteArray();
+            assertThat(response.getHeaders().get("X-Content-Encoding"), is(nullValue()));
             assertThat(downloadedFileContent, is(equalTo(fileContent)));
         } finally {
             deleteFile(file);

@@ -65,7 +65,8 @@ public class ZstdInterceptor implements Interceptor {
 
         return response.newBuilder()
             .body(decompressedBody)
-            .removeHeader("X-Content-Encoding")
+            .addHeader("X-Content-Encoding", contentEncoding)
+            .removeHeader("Content-Encoding")
             .removeHeader("Content-Length")
             .build();
     }
