@@ -553,6 +553,7 @@ public class BoxFolderTest {
         assertEquals(classificationDefinition, info.getClassification().getDefinition());
         assertEquals(classificationName, info.getClassification().getName());
         assertTrue(info.getIsAccessibleViaSharedLink());
+        assertTrue(info.getCanNonOwnersViewCollaborators());
     }
 
     @Test

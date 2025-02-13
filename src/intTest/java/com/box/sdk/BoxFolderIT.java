@@ -263,6 +263,32 @@ public class BoxFolderIT {
     }
 
     @Test
+    public void updateCanNonOwnersViewCollaboratorsSucceeds() {
+        BoxAPIConnection api = jwtApiForServiceAccount();
+        BoxFolder rootFolder = getUniqueFolder(api);
+        final String name = "[updateCanNonOwnersViewCollaboratorsSucceeds] Child Folder";
+        BoxFolder childFolder = null;
+
+        try {
+            BoxFolder.Info info = rootFolder.createFolder(name);
+            childFolder = info.getResource();
+            boolean getCanNonOwnersViewCollaborators = childFolder.getInfo("can_non_owners_view_collaborators")
+                .getCanNonOwnersViewCollaborators();
+            // need to set both
+            info.setCanNonOwnersViewCollaborators(!getCanNonOwnersViewCollaborators);
+            info.setCanNonOwnersInvite(!getCanNonOwnersViewCollaborators);
+            childFolder.updateInfo(info);
+
+            assertThat(info.getCanNonOwnersViewCollaborators(), equalTo(!getCanNonOwnersViewCollaborators));
+            assertThat(info.getCanNonOwnersInvite(), equalTo(!getCanNonOwnersViewCollaborators));
+        } finally {
+            this.deleteFolder(childFolder);
+            assertThat(rootFolder,
+                not(hasItem(Matchers.<BoxItem.Info>hasProperty("ID", equalTo(childFolder.getID())))));
+        }
+    }
+
+    @Test
     public void copyFolderToSameDestinationWithNewNameSucceeds() {
         BoxAPIConnection api = jwtApiForServiceAccount();
         BoxFolder rootFolder = getUniqueFolder(api);
