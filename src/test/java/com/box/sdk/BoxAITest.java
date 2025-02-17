@@ -94,11 +94,9 @@ public class BoxAITest {
         final String fileId = "12345";
         final String prompt = "What is the name of the file?";
 
-        Date date1 = BoxDateFormat.parse("2013-05-16T15:27:57-07:00");
-
         List<BoxAIDialogueEntry> dialogueHistory = new ArrayList<>();
         dialogueHistory.add(
-                new BoxAIDialogueEntry("What is the name of the file?", "Test file", date1)
+                new BoxAIDialogueEntry("What is the name of the file?", "Test file")
         );
         dialogueHistory.add(
                 new BoxAIDialogueEntry("What is the size of the file?", "10kb")
@@ -111,8 +109,7 @@ public class BoxAITest {
                         + "    {\"id\": \"%s\", \"type\": \"file\"}\n"
                         + "  ],\n"
                         + "  \"dialogue_history\": [\n"
-                        + "    {\"prompt\": \"What is the name of the file?\", \"answer\": \"Test file\", "
-                        + "         \"created_at\": \"Fri May 17 00:27:57 CEST 2013\"},\n"
+                        + "    {\"prompt\": \"What is the name of the file?\", \"answer\": \"Test file\"},\n"
                         + "    {\"prompt\": \"What is the size of the file?\", \"answer\": \"10kb\"}\n"
                         + "  ]\n"
                         + "}",
