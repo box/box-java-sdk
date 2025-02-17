@@ -66,9 +66,12 @@ public class BoxAITest {
     public void testSendAITexGenRequestWithNoDialogueHistorySuccess() {
         final String fileId = "12345";
         final String prompt = "What is the name of the file?";
+        String expectedRequestBody = String.format(
+                "{\"prompt\": \"%s\", \"items\": [{\"id\": \"%s\", \"type\": \"file\"}]}", prompt, fileId);
 
         String result = TestUtils.getFixture("BoxAI/SendAITextGen200");
         wireMockRule.stubFor(WireMock.post(WireMock.urlPathEqualTo("/2.0/ai/text_gen"))
+                .withRequestBody(WireMock.equalToJson(expectedRequestBody))
                 .willReturn(WireMock.aResponse()
                         .withHeader("Content-Type", APPLICATION_JSON)
                         .withBody(result)));
@@ -92,18 +95,34 @@ public class BoxAITest {
         final String prompt = "What is the name of the file?";
 
         Date date1 = BoxDateFormat.parse("2013-05-16T15:27:57-07:00");
-        Date date2 = BoxDateFormat.parse("2013-05-16T15:26:57-07:00");
 
         List<BoxAIDialogueEntry> dialogueHistory = new ArrayList<>();
         dialogueHistory.add(
                 new BoxAIDialogueEntry("What is the name of the file?", "Test file", date1)
         );
         dialogueHistory.add(
-                new BoxAIDialogueEntry("What is the size of the file?", "10kb", date2)
+                new BoxAIDialogueEntry("What is the size of the file?", "10kb")
         );
+
+        String expectedRequestBody = String.format(
+                "{\n"
+                        + "  \"prompt\": \"%s\",\n"
+                        + "  \"items\": [\n"
+                        + "    {\"id\": \"%s\", \"type\": \"file\"}\n"
+                        + "  ],\n"
+                        + "  \"dialogue_history\": [\n"
+                        + "    {\"prompt\": \"What is the name of the file?\", \"answer\": \"Test file\", "
+                        + "         \"created_at\": \"Fri May 17 00:27:57 CEST 2013\"},\n"
+                        + "    {\"prompt\": \"What is the size of the file?\", \"answer\": \"10kb\"}\n"
+                        + "  ]\n"
+                        + "}",
+                prompt, fileId
+        );
+
 
         String result = TestUtils.getFixture("BoxAI/SendAITextGen200");
         wireMockRule.stubFor(WireMock.post(WireMock.urlPathEqualTo("/2.0/ai/text_gen"))
+                .withRequestBody(WireMock.equalToJson(expectedRequestBody))
                 .willReturn(WireMock.aResponse()
                         .withHeader("Content-Type", APPLICATION_JSON)
                         .withBody(result)));
