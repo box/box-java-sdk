@@ -370,7 +370,13 @@ public class BoxAITest {
         );
 
         assertThat(response.getSourceJson(), equalTo(Json.parse(result).asObject()));
-        assertThat(response.getSourceJson().get("firstName").asString(), equalTo("John"));
+        assertThat(response.getAnswer().get("firstName").asString(), equalTo("John"));
+        assertThat(response.getAnswer().get("lastName").asString(), equalTo("Doe"));
+        assertThat(response.getAnswer().get("age").asInt(), equalTo(25));
+        assertThat(response.getAnswer().get("hobbies").asArray().get(0).asString(), equalTo("reading"));
+
+        assertThat(response.getCreatedAt(), equalTo(new Date(1355338423123L)));
+        assertThat(response.getCompletionReason(), equalTo("done"));
     }
 
     @Test
@@ -414,6 +420,12 @@ public class BoxAITest {
         );
 
         assertThat(response.getSourceJson(), equalTo(Json.parse(result).asObject()));
-        assertThat(response.getSourceJson().get("firstName").asString(), equalTo("John"));
+        assertThat(response.getAnswer().get("firstName").asString(), equalTo("John"));
+        assertThat(response.getAnswer().get("lastName").asString(), equalTo("Doe"));
+        assertThat(response.getAnswer().get("age").asInt(), equalTo(25));
+        assertThat(response.getAnswer().get("hobbies").asArray().get(0).asString(), equalTo("reading"));
+
+        assertThat(response.getCreatedAt(), equalTo(new Date(1355338423123L)));
+        assertThat(response.getCompletionReason(), equalTo("done"));
     }
 }
