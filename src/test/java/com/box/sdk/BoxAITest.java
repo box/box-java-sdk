@@ -93,13 +93,15 @@ public class BoxAITest {
     public void testSendAITexGenRequestWithDialogueHistorySuccess() throws ParseException {
         final String fileId = "12345";
         final String prompt = "What is the name of the file?";
+        Date date1 = BoxDateFormat.parse("2021-01-01T00:00:00Z");
+        Date date2 = BoxDateFormat.parse("2022-01-01T00:00:00Z");
 
         List<BoxAIDialogueEntry> dialogueHistory = new ArrayList<>();
         dialogueHistory.add(
-                new BoxAIDialogueEntry("What is the name of the file?", "Test file")
+                new BoxAIDialogueEntry("What is the name of the file?", "Test file", date1)
         );
         dialogueHistory.add(
-                new BoxAIDialogueEntry("What is the size of the file?", "10kb")
+                new BoxAIDialogueEntry("What is the size of the file?", "10kb", date2)
         );
 
         String expectedRequestBody = String.format(
@@ -109,8 +111,10 @@ public class BoxAITest {
                         + "    {\"id\": \"%s\", \"type\": \"file\"}\n"
                         + "  ],\n"
                         + "  \"dialogue_history\": [\n"
-                        + "    {\"prompt\": \"What is the name of the file?\", \"answer\": \"Test file\"},\n"
-                        + "    {\"prompt\": \"What is the size of the file?\", \"answer\": \"10kb\"}\n"
+                        + "    {\"prompt\": \"What is the name of the file?\", \"answer\": \"Test file\","
+                        + "     \"created_at\" : \"2021-01-01T00:00:00Z\"},\n"
+                        + "    {\"prompt\": \"What is the size of the file?\", \"answer\": \"10kb\","
+                        + "     \"created_at\" : \"2022-01-01T00:00:00Z\"}\n"
                         + "  ]\n"
                         + "}",
                 prompt, fileId

@@ -10,9 +10,9 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.notNullValue;
 
 import com.eclipsesource.json.Json;
-import com.eclipsesource.json.JsonObject;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -111,8 +111,8 @@ public class BoxAIIT {
     public void askAITextGenItemWithDialogueHistory() throws ParseException, InterruptedException {
         BoxAPIConnection api = jwtApiForServiceAccount();
         String fileName = "[askAITextGenItemWithDialogueHistory] Test File.txt";
-        Date date1 = BoxDateFormat.parse("2013-05-16T15:27:57-07:00");
-        Date date2 = BoxDateFormat.parse("2013-05-16T15:26:57-07:00");
+        Date date1 = BoxDateFormat.parse("2021-01-01T00:00:00Z");
+        Date date2 = BoxDateFormat.parse("2021-02-01T00:00:00Z");
 
         BoxFile uploadedFile = uploadFileToUniqueFolder(api, fileName, "Test file");
         try {
@@ -148,19 +148,17 @@ public class BoxAIIT {
     @Test
     public void getAIAgentDefaultConfiguration() {
         BoxAPIConnection api = jwtApiForServiceAccount();
-        BoxAIAgent agent = BoxAI.getAiAgentDefaultConfig(api, BoxAIAgent.Mode.ASK,
-            "en", "openai__gpt_3_5_turbo");
+        BoxAIAgent agent = BoxAI.getAiAgentDefaultConfig(api, BoxAIAgent.Mode.ASK);
         BoxAIAgentAsk askAgent = (BoxAIAgentAsk) agent;
 
         assertThat(askAgent.getType(), is(equalTo(BoxAIAgentAsk.TYPE)));
-        assertThat(askAgent.getBasicText().getModel(), is(equalTo("openai__gpt_3_5_turbo")));
+        assertThat(askAgent.getBasicText().getModel(), is(notNullValue()));
 
-        BoxAIAgent agent2 = BoxAI.getAiAgentDefaultConfig(api, BoxAIAgent.Mode.TEXT_GEN,
-            "en", "openai__gpt_3_5_turbo");
+        BoxAIAgent agent2 = BoxAI.getAiAgentDefaultConfig(api, BoxAIAgent.Mode.TEXT_GEN);
         BoxAIAgentTextGen textGenAgent = (BoxAIAgentTextGen) agent2;
 
         assertThat(textGenAgent.getType(), is(equalTo(BoxAIAgentTextGen.TYPE)));
-        assertThat(textGenAgent.getBasicGen().getModel(), is(equalTo("openai__gpt_3_5_turbo")));
+        assertThat(textGenAgent.getBasicGen().getModel(), is(notNullValue()));
     }
 
     @Test
@@ -168,8 +166,7 @@ public class BoxAIIT {
         BoxAPIConnection api = jwtApiForServiceAccount();
         String fileName = "[askAISingleItem] Test File.txt";
         BoxFile uploadedFile = uploadFileToUniqueFolder(api, fileName, "Test file");
-        BoxAIAgent agent = BoxAI.getAiAgentDefaultConfig(api, BoxAIAgent.Mode.ASK,
-            "en", "openai__gpt_3_5_turbo_16k");
+        BoxAIAgent agent = BoxAI.getAiAgentDefaultConfig(api, BoxAIAgent.Mode.ASK);
         BoxAIAgentAsk askAgent = (BoxAIAgentAsk) agent;
 
         try {
@@ -199,8 +196,10 @@ public class BoxAIIT {
     @Test
     public void aiExtract() throws InterruptedException {
         BoxAPIConnection api = jwtApiForServiceAccount();
-        BoxAIAgent agent = BoxAI.getAiAgentDefaultConfig(api, BoxAIAgent.Mode.EXTRACT, "en-US", null);
+        BoxAIAgent agent = BoxAI.getAiAgentDefaultConfig(api, BoxAIAgent.Mode.EXTRACT);
         BoxAIAgentExtract agentExtract = (BoxAIAgentExtract) agent;
+        // AI team is going to move away from supporting overriding embeddings model
+        agentExtract.getLongText().setEmbeddings(null);
 
         BoxFile uploadedFile = uploadFileToUniqueFolder(api, "[aiExtract] Test File.txt",
             "My name is John Doe. I live in San Francisco. I was born in 1990. I work at Box.");
@@ -224,8 +223,10 @@ public class BoxAIIT {
     @Test
     public void aiExtractStructuredWithFields() throws InterruptedException {
         BoxAPIConnection api = jwtApiForServiceAccount();
-        BoxAIAgent agent = BoxAI.getAiAgentDefaultConfig(api, BoxAIAgent.Mode.EXTRACT_STRUCTURED, "en-US", null);
+        BoxAIAgent agent = BoxAI.getAiAgentDefaultConfig(api, BoxAIAgent.Mode.EXTRACT_STRUCTURED);
         BoxAIAgentExtractStructured agentExtractStructured = (BoxAIAgentExtractStructured) agent;
+        // AI team is going to move away from supporting overriding embeddings model
+        agentExtractStructured.getLongText().setEmbeddings(null);
 
         BoxFile uploadedFile = uploadFileToUniqueFolder(api, "[aiExtractStructuredWithFields] Test File.txt",
             "My name is John Doe. I was born in 4th July 1990. I am 34 years old. My hobby is guitar.");
@@ -259,12 +260,16 @@ public class BoxAIIT {
                                 "What is your hobby?")
                         ),
                     agentExtractStructured);
-                JsonObject sourceJson = response.getSourceJson();
-                assertThat(sourceJson.get("firstName").asString(), is(equalTo("John")));
-                assertThat(sourceJson.get("lastName").asString(), is(equalTo("Doe")));
-                assertThat(sourceJson.get("dateOfBirth").asString(), is(equalTo("1990-07-04")));
-                assertThat(sourceJson.get("age").asInt(), is(equalTo(34)));
-                assertThat(sourceJson.get("hobby").asArray().get(0).asString(), is(equalTo("guitar")));
+                assertThat(response.getSourceJson().get("answer"), is(equalTo(response.getAnswer())));
+
+                assertThat(response.getAnswer().get("firstName").asString(), is(equalTo("John")));
+                assertThat(response.getAnswer().get("lastName").asString(), is(equalTo("Doe")));
+                assertThat(response.getAnswer().get("dateOfBirth").asString(), is(equalTo("1990-07-04")));
+                assertThat(response.getAnswer().get("age").asInt(), is(equalTo(34)));
+                assertThat(response.getAnswer().get("hobby").asArray().get(0).asString(), is(equalTo("guitar")));
+
+                assertThat(response.getCompletionReason(), equalTo("done"));
+                assertThat(response.getCreatedAt(), is(notNullValue()));
             }, 2, 2000);
         } finally {
             deleteFile(uploadedFile);
@@ -274,8 +279,10 @@ public class BoxAIIT {
     @Test
     public void aiExtractStructuredWithMetadataTemplate() throws InterruptedException {
         BoxAPIConnection api = jwtApiForServiceAccount();
-        BoxAIAgent agent = BoxAI.getAiAgentDefaultConfig(api, BoxAIAgent.Mode.EXTRACT_STRUCTURED, "en-US", null);
+        BoxAIAgent agent = BoxAI.getAiAgentDefaultConfig(api, BoxAIAgent.Mode.EXTRACT_STRUCTURED);
         BoxAIAgentExtractStructured agentExtractStructured = (BoxAIAgentExtractStructured) agent;
+        // AI team is going to move away from supporting overriding embeddings model
+        agentExtractStructured.getLongText().setEmbeddings(null);
 
         BoxFile uploadedFile = uploadFileToUniqueFolder(api, "[aiExtractStructuredWithMetadataTemplate] Test File.txt",
             "My name is John Doe. I was born in 4th July 1990. I am 34 years old. My hobby is guitar.");
@@ -312,12 +319,15 @@ public class BoxAIIT {
                     Collections.singletonList(new BoxAIItem(uploadedFile.getID(), BoxAIItem.Type.FILE)),
                     new BoxAIExtractMetadataTemplate(templateKey, "enterprise"),
                     agentExtractStructured);
-                JsonObject sourceJson = response.getSourceJson();
-                assertThat(sourceJson.get("firstName").asString(), is(equalTo("John")));
-                assertThat(sourceJson.get("lastName").asString(), is(equalTo("Doe")));
-                assertThat(sourceJson.get("dateOfBirth").asString(), is(equalTo("1990-07-04T00:00:00Z")));
-                assertThat(sourceJson.get("age").asInt(), is(equalTo(34)));
-                assertThat(sourceJson.get("hobby").asArray().get(0).asString(), is(equalTo("guitar")));
+                assertThat(response.getSourceJson().get("answer"), is(equalTo(response.getAnswer())));
+
+                assertThat(response.getAnswer().get("firstName").asString(), is(equalTo("John")));
+                assertThat(response.getAnswer().get("lastName").asString(), is(equalTo("Doe")));
+                assertThat(response.getAnswer().get("dateOfBirth").asString(), is(equalTo("1990-07-04T00:00:00Z")));
+                assertThat(response.getAnswer().get("age").asInt(), is(equalTo(34)));
+                assertThat(response.getAnswer().get("hobby").asArray().get(0).asString(), is(equalTo("guitar")));
+                assertThat(response.getCompletionReason(), equalTo("done"));
+                assertThat(response.getCreatedAt(), is(notNullValue()));
             }, 2, 2000);
         } finally {
             deleteFile(uploadedFile);

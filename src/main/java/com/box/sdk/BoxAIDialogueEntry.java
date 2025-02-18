@@ -98,7 +98,7 @@ public class BoxAIDialogueEntry extends BoxJSONObject {
                 .add("answer", this.answer);
 
         if (this.createdAt != null) {
-            itemJSON.add("created_at", this.createdAt.toString());
+            itemJSON.add("created_at", BoxDateFormat.format(this.createdAt));
         }
 
         return itemJSON;
