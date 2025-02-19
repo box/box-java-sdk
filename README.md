@@ -207,6 +207,9 @@ public final class BoxDeveloperEditionAPIConnectionAsEnterpriseUser {
 
 The Box Java SDK is compatible with Java 8 and up.
 
+## Compression Support
+The SDK supports both gzip and zstd compression for API requests. Compression is handled automatically based on server capabilities.
+
 ## Building
 
 The SDK uses Gradle for its build system. SDK comes with Gradle wrapper. Running `./gradlew build` from the root
@@ -230,9 +233,6 @@ $ ./gradlew integrationTest
 ## Documentation
 
 You can find guides and tutorials in the `doc` directory.
-
-## Compression Support
-The SDK supports both gzip and zstd compression for API requests. Compression is handled automatically based on server capabilities.
 
 * [BUILD ON BOX PLATFORM](https://developer.box.com/guides/getting-started/)
 * [Javadocs](http://box.github.io/box-java-sdk/javadoc/com/box/sdk/package-summary.html)
