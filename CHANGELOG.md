@@ -7,7 +7,7 @@ All notable changes to this project will be documented in this file. See [standa
 
 ### New Features and Enhancements:
 
-* add `canNonOwnersViewCollaborators` flag to `Folder` ([#1288](https://github.com/box/box-java-sdk/issues/1288)) ([9119adc](https://github.com/box/box-java-sdk/commit/9119adceae35e892e73ed61ed30cf82ad912960d))
+* Add `canNonOwnersViewCollaborators` flag to `Folder` ([#1288](https://github.com/box/box-java-sdk/issues/1288)) ([9119adc](https://github.com/box/box-java-sdk/commit/9119adceae35e892e73ed61ed30cf82ad912960d))
 * Support `zstd` encoding for downloads ([#1287](https://github.com/box/box-java-sdk/issues/1287)) ([0e3c4c0](https://github.com/box/box-java-sdk/commit/0e3c4c07e65ef1887cd5c393e3daf98aeb50ee47))
 
 ### Bug Fixes:
