@@ -31,6 +31,7 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.zip.GZIPOutputStream;
+import com.github.luben.zstd.ZstdOutputStream;
 import org.junit.Rule;
 import org.junit.Test;
 import org.mockito.Mockito;
@@ -225,7 +226,7 @@ public class BoxAPIRequestTest {
             aResponse()
                 .withStatus(200)
                 .withHeader("content-type", APPLICATION_JSON)
-                .withHeader("content-encoding", "GZIP")
+                .withHeader("content-encoding", "gzip")
                 .withBody(gzipped(jsonString))
         ));
 
@@ -338,14 +339,43 @@ public class BoxAPIRequestTest {
     private byte[] gzipped(String str) {
         try {
             ByteArrayOutputStream obj = new ByteArrayOutputStream();
-            GZIPOutputStream gzip = new GZIPOutputStream(obj);
-            gzip.write(str.getBytes(UTF_8));
-            gzip.close();
+            try (GZIPOutputStream gzip = new GZIPOutputStream(obj)) {
+                byte[] bytes = str.getBytes(UTF_8);
+                gzip.write(bytes, 0, bytes.length);
+                gzip.flush();
+                gzip.finish();
+            }
             return obj.toByteArray();
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+    }
 
+    @Test
+    public void handlesZstdResponse() throws IOException {
+        BoxAPIConnection api = createConnectionWith(boxMockUrl().toString());
+        BoxAPIRequest request = new BoxAPIRequest(api, boxMockUrl(), "GET");
+        String jsonString = "{\"foo\":\"bar\"}";
+
+        stubFor(get(urlEqualTo("/")).willReturn(
+            aResponse()
+                .withStatus(200)
+                .withHeader("content-type", APPLICATION_JSON)
+                .withHeader("content-encoding", "zstd")
+                .withBody(zstdCompressed(jsonString))
+        ));
+
+        try (BoxAPIResponse response = request.send()) {
+            assertThat(response.bodyToString(), is(jsonString));
+        }
+    }
+
+    private byte[] zstdCompressed(String str) throws IOException {
+        ByteArrayOutputStream obj = new ByteArrayOutputStream();
+        try (ZstdOutputStream zstd = new ZstdOutputStream(obj)) {
+            zstd.write(str.getBytes(UTF_8));
+        }
+        return obj.toByteArray();
     }
 
     private URL boxMockUrl() {

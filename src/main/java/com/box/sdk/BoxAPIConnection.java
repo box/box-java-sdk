@@ -122,6 +122,7 @@ public class BoxAPIConnection {
     private int maxRetryAttempts;
     private int connectTimeout;
     private int readTimeout;
+    private boolean useZstdCompression;
     private final List<BoxAPIConnectionListener> listeners;
     private RequestInterceptor interceptor;
     private final Map<String, String> customHeaders;
@@ -160,6 +161,7 @@ public class BoxAPIConnection {
         this.maxRetryAttempts = BoxGlobalSettings.getMaxRetryAttempts();
         this.connectTimeout = BoxGlobalSettings.getConnectTimeout();
         this.readTimeout = BoxGlobalSettings.getReadTimeout();
+        this.useZstdCompression = BoxGlobalSettings.getUseZstdCompression();
         this.refreshLock = new ReentrantReadWriteLock();
         this.userAgent = "Box Java SDK v" + SDK_VERSION + " (Java " + JAVA_VERSION + ")";
         this.listeners = new ArrayList<>();
@@ -237,6 +239,9 @@ public class BoxAPIConnection {
             }
         }
         builder = modifyHttpClientBuilder(builder);
+        if (this.useZstdCompression) {
+            builder.addNetworkInterceptor(new ZstdInterceptor());
+        }
 
         this.httpClient = builder.build();
         this.noRedirectsHttpClient = new OkHttpClient.Builder(httpClient)
@@ -654,6 +659,23 @@ public class BoxAPIConnection {
      */
     public void setConnectTimeout(int connectTimeout) {
         this.connectTimeout = connectTimeout;
+        buildHttpClients();
+    }
+
+    /*
+     * Gets if request use zstd encoding when possible
+     * @return true if request use zstd encoding when possible
+     */
+    public boolean getUseZstdCompression() {
+        return this.useZstdCompression;
+    }
+
+    /*
+     * Sets if request use zstd encoding when possible
+     * @param useZstdCompression true if request use zstd encoding when possible
+     */
+    public void setUseZstdCompression(boolean useZstdCompression) {
+        this.useZstdCompression = useZstdCompression;
         buildHttpClients();
     }
 
