@@ -228,7 +228,7 @@ public class BoxFileIT {
     }
 
     @Test
-    public void uploadAndDownloadFileUseZstdSucceeds() throws IOException {
+    public void downloadFileUseZstdSucceeds() throws IOException {
         BoxAPIConnection api = jwtApiForServiceAccount();
         api.setUseZstdCompression(true);
 
