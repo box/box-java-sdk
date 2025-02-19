@@ -101,8 +101,12 @@ public class BoxAIAgentExtractStructured extends BoxAIAgent {
     public JsonObject getJSONObject() {
         JsonObject jsonObject = new JsonObject();
         JsonUtils.addIfNotNull(jsonObject, "type", this.getType());
-        JsonUtils.addIfNotNull(jsonObject, "basic_text", this.basicText.getJSONObject());
-        JsonUtils.addIfNotNull(jsonObject, "long_text", this.longText.getJSONObject());
+        if (this.basicText != null) {
+            jsonObject.add("basic_text", this.basicText.getJSONObject());
+        }
+        if (this.longText != null) {
+            jsonObject.add("long_text", this.longText.getJSONObject());
+        }
         return jsonObject;
     }
 }

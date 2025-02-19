@@ -66,9 +66,12 @@ public class BoxAITest {
     public void testSendAITexGenRequestWithNoDialogueHistorySuccess() {
         final String fileId = "12345";
         final String prompt = "What is the name of the file?";
+        String expectedRequestBody = String.format(
+                "{\"prompt\": \"%s\", \"items\": [{\"id\": \"%s\", \"type\": \"file\"}]}", prompt, fileId);
 
         String result = TestUtils.getFixture("BoxAI/SendAITextGen200");
         wireMockRule.stubFor(WireMock.post(WireMock.urlPathEqualTo("/2.0/ai/text_gen"))
+                .withRequestBody(WireMock.equalToJson(expectedRequestBody))
                 .willReturn(WireMock.aResponse()
                         .withHeader("Content-Type", APPLICATION_JSON)
                         .withBody(result)));
@@ -90,9 +93,8 @@ public class BoxAITest {
     public void testSendAITexGenRequestWithDialogueHistorySuccess() throws ParseException {
         final String fileId = "12345";
         final String prompt = "What is the name of the file?";
-
-        Date date1 = BoxDateFormat.parse("2013-05-16T15:27:57-07:00");
-        Date date2 = BoxDateFormat.parse("2013-05-16T15:26:57-07:00");
+        Date date1 = BoxDateFormat.parse("2021-01-01T00:00:00Z");
+        Date date2 = BoxDateFormat.parse("2022-01-01T00:00:00Z");
 
         List<BoxAIDialogueEntry> dialogueHistory = new ArrayList<>();
         dialogueHistory.add(
@@ -102,8 +104,26 @@ public class BoxAITest {
                 new BoxAIDialogueEntry("What is the size of the file?", "10kb", date2)
         );
 
+        String expectedRequestBody = String.format(
+                "{\n"
+                        + "  \"prompt\": \"%s\",\n"
+                        + "  \"items\": [\n"
+                        + "    {\"id\": \"%s\", \"type\": \"file\"}\n"
+                        + "  ],\n"
+                        + "  \"dialogue_history\": [\n"
+                        + "    {\"prompt\": \"What is the name of the file?\", \"answer\": \"Test file\","
+                        + "     \"created_at\" : \"2021-01-01T00:00:00Z\"},\n"
+                        + "    {\"prompt\": \"What is the size of the file?\", \"answer\": \"10kb\","
+                        + "     \"created_at\" : \"2022-01-01T00:00:00Z\"}\n"
+                        + "  ]\n"
+                        + "}",
+                prompt, fileId
+        );
+
+
         String result = TestUtils.getFixture("BoxAI/SendAITextGen200");
         wireMockRule.stubFor(WireMock.post(WireMock.urlPathEqualTo("/2.0/ai/text_gen"))
+                .withRequestBody(WireMock.equalToJson(expectedRequestBody))
                 .willReturn(WireMock.aResponse()
                         .withHeader("Content-Type", APPLICATION_JSON)
                         .withBody(result)));
@@ -350,7 +370,13 @@ public class BoxAITest {
         );
 
         assertThat(response.getSourceJson(), equalTo(Json.parse(result).asObject()));
-        assertThat(response.getSourceJson().get("firstName").asString(), equalTo("John"));
+        assertThat(response.getAnswer().get("firstName").asString(), equalTo("John"));
+        assertThat(response.getAnswer().get("lastName").asString(), equalTo("Doe"));
+        assertThat(response.getAnswer().get("age").asInt(), equalTo(25));
+        assertThat(response.getAnswer().get("hobbies").asArray().get(0).asString(), equalTo("reading"));
+
+        assertThat(response.getCreatedAt(), equalTo(new Date(1355338423123L)));
+        assertThat(response.getCompletionReason(), equalTo("done"));
     }
 
     @Test
@@ -394,6 +420,12 @@ public class BoxAITest {
         );
 
         assertThat(response.getSourceJson(), equalTo(Json.parse(result).asObject()));
-        assertThat(response.getSourceJson().get("firstName").asString(), equalTo("John"));
+        assertThat(response.getAnswer().get("firstName").asString(), equalTo("John"));
+        assertThat(response.getAnswer().get("lastName").asString(), equalTo("Doe"));
+        assertThat(response.getAnswer().get("age").asInt(), equalTo(25));
+        assertThat(response.getAnswer().get("hobbies").asArray().get(0).asString(), equalTo("reading"));
+
+        assertThat(response.getCreatedAt(), equalTo(new Date(1355338423123L)));
+        assertThat(response.getCompletionReason(), equalTo("done"));
     }
 }

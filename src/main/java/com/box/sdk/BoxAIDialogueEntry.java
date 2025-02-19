@@ -94,11 +94,11 @@ public class BoxAIDialogueEntry extends BoxJSONObject {
      */
     public JsonObject getJSONObject() {
         JsonObject itemJSON = new JsonObject()
-                .add("id", this.prompt)
-                .add("type", this.answer);
+                .add("prompt", this.prompt)
+                .add("answer", this.answer);
 
         if (this.createdAt != null) {
-            itemJSON.add("content", this.createdAt.toString());
+            itemJSON.add("created_at", BoxDateFormat.format(this.createdAt));
         }
 
         return itemJSON;

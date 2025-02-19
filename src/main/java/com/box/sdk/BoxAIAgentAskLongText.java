@@ -201,8 +201,12 @@ public class BoxAIAgentAskLongText extends BoxJSONObject {
 
     public JsonObject getJSONObject() {
         JsonObject jsonObject = new JsonObject();
-        JsonUtils.addIfNotNull(jsonObject, "embeddings", this.embeddings.getJSONObject());
-        JsonUtils.addIfNotNull(jsonObject, "llm_endpoint_params", this.llmEndpointParams.getJSONObject());
+        if (this.embeddings != null) {
+            jsonObject.add("embeddings", this.embeddings.getJSONObject());
+        }
+        if (this.llmEndpointParams != null) {
+            jsonObject.add("llm_endpoint_params", this.llmEndpointParams.getJSONObject());
+        }
         JsonUtils.addIfNotNull(jsonObject, "model", this.model);
         JsonUtils.addIfNotNull(jsonObject, "num_tokens_for_completion", this.numTokensForCompletion);
         JsonUtils.addIfNotNull(jsonObject, "prompt_template", this.promptTemplate);

@@ -151,10 +151,18 @@ public class BoxAIAgentAsk extends BoxAIAgent {
     public JsonObject getJSONObject() {
         JsonObject jsonObject = new JsonObject();
         JsonUtils.addIfNotNull(jsonObject, "type", this.getType());
-        JsonUtils.addIfNotNull(jsonObject, "basic_text", this.basicText.getJSONObject());
-        JsonUtils.addIfNotNull(jsonObject, "basic_text_multi", this.basicTextMulti.getJSONObject());
-        JsonUtils.addIfNotNull(jsonObject, "long_text", this.longText.getJSONObject());
-        JsonUtils.addIfNotNull(jsonObject, "long_text_multi", this.longTextMulti.getJSONObject());
+        if (this.basicText != null) {
+            jsonObject.add("basic_text", this.basicText.getJSONObject());
+        }
+        if (this.basicTextMulti != null) {
+            jsonObject.add("basic_text_multi", this.basicTextMulti.getJSONObject());
+        }
+        if (this.longText != null) {
+            jsonObject.add("long_text", this.longText.getJSONObject());
+        }
+        if (this.longTextMulti != null) {
+            jsonObject.add("long_text_multi", this.longTextMulti.getJSONObject());
+        }
         return jsonObject;
     }
 }
