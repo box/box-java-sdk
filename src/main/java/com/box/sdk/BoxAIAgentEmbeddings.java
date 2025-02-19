@@ -87,7 +87,9 @@ public class BoxAIAgentEmbeddings extends BoxJSONObject {
     public JsonObject getJSONObject() {
         JsonObject jsonObject = new JsonObject();
         JsonUtils.addIfNotNull(jsonObject, "model", this.model);
-        JsonUtils.addIfNotNull(jsonObject, "strategy", this.strategy.getJSONObject());
+        if (this.strategy != null) {
+            jsonObject.add("strategy", this.strategy.getJSONObject());
+        }
         return jsonObject;
     }
 }

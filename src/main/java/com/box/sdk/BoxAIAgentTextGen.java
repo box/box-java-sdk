@@ -64,7 +64,9 @@ public class BoxAIAgentTextGen extends BoxAIAgent {
     public JsonObject getJSONObject() {
         JsonObject jsonObject = new JsonObject();
         JsonUtils.addIfNotNull(jsonObject, "type", this.getType());
-        JsonUtils.addIfNotNull(jsonObject, "basic_gen", this.basicGen.getJSONObject());
+        if (this.basicGen != null) {
+            jsonObject.add("basic_gen", this.basicGen.getJSONObject());
+        }
         return jsonObject;
     }
 }
