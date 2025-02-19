@@ -159,14 +159,22 @@
 <span class="sourceLineNo">151</span>    public JsonObject getJSONObject() {<a name="line.151"></a>
 <span class="sourceLineNo">152</span>        JsonObject jsonObject = new JsonObject();<a name="line.152"></a>
 <span class="sourceLineNo">153</span>        JsonUtils.addIfNotNull(jsonObject, "type", this.getType());<a name="line.153"></a>
-<span class="sourceLineNo">154</span>        JsonUtils.addIfNotNull(jsonObject, "basic_text", this.basicText.getJSONObject());<a name="line.154"></a>
-<span class="sourceLineNo">155</span>        JsonUtils.addIfNotNull(jsonObject, "basic_text_multi", this.basicTextMulti.getJSONObject());<a name="line.155"></a>
-<span class="sourceLineNo">156</span>        JsonUtils.addIfNotNull(jsonObject, "long_text", this.longText.getJSONObject());<a name="line.156"></a>
-<span class="sourceLineNo">157</span>        JsonUtils.addIfNotNull(jsonObject, "long_text_multi", this.longTextMulti.getJSONObject());<a name="line.157"></a>
-<span class="sourceLineNo">158</span>        return jsonObject;<a name="line.158"></a>
-<span class="sourceLineNo">159</span>    }<a name="line.159"></a>
-<span class="sourceLineNo">160</span>}<a name="line.160"></a>
-<span class="sourceLineNo">161</span><a name="line.161"></a>
+<span class="sourceLineNo">154</span>        if (this.basicText != null) {<a name="line.154"></a>
+<span class="sourceLineNo">155</span>            jsonObject.add("basic_text", this.basicText.getJSONObject());<a name="line.155"></a>
+<span class="sourceLineNo">156</span>        }<a name="line.156"></a>
+<span class="sourceLineNo">157</span>        if (this.basicTextMulti != null) {<a name="line.157"></a>
+<span class="sourceLineNo">158</span>            jsonObject.add("basic_text_multi", this.basicTextMulti.getJSONObject());<a name="line.158"></a>
+<span class="sourceLineNo">159</span>        }<a name="line.159"></a>
+<span class="sourceLineNo">160</span>        if (this.longText != null) {<a name="line.160"></a>
+<span class="sourceLineNo">161</span>            jsonObject.add("long_text", this.longText.getJSONObject());<a name="line.161"></a>
+<span class="sourceLineNo">162</span>        }<a name="line.162"></a>
+<span class="sourceLineNo">163</span>        if (this.longTextMulti != null) {<a name="line.163"></a>
+<span class="sourceLineNo">164</span>            jsonObject.add("long_text_multi", this.longTextMulti.getJSONObject());<a name="line.164"></a>
+<span class="sourceLineNo">165</span>        }<a name="line.165"></a>
+<span class="sourceLineNo">166</span>        return jsonObject;<a name="line.166"></a>
+<span class="sourceLineNo">167</span>    }<a name="line.167"></a>
+<span class="sourceLineNo">168</span>}<a name="line.168"></a>
+<span class="sourceLineNo">169</span><a name="line.169"></a>
 
 
 

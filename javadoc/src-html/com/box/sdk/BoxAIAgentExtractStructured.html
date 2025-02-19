@@ -109,12 +109,16 @@
 <span class="sourceLineNo">101</span>    public JsonObject getJSONObject() {<a name="line.101"></a>
 <span class="sourceLineNo">102</span>        JsonObject jsonObject = new JsonObject();<a name="line.102"></a>
 <span class="sourceLineNo">103</span>        JsonUtils.addIfNotNull(jsonObject, "type", this.getType());<a name="line.103"></a>
-<span class="sourceLineNo">104</span>        JsonUtils.addIfNotNull(jsonObject, "basic_text", this.basicText.getJSONObject());<a name="line.104"></a>
-<span class="sourceLineNo">105</span>        JsonUtils.addIfNotNull(jsonObject, "long_text", this.longText.getJSONObject());<a name="line.105"></a>
-<span class="sourceLineNo">106</span>        return jsonObject;<a name="line.106"></a>
-<span class="sourceLineNo">107</span>    }<a name="line.107"></a>
-<span class="sourceLineNo">108</span>}<a name="line.108"></a>
-<span class="sourceLineNo">109</span><a name="line.109"></a>
+<span class="sourceLineNo">104</span>        if (this.basicText != null) {<a name="line.104"></a>
+<span class="sourceLineNo">105</span>            jsonObject.add("basic_text", this.basicText.getJSONObject());<a name="line.105"></a>
+<span class="sourceLineNo">106</span>        }<a name="line.106"></a>
+<span class="sourceLineNo">107</span>        if (this.longText != null) {<a name="line.107"></a>
+<span class="sourceLineNo">108</span>            jsonObject.add("long_text", this.longText.getJSONObject());<a name="line.108"></a>
+<span class="sourceLineNo">109</span>        }<a name="line.109"></a>
+<span class="sourceLineNo">110</span>        return jsonObject;<a name="line.110"></a>
+<span class="sourceLineNo">111</span>    }<a name="line.111"></a>
+<span class="sourceLineNo">112</span>}<a name="line.112"></a>
+<span class="sourceLineNo">113</span><a name="line.113"></a>
 
 
 

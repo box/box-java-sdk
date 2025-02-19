@@ -95,10 +95,12 @@
 <span class="sourceLineNo">087</span>    public JsonObject getJSONObject() {<a name="line.87"></a>
 <span class="sourceLineNo">088</span>        JsonObject jsonObject = new JsonObject();<a name="line.88"></a>
 <span class="sourceLineNo">089</span>        JsonUtils.addIfNotNull(jsonObject, "model", this.model);<a name="line.89"></a>
-<span class="sourceLineNo">090</span>        JsonUtils.addIfNotNull(jsonObject, "strategy", this.strategy.getJSONObject());<a name="line.90"></a>
-<span class="sourceLineNo">091</span>        return jsonObject;<a name="line.91"></a>
-<span class="sourceLineNo">092</span>    }<a name="line.92"></a>
-<span class="sourceLineNo">093</span>}<a name="line.93"></a>
+<span class="sourceLineNo">090</span>        if (this.strategy != null) {<a name="line.90"></a>
+<span class="sourceLineNo">091</span>            jsonObject.add("strategy", this.strategy.getJSONObject());<a name="line.91"></a>
+<span class="sourceLineNo">092</span>        }<a name="line.92"></a>
+<span class="sourceLineNo">093</span>        return jsonObject;<a name="line.93"></a>
+<span class="sourceLineNo">094</span>    }<a name="line.94"></a>
+<span class="sourceLineNo">095</span>}<a name="line.95"></a>
 
 
 

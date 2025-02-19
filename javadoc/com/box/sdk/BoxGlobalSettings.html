@@ -18,7 +18,7 @@
     catch(err) {
     }
 //-->
-var methods = {"i0":9,"i1":9,"i2":9,"i3":9,"i4":9,"i5":9};
+var methods = {"i0":9,"i1":9,"i2":9,"i3":9,"i4":9,"i5":9,"i6":9,"i7":9};
 var tabs = {65535:["t0","All Methods"],1:["t1","Static Methods"],8:["t4","Concrete Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
@@ -88,23 +88,31 @@ extends <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html
 </td>
 </tr>
 <tr id="i3" class="rowColor">
+<td class="colFirst"><code>static boolean</code></td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../com/box/sdk/BoxGlobalSettings.html#getUseZstdCompression--">getUseZstdCompression</a></span>()</code>&nbsp;</td>
+</tr>
+<tr id="i4" class="altColor">
 <td class="colFirst"><code>static void</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../com/box/sdk/BoxGlobalSettings.html#setConnectTimeout-int-">setConnectTimeout</a></span>(int&nbsp;connectTimeout)</code>
 <div class="block">Sets the global connect timeout.</div>
 </td>
 </tr>
-<tr id="i4" class="altColor">
+<tr id="i5" class="rowColor">
 <td class="colFirst"><code>static void</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../com/box/sdk/BoxGlobalSettings.html#setMaxRetryAttempts-int-">setMaxRetryAttempts</a></span>(int&nbsp;attempts)</code>
 <div class="block">Sets the global maximum number of times an API request will be retried after an error response
  is received.</div>
 </td>
 </tr>
-<tr id="i5" class="rowColor">
+<tr id="i6" class="altColor">
 <td class="colFirst"><code>static void</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../com/box/sdk/BoxGlobalSettings.html#setReadTimeout-int-">setReadTimeout</a></span>(int&nbsp;readTimeout)</code>
 <div class="block">Sets the global read timeout.</div>
 </td>
+</tr>
+<tr id="i7" class="rowColor">
+<td class="colFirst"><code>static void</code></td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../com/box/sdk/BoxGlobalSettings.html#setUseZstdCompression-boolean-">setUseZstdCompression</a></span>(boolean&nbsp;useZstdCompression)</code>&nbsp;</td>
 </tr>
 </table>
 <ul class="blockList">
@@ -134,7 +142,7 @@ extends <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html
 <ul class="blockList">
 <li class="blockList">
 <h4>getConnectTimeout</h4>
-<pre>public static&nbsp;int&nbsp;<a href="../../../src-html/com/box/sdk/BoxGlobalSettings.html#line.19">getConnectTimeout</a>()</pre>
+<pre>public static&nbsp;int&nbsp;<a href="../../../src-html/com/box/sdk/BoxGlobalSettings.html#line.20">getConnectTimeout</a>()</pre>
 <div class="block">Returns the current global connect timeout.</div>
 <dl>
 <dt><span class="returnLabel">Returns:</span></dt>
@@ -148,7 +156,7 @@ extends <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html
 <ul class="blockList">
 <li class="blockList">
 <h4>setConnectTimeout</h4>
-<pre>public static&nbsp;void&nbsp;<a href="../../../src-html/com/box/sdk/BoxGlobalSettings.html#line.28">setConnectTimeout</a>(int&nbsp;connectTimeout)</pre>
+<pre>public static&nbsp;void&nbsp;<a href="../../../src-html/com/box/sdk/BoxGlobalSettings.html#line.29">setConnectTimeout</a>(int&nbsp;connectTimeout)</pre>
 <div class="block">Sets the global connect timeout.</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
@@ -162,7 +170,7 @@ extends <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html
 <ul class="blockList">
 <li class="blockList">
 <h4>getReadTimeout</h4>
-<pre>public static&nbsp;int&nbsp;<a href="../../../src-html/com/box/sdk/BoxGlobalSettings.html#line.37">getReadTimeout</a>()</pre>
+<pre>public static&nbsp;int&nbsp;<a href="../../../src-html/com/box/sdk/BoxGlobalSettings.html#line.38">getReadTimeout</a>()</pre>
 <div class="block">Returns the current global read timeout.</div>
 <dl>
 <dt><span class="returnLabel">Returns:</span></dt>
@@ -176,7 +184,7 @@ extends <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html
 <ul class="blockList">
 <li class="blockList">
 <h4>setReadTimeout</h4>
-<pre>public static&nbsp;void&nbsp;<a href="../../../src-html/com/box/sdk/BoxGlobalSettings.html#line.46">setReadTimeout</a>(int&nbsp;readTimeout)</pre>
+<pre>public static&nbsp;void&nbsp;<a href="../../../src-html/com/box/sdk/BoxGlobalSettings.html#line.47">setReadTimeout</a>(int&nbsp;readTimeout)</pre>
 <div class="block">Sets the global read timeout.</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
@@ -190,7 +198,7 @@ extends <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html
 <ul class="blockList">
 <li class="blockList">
 <h4>getMaxRetryAttempts</h4>
-<pre>public static&nbsp;int&nbsp;<a href="../../../src-html/com/box/sdk/BoxGlobalSettings.html#line.57">getMaxRetryAttempts</a>()</pre>
+<pre>public static&nbsp;int&nbsp;<a href="../../../src-html/com/box/sdk/BoxGlobalSettings.html#line.58">getMaxRetryAttempts</a>()</pre>
 <div class="block">Returns the global maximum number of times an API request will be retried after an error response
  is received.</div>
 <dl>
@@ -202,16 +210,34 @@ extends <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html
 <a name="setMaxRetryAttempts-int-">
 <!--   -->
 </a>
-<ul class="blockListLast">
+<ul class="blockList">
 <li class="blockList">
 <h4>setMaxRetryAttempts</h4>
-<pre>public static&nbsp;void&nbsp;<a href="../../../src-html/com/box/sdk/BoxGlobalSettings.html#line.67">setMaxRetryAttempts</a>(int&nbsp;attempts)</pre>
+<pre>public static&nbsp;void&nbsp;<a href="../../../src-html/com/box/sdk/BoxGlobalSettings.html#line.68">setMaxRetryAttempts</a>(int&nbsp;attempts)</pre>
 <div class="block">Sets the global maximum number of times an API request will be retried after an error response
  is received.</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
 <dd><code>attempts</code> - maximum number of request attempts</dd>
 </dl>
+</li>
+</ul>
+<a name="getUseZstdCompression--">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>getUseZstdCompression</h4>
+<pre>public static&nbsp;boolean&nbsp;<a href="../../../src-html/com/box/sdk/BoxGlobalSettings.html#line.76">getUseZstdCompression</a>()</pre>
+</li>
+</ul>
+<a name="setUseZstdCompression-boolean-">
+<!--   -->
+</a>
+<ul class="blockListLast">
+<li class="blockList">
+<h4>setUseZstdCompression</h4>
+<pre>public static&nbsp;void&nbsp;<a href="../../../src-html/com/box/sdk/BoxGlobalSettings.html#line.84">setUseZstdCompression</a>(boolean&nbsp;useZstdCompression)</pre>
 </li>
 </ul>
 </li>
