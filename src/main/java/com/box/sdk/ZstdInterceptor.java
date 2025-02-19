@@ -1,12 +1,16 @@
 package com.box.sdk;
 
 import com.github.luben.zstd.ZstdInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import okhttp3.Interceptor;
+import okhttp3.MediaType;
 import okhttp3.Request;
 import okhttp3.Response;
 import okhttp3.ResponseBody;
+import okio.BufferedSource;
+import okio.Okio;
+import okio.Source;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -22,7 +26,7 @@ public class ZstdInterceptor implements Interceptor {
         // Add zstd to the Accept-Encoding header
         String acceptEncoding;
         String acceptEncodingHeader = request.header("Accept-Encoding");
-        if (acceptEncodingHeader == null) {
+        if (acceptEncodingHeader == null || acceptEncodingHeader.isEmpty()) {
             acceptEncoding = "zstd";
         } else {
             acceptEncoding = acceptEncodingHeader + ", zstd";
@@ -46,28 +50,44 @@ public class ZstdInterceptor implements Interceptor {
             return response;
         }
 
-        // Buffer the entire response body
-        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-        try (ZstdInputStream zstdStream = new ZstdInputStream(originalBody.byteStream())) {
-            byte[] buffer = new byte[8192];
-            int bytesRead;
-            while ((bytesRead = zstdStream.read(buffer)) != -1) {
-                outputStream.write(buffer, 0, bytesRead);
-            }
-        }
-        byte[] decompressedBytes = outputStream.toByteArray();
-
-        // Create a new response body that serves the buffered content
-        ResponseBody decompressedBody = ResponseBody.create(
-            decompressedBytes,
-            originalBody.contentType()
-        );
+        // Create a streaming response body
+        ResponseBody decompressedBody = createStreamingResponseBody(originalBody);
 
         return response.newBuilder()
-            .body(decompressedBody)
-            .addHeader("X-Content-Encoding", contentEncoding)
-            .removeHeader("Content-Encoding")
-            .removeHeader("Content-Length")
-            .build();
+                .body(decompressedBody)
+                .addHeader("X-Content-Encoding", "zstd")
+                .removeHeader("Content-Encoding")
+                .removeHeader("Content-Length")
+                .build();
+    }
+
+    /**
+     * Wraps the original response body in a streaming Zstd decompressor.
+     */
+    private ResponseBody createStreamingResponseBody(ResponseBody originalBody) {
+        return new ResponseBody() {
+            @Override
+            public MediaType contentType() {
+                return originalBody.contentType();
+            }
+
+            @Override
+            public long contentLength() {
+                return -1;
+            }
+
+            @Override
+            public BufferedSource source() {
+                InputStream decompressedStream;
+                try {
+                    decompressedStream = new ZstdInputStream(originalBody.byteStream());
+                } catch (IOException e) {
+                    throw new RuntimeException("Failed to create ZstdInputStream", e);
+                }
+
+                Source source = Okio.source(decompressedStream);
+                return Okio.buffer(source);
+            }
+        };
     }
 }
