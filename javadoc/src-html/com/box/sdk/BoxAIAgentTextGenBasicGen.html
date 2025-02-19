@@ -232,15 +232,19 @@
 <span class="sourceLineNo">224</span>    public JsonObject getJSONObject() {<a name="line.224"></a>
 <span class="sourceLineNo">225</span>        JsonObject jsonObject = new JsonObject();<a name="line.225"></a>
 <span class="sourceLineNo">226</span>        JsonUtils.addIfNotNull(jsonObject, "content_template", this.contentTemplate);<a name="line.226"></a>
-<span class="sourceLineNo">227</span>        JsonUtils.addIfNotNull(jsonObject, "embeddings", this.embeddings.getJSONObject());<a name="line.227"></a>
-<span class="sourceLineNo">228</span>        JsonUtils.addIfNotNull(jsonObject, "llm_endpoint_params", this.llmEndpointParams.getJSONObject());<a name="line.228"></a>
-<span class="sourceLineNo">229</span>        JsonUtils.addIfNotNull(jsonObject, "model", this.model);<a name="line.229"></a>
-<span class="sourceLineNo">230</span>        JsonUtils.addIfNotNull(jsonObject, "num_tokens_for_completion", this.numTokensForCompletion);<a name="line.230"></a>
-<span class="sourceLineNo">231</span>        JsonUtils.addIfNotNull(jsonObject, "prompt_template", this.promptTemplate);<a name="line.231"></a>
-<span class="sourceLineNo">232</span>        JsonUtils.addIfNotNull(jsonObject, "system_message", this.systemMessage);<a name="line.232"></a>
-<span class="sourceLineNo">233</span>        return jsonObject;<a name="line.233"></a>
-<span class="sourceLineNo">234</span>    }<a name="line.234"></a>
-<span class="sourceLineNo">235</span>}<a name="line.235"></a>
+<span class="sourceLineNo">227</span>        if (this.embeddings != null) {<a name="line.227"></a>
+<span class="sourceLineNo">228</span>            jsonObject.add("embeddings", this.embeddings.getJSONObject());<a name="line.228"></a>
+<span class="sourceLineNo">229</span>        }<a name="line.229"></a>
+<span class="sourceLineNo">230</span>        if (this.llmEndpointParams != null) {<a name="line.230"></a>
+<span class="sourceLineNo">231</span>            jsonObject.add("llm_endpoint_params", this.llmEndpointParams.getJSONObject());<a name="line.231"></a>
+<span class="sourceLineNo">232</span>        }<a name="line.232"></a>
+<span class="sourceLineNo">233</span>        JsonUtils.addIfNotNull(jsonObject, "model", this.model);<a name="line.233"></a>
+<span class="sourceLineNo">234</span>        JsonUtils.addIfNotNull(jsonObject, "num_tokens_for_completion", this.numTokensForCompletion);<a name="line.234"></a>
+<span class="sourceLineNo">235</span>        JsonUtils.addIfNotNull(jsonObject, "prompt_template", this.promptTemplate);<a name="line.235"></a>
+<span class="sourceLineNo">236</span>        JsonUtils.addIfNotNull(jsonObject, "system_message", this.systemMessage);<a name="line.236"></a>
+<span class="sourceLineNo">237</span>        return jsonObject;<a name="line.237"></a>
+<span class="sourceLineNo">238</span>    }<a name="line.238"></a>
+<span class="sourceLineNo">239</span>}<a name="line.239"></a>
 
 
 

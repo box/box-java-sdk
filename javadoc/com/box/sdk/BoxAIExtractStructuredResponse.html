@@ -18,7 +18,7 @@
     catch(err) {
     }
 //-->
-var methods = {"i0":10};
+var methods = {"i0":10,"i1":10,"i2":10,"i3":10};
 var tabs = {65535:["t0","All Methods"],2:["t2","Instance Methods"],8:["t4","Concrete Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
@@ -52,7 +52,7 @@ var activeTableTab = "activeTableTab";
 <li class="blockList">
 <hr>
 <br>
-<pre>public class <a href="../../../src-html/com/box/sdk/BoxAIExtractStructuredResponse.html#line.9">BoxAIExtractStructuredResponse</a>
+<pre>public class <a href="../../../src-html/com/box/sdk/BoxAIExtractStructuredResponse.html#line.12">BoxAIExtractStructuredResponse</a>
 extends <a href="../../../com/box/sdk/BoxJSONObject.html" title="class in com.box.sdk">BoxJSONObject</a></pre>
 <div class="block">AI response to a user request.</div>
 </li>
@@ -94,6 +94,24 @@ extends <a href="../../../com/box/sdk/BoxJSONObject.html" title="class in com.bo
 </tr>
 <tr id="i0" class="altColor">
 <td class="colFirst"><code>JsonObject</code></td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../com/box/sdk/BoxAIExtractStructuredResponse.html#getAnswer--">getAnswer</a></span>()</code>
+<div class="block">Gets the answer of the AI.</div>
+</td>
+</tr>
+<tr id="i1" class="rowColor">
+<td class="colFirst"><code><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a></code></td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../com/box/sdk/BoxAIExtractStructuredResponse.html#getCompletionReason--">getCompletionReason</a></span>()</code>
+<div class="block">Gets reason the response finishes.</div>
+</td>
+</tr>
+<tr id="i2" class="altColor">
+<td class="colFirst"><code><a href="https://docs.oracle.com/javase/8/docs/api/java/util/Date.html?is-external=true" title="class or interface in java.util">Date</a></code></td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../com/box/sdk/BoxAIExtractStructuredResponse.html#getCreatedAt--">getCreatedAt</a></span>()</code>
+<div class="block">Gets the ISO date formatted timestamp of when the answer to the prompt was created.</div>
+</td>
+</tr>
+<tr id="i3" class="rowColor">
+<td class="colFirst"><code>JsonObject</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../com/box/sdk/BoxAIExtractStructuredResponse.html#getSourceJson--">getSourceJson</a></span>()</code>
 <div class="block">Gets the source JSON of the AI response.</div>
 </td>
@@ -133,7 +151,7 @@ extends <a href="../../../com/box/sdk/BoxJSONObject.html" title="class in com.bo
 <ul class="blockListLast">
 <li class="blockList">
 <h4>BoxAIExtractStructuredResponse</h4>
-<pre>public&nbsp;<a href="../../../src-html/com/box/sdk/BoxAIExtractStructuredResponse.html#line.15">BoxAIExtractStructuredResponse</a>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;json)</pre>
+<pre>public&nbsp;<a href="../../../src-html/com/box/sdk/BoxAIExtractStructuredResponse.html#line.21">BoxAIExtractStructuredResponse</a>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;json)</pre>
 <div class="block">Constructs a BoxAIResponse object.</div>
 </li>
 </ul>
@@ -148,14 +166,56 @@ extends <a href="../../../com/box/sdk/BoxJSONObject.html" title="class in com.bo
 <a name="getSourceJson--">
 <!--   -->
 </a>
-<ul class="blockListLast">
+<ul class="blockList">
 <li class="blockList">
 <h4>getSourceJson</h4>
-<pre>public&nbsp;JsonObject&nbsp;<a href="../../../src-html/com/box/sdk/BoxAIExtractStructuredResponse.html#line.35">getSourceJson</a>()</pre>
+<pre>public&nbsp;JsonObject&nbsp;<a href="../../../src-html/com/box/sdk/BoxAIExtractStructuredResponse.html#line.41">getSourceJson</a>()</pre>
 <div class="block">Gets the source JSON of the AI response.</div>
 <dl>
 <dt><span class="returnLabel">Returns:</span></dt>
 <dd>the source JSON of the AI response.</dd>
+</dl>
+</li>
+</ul>
+<a name="getAnswer--">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>getAnswer</h4>
+<pre>public&nbsp;JsonObject&nbsp;<a href="../../../src-html/com/box/sdk/BoxAIExtractStructuredResponse.html#line.50">getAnswer</a>()</pre>
+<div class="block">Gets the answer of the AI.</div>
+<dl>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>the answer of the AI.</dd>
+</dl>
+</li>
+</ul>
+<a name="getCompletionReason--">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>getCompletionReason</h4>
+<pre>public&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxAIExtractStructuredResponse.html#line.59">getCompletionReason</a>()</pre>
+<div class="block">Gets reason the response finishes.</div>
+<dl>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>the reason the response finishes.</dd>
+</dl>
+</li>
+</ul>
+<a name="getCreatedAt--">
+<!--   -->
+</a>
+<ul class="blockListLast">
+<li class="blockList">
+<h4>getCreatedAt</h4>
+<pre>public&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/util/Date.html?is-external=true" title="class or interface in java.util">Date</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxAIExtractStructuredResponse.html#line.68">getCreatedAt</a>()</pre>
+<div class="block">Gets the ISO date formatted timestamp of when the answer to the prompt was created.</div>
+<dl>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>The ISO date formatted timestamp of when the answer to the prompt was created.</dd>
 </dl>
 </li>
 </ul>

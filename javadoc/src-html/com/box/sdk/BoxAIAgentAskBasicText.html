@@ -183,14 +183,16 @@
 <span class="sourceLineNo">175</span><a name="line.175"></a>
 <span class="sourceLineNo">176</span>    public JsonObject getJSONObject() {<a name="line.176"></a>
 <span class="sourceLineNo">177</span>        JsonObject jsonObject = new JsonObject();<a name="line.177"></a>
-<span class="sourceLineNo">178</span>        JsonUtils.addIfNotNull(jsonObject, "llm_endpoint_params", this.llmEndpointParams.getJSONObject());<a name="line.178"></a>
-<span class="sourceLineNo">179</span>        JsonUtils.addIfNotNull(jsonObject, "model", this.model);<a name="line.179"></a>
-<span class="sourceLineNo">180</span>        JsonUtils.addIfNotNull(jsonObject, "num_tokens_for_completion", this.numTokensForCompletion);<a name="line.180"></a>
-<span class="sourceLineNo">181</span>        JsonUtils.addIfNotNull(jsonObject, "prompt_template", this.promptTemplate);<a name="line.181"></a>
-<span class="sourceLineNo">182</span>        JsonUtils.addIfNotNull(jsonObject, "system_message", this.systemMessage);<a name="line.182"></a>
-<span class="sourceLineNo">183</span>        return jsonObject;<a name="line.183"></a>
-<span class="sourceLineNo">184</span>    }<a name="line.184"></a>
-<span class="sourceLineNo">185</span>}<a name="line.185"></a>
+<span class="sourceLineNo">178</span>        if (this.llmEndpointParams != null) {<a name="line.178"></a>
+<span class="sourceLineNo">179</span>            jsonObject.add("llm_endpoint_params", this.llmEndpointParams.getJSONObject());<a name="line.179"></a>
+<span class="sourceLineNo">180</span>        }<a name="line.180"></a>
+<span class="sourceLineNo">181</span>        JsonUtils.addIfNotNull(jsonObject, "model", this.model);<a name="line.181"></a>
+<span class="sourceLineNo">182</span>        JsonUtils.addIfNotNull(jsonObject, "num_tokens_for_completion", this.numTokensForCompletion);<a name="line.182"></a>
+<span class="sourceLineNo">183</span>        JsonUtils.addIfNotNull(jsonObject, "prompt_template", this.promptTemplate);<a name="line.183"></a>
+<span class="sourceLineNo">184</span>        JsonUtils.addIfNotNull(jsonObject, "system_message", this.systemMessage);<a name="line.184"></a>
+<span class="sourceLineNo">185</span>        return jsonObject;<a name="line.185"></a>
+<span class="sourceLineNo">186</span>    }<a name="line.186"></a>
+<span class="sourceLineNo">187</span>}<a name="line.187"></a>
 
 
 

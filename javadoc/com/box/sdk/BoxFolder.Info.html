@@ -18,7 +18,7 @@
     catch(err) {
     }
 //-->
-var methods = {"i0":10,"i1":10,"i2":10,"i3":10,"i4":10,"i5":10,"i6":10,"i7":10,"i8":10,"i9":10,"i10":10,"i11":10,"i12":10,"i13":10,"i14":10,"i15":10,"i16":10,"i17":10,"i18":10};
+var methods = {"i0":10,"i1":10,"i2":10,"i3":10,"i4":10,"i5":10,"i6":10,"i7":10,"i8":10,"i9":10,"i10":10,"i11":10,"i12":10,"i13":10,"i14":10,"i15":10,"i16":10,"i17":10,"i18":10,"i19":10,"i20":10};
 var tabs = {65535:["t0","All Methods"],2:["t2","Instance Methods"],8:["t4","Concrete Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
@@ -135,98 +135,112 @@ extends <a href="../../../com/box/sdk/BoxItem.Info.html" title="class in com.box
 </td>
 </tr>
 <tr id="i3" class="rowColor">
+<td class="colFirst"><code>boolean</code></td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../com/box/sdk/BoxFolder.Info.html#getCanNonOwnersViewCollaborators--">getCanNonOwnersViewCollaborators</a></span>()</code>
+<div class="block">Returns the flag indicating if collaborators who are not owners of this folder
+ are restricted from viewing other collaborations on this folder.</div>
+</td>
+</tr>
+<tr id="i4" class="altColor">
 <td class="colFirst"><code><a href="../../../com/box/sdk/BoxClassification.html" title="class in com.box.sdk">BoxClassification</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../com/box/sdk/BoxFolder.Info.html#getClassification--">getClassification</a></span>()</code>
 <div class="block">Gets the metadata classification type of this folder.</div>
 </td>
 </tr>
-<tr id="i4" class="altColor">
+<tr id="i5" class="rowColor">
 <td class="colFirst"><code>boolean</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../com/box/sdk/BoxFolder.Info.html#getHasCollaborations--">getHasCollaborations</a></span>()</code>
 <div class="block">Gets whether or not the folder has any collaborations.</div>
 </td>
 </tr>
-<tr id="i5" class="rowColor">
+<tr id="i6" class="altColor">
 <td class="colFirst"><code>boolean</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../com/box/sdk/BoxFolder.Info.html#getIsAccessibleViaSharedLink--">getIsAccessibleViaSharedLink</a></span>()</code>
 <div class="block">Returns the flag indicating whether the folder is accessible via a shared link.</div>
 </td>
 </tr>
-<tr id="i6" class="altColor">
+<tr id="i7" class="rowColor">
 <td class="colFirst"><code>boolean</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../com/box/sdk/BoxFolder.Info.html#getIsCollaborationRestrictedToEnterprise--">getIsCollaborationRestrictedToEnterprise</a></span>()</code>
 <div class="block">Gets whether future collaborations should be restricted to within the enterprise only.</div>
 </td>
 </tr>
-<tr id="i7" class="rowColor">
+<tr id="i8" class="altColor">
 <td class="colFirst"><code>boolean</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../com/box/sdk/BoxFolder.Info.html#getIsExternallyOwned--">getIsExternallyOwned</a></span>()</code>
 <div class="block">Get the field is_externally_owned determining whether this folder is owned by a user outside of the
  enterprise.</div>
 </td>
 </tr>
-<tr id="i8" class="altColor">
+<tr id="i9" class="rowColor">
 <td class="colFirst"><code>boolean</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../com/box/sdk/BoxFolder.Info.html#getIsWatermarked--">getIsWatermarked</a></span>()</code>
 <div class="block">Gets flag indicating whether this file is Watermarked.</div>
 </td>
 </tr>
-<tr id="i9" class="rowColor">
+<tr id="i10" class="altColor">
 <td class="colFirst"><code><a href="../../../com/box/sdk/Metadata.html" title="class in com.box.sdk">Metadata</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../com/box/sdk/BoxFolder.Info.html#getMetadata-java.lang.String-java.lang.String-">getMetadata</a></span>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;templateName,
            <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;scope)</code>
 <div class="block">Gets the metadata on this folder associated with a specified scope and template.</div>
 </td>
 </tr>
-<tr id="i10" class="altColor">
+<tr id="i11" class="rowColor">
 <td class="colFirst"><code><a href="https://docs.oracle.com/javase/8/docs/api/java/util/EnumSet.html?is-external=true" title="class or interface in java.util">EnumSet</a>&lt;<a href="../../../com/box/sdk/BoxFolder.Permission.html" title="enum in com.box.sdk">BoxFolder.Permission</a>&gt;</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../com/box/sdk/BoxFolder.Info.html#getPermissions--">getPermissions</a></span>()</code>
 <div class="block">Gets the permissions that the current user has on the folder.</div>
 </td>
 </tr>
-<tr id="i11" class="rowColor">
+<tr id="i12" class="altColor">
 <td class="colFirst"><code><a href="../../../com/box/sdk/BoxFolder.html" title="class in com.box.sdk">BoxFolder</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../com/box/sdk/BoxFolder.Info.html#getResource--">getResource</a></span>()</code>
 <div class="block">Gets the resource associated with this Info.</div>
 </td>
 </tr>
-<tr id="i12" class="altColor">
+<tr id="i13" class="rowColor">
 <td class="colFirst"><code><a href="../../../com/box/sdk/BoxFolder.SyncState.html" title="enum in com.box.sdk">BoxFolder.SyncState</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../com/box/sdk/BoxFolder.Info.html#getSyncState--">getSyncState</a></span>()</code>
 <div class="block">Gets the sync state of the folder.</div>
 </td>
 </tr>
-<tr id="i13" class="rowColor">
+<tr id="i14" class="altColor">
 <td class="colFirst"><code><a href="../../../com/box/sdk/BoxUploadEmail.html" title="class in com.box.sdk">BoxUploadEmail</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../com/box/sdk/BoxFolder.Info.html#getUploadEmail--">getUploadEmail</a></span>()</code>
 <div class="block">Gets the upload email for the folder.</div>
 </td>
 </tr>
-<tr id="i14" class="altColor">
+<tr id="i15" class="rowColor">
 <td class="colFirst"><code>protected void</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../com/box/sdk/BoxFolder.Info.html#parseJSONMember-com.eclipsesource.json.JsonObject.Member-">parseJSONMember</a></span>(JsonObject.Member&nbsp;member)</code>
 <div class="block">Invoked with a JSON member whenever this object is updated or created from a JSON object.</div>
 </td>
 </tr>
-<tr id="i15" class="rowColor">
+<tr id="i16" class="altColor">
 <td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../com/box/sdk/BoxFolder.Info.html#setCanNonOwnersInvite-boolean-">setCanNonOwnersInvite</a></span>(boolean&nbsp;canNonOwnersInvite)</code>
 <div class="block">Sets whether or not non-owners can invite collaborators to the folder.</div>
 </td>
 </tr>
-<tr id="i16" class="altColor">
+<tr id="i17" class="rowColor">
+<td class="colFirst"><code>void</code></td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../com/box/sdk/BoxFolder.Info.html#setCanNonOwnersViewCollaborators-boolean-">setCanNonOwnersViewCollaborators</a></span>(boolean&nbsp;canNonOwnersViewCollaborators)</code>
+<div class="block">Sets whether collaborators who are not owners of this folder
+ are restricted from viewing other collaborations on this folder.</div>
+</td>
+</tr>
+<tr id="i18" class="altColor">
 <td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../com/box/sdk/BoxFolder.Info.html#setIsCollaborationRestrictedToEnterprise-boolean-">setIsCollaborationRestrictedToEnterprise</a></span>(boolean&nbsp;isRestricted)</code>
 <div class="block">Sets whether future collaborations should be restricted to within the enterprise only.</div>
 </td>
 </tr>
-<tr id="i17" class="rowColor">
+<tr id="i19" class="rowColor">
 <td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../com/box/sdk/BoxFolder.Info.html#setSyncState-com.box.sdk.BoxFolder.SyncState-">setSyncState</a></span>(<a href="../../../com/box/sdk/BoxFolder.SyncState.html" title="enum in com.box.sdk">BoxFolder.SyncState</a>&nbsp;syncState)</code>
 <div class="block">Sets the sync state of the folder.</div>
 </td>
 </tr>
-<tr id="i18" class="altColor">
+<tr id="i20" class="altColor">
 <td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../com/box/sdk/BoxFolder.Info.html#setUploadEmail-com.box.sdk.BoxUploadEmail-">setUploadEmail</a></span>(<a href="../../../com/box/sdk/BoxUploadEmail.html" title="class in com.box.sdk">BoxUploadEmail</a>&nbsp;uploadEmail)</code>
 <div class="block">Sets the upload email for the folder.</div>
@@ -281,7 +295,7 @@ extends <a href="../../../com/box/sdk/BoxItem.Info.html" title="class in com.box
 <ul class="blockList">
 <li class="blockList">
 <h4>Info</h4>
-<pre>public&nbsp;<a href="../../../src-html/com/box/sdk/BoxFolder.Info.html#line.1474">Info</a>()</pre>
+<pre>public&nbsp;<a href="../../../src-html/com/box/sdk/BoxFolder.Info.html#line.1475">Info</a>()</pre>
 <div class="block">Constructs an empty Info object.</div>
 </li>
 </ul>
@@ -291,7 +305,7 @@ extends <a href="../../../com/box/sdk/BoxItem.Info.html" title="class in com.box
 <ul class="blockList">
 <li class="blockList">
 <h4>Info</h4>
-<pre>public&nbsp;<a href="../../../src-html/com/box/sdk/BoxFolder.Info.html#line.1483">Info</a>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;json)</pre>
+<pre>public&nbsp;<a href="../../../src-html/com/box/sdk/BoxFolder.Info.html#line.1484">Info</a>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;json)</pre>
 <div class="block">Constructs an Info object by parsing information from a JSON string.</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
@@ -305,7 +319,7 @@ extends <a href="../../../com/box/sdk/BoxItem.Info.html" title="class in com.box
 <ul class="blockListLast">
 <li class="blockList">
 <h4>Info</h4>
-<pre>public&nbsp;<a href="../../../src-html/com/box/sdk/BoxFolder.Info.html#line.1492">Info</a>(JsonObject&nbsp;jsonObject)</pre>
+<pre>public&nbsp;<a href="../../../src-html/com/box/sdk/BoxFolder.Info.html#line.1493">Info</a>(JsonObject&nbsp;jsonObject)</pre>
 <div class="block">Constructs an Info object using an already parsed JSON object.</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
@@ -327,7 +341,7 @@ extends <a href="../../../com/box/sdk/BoxItem.Info.html" title="class in com.box
 <ul class="blockList">
 <li class="blockList">
 <h4>getUploadEmail</h4>
-<pre>public&nbsp;<a href="../../../com/box/sdk/BoxUploadEmail.html" title="class in com.box.sdk">BoxUploadEmail</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxFolder.Info.html#line.1501">getUploadEmail</a>()</pre>
+<pre>public&nbsp;<a href="../../../com/box/sdk/BoxUploadEmail.html" title="class in com.box.sdk">BoxUploadEmail</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxFolder.Info.html#line.1502">getUploadEmail</a>()</pre>
 <div class="block">Gets the upload email for the folder.</div>
 <dl>
 <dt><span class="returnLabel">Returns:</span></dt>
@@ -341,7 +355,7 @@ extends <a href="../../../com/box/sdk/BoxItem.Info.html" title="class in com.box
 <ul class="blockList">
 <li class="blockList">
 <h4>setUploadEmail</h4>
-<pre>public&nbsp;void&nbsp;<a href="../../../src-html/com/box/sdk/BoxFolder.Info.html#line.1510">setUploadEmail</a>(<a href="../../../com/box/sdk/BoxUploadEmail.html" title="class in com.box.sdk">BoxUploadEmail</a>&nbsp;uploadEmail)</pre>
+<pre>public&nbsp;void&nbsp;<a href="../../../src-html/com/box/sdk/BoxFolder.Info.html#line.1511">setUploadEmail</a>(<a href="../../../com/box/sdk/BoxUploadEmail.html" title="class in com.box.sdk">BoxUploadEmail</a>&nbsp;uploadEmail)</pre>
 <div class="block">Sets the upload email for the folder.</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
@@ -355,7 +369,7 @@ extends <a href="../../../com/box/sdk/BoxItem.Info.html" title="class in com.box
 <ul class="blockList">
 <li class="blockList">
 <h4>getHasCollaborations</h4>
-<pre>public&nbsp;boolean&nbsp;<a href="../../../src-html/com/box/sdk/BoxFolder.Info.html#line.1530">getHasCollaborations</a>()</pre>
+<pre>public&nbsp;boolean&nbsp;<a href="../../../src-html/com/box/sdk/BoxFolder.Info.html#line.1531">getHasCollaborations</a>()</pre>
 <div class="block">Gets whether or not the folder has any collaborations.</div>
 <dl>
 <dt><span class="returnLabel">Returns:</span></dt>
@@ -369,7 +383,7 @@ extends <a href="../../../com/box/sdk/BoxItem.Info.html" title="class in com.box
 <ul class="blockList">
 <li class="blockList">
 <h4>getSyncState</h4>
-<pre>public&nbsp;<a href="../../../com/box/sdk/BoxFolder.SyncState.html" title="enum in com.box.sdk">BoxFolder.SyncState</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxFolder.Info.html#line.1539">getSyncState</a>()</pre>
+<pre>public&nbsp;<a href="../../../com/box/sdk/BoxFolder.SyncState.html" title="enum in com.box.sdk">BoxFolder.SyncState</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxFolder.Info.html#line.1540">getSyncState</a>()</pre>
 <div class="block">Gets the sync state of the folder.</div>
 <dl>
 <dt><span class="returnLabel">Returns:</span></dt>
@@ -383,7 +397,7 @@ extends <a href="../../../com/box/sdk/BoxItem.Info.html" title="class in com.box
 <ul class="blockList">
 <li class="blockList">
 <h4>setSyncState</h4>
-<pre>public&nbsp;void&nbsp;<a href="../../../src-html/com/box/sdk/BoxFolder.Info.html#line.1548">setSyncState</a>(<a href="../../../com/box/sdk/BoxFolder.SyncState.html" title="enum in com.box.sdk">BoxFolder.SyncState</a>&nbsp;syncState)</pre>
+<pre>public&nbsp;void&nbsp;<a href="../../../src-html/com/box/sdk/BoxFolder.Info.html#line.1549">setSyncState</a>(<a href="../../../com/box/sdk/BoxFolder.SyncState.html" title="enum in com.box.sdk">BoxFolder.SyncState</a>&nbsp;syncState)</pre>
 <div class="block">Sets the sync state of the folder.</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
@@ -397,7 +411,7 @@ extends <a href="../../../com/box/sdk/BoxItem.Info.html" title="class in com.box
 <ul class="blockList">
 <li class="blockList">
 <h4>getPermissions</h4>
-<pre>public&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/util/EnumSet.html?is-external=true" title="class or interface in java.util">EnumSet</a>&lt;<a href="../../../com/box/sdk/BoxFolder.Permission.html" title="enum in com.box.sdk">BoxFolder.Permission</a>&gt;&nbsp;<a href="../../../src-html/com/box/sdk/BoxFolder.Info.html#line.1558">getPermissions</a>()</pre>
+<pre>public&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/util/EnumSet.html?is-external=true" title="class or interface in java.util">EnumSet</a>&lt;<a href="../../../com/box/sdk/BoxFolder.Permission.html" title="enum in com.box.sdk">BoxFolder.Permission</a>&gt;&nbsp;<a href="../../../src-html/com/box/sdk/BoxFolder.Info.html#line.1559">getPermissions</a>()</pre>
 <div class="block">Gets the permissions that the current user has on the folder.</div>
 <dl>
 <dt><span class="returnLabel">Returns:</span></dt>
@@ -411,7 +425,7 @@ extends <a href="../../../com/box/sdk/BoxItem.Info.html" title="class in com.box
 <ul class="blockList">
 <li class="blockList">
 <h4>getCanNonOwnersInvite</h4>
-<pre>public&nbsp;boolean&nbsp;<a href="../../../src-html/com/box/sdk/BoxFolder.Info.html#line.1567">getCanNonOwnersInvite</a>()</pre>
+<pre>public&nbsp;boolean&nbsp;<a href="../../../src-html/com/box/sdk/BoxFolder.Info.html#line.1568">getCanNonOwnersInvite</a>()</pre>
 <div class="block">Gets whether or not the non-owners can invite collaborators to the folder.</div>
 <dl>
 <dt><span class="returnLabel">Returns:</span></dt>
@@ -425,7 +439,7 @@ extends <a href="../../../com/box/sdk/BoxItem.Info.html" title="class in com.box
 <ul class="blockList">
 <li class="blockList">
 <h4>setCanNonOwnersInvite</h4>
-<pre>public&nbsp;void&nbsp;<a href="../../../src-html/com/box/sdk/BoxFolder.Info.html#line.1576">setCanNonOwnersInvite</a>(boolean&nbsp;canNonOwnersInvite)</pre>
+<pre>public&nbsp;void&nbsp;<a href="../../../src-html/com/box/sdk/BoxFolder.Info.html#line.1577">setCanNonOwnersInvite</a>(boolean&nbsp;canNonOwnersInvite)</pre>
 <div class="block">Sets whether or not non-owners can invite collaborators to the folder.</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
@@ -439,7 +453,7 @@ extends <a href="../../../com/box/sdk/BoxItem.Info.html" title="class in com.box
 <ul class="blockList">
 <li class="blockList">
 <h4>getIsCollaborationRestrictedToEnterprise</h4>
-<pre>public&nbsp;boolean&nbsp;<a href="../../../src-html/com/box/sdk/BoxFolder.Info.html#line.1586">getIsCollaborationRestrictedToEnterprise</a>()</pre>
+<pre>public&nbsp;boolean&nbsp;<a href="../../../src-html/com/box/sdk/BoxFolder.Info.html#line.1587">getIsCollaborationRestrictedToEnterprise</a>()</pre>
 <div class="block">Gets whether future collaborations should be restricted to within the enterprise only.</div>
 <dl>
 <dt><span class="returnLabel">Returns:</span></dt>
@@ -453,7 +467,7 @@ extends <a href="../../../com/box/sdk/BoxItem.Info.html" title="class in com.box
 <ul class="blockList">
 <li class="blockList">
 <h4>setIsCollaborationRestrictedToEnterprise</h4>
-<pre>public&nbsp;void&nbsp;<a href="../../../src-html/com/box/sdk/BoxFolder.Info.html#line.1595">setIsCollaborationRestrictedToEnterprise</a>(boolean&nbsp;isRestricted)</pre>
+<pre>public&nbsp;void&nbsp;<a href="../../../src-html/com/box/sdk/BoxFolder.Info.html#line.1596">setIsCollaborationRestrictedToEnterprise</a>(boolean&nbsp;isRestricted)</pre>
 <div class="block">Sets whether future collaborations should be restricted to within the enterprise only.</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
@@ -467,7 +481,7 @@ extends <a href="../../../com/box/sdk/BoxItem.Info.html" title="class in com.box
 <ul class="blockList">
 <li class="blockList">
 <h4>getAllowedInviteeRoles</h4>
-<pre>public&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/util/List.html?is-external=true" title="class or interface in java.util">List</a>&lt;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&gt;&nbsp;<a href="../../../src-html/com/box/sdk/BoxFolder.Info.html#line.1605">getAllowedInviteeRoles</a>()</pre>
+<pre>public&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/util/List.html?is-external=true" title="class or interface in java.util">List</a>&lt;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&gt;&nbsp;<a href="../../../src-html/com/box/sdk/BoxFolder.Info.html#line.1606">getAllowedInviteeRoles</a>()</pre>
 <div class="block">Retrieves the allowed roles for collaborations.</div>
 <dl>
 <dt><span class="returnLabel">Returns:</span></dt>
@@ -481,7 +495,7 @@ extends <a href="../../../com/box/sdk/BoxItem.Info.html" title="class in com.box
 <ul class="blockList">
 <li class="blockList">
 <h4>getAllowedSharedLinkAccessLevels</h4>
-<pre>public&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/util/List.html?is-external=true" title="class or interface in java.util">List</a>&lt;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&gt;&nbsp;<a href="../../../src-html/com/box/sdk/BoxFolder.Info.html#line.1614">getAllowedSharedLinkAccessLevels</a>()</pre>
+<pre>public&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/util/List.html?is-external=true" title="class or interface in java.util">List</a>&lt;<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&gt;&nbsp;<a href="../../../src-html/com/box/sdk/BoxFolder.Info.html#line.1615">getAllowedSharedLinkAccessLevels</a>()</pre>
 <div class="block">Retrieves the allowed access levels for a shared link.</div>
 <dl>
 <dt><span class="returnLabel">Returns:</span></dt>
@@ -495,7 +509,7 @@ extends <a href="../../../com/box/sdk/BoxItem.Info.html" title="class in com.box
 <ul class="blockList">
 <li class="blockList">
 <h4>getIsWatermarked</h4>
-<pre>public&nbsp;boolean&nbsp;<a href="../../../src-html/com/box/sdk/BoxFolder.Info.html#line.1623">getIsWatermarked</a>()</pre>
+<pre>public&nbsp;boolean&nbsp;<a href="../../../src-html/com/box/sdk/BoxFolder.Info.html#line.1624">getIsWatermarked</a>()</pre>
 <div class="block">Gets flag indicating whether this file is Watermarked.</div>
 <dl>
 <dt><span class="returnLabel">Returns:</span></dt>
@@ -509,7 +523,7 @@ extends <a href="../../../com/box/sdk/BoxItem.Info.html" title="class in com.box
 <ul class="blockList">
 <li class="blockList">
 <h4>getMetadata</h4>
-<pre>public&nbsp;<a href="../../../com/box/sdk/Metadata.html" title="class in com.box.sdk">Metadata</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxFolder.Info.html#line.1635">getMetadata</a>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;templateName,
+<pre>public&nbsp;<a href="../../../com/box/sdk/Metadata.html" title="class in com.box.sdk">Metadata</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxFolder.Info.html#line.1636">getMetadata</a>(<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;templateName,
                             <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;scope)</pre>
 <div class="block">Gets the metadata on this folder associated with a specified scope and template.
  Makes an attempt to get metadata that was retrieved using getInfo(String ...) method.</div>
@@ -528,7 +542,7 @@ extends <a href="../../../com/box/sdk/BoxItem.Info.html" title="class in com.box
 <ul class="blockList">
 <li class="blockList">
 <h4>getIsExternallyOwned</h4>
-<pre>public&nbsp;boolean&nbsp;<a href="../../../src-html/com/box/sdk/BoxFolder.Info.html#line.1649">getIsExternallyOwned</a>()</pre>
+<pre>public&nbsp;boolean&nbsp;<a href="../../../src-html/com/box/sdk/BoxFolder.Info.html#line.1650">getIsExternallyOwned</a>()</pre>
 <div class="block">Get the field is_externally_owned determining whether this folder is owned by a user outside of the
  enterprise.</div>
 <dl>
@@ -543,7 +557,7 @@ extends <a href="../../../com/box/sdk/BoxItem.Info.html" title="class in com.box
 <ul class="blockList">
 <li class="blockList">
 <h4>getClassification</h4>
-<pre>public&nbsp;<a href="../../../com/box/sdk/BoxClassification.html" title="class in com.box.sdk">BoxClassification</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxFolder.Info.html#line.1658">getClassification</a>()</pre>
+<pre>public&nbsp;<a href="../../../com/box/sdk/BoxClassification.html" title="class in com.box.sdk">BoxClassification</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxFolder.Info.html#line.1659">getClassification</a>()</pre>
 <div class="block">Gets the metadata classification type of this folder.</div>
 <dl>
 <dt><span class="returnLabel">Returns:</span></dt>
@@ -557,11 +571,43 @@ extends <a href="../../../com/box/sdk/BoxItem.Info.html" title="class in com.box
 <ul class="blockList">
 <li class="blockList">
 <h4>getIsAccessibleViaSharedLink</h4>
-<pre>public&nbsp;boolean&nbsp;<a href="../../../src-html/com/box/sdk/BoxFolder.Info.html#line.1667">getIsAccessibleViaSharedLink</a>()</pre>
+<pre>public&nbsp;boolean&nbsp;<a href="../../../src-html/com/box/sdk/BoxFolder.Info.html#line.1668">getIsAccessibleViaSharedLink</a>()</pre>
 <div class="block">Returns the flag indicating whether the folder is accessible via a shared link.</div>
 <dl>
 <dt><span class="returnLabel">Returns:</span></dt>
 <dd>boolean flag indicating whether the folder is accessible via a shared link.</dd>
+</dl>
+</li>
+</ul>
+<a name="getCanNonOwnersViewCollaborators--">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>getCanNonOwnersViewCollaborators</h4>
+<pre>public&nbsp;boolean&nbsp;<a href="../../../src-html/com/box/sdk/BoxFolder.Info.html#line.1679">getCanNonOwnersViewCollaborators</a>()</pre>
+<div class="block">Returns the flag indicating if collaborators who are not owners of this folder
+ are restricted from viewing other collaborations on this folder.</div>
+<dl>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>boolean flag indicating if collaborators who are not owners of this folder
+ are restricted from viewing other collaborations on this folder.</dd>
+</dl>
+</li>
+</ul>
+<a name="setCanNonOwnersViewCollaborators-boolean-">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>setCanNonOwnersViewCollaborators</h4>
+<pre>public&nbsp;void&nbsp;<a href="../../../src-html/com/box/sdk/BoxFolder.Info.html#line.1690">setCanNonOwnersViewCollaborators</a>(boolean&nbsp;canNonOwnersViewCollaborators)</pre>
+<div class="block">Sets whether collaborators who are not owners of this folder
+ are restricted from viewing other collaborations on this folder.</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>canNonOwnersViewCollaborators</code> - indicates if collaborators who are not owners of this folder
+ are restricted from viewing other collaborations on this folderr.</dd>
 </dl>
 </li>
 </ul>
@@ -571,7 +617,7 @@ extends <a href="../../../com/box/sdk/BoxItem.Info.html" title="class in com.box
 <ul class="blockList">
 <li class="blockList">
 <h4>getResource</h4>
-<pre>public&nbsp;<a href="../../../com/box/sdk/BoxFolder.html" title="class in com.box.sdk">BoxFolder</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxFolder.Info.html#line.1673">getResource</a>()</pre>
+<pre>public&nbsp;<a href="../../../com/box/sdk/BoxFolder.html" title="class in com.box.sdk">BoxFolder</a>&nbsp;<a href="../../../src-html/com/box/sdk/BoxFolder.Info.html#line.1697">getResource</a>()</pre>
 <div class="block"><span class="descfrmTypeLabel">Description copied from class:&nbsp;<code><a href="../../../com/box/sdk/BoxResource.Info.html#getResource--">BoxResource.Info</a></code></span></div>
 <div class="block">Gets the resource associated with this Info.</div>
 <dl>
@@ -588,7 +634,7 @@ extends <a href="../../../com/box/sdk/BoxItem.Info.html" title="class in com.box
 <ul class="blockListLast">
 <li class="blockList">
 <h4>parseJSONMember</h4>
-<pre>protected&nbsp;void&nbsp;<a href="../../../src-html/com/box/sdk/BoxFolder.Info.html#line.1678">parseJSONMember</a>(JsonObject.Member&nbsp;member)</pre>
+<pre>protected&nbsp;void&nbsp;<a href="../../../src-html/com/box/sdk/BoxFolder.Info.html#line.1702">parseJSONMember</a>(JsonObject.Member&nbsp;member)</pre>
 <div class="block"><span class="descfrmTypeLabel">Description copied from class:&nbsp;<code><a href="../../../com/box/sdk/BoxJSONObject.html#parseJSONMember-com.eclipsesource.json.JsonObject.Member-">BoxJSONObject</a></code></span></div>
 <div class="block">Invoked with a JSON member whenever this object is updated or created from a JSON object.
 
