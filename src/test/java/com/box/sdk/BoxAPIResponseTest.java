@@ -1,5 +1,6 @@
 package com.box.sdk;
 
+import static com.box.sdk.BinaryBodyUtils.writeStreamWithContentLength;
 import static com.box.sdk.StandardCharsets.UTF_8;
 import static com.box.sdk.http.ContentType.APPLICATION_JSON;
 import static java.util.Arrays.asList;
@@ -9,12 +10,70 @@ import static org.hamcrest.Matchers.contains;
 import static org.hamcrest.Matchers.is;
 
 import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 import org.junit.Test;
 
 public class BoxAPIResponseTest {
+
+    /**
+     * Simulated large InputStream that generates data on demand.
+     */
+    static class LargeByteArrayInputStream extends InputStream {
+        private final long size;
+        private long bytesRead = 0;
+
+        LargeByteArrayInputStream(long size) {
+            this.size = size;
+        }
+
+        @Override
+        public int read() throws IOException {
+            if (bytesRead < size) {
+                bytesRead++;
+                return 'A'; // Simulated byte
+            }
+            return -1; // End of stream
+        }
+
+        @Override
+        public int read(byte[] b, int off, int len) throws IOException {
+            if (bytesRead >= size) {
+                return -1;
+            }
+            int bytesToRead = (int) Math.min(len, size - bytesRead);
+            for (int i = 0; i < bytesToRead; i++) {
+                b[off + i] = 'A';
+            }
+            bytesRead += bytesToRead;
+            return bytesToRead;
+        }
+    }
+
+
+    /**
+     * Null OutputStream that discards written data (useful for counting bytes).
+     */
+    class NullOutputStream extends OutputStream {
+        long bytesWritten = 0;
+        @Override
+        public void write(int b) {
+            bytesWritten++;
+        }
+
+        @Override
+        public void write(byte[] b, int off, int len) {
+            bytesWritten += len;
+        }
+
+        long getBytesWritten() {
+            return bytesWritten;
+        }
+    }
 
     @Test
     public void testAPIResponseHeaderIsCaseInsensitive() {
@@ -84,5 +143,19 @@ public class BoxAPIResponseTest {
                 + "Headers:\nfoo: [[bAr, zab]]\n"
                 + "Body:\n{\"foo\":\"bar\"}")
         );
+    }
+
+    @Test
+    public void testLargeBinaryResponseContentLength() {
+        long contentLength = Integer.MAX_VALUE + 10000L;
+        Map<String, List<String>> headers = new TreeMap<>();
+        headers.put("content-length", singletonList(Long.toString(contentLength)));
+        LargeByteArrayInputStream inputStream = new LargeByteArrayInputStream(contentLength);
+        NullOutputStream outputStream = new NullOutputStream();
+        BoxAPIResponse response = new BoxAPIResponse(
+            202, "GET", "https://aaa.com", headers, inputStream, "image/jpg", -1
+        );
+        writeStreamWithContentLength(response, outputStream);
+        assertThat(outputStream.getBytesWritten(), is(contentLength));
     }
 }
