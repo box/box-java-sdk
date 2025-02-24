@@ -147,7 +147,7 @@ public class BoxAPIResponseTest {
 
     @Test
     public void testLargeBinaryResponseContentLength() {
-        long contentLength = 2352815193L;
+        long contentLength = Integer.MAX_VALUE + 10000L;
         Map<String, List<String>> headers = new TreeMap<>();
         headers.put("content-length", singletonList(Long.toString(contentLength)));
         LargeByteArrayInputStream inputStream = new LargeByteArrayInputStream(contentLength);
