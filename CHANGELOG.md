@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [4.15.1](https://github.com/box/box-java-sdk/compare/v4.15.0...v4.15.1) (2025-02-24)
+
+
+### Bug Fixes:
+
+* Fix parsing content length header ([#1292](https://github.com/box/box-java-sdk/issues/1292)) ([3bcf788](https://github.com/box/box-java-sdk/commit/3bcf788dd9849305aa2cc85b8e5f88b35803ecb2))
+
 ## [4.15.0](https://github.com/box/box-java-sdk/compare/v4.14.0...v4.15.0) (2025-02-19)
 
 
