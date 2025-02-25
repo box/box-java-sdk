@@ -3,6 +3,7 @@ package com.box.sdk;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 
+import com.eclipsesource.json.JsonObject;
 import java.util.HashMap;
 import java.util.Map;
 import okhttp3.Headers;
@@ -84,5 +85,16 @@ public class BoxSensitiveDataSanitizerTest {
 
         assertThat(sanitizedHeaders.size(), is(1));
         assertThat(sanitizedHeaders.get("x-auth"), is("[REDACTED]"));
+    }
+
+    @Test
+    public void removeSensitiveDataFromJsonBody() {
+        JsonObject body = new JsonObject()
+            .add("authorization", "token")
+            .add("user-agent", "java-sdk");
+        JsonObject sanitizedBody = BoxSensitiveDataSanitizer.sanitizeJsonBody(body);
+
+        assertThat(sanitizedBody.get("authorization").asString(), is("[REDACATED]"));
+        assertThat(sanitizedBody.get("user-agent").asString(), is("java-sdk"));
     }
 }

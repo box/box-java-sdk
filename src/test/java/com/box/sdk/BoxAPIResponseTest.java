@@ -9,6 +9,8 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.contains;
 import static org.hamcrest.Matchers.is;
 
+import com.eclipsesource.json.Json;
+import com.eclipsesource.json.JsonObject;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -111,7 +113,7 @@ public class BoxAPIResponseTest {
         BoxAPIResponse response = new BoxAPIResponse(200, "GET", "https://aaa.com", headers);
 
         String str = response.toString();
-        assertThat(str, is("Response\nGET https://aaa.com\nHeaders:\nfoo: [[bAr, zab]]"));
+        assertThat(str, is("Response\nGET https://aaa.com 200\nHeaders:\nfoo: [[bAr, zab]]"));
     }
 
     @Test
@@ -124,7 +126,7 @@ public class BoxAPIResponseTest {
         );
 
         String str = response.toString();
-        assertThat(str, is("Response\nGET https://aaa.com\nContent-Type: image/jpg\nHeaders:\nfoo: [[bAr, zab]]"));
+        assertThat(str, is("Response\nGET https://aaa.com 202\nContent-Type: image/jpg\nHeaders:\nfoo: [[bAr, zab]]"));
     }
 
     @Test
@@ -138,7 +140,27 @@ public class BoxAPIResponseTest {
 
         String str = response.toString();
         assertThat(str, is(
-            "Response\nGET https://aaa.com\n"
+            "Response\nGET https://aaa.com 202\n"
+                + "Content-Type: application/json\n"
+                + "Headers:\nfoo: [[bAr, zab]]\n"
+                + "Body:\n{\"foo\":\"bar\"}")
+        );
+    }
+
+
+    @Test
+    public void testBoxJSONResponseToString() {
+        Map<String, List<String>> headers = new TreeMap<>();
+        headers.put("FOO", asList("bAr", "zab"));
+        String responseBody = "{\"foo\":\"bar\"}";
+        JsonObject jsonBody = Json.parse(responseBody).asObject();
+        BoxAPIResponse response = new BoxJSONResponse(
+            202, "GET", "https://aaa.com", headers, jsonBody
+        );
+
+        String str = response.toString();
+        assertThat(str, is(
+            "Response\nGET https://aaa.com 202\n"
                 + "Content-Type: application/json\n"
                 + "Headers:\nfoo: [[bAr, zab]]\n"
                 + "Body:\n{\"foo\":\"bar\"}")

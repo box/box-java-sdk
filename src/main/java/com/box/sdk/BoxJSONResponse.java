@@ -1,5 +1,6 @@
 package com.box.sdk;
 
+import com.box.sdk.http.ContentType;
 import com.eclipsesource.json.Json;
 import com.eclipsesource.json.JsonObject;
 import com.eclipsesource.json.ParseException;
@@ -48,7 +49,7 @@ public class BoxJSONResponse extends BoxAPIResponse {
                            Map<String, List<String>> headers,
                            JsonObject body
     ) {
-        super(responseCode, requestMethod, requestUrl, headers);
+        super(responseCode, requestMethod, requestUrl, headers, body.toString(), ContentType.APPLICATION_JSON);
         this.jsonObject = body;
     }
 
