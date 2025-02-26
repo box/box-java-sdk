@@ -1,5 +1,6 @@
 package com.box.sdk;
 
+import static com.box.sdk.BoxSensitiveDataSanitizer.sanitizeHeaders;
 import static com.box.sdk.internal.utils.CollectionUtils.mapToString;
 import static java.lang.String.format;
 
@@ -20,6 +21,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import okhttp3.Headers;
 import okhttp3.MediaType;
 import okhttp3.Request;
 import okhttp3.RequestBody;
@@ -509,6 +511,10 @@ public class BoxAPIRequest {
      */
     @Override
     public String toString() {
+        return toStringWithHeaders(null);
+    }
+
+    private String toStringWithHeaders(Headers headers) {
         String lineSeparator = System.getProperty("line.separator");
         StringBuilder builder = new StringBuilder();
         builder.append("Request");
@@ -517,6 +523,11 @@ public class BoxAPIRequest {
         builder.append(' ');
         builder.append(this.url.toString());
         builder.append(lineSeparator);
+        if (headers != null) {
+            builder.append("Headers:").append(lineSeparator);
+            sanitizeHeaders(headers)
+                .forEach(h -> builder.append(format("%s: [%s]%s", h.getFirst(), h.getSecond(), lineSeparator)));
+        }
 
         String bodyString = this.bodyToString();
         if (bodyString != null) {
@@ -588,6 +599,7 @@ public class BoxAPIRequest {
         long start = System.currentTimeMillis();
         Request request = composeRequest(listener);
         Response response;
+        this.logRequest(request.headers());
         if (this.followRedirects) {
             response = api.execute(request);
         } else {
@@ -596,7 +608,6 @@ public class BoxAPIRequest {
         logDebug(format("[trySend] connection.connect() took %dms%n", (System.currentTimeMillis() - start)));
 
         BoxAPIResponse result = BoxAPIResponse.toBoxResponse(response);
-        this.logRequest();
         long getResponseStart = System.currentTimeMillis();
         logDebug(format(
             "[trySend] Get Response (read network) took %dms%n", System.currentTimeMillis() - getResponseStart
@@ -670,8 +681,8 @@ public class BoxAPIRequest {
         }
     }
 
-    private void logRequest() {
-        logDebug(this.toString());
+    private void logRequest(Headers headers) {
+        logDebug(headers != null ? this.toStringWithHeaders(headers) : this.toString());
     }
 
     /**

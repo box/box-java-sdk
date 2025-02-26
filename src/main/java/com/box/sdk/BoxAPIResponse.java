@@ -80,6 +80,15 @@ public class BoxAPIResponse implements Closeable {
         this(responseCode, requestMethod, requestUrl, headers, null, null, 0);
     }
 
+    public BoxAPIResponse(int responseCode,
+                          String requestMethod,
+                          String requestUrl,
+                          Map<String, List<String>> headers,
+                          String bodyString,
+                          String contentType) {
+        this(responseCode, requestMethod, requestUrl, headers, null, contentType, 0, bodyString);
+    }
+
     public BoxAPIResponse(int code,
                           String requestMethod,
                           String requestUrl,
@@ -87,6 +96,18 @@ public class BoxAPIResponse implements Closeable {
                           InputStream body,
                           String contentType,
                           long contentLength
+    ) {
+        this(code, requestMethod, requestUrl, headers, body, contentType, contentLength, null);
+    }
+
+    public BoxAPIResponse(int code,
+                          String requestMethod,
+                          String requestUrl,
+                          Map<String, List<String>> headers,
+                          InputStream body,
+                          String contentType,
+                          long contentLength,
+                          String bodyString
     ) {
         this.responseCode = code;
         this.requestMethod = requestMethod;
@@ -97,34 +118,15 @@ public class BoxAPIResponse implements Closeable {
         this.rawInputStream = body;
         this.contentType = contentType;
         this.contentLength = contentLength;
-        storeBodyResponse(body);
+        this.bodyString = bodyString;
+        if (body != null) {
+            storeBodyResponse(body);
+        }
         if (isSuccess(responseCode)) {
             this.logResponse();
         } else {
             this.logErrorResponse(this.responseCode);
             throw new BoxAPIResponseException("The API returned an error code", responseCode, null, headers);
-        }
-    }
-
-    private void storeBodyResponse(InputStream body) {
-        try {
-            if (contentType != null && body != null && contentType.contains(APPLICATION_JSON) && body.available() > 0) {
-                InputStreamReader reader = new InputStreamReader(this.getBody(), UTF_8);
-                StringBuilder builder = new StringBuilder();
-                char[] buffer = new char[BUFFER_SIZE];
-
-                int read = reader.read(buffer, 0, BUFFER_SIZE);
-                while (read != -1) {
-                    builder.append(buffer, 0, read);
-                    read = reader.read(buffer, 0, BUFFER_SIZE);
-                }
-                reader.close();
-                this.disconnect();
-                bodyString = builder.toString();
-                rawInputStream = new ByteArrayInputStream(bodyString.getBytes(UTF_8));
-            }
-        } catch (IOException e) {
-            throw new RuntimeException("Cannot read body stream", e);
         }
     }
 
@@ -194,6 +196,28 @@ public class BoxAPIResponse implements Closeable {
             response.request().url().toString(),
             response.headers().toMultimap()
         );
+    }
+
+    private void storeBodyResponse(InputStream body) {
+        try {
+            if (contentType != null && body != null && contentType.contains(APPLICATION_JSON) && body.available() > 0) {
+                InputStreamReader reader = new InputStreamReader(this.getBody(), UTF_8);
+                StringBuilder builder = new StringBuilder();
+                char[] buffer = new char[BUFFER_SIZE];
+
+                int read = reader.read(buffer, 0, BUFFER_SIZE);
+                while (read != -1) {
+                    builder.append(buffer, 0, read);
+                    read = reader.read(buffer, 0, BUFFER_SIZE);
+                }
+                reader.close();
+                this.disconnect();
+                bodyString = builder.toString();
+                rawInputStream = new ByteArrayInputStream(bodyString.getBytes(UTF_8));
+            }
+        } catch (IOException e) {
+            throw new RuntimeException("Cannot read body stream", e);
+        }
     }
 
     /**
@@ -274,6 +298,8 @@ public class BoxAPIResponse implements Closeable {
             .append(this.requestMethod)
             .append(' ')
             .append(this.requestUrl)
+            .append(' ')
+            .append(this.responseCode)
             .append(lineSeparator)
             .append(contentType != null ? "Content-Type: " + contentType + lineSeparator : "")
             .append(headers.isEmpty() ? "" : "Headers:" + lineSeparator);
@@ -284,7 +310,10 @@ public class BoxAPIResponse implements Closeable {
 
         String bodyString = this.bodyToString();
         if (bodyString != null && !bodyString.equals("")) {
-            builder.append("Body:").append(lineSeparator).append(bodyString);
+            String sanitizedBodyString = contentType.equals(APPLICATION_JSON)
+                ? BoxSensitiveDataSanitizer.sanitizeJsonBody(Json.parse(bodyString).asObject()).toString()
+                : bodyString;
+            builder.append("Body:").append(lineSeparator).append(sanitizedBodyString);
         }
 
         return builder.toString().trim();
@@ -310,7 +339,7 @@ public class BoxAPIResponse implements Closeable {
     /**
      * Returns a string representation of this response's body. This method is used when logging this response's body.
      * By default, it returns an empty string (to avoid accidentally logging binary data) unless the response contained
-     * an error message.
+     * an error message or content type is application/json.
      *
      * @return a string representation of this response's body.
      */

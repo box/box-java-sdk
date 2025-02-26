@@ -1,5 +1,6 @@
 package com.box.sdk;
 
+import com.eclipsesource.json.JsonObject;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
@@ -42,6 +43,26 @@ public final class BoxSensitiveDataSanitizer {
         }
 
         return sanitizedHeadersBuilder.build();
+    }
+
+    /**
+     * Sanitize the json body. Only for the first level of the json.
+     *
+     * @param originalBody the original json body
+     * @return the sanitized json body
+     */
+    @NotNull
+    static JsonObject sanitizeJsonBody(JsonObject originalBody) {
+        JsonObject sanitizedBody = new JsonObject();
+
+        for (String key : originalBody.names()) {
+            if (isSensitiveKey(key)) {
+                sanitizedBody.set(key, "[REDACATED]");
+            } else {
+                sanitizedBody.set(key, originalBody.get(key));
+            }
+        }
+        return sanitizedBody;
     }
 
     private static boolean isSensitiveKey(@NotNull String key) {
