@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [4.15.2](https://github.com/box/box-java-sdk/compare/v4.15.1...v4.15.2) (2025-02-26)
+
+
+### Bug Fixes:
+
+* Improve logging for API Request and API Response ([#1295](https://github.com/box/box-java-sdk/issues/1295)) ([6eb1f57](https://github.com/box/box-java-sdk/commit/6eb1f57a584571b46daa14d045a36bca382493fa))
+
 ### [4.15.1](https://github.com/box/box-java-sdk/compare/v4.15.0...v4.15.1) (2025-02-24)
 
 
