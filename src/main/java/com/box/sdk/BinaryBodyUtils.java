@@ -100,11 +100,12 @@ final class BinaryBodyUtils {
             }
 
             if (headerValue != null) {
+                String trimmedHeaderValue = headerValue.trim();
                 try {
-                    length = Long.parseLong(headerValue.trim());
+                    length = Long.parseLong(trimmedHeaderValue);
                 } catch (NumberFormatException e) {
-                    throw new RuntimeException("Invalid content length: " + headerValue.trim() + " with: "
-                        + headerValue.trim().length() + " number of characters.");
+                    throw new RuntimeException("Invalid content length: " + trimmedHeaderValue + " with: "
+                        + trimmedHeaderValue.length() + " number of characters.");
                 }
             }
         }
