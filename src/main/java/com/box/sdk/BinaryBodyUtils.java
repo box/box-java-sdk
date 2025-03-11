@@ -103,8 +103,8 @@ final class BinaryBodyUtils {
                 try {
                     length = Long.parseLong(headerValue.trim());
                 } catch (NumberFormatException e) {
-                    throw new RuntimeException("Invalid content length: " + headerValue.trim() + "with: "
-                        + headerValue.trim().length() + "number of characters.");
+                    throw new RuntimeException("Invalid content length: " + headerValue.trim() + " with: "
+                        + headerValue.trim().length() + " number of characters.");
                 }
             }
         }
