@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [4.16.0](https://github.com/box/box-java-sdk/compare/v4.15.3...v4.16.0) (2025-04-15)
+
+
+### New Features and Enhancements:
+
+* Bump version of `zstd-jni` ([#1302](https://github.com/box/box-java-sdk/issues/1302)) ([9ebf8b5](https://github.com/box/box-java-sdk/commit/9ebf8b5d16c0ab8f4aa19849fdaa86935d38b294))
+
 ### [4.15.3](https://github.com/box/box-java-sdk/compare/v4.15.2...v4.15.3) (2025-03-12)
 
 
