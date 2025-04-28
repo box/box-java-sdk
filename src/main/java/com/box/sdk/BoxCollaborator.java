@@ -40,7 +40,7 @@ public abstract class BoxCollaborator extends BoxResource {
         }
 
         static CollaboratorType fromJSONValue(String jsonValue) {
-            return CollaboratorType.valueOf(jsonValue.toUpperCase());
+            return CollaboratorType.valueOf(jsonValue.toUpperCase(java.util.Locale.ROOT));
         }
 
         String toJSONValue() {
@@ -69,7 +69,7 @@ public abstract class BoxCollaborator extends BoxResource {
         }
 
         static GroupType fromJSONValue(String jsonValue) {
-            return GroupType.valueOf(jsonValue.toUpperCase());
+            return GroupType.valueOf(jsonValue.toUpperCase(java.util.Locale.ROOT));
         }
 
         String toJSONValue() {

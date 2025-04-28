@@ -520,7 +520,7 @@ public class BoxCollaboration extends BoxResource {
          */
         public void setStatus(Status status) {
             this.status = status;
-            this.addPendingChange("status", status.name().toLowerCase());
+            this.addPendingChange("status", status.name().toLowerCase(java.util.Locale.ROOT));
         }
 
         /**
@@ -604,7 +604,7 @@ public class BoxCollaboration extends BoxResource {
                         this.expiresAt = BoxDateFormat.parse(value.asString());
                         break;
                     case "status":
-                        String statusString = value.asString().toUpperCase();
+                        String statusString = value.asString().toUpperCase(java.util.Locale.ROOT);
                         this.status = Status.valueOf(statusString);
 
                         break;

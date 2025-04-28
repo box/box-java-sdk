@@ -161,7 +161,7 @@ public class BoxGroupMembership extends BoxResource {
         }
 
         static Permission fromJSONValue(String jsonValue) {
-            return Permission.valueOf(jsonValue.toUpperCase());
+            return Permission.valueOf(jsonValue.toUpperCase(java.util.Locale.ROOT));
         }
 
         String toJSONValue() {

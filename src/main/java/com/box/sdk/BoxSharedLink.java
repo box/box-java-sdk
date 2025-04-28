@@ -227,7 +227,7 @@ public class BoxSharedLink extends BoxJSONObject {
     }
 
     private Access parseAccessValue(JsonValue value) {
-        String accessString = value.asString().toUpperCase();
+        String accessString = value.asString().toUpperCase(java.util.Locale.ROOT);
         return Access.valueOf(accessString);
     }
 

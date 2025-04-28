@@ -151,7 +151,7 @@ public class BoxFileRequest extends BoxResource {
         }
 
         static Status fromJSONString(String jsonValue) {
-            return Status.valueOf(jsonValue.toUpperCase());
+            return Status.valueOf(jsonValue.toUpperCase(java.util.Locale.ROOT));
         }
 
         String toJSONString() {

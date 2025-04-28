@@ -120,7 +120,7 @@ public class BoxZipDownloadStatus extends BoxJSONObject {
         }
 
         static State fromJSONValue(String jsonValue) {
-            return State.valueOf(jsonValue.toUpperCase());
+            return State.valueOf(jsonValue.toUpperCase(java.util.Locale.ROOT));
         }
 
         String toJSONValue() {
