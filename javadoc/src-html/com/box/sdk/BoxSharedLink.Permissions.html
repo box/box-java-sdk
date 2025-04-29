@@ -235,7 +235,7 @@
 <span class="sourceLineNo">227</span>    }<a name="line.227"></a>
 <span class="sourceLineNo">228</span><a name="line.228"></a>
 <span class="sourceLineNo">229</span>    private Access parseAccessValue(JsonValue value) {<a name="line.229"></a>
-<span class="sourceLineNo">230</span>        String accessString = value.asString().toUpperCase();<a name="line.230"></a>
+<span class="sourceLineNo">230</span>        String accessString = value.asString().toUpperCase(java.util.Locale.ROOT);<a name="line.230"></a>
 <span class="sourceLineNo">231</span>        return Access.valueOf(accessString);<a name="line.231"></a>
 <span class="sourceLineNo">232</span>    }<a name="line.232"></a>
 <span class="sourceLineNo">233</span><a name="line.233"></a>

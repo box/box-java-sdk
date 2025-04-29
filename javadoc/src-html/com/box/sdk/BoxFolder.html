@@ -1395,7 +1395,7 @@
 <span class="sourceLineNo">1387</span>        }<a name="line.1387"></a>
 <span class="sourceLineNo">1388</span><a name="line.1388"></a>
 <span class="sourceLineNo">1389</span>        static SyncState fromJSONValue(String jsonValue) {<a name="line.1389"></a>
-<span class="sourceLineNo">1390</span>            return SyncState.valueOf(jsonValue.toUpperCase());<a name="line.1390"></a>
+<span class="sourceLineNo">1390</span>            return SyncState.valueOf(jsonValue.toUpperCase(java.util.Locale.ROOT));<a name="line.1390"></a>
 <span class="sourceLineNo">1391</span>        }<a name="line.1391"></a>
 <span class="sourceLineNo">1392</span><a name="line.1392"></a>
 <span class="sourceLineNo">1393</span>        String toJSONValue() {<a name="line.1393"></a>
@@ -1449,7 +1449,7 @@
 <span class="sourceLineNo">1441</span>        }<a name="line.1441"></a>
 <span class="sourceLineNo">1442</span><a name="line.1442"></a>
 <span class="sourceLineNo">1443</span>        static Permission fromJSONValue(String jsonValue) {<a name="line.1443"></a>
-<span class="sourceLineNo">1444</span>            return Permission.valueOf(jsonValue.toUpperCase());<a name="line.1444"></a>
+<span class="sourceLineNo">1444</span>            return Permission.valueOf(jsonValue.toUpperCase(java.util.Locale.ROOT));<a name="line.1444"></a>
 <span class="sourceLineNo">1445</span>        }<a name="line.1445"></a>
 <span class="sourceLineNo">1446</span><a name="line.1446"></a>
 <span class="sourceLineNo">1447</span>        String toJSONValue() {<a name="line.1447"></a>

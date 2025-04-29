@@ -826,7 +826,7 @@
 <span class="sourceLineNo">818</span>        }<a name="line.818"></a>
 <span class="sourceLineNo">819</span><a name="line.819"></a>
 <span class="sourceLineNo">820</span>        static Role fromJSONValue(String jsonValue) {<a name="line.820"></a>
-<span class="sourceLineNo">821</span>            return Role.valueOf(jsonValue.toUpperCase());<a name="line.821"></a>
+<span class="sourceLineNo">821</span>            return Role.valueOf(jsonValue.toUpperCase(java.util.Locale.ROOT));<a name="line.821"></a>
 <span class="sourceLineNo">822</span>        }<a name="line.822"></a>
 <span class="sourceLineNo">823</span><a name="line.823"></a>
 <span class="sourceLineNo">824</span>        String toJSONValue() {<a name="line.824"></a>
@@ -865,7 +865,7 @@
 <span class="sourceLineNo">857</span>        }<a name="line.857"></a>
 <span class="sourceLineNo">858</span><a name="line.858"></a>
 <span class="sourceLineNo">859</span>        static Status fromJSONValue(String jsonValue) {<a name="line.859"></a>
-<span class="sourceLineNo">860</span>            return Status.valueOf(jsonValue.toUpperCase());<a name="line.860"></a>
+<span class="sourceLineNo">860</span>            return Status.valueOf(jsonValue.toUpperCase(java.util.Locale.ROOT));<a name="line.860"></a>
 <span class="sourceLineNo">861</span>        }<a name="line.861"></a>
 <span class="sourceLineNo">862</span><a name="line.862"></a>
 <span class="sourceLineNo">863</span>        String toJSONValue() {<a name="line.863"></a>
@@ -964,7 +964,7 @@
 <span class="sourceLineNo">956</span>         */<a name="line.956"></a>
 <span class="sourceLineNo">957</span>        public void setRole(Role role) {<a name="line.957"></a>
 <span class="sourceLineNo">958</span>            this.role = role;<a name="line.958"></a>
-<span class="sourceLineNo">959</span>            this.addPendingChange("role", role.name().toLowerCase());<a name="line.959"></a>
+<span class="sourceLineNo">959</span>            this.addPendingChange("role", role.name().toLowerCase(java.util.Locale.ROOT));<a name="line.959"></a>
 <span class="sourceLineNo">960</span>        }<a name="line.960"></a>
 <span class="sourceLineNo">961</span><a name="line.961"></a>
 <span class="sourceLineNo">962</span>        /**<a name="line.962"></a>
@@ -1058,7 +1058,7 @@
 <span class="sourceLineNo">1050</span>         */<a name="line.1050"></a>
 <span class="sourceLineNo">1051</span>        public void setStatus(Status status) {<a name="line.1051"></a>
 <span class="sourceLineNo">1052</span>            this.status = status;<a name="line.1052"></a>
-<span class="sourceLineNo">1053</span>            this.addPendingChange("status", status.name().toLowerCase());<a name="line.1053"></a>
+<span class="sourceLineNo">1053</span>            this.addPendingChange("status", status.name().toLowerCase(java.util.Locale.ROOT));<a name="line.1053"></a>
 <span class="sourceLineNo">1054</span>        }<a name="line.1054"></a>
 <span class="sourceLineNo">1055</span><a name="line.1055"></a>
 <span class="sourceLineNo">1056</span>        /**<a name="line.1056"></a>

@@ -1714,7 +1714,7 @@
 <span class="sourceLineNo">1706</span>        }<a name="line.1706"></a>
 <span class="sourceLineNo">1707</span><a name="line.1707"></a>
 <span class="sourceLineNo">1708</span>        static Permission fromJSONValue(String jsonValue) {<a name="line.1708"></a>
-<span class="sourceLineNo">1709</span>            return Permission.valueOf(jsonValue.toUpperCase());<a name="line.1709"></a>
+<span class="sourceLineNo">1709</span>            return Permission.valueOf(jsonValue.toUpperCase(java.util.Locale.ROOT));<a name="line.1709"></a>
 <span class="sourceLineNo">1710</span>        }<a name="line.1710"></a>
 <span class="sourceLineNo">1711</span><a name="line.1711"></a>
 <span class="sourceLineNo">1712</span>        String toJSONValue() {<a name="line.1712"></a>
