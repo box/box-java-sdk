@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [4.16.1](https://github.com/box/box-java-sdk/compare/v4.16.0...v4.16.1) (2025-04-29)
+
+
+### Bug Fixes:
+
+* use `Locale.ROOT` to prevent issues with non-US locales ([#1306](https://github.com/box/box-java-sdk/issues/1306)) ([f083092](https://github.com/box/box-java-sdk/commit/f083092d5fdac37c93493945ab0c05ecdcdbc838))
+
 ## [4.16.0](https://github.com/box/box-java-sdk/compare/v4.15.3...v4.16.0) (2025-04-15)
 
 
