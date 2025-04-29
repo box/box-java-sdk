@@ -48,7 +48,7 @@
 <span class="sourceLineNo">040</span>        }<a name="line.40"></a>
 <span class="sourceLineNo">041</span><a name="line.41"></a>
 <span class="sourceLineNo">042</span>        static CollaboratorType fromJSONValue(String jsonValue) {<a name="line.42"></a>
-<span class="sourceLineNo">043</span>            return CollaboratorType.valueOf(jsonValue.toUpperCase());<a name="line.43"></a>
+<span class="sourceLineNo">043</span>            return CollaboratorType.valueOf(jsonValue.toUpperCase(java.util.Locale.ROOT));<a name="line.43"></a>
 <span class="sourceLineNo">044</span>        }<a name="line.44"></a>
 <span class="sourceLineNo">045</span><a name="line.45"></a>
 <span class="sourceLineNo">046</span>        String toJSONValue() {<a name="line.46"></a>
@@ -77,7 +77,7 @@
 <span class="sourceLineNo">069</span>        }<a name="line.69"></a>
 <span class="sourceLineNo">070</span><a name="line.70"></a>
 <span class="sourceLineNo">071</span>        static GroupType fromJSONValue(String jsonValue) {<a name="line.71"></a>
-<span class="sourceLineNo">072</span>            return GroupType.valueOf(jsonValue.toUpperCase());<a name="line.72"></a>
+<span class="sourceLineNo">072</span>            return GroupType.valueOf(jsonValue.toUpperCase(java.util.Locale.ROOT));<a name="line.72"></a>
 <span class="sourceLineNo">073</span>        }<a name="line.73"></a>
 <span class="sourceLineNo">074</span><a name="line.74"></a>
 <span class="sourceLineNo">075</span>        String toJSONValue() {<a name="line.75"></a>

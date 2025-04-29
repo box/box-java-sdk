@@ -290,7 +290,7 @@
 <span class="sourceLineNo">282</span>            if (jsonValue.isObject()) {<a name="line.282"></a>
 <span class="sourceLineNo">283</span>                JsonObject object = jsonValue.asObject();<a name="line.283"></a>
 <span class="sourceLineNo">284</span>                String fieldName = object.get(FIELD_KEY).asString();<a name="line.284"></a>
-<span class="sourceLineNo">285</span>                String direction = object.get(DIRECTION).asString().toLowerCase();<a name="line.285"></a>
+<span class="sourceLineNo">285</span>                String direction = object.get(DIRECTION).asString().toLowerCase(java.util.Locale.ROOT);<a name="line.285"></a>
 <span class="sourceLineNo">286</span>                if (!DIRECTION_ASCENDING.equals(direction) &amp;&amp; !DIRECTION_DESCENDING.equals(direction)) {<a name="line.286"></a>
 <span class="sourceLineNo">287</span>                    throw new RuntimeException(<a name="line.287"></a>
 <span class="sourceLineNo">288</span>                        String.format("Unsupported sort direction [%s] for field [%s]", direction, fieldName)<a name="line.288"></a>
