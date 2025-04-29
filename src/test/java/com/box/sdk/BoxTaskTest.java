@@ -136,7 +136,7 @@ public class BoxTaskTest {
         BoxTask.Info taskInfo = file.addTask(BoxTask.Action.COMPLETE, taskMessage, null,
             BoxTask.CompletionRule.ALL_ASSIGNEES);
 
-        assertEquals(BoxTask.Action.COMPLETE.toString().toLowerCase(), taskInfo.getTaskType());
+        assertEquals(BoxTask.Action.COMPLETE.toString().toLowerCase(java.util.Locale.ROOT), taskInfo.getTaskType());
         assertEquals(fileID, taskInfo.getItem().getID());
         assertEquals(taskID, taskInfo.getID());
         assertEquals(taskMessage, taskInfo.getMessage());

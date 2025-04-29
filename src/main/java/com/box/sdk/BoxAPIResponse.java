@@ -306,7 +306,8 @@ public class BoxAPIResponse implements Closeable {
         headers.entrySet()
             .stream()
             .filter(Objects::nonNull)
-            .forEach(e -> builder.append(format("%s: [%s]%s", e.getKey().toLowerCase(), e.getValue(), lineSeparator)));
+            .forEach(e -> builder.append(format("%s: [%s]%s", e.getKey().toLowerCase(java.util.Locale.ROOT),
+                e.getValue(), lineSeparator)));
 
         String bodyString = this.bodyToString();
         if (bodyString != null && !bodyString.equals("")) {

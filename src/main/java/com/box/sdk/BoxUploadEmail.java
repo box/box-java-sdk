@@ -93,7 +93,7 @@ public class BoxUploadEmail extends BoxJSONObject {
         }
 
         static Access fromJSONValue(String jsonValue) {
-            return Access.valueOf(jsonValue.toUpperCase());
+            return Access.valueOf(jsonValue.toUpperCase(java.util.Locale.ROOT));
         }
 
         String toJSONValue() {

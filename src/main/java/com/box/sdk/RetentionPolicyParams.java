@@ -179,7 +179,7 @@ public class RetentionPolicyParams {
         }
 
         static RetentionType fromJSONString(String jsonValue) {
-            return RetentionType.valueOf(jsonValue.toUpperCase());
+            return RetentionType.valueOf(jsonValue.toUpperCase(java.util.Locale.ROOT));
         }
 
         String toJSONString() {

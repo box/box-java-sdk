@@ -76,7 +76,7 @@ public class JsonUtils {
      */
     public static void addIfNotNull(JsonObject jsonObject, String propertyName, Enum propertyValue) {
         if (propertyValue != null) {
-            jsonObject.add(propertyName, propertyValue.name().toLowerCase());
+            jsonObject.add(propertyName, propertyValue.name().toLowerCase(java.util.Locale.ROOT));
         }
     }
 

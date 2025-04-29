@@ -1387,7 +1387,7 @@ public class BoxFolder extends BoxItem implements Iterable<BoxItem.Info> {
         }
 
         static SyncState fromJSONValue(String jsonValue) {
-            return SyncState.valueOf(jsonValue.toUpperCase());
+            return SyncState.valueOf(jsonValue.toUpperCase(java.util.Locale.ROOT));
         }
 
         String toJSONValue() {
@@ -1441,7 +1441,7 @@ public class BoxFolder extends BoxItem implements Iterable<BoxItem.Info> {
         }
 
         static Permission fromJSONValue(String jsonValue) {
-            return Permission.valueOf(jsonValue.toUpperCase());
+            return Permission.valueOf(jsonValue.toUpperCase(java.util.Locale.ROOT));
         }
 
         String toJSONValue() {

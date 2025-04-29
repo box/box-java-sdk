@@ -818,7 +818,7 @@ public class BoxUser extends BoxCollaborator {
         }
 
         static Role fromJSONValue(String jsonValue) {
-            return Role.valueOf(jsonValue.toUpperCase());
+            return Role.valueOf(jsonValue.toUpperCase(java.util.Locale.ROOT));
         }
 
         String toJSONValue() {
@@ -857,7 +857,7 @@ public class BoxUser extends BoxCollaborator {
         }
 
         static Status fromJSONValue(String jsonValue) {
-            return Status.valueOf(jsonValue.toUpperCase());
+            return Status.valueOf(jsonValue.toUpperCase(java.util.Locale.ROOT));
         }
 
         String toJSONValue() {
@@ -956,7 +956,7 @@ public class BoxUser extends BoxCollaborator {
          */
         public void setRole(Role role) {
             this.role = role;
-            this.addPendingChange("role", role.name().toLowerCase());
+            this.addPendingChange("role", role.name().toLowerCase(java.util.Locale.ROOT));
         }
 
         /**
@@ -1050,7 +1050,7 @@ public class BoxUser extends BoxCollaborator {
          */
         public void setStatus(Status status) {
             this.status = status;
-            this.addPendingChange("status", status.name().toLowerCase());
+            this.addPendingChange("status", status.name().toLowerCase(java.util.Locale.ROOT));
         }
 
         /**

@@ -111,7 +111,7 @@ public class BoxAIItem {
         }
 
         static BoxAIItem.Type fromJSONValue(String jsonValue) {
-            return BoxAIItem.Type.valueOf(jsonValue.toUpperCase());
+            return BoxAIItem.Type.valueOf(jsonValue.toUpperCase(java.util.Locale.ROOT));
         }
 
         String toJSONValue() {

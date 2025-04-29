@@ -66,6 +66,6 @@ public final class BoxSensitiveDataSanitizer {
     }
 
     private static boolean isSensitiveKey(@NotNull String key) {
-        return SENSITIVE_KEYS.contains(key.toLowerCase());
+        return SENSITIVE_KEYS.contains(key.toLowerCase(java.util.Locale.ROOT));
     }
 }

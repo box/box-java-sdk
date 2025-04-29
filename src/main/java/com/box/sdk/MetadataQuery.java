@@ -282,7 +282,7 @@ public class MetadataQuery {
             if (jsonValue.isObject()) {
                 JsonObject object = jsonValue.asObject();
                 String fieldName = object.get(FIELD_KEY).asString();
-                String direction = object.get(DIRECTION).asString().toLowerCase();
+                String direction = object.get(DIRECTION).asString().toLowerCase(java.util.Locale.ROOT);
                 if (!DIRECTION_ASCENDING.equals(direction) && !DIRECTION_DESCENDING.equals(direction)) {
                     throw new RuntimeException(
                         String.format("Unsupported sort direction [%s] for field [%s]", direction, fieldName)

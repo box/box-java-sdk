@@ -30,6 +30,7 @@ import java.nio.file.Paths;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Locale;
 import java.util.Map;
 import org.hamcrest.CoreMatchers;
 import org.junit.Before;
@@ -89,8 +90,7 @@ public class BoxUserTest {
         assertArrayEquals(fileByteArray, output.toByteArray());
     }
 
-    @Test
-    public void testGetCurrentUserInfoSucceeds() {
+    private void getCurrentUserTest() {
         final String userURL = "/2.0/users/me";
         final String userInfoURL = "/2.0/users/12345";
         final String userName = "Test User";
@@ -111,6 +111,17 @@ public class BoxUserTest {
         assertEquals(userName, info.getName());
         assertEquals(userLogin, info.getLogin());
         assertEquals(userphoneNumber, info.getPhone());
+    }
+
+    @Test
+    public void testGetCurrentUserInfoSucceeds() {
+        getCurrentUserTest();
+    }
+
+    @Test
+    public void testGetCurrentUserInfoOnNonUsLocaleSucceeds() {
+        Locale.setDefault(new Locale("tr", "TR"));
+        getCurrentUserTest();
     }
 
     @Test
