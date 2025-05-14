@@ -83,7 +83,7 @@ public class BoxZipDownloadStatus extends BoxJSONObject {
         String memberName = member.getName();
         if (memberName.equals("total_file_count")) {
             this.totalFileCount = value.asInt();
-        } else if (memberName.equals("download_file_count")) {
+        } else if (memberName.equals("downloaded_file_count")) {
             this.downloadFileCount = value.asInt();
         } else if (memberName.equals("skipped_file_count")) {
             this.skippedFileCount = value.asInt();
