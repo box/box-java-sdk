@@ -1,0 +1,155 @@
+package com.box.sdkgen.schemas.aistudioagentlongtexttoolresponse;
+
+import com.box.sdkgen.schemas.aiagentlongtexttool.AiAgentLongTextToolEmbeddingsField;
+import com.box.sdkgen.schemas.aillmendpointparams.AiLlmEndpointParams;
+import com.box.sdkgen.schemas.aistudioagentlongtexttool.AiStudioAgentLongTextTool;
+import java.util.List;
+import java.util.Objects;
+
+public class AiStudioAgentLongTextToolResponse extends AiStudioAgentLongTextTool {
+
+  protected List<String> warnings;
+
+  public AiStudioAgentLongTextToolResponse() {
+    super();
+  }
+
+  protected AiStudioAgentLongTextToolResponse(AiStudioAgentLongTextToolResponseBuilder builder) {
+    super(builder);
+    this.warnings = builder.warnings;
+  }
+
+  public List<String> getWarnings() {
+    return warnings;
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) {
+      return true;
+    }
+    if (o == null || getClass() != o.getClass()) {
+      return false;
+    }
+    AiStudioAgentLongTextToolResponse casted = (AiStudioAgentLongTextToolResponse) o;
+    return Objects.equals(model, casted.model)
+        && Objects.equals(numTokensForCompletion, casted.numTokensForCompletion)
+        && Objects.equals(llmEndpointParams, casted.llmEndpointParams)
+        && Objects.equals(systemMessage, casted.systemMessage)
+        && Objects.equals(promptTemplate, casted.promptTemplate)
+        && Objects.equals(embeddings, casted.embeddings)
+        && Objects.equals(isCustomInstructionsIncluded, casted.isCustomInstructionsIncluded)
+        && Objects.equals(warnings, casted.warnings);
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(
+        model,
+        numTokensForCompletion,
+        llmEndpointParams,
+        systemMessage,
+        promptTemplate,
+        embeddings,
+        isCustomInstructionsIncluded,
+        warnings);
+  }
+
+  @Override
+  public String toString() {
+    return "AiStudioAgentLongTextToolResponse{"
+        + "model='"
+        + model
+        + '\''
+        + ", "
+        + "numTokensForCompletion='"
+        + numTokensForCompletion
+        + '\''
+        + ", "
+        + "llmEndpointParams='"
+        + llmEndpointParams
+        + '\''
+        + ", "
+        + "systemMessage='"
+        + systemMessage
+        + '\''
+        + ", "
+        + "promptTemplate='"
+        + promptTemplate
+        + '\''
+        + ", "
+        + "embeddings='"
+        + embeddings
+        + '\''
+        + ", "
+        + "isCustomInstructionsIncluded='"
+        + isCustomInstructionsIncluded
+        + '\''
+        + ", "
+        + "warnings='"
+        + warnings
+        + '\''
+        + "}";
+  }
+
+  public static class AiStudioAgentLongTextToolResponseBuilder
+      extends AiStudioAgentLongTextToolBuilder {
+
+    protected List<String> warnings;
+
+    public AiStudioAgentLongTextToolResponseBuilder warnings(List<String> warnings) {
+      this.warnings = warnings;
+      return this;
+    }
+
+    @Override
+    public AiStudioAgentLongTextToolResponseBuilder model(String model) {
+      this.model = model;
+      return this;
+    }
+
+    @Override
+    public AiStudioAgentLongTextToolResponseBuilder numTokensForCompletion(
+        Long numTokensForCompletion) {
+      this.numTokensForCompletion = numTokensForCompletion;
+      return this;
+    }
+
+    @Override
+    public AiStudioAgentLongTextToolResponseBuilder llmEndpointParams(
+        AiLlmEndpointParams llmEndpointParams) {
+      this.llmEndpointParams = llmEndpointParams;
+      return this;
+    }
+
+    @Override
+    public AiStudioAgentLongTextToolResponseBuilder systemMessage(String systemMessage) {
+      this.systemMessage = systemMessage;
+      return this;
+    }
+
+    @Override
+    public AiStudioAgentLongTextToolResponseBuilder promptTemplate(String promptTemplate) {
+      this.promptTemplate = promptTemplate;
+      return this;
+    }
+
+    @Override
+    public AiStudioAgentLongTextToolResponseBuilder embeddings(
+        AiAgentLongTextToolEmbeddingsField embeddings) {
+      this.embeddings = embeddings;
+      return this;
+    }
+
+    @Override
+    public AiStudioAgentLongTextToolResponseBuilder isCustomInstructionsIncluded(
+        Boolean isCustomInstructionsIncluded) {
+      this.isCustomInstructionsIncluded = isCustomInstructionsIncluded;
+      return this;
+    }
+
+    public AiStudioAgentLongTextToolResponse build() {
+      return new AiStudioAgentLongTextToolResponse(this);
+    }
+  }
+}
