@@ -7,6 +7,7 @@ plugins {
     id "signing"
     id "eclipse"
     id "idea"
+    id 'org.jreleaser' version '1.18.0'
 }
 
 sourceCompatibility = 1.8
@@ -195,16 +196,7 @@ publishing {
 
     repositories {
         maven {
-            name = "sonatype"
-            def releasesRepoUrl = "https://oss.sonatype.org/service/local/staging/deploy/maven2/"
-            def snapshotsRepoUrl = "https://oss.sonatype.org/content/repositories/snapshots/"
-            url = version.endsWith("SNAPSHOT") ? snapshotsRepoUrl : releasesRepoUrl
-            if (project.hasProperty("ossrhUsername") && project.hasProperty("ossrhPassword")) {
-                credentials {
-                    username = ossrhUsername
-                    password = ossrhPassword
-                }
-            }
+            url = layout.buildDirectory.dir('staging-deploy')
         }
     }
 }
@@ -216,6 +208,27 @@ signing {
     // not comaptible with Gradle implementation
     useGpgCmd()
     sign publishing.publications.boxJavaSdk
+}
+
+jreleaser {
+    signing {
+        active = "NEVER"
+    }
+    deploy {
+        maven {
+            mavenCentral {
+                sonatype {
+                    sign = false
+                    active = 'RELEASE'
+                    url = 'https://central.sonatype.com/api/v1/publisher'
+                    stagingRepository('build/staging-deploy')
+                    username = centralUsername
+                    password = centralPassword
+                }
+            }
+
+        }
+    }
 }
 
 idea {
