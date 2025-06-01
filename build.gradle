@@ -222,8 +222,8 @@ jreleaser {
                     active = 'RELEASE'
                     url = 'https://central.sonatype.com/api/v1/publisher'
                     stagingRepository('build/staging-deploy')
-                    username = centralUsername
-                    password = centralPassword
+                    username = project.hasProperty("centralUsername") ? project.property("centralUsername") : centralUsername
+                    password = project.hasProperty("centralPassword") ? project.property("centralPassword") : centralPassword
                 }
             }
 
