@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [4.16.2](https://github.com/box/box-java-sdk/compare/v4.16.1...v4.16.2) (2025-06-02)
+
+
+### Bug Fixes:
+
+* Fix parsing `downloadFileCount` property for `BoxZipDownloadStatus` ([50c2249](https://github.com/box/box-java-sdk/commit/50c2249ff5e0f0d1fdc99c9ff8786e9c134e58eb))
+
 ### [4.16.1](https://github.com/box/box-java-sdk/compare/v4.16.0...v4.16.1) (2025-04-29)
 
 
