@@ -3,7 +3,7 @@ package com.box.sdk;
 import com.box.sdk.internal.pool.MacPool;
 import java.nio.charset.Charset;
 import java.security.InvalidKeyException;
-import java.util.Arrays;
+import java.security.MessageDigest;
 import java.util.Collections;
 import java.util.EnumSet;
 import java.util.Map;
@@ -127,7 +127,7 @@ public class BoxWebHookSignatureVerifier {
         byte[] actual = Base64.decode(actualSignature);
         byte[] expected = this.signRaw(actualAlgorithm, key, webHookPayload, deliveryTimestamp);
 
-        return Arrays.equals(expected, actual);
+        return MessageDigest.isEqual(expected, actual);
     }
 
     /**
