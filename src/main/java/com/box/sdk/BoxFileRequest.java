@@ -63,7 +63,8 @@ public class BoxFileRequest extends BoxResource {
         request.setBody(body.toString());
         try (BoxJSONResponse response = request.send()) {
             JsonObject jsonObject = Json.parse(response.getJSON()).asObject();
-            return new Info(jsonObject, this.getAPI().getBaseAppUrl());
+            String id = jsonObject.get("id").asString();
+            return new BoxFileRequest(this.getAPI(), id).new Info(jsonObject, this.getAPI().getBaseAppUrl());
         }
     }
 
@@ -91,8 +92,8 @@ public class BoxFileRequest extends BoxResource {
         request.setBody(body.toString());
         try (BoxJSONResponse response = request.send()) {
             JsonObject jsonObject = Json.parse(response.getJSON()).asObject();
-            info.update(jsonObject);
-            return new Info(jsonObject, this.getAPI().getBaseAppUrl());
+            String id = jsonObject.get("id").asString();
+            return new BoxFileRequest(this.getAPI(), id).new Info(jsonObject, this.getAPI().getBaseAppUrl());
         }
     }
 
@@ -199,7 +200,7 @@ public class BoxFileRequest extends BoxResource {
         /**
          * Constructs an Info object using an already parsed JSON object.
          *
-         * @param jsonObject the parsed JSON object.
+         * @param jsonObject         the parsed JSON object.
          * @param fileRequestBaseUrl Request base URL
          */
         Info(JsonObject jsonObject, String fileRequestBaseUrl) {
