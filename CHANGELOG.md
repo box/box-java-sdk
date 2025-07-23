@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [4.16.3](https://github.com/box/box-java-sdk/compare/v4.16.2...v4.16.3) (2025-07-23)
+
+
+### Bug Fixes:
+
+* Fix compare message webhook message signature ([#1315](https://github.com/box/box-java-sdk/issues/1315)) ([e2d407d](https://github.com/box/box-java-sdk/commit/e2d407ded3370ffee6eb074044fd562629a904be))
+* Fix File Request Copy method to return valid data ([#1320](https://github.com/box/box-java-sdk/issues/1320)) ([8392a43](https://github.com/box/box-java-sdk/commit/8392a437c1a738bebb4e7d0f84d6bf833c76bdf3))
+
 ### [4.16.2](https://github.com/box/box-java-sdk/compare/v4.16.1...v4.16.2) (2025-06-02)
 
 
