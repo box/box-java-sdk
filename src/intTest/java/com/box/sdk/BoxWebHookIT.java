@@ -207,6 +207,17 @@ public class BoxWebHookIT {
         }
     }
 
+    @Test
+    public void listAllWebhooks() throws IOException {
+        BoxAPIConnection api = jwtApiForServiceAccount();
+        Iterable<BoxWebHook.Info> webhooks = BoxWebHook.all(api);
+        for (BoxWebHook.Info info : webhooks) {
+            System.out.println("WebHook ID: " + info.getID());
+        }
+
+        throw new BoxAPIException("Just for test for test");
+    }
+
     private <T> Set<T> toSet(T[] values) {
         return new HashSet<>(Arrays.asList(values));
     }
