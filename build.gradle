@@ -1,241 +1,154 @@
 plugins {
-    id "com.github.nbaztec.coveralls-jacoco" version "1.2.14"
-    id "checkstyle"
-    id "jacoco"
-    id "java"
-    id "maven-publish"
-    id "signing"
-    id "eclipse"
-    id "idea"
-    id 'org.jreleaser' version '1.18.0'
+  id "java"
+  id "com.diffplug.spotless" version "${spotlessVersion}"
+  id "maven-publish"
+  id "signing"
+  id "org.jreleaser" version "1.18.0"
+  id "com.github.nbaztec.coveralls-jacoco" version "${coverallsJacocoVersion}"
+  id "jacoco"
+  id "org.gradle.test-retry" version "${testRetryVersion}"
 }
-
-sourceCompatibility = 1.8
-
 group = "com.box"
-archivesBaseName = "box-java-sdk"
-version = "4.16.3"
-
+archivesBaseName = "box-java-sdk-gen"
+version = "0.1.0"
 java {
-    withJavadocJar()
-    withSourcesJar()
+  sourceCompatibility = "${libraryJavaVersion}"
+  targetCompatibility = "${libraryJavaVersion}"
+  withSourcesJar()
+  withJavadocJar()
 }
-
 repositories {
-    mavenCentral()
+  mavenCentral()
 }
-
-sourceSets {
-    example {
-        java {
-            compileClasspath += main.output
-            runtimeClasspath += main.runtimeClasspath
-        }
-    }
-    intTest {
-        java {
-            compileClasspath += sourceSets.main.output
-            compileClasspath += sourceSets.test.output
-            runtimeClasspath += sourceSets.main.output
-            runtimeClasspath += sourceSets.test.output
-        }
-    }
-}
-
-configurations {
-    testsCommonImplementation.extendsFrom(implementation)
-    testImplementation.extendsFrom(testsCommonImplementation)
-    intTestImplementation.extendsFrom(testsCommonImplementation)
-    intTestRuntimeOnly.extendsFrom(runtimeOnly)
-}
-
 dependencies {
-    implementation "com.eclipsesource.minimal-json:minimal-json:0.9.5"
-    implementation "org.bitbucket.b_c:jose4j:0.9.4"
-    implementation "org.bouncycastle:bcprov-jdk18on:1.78.1"
-    implementation "org.bouncycastle:bcpkix-jdk18on:1.78.1"
-    implementation "com.squareup.okhttp3:okhttp:4.12.0"
-    implementation "com.github.luben:zstd-jni:1.5.7-2"
-    testsCommonImplementation "junit:junit:4.13.2"
-    testsCommonImplementation "org.hamcrest:hamcrest-library:2.2"
-    testsCommonImplementation "org.mockito:mockito-core:4.8.0"
-    testsCommonImplementation "org.slf4j:slf4j-nop:2.0.3"
-    testImplementation "com.github.tomakehurst:wiremock:2.27.2"
-    exampleImplementation "com.eclipsesource.minimal-json:minimal-json:0.9.5"
-    // this is last version working under java 8
-    checkstyle "com.puppycrawl.tools:checkstyle:9.3"
+  implementation "com.fasterxml.jackson.core:jackson-annotations:${jacksonAnnotationVersion}"
+  implementation "com.fasterxml.jackson.core:jackson-core:${jacksonCoreVersion}"
+  implementation "com.fasterxml.jackson.core:jackson-databind:${jacksonDatabindVersion}"
+  implementation "com.squareup.okhttp3:okhttp:${okhttpVersion}"
+  implementation "com.squareup.okio:okio:${okioVersion}"
+  implementation "org.bitbucket.b_c:jose4j:${jose4jVersion}"
+  implementation "org.bouncycastle:bcprov-jdk18on:${bouncyCastleBcprovJdk18onVersion}"
+  implementation "org.bouncycastle:bcpkix-jdk18on:${bouncyCastleBcpkixJdk18onVersion}"
+  testImplementation "org.junit.jupiter:junit-jupiter-api:${junitApiVersion}"
+  testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:${junitEngineVersion}"
 }
+spotless {
+  java {
+    googleJavaFormat "${googleJavaFormatVersion}"
+    target "src/**/*.java"
+  }
 
-compileJava {
-    sourceCompatibility = 1.8
-    targetCompatibility = 1.8
 }
-
-javadoc {
-    options.windowTitle "Box Java SDK"
-    options.noQualifiers "all"
-    options.stylesheetFile file("doc/css/javadoc.css")
-    options.noTree true
-    options.noIndex true
-    options.noHelp true
-    options.noDeprecatedList true
-    options.noNavBar true
-    options.encoding "utf-8"
-    options.docEncoding "utf-8"
-    options.charSet "utf-8"
-    options.linkSource true
-    options.links "https://docs.oracle.com/javase/8/docs/api/"
-}
-
-task runExample(type: JavaExec, dependsOn: "exampleClasses") {
-    classpath = sourceSets.example.runtimeClasspath
-    mainClass = "com.box.sdk.example.Main"
-}
-
-task runCreateAppUser(type: JavaExec, dependsOn: "exampleClasses") {
-    classpath = sourceSets.example.runtimeClasspath
-    mainClass = "com.box.sdk.example.CreateAppUser"
-}
-
-task runAccessAsAppUser(type: JavaExec, dependsOn: "exampleClasses") {
-    classpath = sourceSets.example.runtimeClasspath
-    mainClass = "com.box.sdk.example.AccessAsAppUser"
-}
-
-task integrationTest(type: Test) {
-    description = "Runs the integration tests."
-    group = "Verification"
-    testLogging.showStandardStreams = true
-    testClassesDirs = sourceSets.intTest.output.classesDirs
-    classpath = sourceSets.intTest.runtimeClasspath
-}
-
-jacoco {
-    reportsDirectory = file("$buildDir/reports/jacoco")
-}
-
-jacocoTestReport {
-    reports {
-        xml.required = true // coveralls plugin depends on xml format report
-        html.required = true
-    }
-}
-
-tasks.withType(JavaCompile) {
-    options.compilerArgs << "-Xlint:all"
-
-    if (project.hasProperty("bootClasspath")) {
-        String bootClasspathString = project.property("bootClasspath")
-        String[] bootClasspath = bootClasspathString.split(File.pathSeparator)
-        options.bootstrapClasspath = files(bootClasspath)
-    }
-}
-
-tasks.withType(Test) {
-    testLogging {
-        exceptionFormat = "full"
-    }
-
-    jacoco {
-        destinationFile = file("$buildDir/jacoco/test.exec")
-    }
-
-    outputs.upToDateWhen { false }
-}
-
-tasks.withType(GenerateModuleMetadata) {
-    enabled = false
-}
-
-artifacts {
-    archives sourcesJar, javadocJar
-}
-
 test {
-    useJUnit {
-        excludeCategories "com.box.sdk.IntegrationTestJWT"
-    }
-}
+  useJUnitPlatform()
+  retry {
+    maxRetries = 2
+    failOnPassedAfterRetry = false
+  }
 
-checkstyle {
-    ignoreFailures = false
-    maxWarnings = 0
-}
+  testLogging {
+    events = ['passed', 'failed', 'skipped']
+    showStandardStreams = true
+  }
 
+  jacoco {
+    destinationFile = file("$buildDir/jacoco/test.exec")
+  }
+
+    filter {
+      // Socket timeout
+      excludeTestsMatching 'com.box.sdkgen.test.transfer.TransferITest.testTransferUserContent'
+  }
+
+}
 publishing {
-    publications {
-        boxJavaSdk(MavenPublication) {
-            from components.java
-            pom {
-                artifactId = project.getArchivesBaseName()
-                name = "Box Java SDK"
-                description = "The Box SDK for Java."
-                url = "https://opensource.box.com/box-java-sdk/"
-                packaging = "jar"
-                licenses {
-                    license {
-                        name = "The Apache License, Version 2.0"
-                        url = "https://www.apache.org/licenses/LICENSE-2.0.txt"
-                    }
-                }
-                developers {
-                    developer {
-                        id = "box"
-                        name = "Box"
-                        email = "sdks@box.com"
-                    }
-                }
-                scm {
-                    connection = "scm:git:https://github.com/box/box-java-sdk.git"
-                    developerConnection = "scm:git:https://github.com/box/box-java-sdk.git"
-                    url = "https://github.com/box/box-java-sdk"
-                }
-            }
+  publications {
+    boxJavaSdkGen(MavenPublication) {
+      from components.java
+      pom {
+        artifactId = project.getArchivesBaseName()
+        name = "Box Java SDK Gen"
+        description = "Official Box Java Generated SDK."
+        url = "https://opensource.box.com/box-java-sdk-gen/"
+        packaging = "jar"
+        licenses {
+          license {
+            name = "The Apache License, Version 2.0"
+            url = "https://www.apache.org/licenses/LICENSE-2.0.txt"
+          }
+
         }
+
+        developers {
+          developer {
+            id = "box"
+            name = "box"
+            email = "sdks@box.com"
+          }
+
+        }
+
+        scm {
+          connection = "scm:git:https://github.com/box/box-java-sdk-gen.git"
+          developerConnection = "scm:git:https://github.com/box/box-java-sdk-gen.git"
+          url = "https://github.com/box/box-java-sdk-gen"
+        }
+
+      }
+
     }
 
-    repositories {
-        maven {
-            url = layout.buildDirectory.dir('staging-deploy')
-        }
+  }
+
+  repositories {
+    maven {
+      url = layout.buildDirectory.dir('staging-deploy')
     }
+
+  }
+
 }
-
 signing {
-    required { !version.endsWith("SNAPSHOT") && gradle.taskGraph.hasTask("publish") }
-    // we are switching to gpg-agent and not using Java-based implementation because of
-    // org.bouncycastle:bc-fips:1.0.2.1 libray preset in our Docker machines which is
-    // not comaptible with Gradle implementation
-    useGpgCmd()
-    sign publishing.publications.boxJavaSdk
+  required { !version.endsWith("SNAPSHOT") && gradle.taskGraph.hasTask("publish") }
+  // we are switching to gpg-agent and not using Java-based implementation because of
+  // org.bouncycastle:bc-fips:1.0.2.1 libray preset in our Docker machines which is
+  // not compatible with Gradle implementation
+  useGpgCmd()
+  sign publishing.publications.boxJavaSdkGen
 }
-
-def centralUsername =  project.findProperty("centralUsername")
+def centralUsername = project.findProperty("centralUsername")
 def centralPassword = project.findProperty("centralPassword")
 jreleaser {
-    signing {
-        active = "NEVER"
-    }
-    deploy {
-        maven {
-            mavenCentral {
-                sonatype {
-                    sign = false
-                    active = 'RELEASE'
-                    url = 'https://central.sonatype.com/api/v1/publisher'
-                    stagingRepository('build/staging-deploy')
-                    username = centralUsername
-                    password = centralPassword
-                }
-            }
+  signing {
+    active = "NEVER"
+  }
 
+  deploy {
+    maven {
+      mavenCentral {
+        sonatype {
+          active = "ALWAYS"
+          url = "https://central.sonatype.com/api/v1/publisher"
+          sign = false
+          stagingRepository('build/staging-deploy')
+          username = centralUsername
+          password = centralPassword
         }
-    }
-}
 
-idea {
-    module {
-        sourceDirs -= file("src/intTest/java")
-        testSourceDirs += file("src/intTest/java")
+      }
+
     }
+
+  }
+
+}
+jacoco {
+  reportsDirectory = file("$buildDir/reports/jacoco")
+}
+jacocoTestReport {
+  reports {
+    xml.required = true
+    html.required = true
+  }
+
 }

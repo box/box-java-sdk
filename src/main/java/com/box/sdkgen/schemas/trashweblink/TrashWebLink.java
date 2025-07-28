@@ -1,0 +1,456 @@
+package com.box.sdkgen.schemas.trashweblink;
+
+import com.box.sdkgen.internal.Nullable;
+import com.box.sdkgen.internal.NullableFieldTracker;
+import com.box.sdkgen.internal.SerializableObject;
+import com.box.sdkgen.internal.utils.DateTimeUtils;
+import com.box.sdkgen.schemas.foldermini.FolderMini;
+import com.box.sdkgen.schemas.usermini.UserMini;
+import com.box.sdkgen.serialization.json.EnumWrapper;
+import com.fasterxml.jackson.annotation.JsonFilter;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import java.util.Date;
+import java.util.Objects;
+
+@JsonFilter("nullablePropertyFilter")
+public class TrashWebLink extends SerializableObject {
+
+  @JsonDeserialize(using = TrashWebLinkTypeField.TrashWebLinkTypeFieldDeserializer.class)
+  @JsonSerialize(using = TrashWebLinkTypeField.TrashWebLinkTypeFieldSerializer.class)
+  protected EnumWrapper<TrashWebLinkTypeField> type;
+
+  protected String id;
+
+  @JsonProperty("sequence_id")
+  protected String sequenceId;
+
+  protected String etag;
+
+  protected String name;
+
+  protected String url;
+
+  protected FolderMini parent;
+
+  protected String description;
+
+  @JsonProperty("path_collection")
+  protected TrashWebLinkPathCollectionField pathCollection;
+
+  @JsonProperty("created_at")
+  @JsonSerialize(using = DateTimeUtils.DateTimeSerializer.class)
+  @JsonDeserialize(using = DateTimeUtils.DateTimeDeserializer.class)
+  protected Date createdAt;
+
+  @JsonProperty("modified_at")
+  @JsonSerialize(using = DateTimeUtils.DateTimeSerializer.class)
+  @JsonDeserialize(using = DateTimeUtils.DateTimeDeserializer.class)
+  protected Date modifiedAt;
+
+  @JsonProperty("trashed_at")
+  @JsonSerialize(using = DateTimeUtils.DateTimeSerializer.class)
+  @JsonDeserialize(using = DateTimeUtils.DateTimeDeserializer.class)
+  @Nullable
+  protected Date trashedAt;
+
+  @JsonProperty("purged_at")
+  @JsonSerialize(using = DateTimeUtils.DateTimeSerializer.class)
+  @JsonDeserialize(using = DateTimeUtils.DateTimeDeserializer.class)
+  @Nullable
+  protected Date purgedAt;
+
+  @JsonProperty("created_by")
+  protected UserMini createdBy;
+
+  @JsonProperty("modified_by")
+  protected UserMini modifiedBy;
+
+  @JsonProperty("owned_by")
+  protected UserMini ownedBy;
+
+  @JsonProperty("shared_link")
+  @Nullable
+  protected String sharedLink;
+
+  @JsonDeserialize(
+      using = TrashWebLinkItemStatusField.TrashWebLinkItemStatusFieldDeserializer.class)
+  @JsonSerialize(using = TrashWebLinkItemStatusField.TrashWebLinkItemStatusFieldSerializer.class)
+  @JsonProperty("item_status")
+  protected EnumWrapper<TrashWebLinkItemStatusField> itemStatus;
+
+  public TrashWebLink() {
+    super();
+  }
+
+  protected TrashWebLink(Builder builder) {
+    super();
+    this.type = builder.type;
+    this.id = builder.id;
+    this.sequenceId = builder.sequenceId;
+    this.etag = builder.etag;
+    this.name = builder.name;
+    this.url = builder.url;
+    this.parent = builder.parent;
+    this.description = builder.description;
+    this.pathCollection = builder.pathCollection;
+    this.createdAt = builder.createdAt;
+    this.modifiedAt = builder.modifiedAt;
+    this.trashedAt = builder.trashedAt;
+    this.purgedAt = builder.purgedAt;
+    this.createdBy = builder.createdBy;
+    this.modifiedBy = builder.modifiedBy;
+    this.ownedBy = builder.ownedBy;
+    this.sharedLink = builder.sharedLink;
+    this.itemStatus = builder.itemStatus;
+    markNullableFieldsAsSet(builder.getExplicitlySetNullableFields());
+  }
+
+  public EnumWrapper<TrashWebLinkTypeField> getType() {
+    return type;
+  }
+
+  public String getId() {
+    return id;
+  }
+
+  public String getSequenceId() {
+    return sequenceId;
+  }
+
+  public String getEtag() {
+    return etag;
+  }
+
+  public String getName() {
+    return name;
+  }
+
+  public String getUrl() {
+    return url;
+  }
+
+  public FolderMini getParent() {
+    return parent;
+  }
+
+  public String getDescription() {
+    return description;
+  }
+
+  public TrashWebLinkPathCollectionField getPathCollection() {
+    return pathCollection;
+  }
+
+  public Date getCreatedAt() {
+    return createdAt;
+  }
+
+  public Date getModifiedAt() {
+    return modifiedAt;
+  }
+
+  public Date getTrashedAt() {
+    return trashedAt;
+  }
+
+  public Date getPurgedAt() {
+    return purgedAt;
+  }
+
+  public UserMini getCreatedBy() {
+    return createdBy;
+  }
+
+  public UserMini getModifiedBy() {
+    return modifiedBy;
+  }
+
+  public UserMini getOwnedBy() {
+    return ownedBy;
+  }
+
+  public String getSharedLink() {
+    return sharedLink;
+  }
+
+  public EnumWrapper<TrashWebLinkItemStatusField> getItemStatus() {
+    return itemStatus;
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) {
+      return true;
+    }
+    if (o == null || getClass() != o.getClass()) {
+      return false;
+    }
+    TrashWebLink casted = (TrashWebLink) o;
+    return Objects.equals(type, casted.type)
+        && Objects.equals(id, casted.id)
+        && Objects.equals(sequenceId, casted.sequenceId)
+        && Objects.equals(etag, casted.etag)
+        && Objects.equals(name, casted.name)
+        && Objects.equals(url, casted.url)
+        && Objects.equals(parent, casted.parent)
+        && Objects.equals(description, casted.description)
+        && Objects.equals(pathCollection, casted.pathCollection)
+        && Objects.equals(createdAt, casted.createdAt)
+        && Objects.equals(modifiedAt, casted.modifiedAt)
+        && Objects.equals(trashedAt, casted.trashedAt)
+        && Objects.equals(purgedAt, casted.purgedAt)
+        && Objects.equals(createdBy, casted.createdBy)
+        && Objects.equals(modifiedBy, casted.modifiedBy)
+        && Objects.equals(ownedBy, casted.ownedBy)
+        && Objects.equals(sharedLink, casted.sharedLink)
+        && Objects.equals(itemStatus, casted.itemStatus);
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(
+        type,
+        id,
+        sequenceId,
+        etag,
+        name,
+        url,
+        parent,
+        description,
+        pathCollection,
+        createdAt,
+        modifiedAt,
+        trashedAt,
+        purgedAt,
+        createdBy,
+        modifiedBy,
+        ownedBy,
+        sharedLink,
+        itemStatus);
+  }
+
+  @Override
+  public String toString() {
+    return "TrashWebLink{"
+        + "type='"
+        + type
+        + '\''
+        + ", "
+        + "id='"
+        + id
+        + '\''
+        + ", "
+        + "sequenceId='"
+        + sequenceId
+        + '\''
+        + ", "
+        + "etag='"
+        + etag
+        + '\''
+        + ", "
+        + "name='"
+        + name
+        + '\''
+        + ", "
+        + "url='"
+        + url
+        + '\''
+        + ", "
+        + "parent='"
+        + parent
+        + '\''
+        + ", "
+        + "description='"
+        + description
+        + '\''
+        + ", "
+        + "pathCollection='"
+        + pathCollection
+        + '\''
+        + ", "
+        + "createdAt='"
+        + createdAt
+        + '\''
+        + ", "
+        + "modifiedAt='"
+        + modifiedAt
+        + '\''
+        + ", "
+        + "trashedAt='"
+        + trashedAt
+        + '\''
+        + ", "
+        + "purgedAt='"
+        + purgedAt
+        + '\''
+        + ", "
+        + "createdBy='"
+        + createdBy
+        + '\''
+        + ", "
+        + "modifiedBy='"
+        + modifiedBy
+        + '\''
+        + ", "
+        + "ownedBy='"
+        + ownedBy
+        + '\''
+        + ", "
+        + "sharedLink='"
+        + sharedLink
+        + '\''
+        + ", "
+        + "itemStatus='"
+        + itemStatus
+        + '\''
+        + "}";
+  }
+
+  public static class Builder extends NullableFieldTracker {
+
+    protected EnumWrapper<TrashWebLinkTypeField> type;
+
+    protected String id;
+
+    protected String sequenceId;
+
+    protected String etag;
+
+    protected String name;
+
+    protected String url;
+
+    protected FolderMini parent;
+
+    protected String description;
+
+    protected TrashWebLinkPathCollectionField pathCollection;
+
+    protected Date createdAt;
+
+    protected Date modifiedAt;
+
+    protected Date trashedAt;
+
+    protected Date purgedAt;
+
+    protected UserMini createdBy;
+
+    protected UserMini modifiedBy;
+
+    protected UserMini ownedBy;
+
+    protected String sharedLink;
+
+    protected EnumWrapper<TrashWebLinkItemStatusField> itemStatus;
+
+    public Builder type(TrashWebLinkTypeField type) {
+      this.type = new EnumWrapper<TrashWebLinkTypeField>(type);
+      return this;
+    }
+
+    public Builder type(EnumWrapper<TrashWebLinkTypeField> type) {
+      this.type = type;
+      return this;
+    }
+
+    public Builder id(String id) {
+      this.id = id;
+      return this;
+    }
+
+    public Builder sequenceId(String sequenceId) {
+      this.sequenceId = sequenceId;
+      return this;
+    }
+
+    public Builder etag(String etag) {
+      this.etag = etag;
+      return this;
+    }
+
+    public Builder name(String name) {
+      this.name = name;
+      return this;
+    }
+
+    public Builder url(String url) {
+      this.url = url;
+      return this;
+    }
+
+    public Builder parent(FolderMini parent) {
+      this.parent = parent;
+      return this;
+    }
+
+    public Builder description(String description) {
+      this.description = description;
+      return this;
+    }
+
+    public Builder pathCollection(TrashWebLinkPathCollectionField pathCollection) {
+      this.pathCollection = pathCollection;
+      return this;
+    }
+
+    public Builder createdAt(Date createdAt) {
+      this.createdAt = createdAt;
+      return this;
+    }
+
+    public Builder modifiedAt(Date modifiedAt) {
+      this.modifiedAt = modifiedAt;
+      return this;
+    }
+
+    public Builder trashedAt(Date trashedAt) {
+      this.trashedAt = trashedAt;
+      this.markNullableFieldAsSet("trashed_at");
+      return this;
+    }
+
+    public Builder purgedAt(Date purgedAt) {
+      this.purgedAt = purgedAt;
+      this.markNullableFieldAsSet("purged_at");
+      return this;
+    }
+
+    public Builder createdBy(UserMini createdBy) {
+      this.createdBy = createdBy;
+      return this;
+    }
+
+    public Builder modifiedBy(UserMini modifiedBy) {
+      this.modifiedBy = modifiedBy;
+      return this;
+    }
+
+    public Builder ownedBy(UserMini ownedBy) {
+      this.ownedBy = ownedBy;
+      return this;
+    }
+
+    public Builder sharedLink(String sharedLink) {
+      this.sharedLink = sharedLink;
+      this.markNullableFieldAsSet("shared_link");
+      return this;
+    }
+
+    public Builder itemStatus(TrashWebLinkItemStatusField itemStatus) {
+      this.itemStatus = new EnumWrapper<TrashWebLinkItemStatusField>(itemStatus);
+      return this;
+    }
+
+    public Builder itemStatus(EnumWrapper<TrashWebLinkItemStatusField> itemStatus) {
+      this.itemStatus = itemStatus;
+      return this;
+    }
+
+    public TrashWebLink build() {
+      return new TrashWebLink(this);
+    }
+  }
+}
