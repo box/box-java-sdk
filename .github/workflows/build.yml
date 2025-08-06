@@ -1,10 +1,11 @@
 name: build
 on:
   pull_request:
-    types: [opened, synchronize]
+    branches:
+      - sdk-gen
   push:
     branches:
-      - main
+      - sdk-gen
 jobs:
   build-and-test:
     runs-on: ubuntu-latest
