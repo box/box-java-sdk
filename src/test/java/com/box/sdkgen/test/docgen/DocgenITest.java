@@ -71,7 +71,7 @@ public class DocgenITest {
         client
             .getDocgen()
             .getDocgenJobsV2025R0(
-                new GetDocgenJobsV2025R0QueryParams.Builder().limit(500L).build());
+                new GetDocgenJobsV2025R0QueryParams.Builder().limit(10000L).build());
     assert docgenJobs.getEntries().size() >= 1;
     assert !(docgenJobs.getEntries().get(0).getBatch().getId().equals(""));
     assert !(docgenJobs.getEntries().get(0).getCreatedBy().getId().equals(""));
@@ -87,7 +87,7 @@ public class DocgenITest {
         .equals("file_version");
     assert !(docgenJobs.getEntries().get(0).getTemplateFileVersion().getId().equals(""));
     assert convertToString(docgenJobs.getEntries().get(0).getType()).equals("docgen_job");
-    int indexOfItem = 0;
+    int indexOfItem = docgenJobs.getEntries().size() - 1;
     DocGenJobFullV2025R0 docgenJobItemFromList = docgenJobs.getEntries().get(indexOfItem);
     DocGenJobV2025R0 docgenJob =
         client.getDocgen().getDocgenJobByIdV2025R0(docgenJobItemFromList.getId());

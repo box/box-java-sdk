@@ -46,7 +46,7 @@ See the endpoint docs at
 
 <!-- sample get_docgen_jobs_v2025.0 -->
 ```
-client.getDocgen().getDocgenJobsV2025R0(new GetDocgenJobsV2025R0QueryParams.Builder().limit(500L).build())
+client.getDocgen().getDocgenJobsV2025R0(new GetDocgenJobsV2025R0QueryParams.Builder().limit(10000L).build())
 ```
 
 ### Arguments

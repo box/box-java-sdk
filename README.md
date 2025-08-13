@@ -2,15 +2,15 @@
   <img src="https://github.com/box/sdks/blob/master/images/box-dev-logo.png" alt= “box-dev-logo” width="30%" height="50%">
 </p>
 
-# Box Java SDK Gen
+# Box Java SDK
 
 [![Project Status](http://opensource.box.com/badges/active.svg)](http://opensource.box.com/badges)
-![build](https://github.com/box/box-java-sdk-gen/actions/workflows/build.yml/badge.svg)
-![Maven Central Version](https://img.shields.io/maven-central/v/com.box/box-java-sdk-gen)
+![build](https://github.com/box/box-java-sdk/actions/workflows/build.yml/badge.svg)
+![Maven Central Version](https://img.shields.io/maven-central/v/com.box/box-java-sdk)
 ![Platform](https://img.shields.io/badge/java-%3E%3D8-blue)
-[![Coverage](https://coveralls.io/repos/github/box/box-java-sdk-gen/badge.svg?branch=main)](https://coveralls.io/github/box/box-java-sdk-gen?branch=main)
+[![Coverage](https://coveralls.io/repos/github/box/box-java-sdk/badge.svg?branch=sdk-gen)](https://coveralls.io/github/box/box-java-sdk-gen?branch=sdk-gen)
 
-We are excited to introduce the Beta Release of the latest generation of Box Java SDK Gen, designed to elevate the developer experience and streamline your integration with the Box Content Cloud.
+We are excited to introduce the stable Release of the latest generation of Box Java SDK, designed to elevate the developer experience and streamline your integration with the Box Content Cloud.
 
 With this SDK, you’ll have access to:
 
@@ -27,7 +27,7 @@ Embrace the new generation of Box SDKs and unlock the full potential of the Box 
 <!-- START doctoc generated TOC please keep comment here to allow auto update -->
 <!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
 
-- [Box Java SDK Gen](#box-java-sdk-gen)
+- [Box Java SDK](#box-java-sdk)
 - [Table of contents](#table-of-contents)
 - [Installing](#installing)
 - [Getting Started](#getting-started)
@@ -46,20 +46,12 @@ Embrace the new generation of Box SDKs and unlock the full potential of the Box 
 
 # Installing
 
-To generate a .jar file download the source code and run the following command:
-
-```console
-./gradlew build
-```
-
-.jar file will be generated in the build/libs directory.
-
-The SDK is also available on [Maven Central Repository](https://mvnrepository.com/artifact/com.box/box-java-sdk-gen). To include the SDK in your project, add the following dependency to your `pom.xml` file:
+The SDK is available on [Maven Central Repository](https://mvnrepository.com/artifact/com.box/box-java-sdk). To include the SDK in your project, add the following dependency to your `pom.xml` file:
 
 ```xml
 <dependency>
     <groupId>com.box</groupId>
-    <artifactId>box-java-sdk-gen</artifactId>
+    <artifactId>box-java-sdk</artifactId>
     <version>VERSION</version>
 </dependency>
 ```
@@ -67,10 +59,11 @@ The SDK is also available on [Maven Central Repository](https://mvnrepository.co
 To include the SDK in your project using Gradle, add the following dependency to your `build.gradle` file:
 
 ```gradle
-implementation 'com.box:box-java-sdk-gen:VERSION'
+implementation 'com.box:box-java-sdk:VERSION'
 ```
 
-Where `VERSION` is the version of the SDK you want to use. You can find the latest version in the [Maven Central Repository](https://mvnrepository.com/artifact/com.box/box-java-sdk-gen).
+Where `VERSION` is the version of the SDK you want to use. The next generation of the SDK starts with version `10.0.0`.
+You can find the latest version in the [Maven Central Repository](https://mvnrepository.com/artifact/com.box/box-java-sdk).
 
 # Getting Started
 
@@ -97,7 +90,7 @@ Browse the [docs](docs/README.md) or see [API Reference](https://developer.box.c
 
 # Upgrades
 
-The SDK is updated regularly to include new features, enhancements, and bug fixes. If you are upgrading from our legacy SDKs to this new generation SDKs is a straightforward process. Checkout the [migration guide](MIGRATION_GUIDE.md) and [changelog](CHANGELOG.md) for more information.
+The SDK is updated regularly to include new features, enhancements, and bug fixes. If you are upgrading from manual SDK to this new generated SDKm checkout the [migration guide](MIGRATION_GUIDE.md) and [changelog](CHANGELOG.md) for more information.
 
 # Integration Tests
 
@@ -136,7 +129,7 @@ To run integration tests locally, you can use the following command:
 
 # 3rd Party Libraries & Licenses
 
-The Java SDK Gen uses third-party libraries that are required for usage. Their licenses are listed below:
+The Java SDK uses third-party libraries that are required for usage. Their licenses are listed below:
 
 1. [jackson-annotations v2.17.2](https://mvnrepository.com/artifact/com.fasterxml.jackson.core/jackson-annotations/2.17.2)
    Maven: `com.fasterxml.jackson.core:jackson-annotations:2.17.2`
@@ -175,9 +168,9 @@ The following libraries are required for running tests:
 # Questions, Bugs, and Feature Requests?
 
 Need to contact us directly? [Browse the issues
-tickets](https://github.com/box/box-java-sdk-gen/issues)! Or, if that
+tickets](https://github.com/box/box-java-sdk/issues)! Or, if that
 doesn't work, [file a new
-one](https://github.com/box/box-java-sdk-gen/issues/new) and we will get
+one](https://github.com/box/box-java-sdk/issues/new) and we will get
 back to you. If you have general questions about the Box API, you can
 post to the [Box Developer Forum](https://forum.box.com/).
 
