@@ -2,7 +2,7 @@ package com.box.sdkgen.schemas.filefull;
 
 import com.box.sdkgen.internal.NullableFieldTracker;
 import com.box.sdkgen.internal.SerializableObject;
-import com.box.sdkgen.schemas.fileorfolderscope.FileOrFolderScope;
+import com.box.sdkgen.schemas.resourcescope.ResourceScope;
 import com.box.sdkgen.serialization.json.EnumWrapper;
 import com.fasterxml.jackson.annotation.JsonFilter;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -32,7 +32,7 @@ public class FileFullExpiringEmbedLinkField extends SerializableObject {
   protected EnumWrapper<FileFullExpiringEmbedLinkTokenTypeField> tokenType;
 
   @JsonProperty("restricted_to")
-  protected List<FileOrFolderScope> restrictedTo;
+  protected List<ResourceScope> restrictedTo;
 
   protected String url;
 
@@ -62,7 +62,7 @@ public class FileFullExpiringEmbedLinkField extends SerializableObject {
     return tokenType;
   }
 
-  public List<FileOrFolderScope> getRestrictedTo() {
+  public List<ResourceScope> getRestrictedTo() {
     return restrictedTo;
   }
 
@@ -124,7 +124,7 @@ public class FileFullExpiringEmbedLinkField extends SerializableObject {
 
     protected EnumWrapper<FileFullExpiringEmbedLinkTokenTypeField> tokenType;
 
-    protected List<FileOrFolderScope> restrictedTo;
+    protected List<ResourceScope> restrictedTo;
 
     protected String url;
 
@@ -148,7 +148,7 @@ public class FileFullExpiringEmbedLinkField extends SerializableObject {
       return this;
     }
 
-    public Builder restrictedTo(List<FileOrFolderScope> restrictedTo) {
+    public Builder restrictedTo(List<ResourceScope> restrictedTo) {
       this.restrictedTo = restrictedTo;
       return this;
     }

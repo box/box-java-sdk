@@ -13,7 +13,7 @@ import com.box.sdkgen.networking.fetchresponse.FetchResponse;
 import com.box.sdkgen.networking.network.NetworkSession;
 import com.box.sdkgen.schemas.metadataquery.MetadataQuery;
 import com.box.sdkgen.schemas.metadataqueryresults.MetadataQueryResults;
-import com.box.sdkgen.schemas.searchresultsorsearchresultswithsharedlinks.SearchResultsOrSearchResultsWithSharedLinks;
+import com.box.sdkgen.schemas.searchresultsresponse.SearchResultsResponse;
 import com.box.sdkgen.serialization.json.JsonManager;
 import java.util.Map;
 
@@ -59,21 +59,19 @@ public class SearchManager {
     return JsonManager.deserialize(response.getData(), MetadataQueryResults.class);
   }
 
-  public SearchResultsOrSearchResultsWithSharedLinks searchForContent() {
+  public SearchResultsResponse searchForContent() {
     return searchForContent(new SearchForContentQueryParams(), new SearchForContentHeaders());
   }
 
-  public SearchResultsOrSearchResultsWithSharedLinks searchForContent(
-      SearchForContentQueryParams queryParams) {
+  public SearchResultsResponse searchForContent(SearchForContentQueryParams queryParams) {
     return searchForContent(queryParams, new SearchForContentHeaders());
   }
 
-  public SearchResultsOrSearchResultsWithSharedLinks searchForContent(
-      SearchForContentHeaders headers) {
+  public SearchResultsResponse searchForContent(SearchForContentHeaders headers) {
     return searchForContent(new SearchForContentQueryParams(), headers);
   }
 
-  public SearchResultsOrSearchResultsWithSharedLinks searchForContent(
+  public SearchResultsResponse searchForContent(
       SearchForContentQueryParams queryParams, SearchForContentHeaders headers) {
     Map<String, String> queryParamsMap =
         prepareParams(
@@ -118,8 +116,7 @@ public class SearchManager {
                     .auth(this.auth)
                     .networkSession(this.networkSession)
                     .build());
-    return JsonManager.deserialize(
-        response.getData(), SearchResultsOrSearchResultsWithSharedLinks.class);
+    return JsonManager.deserialize(response.getData(), SearchResultsResponse.class);
   }
 
   public Authentication getAuth() {

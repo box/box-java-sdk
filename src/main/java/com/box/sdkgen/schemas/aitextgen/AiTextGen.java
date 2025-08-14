@@ -3,9 +3,9 @@ package com.box.sdkgen.schemas.aitextgen;
 import com.box.sdkgen.internal.NullableFieldTracker;
 import com.box.sdkgen.internal.SerializableObject;
 import com.box.sdkgen.schemas.aiagentreference.AiAgentReference;
-import com.box.sdkgen.schemas.aiagentreferenceoraiagenttextgen.AiAgentReferenceOrAiAgentTextGen;
 import com.box.sdkgen.schemas.aiagenttextgen.AiAgentTextGen;
 import com.box.sdkgen.schemas.aidialoguehistory.AiDialogueHistory;
+import com.box.sdkgen.schemas.aitextgenagent.AiTextGenAgent;
 import com.fasterxml.jackson.annotation.JsonFilter;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.List;
@@ -22,7 +22,7 @@ public class AiTextGen extends SerializableObject {
   protected List<AiDialogueHistory> dialogueHistory;
 
   @JsonProperty("ai_agent")
-  protected AiAgentReferenceOrAiAgentTextGen aiAgent;
+  protected AiTextGenAgent aiAgent;
 
   public AiTextGen(
       @JsonProperty("prompt") String prompt,
@@ -53,7 +53,7 @@ public class AiTextGen extends SerializableObject {
     return dialogueHistory;
   }
 
-  public AiAgentReferenceOrAiAgentTextGen getAiAgent() {
+  public AiTextGenAgent getAiAgent() {
     return aiAgent;
   }
 
@@ -106,7 +106,7 @@ public class AiTextGen extends SerializableObject {
 
     protected List<AiDialogueHistory> dialogueHistory;
 
-    protected AiAgentReferenceOrAiAgentTextGen aiAgent;
+    protected AiTextGenAgent aiAgent;
 
     public Builder(String prompt, List<AiTextGenItemsField> items) {
       super();
@@ -120,16 +120,16 @@ public class AiTextGen extends SerializableObject {
     }
 
     public Builder aiAgent(AiAgentReference aiAgent) {
-      this.aiAgent = new AiAgentReferenceOrAiAgentTextGen(aiAgent);
+      this.aiAgent = new AiTextGenAgent(aiAgent);
       return this;
     }
 
     public Builder aiAgent(AiAgentTextGen aiAgent) {
-      this.aiAgent = new AiAgentReferenceOrAiAgentTextGen(aiAgent);
+      this.aiAgent = new AiTextGenAgent(aiAgent);
       return this;
     }
 
-    public Builder aiAgent(AiAgentReferenceOrAiAgentTextGen aiAgent) {
+    public Builder aiAgent(AiTextGenAgent aiAgent) {
       this.aiAgent = aiAgent;
       return this;
     }

@@ -2,7 +2,7 @@ package com.box.sdkgen.schemas.skillcardsmetadata;
 
 import com.box.sdkgen.internal.NullableFieldTracker;
 import com.box.sdkgen.internal.SerializableObject;
-import com.box.sdkgen.schemas.keywordskillcardorstatusskillcardortimelineskillcardortranscriptskillcard.KeywordSkillCardOrStatusSkillCardOrTimelineSkillCardOrTranscriptSkillCard;
+import com.box.sdkgen.schemas.skillcard.SkillCard;
 import com.fasterxml.jackson.annotation.JsonFilter;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.List;
@@ -35,7 +35,7 @@ public class SkillCardsMetadata extends SerializableObject {
   @JsonProperty("$version")
   protected Long version;
 
-  protected List<KeywordSkillCardOrStatusSkillCardOrTimelineSkillCardOrTranscriptSkillCard> cards;
+  protected List<SkillCard> cards;
 
   public SkillCardsMetadata() {
     super();
@@ -87,8 +87,7 @@ public class SkillCardsMetadata extends SerializableObject {
     return version;
   }
 
-  public List<KeywordSkillCardOrStatusSkillCardOrTimelineSkillCardOrTranscriptSkillCard>
-      getCards() {
+  public List<SkillCard> getCards() {
     return cards;
   }
 
@@ -176,7 +175,7 @@ public class SkillCardsMetadata extends SerializableObject {
 
     protected Long version;
 
-    protected List<KeywordSkillCardOrStatusSkillCardOrTimelineSkillCardOrTranscriptSkillCard> cards;
+    protected List<SkillCard> cards;
 
     public Builder canEdit(Boolean canEdit) {
       this.canEdit = canEdit;
@@ -218,8 +217,7 @@ public class SkillCardsMetadata extends SerializableObject {
       return this;
     }
 
-    public Builder cards(
-        List<KeywordSkillCardOrStatusSkillCardOrTimelineSkillCardOrTranscriptSkillCard> cards) {
+    public Builder cards(List<SkillCard> cards) {
       this.cards = cards;
       return this;
     }

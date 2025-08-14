@@ -3,8 +3,8 @@ package com.box.sdkgen.schemas.appitemassociation;
 import com.box.sdkgen.internal.NullableFieldTracker;
 import com.box.sdkgen.internal.SerializableObject;
 import com.box.sdkgen.schemas.appitem.AppItem;
+import com.box.sdkgen.schemas.appitemassociateditem.AppItemAssociatedItem;
 import com.box.sdkgen.schemas.filebase.FileBase;
-import com.box.sdkgen.schemas.filebaseorfolderbaseorweblinkbase.FileBaseOrFolderBaseOrWebLinkBase;
 import com.box.sdkgen.schemas.folderbase.FolderBase;
 import com.box.sdkgen.schemas.weblinkbase.WebLinkBase;
 import com.box.sdkgen.serialization.json.EnumWrapper;
@@ -27,13 +27,13 @@ public class AppItemAssociation extends SerializableObject {
   @JsonProperty("app_item")
   protected final AppItem appItem;
 
-  protected final FileBaseOrFolderBaseOrWebLinkBase item;
+  protected final AppItemAssociatedItem item;
 
   public AppItemAssociation(String id, AppItem appItem, FileBase item) {
     super();
     this.id = id;
     this.appItem = appItem;
-    this.item = new FileBaseOrFolderBaseOrWebLinkBase(item);
+    this.item = new AppItemAssociatedItem(item);
     this.type =
         new EnumWrapper<AppItemAssociationTypeField>(
             AppItemAssociationTypeField.APP_ITEM_ASSOCIATION);
@@ -43,7 +43,7 @@ public class AppItemAssociation extends SerializableObject {
     super();
     this.id = id;
     this.appItem = appItem;
-    this.item = new FileBaseOrFolderBaseOrWebLinkBase(item);
+    this.item = new AppItemAssociatedItem(item);
     this.type =
         new EnumWrapper<AppItemAssociationTypeField>(
             AppItemAssociationTypeField.APP_ITEM_ASSOCIATION);
@@ -53,7 +53,7 @@ public class AppItemAssociation extends SerializableObject {
     super();
     this.id = id;
     this.appItem = appItem;
-    this.item = new FileBaseOrFolderBaseOrWebLinkBase(item);
+    this.item = new AppItemAssociatedItem(item);
     this.type =
         new EnumWrapper<AppItemAssociationTypeField>(
             AppItemAssociationTypeField.APP_ITEM_ASSOCIATION);
@@ -62,7 +62,7 @@ public class AppItemAssociation extends SerializableObject {
   public AppItemAssociation(
       @JsonProperty("id") String id,
       @JsonProperty("app_item") AppItem appItem,
-      @JsonProperty("item") FileBaseOrFolderBaseOrWebLinkBase item) {
+      @JsonProperty("item") AppItemAssociatedItem item) {
     super();
     this.id = id;
     this.appItem = appItem;
@@ -93,7 +93,7 @@ public class AppItemAssociation extends SerializableObject {
     return appItem;
   }
 
-  public FileBaseOrFolderBaseOrWebLinkBase getItem() {
+  public AppItemAssociatedItem getItem() {
     return item;
   }
 
@@ -146,13 +146,13 @@ public class AppItemAssociation extends SerializableObject {
 
     protected final AppItem appItem;
 
-    protected final FileBaseOrFolderBaseOrWebLinkBase item;
+    protected final AppItemAssociatedItem item;
 
     public Builder(String id, AppItem appItem, FileBase item) {
       super();
       this.id = id;
       this.appItem = appItem;
-      this.item = new FileBaseOrFolderBaseOrWebLinkBase(item);
+      this.item = new AppItemAssociatedItem(item);
       this.type =
           new EnumWrapper<AppItemAssociationTypeField>(
               AppItemAssociationTypeField.APP_ITEM_ASSOCIATION);
@@ -162,7 +162,7 @@ public class AppItemAssociation extends SerializableObject {
       super();
       this.id = id;
       this.appItem = appItem;
-      this.item = new FileBaseOrFolderBaseOrWebLinkBase(item);
+      this.item = new AppItemAssociatedItem(item);
       this.type =
           new EnumWrapper<AppItemAssociationTypeField>(
               AppItemAssociationTypeField.APP_ITEM_ASSOCIATION);
@@ -172,13 +172,13 @@ public class AppItemAssociation extends SerializableObject {
       super();
       this.id = id;
       this.appItem = appItem;
-      this.item = new FileBaseOrFolderBaseOrWebLinkBase(item);
+      this.item = new AppItemAssociatedItem(item);
       this.type =
           new EnumWrapper<AppItemAssociationTypeField>(
               AppItemAssociationTypeField.APP_ITEM_ASSOCIATION);
     }
 
-    public Builder(String id, AppItem appItem, FileBaseOrFolderBaseOrWebLinkBase item) {
+    public Builder(String id, AppItem appItem, AppItemAssociatedItem item) {
       super();
       this.id = id;
       this.appItem = appItem;

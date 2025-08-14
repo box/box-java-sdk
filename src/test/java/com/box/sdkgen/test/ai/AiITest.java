@@ -20,8 +20,8 @@ import com.box.sdkgen.managers.metadatatemplates.DeleteMetadataTemplateScope;
 import com.box.sdkgen.managers.uploads.UploadFileRequestBody;
 import com.box.sdkgen.managers.uploads.UploadFileRequestBodyAttributesField;
 import com.box.sdkgen.managers.uploads.UploadFileRequestBodyAttributesParentField;
+import com.box.sdkgen.schemas.aiagent.AiAgent;
 import com.box.sdkgen.schemas.aiagentask.AiAgentAsk;
-import com.box.sdkgen.schemas.aiagentaskoraiagentextractoraiagentextractstructuredoraiagenttextgen.AiAgentAskOrAiAgentExtractOrAiAgentExtractStructuredOrAiAgentTextGen;
 import com.box.sdkgen.schemas.aiagentextract.AiAgentExtract;
 import com.box.sdkgen.schemas.aiagentextractstructured.AiAgentExtractStructured;
 import com.box.sdkgen.schemas.aiagentlongtexttool.AiAgentLongTextTool;
@@ -55,7 +55,7 @@ public class AiITest {
 
   @Test
   public void testAskAiSingleItem() {
-    AiAgentAskOrAiAgentExtractOrAiAgentExtractStructuredOrAiAgentTextGen aiAgentConfig =
+    AiAgent aiAgentConfig =
         client
             .getAi()
             .getAiAgentDefaultConfig(
@@ -110,7 +110,7 @@ public class AiITest {
   @Test
   public void testAiTextGenWithDialogueHistory() {
     FileFull fileToAsk = uploadNewFile();
-    AiAgentAskOrAiAgentExtractOrAiAgentExtractStructuredOrAiAgentTextGen aiAgentConfig =
+    AiAgent aiAgentConfig =
         client
             .getAi()
             .getAiAgentDefaultConfig(
@@ -152,7 +152,7 @@ public class AiITest {
 
   @Test
   public void testGettingAiAskAgentConfig() {
-    AiAgentAskOrAiAgentExtractOrAiAgentExtractStructuredOrAiAgentTextGen aiAgentConfig =
+    AiAgent aiAgentConfig =
         client
             .getAi()
             .getAiAgentDefaultConfig(
@@ -186,7 +186,7 @@ public class AiITest {
 
   @Test
   public void testGettingAiTextGenAgentConfig() {
-    AiAgentAskOrAiAgentExtractOrAiAgentExtractStructuredOrAiAgentTextGen aiAgentConfig =
+    AiAgent aiAgentConfig =
         client
             .getAi()
             .getAiAgentDefaultConfig(
@@ -207,7 +207,7 @@ public class AiITest {
 
   @Test
   public void testAiExtract() {
-    AiAgentAskOrAiAgentExtractOrAiAgentExtractStructuredOrAiAgentTextGen aiAgentConfig =
+    AiAgent aiAgentConfig =
         client
             .getAi()
             .getAiAgentDefaultConfig(
@@ -259,7 +259,7 @@ public class AiITest {
 
   @Test
   public void testAiExtractStructuredWithFields() {
-    AiAgentAskOrAiAgentExtractOrAiAgentExtractStructuredOrAiAgentTextGen aiAgentConfig =
+    AiAgent aiAgentConfig =
         client
             .getAi()
             .getAiAgentDefaultConfig(

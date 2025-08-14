@@ -3,8 +3,8 @@ package com.box.sdkgen.schemas.searchresultwithsharedlink;
 import com.box.sdkgen.internal.NullableFieldTracker;
 import com.box.sdkgen.internal.SerializableObject;
 import com.box.sdkgen.schemas.filefull.FileFull;
-import com.box.sdkgen.schemas.filefullorfolderfullorweblink.FileFullOrFolderFullOrWebLink;
 import com.box.sdkgen.schemas.folderfull.FolderFull;
+import com.box.sdkgen.schemas.searchresultwithsharedlinkitem.SearchResultWithSharedLinkItem;
 import com.box.sdkgen.schemas.weblink.WebLink;
 import com.fasterxml.jackson.annotation.JsonFilter;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -16,7 +16,7 @@ public class SearchResultWithSharedLink extends SerializableObject {
   @JsonProperty("accessible_via_shared_link")
   protected String accessibleViaSharedLink;
 
-  protected FileFullOrFolderFullOrWebLink item;
+  protected SearchResultWithSharedLinkItem item;
 
   protected String type;
 
@@ -36,7 +36,7 @@ public class SearchResultWithSharedLink extends SerializableObject {
     return accessibleViaSharedLink;
   }
 
-  public FileFullOrFolderFullOrWebLink getItem() {
+  public SearchResultWithSharedLinkItem getItem() {
     return item;
   }
 
@@ -84,7 +84,7 @@ public class SearchResultWithSharedLink extends SerializableObject {
 
     protected String accessibleViaSharedLink;
 
-    protected FileFullOrFolderFullOrWebLink item;
+    protected SearchResultWithSharedLinkItem item;
 
     protected String type;
 
@@ -94,21 +94,21 @@ public class SearchResultWithSharedLink extends SerializableObject {
     }
 
     public Builder item(FileFull item) {
-      this.item = new FileFullOrFolderFullOrWebLink(item);
+      this.item = new SearchResultWithSharedLinkItem(item);
       return this;
     }
 
     public Builder item(FolderFull item) {
-      this.item = new FileFullOrFolderFullOrWebLink(item);
+      this.item = new SearchResultWithSharedLinkItem(item);
       return this;
     }
 
     public Builder item(WebLink item) {
-      this.item = new FileFullOrFolderFullOrWebLink(item);
+      this.item = new SearchResultWithSharedLinkItem(item);
       return this;
     }
 
-    public Builder item(FileFullOrFolderFullOrWebLink item) {
+    public Builder item(SearchResultWithSharedLinkItem item) {
       this.item = item;
       return this;
     }

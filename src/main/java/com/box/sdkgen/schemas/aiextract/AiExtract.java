@@ -3,8 +3,8 @@ package com.box.sdkgen.schemas.aiextract;
 import com.box.sdkgen.internal.NullableFieldTracker;
 import com.box.sdkgen.internal.SerializableObject;
 import com.box.sdkgen.schemas.aiagentextract.AiAgentExtract;
-import com.box.sdkgen.schemas.aiagentextractoraiagentreference.AiAgentExtractOrAiAgentReference;
 import com.box.sdkgen.schemas.aiagentreference.AiAgentReference;
+import com.box.sdkgen.schemas.aiextractagent.AiExtractAgent;
 import com.box.sdkgen.schemas.aiitembase.AiItemBase;
 import com.fasterxml.jackson.annotation.JsonFilter;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -19,7 +19,7 @@ public class AiExtract extends SerializableObject {
   protected final List<AiItemBase> items;
 
   @JsonProperty("ai_agent")
-  protected AiAgentExtractOrAiAgentReference aiAgent;
+  protected AiExtractAgent aiAgent;
 
   public AiExtract(
       @JsonProperty("prompt") String prompt, @JsonProperty("items") List<AiItemBase> items) {
@@ -44,7 +44,7 @@ public class AiExtract extends SerializableObject {
     return items;
   }
 
-  public AiAgentExtractOrAiAgentReference getAiAgent() {
+  public AiExtractAgent getAiAgent() {
     return aiAgent;
   }
 
@@ -90,7 +90,7 @@ public class AiExtract extends SerializableObject {
 
     protected final List<AiItemBase> items;
 
-    protected AiAgentExtractOrAiAgentReference aiAgent;
+    protected AiExtractAgent aiAgent;
 
     public Builder(String prompt, List<AiItemBase> items) {
       super();
@@ -98,17 +98,17 @@ public class AiExtract extends SerializableObject {
       this.items = items;
     }
 
-    public Builder aiAgent(AiAgentExtract aiAgent) {
-      this.aiAgent = new AiAgentExtractOrAiAgentReference(aiAgent);
-      return this;
-    }
-
     public Builder aiAgent(AiAgentReference aiAgent) {
-      this.aiAgent = new AiAgentExtractOrAiAgentReference(aiAgent);
+      this.aiAgent = new AiExtractAgent(aiAgent);
       return this;
     }
 
-    public Builder aiAgent(AiAgentExtractOrAiAgentReference aiAgent) {
+    public Builder aiAgent(AiAgentExtract aiAgent) {
+      this.aiAgent = new AiExtractAgent(aiAgent);
+      return this;
+    }
+
+    public Builder aiAgent(AiExtractAgent aiAgent) {
       this.aiAgent = aiAgent;
       return this;
     }

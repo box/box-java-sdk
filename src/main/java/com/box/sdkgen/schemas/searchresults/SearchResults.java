@@ -2,7 +2,7 @@ package com.box.sdkgen.schemas.searchresults;
 
 import com.box.sdkgen.internal.NullableFieldTracker;
 import com.box.sdkgen.internal.SerializableObject;
-import com.box.sdkgen.schemas.filefullorfolderfullorweblink.FileFullOrFolderFullOrWebLink;
+import com.box.sdkgen.schemas.searchresultitem.SearchResultItem;
 import com.box.sdkgen.serialization.json.EnumWrapper;
 import com.fasterxml.jackson.annotation.JsonFilter;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -25,7 +25,7 @@ public class SearchResults extends SerializableObject {
   @JsonSerialize(using = SearchResultsTypeField.SearchResultsTypeFieldSerializer.class)
   protected EnumWrapper<SearchResultsTypeField> type;
 
-  protected List<FileFullOrFolderFullOrWebLink> entries;
+  protected List<SearchResultItem> entries;
 
   public SearchResults() {
     super();
@@ -59,7 +59,7 @@ public class SearchResults extends SerializableObject {
     return type;
   }
 
-  public List<FileFullOrFolderFullOrWebLink> getEntries() {
+  public List<SearchResultItem> getEntries() {
     return entries;
   }
 
@@ -119,7 +119,7 @@ public class SearchResults extends SerializableObject {
 
     protected EnumWrapper<SearchResultsTypeField> type;
 
-    protected List<FileFullOrFolderFullOrWebLink> entries;
+    protected List<SearchResultItem> entries;
 
     public Builder() {
       super();
@@ -152,7 +152,7 @@ public class SearchResults extends SerializableObject {
       return this;
     }
 
-    public Builder entries(List<FileFullOrFolderFullOrWebLink> entries) {
+    public Builder entries(List<SearchResultItem> entries) {
       this.entries = entries;
       return this;
     }

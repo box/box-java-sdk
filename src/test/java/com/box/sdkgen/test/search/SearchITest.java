@@ -24,16 +24,16 @@ import com.box.sdkgen.managers.uploads.UploadFileRequestBodyAttributesParentFiel
 import com.box.sdkgen.schemas.filefull.FileFull;
 import com.box.sdkgen.schemas.files.Files;
 import com.box.sdkgen.schemas.metadatafieldfilterdaterange.MetadataFieldFilterDateRange;
-import com.box.sdkgen.schemas.metadatafieldfilterdaterangeormetadatafieldfilterfloatrangeorarrayofstringornumberorstring.MetadataFieldFilterDateRangeOrMetadataFieldFilterFloatRangeOrArrayOfStringOrNumberOrString;
 import com.box.sdkgen.schemas.metadatafieldfilterfloatrange.MetadataFieldFilterFloatRange;
 import com.box.sdkgen.schemas.metadatafilter.MetadataFilter;
 import com.box.sdkgen.schemas.metadatafilter.MetadataFilterScopeField;
+import com.box.sdkgen.schemas.metadatafiltervalue.MetadataFilterValue;
 import com.box.sdkgen.schemas.metadatafull.MetadataFull;
 import com.box.sdkgen.schemas.metadataquery.MetadataQuery;
 import com.box.sdkgen.schemas.metadataqueryresults.MetadataQueryResults;
 import com.box.sdkgen.schemas.metadatatemplate.MetadataTemplate;
 import com.box.sdkgen.schemas.searchresults.SearchResults;
-import com.box.sdkgen.schemas.searchresultsorsearchresultswithsharedlinks.SearchResultsOrSearchResultsWithSharedLinks;
+import com.box.sdkgen.schemas.searchresultsresponse.SearchResultsResponse;
 import com.box.sdkgen.schemas.searchresultswithsharedlinks.SearchResultsWithSharedLinks;
 import java.util.Arrays;
 import java.util.Map;
@@ -210,35 +210,25 @@ public class SearchITest {
                     entryOf(
                         "multiSelectField",
                         Arrays.asList("multiSelectValue1", "multiSelectValue2"))));
-    Map<
-            String,
-            MetadataFieldFilterDateRangeOrMetadataFieldFilterFloatRangeOrArrayOfStringOrNumberOrString>
-        searchFilters =
-            mapOf(
-                entryOf(
-                    "stringField",
-                    new MetadataFieldFilterDateRangeOrMetadataFieldFilterFloatRangeOrArrayOfStringOrNumberOrString(
-                        "stringValue")),
-                entryOf(
-                    "dateField",
-                    new MetadataFieldFilterDateRangeOrMetadataFieldFilterFloatRangeOrArrayOfStringOrNumberOrString(
-                        new MetadataFieldFilterDateRange.Builder()
-                            .lt(dateTimeFromString("2035-01-01T00:00:00Z"))
-                            .gt(dateTimeFromString("2035-01-03T00:00:00Z"))
-                            .build())),
-                entryOf(
-                    "floatField",
-                    new MetadataFieldFilterDateRangeOrMetadataFieldFilterFloatRangeOrArrayOfStringOrNumberOrString(
-                        new MetadataFieldFilterFloatRange.Builder().lt(9.5).gt(10.5).build())),
-                entryOf(
-                    "enumField",
-                    new MetadataFieldFilterDateRangeOrMetadataFieldFilterFloatRangeOrArrayOfStringOrNumberOrString(
-                        "enumValue2")),
-                entryOf(
-                    "multiSelectField",
-                    new MetadataFieldFilterDateRangeOrMetadataFieldFilterFloatRangeOrArrayOfStringOrNumberOrString(
-                        Arrays.asList("multiSelectValue1", "multiSelectValue2"))));
-    SearchResultsOrSearchResultsWithSharedLinks query =
+    Map<String, MetadataFilterValue> searchFilters =
+        mapOf(
+            entryOf("stringField", new MetadataFilterValue("stringValue")),
+            entryOf(
+                "dateField",
+                new MetadataFilterValue(
+                    new MetadataFieldFilterDateRange.Builder()
+                        .lt(dateTimeFromString("2035-01-01T00:00:00Z"))
+                        .gt(dateTimeFromString("2035-01-03T00:00:00Z"))
+                        .build())),
+            entryOf(
+                "floatField",
+                new MetadataFilterValue(
+                    new MetadataFieldFilterFloatRange.Builder().lt(9.5).gt(10.5).build())),
+            entryOf("enumField", new MetadataFilterValue("enumValue2")),
+            entryOf(
+                "multiSelectField",
+                new MetadataFilterValue(Arrays.asList("multiSelectValue1", "multiSelectValue2"))));
+    SearchResultsResponse query =
         client
             .getSearch()
             .searchForContent(
@@ -263,7 +253,7 @@ public class SearchITest {
   @Test
   public void testGetSearch() {
     String keyword = "test";
-    SearchResultsOrSearchResultsWithSharedLinks search =
+    SearchResultsResponse search =
         client
             .getSearch()
             .searchForContent(
@@ -275,7 +265,7 @@ public class SearchITest {
     assert convertToString(search.getType()).equals("search_results_items");
     SearchResults searchResults = search.getSearchResults();
     assert searchResults.getEntries().size() >= 0;
-    SearchResultsOrSearchResultsWithSharedLinks searchWithSharedLink =
+    SearchResultsResponse searchWithSharedLink =
         client
             .getSearch()
             .searchForContent(

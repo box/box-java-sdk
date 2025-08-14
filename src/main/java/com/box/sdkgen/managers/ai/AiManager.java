@@ -11,7 +11,7 @@ import com.box.sdkgen.networking.fetchoptions.FetchOptions;
 import com.box.sdkgen.networking.fetchoptions.ResponseFormat;
 import com.box.sdkgen.networking.fetchresponse.FetchResponse;
 import com.box.sdkgen.networking.network.NetworkSession;
-import com.box.sdkgen.schemas.aiagentaskoraiagentextractoraiagentextractstructuredoraiagenttextgen.AiAgentAskOrAiAgentExtractOrAiAgentExtractStructuredOrAiAgentTextGen;
+import com.box.sdkgen.schemas.aiagent.AiAgent;
 import com.box.sdkgen.schemas.aiask.AiAsk;
 import com.box.sdkgen.schemas.aiextract.AiExtract;
 import com.box.sdkgen.schemas.aiextractstructured.AiExtractStructured;
@@ -88,14 +88,12 @@ public class AiManager {
     return JsonManager.deserialize(response.getData(), AiResponse.class);
   }
 
-  public AiAgentAskOrAiAgentExtractOrAiAgentExtractStructuredOrAiAgentTextGen
-      getAiAgentDefaultConfig(GetAiAgentDefaultConfigQueryParams queryParams) {
+  public AiAgent getAiAgentDefaultConfig(GetAiAgentDefaultConfigQueryParams queryParams) {
     return getAiAgentDefaultConfig(queryParams, new GetAiAgentDefaultConfigHeaders());
   }
 
-  public AiAgentAskOrAiAgentExtractOrAiAgentExtractStructuredOrAiAgentTextGen
-      getAiAgentDefaultConfig(
-          GetAiAgentDefaultConfigQueryParams queryParams, GetAiAgentDefaultConfigHeaders headers) {
+  public AiAgent getAiAgentDefaultConfig(
+      GetAiAgentDefaultConfigQueryParams queryParams, GetAiAgentDefaultConfigHeaders headers) {
     Map<String, String> queryParamsMap =
         prepareParams(
             mapOf(
@@ -119,9 +117,7 @@ public class AiManager {
                     .auth(this.auth)
                     .networkSession(this.networkSession)
                     .build());
-    return JsonManager.deserialize(
-        response.getData(),
-        AiAgentAskOrAiAgentExtractOrAiAgentExtractStructuredOrAiAgentTextGen.class);
+    return JsonManager.deserialize(response.getData(), AiAgent.class);
   }
 
   public AiResponse createAiExtract(AiExtract requestBody) {

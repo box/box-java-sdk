@@ -4,8 +4,8 @@ import com.box.sdkgen.internal.NullableFieldTracker;
 import com.box.sdkgen.internal.SerializableObject;
 import com.box.sdkgen.internal.utils.DateTimeUtils;
 import com.box.sdkgen.schemas.filefull.FileFull;
-import com.box.sdkgen.schemas.filefullorfolderfullorweblink.FileFullOrFolderFullOrWebLink;
 import com.box.sdkgen.schemas.folderfull.FolderFull;
+import com.box.sdkgen.schemas.recentitemresource.RecentItemResource;
 import com.box.sdkgen.schemas.weblink.WebLink;
 import com.box.sdkgen.serialization.json.EnumWrapper;
 import com.fasterxml.jackson.annotation.JsonFilter;
@@ -20,7 +20,7 @@ public class RecentItem extends SerializableObject {
 
   protected String type;
 
-  protected FileFullOrFolderFullOrWebLink item;
+  protected RecentItemResource item;
 
   @JsonDeserialize(
       using = RecentItemInteractionTypeField.RecentItemInteractionTypeFieldDeserializer.class)
@@ -55,7 +55,7 @@ public class RecentItem extends SerializableObject {
     return type;
   }
 
-  public FileFullOrFolderFullOrWebLink getItem() {
+  public RecentItemResource getItem() {
     return item;
   }
 
@@ -121,7 +121,7 @@ public class RecentItem extends SerializableObject {
 
     protected String type;
 
-    protected FileFullOrFolderFullOrWebLink item;
+    protected RecentItemResource item;
 
     protected EnumWrapper<RecentItemInteractionTypeField> interactionType;
 
@@ -135,21 +135,21 @@ public class RecentItem extends SerializableObject {
     }
 
     public Builder item(FileFull item) {
-      this.item = new FileFullOrFolderFullOrWebLink(item);
+      this.item = new RecentItemResource(item);
       return this;
     }
 
     public Builder item(FolderFull item) {
-      this.item = new FileFullOrFolderFullOrWebLink(item);
+      this.item = new RecentItemResource(item);
       return this;
     }
 
     public Builder item(WebLink item) {
-      this.item = new FileFullOrFolderFullOrWebLink(item);
+      this.item = new RecentItemResource(item);
       return this;
     }
 
-    public Builder item(FileFullOrFolderFullOrWebLink item) {
+    public Builder item(RecentItemResource item) {
       this.item = item;
       return this;
     }

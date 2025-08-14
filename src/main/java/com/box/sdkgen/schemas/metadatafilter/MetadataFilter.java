@@ -2,7 +2,7 @@ package com.box.sdkgen.schemas.metadatafilter;
 
 import com.box.sdkgen.internal.NullableFieldTracker;
 import com.box.sdkgen.internal.SerializableObject;
-import com.box.sdkgen.schemas.metadatafieldfilterdaterangeormetadatafieldfilterfloatrangeorarrayofstringornumberorstring.MetadataFieldFilterDateRangeOrMetadataFieldFilterFloatRangeOrArrayOfStringOrNumberOrString;
+import com.box.sdkgen.schemas.metadatafiltervalue.MetadataFilterValue;
 import com.box.sdkgen.serialization.json.EnumWrapper;
 import com.fasterxml.jackson.annotation.JsonFilter;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
@@ -19,10 +19,7 @@ public class MetadataFilter extends SerializableObject {
 
   protected String templateKey;
 
-  protected Map<
-          String,
-          MetadataFieldFilterDateRangeOrMetadataFieldFilterFloatRangeOrArrayOfStringOrNumberOrString>
-      filters;
+  protected Map<String, MetadataFilterValue> filters;
 
   public MetadataFilter() {
     super();
@@ -44,10 +41,7 @@ public class MetadataFilter extends SerializableObject {
     return templateKey;
   }
 
-  public Map<
-          String,
-          MetadataFieldFilterDateRangeOrMetadataFieldFilterFloatRangeOrArrayOfStringOrNumberOrString>
-      getFilters() {
+  public Map<String, MetadataFilterValue> getFilters() {
     return filters;
   }
 
@@ -93,10 +87,7 @@ public class MetadataFilter extends SerializableObject {
 
     protected String templateKey;
 
-    protected Map<
-            String,
-            MetadataFieldFilterDateRangeOrMetadataFieldFilterFloatRangeOrArrayOfStringOrNumberOrString>
-        filters;
+    protected Map<String, MetadataFilterValue> filters;
 
     public Builder scope(MetadataFilterScopeField scope) {
       this.scope = new EnumWrapper<MetadataFilterScopeField>(scope);
@@ -113,11 +104,7 @@ public class MetadataFilter extends SerializableObject {
       return this;
     }
 
-    public Builder filters(
-        Map<
-                String,
-                MetadataFieldFilterDateRangeOrMetadataFieldFilterFloatRangeOrArrayOfStringOrNumberOrString>
-            filters) {
+    public Builder filters(Map<String, MetadataFilterValue> filters) {
       this.filters = filters;
       return this;
     }

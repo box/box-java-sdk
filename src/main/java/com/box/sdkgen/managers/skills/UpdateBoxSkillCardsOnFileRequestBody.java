@@ -3,7 +3,7 @@ package com.box.sdkgen.managers.skills;
 import com.box.sdkgen.internal.NullableFieldTracker;
 import com.box.sdkgen.internal.SerializableObject;
 import com.box.sdkgen.schemas.keywordskillcard.KeywordSkillCard;
-import com.box.sdkgen.schemas.keywordskillcardorstatusskillcardortimelineskillcardortranscriptskillcard.KeywordSkillCardOrStatusSkillCardOrTimelineSkillCardOrTranscriptSkillCard;
+import com.box.sdkgen.schemas.skillcard.SkillCard;
 import com.box.sdkgen.schemas.statusskillcard.StatusSkillCard;
 import com.box.sdkgen.schemas.timelineskillcard.TimelineSkillCard;
 import com.box.sdkgen.schemas.transcriptskillcard.TranscriptSkillCard;
@@ -28,7 +28,7 @@ public class UpdateBoxSkillCardsOnFileRequestBody extends SerializableObject {
 
   protected String path;
 
-  protected KeywordSkillCardOrStatusSkillCardOrTimelineSkillCardOrTranscriptSkillCard value;
+  protected SkillCard value;
 
   public UpdateBoxSkillCardsOnFileRequestBody() {
     super();
@@ -50,7 +50,7 @@ public class UpdateBoxSkillCardsOnFileRequestBody extends SerializableObject {
     return path;
   }
 
-  public KeywordSkillCardOrStatusSkillCardOrTimelineSkillCardOrTranscriptSkillCard getValue() {
+  public SkillCard getValue() {
     return value;
   }
 
@@ -96,7 +96,7 @@ public class UpdateBoxSkillCardsOnFileRequestBody extends SerializableObject {
 
     protected String path;
 
-    protected KeywordSkillCardOrStatusSkillCardOrTimelineSkillCardOrTranscriptSkillCard value;
+    protected SkillCard value;
 
     public Builder op(UpdateBoxSkillCardsOnFileRequestBodyOpField op) {
       this.op = new EnumWrapper<UpdateBoxSkillCardsOnFileRequestBodyOpField>(op);
@@ -114,31 +114,26 @@ public class UpdateBoxSkillCardsOnFileRequestBody extends SerializableObject {
     }
 
     public Builder value(KeywordSkillCard value) {
-      this.value =
-          new KeywordSkillCardOrStatusSkillCardOrTimelineSkillCardOrTranscriptSkillCard(value);
-      return this;
-    }
-
-    public Builder value(StatusSkillCard value) {
-      this.value =
-          new KeywordSkillCardOrStatusSkillCardOrTimelineSkillCardOrTranscriptSkillCard(value);
+      this.value = new SkillCard(value);
       return this;
     }
 
     public Builder value(TimelineSkillCard value) {
-      this.value =
-          new KeywordSkillCardOrStatusSkillCardOrTimelineSkillCardOrTranscriptSkillCard(value);
+      this.value = new SkillCard(value);
       return this;
     }
 
     public Builder value(TranscriptSkillCard value) {
-      this.value =
-          new KeywordSkillCardOrStatusSkillCardOrTimelineSkillCardOrTranscriptSkillCard(value);
+      this.value = new SkillCard(value);
       return this;
     }
 
-    public Builder value(
-        KeywordSkillCardOrStatusSkillCardOrTimelineSkillCardOrTranscriptSkillCard value) {
+    public Builder value(StatusSkillCard value) {
+      this.value = new SkillCard(value);
+      return this;
+    }
+
+    public Builder value(SkillCard value) {
       this.value = value;
       return this;
     }
