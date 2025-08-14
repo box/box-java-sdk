@@ -5,7 +5,7 @@
 # Box Java SDK
 
 [![Project Status](http://opensource.box.com/badges/active.svg)](http://opensource.box.com/badges)
-![build](https://github.com/box/box-java-sdk/actions/workflows/build.yml/badge.svg)
+![build](https://github.com/box/box-java-sdk/actions/workflows/build.yml/badge.svg?branch=sdk-gen)
 ![Maven Central Version](https://img.shields.io/maven-central/v/com.box/box-java-sdk)
 ![Platform](https://img.shields.io/badge/java-%3E%3D8-blue)
 [![Coverage](https://coveralls.io/repos/github/box/box-java-sdk/badge.svg?branch=sdk-gen)](https://coveralls.io/github/box/box-java-sdk-gen?branch=sdk-gen)
@@ -90,7 +90,7 @@ Browse the [docs](docs/README.md) or see [API Reference](https://developer.box.c
 
 # Upgrades
 
-The SDK is updated regularly to include new features, enhancements, and bug fixes. If you are upgrading from manual SDK to this new generated SDKm checkout the [migration guide](MIGRATION_GUIDE.md) and [changelog](CHANGELOG.md) for more information.
+The SDK is updated regularly to include new features, enhancements, and bug fixes. If you are upgrading from manual SDK to this new generated SDK checkout the [migration guide](MIGRATION_GUIDE.md) and [changelog](CHANGELOG.md) for more information.
 
 # Integration Tests
 
