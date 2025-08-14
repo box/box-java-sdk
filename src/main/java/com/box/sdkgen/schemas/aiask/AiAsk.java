@@ -3,8 +3,8 @@ package com.box.sdkgen.schemas.aiask;
 import com.box.sdkgen.internal.NullableFieldTracker;
 import com.box.sdkgen.internal.SerializableObject;
 import com.box.sdkgen.schemas.aiagentask.AiAgentAsk;
-import com.box.sdkgen.schemas.aiagentaskoraiagentreference.AiAgentAskOrAiAgentReference;
 import com.box.sdkgen.schemas.aiagentreference.AiAgentReference;
+import com.box.sdkgen.schemas.aiaskagent.AiAskAgent;
 import com.box.sdkgen.schemas.aidialoguehistory.AiDialogueHistory;
 import com.box.sdkgen.schemas.aiitemask.AiItemAsk;
 import com.box.sdkgen.serialization.json.EnumWrapper;
@@ -33,7 +33,7 @@ public class AiAsk extends SerializableObject {
   protected Boolean includeCitations;
 
   @JsonProperty("ai_agent")
-  protected AiAgentAskOrAiAgentReference aiAgent;
+  protected AiAskAgent aiAgent;
 
   public AiAsk(AiAskModeField mode, String prompt, List<AiItemAsk> items) {
     super();
@@ -83,7 +83,7 @@ public class AiAsk extends SerializableObject {
     return includeCitations;
   }
 
-  public AiAgentAskOrAiAgentReference getAiAgent() {
+  public AiAskAgent getAiAgent() {
     return aiAgent;
   }
 
@@ -150,7 +150,7 @@ public class AiAsk extends SerializableObject {
 
     protected Boolean includeCitations;
 
-    protected AiAgentAskOrAiAgentReference aiAgent;
+    protected AiAskAgent aiAgent;
 
     public Builder(AiAskModeField mode, String prompt, List<AiItemAsk> items) {
       super();
@@ -176,17 +176,17 @@ public class AiAsk extends SerializableObject {
       return this;
     }
 
-    public Builder aiAgent(AiAgentAsk aiAgent) {
-      this.aiAgent = new AiAgentAskOrAiAgentReference(aiAgent);
-      return this;
-    }
-
     public Builder aiAgent(AiAgentReference aiAgent) {
-      this.aiAgent = new AiAgentAskOrAiAgentReference(aiAgent);
+      this.aiAgent = new AiAskAgent(aiAgent);
       return this;
     }
 
-    public Builder aiAgent(AiAgentAskOrAiAgentReference aiAgent) {
+    public Builder aiAgent(AiAgentAsk aiAgent) {
+      this.aiAgent = new AiAskAgent(aiAgent);
+      return this;
+    }
+
+    public Builder aiAgent(AiAskAgent aiAgent) {
       this.aiAgent = aiAgent;
       return this;
     }

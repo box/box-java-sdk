@@ -5,7 +5,6 @@ import com.box.sdkgen.schemas.foldermini.FolderMini;
 import com.box.sdkgen.schemas.integrationmappingbase.IntegrationMappingBase;
 import com.box.sdkgen.schemas.integrationmappingbase.IntegrationMappingBaseTypeField;
 import com.box.sdkgen.schemas.integrationmappingpartneritemslack.IntegrationMappingPartnerItemSlack;
-import com.box.sdkgen.schemas.integrationmappingpartneritemslackunion.IntegrationMappingPartnerItemSlackUnion;
 import com.box.sdkgen.schemas.integrationmappingslackoptions.IntegrationMappingSlackOptions;
 import com.box.sdkgen.schemas.userintegrationmappings.UserIntegrationMappings;
 import com.box.sdkgen.serialization.json.EnumWrapper;
@@ -42,7 +41,7 @@ public class IntegrationMapping extends IntegrationMappingBase {
   protected UserIntegrationMappings modifiedBy;
 
   @JsonProperty("partner_item")
-  protected final IntegrationMappingPartnerItemSlackUnion partnerItem;
+  protected final IntegrationMappingPartnerItemSlack partnerItem;
 
   @JsonProperty("box_item")
   protected final FolderMini boxItem;
@@ -58,15 +57,8 @@ public class IntegrationMapping extends IntegrationMappingBase {
   protected Date modifiedAt;
 
   public IntegrationMapping(
-      String id, IntegrationMappingPartnerItemSlack partnerItem, FolderMini boxItem) {
-    super(id);
-    this.partnerItem = new IntegrationMappingPartnerItemSlackUnion(partnerItem);
-    this.boxItem = boxItem;
-  }
-
-  public IntegrationMapping(
       @JsonProperty("id") String id,
-      @JsonProperty("partner_item") IntegrationMappingPartnerItemSlackUnion partnerItem,
+      @JsonProperty("partner_item") IntegrationMappingPartnerItemSlack partnerItem,
       @JsonProperty("box_item") FolderMini boxItem) {
     super(id);
     this.partnerItem = partnerItem;
@@ -107,7 +99,7 @@ public class IntegrationMapping extends IntegrationMappingBase {
     return modifiedBy;
   }
 
-  public IntegrationMappingPartnerItemSlackUnion getPartnerItem() {
+  public IntegrationMappingPartnerItemSlack getPartnerItem() {
     return partnerItem;
   }
 
@@ -222,7 +214,7 @@ public class IntegrationMapping extends IntegrationMappingBase {
 
     protected UserIntegrationMappings modifiedBy;
 
-    protected final IntegrationMappingPartnerItemSlackUnion partnerItem;
+    protected final IntegrationMappingPartnerItemSlack partnerItem;
 
     protected final FolderMini boxItem;
 
@@ -231,13 +223,6 @@ public class IntegrationMapping extends IntegrationMappingBase {
     protected Date modifiedAt;
 
     public Builder(String id, IntegrationMappingPartnerItemSlack partnerItem, FolderMini boxItem) {
-      super(id);
-      this.partnerItem = new IntegrationMappingPartnerItemSlackUnion(partnerItem);
-      this.boxItem = boxItem;
-    }
-
-    public Builder(
-        String id, IntegrationMappingPartnerItemSlackUnion partnerItem, FolderMini boxItem) {
       super(id);
       this.partnerItem = partnerItem;
       this.boxItem = boxItem;

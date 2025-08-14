@@ -4,8 +4,8 @@ import com.box.sdkgen.internal.NullableFieldTracker;
 import com.box.sdkgen.internal.SerializableObject;
 import com.box.sdkgen.internal.utils.DateTimeUtils;
 import com.box.sdkgen.schemas.appitemeventsource.AppItemEventSource;
-import com.box.sdkgen.schemas.appitemeventsourceoreventsourceorfileorfolderorgenericsourceoruser.AppItemEventSourceOrEventSourceOrFileOrFolderOrGenericSourceOrUser;
 import com.box.sdkgen.schemas.eventsource.EventSource;
+import com.box.sdkgen.schemas.eventsourceresource.EventSourceResource;
 import com.box.sdkgen.schemas.file.File;
 import com.box.sdkgen.schemas.folder.Folder;
 import com.box.sdkgen.schemas.user.User;
@@ -48,7 +48,7 @@ public class Event extends SerializableObject {
   @JsonProperty("session_id")
   protected String sessionId;
 
-  protected AppItemEventSourceOrEventSourceOrFileOrFolderOrGenericSourceOrUser source;
+  protected EventSourceResource source;
 
   @JsonProperty("additional_details")
   protected EventAdditionalDetailsField additionalDetails;
@@ -99,7 +99,7 @@ public class Event extends SerializableObject {
     return sessionId;
   }
 
-  public AppItemEventSourceOrEventSourceOrFileOrFolderOrGenericSourceOrUser getSource() {
+  public EventSourceResource getSource() {
     return source;
   }
 
@@ -198,7 +198,7 @@ public class Event extends SerializableObject {
 
     protected String sessionId;
 
-    protected AppItemEventSourceOrEventSourceOrFileOrFolderOrGenericSourceOrUser source;
+    protected EventSourceResource source;
 
     protected EventAdditionalDetailsField additionalDetails;
 
@@ -242,38 +242,37 @@ public class Event extends SerializableObject {
       return this;
     }
 
-    public Builder source(AppItemEventSource source) {
-      this.source = new AppItemEventSourceOrEventSourceOrFileOrFolderOrGenericSourceOrUser(source);
+    public Builder source(User source) {
+      this.source = new EventSourceResource(source);
       return this;
     }
 
     public Builder source(EventSource source) {
-      this.source = new AppItemEventSourceOrEventSourceOrFileOrFolderOrGenericSourceOrUser(source);
+      this.source = new EventSourceResource(source);
       return this;
     }
 
     public Builder source(File source) {
-      this.source = new AppItemEventSourceOrEventSourceOrFileOrFolderOrGenericSourceOrUser(source);
+      this.source = new EventSourceResource(source);
       return this;
     }
 
     public Builder source(Folder source) {
-      this.source = new AppItemEventSourceOrEventSourceOrFileOrFolderOrGenericSourceOrUser(source);
+      this.source = new EventSourceResource(source);
       return this;
     }
 
     public Builder source(Map<String, Object> source) {
-      this.source = new AppItemEventSourceOrEventSourceOrFileOrFolderOrGenericSourceOrUser(source);
+      this.source = new EventSourceResource(source);
       return this;
     }
 
-    public Builder source(User source) {
-      this.source = new AppItemEventSourceOrEventSourceOrFileOrFolderOrGenericSourceOrUser(source);
+    public Builder source(AppItemEventSource source) {
+      this.source = new EventSourceResource(source);
       return this;
     }
 
-    public Builder source(
-        AppItemEventSourceOrEventSourceOrFileOrFolderOrGenericSourceOrUser source) {
+    public Builder source(EventSourceResource source) {
       this.source = source;
       return this;
     }

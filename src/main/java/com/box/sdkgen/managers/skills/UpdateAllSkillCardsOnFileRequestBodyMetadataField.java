@@ -2,7 +2,7 @@ package com.box.sdkgen.managers.skills;
 
 import com.box.sdkgen.internal.NullableFieldTracker;
 import com.box.sdkgen.internal.SerializableObject;
-import com.box.sdkgen.schemas.keywordskillcardorstatusskillcardortimelineskillcardortranscriptskillcard.KeywordSkillCardOrStatusSkillCardOrTimelineSkillCardOrTranscriptSkillCard;
+import com.box.sdkgen.schemas.skillcard.SkillCard;
 import com.fasterxml.jackson.annotation.JsonFilter;
 import java.util.List;
 import java.util.Objects;
@@ -10,7 +10,7 @@ import java.util.Objects;
 @JsonFilter("nullablePropertyFilter")
 public class UpdateAllSkillCardsOnFileRequestBodyMetadataField extends SerializableObject {
 
-  protected List<KeywordSkillCardOrStatusSkillCardOrTimelineSkillCardOrTranscriptSkillCard> cards;
+  protected List<SkillCard> cards;
 
   public UpdateAllSkillCardsOnFileRequestBodyMetadataField() {
     super();
@@ -22,8 +22,7 @@ public class UpdateAllSkillCardsOnFileRequestBodyMetadataField extends Serializa
     markNullableFieldsAsSet(builder.getExplicitlySetNullableFields());
   }
 
-  public List<KeywordSkillCardOrStatusSkillCardOrTimelineSkillCardOrTranscriptSkillCard>
-      getCards() {
+  public List<SkillCard> getCards() {
     return cards;
   }
 
@@ -52,10 +51,9 @@ public class UpdateAllSkillCardsOnFileRequestBodyMetadataField extends Serializa
 
   public static class Builder extends NullableFieldTracker {
 
-    protected List<KeywordSkillCardOrStatusSkillCardOrTimelineSkillCardOrTranscriptSkillCard> cards;
+    protected List<SkillCard> cards;
 
-    public Builder cards(
-        List<KeywordSkillCardOrStatusSkillCardOrTimelineSkillCardOrTranscriptSkillCard> cards) {
+    public Builder cards(List<SkillCard> cards) {
       this.cards = cards;
       return this;
     }

@@ -3,8 +3,8 @@ package com.box.sdkgen.schemas.aiextractstructured;
 import com.box.sdkgen.internal.NullableFieldTracker;
 import com.box.sdkgen.internal.SerializableObject;
 import com.box.sdkgen.schemas.aiagentextractstructured.AiAgentExtractStructured;
-import com.box.sdkgen.schemas.aiagentextractstructuredoraiagentreference.AiAgentExtractStructuredOrAiAgentReference;
 import com.box.sdkgen.schemas.aiagentreference.AiAgentReference;
+import com.box.sdkgen.schemas.aiextractstructuredagent.AiExtractStructuredAgent;
 import com.box.sdkgen.schemas.aiitembase.AiItemBase;
 import com.fasterxml.jackson.annotation.JsonFilter;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -22,7 +22,7 @@ public class AiExtractStructured extends SerializableObject {
   protected List<AiExtractStructuredFieldsField> fields;
 
   @JsonProperty("ai_agent")
-  protected AiAgentExtractStructuredOrAiAgentReference aiAgent;
+  protected AiExtractStructuredAgent aiAgent;
 
   public AiExtractStructured(@JsonProperty("items") List<AiItemBase> items) {
     super();
@@ -50,7 +50,7 @@ public class AiExtractStructured extends SerializableObject {
     return fields;
   }
 
-  public AiAgentExtractStructuredOrAiAgentReference getAiAgent() {
+  public AiExtractStructuredAgent getAiAgent() {
     return aiAgent;
   }
 
@@ -103,7 +103,7 @@ public class AiExtractStructured extends SerializableObject {
 
     protected List<AiExtractStructuredFieldsField> fields;
 
-    protected AiAgentExtractStructuredOrAiAgentReference aiAgent;
+    protected AiExtractStructuredAgent aiAgent;
 
     public Builder(List<AiItemBase> items) {
       super();
@@ -120,17 +120,17 @@ public class AiExtractStructured extends SerializableObject {
       return this;
     }
 
-    public Builder aiAgent(AiAgentExtractStructured aiAgent) {
-      this.aiAgent = new AiAgentExtractStructuredOrAiAgentReference(aiAgent);
-      return this;
-    }
-
     public Builder aiAgent(AiAgentReference aiAgent) {
-      this.aiAgent = new AiAgentExtractStructuredOrAiAgentReference(aiAgent);
+      this.aiAgent = new AiExtractStructuredAgent(aiAgent);
       return this;
     }
 
-    public Builder aiAgent(AiAgentExtractStructuredOrAiAgentReference aiAgent) {
+    public Builder aiAgent(AiAgentExtractStructured aiAgent) {
+      this.aiAgent = new AiExtractStructuredAgent(aiAgent);
+      return this;
+    }
+
+    public Builder aiAgent(AiExtractStructuredAgent aiAgent) {
       this.aiAgent = aiAgent;
       return this;
     }

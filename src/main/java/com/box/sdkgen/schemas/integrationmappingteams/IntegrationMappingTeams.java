@@ -5,7 +5,6 @@ import com.box.sdkgen.schemas.folderreference.FolderReference;
 import com.box.sdkgen.schemas.integrationmappingbase.IntegrationMappingBase;
 import com.box.sdkgen.schemas.integrationmappingbase.IntegrationMappingBaseTypeField;
 import com.box.sdkgen.schemas.integrationmappingpartneritemteams.IntegrationMappingPartnerItemTeams;
-import com.box.sdkgen.schemas.integrationmappingpartneritemteamsunion.IntegrationMappingPartnerItemTeamsUnion;
 import com.box.sdkgen.serialization.json.EnumWrapper;
 import com.fasterxml.jackson.annotation.JsonFilter;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -32,7 +31,7 @@ public class IntegrationMappingTeams extends IntegrationMappingBase {
   protected Boolean isOverriddenByManualMapping;
 
   @JsonProperty("partner_item")
-  protected final IntegrationMappingPartnerItemTeamsUnion partnerItem;
+  protected final IntegrationMappingPartnerItemTeams partnerItem;
 
   @JsonProperty("box_item")
   protected final FolderReference boxItem;
@@ -48,15 +47,8 @@ public class IntegrationMappingTeams extends IntegrationMappingBase {
   protected Date modifiedAt;
 
   public IntegrationMappingTeams(
-      String id, IntegrationMappingPartnerItemTeams partnerItem, FolderReference boxItem) {
-    super(id);
-    this.partnerItem = new IntegrationMappingPartnerItemTeamsUnion(partnerItem);
-    this.boxItem = boxItem;
-  }
-
-  public IntegrationMappingTeams(
       @JsonProperty("id") String id,
-      @JsonProperty("partner_item") IntegrationMappingPartnerItemTeamsUnion partnerItem,
+      @JsonProperty("partner_item") IntegrationMappingPartnerItemTeams partnerItem,
       @JsonProperty("box_item") FolderReference boxItem) {
     super(id);
     this.partnerItem = partnerItem;
@@ -82,7 +74,7 @@ public class IntegrationMappingTeams extends IntegrationMappingBase {
     return isOverriddenByManualMapping;
   }
 
-  public IntegrationMappingPartnerItemTeamsUnion getPartnerItem() {
+  public IntegrationMappingPartnerItemTeams getPartnerItem() {
     return partnerItem;
   }
 
@@ -173,7 +165,7 @@ public class IntegrationMappingTeams extends IntegrationMappingBase {
 
     protected Boolean isOverriddenByManualMapping;
 
-    protected final IntegrationMappingPartnerItemTeamsUnion partnerItem;
+    protected final IntegrationMappingPartnerItemTeams partnerItem;
 
     protected final FolderReference boxItem;
 
@@ -183,13 +175,6 @@ public class IntegrationMappingTeams extends IntegrationMappingBase {
 
     public Builder(
         String id, IntegrationMappingPartnerItemTeams partnerItem, FolderReference boxItem) {
-      super(id);
-      this.partnerItem = new IntegrationMappingPartnerItemTeamsUnion(partnerItem);
-      this.boxItem = boxItem;
-    }
-
-    public Builder(
-        String id, IntegrationMappingPartnerItemTeamsUnion partnerItem, FolderReference boxItem) {
       super(id);
       this.partnerItem = partnerItem;
       this.boxItem = boxItem;

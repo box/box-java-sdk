@@ -2,7 +2,7 @@ package com.box.sdkgen.schemas.metadataqueryresults;
 
 import com.box.sdkgen.internal.NullableFieldTracker;
 import com.box.sdkgen.internal.SerializableObject;
-import com.box.sdkgen.schemas.filefullorfolderfull.FileFullOrFolderFull;
+import com.box.sdkgen.schemas.metadataqueryresultitem.MetadataQueryResultItem;
 import com.fasterxml.jackson.annotation.JsonFilter;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.List;
@@ -11,7 +11,7 @@ import java.util.Objects;
 @JsonFilter("nullablePropertyFilter")
 public class MetadataQueryResults extends SerializableObject {
 
-  protected List<FileFullOrFolderFull> entries;
+  protected List<MetadataQueryResultItem> entries;
 
   protected Long limit;
 
@@ -30,7 +30,7 @@ public class MetadataQueryResults extends SerializableObject {
     markNullableFieldsAsSet(builder.getExplicitlySetNullableFields());
   }
 
-  public List<FileFullOrFolderFull> getEntries() {
+  public List<MetadataQueryResultItem> getEntries() {
     return entries;
   }
 
@@ -80,13 +80,13 @@ public class MetadataQueryResults extends SerializableObject {
 
   public static class Builder extends NullableFieldTracker {
 
-    protected List<FileFullOrFolderFull> entries;
+    protected List<MetadataQueryResultItem> entries;
 
     protected Long limit;
 
     protected String nextMarker;
 
-    public Builder entries(List<FileFullOrFolderFull> entries) {
+    public Builder entries(List<MetadataQueryResultItem> entries) {
       this.entries = entries;
       return this;
     }

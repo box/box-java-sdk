@@ -18,7 +18,7 @@ import com.box.sdkgen.schemas.keywordskillcard.KeywordSkillCardSkillCardTypeFiel
 import com.box.sdkgen.schemas.keywordskillcard.KeywordSkillCardSkillField;
 import com.box.sdkgen.schemas.keywordskillcard.KeywordSkillCardSkillTypeField;
 import com.box.sdkgen.schemas.keywordskillcard.KeywordSkillCardTypeField;
-import com.box.sdkgen.schemas.keywordskillcardorstatusskillcardortimelineskillcardortranscriptskillcard.KeywordSkillCardOrStatusSkillCardOrTimelineSkillCardOrTranscriptSkillCard;
+import com.box.sdkgen.schemas.skillcard.SkillCard;
 import com.box.sdkgen.schemas.skillcardsmetadata.SkillCardsMetadata;
 import java.util.Arrays;
 import java.util.List;
@@ -50,10 +50,7 @@ public class SkillsITest {
                     .code("license-plates")
                     .build())
             .build();
-    List<KeywordSkillCardOrStatusSkillCardOrTimelineSkillCardOrTranscriptSkillCard> cardsToCreate =
-        Arrays.asList(
-            new KeywordSkillCardOrStatusSkillCardOrTimelineSkillCardOrTranscriptSkillCard(
-                cardToCreate));
+    List<SkillCard> cardsToCreate = Arrays.asList(new SkillCard(cardToCreate));
     SkillCardsMetadata skillCardsMetadata =
         client
             .getSkills()

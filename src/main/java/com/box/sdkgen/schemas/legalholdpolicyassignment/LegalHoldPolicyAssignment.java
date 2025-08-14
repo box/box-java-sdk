@@ -2,8 +2,8 @@ package com.box.sdkgen.schemas.legalholdpolicyassignment;
 
 import com.box.sdkgen.internal.utils.DateTimeUtils;
 import com.box.sdkgen.schemas.file.File;
-import com.box.sdkgen.schemas.fileorfolderorweblink.FileOrFolderOrWebLink;
 import com.box.sdkgen.schemas.folder.Folder;
+import com.box.sdkgen.schemas.legalholdpolicyassigneditem.LegalHoldPolicyAssignedItem;
 import com.box.sdkgen.schemas.legalholdpolicyassignmentbase.LegalHoldPolicyAssignmentBase;
 import com.box.sdkgen.schemas.legalholdpolicyassignmentbase.LegalHoldPolicyAssignmentBaseTypeField;
 import com.box.sdkgen.schemas.legalholdpolicymini.LegalHoldPolicyMini;
@@ -24,7 +24,7 @@ public class LegalHoldPolicyAssignment extends LegalHoldPolicyAssignmentBase {
   protected LegalHoldPolicyMini legalHoldPolicy;
 
   @JsonProperty("assigned_to")
-  protected FileOrFolderOrWebLink assignedTo;
+  protected LegalHoldPolicyAssignedItem assignedTo;
 
   @JsonProperty("assigned_by")
   protected UserMini assignedBy;
@@ -57,7 +57,7 @@ public class LegalHoldPolicyAssignment extends LegalHoldPolicyAssignmentBase {
     return legalHoldPolicy;
   }
 
-  public FileOrFolderOrWebLink getAssignedTo() {
+  public LegalHoldPolicyAssignedItem getAssignedTo() {
     return assignedTo;
   }
 
@@ -133,7 +133,7 @@ public class LegalHoldPolicyAssignment extends LegalHoldPolicyAssignmentBase {
 
     protected LegalHoldPolicyMini legalHoldPolicy;
 
-    protected FileOrFolderOrWebLink assignedTo;
+    protected LegalHoldPolicyAssignedItem assignedTo;
 
     protected UserMini assignedBy;
 
@@ -147,21 +147,21 @@ public class LegalHoldPolicyAssignment extends LegalHoldPolicyAssignmentBase {
     }
 
     public Builder assignedTo(File assignedTo) {
-      this.assignedTo = new FileOrFolderOrWebLink(assignedTo);
+      this.assignedTo = new LegalHoldPolicyAssignedItem(assignedTo);
       return this;
     }
 
     public Builder assignedTo(Folder assignedTo) {
-      this.assignedTo = new FileOrFolderOrWebLink(assignedTo);
+      this.assignedTo = new LegalHoldPolicyAssignedItem(assignedTo);
       return this;
     }
 
     public Builder assignedTo(WebLink assignedTo) {
-      this.assignedTo = new FileOrFolderOrWebLink(assignedTo);
+      this.assignedTo = new LegalHoldPolicyAssignedItem(assignedTo);
       return this;
     }
 
-    public Builder assignedTo(FileOrFolderOrWebLink assignedTo) {
+    public Builder assignedTo(LegalHoldPolicyAssignedItem assignedTo) {
       this.assignedTo = assignedTo;
       return this;
     }

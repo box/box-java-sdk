@@ -1,9 +1,9 @@
 package com.box.sdkgen.schemas.v2025r0.hubitemoperationv2025r0;
 
 import com.box.sdkgen.internal.SerializableObject;
-import com.box.sdkgen.schemas.v2025r0.filereferenceorfolderreferenceorweblinkreferencev2025r0.FileReferenceOrFolderReferenceOrWeblinkReferenceV2025R0;
 import com.box.sdkgen.schemas.v2025r0.filereferencev2025r0.FileReferenceV2025R0;
 import com.box.sdkgen.schemas.v2025r0.folderreferencev2025r0.FolderReferenceV2025R0;
+import com.box.sdkgen.schemas.v2025r0.hubitemreferencev2025r0.HubItemReferenceV2025R0;
 import com.box.sdkgen.schemas.v2025r0.weblinkreferencev2025r0.WeblinkReferenceV2025R0;
 import com.box.sdkgen.serialization.json.EnumWrapper;
 import com.fasterxml.jackson.annotation.JsonFilter;
@@ -22,32 +22,31 @@ public class HubItemOperationV2025R0 extends SerializableObject {
       using = HubItemOperationV2025R0ActionField.HubItemOperationV2025R0ActionFieldSerializer.class)
   protected final EnumWrapper<HubItemOperationV2025R0ActionField> action;
 
-  protected final FileReferenceOrFolderReferenceOrWeblinkReferenceV2025R0 item;
+  protected final HubItemReferenceV2025R0 item;
 
   public HubItemOperationV2025R0(
       HubItemOperationV2025R0ActionField action, FileReferenceV2025R0 item) {
     super();
     this.action = new EnumWrapper<HubItemOperationV2025R0ActionField>(action);
-    this.item = new FileReferenceOrFolderReferenceOrWeblinkReferenceV2025R0(item);
+    this.item = new HubItemReferenceV2025R0(item);
   }
 
   public HubItemOperationV2025R0(
       HubItemOperationV2025R0ActionField action, FolderReferenceV2025R0 item) {
     super();
     this.action = new EnumWrapper<HubItemOperationV2025R0ActionField>(action);
-    this.item = new FileReferenceOrFolderReferenceOrWeblinkReferenceV2025R0(item);
+    this.item = new HubItemReferenceV2025R0(item);
   }
 
   public HubItemOperationV2025R0(
       HubItemOperationV2025R0ActionField action, WeblinkReferenceV2025R0 item) {
     super();
     this.action = new EnumWrapper<HubItemOperationV2025R0ActionField>(action);
-    this.item = new FileReferenceOrFolderReferenceOrWeblinkReferenceV2025R0(item);
+    this.item = new HubItemReferenceV2025R0(item);
   }
 
   public HubItemOperationV2025R0(
-      HubItemOperationV2025R0ActionField action,
-      FileReferenceOrFolderReferenceOrWeblinkReferenceV2025R0 item) {
+      HubItemOperationV2025R0ActionField action, HubItemReferenceV2025R0 item) {
     super();
     this.action = new EnumWrapper<HubItemOperationV2025R0ActionField>(action);
     this.item = item;
@@ -57,26 +56,26 @@ public class HubItemOperationV2025R0 extends SerializableObject {
       EnumWrapper<HubItemOperationV2025R0ActionField> action, FileReferenceV2025R0 item) {
     super();
     this.action = action;
-    this.item = new FileReferenceOrFolderReferenceOrWeblinkReferenceV2025R0(item);
+    this.item = new HubItemReferenceV2025R0(item);
   }
 
   public HubItemOperationV2025R0(
       EnumWrapper<HubItemOperationV2025R0ActionField> action, FolderReferenceV2025R0 item) {
     super();
     this.action = action;
-    this.item = new FileReferenceOrFolderReferenceOrWeblinkReferenceV2025R0(item);
+    this.item = new HubItemReferenceV2025R0(item);
   }
 
   public HubItemOperationV2025R0(
       EnumWrapper<HubItemOperationV2025R0ActionField> action, WeblinkReferenceV2025R0 item) {
     super();
     this.action = action;
-    this.item = new FileReferenceOrFolderReferenceOrWeblinkReferenceV2025R0(item);
+    this.item = new HubItemReferenceV2025R0(item);
   }
 
   public HubItemOperationV2025R0(
       @JsonProperty("action") EnumWrapper<HubItemOperationV2025R0ActionField> action,
-      @JsonProperty("item") FileReferenceOrFolderReferenceOrWeblinkReferenceV2025R0 item) {
+      @JsonProperty("item") HubItemReferenceV2025R0 item) {
     super();
     this.action = action;
     this.item = item;
@@ -86,7 +85,7 @@ public class HubItemOperationV2025R0 extends SerializableObject {
     return action;
   }
 
-  public FileReferenceOrFolderReferenceOrWeblinkReferenceV2025R0 getItem() {
+  public HubItemReferenceV2025R0 getItem() {
     return item;
   }
 

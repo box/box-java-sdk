@@ -5,11 +5,11 @@ import com.box.sdkgen.internal.NullableFieldTracker;
 import com.box.sdkgen.internal.SerializableObject;
 import com.box.sdkgen.internal.utils.DateTimeUtils;
 import com.box.sdkgen.schemas.appitem.AppItem;
+import com.box.sdkgen.schemas.collaborationaccessgrantee.CollaborationAccessGrantee;
+import com.box.sdkgen.schemas.collaborationitem.CollaborationItem;
 import com.box.sdkgen.schemas.file.File;
-import com.box.sdkgen.schemas.fileorfolderorweblink.FileOrFolderOrWebLink;
 import com.box.sdkgen.schemas.folder.Folder;
 import com.box.sdkgen.schemas.groupmini.GroupMini;
-import com.box.sdkgen.schemas.groupminiorusercollaborations.GroupMiniOrUserCollaborations;
 import com.box.sdkgen.schemas.usercollaborations.UserCollaborations;
 import com.box.sdkgen.schemas.weblink.WebLink;
 import com.box.sdkgen.serialization.json.EnumWrapper;
@@ -29,14 +29,14 @@ public class Collaboration extends SerializableObject {
   @JsonSerialize(using = CollaborationTypeField.CollaborationTypeFieldSerializer.class)
   protected EnumWrapper<CollaborationTypeField> type;
 
-  @Nullable protected FileOrFolderOrWebLink item;
+  @Nullable protected CollaborationItem item;
 
   @JsonProperty("app_item")
   @Nullable
   protected AppItem appItem;
 
   @JsonProperty("accessible_by")
-  protected GroupMiniOrUserCollaborations accessibleBy;
+  protected CollaborationAccessGrantee accessibleBy;
 
   @JsonProperty("invite_email")
   @Nullable
@@ -114,7 +114,7 @@ public class Collaboration extends SerializableObject {
     return type;
   }
 
-  public FileOrFolderOrWebLink getItem() {
+  public CollaborationItem getItem() {
     return item;
   }
 
@@ -122,7 +122,7 @@ public class Collaboration extends SerializableObject {
     return appItem;
   }
 
-  public GroupMiniOrUserCollaborations getAccessibleBy() {
+  public CollaborationAccessGrantee getAccessibleBy() {
     return accessibleBy;
   }
 
@@ -283,11 +283,11 @@ public class Collaboration extends SerializableObject {
 
     protected EnumWrapper<CollaborationTypeField> type;
 
-    protected FileOrFolderOrWebLink item;
+    protected CollaborationItem item;
 
     protected AppItem appItem;
 
-    protected GroupMiniOrUserCollaborations accessibleBy;
+    protected CollaborationAccessGrantee accessibleBy;
 
     protected String inviteEmail;
 
@@ -326,24 +326,24 @@ public class Collaboration extends SerializableObject {
     }
 
     public Builder item(File item) {
-      this.item = new FileOrFolderOrWebLink(item);
+      this.item = new CollaborationItem(item);
       this.markNullableFieldAsSet("item");
       return this;
     }
 
     public Builder item(Folder item) {
-      this.item = new FileOrFolderOrWebLink(item);
+      this.item = new CollaborationItem(item);
       this.markNullableFieldAsSet("item");
       return this;
     }
 
     public Builder item(WebLink item) {
-      this.item = new FileOrFolderOrWebLink(item);
+      this.item = new CollaborationItem(item);
       this.markNullableFieldAsSet("item");
       return this;
     }
 
-    public Builder item(FileOrFolderOrWebLink item) {
+    public Builder item(CollaborationItem item) {
       this.item = item;
       this.markNullableFieldAsSet("item");
       return this;
@@ -355,17 +355,17 @@ public class Collaboration extends SerializableObject {
       return this;
     }
 
-    public Builder accessibleBy(GroupMini accessibleBy) {
-      this.accessibleBy = new GroupMiniOrUserCollaborations(accessibleBy);
-      return this;
-    }
-
     public Builder accessibleBy(UserCollaborations accessibleBy) {
-      this.accessibleBy = new GroupMiniOrUserCollaborations(accessibleBy);
+      this.accessibleBy = new CollaborationAccessGrantee(accessibleBy);
       return this;
     }
 
-    public Builder accessibleBy(GroupMiniOrUserCollaborations accessibleBy) {
+    public Builder accessibleBy(GroupMini accessibleBy) {
+      this.accessibleBy = new CollaborationAccessGrantee(accessibleBy);
+      return this;
+    }
+
+    public Builder accessibleBy(CollaborationAccessGrantee accessibleBy) {
       this.accessibleBy = accessibleBy;
       return this;
     }
