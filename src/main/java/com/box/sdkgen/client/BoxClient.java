@@ -21,6 +21,7 @@ import com.box.sdkgen.managers.docgentemplate.DocgenTemplateManager;
 import com.box.sdkgen.managers.downloads.DownloadsManager;
 import com.box.sdkgen.managers.emailaliases.EmailAliasesManager;
 import com.box.sdkgen.managers.events.EventsManager;
+import com.box.sdkgen.managers.externalusers.ExternalUsersManager;
 import com.box.sdkgen.managers.fileclassifications.FileClassificationsManager;
 import com.box.sdkgen.managers.filemetadata.FileMetadataManager;
 import com.box.sdkgen.managers.filerequests.FileRequestsManager;
@@ -255,6 +256,8 @@ public class BoxClient {
   public final ShieldListsManager shieldLists;
 
   public final ArchivesManager archives;
+
+  public final ExternalUsersManager externalUsers;
 
   public BoxClient(Authentication auth) {
     this.auth = auth;
@@ -584,6 +587,11 @@ public class BoxClient {
             .build();
     this.archives =
         new ArchivesManager.Builder().auth(this.auth).networkSession(this.networkSession).build();
+    this.externalUsers =
+        new ExternalUsersManager.Builder()
+            .auth(this.auth)
+            .networkSession(this.networkSession)
+            .build();
   }
 
   protected BoxClient(Builder builder) {
@@ -914,6 +922,11 @@ public class BoxClient {
             .build();
     this.archives =
         new ArchivesManager.Builder().auth(this.auth).networkSession(this.networkSession).build();
+    this.externalUsers =
+        new ExternalUsersManager.Builder()
+            .auth(this.auth)
+            .networkSession(this.networkSession)
+            .build();
   }
 
   public FetchResponse makeRequest(FetchOptions fetchOptions) {
@@ -1297,6 +1310,10 @@ public class BoxClient {
 
   public ArchivesManager getArchives() {
     return archives;
+  }
+
+  public ExternalUsersManager getExternalUsers() {
+    return externalUsers;
   }
 
   public static class Builder {
