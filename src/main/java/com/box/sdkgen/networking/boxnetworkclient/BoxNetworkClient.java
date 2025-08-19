@@ -77,7 +77,7 @@ public class BoxNetworkClient implements NetworkClient {
 
     boolean authenticationNeeded = false;
     Request request;
-    FetchResponse fetchResponse = null;
+    FetchResponse fetchResponse = new FetchResponse.Builder(0, new TreeMap<>()).build();
     Exception exceptionThrown = null;
 
     int attemptNumber = 1;
@@ -140,9 +140,6 @@ public class BoxNetworkClient implements NetworkClient {
         if (response != null) {
           response.close();
         }
-
-        fetchResponse =
-            new FetchResponse.Builder(0, new TreeMap<>(String.CASE_INSENSITIVE_ORDER)).build();
       }
 
       shouldRetry =
@@ -167,8 +164,7 @@ public class BoxNetworkClient implements NetworkClient {
         continue;
       }
 
-      if (fetchResponse != null
-          && fetchResponse.getStatus() >= 300
+      if (fetchResponse.getStatus() >= 300
           && fetchResponse.getStatus() < 400
           && fetchOptions.followRedirects) {
         if (!fetchResponse.getHeaders().containsKey("Location")) {
@@ -189,9 +185,7 @@ public class BoxNetworkClient implements NetworkClient {
                 .build());
       }
 
-      if (fetchResponse != null
-          && fetchResponse.getStatus() >= 200
-          && fetchResponse.getStatus() < 400) {
+      if (fetchResponse.getStatus() >= 200 && fetchResponse.getStatus() < 400) {
         return fetchResponse;
       }
 
@@ -313,7 +307,7 @@ public class BoxNetworkClient implements NetworkClient {
       String rawResponseBody,
       Exception exceptionThrown,
       DataSanitizer dataSanitizer) {
-    if (fetchResponse == null) {
+    if (fetchResponse.getStatus() == 0 && exceptionThrown != null) {
       throw new BoxSDKError(exceptionThrown.getMessage(), exceptionThrown);
     }
     try {

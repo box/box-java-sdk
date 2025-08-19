@@ -93,7 +93,7 @@ public class JsonManager {
   }
 
   public static JsonNode sanitizeSerializedData(JsonNode sd, Map<String, String> keysToSanitize) {
-    if (!sd.isObject()) {
+    if (sd == null || !sd.isObject()) {
       return sd;
     }
     Map<String, JsonNode> sanitizedDictionary = new HashMap<>();
