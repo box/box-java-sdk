@@ -11,17 +11,20 @@ public class BoxSDKError extends RuntimeException {
   public String name;
 
   public BoxSDKError(String message) {
+    super(message);
     this.message = message;
     this.name = "BoxSDKError";
   }
 
   public BoxSDKError(String message, Exception error) {
+    super(message, error);
     this.message = message;
     this.error = error;
     this.name = "BoxSDKError";
   }
 
   protected BoxSDKError(Builder builder) {
+    super(builder.message, builder.error);
     this.message = builder.message;
     this.timestamp = builder.timestamp;
     this.error = builder.error;
