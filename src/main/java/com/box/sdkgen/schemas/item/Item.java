@@ -2,7 +2,7 @@ package com.box.sdkgen.schemas.item;
 
 import com.box.sdkgen.internal.OneOfThree;
 import com.box.sdkgen.schemas.filefull.FileFull;
-import com.box.sdkgen.schemas.foldermini.FolderMini;
+import com.box.sdkgen.schemas.folderfull.FolderFull;
 import com.box.sdkgen.schemas.weblink.WebLink;
 import com.box.sdkgen.serialization.json.EnumWrapper;
 import com.box.sdkgen.serialization.json.JsonManager;
@@ -17,7 +17,7 @@ import java.io.IOException;
 
 @JsonDeserialize(using = Item.ItemDeserializer.class)
 @JsonSerialize(using = OneOfThree.OneOfThreeSerializer.class)
-public class Item extends OneOfThree<FileFull, FolderMini, WebLink> {
+public class Item extends OneOfThree<FileFull, FolderFull, WebLink> {
 
   protected final String sequenceId;
 
@@ -38,13 +38,13 @@ public class Item extends OneOfThree<FileFull, FolderMini, WebLink> {
     this.type = EnumWrapper.convertToString(fileFull.getType());
   }
 
-  public Item(FolderMini folderMini) {
-    super(null, folderMini, null);
-    this.sequenceId = folderMini.getSequenceId();
-    this.name = folderMini.getName();
-    this.id = folderMini.getId();
-    this.etag = folderMini.getEtag();
-    this.type = EnumWrapper.convertToString(folderMini.getType());
+  public Item(FolderFull folderFull) {
+    super(null, folderFull, null);
+    this.sequenceId = folderFull.getSequenceId();
+    this.name = folderFull.getName();
+    this.id = folderFull.getId();
+    this.etag = folderFull.getEtag();
+    this.type = EnumWrapper.convertToString(folderFull.getType());
   }
 
   public Item(WebLink webLink) {
@@ -64,11 +64,11 @@ public class Item extends OneOfThree<FileFull, FolderMini, WebLink> {
     return value0;
   }
 
-  public boolean isFolderMini() {
+  public boolean isFolderFull() {
     return value1 != null;
   }
 
-  public FolderMini getFolderMini() {
+  public FolderFull getFolderFull() {
     return value1;
   }
 
@@ -115,7 +115,7 @@ public class Item extends OneOfThree<FileFull, FolderMini, WebLink> {
           case "file":
             return new Item(JsonManager.deserialize(node, FileFull.class));
           case "folder":
-            return new Item(JsonManager.deserialize(node, FolderMini.class));
+            return new Item(JsonManager.deserialize(node, FolderFull.class));
           case "web_link":
             return new Item(JsonManager.deserialize(node, WebLink.class));
         }
