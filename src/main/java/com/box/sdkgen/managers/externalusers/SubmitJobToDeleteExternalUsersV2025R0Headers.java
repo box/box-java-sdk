@@ -6,18 +6,18 @@ import com.box.sdkgen.parameters.v2025r0.boxversionheaderv2025r0.BoxVersionHeade
 import com.box.sdkgen.serialization.json.EnumWrapper;
 import java.util.Map;
 
-public class CreateExternalUserSubmitDeleteJobV2025R0Headers {
+public class SubmitJobToDeleteExternalUsersV2025R0Headers {
 
   public EnumWrapper<BoxVersionHeaderV2025R0> boxVersion;
 
   public Map<String, String> extraHeaders;
 
-  public CreateExternalUserSubmitDeleteJobV2025R0Headers() {
+  public SubmitJobToDeleteExternalUsersV2025R0Headers() {
     this.boxVersion = new EnumWrapper<BoxVersionHeaderV2025R0>(BoxVersionHeaderV2025R0._2025_0);
     this.extraHeaders = mapOf();
   }
 
-  protected CreateExternalUserSubmitDeleteJobV2025R0Headers(Builder builder) {
+  protected SubmitJobToDeleteExternalUsersV2025R0Headers(Builder builder) {
     this.boxVersion = builder.boxVersion;
     this.extraHeaders = builder.extraHeaders;
   }
@@ -56,8 +56,8 @@ public class CreateExternalUserSubmitDeleteJobV2025R0Headers {
       return this;
     }
 
-    public CreateExternalUserSubmitDeleteJobV2025R0Headers build() {
-      return new CreateExternalUserSubmitDeleteJobV2025R0Headers(this);
+    public SubmitJobToDeleteExternalUsersV2025R0Headers build() {
+      return new SubmitJobToDeleteExternalUsersV2025R0Headers(this);
     }
   }
 }

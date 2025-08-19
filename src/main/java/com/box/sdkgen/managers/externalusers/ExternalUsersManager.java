@@ -31,15 +31,15 @@ public class ExternalUsersManager {
     this.networkSession = builder.networkSession;
   }
 
-  public ExternalUsersSubmitDeleteJobResponseV2025R0 createExternalUserSubmitDeleteJobV2025R0(
+  public ExternalUsersSubmitDeleteJobResponseV2025R0 submitJobToDeleteExternalUsersV2025R0(
       ExternalUsersSubmitDeleteJobRequestV2025R0 requestBody) {
-    return createExternalUserSubmitDeleteJobV2025R0(
-        requestBody, new CreateExternalUserSubmitDeleteJobV2025R0Headers());
+    return submitJobToDeleteExternalUsersV2025R0(
+        requestBody, new SubmitJobToDeleteExternalUsersV2025R0Headers());
   }
 
-  public ExternalUsersSubmitDeleteJobResponseV2025R0 createExternalUserSubmitDeleteJobV2025R0(
+  public ExternalUsersSubmitDeleteJobResponseV2025R0 submitJobToDeleteExternalUsersV2025R0(
       ExternalUsersSubmitDeleteJobRequestV2025R0 requestBody,
-      CreateExternalUserSubmitDeleteJobV2025R0Headers headers) {
+      SubmitJobToDeleteExternalUsersV2025R0Headers headers) {
     Map<String, String> headersMap =
         prepareParams(
             mergeMaps(
