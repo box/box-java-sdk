@@ -9,7 +9,7 @@ plugins {
   id "org.gradle.test-retry" version "${testRetryVersion}"
 }
 group = "com.box"
-archivesBaseName = "box-java-sdk-gen"
+archivesBaseName = "box-java-sdk"
 version = "0.1.0"
 java {
   sourceCompatibility = JavaVersion.toVersion(libraryJavaVersion)
@@ -63,13 +63,13 @@ test {
 }
 publishing {
   publications {
-    boxJavaSdkGen(MavenPublication) {
+    boxJavaSdk(MavenPublication) {
       from components.java
       pom {
         artifactId = project.getArchivesBaseName()
-        name = "Box Java SDK Gen"
-        description = "Official Box Java Generated SDK."
-        url = "https://opensource.box.com/box-java-sdk-gen/"
+        name = "Box Java SDK"
+        description = "Official Box Java SDK."
+        url = "https://opensource.box.com/box-java-sdk/"
         packaging = "jar"
         licenses {
           license {
@@ -89,9 +89,9 @@ publishing {
         }
 
         scm {
-          connection = "scm:git:https://github.com/box/box-java-sdk-gen.git"
-          developerConnection = "scm:git:https://github.com/box/box-java-sdk-gen.git"
-          url = "https://github.com/box/box-java-sdk-gen"
+          connection = "scm:git:https://github.com/box/box-java-sdk.git"
+          developerConnection = "scm:git:https://github.com/box/box-java-sdk.git"
+          url = "https://github.com/box/box-java-sdk"
         }
 
       }
@@ -114,7 +114,7 @@ signing {
   // org.bouncycastle:bc-fips:1.0.2.1 libray preset in our Docker machines which is
   // not compatible with Gradle implementation
   useGpgCmd()
-  sign publishing.publications.boxJavaSdkGen
+  sign publishing.publications.boxJavaSdk
 }
 def centralUsername = project.findProperty("centralUsername")
 def centralPassword = project.findProperty("centralPassword")
