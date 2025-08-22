@@ -2,6 +2,27 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [10.0.0-SNAPSHOT](https://github.com/box/box-java-sdk/compare/v4.16.3...v10.0.0-SNAPSHOT) (2025-08-22)
+
+
+### ⚠ BREAKING CHANGES
+
+* Change names of unions (box/box-codegen#787) (#1359)
+* remove unused models from schemas (box/box-openapi#547) (#1354)
+
+### Bug Fixes
+
+* Adjust Item union (box/box-codegen[#790](https://github.com/box/box-java-sdk/issues/790)) ([#1371](https://github.com/box/box-java-sdk/issues/1371)) ([7fd434d](https://github.com/box/box-java-sdk/commit/7fd434d6854f5805af305a00dd18827233b40465))
+* Fix managing network errors (box/box-codegen[#798](https://github.com/box/box-java-sdk/issues/798)) ([#1377](https://github.com/box/box-java-sdk/issues/1377)) ([427136d](https://github.com/box/box-java-sdk/commit/427136d090772a402c30c7b04631424cf1a45d41))
+* Rename external user deletion method (box/box-codegen[#796](https://github.com/box/box-java-sdk/issues/796)) ([#1374](https://github.com/box/box-java-sdk/issues/1374)) ([4c718e2](https://github.com/box/box-java-sdk/commit/4c718e298a98788cae156fe192725d427f149ba2))
+
+
+### New Features and Enhancements
+
+* Change names of unions (box/box-codegen[#787](https://github.com/box/box-java-sdk/issues/787)) ([#1359](https://github.com/box/box-java-sdk/issues/1359)) ([114e778](https://github.com/box/box-java-sdk/commit/114e7785031e19fb58933f231e656a991b5effb7))
+* remove unused models from schemas (box/box-openapi[#547](https://github.com/box/box-java-sdk/issues/547)) ([#1354](https://github.com/box/box-java-sdk/issues/1354)) ([e031308](https://github.com/box/box-java-sdk/commit/e031308f102137351238bf3823372150d3927442)), closes [box/box-openapi#542](https://github.com/box/box-openapi/issues/542) [box/box-openapi#544](https://github.com/box/box-openapi/issues/544) [box/box-codegen#781](https://github.com/box/box-codegen/issues/781) [box/box-openapi#545](https://github.com/box/box-openapi/issues/545) [box/box-codegen#782](https://github.com/box/box-codegen/issues/782)
+* Support external user deletion API ([4188e3f](https://github.com/box/box-java-sdk/commit/4188e3fcf9cfe186beb850415910210aa89cb7bf))
+
 ### [4.16.3](https://github.com/box/box-java-sdk/compare/v4.16.2...v4.16.3) (2025-07-23)
 
 
