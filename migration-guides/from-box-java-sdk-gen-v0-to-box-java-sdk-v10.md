@@ -1,4 +1,4 @@
-# Migration guide from beta release (v0.8.0) of the `box-java-sdk-gen` to the v10 version of the `box-java-sdk`
+# Migration guide from beta release (v0.X.Y) of the `box-java-sdk-gen` to the v10 version of the `box-java-sdk`
 
 <!-- START doctoc generated TOC please keep comment here to allow auto update -->
 <!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
@@ -92,6 +92,7 @@ List of changed `OneOf` classes and types associated with them:
 | FileMiniOrFolderMini                                                                       | Resource                                                           |
 | FileOrFolderOrWebLink                                                                      | LegalHoldPolicyAssignedItem/CollaborationItem                      |
 | FileOrFolderScope                                                                          | ResourceScope                                                      |
+| FileOrFolderScopeScopeField                                                                | ResourceScopeScopeField                                            |
 | FileReferenceOrFolderReferenceOrWeblinkReferenceV2025R0                                    | HubItemReferenceV2025R0                                            |
 | GroupMiniOrUserCollaborations                                                              | CollaborationAccessGrantee                                         |
 | IntegrationMappingPartnerItemSlackUnion                                                    | IntegrationMappingPartnerItemSlack                                 |
