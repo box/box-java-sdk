@@ -6,6 +6,7 @@ import static com.box.sdkgen.internal.utils.UtilsManager.mapOf;
 import static com.box.sdkgen.internal.utils.UtilsManager.mergeMaps;
 import static com.box.sdkgen.internal.utils.UtilsManager.prepareParams;
 
+import com.box.sdkgen.box.eventstream.EventStream;
 import com.box.sdkgen.networking.auth.Authentication;
 import com.box.sdkgen.networking.fetchoptions.FetchOptions;
 import com.box.sdkgen.networking.fetchoptions.ResponseFormat;
@@ -91,6 +92,23 @@ public class EventsManager {
                     .networkSession(this.networkSession)
                     .build());
     return JsonManager.deserialize(response.getData(), Events.class);
+  }
+
+  public EventStream getEventStream() {
+    return getEventStream(new GetEventStreamQueryParams(), new GetEventStreamHeaders());
+  }
+
+  public EventStream getEventStream(GetEventStreamQueryParams queryParams) {
+    return getEventStream(queryParams, new GetEventStreamHeaders());
+  }
+
+  public EventStream getEventStream(GetEventStreamHeaders headers) {
+    return getEventStream(new GetEventStreamQueryParams(), headers);
+  }
+
+  public EventStream getEventStream(
+      GetEventStreamQueryParams queryParams, GetEventStreamHeaders headers) {
+    return new EventStream.Builder(this, queryParams).headersInput(headers).build();
   }
 
   public Authentication getAuth() {

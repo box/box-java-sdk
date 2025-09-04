@@ -5,6 +5,7 @@ import static com.box.sdkgen.internal.utils.UtilsManager.epochSecondsToDateTime;
 import static com.box.sdkgen.internal.utils.UtilsManager.getEpochTimeInSeconds;
 import static com.box.sdkgen.test.commons.CommonsManager.getDefaultClient;
 
+import com.box.sdkgen.box.eventstream.EventStream;
 import com.box.sdkgen.client.BoxClient;
 import com.box.sdkgen.managers.events.GetEventsQueryParams;
 import com.box.sdkgen.managers.events.GetEventsQueryParamsEventTypeField;
@@ -108,5 +109,11 @@ public class EventsITest {
                     .createdBefore(createdBeforeDate)
                     .build());
     assert servers.getEntries().size() == 1;
+  }
+
+  @Test
+  public void testGetEventStream() {
+    EventStream eventStream = client.getEvents().getEventStream();
+    assert !(eventStream == null);
   }
 }
