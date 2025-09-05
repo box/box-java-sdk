@@ -2,6 +2,12 @@
   <img src="https://github.com/box/sdks/blob/master/images/box-dev-logo.png" alt= “box-dev-logo” width="30%" height="50%">
 </p>
 
+# Migration to v10
+The `sdk-gen` branch contains the generated code for the `v10` version of the Box Java SDK. This is intended primarily for developers migrating from [Box Java SDK(generated)](https://github.com/box/box-java-sdk-gen) to the v10 version.
+As part of our upcoming major release, we will be introducing a combined SDK that consolidates the previously separate generated SDK into one unified SDK package for improved usability and maintenance.
+
+You can find the migration guide [here](https://github.com/box/box-java-sdk/blob/sdk-gen/migration-guides/from-box-java-sdk-gen-v0-to-box-java-sdk-v10.md) for transitioning from Box Java SDK Gen to Box Java SDK v10. If you have any questions, please create an issue in the new repository or reach out to [Box Developer Support](https://developer.box.com/support/).
+
 # Box Java SDK
 
 [![Project Status](http://opensource.box.com/badges/active.svg)](http://opensource.box.com/badges)
