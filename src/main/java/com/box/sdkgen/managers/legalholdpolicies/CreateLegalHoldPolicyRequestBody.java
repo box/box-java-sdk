@@ -7,7 +7,7 @@ import com.fasterxml.jackson.annotation.JsonFilter;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import java.util.Date;
+import java.time.OffsetDateTime;
 import java.util.Objects;
 
 @JsonFilter("nullablePropertyFilter")
@@ -21,12 +21,12 @@ public class CreateLegalHoldPolicyRequestBody extends SerializableObject {
   @JsonProperty("filter_started_at")
   @JsonSerialize(using = DateTimeUtils.DateTimeSerializer.class)
   @JsonDeserialize(using = DateTimeUtils.DateTimeDeserializer.class)
-  protected Date filterStartedAt;
+  protected OffsetDateTime filterStartedAt;
 
   @JsonProperty("filter_ended_at")
   @JsonSerialize(using = DateTimeUtils.DateTimeSerializer.class)
   @JsonDeserialize(using = DateTimeUtils.DateTimeDeserializer.class)
-  protected Date filterEndedAt;
+  protected OffsetDateTime filterEndedAt;
 
   @JsonProperty("is_ongoing")
   protected Boolean isOngoing;
@@ -54,11 +54,11 @@ public class CreateLegalHoldPolicyRequestBody extends SerializableObject {
     return description;
   }
 
-  public Date getFilterStartedAt() {
+  public OffsetDateTime getFilterStartedAt() {
     return filterStartedAt;
   }
 
-  public Date getFilterEndedAt() {
+  public OffsetDateTime getFilterEndedAt() {
     return filterEndedAt;
   }
 
@@ -118,9 +118,9 @@ public class CreateLegalHoldPolicyRequestBody extends SerializableObject {
 
     protected String description;
 
-    protected Date filterStartedAt;
+    protected OffsetDateTime filterStartedAt;
 
-    protected Date filterEndedAt;
+    protected OffsetDateTime filterEndedAt;
 
     protected Boolean isOngoing;
 
@@ -134,12 +134,12 @@ public class CreateLegalHoldPolicyRequestBody extends SerializableObject {
       return this;
     }
 
-    public Builder filterStartedAt(Date filterStartedAt) {
+    public Builder filterStartedAt(OffsetDateTime filterStartedAt) {
       this.filterStartedAt = filterStartedAt;
       return this;
     }
 
-    public Builder filterEndedAt(Date filterEndedAt) {
+    public Builder filterEndedAt(OffsetDateTime filterEndedAt) {
       this.filterEndedAt = filterEndedAt;
       return this;
     }

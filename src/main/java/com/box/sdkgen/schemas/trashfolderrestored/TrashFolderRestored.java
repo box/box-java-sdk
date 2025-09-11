@@ -11,7 +11,7 @@ import com.fasterxml.jackson.annotation.JsonFilter;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import java.util.Date;
+import java.time.OffsetDateTime;
 import java.util.Objects;
 
 @JsonFilter("nullablePropertyFilter")
@@ -35,13 +35,13 @@ public class TrashFolderRestored extends SerializableObject {
   @JsonSerialize(using = DateTimeUtils.DateTimeSerializer.class)
   @JsonDeserialize(using = DateTimeUtils.DateTimeDeserializer.class)
   @Nullable
-  protected Date createdAt;
+  protected OffsetDateTime createdAt;
 
   @JsonProperty("modified_at")
   @JsonSerialize(using = DateTimeUtils.DateTimeSerializer.class)
   @JsonDeserialize(using = DateTimeUtils.DateTimeDeserializer.class)
   @Nullable
-  protected Date modifiedAt;
+  protected OffsetDateTime modifiedAt;
 
   protected String description;
 
@@ -68,13 +68,13 @@ public class TrashFolderRestored extends SerializableObject {
   @JsonSerialize(using = DateTimeUtils.DateTimeSerializer.class)
   @JsonDeserialize(using = DateTimeUtils.DateTimeDeserializer.class)
   @Nullable
-  protected Date contentCreatedAt;
+  protected OffsetDateTime contentCreatedAt;
 
   @JsonProperty("content_modified_at")
   @JsonSerialize(using = DateTimeUtils.DateTimeSerializer.class)
   @JsonDeserialize(using = DateTimeUtils.DateTimeDeserializer.class)
   @Nullable
-  protected Date contentModifiedAt;
+  protected OffsetDateTime contentModifiedAt;
 
   @JsonProperty("owned_by")
   protected UserMini ownedBy;
@@ -147,11 +147,11 @@ public class TrashFolderRestored extends SerializableObject {
     return name;
   }
 
-  public Date getCreatedAt() {
+  public OffsetDateTime getCreatedAt() {
     return createdAt;
   }
 
-  public Date getModifiedAt() {
+  public OffsetDateTime getModifiedAt() {
     return modifiedAt;
   }
 
@@ -183,11 +183,11 @@ public class TrashFolderRestored extends SerializableObject {
     return purgedAt;
   }
 
-  public Date getContentCreatedAt() {
+  public OffsetDateTime getContentCreatedAt() {
     return contentCreatedAt;
   }
 
-  public Date getContentModifiedAt() {
+  public OffsetDateTime getContentModifiedAt() {
     return contentModifiedAt;
   }
 
@@ -370,9 +370,9 @@ public class TrashFolderRestored extends SerializableObject {
 
     protected String name;
 
-    protected Date createdAt;
+    protected OffsetDateTime createdAt;
 
-    protected Date modifiedAt;
+    protected OffsetDateTime modifiedAt;
 
     protected String description;
 
@@ -388,9 +388,9 @@ public class TrashFolderRestored extends SerializableObject {
 
     protected String purgedAt;
 
-    protected Date contentCreatedAt;
+    protected OffsetDateTime contentCreatedAt;
 
-    protected Date contentModifiedAt;
+    protected OffsetDateTime contentModifiedAt;
 
     protected UserMini ownedBy;
 
@@ -433,13 +433,13 @@ public class TrashFolderRestored extends SerializableObject {
       return this;
     }
 
-    public Builder createdAt(Date createdAt) {
+    public Builder createdAt(OffsetDateTime createdAt) {
       this.createdAt = createdAt;
       this.markNullableFieldAsSet("created_at");
       return this;
     }
 
-    public Builder modifiedAt(Date modifiedAt) {
+    public Builder modifiedAt(OffsetDateTime modifiedAt) {
       this.modifiedAt = modifiedAt;
       this.markNullableFieldAsSet("modified_at");
       return this;
@@ -482,13 +482,13 @@ public class TrashFolderRestored extends SerializableObject {
       return this;
     }
 
-    public Builder contentCreatedAt(Date contentCreatedAt) {
+    public Builder contentCreatedAt(OffsetDateTime contentCreatedAt) {
       this.contentCreatedAt = contentCreatedAt;
       this.markNullableFieldAsSet("content_created_at");
       return this;
     }
 
-    public Builder contentModifiedAt(Date contentModifiedAt) {
+    public Builder contentModifiedAt(OffsetDateTime contentModifiedAt) {
       this.contentModifiedAt = contentModifiedAt;
       this.markNullableFieldAsSet("content_modified_at");
       return this;

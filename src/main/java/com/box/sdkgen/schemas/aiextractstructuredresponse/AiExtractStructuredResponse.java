@@ -9,7 +9,7 @@ import com.fasterxml.jackson.annotation.JsonFilter;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import java.util.Date;
+import java.time.OffsetDateTime;
 import java.util.Objects;
 
 @JsonFilter("nullablePropertyFilter")
@@ -20,7 +20,7 @@ public class AiExtractStructuredResponse extends SerializableObject {
   @JsonProperty("created_at")
   @JsonSerialize(using = DateTimeUtils.DateTimeSerializer.class)
   @JsonDeserialize(using = DateTimeUtils.DateTimeDeserializer.class)
-  protected final Date createdAt;
+  protected final OffsetDateTime createdAt;
 
   @JsonProperty("completion_reason")
   protected String completionReason;
@@ -30,7 +30,7 @@ public class AiExtractStructuredResponse extends SerializableObject {
 
   public AiExtractStructuredResponse(
       @JsonProperty("answer") AiExtractResponse answer,
-      @JsonProperty("created_at") Date createdAt) {
+      @JsonProperty("created_at") OffsetDateTime createdAt) {
     super();
     this.answer = answer;
     this.createdAt = createdAt;
@@ -49,7 +49,7 @@ public class AiExtractStructuredResponse extends SerializableObject {
     return answer;
   }
 
-  public Date getCreatedAt() {
+  public OffsetDateTime getCreatedAt() {
     return createdAt;
   }
 
@@ -106,13 +106,13 @@ public class AiExtractStructuredResponse extends SerializableObject {
 
     protected final AiExtractResponse answer;
 
-    protected final Date createdAt;
+    protected final OffsetDateTime createdAt;
 
     protected String completionReason;
 
     protected AiAgentInfo aiAgentInfo;
 
-    public Builder(AiExtractResponse answer, Date createdAt) {
+    public Builder(AiExtractResponse answer, OffsetDateTime createdAt) {
       super();
       this.answer = answer;
       this.createdAt = createdAt;

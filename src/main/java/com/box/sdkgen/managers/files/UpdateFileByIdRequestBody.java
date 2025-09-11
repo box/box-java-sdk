@@ -8,7 +8,7 @@ import com.fasterxml.jackson.annotation.JsonFilter;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import java.util.Date;
+import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.Objects;
 
@@ -30,7 +30,7 @@ public class UpdateFileByIdRequestBody extends SerializableObject {
   @JsonProperty("disposition_at")
   @JsonSerialize(using = DateTimeUtils.DateTimeSerializer.class)
   @JsonDeserialize(using = DateTimeUtils.DateTimeDeserializer.class)
-  protected Date dispositionAt;
+  protected OffsetDateTime dispositionAt;
 
   protected UpdateFileByIdRequestBodyPermissionsField permissions;
 
@@ -76,7 +76,7 @@ public class UpdateFileByIdRequestBody extends SerializableObject {
     return lock;
   }
 
-  public Date getDispositionAt() {
+  public OffsetDateTime getDispositionAt() {
     return dispositionAt;
   }
 
@@ -171,7 +171,7 @@ public class UpdateFileByIdRequestBody extends SerializableObject {
 
     protected UpdateFileByIdRequestBodyLockField lock;
 
-    protected Date dispositionAt;
+    protected OffsetDateTime dispositionAt;
 
     protected UpdateFileByIdRequestBodyPermissionsField permissions;
 
@@ -206,7 +206,7 @@ public class UpdateFileByIdRequestBody extends SerializableObject {
       return this;
     }
 
-    public Builder dispositionAt(Date dispositionAt) {
+    public Builder dispositionAt(OffsetDateTime dispositionAt) {
       this.dispositionAt = dispositionAt;
       return this;
     }

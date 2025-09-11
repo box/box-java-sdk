@@ -7,7 +7,7 @@ import com.fasterxml.jackson.annotation.JsonFilter;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import java.util.Date;
+import java.time.OffsetDateTime;
 import java.util.Objects;
 
 @JsonFilter("nullablePropertyFilter")
@@ -20,7 +20,7 @@ public class AiDialogueHistory extends SerializableObject {
   @JsonProperty("created_at")
   @JsonSerialize(using = DateTimeUtils.DateTimeSerializer.class)
   @JsonDeserialize(using = DateTimeUtils.DateTimeDeserializer.class)
-  protected Date createdAt;
+  protected OffsetDateTime createdAt;
 
   public AiDialogueHistory() {
     super();
@@ -42,7 +42,7 @@ public class AiDialogueHistory extends SerializableObject {
     return answer;
   }
 
-  public Date getCreatedAt() {
+  public OffsetDateTime getCreatedAt() {
     return createdAt;
   }
 
@@ -88,7 +88,7 @@ public class AiDialogueHistory extends SerializableObject {
 
     protected String answer;
 
-    protected Date createdAt;
+    protected OffsetDateTime createdAt;
 
     public Builder prompt(String prompt) {
       this.prompt = prompt;
@@ -100,7 +100,7 @@ public class AiDialogueHistory extends SerializableObject {
       return this;
     }
 
-    public Builder createdAt(Date createdAt) {
+    public Builder createdAt(OffsetDateTime createdAt) {
       this.createdAt = createdAt;
       return this;
     }

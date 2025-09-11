@@ -16,7 +16,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import java.io.IOException;
-import java.util.Date;
+import java.time.OffsetDateTime;
 
 @JsonDeserialize(
     using = SearchResultWithSharedLinkItem.SearchResultWithSharedLinkItemDeserializer.class)
@@ -25,13 +25,13 @@ public class SearchResultWithSharedLinkItem extends OneOfThree<FileFull, FolderF
 
   protected final String description;
 
-  protected final Date createdAt;
+  protected final OffsetDateTime createdAt;
 
-  protected final Date modifiedAt;
+  protected final OffsetDateTime modifiedAt;
 
-  protected final Date trashedAt;
+  protected final OffsetDateTime trashedAt;
 
-  protected final Date purgedAt;
+  protected final OffsetDateTime purgedAt;
 
   protected final UserMini createdBy;
 
@@ -138,19 +138,19 @@ public class SearchResultWithSharedLinkItem extends OneOfThree<FileFull, FolderF
     return description;
   }
 
-  public Date getCreatedAt() {
+  public OffsetDateTime getCreatedAt() {
     return createdAt;
   }
 
-  public Date getModifiedAt() {
+  public OffsetDateTime getModifiedAt() {
     return modifiedAt;
   }
 
-  public Date getTrashedAt() {
+  public OffsetDateTime getTrashedAt() {
     return trashedAt;
   }
 
-  public Date getPurgedAt() {
+  public OffsetDateTime getPurgedAt() {
     return purgedAt;
   }
 

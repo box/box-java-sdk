@@ -9,7 +9,7 @@ import com.fasterxml.jackson.annotation.JsonFilter;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import java.util.Date;
+import java.time.OffsetDateTime;
 import java.util.Objects;
 
 @JsonFilter("nullablePropertyFilter")
@@ -22,12 +22,12 @@ public class HubV2025R0 extends HubBaseV2025R0 {
   @JsonProperty("created_at")
   @JsonSerialize(using = DateTimeUtils.DateTimeSerializer.class)
   @JsonDeserialize(using = DateTimeUtils.DateTimeDeserializer.class)
-  protected Date createdAt;
+  protected OffsetDateTime createdAt;
 
   @JsonProperty("updated_at")
   @JsonSerialize(using = DateTimeUtils.DateTimeSerializer.class)
   @JsonDeserialize(using = DateTimeUtils.DateTimeDeserializer.class)
-  protected Date updatedAt;
+  protected OffsetDateTime updatedAt;
 
   @JsonProperty("created_by")
   protected UserMiniV2025R0 createdBy;
@@ -78,11 +78,11 @@ public class HubV2025R0 extends HubBaseV2025R0 {
     return description;
   }
 
-  public Date getCreatedAt() {
+  public OffsetDateTime getCreatedAt() {
     return createdAt;
   }
 
-  public Date getUpdatedAt() {
+  public OffsetDateTime getUpdatedAt() {
     return updatedAt;
   }
 
@@ -220,9 +220,9 @@ public class HubV2025R0 extends HubBaseV2025R0 {
 
     protected String description;
 
-    protected Date createdAt;
+    protected OffsetDateTime createdAt;
 
-    protected Date updatedAt;
+    protected OffsetDateTime updatedAt;
 
     protected UserMiniV2025R0 createdBy;
 
@@ -252,12 +252,12 @@ public class HubV2025R0 extends HubBaseV2025R0 {
       return this;
     }
 
-    public Builder createdAt(Date createdAt) {
+    public Builder createdAt(OffsetDateTime createdAt) {
       this.createdAt = createdAt;
       return this;
     }
 
-    public Builder updatedAt(Date updatedAt) {
+    public Builder updatedAt(OffsetDateTime updatedAt) {
       this.updatedAt = updatedAt;
       return this;
     }

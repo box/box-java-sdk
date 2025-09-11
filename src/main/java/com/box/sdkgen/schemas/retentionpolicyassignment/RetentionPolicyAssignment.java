@@ -11,7 +11,7 @@ import com.fasterxml.jackson.annotation.JsonFilter;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import java.util.Date;
+import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.Objects;
 
@@ -43,7 +43,7 @@ public class RetentionPolicyAssignment extends SerializableObject {
   @JsonProperty("assigned_at")
   @JsonSerialize(using = DateTimeUtils.DateTimeSerializer.class)
   @JsonDeserialize(using = DateTimeUtils.DateTimeDeserializer.class)
-  protected Date assignedAt;
+  protected OffsetDateTime assignedAt;
 
   @JsonProperty("start_date_field")
   protected String startDateField;
@@ -93,7 +93,7 @@ public class RetentionPolicyAssignment extends SerializableObject {
     return assignedBy;
   }
 
-  public Date getAssignedAt() {
+  public OffsetDateTime getAssignedAt() {
     return assignedAt;
   }
 
@@ -184,7 +184,7 @@ public class RetentionPolicyAssignment extends SerializableObject {
 
     protected UserMini assignedBy;
 
-    protected Date assignedAt;
+    protected OffsetDateTime assignedAt;
 
     protected String startDateField;
 
@@ -227,7 +227,7 @@ public class RetentionPolicyAssignment extends SerializableObject {
       return this;
     }
 
-    public Builder assignedAt(Date assignedAt) {
+    public Builder assignedAt(OffsetDateTime assignedAt) {
       this.assignedAt = assignedAt;
       return this;
     }

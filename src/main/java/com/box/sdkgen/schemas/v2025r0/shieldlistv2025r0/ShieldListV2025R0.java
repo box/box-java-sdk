@@ -14,7 +14,7 @@ import com.fasterxml.jackson.annotation.JsonFilter;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import java.util.Date;
+import java.time.OffsetDateTime;
 import java.util.Objects;
 
 @JsonFilter("nullablePropertyFilter")
@@ -33,12 +33,12 @@ public class ShieldListV2025R0 extends SerializableObject {
   @JsonProperty("created_at")
   @JsonSerialize(using = DateTimeUtils.DateTimeSerializer.class)
   @JsonDeserialize(using = DateTimeUtils.DateTimeDeserializer.class)
-  protected final Date createdAt;
+  protected final OffsetDateTime createdAt;
 
   @JsonProperty("updated_at")
   @JsonSerialize(using = DateTimeUtils.DateTimeSerializer.class)
   @JsonDeserialize(using = DateTimeUtils.DateTimeDeserializer.class)
-  protected final Date updatedAt;
+  protected final OffsetDateTime updatedAt;
 
   protected final ShieldListContentV2025R0 content;
 
@@ -47,8 +47,8 @@ public class ShieldListV2025R0 extends SerializableObject {
       String type,
       String name,
       EnterpriseReferenceV2025R0 enterprise,
-      Date createdAt,
-      Date updatedAt,
+      OffsetDateTime createdAt,
+      OffsetDateTime updatedAt,
       ShieldListContentCountryV2025R0 content) {
     super();
     this.id = id;
@@ -65,8 +65,8 @@ public class ShieldListV2025R0 extends SerializableObject {
       String type,
       String name,
       EnterpriseReferenceV2025R0 enterprise,
-      Date createdAt,
-      Date updatedAt,
+      OffsetDateTime createdAt,
+      OffsetDateTime updatedAt,
       ShieldListContentDomainV2025R0 content) {
     super();
     this.id = id;
@@ -83,8 +83,8 @@ public class ShieldListV2025R0 extends SerializableObject {
       String type,
       String name,
       EnterpriseReferenceV2025R0 enterprise,
-      Date createdAt,
-      Date updatedAt,
+      OffsetDateTime createdAt,
+      OffsetDateTime updatedAt,
       ShieldListContentEmailV2025R0 content) {
     super();
     this.id = id;
@@ -101,8 +101,8 @@ public class ShieldListV2025R0 extends SerializableObject {
       String type,
       String name,
       EnterpriseReferenceV2025R0 enterprise,
-      Date createdAt,
-      Date updatedAt,
+      OffsetDateTime createdAt,
+      OffsetDateTime updatedAt,
       ShieldListContentIpV2025R0 content) {
     super();
     this.id = id;
@@ -119,8 +119,8 @@ public class ShieldListV2025R0 extends SerializableObject {
       String type,
       String name,
       EnterpriseReferenceV2025R0 enterprise,
-      Date createdAt,
-      Date updatedAt,
+      OffsetDateTime createdAt,
+      OffsetDateTime updatedAt,
       ShieldListContentIntegrationV2025R0 content) {
     super();
     this.id = id;
@@ -137,8 +137,8 @@ public class ShieldListV2025R0 extends SerializableObject {
       @JsonProperty("type") String type,
       @JsonProperty("name") String name,
       @JsonProperty("enterprise") EnterpriseReferenceV2025R0 enterprise,
-      @JsonProperty("created_at") Date createdAt,
-      @JsonProperty("updated_at") Date updatedAt,
+      @JsonProperty("created_at") OffsetDateTime createdAt,
+      @JsonProperty("updated_at") OffsetDateTime updatedAt,
       @JsonProperty("content") ShieldListContentV2025R0 content) {
     super();
     this.id = id;
@@ -183,11 +183,11 @@ public class ShieldListV2025R0 extends SerializableObject {
     return description;
   }
 
-  public Date getCreatedAt() {
+  public OffsetDateTime getCreatedAt() {
     return createdAt;
   }
 
-  public Date getUpdatedAt() {
+  public OffsetDateTime getUpdatedAt() {
     return updatedAt;
   }
 
@@ -268,9 +268,9 @@ public class ShieldListV2025R0 extends SerializableObject {
 
     protected String description;
 
-    protected final Date createdAt;
+    protected final OffsetDateTime createdAt;
 
-    protected final Date updatedAt;
+    protected final OffsetDateTime updatedAt;
 
     protected final ShieldListContentV2025R0 content;
 
@@ -279,8 +279,8 @@ public class ShieldListV2025R0 extends SerializableObject {
         String type,
         String name,
         EnterpriseReferenceV2025R0 enterprise,
-        Date createdAt,
-        Date updatedAt,
+        OffsetDateTime createdAt,
+        OffsetDateTime updatedAt,
         ShieldListContentCountryV2025R0 content) {
       super();
       this.id = id;
@@ -297,8 +297,8 @@ public class ShieldListV2025R0 extends SerializableObject {
         String type,
         String name,
         EnterpriseReferenceV2025R0 enterprise,
-        Date createdAt,
-        Date updatedAt,
+        OffsetDateTime createdAt,
+        OffsetDateTime updatedAt,
         ShieldListContentDomainV2025R0 content) {
       super();
       this.id = id;
@@ -315,8 +315,8 @@ public class ShieldListV2025R0 extends SerializableObject {
         String type,
         String name,
         EnterpriseReferenceV2025R0 enterprise,
-        Date createdAt,
-        Date updatedAt,
+        OffsetDateTime createdAt,
+        OffsetDateTime updatedAt,
         ShieldListContentEmailV2025R0 content) {
       super();
       this.id = id;
@@ -333,8 +333,8 @@ public class ShieldListV2025R0 extends SerializableObject {
         String type,
         String name,
         EnterpriseReferenceV2025R0 enterprise,
-        Date createdAt,
-        Date updatedAt,
+        OffsetDateTime createdAt,
+        OffsetDateTime updatedAt,
         ShieldListContentIpV2025R0 content) {
       super();
       this.id = id;
@@ -351,8 +351,8 @@ public class ShieldListV2025R0 extends SerializableObject {
         String type,
         String name,
         EnterpriseReferenceV2025R0 enterprise,
-        Date createdAt,
-        Date updatedAt,
+        OffsetDateTime createdAt,
+        OffsetDateTime updatedAt,
         ShieldListContentIntegrationV2025R0 content) {
       super();
       this.id = id;
@@ -369,8 +369,8 @@ public class ShieldListV2025R0 extends SerializableObject {
         String type,
         String name,
         EnterpriseReferenceV2025R0 enterprise,
-        Date createdAt,
-        Date updatedAt,
+        OffsetDateTime createdAt,
+        OffsetDateTime updatedAt,
         ShieldListContentV2025R0 content) {
       super();
       this.id = id;

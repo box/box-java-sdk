@@ -5,7 +5,7 @@ import com.box.sdkgen.schemas.aicitation.AiCitation;
 import com.box.sdkgen.schemas.airesponse.AiResponse;
 import com.fasterxml.jackson.annotation.JsonFilter;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import java.util.Date;
+import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.Objects;
 
@@ -15,7 +15,7 @@ public class AiResponseFull extends AiResponse {
   protected List<AiCitation> citations;
 
   public AiResponseFull(
-      @JsonProperty("answer") String answer, @JsonProperty("created_at") Date createdAt) {
+      @JsonProperty("answer") String answer, @JsonProperty("created_at") OffsetDateTime createdAt) {
     super(answer, createdAt);
   }
 
@@ -79,7 +79,7 @@ public class AiResponseFull extends AiResponse {
 
     protected List<AiCitation> citations;
 
-    public Builder(String answer, Date createdAt) {
+    public Builder(String answer, OffsetDateTime createdAt) {
       super(answer, createdAt);
     }
 

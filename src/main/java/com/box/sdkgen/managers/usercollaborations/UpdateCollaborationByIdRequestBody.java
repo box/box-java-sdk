@@ -8,7 +8,7 @@ import com.fasterxml.jackson.annotation.JsonFilter;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import java.util.Date;
+import java.time.OffsetDateTime;
 import java.util.Objects;
 
 @JsonFilter("nullablePropertyFilter")
@@ -37,7 +37,7 @@ public class UpdateCollaborationByIdRequestBody extends SerializableObject {
   @JsonProperty("expires_at")
   @JsonSerialize(using = DateTimeUtils.DateTimeSerializer.class)
   @JsonDeserialize(using = DateTimeUtils.DateTimeDeserializer.class)
-  protected Date expiresAt;
+  protected OffsetDateTime expiresAt;
 
   @JsonProperty("can_view_path")
   protected Boolean canViewPath;
@@ -70,7 +70,7 @@ public class UpdateCollaborationByIdRequestBody extends SerializableObject {
     return status;
   }
 
-  public Date getExpiresAt() {
+  public OffsetDateTime getExpiresAt() {
     return expiresAt;
   }
 
@@ -125,7 +125,7 @@ public class UpdateCollaborationByIdRequestBody extends SerializableObject {
 
     protected EnumWrapper<UpdateCollaborationByIdRequestBodyStatusField> status;
 
-    protected Date expiresAt;
+    protected OffsetDateTime expiresAt;
 
     protected Boolean canViewPath;
 
@@ -149,7 +149,7 @@ public class UpdateCollaborationByIdRequestBody extends SerializableObject {
       return this;
     }
 
-    public Builder expiresAt(Date expiresAt) {
+    public Builder expiresAt(OffsetDateTime expiresAt) {
       this.expiresAt = expiresAt;
       return this;
     }

@@ -23,8 +23,8 @@ import com.fasterxml.jackson.databind.SerializerProvider;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import java.io.IOException;
+import java.time.OffsetDateTime;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 
@@ -563,14 +563,14 @@ public class FolderFull extends Folder {
     }
 
     @Override
-    public Builder createdAt(Date createdAt) {
+    public Builder createdAt(OffsetDateTime createdAt) {
       this.createdAt = createdAt;
       this.markNullableFieldAsSet("created_at");
       return this;
     }
 
     @Override
-    public Builder modifiedAt(Date modifiedAt) {
+    public Builder modifiedAt(OffsetDateTime modifiedAt) {
       this.modifiedAt = modifiedAt;
       this.markNullableFieldAsSet("modified_at");
       return this;
@@ -607,28 +607,28 @@ public class FolderFull extends Folder {
     }
 
     @Override
-    public Builder trashedAt(Date trashedAt) {
+    public Builder trashedAt(OffsetDateTime trashedAt) {
       this.trashedAt = trashedAt;
       this.markNullableFieldAsSet("trashed_at");
       return this;
     }
 
     @Override
-    public Builder purgedAt(Date purgedAt) {
+    public Builder purgedAt(OffsetDateTime purgedAt) {
       this.purgedAt = purgedAt;
       this.markNullableFieldAsSet("purged_at");
       return this;
     }
 
     @Override
-    public Builder contentCreatedAt(Date contentCreatedAt) {
+    public Builder contentCreatedAt(OffsetDateTime contentCreatedAt) {
       this.contentCreatedAt = contentCreatedAt;
       this.markNullableFieldAsSet("content_created_at");
       return this;
     }
 
     @Override
-    public Builder contentModifiedAt(Date contentModifiedAt) {
+    public Builder contentModifiedAt(OffsetDateTime contentModifiedAt) {
       this.contentModifiedAt = contentModifiedAt;
       this.markNullableFieldAsSet("content_modified_at");
       return this;

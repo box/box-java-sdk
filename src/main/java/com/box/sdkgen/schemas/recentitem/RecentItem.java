@@ -12,7 +12,7 @@ import com.fasterxml.jackson.annotation.JsonFilter;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import java.util.Date;
+import java.time.OffsetDateTime;
 import java.util.Objects;
 
 @JsonFilter("nullablePropertyFilter")
@@ -32,7 +32,7 @@ public class RecentItem extends SerializableObject {
   @JsonProperty("interacted_at")
   @JsonSerialize(using = DateTimeUtils.DateTimeSerializer.class)
   @JsonDeserialize(using = DateTimeUtils.DateTimeDeserializer.class)
-  protected Date interactedAt;
+  protected OffsetDateTime interactedAt;
 
   @JsonProperty("interaction_shared_link")
   protected String interactionSharedLink;
@@ -63,7 +63,7 @@ public class RecentItem extends SerializableObject {
     return interactionType;
   }
 
-  public Date getInteractedAt() {
+  public OffsetDateTime getInteractedAt() {
     return interactedAt;
   }
 
@@ -125,7 +125,7 @@ public class RecentItem extends SerializableObject {
 
     protected EnumWrapper<RecentItemInteractionTypeField> interactionType;
 
-    protected Date interactedAt;
+    protected OffsetDateTime interactedAt;
 
     protected String interactionSharedLink;
 
@@ -164,7 +164,7 @@ public class RecentItem extends SerializableObject {
       return this;
     }
 
-    public Builder interactedAt(Date interactedAt) {
+    public Builder interactedAt(OffsetDateTime interactedAt) {
       this.interactedAt = interactedAt;
       return this;
     }

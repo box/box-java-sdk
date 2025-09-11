@@ -15,7 +15,7 @@ import com.fasterxml.jackson.annotation.JsonFilter;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import java.util.Date;
+import java.time.OffsetDateTime;
 import java.util.Map;
 import java.util.Objects;
 
@@ -27,12 +27,12 @@ public class Event extends SerializableObject {
   @JsonProperty("created_at")
   @JsonSerialize(using = DateTimeUtils.DateTimeSerializer.class)
   @JsonDeserialize(using = DateTimeUtils.DateTimeDeserializer.class)
-  protected Date createdAt;
+  protected OffsetDateTime createdAt;
 
   @JsonProperty("recorded_at")
   @JsonSerialize(using = DateTimeUtils.DateTimeSerializer.class)
   @JsonDeserialize(using = DateTimeUtils.DateTimeDeserializer.class)
-  protected Date recordedAt;
+  protected OffsetDateTime recordedAt;
 
   @JsonProperty("event_id")
   protected String eventId;
@@ -75,11 +75,11 @@ public class Event extends SerializableObject {
     return type;
   }
 
-  public Date getCreatedAt() {
+  public OffsetDateTime getCreatedAt() {
     return createdAt;
   }
 
-  public Date getRecordedAt() {
+  public OffsetDateTime getRecordedAt() {
     return recordedAt;
   }
 
@@ -186,9 +186,9 @@ public class Event extends SerializableObject {
 
     protected String type;
 
-    protected Date createdAt;
+    protected OffsetDateTime createdAt;
 
-    protected Date recordedAt;
+    protected OffsetDateTime recordedAt;
 
     protected String eventId;
 
@@ -207,12 +207,12 @@ public class Event extends SerializableObject {
       return this;
     }
 
-    public Builder createdAt(Date createdAt) {
+    public Builder createdAt(OffsetDateTime createdAt) {
       this.createdAt = createdAt;
       return this;
     }
 
-    public Builder recordedAt(Date recordedAt) {
+    public Builder recordedAt(OffsetDateTime recordedAt) {
       this.recordedAt = recordedAt;
       return this;
     }

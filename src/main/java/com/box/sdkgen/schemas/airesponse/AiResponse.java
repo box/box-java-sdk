@@ -8,7 +8,7 @@ import com.fasterxml.jackson.annotation.JsonFilter;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import java.util.Date;
+import java.time.OffsetDateTime;
 import java.util.Objects;
 
 @JsonFilter("nullablePropertyFilter")
@@ -19,7 +19,7 @@ public class AiResponse extends SerializableObject {
   @JsonProperty("created_at")
   @JsonSerialize(using = DateTimeUtils.DateTimeSerializer.class)
   @JsonDeserialize(using = DateTimeUtils.DateTimeDeserializer.class)
-  protected final Date createdAt;
+  protected final OffsetDateTime createdAt;
 
   @JsonProperty("completion_reason")
   protected String completionReason;
@@ -28,7 +28,7 @@ public class AiResponse extends SerializableObject {
   protected AiAgentInfo aiAgentInfo;
 
   public AiResponse(
-      @JsonProperty("answer") String answer, @JsonProperty("created_at") Date createdAt) {
+      @JsonProperty("answer") String answer, @JsonProperty("created_at") OffsetDateTime createdAt) {
     super();
     this.answer = answer;
     this.createdAt = createdAt;
@@ -47,7 +47,7 @@ public class AiResponse extends SerializableObject {
     return answer;
   }
 
-  public Date getCreatedAt() {
+  public OffsetDateTime getCreatedAt() {
     return createdAt;
   }
 
@@ -104,13 +104,13 @@ public class AiResponse extends SerializableObject {
 
     protected final String answer;
 
-    protected final Date createdAt;
+    protected final OffsetDateTime createdAt;
 
     protected String completionReason;
 
     protected AiAgentInfo aiAgentInfo;
 
-    public Builder(String answer, Date createdAt) {
+    public Builder(String answer, OffsetDateTime createdAt) {
       super();
       this.answer = answer;
       this.createdAt = createdAt;

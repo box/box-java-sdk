@@ -7,7 +7,7 @@ import com.fasterxml.jackson.annotation.JsonFilter;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import java.util.Date;
+import java.time.OffsetDateTime;
 import java.util.Objects;
 
 @JsonFilter("nullablePropertyFilter")
@@ -18,7 +18,7 @@ public class UploadFileVersionRequestBodyAttributesField extends SerializableObj
   @JsonProperty("content_modified_at")
   @JsonSerialize(using = DateTimeUtils.DateTimeSerializer.class)
   @JsonDeserialize(using = DateTimeUtils.DateTimeDeserializer.class)
-  protected Date contentModifiedAt;
+  protected OffsetDateTime contentModifiedAt;
 
   public UploadFileVersionRequestBodyAttributesField(@JsonProperty("name") String name) {
     super();
@@ -36,7 +36,7 @@ public class UploadFileVersionRequestBodyAttributesField extends SerializableObj
     return name;
   }
 
-  public Date getContentModifiedAt() {
+  public OffsetDateTime getContentModifiedAt() {
     return contentModifiedAt;
   }
 
@@ -76,14 +76,14 @@ public class UploadFileVersionRequestBodyAttributesField extends SerializableObj
 
     protected final String name;
 
-    protected Date contentModifiedAt;
+    protected OffsetDateTime contentModifiedAt;
 
     public Builder(String name) {
       super();
       this.name = name;
     }
 
-    public Builder contentModifiedAt(Date contentModifiedAt) {
+    public Builder contentModifiedAt(OffsetDateTime contentModifiedAt) {
       this.contentModifiedAt = contentModifiedAt;
       return this;
     }

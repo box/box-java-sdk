@@ -17,7 +17,7 @@ import com.fasterxml.jackson.annotation.JsonFilter;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import java.util.Date;
+import java.time.OffsetDateTime;
 import java.util.Objects;
 
 @JsonFilter("nullablePropertyFilter")
@@ -50,7 +50,7 @@ public class Collaboration extends SerializableObject {
   @JsonSerialize(using = DateTimeUtils.DateTimeSerializer.class)
   @JsonDeserialize(using = DateTimeUtils.DateTimeDeserializer.class)
   @Nullable
-  protected Date expiresAt;
+  protected OffsetDateTime expiresAt;
 
   @JsonProperty("is_access_only")
   protected Boolean isAccessOnly;
@@ -62,7 +62,7 @@ public class Collaboration extends SerializableObject {
   @JsonProperty("acknowledged_at")
   @JsonSerialize(using = DateTimeUtils.DateTimeSerializer.class)
   @JsonDeserialize(using = DateTimeUtils.DateTimeDeserializer.class)
-  protected Date acknowledgedAt;
+  protected OffsetDateTime acknowledgedAt;
 
   @JsonProperty("created_by")
   protected UserCollaborations createdBy;
@@ -70,12 +70,12 @@ public class Collaboration extends SerializableObject {
   @JsonProperty("created_at")
   @JsonSerialize(using = DateTimeUtils.DateTimeSerializer.class)
   @JsonDeserialize(using = DateTimeUtils.DateTimeDeserializer.class)
-  protected Date createdAt;
+  protected OffsetDateTime createdAt;
 
   @JsonProperty("modified_at")
   @JsonSerialize(using = DateTimeUtils.DateTimeSerializer.class)
   @JsonDeserialize(using = DateTimeUtils.DateTimeDeserializer.class)
-  protected Date modifiedAt;
+  protected OffsetDateTime modifiedAt;
 
   @JsonProperty("acceptance_requirements_status")
   protected CollaborationAcceptanceRequirementsStatusField acceptanceRequirementsStatus;
@@ -134,7 +134,7 @@ public class Collaboration extends SerializableObject {
     return role;
   }
 
-  public Date getExpiresAt() {
+  public OffsetDateTime getExpiresAt() {
     return expiresAt;
   }
 
@@ -146,7 +146,7 @@ public class Collaboration extends SerializableObject {
     return status;
   }
 
-  public Date getAcknowledgedAt() {
+  public OffsetDateTime getAcknowledgedAt() {
     return acknowledgedAt;
   }
 
@@ -154,11 +154,11 @@ public class Collaboration extends SerializableObject {
     return createdBy;
   }
 
-  public Date getCreatedAt() {
+  public OffsetDateTime getCreatedAt() {
     return createdAt;
   }
 
-  public Date getModifiedAt() {
+  public OffsetDateTime getModifiedAt() {
     return modifiedAt;
   }
 
@@ -293,19 +293,19 @@ public class Collaboration extends SerializableObject {
 
     protected EnumWrapper<CollaborationRoleField> role;
 
-    protected Date expiresAt;
+    protected OffsetDateTime expiresAt;
 
     protected Boolean isAccessOnly;
 
     protected EnumWrapper<CollaborationStatusField> status;
 
-    protected Date acknowledgedAt;
+    protected OffsetDateTime acknowledgedAt;
 
     protected UserCollaborations createdBy;
 
-    protected Date createdAt;
+    protected OffsetDateTime createdAt;
 
-    protected Date modifiedAt;
+    protected OffsetDateTime modifiedAt;
 
     protected CollaborationAcceptanceRequirementsStatusField acceptanceRequirementsStatus;
 
@@ -386,7 +386,7 @@ public class Collaboration extends SerializableObject {
       return this;
     }
 
-    public Builder expiresAt(Date expiresAt) {
+    public Builder expiresAt(OffsetDateTime expiresAt) {
       this.expiresAt = expiresAt;
       this.markNullableFieldAsSet("expires_at");
       return this;
@@ -407,7 +407,7 @@ public class Collaboration extends SerializableObject {
       return this;
     }
 
-    public Builder acknowledgedAt(Date acknowledgedAt) {
+    public Builder acknowledgedAt(OffsetDateTime acknowledgedAt) {
       this.acknowledgedAt = acknowledgedAt;
       return this;
     }
@@ -417,12 +417,12 @@ public class Collaboration extends SerializableObject {
       return this;
     }
 
-    public Builder createdAt(Date createdAt) {
+    public Builder createdAt(OffsetDateTime createdAt) {
       this.createdAt = createdAt;
       return this;
     }
 
-    public Builder modifiedAt(Date modifiedAt) {
+    public Builder modifiedAt(OffsetDateTime modifiedAt) {
       this.modifiedAt = modifiedAt;
       return this;
     }

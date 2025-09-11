@@ -9,7 +9,7 @@ import com.fasterxml.jackson.annotation.JsonFilter;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import java.util.Date;
+import java.time.OffsetDateTime;
 import java.util.Objects;
 
 @JsonFilter("nullablePropertyFilter")
@@ -33,27 +33,27 @@ public class LegalHoldPolicy extends LegalHoldPolicyMini {
   @JsonProperty("created_at")
   @JsonSerialize(using = DateTimeUtils.DateTimeSerializer.class)
   @JsonDeserialize(using = DateTimeUtils.DateTimeDeserializer.class)
-  protected Date createdAt;
+  protected OffsetDateTime createdAt;
 
   @JsonProperty("modified_at")
   @JsonSerialize(using = DateTimeUtils.DateTimeSerializer.class)
   @JsonDeserialize(using = DateTimeUtils.DateTimeDeserializer.class)
-  protected Date modifiedAt;
+  protected OffsetDateTime modifiedAt;
 
   @JsonProperty("deleted_at")
   @JsonSerialize(using = DateTimeUtils.DateTimeSerializer.class)
   @JsonDeserialize(using = DateTimeUtils.DateTimeDeserializer.class)
-  protected Date deletedAt;
+  protected OffsetDateTime deletedAt;
 
   @JsonProperty("filter_started_at")
   @JsonSerialize(using = DateTimeUtils.DateTimeSerializer.class)
   @JsonDeserialize(using = DateTimeUtils.DateTimeDeserializer.class)
-  protected Date filterStartedAt;
+  protected OffsetDateTime filterStartedAt;
 
   @JsonProperty("filter_ended_at")
   @JsonSerialize(using = DateTimeUtils.DateTimeSerializer.class)
   @JsonDeserialize(using = DateTimeUtils.DateTimeDeserializer.class)
-  protected Date filterEndedAt;
+  protected OffsetDateTime filterEndedAt;
 
   @JsonProperty("release_notes")
   protected String releaseNotes;
@@ -98,23 +98,23 @@ public class LegalHoldPolicy extends LegalHoldPolicyMini {
     return createdBy;
   }
 
-  public Date getCreatedAt() {
+  public OffsetDateTime getCreatedAt() {
     return createdAt;
   }
 
-  public Date getModifiedAt() {
+  public OffsetDateTime getModifiedAt() {
     return modifiedAt;
   }
 
-  public Date getDeletedAt() {
+  public OffsetDateTime getDeletedAt() {
     return deletedAt;
   }
 
-  public Date getFilterStartedAt() {
+  public OffsetDateTime getFilterStartedAt() {
     return filterStartedAt;
   }
 
-  public Date getFilterEndedAt() {
+  public OffsetDateTime getFilterEndedAt() {
     return filterEndedAt;
   }
 
@@ -233,15 +233,15 @@ public class LegalHoldPolicy extends LegalHoldPolicyMini {
 
     protected UserMini createdBy;
 
-    protected Date createdAt;
+    protected OffsetDateTime createdAt;
 
-    protected Date modifiedAt;
+    protected OffsetDateTime modifiedAt;
 
-    protected Date deletedAt;
+    protected OffsetDateTime deletedAt;
 
-    protected Date filterStartedAt;
+    protected OffsetDateTime filterStartedAt;
 
-    protected Date filterEndedAt;
+    protected OffsetDateTime filterEndedAt;
 
     protected String releaseNotes;
 
@@ -279,27 +279,27 @@ public class LegalHoldPolicy extends LegalHoldPolicyMini {
       return this;
     }
 
-    public Builder createdAt(Date createdAt) {
+    public Builder createdAt(OffsetDateTime createdAt) {
       this.createdAt = createdAt;
       return this;
     }
 
-    public Builder modifiedAt(Date modifiedAt) {
+    public Builder modifiedAt(OffsetDateTime modifiedAt) {
       this.modifiedAt = modifiedAt;
       return this;
     }
 
-    public Builder deletedAt(Date deletedAt) {
+    public Builder deletedAt(OffsetDateTime deletedAt) {
       this.deletedAt = deletedAt;
       return this;
     }
 
-    public Builder filterStartedAt(Date filterStartedAt) {
+    public Builder filterStartedAt(OffsetDateTime filterStartedAt) {
       this.filterStartedAt = filterStartedAt;
       return this;
     }
 
-    public Builder filterEndedAt(Date filterEndedAt) {
+    public Builder filterEndedAt(OffsetDateTime filterEndedAt) {
       this.filterEndedAt = filterEndedAt;
       return this;
     }

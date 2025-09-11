@@ -11,7 +11,7 @@ import com.fasterxml.jackson.annotation.JsonFilter;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import java.util.Date;
+import java.time.OffsetDateTime;
 import java.util.Objects;
 
 @JsonFilter("nullablePropertyFilter")
@@ -28,7 +28,7 @@ public class Task extends SerializableObject {
   @JsonProperty("due_at")
   @JsonSerialize(using = DateTimeUtils.DateTimeSerializer.class)
   @JsonDeserialize(using = DateTimeUtils.DateTimeDeserializer.class)
-  protected Date dueAt;
+  protected OffsetDateTime dueAt;
 
   @JsonDeserialize(using = TaskActionField.TaskActionFieldDeserializer.class)
   @JsonSerialize(using = TaskActionField.TaskActionFieldSerializer.class)
@@ -48,7 +48,7 @@ public class Task extends SerializableObject {
   @JsonProperty("created_at")
   @JsonSerialize(using = DateTimeUtils.DateTimeSerializer.class)
   @JsonDeserialize(using = DateTimeUtils.DateTimeDeserializer.class)
-  protected Date createdAt;
+  protected OffsetDateTime createdAt;
 
   @JsonDeserialize(using = TaskCompletionRuleField.TaskCompletionRuleFieldDeserializer.class)
   @JsonSerialize(using = TaskCompletionRuleField.TaskCompletionRuleFieldSerializer.class)
@@ -87,7 +87,7 @@ public class Task extends SerializableObject {
     return item;
   }
 
-  public Date getDueAt() {
+  public OffsetDateTime getDueAt() {
     return dueAt;
   }
 
@@ -111,7 +111,7 @@ public class Task extends SerializableObject {
     return createdBy;
   }
 
-  public Date getCreatedAt() {
+  public OffsetDateTime getCreatedAt() {
     return createdAt;
   }
 
@@ -214,7 +214,7 @@ public class Task extends SerializableObject {
 
     protected FileMini item;
 
-    protected Date dueAt;
+    protected OffsetDateTime dueAt;
 
     protected EnumWrapper<TaskActionField> action;
 
@@ -226,7 +226,7 @@ public class Task extends SerializableObject {
 
     protected UserMini createdBy;
 
-    protected Date createdAt;
+    protected OffsetDateTime createdAt;
 
     protected EnumWrapper<TaskCompletionRuleField> completionRule;
 
@@ -250,7 +250,7 @@ public class Task extends SerializableObject {
       return this;
     }
 
-    public Builder dueAt(Date dueAt) {
+    public Builder dueAt(OffsetDateTime dueAt) {
       this.dueAt = dueAt;
       return this;
     }
@@ -285,7 +285,7 @@ public class Task extends SerializableObject {
       return this;
     }
 
-    public Builder createdAt(Date createdAt) {
+    public Builder createdAt(OffsetDateTime createdAt) {
       this.createdAt = createdAt;
       return this;
     }

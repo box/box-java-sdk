@@ -10,7 +10,7 @@ import com.fasterxml.jackson.annotation.JsonFilter;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import java.util.Date;
+import java.time.OffsetDateTime;
 import java.util.Objects;
 
 @JsonFilter("nullablePropertyFilter")
@@ -27,7 +27,7 @@ public class ShieldInformationBarrierSegmentMember
   @JsonProperty("created_at")
   @JsonSerialize(using = DateTimeUtils.DateTimeSerializer.class)
   @JsonDeserialize(using = DateTimeUtils.DateTimeDeserializer.class)
-  protected Date createdAt;
+  protected OffsetDateTime createdAt;
 
   @JsonProperty("created_by")
   protected UserBase createdBy;
@@ -35,7 +35,7 @@ public class ShieldInformationBarrierSegmentMember
   @JsonProperty("updated_at")
   @JsonSerialize(using = DateTimeUtils.DateTimeSerializer.class)
   @JsonDeserialize(using = DateTimeUtils.DateTimeDeserializer.class)
-  protected Date updatedAt;
+  protected OffsetDateTime updatedAt;
 
   @JsonProperty("updated_by")
   protected UserBase updatedBy;
@@ -64,7 +64,7 @@ public class ShieldInformationBarrierSegmentMember
     return shieldInformationBarrierSegment;
   }
 
-  public Date getCreatedAt() {
+  public OffsetDateTime getCreatedAt() {
     return createdAt;
   }
 
@@ -72,7 +72,7 @@ public class ShieldInformationBarrierSegmentMember
     return createdBy;
   }
 
-  public Date getUpdatedAt() {
+  public OffsetDateTime getUpdatedAt() {
     return updatedAt;
   }
 
@@ -162,11 +162,11 @@ public class ShieldInformationBarrierSegmentMember
     protected ShieldInformationBarrierSegmentMemberShieldInformationBarrierSegmentField
         shieldInformationBarrierSegment;
 
-    protected Date createdAt;
+    protected OffsetDateTime createdAt;
 
     protected UserBase createdBy;
 
-    protected Date updatedAt;
+    protected OffsetDateTime updatedAt;
 
     protected UserBase updatedBy;
 
@@ -182,7 +182,7 @@ public class ShieldInformationBarrierSegmentMember
       return this;
     }
 
-    public Builder createdAt(Date createdAt) {
+    public Builder createdAt(OffsetDateTime createdAt) {
       this.createdAt = createdAt;
       return this;
     }
@@ -192,7 +192,7 @@ public class ShieldInformationBarrierSegmentMember
       return this;
     }
 
-    public Builder updatedAt(Date updatedAt) {
+    public Builder updatedAt(OffsetDateTime updatedAt) {
       this.updatedAt = updatedAt;
       return this;
     }

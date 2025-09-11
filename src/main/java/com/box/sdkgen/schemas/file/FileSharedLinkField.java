@@ -9,7 +9,7 @@ import com.fasterxml.jackson.annotation.JsonFilter;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import java.util.Date;
+import java.time.OffsetDateTime;
 import java.util.Objects;
 
 @JsonFilter("nullablePropertyFilter")
@@ -56,7 +56,7 @@ public class FileSharedLinkField extends SerializableObject {
   @JsonSerialize(using = DateTimeUtils.DateTimeSerializer.class)
   @JsonDeserialize(using = DateTimeUtils.DateTimeDeserializer.class)
   @Nullable
-  protected Date unsharedAt;
+  protected OffsetDateTime unsharedAt;
 
   @JsonProperty("is_password_enabled")
   protected final boolean isPasswordEnabled;
@@ -182,7 +182,7 @@ public class FileSharedLinkField extends SerializableObject {
     return effectivePermission;
   }
 
-  public Date getUnsharedAt() {
+  public OffsetDateTime getUnsharedAt() {
     return unsharedAt;
   }
 
@@ -311,7 +311,7 @@ public class FileSharedLinkField extends SerializableObject {
 
     protected final EnumWrapper<FileSharedLinkEffectivePermissionField> effectivePermission;
 
-    protected Date unsharedAt;
+    protected OffsetDateTime unsharedAt;
 
     protected final boolean isPasswordEnabled;
 
@@ -415,7 +415,7 @@ public class FileSharedLinkField extends SerializableObject {
       return this;
     }
 
-    public Builder unsharedAt(Date unsharedAt) {
+    public Builder unsharedAt(OffsetDateTime unsharedAt) {
       this.unsharedAt = unsharedAt;
       this.markNullableFieldAsSet("unshared_at");
       return this;
