@@ -18,16 +18,22 @@ import com.box.sdkgen.networking.fetchoptions.ResponseFormat;
 import com.box.sdkgen.networking.fetchresponse.FetchResponse;
 import com.box.sdkgen.networking.network.NetworkSession;
 import com.box.sdkgen.networking.networkclient.NetworkClient;
+import com.box.sdkgen.networking.proxyconfig.ProxyConfig;
 import com.fasterxml.jackson.databind.JsonNode;
 import java.io.IOException;
+import java.net.InetSocketAddress;
+import java.net.Proxy;
 import java.net.URI;
+import java.nio.charset.StandardCharsets;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.TreeMap;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 import okhttp3.Call;
+import okhttp3.Credentials;
 import okhttp3.Headers;
 import okhttp3.HttpUrl;
 import okhttp3.MediaType;
@@ -44,6 +50,8 @@ public class BoxNetworkClient implements NetworkClient {
 
   private static final int BASE_TIMEOUT = 1;
   private static final double RANDOM_FACTOR = 0.5;
+  private static final int DEFAULT_HTTP_PORT = 80;
+  private static final int DEFAULT_HTTPS_PORT = 443;
 
   protected OkHttpClient httpClient;
 
@@ -62,6 +70,36 @@ public class BoxNetworkClient implements NetworkClient {
 
   public OkHttpClient getHttpClient() {
     return httpClient;
+  }
+
+  public BoxNetworkClient withProxy(ProxyConfig config) {
+    URI uri = URI.create(config.getUrl());
+    String host = Objects.requireNonNull(uri.getHost(), "Invalid Proxy URL");
+
+    String scheme =
+        Optional.ofNullable(uri.getScheme())
+            .filter(schema -> schema.startsWith("http"))
+            .orElseThrow(() -> new IllegalArgumentException("Invalid Proxy URL: " + uri));
+
+    int port =
+        (uri.getPort() != -1)
+            ? uri.getPort()
+            : ("https".equalsIgnoreCase(scheme) ? DEFAULT_HTTPS_PORT : DEFAULT_HTTP_PORT);
+
+    OkHttpClient.Builder clientBuilder =
+        httpClient
+            .newBuilder()
+            .proxy(new Proxy(Proxy.Type.HTTP, new InetSocketAddress(host, port)));
+
+    String username = config.getUsername();
+    String password = config.getPassword();
+    if (username != null && !username.isBlank() && password != null) {
+      String basic = Credentials.basic(username, password, StandardCharsets.UTF_8);
+      clientBuilder.proxyAuthenticator(
+          (route, resp) ->
+              resp.request().newBuilder().header("Proxy-Authorization", basic).build());
+    }
+    return new BoxNetworkClient(clientBuilder.build());
   }
 
   public FetchResponse fetch(FetchOptions options) {

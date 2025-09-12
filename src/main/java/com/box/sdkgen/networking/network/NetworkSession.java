@@ -1,10 +1,12 @@
 package com.box.sdkgen.networking.network;
 
+import com.box.sdkgen.box.errors.BoxSDKError;
 import com.box.sdkgen.internal.logging.DataSanitizer;
 import com.box.sdkgen.networking.baseurls.BaseUrls;
 import com.box.sdkgen.networking.boxnetworkclient.BoxNetworkClient;
 import com.box.sdkgen.networking.interceptors.Interceptor;
 import com.box.sdkgen.networking.networkclient.NetworkClient;
+import com.box.sdkgen.networking.proxyconfig.ProxyConfig;
 import com.box.sdkgen.networking.retries.BoxRetryStrategy;
 import com.box.sdkgen.networking.retries.RetryStrategy;
 import java.util.ArrayList;
@@ -27,6 +29,8 @@ public class NetworkSession {
 
   protected DataSanitizer dataSanitizer;
 
+  protected ProxyConfig proxyConfig;
+
   public NetworkSession() {
     networkClient = new BoxNetworkClient();
     retryStrategy = new BoxRetryStrategy();
@@ -40,6 +44,7 @@ public class NetworkSession {
     this.interceptors = builder.interceptors;
     this.retryStrategy = builder.retryStrategy;
     this.dataSanitizer = builder.dataSanitizer;
+    this.proxyConfig = builder.proxyConfig;
   }
 
   public NetworkSession withAdditionalHeaders() {
@@ -56,7 +61,8 @@ public class NetworkSession {
         .interceptors(this.interceptors)
         .networkClient(this.networkClient)
         .retryStrategy(this.retryStrategy)
-        .dataSanitizer(dataSanitizer)
+        .dataSanitizer(this.dataSanitizer)
+        .proxyConfig(this.proxyConfig)
         .build();
   }
 
@@ -67,7 +73,8 @@ public class NetworkSession {
         .interceptors(this.interceptors)
         .networkClient(this.networkClient)
         .retryStrategy(this.retryStrategy)
-        .dataSanitizer(dataSanitizer)
+        .dataSanitizer(this.dataSanitizer)
+        .proxyConfig(this.proxyConfig)
         .build();
   }
 
@@ -81,7 +88,8 @@ public class NetworkSession {
         .interceptors(newInterceptors)
         .networkClient(this.networkClient)
         .retryStrategy(this.retryStrategy)
-        .dataSanitizer(dataSanitizer)
+        .dataSanitizer(this.dataSanitizer)
+        .proxyConfig(this.proxyConfig)
         .build();
   }
 
@@ -92,7 +100,8 @@ public class NetworkSession {
         .interceptors(this.interceptors)
         .networkClient(networkClient)
         .retryStrategy(this.retryStrategy)
-        .dataSanitizer(dataSanitizer)
+        .dataSanitizer(this.dataSanitizer)
+        .proxyConfig(this.proxyConfig)
         .build();
   }
 
@@ -103,7 +112,8 @@ public class NetworkSession {
         .interceptors(this.interceptors)
         .networkClient(this.networkClient)
         .retryStrategy(retryStrategy)
-        .dataSanitizer(dataSanitizer)
+        .dataSanitizer(this.dataSanitizer)
+        .proxyConfig(this.proxyConfig)
         .build();
   }
 
@@ -115,6 +125,26 @@ public class NetworkSession {
         .networkClient(this.networkClient)
         .retryStrategy(this.retryStrategy)
         .dataSanitizer(dataSanitizer)
+        .proxyConfig(this.proxyConfig)
+        .build();
+  }
+
+  public NetworkSession withProxy(ProxyConfig config) {
+    if (config == null) {
+      throw new IllegalArgumentException("ProxyConfig cannot be null");
+    }
+    if (!(this.networkClient instanceof BoxNetworkClient)) {
+      throw new BoxSDKError("Proxies are only supported for BoxNetworkClient");
+    }
+    BoxNetworkClient newClient = ((BoxNetworkClient) this.networkClient).withProxy(config);
+    return new Builder()
+        .additionalHeaders(this.additionalHeaders)
+        .baseUrls(this.baseUrls)
+        .interceptors(this.interceptors)
+        .networkClient(newClient)
+        .retryStrategy(this.retryStrategy)
+        .dataSanitizer(this.dataSanitizer)
+        .proxyConfig(config)
         .build();
   }
 
@@ -142,6 +172,10 @@ public class NetworkSession {
     return dataSanitizer;
   }
 
+  public ProxyConfig getProxyConfig() {
+    return proxyConfig;
+  }
+
   public static class Builder {
 
     protected Map<String, String> additionalHeaders = new HashMap<>();
@@ -155,6 +189,8 @@ public class NetworkSession {
     protected RetryStrategy retryStrategy;
 
     protected DataSanitizer dataSanitizer;
+
+    protected ProxyConfig proxyConfig;
 
     public Builder() {
       networkClient = new BoxNetworkClient();
@@ -189,6 +225,11 @@ public class NetworkSession {
 
     public Builder dataSanitizer(DataSanitizer dataSanitizer) {
       this.dataSanitizer = dataSanitizer;
+      return this;
+    }
+
+    public Builder proxyConfig(ProxyConfig proxyConfig) {
+      this.proxyConfig = proxyConfig;
       return this;
     }
 
