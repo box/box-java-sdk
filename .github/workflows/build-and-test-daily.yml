@@ -56,7 +56,7 @@ jobs:
           SLACK_WEBHOOK_TEST_NOTIFICATION_URL: ${{ secrets.SLACK_WEBHOOK_TEST_NOTIFICATION_URL }}
           BUILD_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
         run: |
-          if [ "${{ needs.build-and-test }}" != "success" ]; then
+          if [ "${{ needs.build-and-test.result }}" != "success" ]; then
             STATUS="Failure ❌"
           else
             STATUS="Success ✅"
