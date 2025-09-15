@@ -3,9 +3,6 @@ on:
   pull_request:
     branches:
       - sdk-gen
-  push:
-    branches:
-      - sdk-gen
 jobs:
   build-and-test:
     runs-on: ubuntu-latest
@@ -24,7 +21,8 @@ jobs:
           distribution: ${{ matrix.distribution }}
           java-version: ${{ matrix.java }}
           cache: 'gradle'
-      - name: Build and test
+      - name: All Tests
+        if: startsWith(github.head_ref, 'codegen-release')
         env:
           JWT_CONFIG_BASE_64: ${{ secrets.JWT_CONFIG_BASE_64 }}
           ADMIN_USER_ID: ${{ secrets.ADMIN_USER_ID }}
@@ -43,8 +41,12 @@ jobs:
           SLACK_ORG_ID: ${{ secrets.SLACK_ORG_ID }}
           SLACK_PARTNER_ITEM_ID: ${{ secrets.SLACK_PARTNER_ITEM_ID }}
         run: ./gradlew check --stacktrace
-
-      - name: Coverage
+      - name: Smoke Tests
+        if: "!startsWith(github.head_ref, 'codegen-release')"
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: ./gradlew jacocoTestReport coverallsJacoco
+          JWT_CONFIG_BASE_64: ${{ secrets.JWT_CONFIG_BASE_64 }}
+          CLIENT_ID: ${{ secrets.CLIENT_ID }}
+          CLIENT_SECRET: ${{ secrets.CLIENT_SECRET }}
+          USER_ID: ${{ secrets.USER_ID }}
+          ENTERPRISE_ID: ${{ secrets.ENTERPRISE_ID }}
+        run: ./gradlew test --tests com.box.sdkgen.test.auth.AuthITest --tests com.box.sdkgen.test.files.FilesITest --tests com.box.sdkgen.test.downloads.DownloadsITest --tests com.box.sdkgen.test.uploads.UploadsITest --stacktrace
