@@ -17,6 +17,7 @@ divided across resource managers.
   - [Custom headers](#custom-headers)
 - [Custom Base URLs](#custom-base-urls)
 - [Interceptors](#interceptors)
+- [Use Proxy for API calls](#use-proxy-for-api-calls)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
@@ -175,4 +176,19 @@ List<Interceptor> interceptors = new ArrayList<>() {
     }
 };
 BoxClient clientWithInterceptor = client.withInterceptors(interceptors);
+```
+
+# Use Proxy for API calls
+
+In order to use a proxy for API calls, calling the `client.withProxy(proxyConfig)` method creates a new client, leaving the original client unmodified, with the username and password being optional. We only support adding proxy for BoxNetworkClient. If you are using your own implementation of NetworkClient, you would need to configure proxy on your own.
+
+**Note:** We are only supporting http/s proxies with basic authentication. NTLM and other authentication methods are not supported.
+
+```java
+ProxyConfig proxyConfig = new ProxyConfig("http://127.0.0.1:3128");
+newClient = client.withProxy(proxyConfig);
+
+//Using Basic Auth with username and password
+ProxyConfig proxyConfig = new ProxyConfig.Builder("http://127.0.0.1:3128").username("username").password("password").build();
+newClient = client.withProxy(proxyConfig);
 ```
