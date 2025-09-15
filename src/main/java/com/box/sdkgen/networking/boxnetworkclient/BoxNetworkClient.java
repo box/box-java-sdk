@@ -93,7 +93,7 @@ public class BoxNetworkClient implements NetworkClient {
 
     String username = config.getUsername();
     String password = config.getPassword();
-    if (username != null && !username.isBlank() && password != null) {
+    if (username != null && !username.trim().isEmpty() && password != null) {
       String basic = Credentials.basic(username, password, StandardCharsets.UTF_8);
       clientBuilder.proxyAuthenticator(
           (route, resp) ->
