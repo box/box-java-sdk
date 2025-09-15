@@ -8,7 +8,7 @@ import com.fasterxml.jackson.annotation.JsonFilter;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import java.util.Date;
+import java.time.OffsetDateTime;
 import java.util.Objects;
 
 @JsonFilter("nullablePropertyFilter")
@@ -30,7 +30,7 @@ public class SignRequestPrefillTag extends SerializableObject {
   @JsonSerialize(using = DateUtils.DateSerializer.class)
   @JsonDeserialize(using = DateUtils.DateDeserializer.class)
   @Nullable
-  protected Date dateValue;
+  protected OffsetDateTime dateValue;
 
   public SignRequestPrefillTag() {
     super();
@@ -57,7 +57,7 @@ public class SignRequestPrefillTag extends SerializableObject {
     return checkboxValue;
   }
 
-  public Date getDateValue() {
+  public OffsetDateTime getDateValue() {
     return dateValue;
   }
 
@@ -110,7 +110,7 @@ public class SignRequestPrefillTag extends SerializableObject {
 
     protected Boolean checkboxValue;
 
-    protected Date dateValue;
+    protected OffsetDateTime dateValue;
 
     public Builder documentTagId(String documentTagId) {
       this.documentTagId = documentTagId;
@@ -130,7 +130,7 @@ public class SignRequestPrefillTag extends SerializableObject {
       return this;
     }
 
-    public Builder dateValue(Date dateValue) {
+    public Builder dateValue(OffsetDateTime dateValue) {
       this.dateValue = dateValue;
       this.markNullableFieldAsSet("date_value");
       return this;

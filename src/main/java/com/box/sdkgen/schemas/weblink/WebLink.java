@@ -11,7 +11,7 @@ import com.fasterxml.jackson.annotation.JsonFilter;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import java.util.Date;
+import java.time.OffsetDateTime;
 import java.util.Objects;
 
 @JsonFilter("nullablePropertyFilter")
@@ -27,24 +27,24 @@ public class WebLink extends WebLinkMini {
   @JsonProperty("created_at")
   @JsonSerialize(using = DateTimeUtils.DateTimeSerializer.class)
   @JsonDeserialize(using = DateTimeUtils.DateTimeDeserializer.class)
-  protected Date createdAt;
+  protected OffsetDateTime createdAt;
 
   @JsonProperty("modified_at")
   @JsonSerialize(using = DateTimeUtils.DateTimeSerializer.class)
   @JsonDeserialize(using = DateTimeUtils.DateTimeDeserializer.class)
-  protected Date modifiedAt;
+  protected OffsetDateTime modifiedAt;
 
   @JsonProperty("trashed_at")
   @JsonSerialize(using = DateTimeUtils.DateTimeSerializer.class)
   @JsonDeserialize(using = DateTimeUtils.DateTimeDeserializer.class)
   @Nullable
-  protected Date trashedAt;
+  protected OffsetDateTime trashedAt;
 
   @JsonProperty("purged_at")
   @JsonSerialize(using = DateTimeUtils.DateTimeSerializer.class)
   @JsonDeserialize(using = DateTimeUtils.DateTimeDeserializer.class)
   @Nullable
-  protected Date purgedAt;
+  protected OffsetDateTime purgedAt;
 
   @JsonProperty("created_by")
   protected UserMini createdBy;
@@ -96,19 +96,19 @@ public class WebLink extends WebLinkMini {
     return pathCollection;
   }
 
-  public Date getCreatedAt() {
+  public OffsetDateTime getCreatedAt() {
     return createdAt;
   }
 
-  public Date getModifiedAt() {
+  public OffsetDateTime getModifiedAt() {
     return modifiedAt;
   }
 
-  public Date getTrashedAt() {
+  public OffsetDateTime getTrashedAt() {
     return trashedAt;
   }
 
-  public Date getPurgedAt() {
+  public OffsetDateTime getPurgedAt() {
     return purgedAt;
   }
 
@@ -269,13 +269,13 @@ public class WebLink extends WebLinkMini {
 
     protected WebLinkPathCollectionField pathCollection;
 
-    protected Date createdAt;
+    protected OffsetDateTime createdAt;
 
-    protected Date modifiedAt;
+    protected OffsetDateTime modifiedAt;
 
-    protected Date trashedAt;
+    protected OffsetDateTime trashedAt;
 
-    protected Date purgedAt;
+    protected OffsetDateTime purgedAt;
 
     protected UserMini createdBy;
 
@@ -306,23 +306,23 @@ public class WebLink extends WebLinkMini {
       return this;
     }
 
-    public Builder createdAt(Date createdAt) {
+    public Builder createdAt(OffsetDateTime createdAt) {
       this.createdAt = createdAt;
       return this;
     }
 
-    public Builder modifiedAt(Date modifiedAt) {
+    public Builder modifiedAt(OffsetDateTime modifiedAt) {
       this.modifiedAt = modifiedAt;
       return this;
     }
 
-    public Builder trashedAt(Date trashedAt) {
+    public Builder trashedAt(OffsetDateTime trashedAt) {
       this.trashedAt = trashedAt;
       this.markNullableFieldAsSet("trashed_at");
       return this;
     }
 
-    public Builder purgedAt(Date purgedAt) {
+    public Builder purgedAt(OffsetDateTime purgedAt) {
       this.purgedAt = purgedAt;
       this.markNullableFieldAsSet("purged_at");
       return this;

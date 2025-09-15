@@ -8,7 +8,7 @@ import com.fasterxml.jackson.annotation.JsonFilter;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import java.util.Date;
+import java.time.OffsetDateTime;
 import java.util.Objects;
 
 @JsonFilter("nullablePropertyFilter")
@@ -28,7 +28,7 @@ public class UpdateTaskByIdRequestBody extends SerializableObject {
   @JsonProperty("due_at")
   @JsonSerialize(using = DateTimeUtils.DateTimeSerializer.class)
   @JsonDeserialize(using = DateTimeUtils.DateTimeDeserializer.class)
-  protected Date dueAt;
+  protected OffsetDateTime dueAt;
 
   @JsonDeserialize(
       using =
@@ -62,7 +62,7 @@ public class UpdateTaskByIdRequestBody extends SerializableObject {
     return message;
   }
 
-  public Date getDueAt() {
+  public OffsetDateTime getDueAt() {
     return dueAt;
   }
 
@@ -117,7 +117,7 @@ public class UpdateTaskByIdRequestBody extends SerializableObject {
 
     protected String message;
 
-    protected Date dueAt;
+    protected OffsetDateTime dueAt;
 
     protected EnumWrapper<UpdateTaskByIdRequestBodyCompletionRuleField> completionRule;
 
@@ -136,7 +136,7 @@ public class UpdateTaskByIdRequestBody extends SerializableObject {
       return this;
     }
 
-    public Builder dueAt(Date dueAt) {
+    public Builder dueAt(OffsetDateTime dueAt) {
       this.dueAt = dueAt;
       return this;
     }

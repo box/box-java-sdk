@@ -24,8 +24,8 @@ import com.fasterxml.jackson.databind.SerializerProvider;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import java.io.IOException;
+import java.time.OffsetDateTime;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 
@@ -75,7 +75,7 @@ public class FileFull extends File {
   @JsonSerialize(using = DateTimeUtils.DateTimeSerializer.class)
   @JsonDeserialize(using = DateTimeUtils.DateTimeDeserializer.class)
   @Nullable
-  protected Date expiresAt;
+  protected OffsetDateTime expiresAt;
 
   protected FileFullRepresentationsField representations;
 
@@ -88,7 +88,7 @@ public class FileFull extends File {
   @JsonSerialize(using = DateTimeUtils.DateTimeSerializer.class)
   @JsonDeserialize(using = DateTimeUtils.DateTimeDeserializer.class)
   @Nullable
-  protected Date dispositionAt;
+  protected OffsetDateTime dispositionAt;
 
   @JsonDeserialize(using = SharedLinkPermissionOptionsDeserializer.class)
   @JsonSerialize(using = SharedLinkPermissionOptionsSerializer.class)
@@ -185,7 +185,7 @@ public class FileFull extends File {
     return metadata;
   }
 
-  public Date getExpiresAt() {
+  public OffsetDateTime getExpiresAt() {
     return expiresAt;
   }
 
@@ -201,7 +201,7 @@ public class FileFull extends File {
     return uploaderDisplayName;
   }
 
-  public Date getDispositionAt() {
+  public OffsetDateTime getDispositionAt() {
     return dispositionAt;
   }
 
@@ -523,7 +523,7 @@ public class FileFull extends File {
 
     protected FileFullMetadataField metadata;
 
-    protected Date expiresAt;
+    protected OffsetDateTime expiresAt;
 
     protected FileFullRepresentationsField representations;
 
@@ -531,7 +531,7 @@ public class FileFull extends File {
 
     protected String uploaderDisplayName;
 
-    protected Date dispositionAt;
+    protected OffsetDateTime dispositionAt;
 
     protected List<EnumWrapper<FileFullSharedLinkPermissionOptionsField>>
         sharedLinkPermissionOptions;
@@ -615,7 +615,7 @@ public class FileFull extends File {
       return this;
     }
 
-    public Builder expiresAt(Date expiresAt) {
+    public Builder expiresAt(OffsetDateTime expiresAt) {
       this.expiresAt = expiresAt;
       this.markNullableFieldAsSet("expires_at");
       return this;
@@ -636,7 +636,7 @@ public class FileFull extends File {
       return this;
     }
 
-    public Builder dispositionAt(Date dispositionAt) {
+    public Builder dispositionAt(OffsetDateTime dispositionAt) {
       this.dispositionAt = dispositionAt;
       this.markNullableFieldAsSet("disposition_at");
       return this;
@@ -718,40 +718,40 @@ public class FileFull extends File {
     }
 
     @Override
-    public Builder createdAt(Date createdAt) {
+    public Builder createdAt(OffsetDateTime createdAt) {
       this.createdAt = createdAt;
       return this;
     }
 
     @Override
-    public Builder modifiedAt(Date modifiedAt) {
+    public Builder modifiedAt(OffsetDateTime modifiedAt) {
       this.modifiedAt = modifiedAt;
       return this;
     }
 
     @Override
-    public Builder trashedAt(Date trashedAt) {
+    public Builder trashedAt(OffsetDateTime trashedAt) {
       this.trashedAt = trashedAt;
       this.markNullableFieldAsSet("trashed_at");
       return this;
     }
 
     @Override
-    public Builder purgedAt(Date purgedAt) {
+    public Builder purgedAt(OffsetDateTime purgedAt) {
       this.purgedAt = purgedAt;
       this.markNullableFieldAsSet("purged_at");
       return this;
     }
 
     @Override
-    public Builder contentCreatedAt(Date contentCreatedAt) {
+    public Builder contentCreatedAt(OffsetDateTime contentCreatedAt) {
       this.contentCreatedAt = contentCreatedAt;
       this.markNullableFieldAsSet("content_created_at");
       return this;
     }
 
     @Override
-    public Builder contentModifiedAt(Date contentModifiedAt) {
+    public Builder contentModifiedAt(OffsetDateTime contentModifiedAt) {
       this.contentModifiedAt = contentModifiedAt;
       this.markNullableFieldAsSet("content_modified_at");
       return this;

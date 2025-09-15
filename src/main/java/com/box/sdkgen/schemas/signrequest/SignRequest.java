@@ -13,7 +13,7 @@ import com.fasterxml.jackson.annotation.JsonFilter;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import java.util.Date;
+import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.Objects;
 
@@ -53,7 +53,7 @@ public class SignRequest extends SignRequestBase {
   @JsonSerialize(using = DateTimeUtils.DateTimeSerializer.class)
   @JsonDeserialize(using = DateTimeUtils.DateTimeDeserializer.class)
   @Nullable
-  protected Date autoExpireAt;
+  protected OffsetDateTime autoExpireAt;
 
   @JsonProperty("parent_folder")
   protected FolderMini parentFolder;
@@ -129,7 +129,7 @@ public class SignRequest extends SignRequestBase {
     return signFiles;
   }
 
-  public Date getAutoExpireAt() {
+  public OffsetDateTime getAutoExpireAt() {
     return autoExpireAt;
   }
 
@@ -352,7 +352,7 @@ public class SignRequest extends SignRequestBase {
 
     protected SignRequestSignFilesField signFiles;
 
-    protected Date autoExpireAt;
+    protected OffsetDateTime autoExpireAt;
 
     protected FolderMini parentFolder;
 
@@ -419,7 +419,7 @@ public class SignRequest extends SignRequestBase {
       return this;
     }
 
-    public Builder autoExpireAt(Date autoExpireAt) {
+    public Builder autoExpireAt(OffsetDateTime autoExpireAt) {
       this.autoExpireAt = autoExpireAt;
       this.markNullableFieldAsSet("auto_expire_at");
       return this;

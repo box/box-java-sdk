@@ -10,7 +10,7 @@ import com.fasterxml.jackson.annotation.JsonFilter;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import java.util.Date;
+import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.Objects;
 
@@ -436,13 +436,13 @@ public class UserFull extends User {
     }
 
     @Override
-    public Builder createdAt(Date createdAt) {
+    public Builder createdAt(OffsetDateTime createdAt) {
       this.createdAt = createdAt;
       return this;
     }
 
     @Override
-    public Builder modifiedAt(Date modifiedAt) {
+    public Builder modifiedAt(OffsetDateTime modifiedAt) {
       this.modifiedAt = modifiedAt;
       return this;
     }

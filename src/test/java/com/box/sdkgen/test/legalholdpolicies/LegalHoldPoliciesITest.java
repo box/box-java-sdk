@@ -10,7 +10,7 @@ import com.box.sdkgen.managers.legalholdpolicies.CreateLegalHoldPolicyRequestBod
 import com.box.sdkgen.managers.legalholdpolicies.UpdateLegalHoldPolicyByIdRequestBody;
 import com.box.sdkgen.schemas.legalholdpolicies.LegalHoldPolicies;
 import com.box.sdkgen.schemas.legalholdpolicy.LegalHoldPolicy;
-import java.util.Date;
+import java.time.OffsetDateTime;
 import org.junit.jupiter.api.Test;
 
 public class LegalHoldPoliciesITest {
@@ -21,8 +21,8 @@ public class LegalHoldPoliciesITest {
   public void testCreateNotOngoingLegalHoldPolicy() {
     String legalHoldPolicyName = getUuid();
     String legalHoldDescription = "test description";
-    Date filterStartedAt = dateTimeFromString("2021-01-01T00:00:00-08:00");
-    Date filterEndedAt = dateTimeFromString("2022-01-01T00:00:00-08:00");
+    OffsetDateTime filterStartedAt = dateTimeFromString("2021-01-01T00:00:00-08:00");
+    OffsetDateTime filterEndedAt = dateTimeFromString("2022-01-01T00:00:00-08:00");
     LegalHoldPolicy legalHoldPolicy =
         client
             .getLegalHoldPolicies()

@@ -8,7 +8,7 @@ import com.fasterxml.jackson.annotation.JsonFilter;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import java.util.Date;
+import java.time.OffsetDateTime;
 import java.util.Objects;
 
 @JsonFilter("nullablePropertyFilter")
@@ -17,7 +17,7 @@ public class StatusSkillCard extends SerializableObject {
   @JsonProperty("created_at")
   @JsonSerialize(using = DateTimeUtils.DateTimeSerializer.class)
   @JsonDeserialize(using = DateTimeUtils.DateTimeDeserializer.class)
-  protected Date createdAt;
+  protected OffsetDateTime createdAt;
 
   @JsonDeserialize(using = StatusSkillCardTypeField.StatusSkillCardTypeFieldDeserializer.class)
   @JsonSerialize(using = StatusSkillCardTypeField.StatusSkillCardTypeFieldSerializer.class)
@@ -65,7 +65,7 @@ public class StatusSkillCard extends SerializableObject {
     markNullableFieldsAsSet(builder.getExplicitlySetNullableFields());
   }
 
-  public Date getCreatedAt() {
+  public OffsetDateTime getCreatedAt() {
     return createdAt;
   }
 
@@ -151,7 +151,7 @@ public class StatusSkillCard extends SerializableObject {
 
   public static class Builder extends NullableFieldTracker {
 
-    protected Date createdAt;
+    protected OffsetDateTime createdAt;
 
     protected EnumWrapper<StatusSkillCardTypeField> type;
 
@@ -179,7 +179,7 @@ public class StatusSkillCard extends SerializableObject {
               StatusSkillCardSkillCardTypeField.STATUS);
     }
 
-    public Builder createdAt(Date createdAt) {
+    public Builder createdAt(OffsetDateTime createdAt) {
       this.createdAt = createdAt;
       return this;
     }

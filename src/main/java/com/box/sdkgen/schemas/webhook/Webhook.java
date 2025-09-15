@@ -19,8 +19,8 @@ import com.fasterxml.jackson.databind.SerializerProvider;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import java.io.IOException;
+import java.time.OffsetDateTime;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 
@@ -33,7 +33,7 @@ public class Webhook extends WebhookMini {
   @JsonProperty("created_at")
   @JsonSerialize(using = DateTimeUtils.DateTimeSerializer.class)
   @JsonDeserialize(using = DateTimeUtils.DateTimeDeserializer.class)
-  protected Date createdAt;
+  protected OffsetDateTime createdAt;
 
   protected String address;
 
@@ -58,7 +58,7 @@ public class Webhook extends WebhookMini {
     return createdBy;
   }
 
-  public Date getCreatedAt() {
+  public OffsetDateTime getCreatedAt() {
     return createdAt;
   }
 
@@ -130,7 +130,7 @@ public class Webhook extends WebhookMini {
 
     protected UserMini createdBy;
 
-    protected Date createdAt;
+    protected OffsetDateTime createdAt;
 
     protected String address;
 
@@ -141,7 +141,7 @@ public class Webhook extends WebhookMini {
       return this;
     }
 
-    public Builder createdAt(Date createdAt) {
+    public Builder createdAt(OffsetDateTime createdAt) {
       this.createdAt = createdAt;
       return this;
     }

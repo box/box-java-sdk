@@ -15,14 +15,14 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import java.io.IOException;
-import java.util.Date;
+import java.time.OffsetDateTime;
 
 @JsonDeserialize(using = SkillCard.SkillCardDeserializer.class)
 @JsonSerialize(using = OneOfFour.OneOfFourSerializer.class)
 public class SkillCard
     extends OneOfFour<KeywordSkillCard, TimelineSkillCard, TranscriptSkillCard, StatusSkillCard> {
 
-  protected final Date createdAt;
+  protected final OffsetDateTime createdAt;
 
   protected final String type;
 
@@ -88,7 +88,7 @@ public class SkillCard
     return value3;
   }
 
-  public Date getCreatedAt() {
+  public OffsetDateTime getCreatedAt() {
     return createdAt;
   }
 

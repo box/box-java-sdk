@@ -7,7 +7,7 @@ import com.fasterxml.jackson.annotation.JsonFilter;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import java.util.Date;
+import java.time.OffsetDateTime;
 import java.util.Objects;
 
 @JsonFilter("nullablePropertyFilter")
@@ -20,12 +20,12 @@ public class UploadWithPreflightCheckRequestBodyAttributesField extends Serializ
   @JsonProperty("content_created_at")
   @JsonSerialize(using = DateTimeUtils.DateTimeSerializer.class)
   @JsonDeserialize(using = DateTimeUtils.DateTimeDeserializer.class)
-  protected Date contentCreatedAt;
+  protected OffsetDateTime contentCreatedAt;
 
   @JsonProperty("content_modified_at")
   @JsonSerialize(using = DateTimeUtils.DateTimeSerializer.class)
   @JsonDeserialize(using = DateTimeUtils.DateTimeDeserializer.class)
-  protected Date contentModifiedAt;
+  protected OffsetDateTime contentModifiedAt;
 
   protected final int size;
 
@@ -57,11 +57,11 @@ public class UploadWithPreflightCheckRequestBodyAttributesField extends Serializ
     return parent;
   }
 
-  public Date getContentCreatedAt() {
+  public OffsetDateTime getContentCreatedAt() {
     return contentCreatedAt;
   }
 
-  public Date getContentModifiedAt() {
+  public OffsetDateTime getContentModifiedAt() {
     return contentModifiedAt;
   }
 
@@ -122,9 +122,9 @@ public class UploadWithPreflightCheckRequestBodyAttributesField extends Serializ
 
     protected final UploadWithPreflightCheckRequestBodyAttributesParentField parent;
 
-    protected Date contentCreatedAt;
+    protected OffsetDateTime contentCreatedAt;
 
-    protected Date contentModifiedAt;
+    protected OffsetDateTime contentModifiedAt;
 
     protected final int size;
 
@@ -136,12 +136,12 @@ public class UploadWithPreflightCheckRequestBodyAttributesField extends Serializ
       this.size = size;
     }
 
-    public Builder contentCreatedAt(Date contentCreatedAt) {
+    public Builder contentCreatedAt(OffsetDateTime contentCreatedAt) {
       this.contentCreatedAt = contentCreatedAt;
       return this;
     }
 
-    public Builder contentModifiedAt(Date contentModifiedAt) {
+    public Builder contentModifiedAt(OffsetDateTime contentModifiedAt) {
       this.contentModifiedAt = contentModifiedAt;
       return this;
     }

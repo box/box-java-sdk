@@ -23,7 +23,7 @@ import com.box.sdkgen.schemas.task.Task;
 import com.box.sdkgen.schemas.taskassignment.TaskAssignment;
 import com.box.sdkgen.schemas.taskassignments.TaskAssignments;
 import com.box.sdkgen.schemas.userfull.UserFull;
-import java.util.Date;
+import java.time.OffsetDateTime;
 import org.junit.jupiter.api.Test;
 
 public class TaskAssignmentsITest {
@@ -33,7 +33,7 @@ public class TaskAssignmentsITest {
   @Test
   public void testCreateUpdateGetDeleteTaskAssignment() {
     FileFull file = uploadNewFile();
-    Date date = dateTimeFromString("2035-01-01T00:00:00Z");
+    OffsetDateTime date = dateTimeFromString("2035-01-01T00:00:00Z");
     Task task =
         client
             .getTasks()

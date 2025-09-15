@@ -8,7 +8,7 @@ import com.fasterxml.jackson.annotation.JsonFilter;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import java.util.Date;
+import java.time.OffsetDateTime;
 import java.util.Objects;
 
 @JsonFilter("nullablePropertyFilter")
@@ -35,7 +35,7 @@ public class FileRequestUpdateRequest extends SerializableObject {
   @JsonProperty("expires_at")
   @JsonSerialize(using = DateTimeUtils.DateTimeSerializer.class)
   @JsonDeserialize(using = DateTimeUtils.DateTimeDeserializer.class)
-  protected Date expiresAt;
+  protected OffsetDateTime expiresAt;
 
   public FileRequestUpdateRequest() {
     super();
@@ -72,7 +72,7 @@ public class FileRequestUpdateRequest extends SerializableObject {
     return isDescriptionRequired;
   }
 
-  public Date getExpiresAt() {
+  public OffsetDateTime getExpiresAt() {
     return expiresAt;
   }
 
@@ -140,7 +140,7 @@ public class FileRequestUpdateRequest extends SerializableObject {
 
     protected Boolean isDescriptionRequired;
 
-    protected Date expiresAt;
+    protected OffsetDateTime expiresAt;
 
     public Builder title(String title) {
       this.title = title;
@@ -172,7 +172,7 @@ public class FileRequestUpdateRequest extends SerializableObject {
       return this;
     }
 
-    public Builder expiresAt(Date expiresAt) {
+    public Builder expiresAt(OffsetDateTime expiresAt) {
       this.expiresAt = expiresAt;
       return this;
     }

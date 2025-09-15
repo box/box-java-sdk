@@ -9,7 +9,7 @@ import com.fasterxml.jackson.annotation.JsonFilter;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import java.util.Date;
+import java.time.OffsetDateTime;
 import java.util.Objects;
 
 @JsonFilter("nullablePropertyFilter")
@@ -28,7 +28,7 @@ public class SignRequestSignerSignerDecisionField extends SerializableObject {
   @JsonProperty("finalized_at")
   @JsonSerialize(using = DateTimeUtils.DateTimeSerializer.class)
   @JsonDeserialize(using = DateTimeUtils.DateTimeDeserializer.class)
-  protected Date finalizedAt;
+  protected OffsetDateTime finalizedAt;
 
   @JsonProperty("additional_info")
   @Nullable
@@ -50,7 +50,7 @@ public class SignRequestSignerSignerDecisionField extends SerializableObject {
     return type;
   }
 
-  public Date getFinalizedAt() {
+  public OffsetDateTime getFinalizedAt() {
     return finalizedAt;
   }
 
@@ -98,7 +98,7 @@ public class SignRequestSignerSignerDecisionField extends SerializableObject {
 
     protected EnumWrapper<SignRequestSignerSignerDecisionTypeField> type;
 
-    protected Date finalizedAt;
+    protected OffsetDateTime finalizedAt;
 
     protected String additionalInfo;
 
@@ -112,7 +112,7 @@ public class SignRequestSignerSignerDecisionField extends SerializableObject {
       return this;
     }
 
-    public Builder finalizedAt(Date finalizedAt) {
+    public Builder finalizedAt(OffsetDateTime finalizedAt) {
       this.finalizedAt = finalizedAt;
       return this;
     }

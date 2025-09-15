@@ -19,7 +19,7 @@ import com.box.sdkgen.networking.network.NetworkSession;
 import com.box.sdkgen.schemas.webhook.Webhook;
 import com.box.sdkgen.schemas.webhooks.Webhooks;
 import com.box.sdkgen.serialization.json.JsonManager;
-import java.util.Date;
+import java.time.OffsetDateTime;
 import java.util.Map;
 
 public class WebhooksManager {
@@ -206,7 +206,7 @@ public class WebhooksManager {
       String primaryKey,
       String secondaryKey,
       Integer maxAge) {
-    Date deliveryTimestamp = dateTimeFromString(headers.get("box-delivery-timestamp"));
+    OffsetDateTime deliveryTimestamp = dateTimeFromString(headers.get("box-delivery-timestamp"));
     long currentEpoch = getEpochTimeInSeconds();
     if (currentEpoch - maxAge > dateTimeToEpochSeconds(deliveryTimestamp)
         || dateTimeToEpochSeconds(deliveryTimestamp) > currentEpoch) {

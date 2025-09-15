@@ -9,7 +9,7 @@ import com.fasterxml.jackson.annotation.JsonFilter;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import java.util.Date;
+import java.time.OffsetDateTime;
 import java.util.Objects;
 
 @JsonFilter("nullablePropertyFilter")
@@ -33,7 +33,7 @@ public class UpdateSharedLinkOnFileRequestBodySharedLinkField extends Serializab
   @JsonProperty("unshared_at")
   @JsonSerialize(using = DateTimeUtils.DateTimeSerializer.class)
   @JsonDeserialize(using = DateTimeUtils.DateTimeDeserializer.class)
-  protected Date unsharedAt;
+  protected OffsetDateTime unsharedAt;
 
   protected UpdateSharedLinkOnFileRequestBodySharedLinkPermissionsField permissions;
 
@@ -63,7 +63,7 @@ public class UpdateSharedLinkOnFileRequestBodySharedLinkField extends Serializab
     return vanityName;
   }
 
-  public Date getUnsharedAt() {
+  public OffsetDateTime getUnsharedAt() {
     return unsharedAt;
   }
 
@@ -126,7 +126,7 @@ public class UpdateSharedLinkOnFileRequestBodySharedLinkField extends Serializab
 
     protected String vanityName;
 
-    protected Date unsharedAt;
+    protected OffsetDateTime unsharedAt;
 
     protected UpdateSharedLinkOnFileRequestBodySharedLinkPermissionsField permissions;
 
@@ -152,7 +152,7 @@ public class UpdateSharedLinkOnFileRequestBodySharedLinkField extends Serializab
       return this;
     }
 
-    public Builder unsharedAt(Date unsharedAt) {
+    public Builder unsharedAt(OffsetDateTime unsharedAt) {
       this.unsharedAt = unsharedAt;
       return this;
     }

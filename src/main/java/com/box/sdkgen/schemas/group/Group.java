@@ -9,7 +9,7 @@ import com.fasterxml.jackson.annotation.JsonFilter;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import java.util.Date;
+import java.time.OffsetDateTime;
 import java.util.Objects;
 
 @JsonFilter("nullablePropertyFilter")
@@ -18,12 +18,12 @@ public class Group extends GroupMini {
   @JsonProperty("created_at")
   @JsonSerialize(using = DateTimeUtils.DateTimeSerializer.class)
   @JsonDeserialize(using = DateTimeUtils.DateTimeDeserializer.class)
-  protected Date createdAt;
+  protected OffsetDateTime createdAt;
 
   @JsonProperty("modified_at")
   @JsonSerialize(using = DateTimeUtils.DateTimeSerializer.class)
   @JsonDeserialize(using = DateTimeUtils.DateTimeDeserializer.class)
-  protected Date modifiedAt;
+  protected OffsetDateTime modifiedAt;
 
   public Group(@JsonProperty("id") String id) {
     super(id);
@@ -36,11 +36,11 @@ public class Group extends GroupMini {
     markNullableFieldsAsSet(builder.getExplicitlySetNullableFields());
   }
 
-  public Date getCreatedAt() {
+  public OffsetDateTime getCreatedAt() {
     return createdAt;
   }
 
-  public Date getModifiedAt() {
+  public OffsetDateTime getModifiedAt() {
     return modifiedAt;
   }
 
@@ -97,20 +97,20 @@ public class Group extends GroupMini {
 
   public static class Builder extends GroupMini.Builder {
 
-    protected Date createdAt;
+    protected OffsetDateTime createdAt;
 
-    protected Date modifiedAt;
+    protected OffsetDateTime modifiedAt;
 
     public Builder(String id) {
       super(id);
     }
 
-    public Builder createdAt(Date createdAt) {
+    public Builder createdAt(OffsetDateTime createdAt) {
       this.createdAt = createdAt;
       return this;
     }
 
-    public Builder modifiedAt(Date modifiedAt) {
+    public Builder modifiedAt(OffsetDateTime modifiedAt) {
       this.modifiedAt = modifiedAt;
       return this;
     }

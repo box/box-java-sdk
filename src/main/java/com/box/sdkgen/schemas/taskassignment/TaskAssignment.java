@@ -10,7 +10,7 @@ import com.fasterxml.jackson.annotation.JsonFilter;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import java.util.Date;
+import java.time.OffsetDateTime;
 import java.util.Objects;
 
 @JsonFilter("nullablePropertyFilter")
@@ -32,17 +32,17 @@ public class TaskAssignment extends SerializableObject {
   @JsonProperty("completed_at")
   @JsonSerialize(using = DateTimeUtils.DateTimeSerializer.class)
   @JsonDeserialize(using = DateTimeUtils.DateTimeDeserializer.class)
-  protected Date completedAt;
+  protected OffsetDateTime completedAt;
 
   @JsonProperty("assigned_at")
   @JsonSerialize(using = DateTimeUtils.DateTimeSerializer.class)
   @JsonDeserialize(using = DateTimeUtils.DateTimeDeserializer.class)
-  protected Date assignedAt;
+  protected OffsetDateTime assignedAt;
 
   @JsonProperty("reminded_at")
   @JsonSerialize(using = DateTimeUtils.DateTimeSerializer.class)
   @JsonDeserialize(using = DateTimeUtils.DateTimeDeserializer.class)
-  protected Date remindedAt;
+  protected OffsetDateTime remindedAt;
 
   @JsonDeserialize(
       using =
@@ -94,15 +94,15 @@ public class TaskAssignment extends SerializableObject {
     return message;
   }
 
-  public Date getCompletedAt() {
+  public OffsetDateTime getCompletedAt() {
     return completedAt;
   }
 
-  public Date getAssignedAt() {
+  public OffsetDateTime getAssignedAt() {
     return assignedAt;
   }
 
-  public Date getRemindedAt() {
+  public OffsetDateTime getRemindedAt() {
     return remindedAt;
   }
 
@@ -207,11 +207,11 @@ public class TaskAssignment extends SerializableObject {
 
     protected String message;
 
-    protected Date completedAt;
+    protected OffsetDateTime completedAt;
 
-    protected Date assignedAt;
+    protected OffsetDateTime assignedAt;
 
-    protected Date remindedAt;
+    protected OffsetDateTime remindedAt;
 
     protected EnumWrapper<TaskAssignmentResolutionStateField> resolutionState;
 
@@ -247,17 +247,17 @@ public class TaskAssignment extends SerializableObject {
       return this;
     }
 
-    public Builder completedAt(Date completedAt) {
+    public Builder completedAt(OffsetDateTime completedAt) {
       this.completedAt = completedAt;
       return this;
     }
 
-    public Builder assignedAt(Date assignedAt) {
+    public Builder assignedAt(OffsetDateTime assignedAt) {
       this.assignedAt = assignedAt;
       return this;
     }
 
-    public Builder remindedAt(Date remindedAt) {
+    public Builder remindedAt(OffsetDateTime remindedAt) {
       this.remindedAt = remindedAt;
       return this;
     }

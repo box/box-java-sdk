@@ -6,7 +6,7 @@ import com.box.sdkgen.internal.utils.DateTimeUtils;
 import com.fasterxml.jackson.annotation.JsonFilter;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import java.util.Date;
+import java.time.OffsetDateTime;
 import java.util.Objects;
 
 @JsonFilter("nullablePropertyFilter")
@@ -14,11 +14,11 @@ public class MetadataFieldFilterDateRange extends SerializableObject {
 
   @JsonSerialize(using = DateTimeUtils.DateTimeSerializer.class)
   @JsonDeserialize(using = DateTimeUtils.DateTimeDeserializer.class)
-  protected Date lt;
+  protected OffsetDateTime lt;
 
   @JsonSerialize(using = DateTimeUtils.DateTimeSerializer.class)
   @JsonDeserialize(using = DateTimeUtils.DateTimeDeserializer.class)
-  protected Date gt;
+  protected OffsetDateTime gt;
 
   public MetadataFieldFilterDateRange() {
     super();
@@ -31,11 +31,11 @@ public class MetadataFieldFilterDateRange extends SerializableObject {
     markNullableFieldsAsSet(builder.getExplicitlySetNullableFields());
   }
 
-  public Date getLt() {
+  public OffsetDateTime getLt() {
     return lt;
   }
 
-  public Date getGt() {
+  public OffsetDateTime getGt() {
     return gt;
   }
 
@@ -63,16 +63,16 @@ public class MetadataFieldFilterDateRange extends SerializableObject {
 
   public static class Builder extends NullableFieldTracker {
 
-    protected Date lt;
+    protected OffsetDateTime lt;
 
-    protected Date gt;
+    protected OffsetDateTime gt;
 
-    public Builder lt(Date lt) {
+    public Builder lt(OffsetDateTime lt) {
       this.lt = lt;
       return this;
     }
 
-    public Builder gt(Date gt) {
+    public Builder gt(OffsetDateTime gt) {
       this.gt = gt;
       return this;
     }

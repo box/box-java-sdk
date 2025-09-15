@@ -6,7 +6,7 @@ import com.box.sdkgen.schemas.usermini.UserMini;
 import com.box.sdkgen.serialization.json.EnumWrapper;
 import com.fasterxml.jackson.annotation.JsonFilter;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import java.util.Date;
+import java.time.OffsetDateTime;
 import java.util.Objects;
 
 @JsonFilter("nullablePropertyFilter")
@@ -184,13 +184,13 @@ public class FileVersionFull extends FileVersion {
     }
 
     @Override
-    public Builder createdAt(Date createdAt) {
+    public Builder createdAt(OffsetDateTime createdAt) {
       this.createdAt = createdAt;
       return this;
     }
 
     @Override
-    public Builder modifiedAt(Date modifiedAt) {
+    public Builder modifiedAt(OffsetDateTime modifiedAt) {
       this.modifiedAt = modifiedAt;
       return this;
     }
@@ -202,7 +202,7 @@ public class FileVersionFull extends FileVersion {
     }
 
     @Override
-    public Builder trashedAt(Date trashedAt) {
+    public Builder trashedAt(OffsetDateTime trashedAt) {
       this.trashedAt = trashedAt;
       this.markNullableFieldAsSet("trashed_at");
       return this;
@@ -215,7 +215,7 @@ public class FileVersionFull extends FileVersion {
     }
 
     @Override
-    public Builder restoredAt(Date restoredAt) {
+    public Builder restoredAt(OffsetDateTime restoredAt) {
       this.restoredAt = restoredAt;
       this.markNullableFieldAsSet("restored_at");
       return this;
@@ -228,7 +228,7 @@ public class FileVersionFull extends FileVersion {
     }
 
     @Override
-    public Builder purgedAt(Date purgedAt) {
+    public Builder purgedAt(OffsetDateTime purgedAt) {
       this.purgedAt = purgedAt;
       this.markNullableFieldAsSet("purged_at");
       return this;

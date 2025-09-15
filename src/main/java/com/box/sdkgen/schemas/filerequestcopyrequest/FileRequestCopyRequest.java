@@ -5,7 +5,7 @@ import com.box.sdkgen.schemas.filerequestupdaterequest.FileRequestUpdateRequestS
 import com.box.sdkgen.serialization.json.EnumWrapper;
 import com.fasterxml.jackson.annotation.JsonFilter;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import java.util.Date;
+import java.time.OffsetDateTime;
 import java.util.Objects;
 
 @JsonFilter("nullablePropertyFilter")
@@ -131,7 +131,7 @@ public class FileRequestCopyRequest extends FileRequestUpdateRequest {
     }
 
     @Override
-    public Builder expiresAt(Date expiresAt) {
+    public Builder expiresAt(OffsetDateTime expiresAt) {
       this.expiresAt = expiresAt;
       return this;
     }

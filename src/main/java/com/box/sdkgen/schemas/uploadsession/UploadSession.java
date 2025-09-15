@@ -8,7 +8,7 @@ import com.fasterxml.jackson.annotation.JsonFilter;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import java.util.Date;
+import java.time.OffsetDateTime;
 import java.util.Objects;
 
 @JsonFilter("nullablePropertyFilter")
@@ -23,7 +23,7 @@ public class UploadSession extends SerializableObject {
   @JsonProperty("session_expires_at")
   @JsonSerialize(using = DateTimeUtils.DateTimeSerializer.class)
   @JsonDeserialize(using = DateTimeUtils.DateTimeDeserializer.class)
-  protected Date sessionExpiresAt;
+  protected OffsetDateTime sessionExpiresAt;
 
   @JsonProperty("part_size")
   protected Long partSize;
@@ -61,7 +61,7 @@ public class UploadSession extends SerializableObject {
     return type;
   }
 
-  public Date getSessionExpiresAt() {
+  public OffsetDateTime getSessionExpiresAt() {
     return sessionExpiresAt;
   }
 
@@ -144,7 +144,7 @@ public class UploadSession extends SerializableObject {
 
     protected EnumWrapper<UploadSessionTypeField> type;
 
-    protected Date sessionExpiresAt;
+    protected OffsetDateTime sessionExpiresAt;
 
     protected Long partSize;
 
@@ -169,7 +169,7 @@ public class UploadSession extends SerializableObject {
       return this;
     }
 
-    public Builder sessionExpiresAt(Date sessionExpiresAt) {
+    public Builder sessionExpiresAt(OffsetDateTime sessionExpiresAt) {
       this.sessionExpiresAt = sessionExpiresAt;
       return this;
     }

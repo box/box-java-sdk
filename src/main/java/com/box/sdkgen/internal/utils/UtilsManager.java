@@ -20,10 +20,12 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.security.MessageDigest;
-import java.text.SimpleDateFormat;
+import java.time.OffsetDateTime;
+import java.time.ZoneOffset;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.util.Arrays;
 import java.util.Base64;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -31,7 +33,6 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
-import java.util.TimeZone;
 import java.util.UUID;
 import java.util.function.BiFunction;
 import java.util.stream.Collectors;
@@ -44,13 +45,15 @@ import org.jose4j.lang.JoseException;
 
 public class UtilsManager {
   private static final int BUFFER_SIZE = 8192;
-  private static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd");
-  private static final SimpleDateFormat DATE_TIME_FORMAT =
-      new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssXXX");
-  private static final SimpleDateFormat DATE_TIME_FORMAT_WITH_MILLIS =
-      new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX");
-  private static final SimpleDateFormat DATE_TIME_FORMAT_WITH_MICROS =
-      new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSSSSX");
+
+  private static final DateTimeFormatter OFFSET_DATE_TIME_FORMAT =
+      DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ssXXX");
+  private static final DateTimeFormatter OFFSET_DATE_TIME_FORMAT_WITH_MILLIS =
+      DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSXXX");
+  private static final DateTimeFormatter OFFSET_DATE_TIME_FORMAT_WITH_MICROS =
+      DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSSSSX");
+  private static final DateTimeFormatter OFFSET_DATE_FORMAT =
+      DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
   public static <K, V> Map<K, V> mapOf(Entry<K, V>... entries) {
     return Arrays.stream(entries)
@@ -377,37 +380,54 @@ public class UtilsManager {
                         : entry.getValue()));
   }
 
-  public static Date dateTimeFromString(String dateString) {
-    SimpleDateFormat[] formats = {
-      DATE_TIME_FORMAT, DATE_TIME_FORMAT_WITH_MILLIS, DATE_TIME_FORMAT_WITH_MICROS
+  public static OffsetDateTime dateTimeFromString(String dateString) {
+    DateTimeFormatter[] formatters = {
+      OFFSET_DATE_TIME_FORMAT,
+      OFFSET_DATE_TIME_FORMAT_WITH_MILLIS,
+      OFFSET_DATE_TIME_FORMAT_WITH_MICROS
     };
 
-    for (SimpleDateFormat format : formats) {
+    for (DateTimeFormatter formatter : formatters) {
       try {
-        return format.parse(dateString);
-      } catch (java.text.ParseException e) {
+        return OffsetDateTime.parse(dateString, formatter);
+      } catch (DateTimeParseException e) {
         // Ignore and try the next format
       }
     }
     return null;
   }
 
-  public static String dateTimeToString(Date dateTime) {
-    DATE_TIME_FORMAT_WITH_MILLIS.setTimeZone(TimeZone.getTimeZone("UTC"));
-    return DATE_TIME_FORMAT_WITH_MILLIS.format(dateTime);
+  public static String dateTimeToString(OffsetDateTime dateTime) {
+    return dateTime.format(OFFSET_DATE_TIME_FORMAT_WITH_MILLIS);
   }
 
-  public static Date dateFromString(String dateString) {
+  public static OffsetDateTime dateFromString(String dateString) {
     try {
-      return DATE_FORMAT.parse(dateString);
-    } catch (java.text.ParseException e) {
+      // For date-only strings, parse as date and convert to OffsetDateTime at start of day UTC
+      if (dateString.matches("\\d{4}-\\d{2}-\\d{2}")) {
+        return OffsetDateTime.parse(dateString + "T00:00:00Z");
+      }
+      // Otherwise try to parse as full OffsetDateTime
+      DateTimeFormatter[] formatters = {
+        OFFSET_DATE_TIME_FORMAT,
+        OFFSET_DATE_TIME_FORMAT_WITH_MILLIS,
+        OFFSET_DATE_TIME_FORMAT_WITH_MICROS
+      };
+      for (DateTimeFormatter formatter : formatters) {
+        try {
+          return OffsetDateTime.parse(dateString, formatter);
+        } catch (DateTimeParseException e) {
+          // Ignore and try the next format
+        }
+      }
+      return null;
+    } catch (DateTimeParseException e) {
       return null;
     }
   }
 
-  public static String dateToString(Date date) {
-    DATE_FORMAT.setTimeZone(TimeZone.getTimeZone("UTC"));
-    return DATE_FORMAT.format(date);
+  public static String dateToString(OffsetDateTime date) {
+    return date.format(OFFSET_DATE_FORMAT);
   }
 
   public static String escapeUnicode(String value) {
@@ -441,12 +461,12 @@ public class UtilsManager {
     return result.toString();
   }
 
-  public static Date epochSecondsToDateTime(long seconds) {
-    return new Date(seconds * 1000);
+  public static OffsetDateTime epochSecondsToDateTime(long seconds) {
+    return OffsetDateTime.ofInstant(java.time.Instant.ofEpochSecond(seconds), ZoneOffset.UTC);
   }
 
-  public static long dateTimeToEpochSeconds(Date dateTime) {
-    return dateTime.getTime() / 1000;
+  public static long dateTimeToEpochSeconds(OffsetDateTime dateTime) {
+    return dateTime.toEpochSecond();
   }
 
   public static boolean compareSignatures(String expectedSignature, String receivedSignature) {
@@ -486,7 +506,6 @@ public class UtilsManager {
       byte[] hmacDigest = mac.doFinal();
       return Base64.getEncoder().encodeToString(hmacDigest);
     } catch (Exception e) {
-      System.err.println("Error computing webhook signature: " + e.getMessage());
       return null;
     }
   }

@@ -20,7 +20,7 @@ import com.box.sdkgen.schemas.filefull.FileFull;
 import com.box.sdkgen.schemas.files.Files;
 import com.box.sdkgen.schemas.task.Task;
 import com.box.sdkgen.schemas.tasks.Tasks;
-import java.util.Date;
+import java.time.OffsetDateTime;
 import org.junit.jupiter.api.Test;
 
 public class TasksITest {
@@ -38,7 +38,7 @@ public class TasksITest {
                         getUuid(), new UploadFileRequestBodyAttributesParentField("0")),
                     generateByteStream(10)));
     FileFull file = files.getEntries().get(0);
-    Date dateTime = dateTimeFromString("2035-01-01T00:00:00Z");
+    OffsetDateTime dateTime = dateTimeFromString("2035-01-01T00:00:00Z");
     Task task =
         client
             .getTasks()

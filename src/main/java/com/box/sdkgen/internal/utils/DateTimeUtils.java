@@ -10,24 +10,24 @@ import com.fasterxml.jackson.databind.JsonDeserializer;
 import com.fasterxml.jackson.databind.JsonSerializer;
 import com.fasterxml.jackson.databind.SerializerProvider;
 import java.io.IOException;
-import java.util.Date;
+import java.time.OffsetDateTime;
 
 public class DateTimeUtils {
 
-  public static class DateTimeSerializer extends JsonSerializer<Date> {
+  public static class DateTimeSerializer extends JsonSerializer<OffsetDateTime> {
     @Override
-    public void serialize(Date value, JsonGenerator gen, SerializerProvider serializers)
+    public void serialize(OffsetDateTime value, JsonGenerator gen, SerializerProvider serializers)
         throws IOException {
       String formattedDate = dateTimeToString(value);
       gen.writeString(formattedDate);
     }
   }
 
-  public static class DateTimeDeserializer extends JsonDeserializer<Date> {
+  public static class DateTimeDeserializer extends JsonDeserializer<OffsetDateTime> {
     @Override
-    public Date deserialize(JsonParser p, DeserializationContext ctx) throws IOException {
+    public OffsetDateTime deserialize(JsonParser p, DeserializationContext ctx) throws IOException {
       String dateString = p.getValueAsString();
-      Date d = dateTimeFromString(dateString);
+      OffsetDateTime d = dateTimeFromString(dateString);
       if (d == null) {
         throw new IOException("Invalid date time format: " + dateString);
       }

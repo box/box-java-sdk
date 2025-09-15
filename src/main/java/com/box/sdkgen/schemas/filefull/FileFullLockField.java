@@ -10,7 +10,7 @@ import com.fasterxml.jackson.annotation.JsonFilter;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import java.util.Date;
+import java.time.OffsetDateTime;
 import java.util.Objects;
 
 @JsonFilter("nullablePropertyFilter")
@@ -28,12 +28,12 @@ public class FileFullLockField extends SerializableObject {
   @JsonProperty("created_at")
   @JsonSerialize(using = DateTimeUtils.DateTimeSerializer.class)
   @JsonDeserialize(using = DateTimeUtils.DateTimeDeserializer.class)
-  protected Date createdAt;
+  protected OffsetDateTime createdAt;
 
   @JsonProperty("expired_at")
   @JsonSerialize(using = DateTimeUtils.DateTimeSerializer.class)
   @JsonDeserialize(using = DateTimeUtils.DateTimeDeserializer.class)
-  protected Date expiredAt;
+  protected OffsetDateTime expiredAt;
 
   @JsonProperty("is_download_prevented")
   protected Boolean isDownloadPrevented;
@@ -72,11 +72,11 @@ public class FileFullLockField extends SerializableObject {
     return createdBy;
   }
 
-  public Date getCreatedAt() {
+  public OffsetDateTime getCreatedAt() {
     return createdAt;
   }
 
-  public Date getExpiredAt() {
+  public OffsetDateTime getExpiredAt() {
     return expiredAt;
   }
 
@@ -152,9 +152,9 @@ public class FileFullLockField extends SerializableObject {
 
     protected UserMini createdBy;
 
-    protected Date createdAt;
+    protected OffsetDateTime createdAt;
 
-    protected Date expiredAt;
+    protected OffsetDateTime expiredAt;
 
     protected Boolean isDownloadPrevented;
 
@@ -180,12 +180,12 @@ public class FileFullLockField extends SerializableObject {
       return this;
     }
 
-    public Builder createdAt(Date createdAt) {
+    public Builder createdAt(OffsetDateTime createdAt) {
       this.createdAt = createdAt;
       return this;
     }
 
-    public Builder expiredAt(Date expiredAt) {
+    public Builder expiredAt(OffsetDateTime expiredAt) {
       this.expiredAt = expiredAt;
       return this;
     }

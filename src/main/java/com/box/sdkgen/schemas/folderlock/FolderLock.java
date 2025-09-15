@@ -9,7 +9,7 @@ import com.fasterxml.jackson.annotation.JsonFilter;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import java.util.Date;
+import java.time.OffsetDateTime;
 import java.util.Objects;
 
 @JsonFilter("nullablePropertyFilter")
@@ -27,7 +27,7 @@ public class FolderLock extends SerializableObject {
   @JsonProperty("created_at")
   @JsonSerialize(using = DateTimeUtils.DateTimeSerializer.class)
   @JsonDeserialize(using = DateTimeUtils.DateTimeDeserializer.class)
-  protected Date createdAt;
+  protected OffsetDateTime createdAt;
 
   @JsonProperty("locked_operations")
   protected FolderLockLockedOperationsField lockedOperations;
@@ -67,7 +67,7 @@ public class FolderLock extends SerializableObject {
     return createdBy;
   }
 
-  public Date getCreatedAt() {
+  public OffsetDateTime getCreatedAt() {
     return createdAt;
   }
 
@@ -145,7 +145,7 @@ public class FolderLock extends SerializableObject {
 
     protected UserBase createdBy;
 
-    protected Date createdAt;
+    protected OffsetDateTime createdAt;
 
     protected FolderLockLockedOperationsField lockedOperations;
 
@@ -171,7 +171,7 @@ public class FolderLock extends SerializableObject {
       return this;
     }
 
-    public Builder createdAt(Date createdAt) {
+    public Builder createdAt(OffsetDateTime createdAt) {
       this.createdAt = createdAt;
       return this;
     }

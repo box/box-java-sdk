@@ -14,7 +14,7 @@ import com.fasterxml.jackson.annotation.JsonFilter;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import java.util.Date;
+import java.time.OffsetDateTime;
 import java.util.Objects;
 
 @JsonFilter("nullablePropertyFilter")
@@ -32,12 +32,12 @@ public class LegalHoldPolicyAssignment extends LegalHoldPolicyAssignmentBase {
   @JsonProperty("assigned_at")
   @JsonSerialize(using = DateTimeUtils.DateTimeSerializer.class)
   @JsonDeserialize(using = DateTimeUtils.DateTimeDeserializer.class)
-  protected Date assignedAt;
+  protected OffsetDateTime assignedAt;
 
   @JsonProperty("deleted_at")
   @JsonSerialize(using = DateTimeUtils.DateTimeSerializer.class)
   @JsonDeserialize(using = DateTimeUtils.DateTimeDeserializer.class)
-  protected Date deletedAt;
+  protected OffsetDateTime deletedAt;
 
   public LegalHoldPolicyAssignment() {
     super();
@@ -65,11 +65,11 @@ public class LegalHoldPolicyAssignment extends LegalHoldPolicyAssignmentBase {
     return assignedBy;
   }
 
-  public Date getAssignedAt() {
+  public OffsetDateTime getAssignedAt() {
     return assignedAt;
   }
 
-  public Date getDeletedAt() {
+  public OffsetDateTime getDeletedAt() {
     return deletedAt;
   }
 
@@ -137,9 +137,9 @@ public class LegalHoldPolicyAssignment extends LegalHoldPolicyAssignmentBase {
 
     protected UserMini assignedBy;
 
-    protected Date assignedAt;
+    protected OffsetDateTime assignedAt;
 
-    protected Date deletedAt;
+    protected OffsetDateTime deletedAt;
 
     public Builder legalHoldPolicy(LegalHoldPolicyMini legalHoldPolicy) {
       this.legalHoldPolicy = legalHoldPolicy;
@@ -171,12 +171,12 @@ public class LegalHoldPolicyAssignment extends LegalHoldPolicyAssignmentBase {
       return this;
     }
 
-    public Builder assignedAt(Date assignedAt) {
+    public Builder assignedAt(OffsetDateTime assignedAt) {
       this.assignedAt = assignedAt;
       return this;
     }
 
-    public Builder deletedAt(Date deletedAt) {
+    public Builder deletedAt(OffsetDateTime deletedAt) {
       this.deletedAt = deletedAt;
       return this;
     }

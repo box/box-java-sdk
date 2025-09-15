@@ -16,8 +16,8 @@ import com.box.sdkgen.schemas.eventsource.EventSource;
 import com.box.sdkgen.schemas.realtimeserver.RealtimeServer;
 import com.box.sdkgen.schemas.realtimeservers.RealtimeServers;
 import com.box.sdkgen.schemas.user.User;
+import java.time.OffsetDateTime;
 import java.util.Arrays;
-import java.util.Date;
 import org.junit.jupiter.api.Test;
 
 public class EventsITest {
@@ -96,8 +96,8 @@ public class EventsITest {
   public void testGetEventsWithDateFilters() {
     long currentEpochTimeInSeconds = getEpochTimeInSeconds();
     long epochTimeInSecondsAWeekAgo = currentEpochTimeInSeconds - 7 * 24 * 60 * 60;
-    Date createdAfterDate = epochSecondsToDateTime(epochTimeInSecondsAWeekAgo);
-    Date createdBeforeDate = epochSecondsToDateTime(currentEpochTimeInSeconds);
+    OffsetDateTime createdAfterDate = epochSecondsToDateTime(epochTimeInSecondsAWeekAgo);
+    OffsetDateTime createdBeforeDate = epochSecondsToDateTime(currentEpochTimeInSeconds);
     Events servers =
         client
             .getEvents()

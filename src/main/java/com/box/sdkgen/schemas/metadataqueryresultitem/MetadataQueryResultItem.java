@@ -15,7 +15,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import java.io.IOException;
-import java.util.Date;
+import java.time.OffsetDateTime;
 import java.util.List;
 
 @JsonDeserialize(using = MetadataQueryResultItem.MetadataQueryResultItemDeserializer.class)
@@ -38,17 +38,17 @@ public class MetadataQueryResultItem extends OneOfTwo<FileFull, FolderFull> {
 
   protected final Long size;
 
-  protected final Date createdAt;
+  protected final OffsetDateTime createdAt;
 
-  protected final Date modifiedAt;
+  protected final OffsetDateTime modifiedAt;
 
-  protected final Date trashedAt;
+  protected final OffsetDateTime trashedAt;
 
-  protected final Date purgedAt;
+  protected final OffsetDateTime purgedAt;
 
-  protected final Date contentCreatedAt;
+  protected final OffsetDateTime contentCreatedAt;
 
-  protected final Date contentModifiedAt;
+  protected final OffsetDateTime contentModifiedAt;
 
   protected final UserMini createdBy;
 
@@ -174,27 +174,27 @@ public class MetadataQueryResultItem extends OneOfTwo<FileFull, FolderFull> {
     return size;
   }
 
-  public Date getCreatedAt() {
+  public OffsetDateTime getCreatedAt() {
     return createdAt;
   }
 
-  public Date getModifiedAt() {
+  public OffsetDateTime getModifiedAt() {
     return modifiedAt;
   }
 
-  public Date getTrashedAt() {
+  public OffsetDateTime getTrashedAt() {
     return trashedAt;
   }
 
-  public Date getPurgedAt() {
+  public OffsetDateTime getPurgedAt() {
     return purgedAt;
   }
 
-  public Date getContentCreatedAt() {
+  public OffsetDateTime getContentCreatedAt() {
     return contentCreatedAt;
   }
 
-  public Date getContentModifiedAt() {
+  public OffsetDateTime getContentModifiedAt() {
     return contentModifiedAt;
   }
 

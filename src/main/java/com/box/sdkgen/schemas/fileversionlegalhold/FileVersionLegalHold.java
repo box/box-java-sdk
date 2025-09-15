@@ -11,7 +11,7 @@ import com.fasterxml.jackson.annotation.JsonFilter;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import java.util.Date;
+import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.Objects;
 
@@ -37,7 +37,7 @@ public class FileVersionLegalHold extends SerializableObject {
   @JsonProperty("deleted_at")
   @JsonSerialize(using = DateTimeUtils.DateTimeSerializer.class)
   @JsonDeserialize(using = DateTimeUtils.DateTimeDeserializer.class)
-  protected Date deletedAt;
+  protected OffsetDateTime deletedAt;
 
   public FileVersionLegalHold() {
     super();
@@ -74,7 +74,7 @@ public class FileVersionLegalHold extends SerializableObject {
     return legalHoldPolicyAssignments;
   }
 
-  public Date getDeletedAt() {
+  public OffsetDateTime getDeletedAt() {
     return deletedAt;
   }
 
@@ -141,7 +141,7 @@ public class FileVersionLegalHold extends SerializableObject {
 
     protected List<LegalHoldPolicyAssignment> legalHoldPolicyAssignments;
 
-    protected Date deletedAt;
+    protected OffsetDateTime deletedAt;
 
     public Builder id(String id) {
       this.id = id;
@@ -174,7 +174,7 @@ public class FileVersionLegalHold extends SerializableObject {
       return this;
     }
 
-    public Builder deletedAt(Date deletedAt) {
+    public Builder deletedAt(OffsetDateTime deletedAt) {
       this.deletedAt = deletedAt;
       return this;
     }

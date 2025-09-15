@@ -11,7 +11,7 @@ import com.fasterxml.jackson.annotation.JsonFilter;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import java.util.Date;
+import java.time.OffsetDateTime;
 import java.util.Objects;
 
 @JsonFilter("nullablePropertyFilter")
@@ -33,12 +33,12 @@ public class FileVersionRetention extends SerializableObject {
   @JsonProperty("applied_at")
   @JsonSerialize(using = DateTimeUtils.DateTimeSerializer.class)
   @JsonDeserialize(using = DateTimeUtils.DateTimeDeserializer.class)
-  protected Date appliedAt;
+  protected OffsetDateTime appliedAt;
 
   @JsonProperty("disposition_at")
   @JsonSerialize(using = DateTimeUtils.DateTimeSerializer.class)
   @JsonDeserialize(using = DateTimeUtils.DateTimeDeserializer.class)
-  protected Date dispositionAt;
+  protected OffsetDateTime dispositionAt;
 
   @JsonProperty("winning_retention_policy")
   protected RetentionPolicyMini winningRetentionPolicy;
@@ -75,11 +75,11 @@ public class FileVersionRetention extends SerializableObject {
     return file;
   }
 
-  public Date getAppliedAt() {
+  public OffsetDateTime getAppliedAt() {
     return appliedAt;
   }
 
-  public Date getDispositionAt() {
+  public OffsetDateTime getDispositionAt() {
     return dispositionAt;
   }
 
@@ -154,9 +154,9 @@ public class FileVersionRetention extends SerializableObject {
 
     protected FileMini file;
 
-    protected Date appliedAt;
+    protected OffsetDateTime appliedAt;
 
-    protected Date dispositionAt;
+    protected OffsetDateTime dispositionAt;
 
     protected RetentionPolicyMini winningRetentionPolicy;
 
@@ -185,12 +185,12 @@ public class FileVersionRetention extends SerializableObject {
       return this;
     }
 
-    public Builder appliedAt(Date appliedAt) {
+    public Builder appliedAt(OffsetDateTime appliedAt) {
       this.appliedAt = appliedAt;
       return this;
     }
 
-    public Builder dispositionAt(Date dispositionAt) {
+    public Builder dispositionAt(OffsetDateTime dispositionAt) {
       this.dispositionAt = dispositionAt;
       return this;
     }

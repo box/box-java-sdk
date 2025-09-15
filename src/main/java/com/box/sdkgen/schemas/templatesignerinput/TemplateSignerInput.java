@@ -7,7 +7,7 @@ import com.fasterxml.jackson.annotation.JsonFilter;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import java.util.Date;
+import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.Objects;
 
@@ -346,7 +346,7 @@ public class TemplateSignerInput extends SignRequestPrefillTag {
     }
 
     @Override
-    public Builder dateValue(Date dateValue) {
+    public Builder dateValue(OffsetDateTime dateValue) {
       this.dateValue = dateValue;
       this.markNullableFieldAsSet("date_value");
       return this;
