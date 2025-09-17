@@ -2,6 +2,44 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [10.0.0](https://github.com/box/box-java-sdk/compare/v4.16.3...v10.0.0) (2025-09-17)
+
+Introducing **`Box SDK v10`**, a major release designed to elevate your developer experience and streamline integration with Box Content Cloud. Currently available as a separate [`sdk-gen`](https://github.com/box/box-java-sdk/tree/sdk-gen) branch, `v10` will ultimately become the main branch.
+
+### Breaking Changes
+
+- This SDK version is auto-generated and introduces a new interface for all methods. Extensive documentation is available [here](https://github.com/box/box-java-sdk/tree/sdk-gen/docs).
+
+### What's New in `v10`
+
+- **Full API Support** — Complete coverage of the Box API ecosystem, giving you access to all the latest features and functionalities to build feature-rich applications.  
+
+- **Rapid API Updates** — Our new auto-generation approach enables Box API additions within days, ensuring you can leverage the most up-to-date features without delay.  
+
+- **Embedded Documentation** — All objects and parameters are documented directly in the SDK source code, keeping essential information in one place.  
+
+- **Enhanced Convenience Methods** — New methods for authentication, chunk uploads, automatic retries, retry strategy, and more.
+
+### Important Notes
+
+This version includes the Box Next Generation SDK artifact, previously developed in parallel to core Box SDKs. To facilitate migration and provide access to the newest features, we'll soon release an additional major version combining both artifacts. Migration to `v10` includes breaking changes, please review the [migration guide](https://github.com/box/box-java-sdk/blob/sdk-gen/migration-guides/from-v4-to-v10.md) for details.  For more information, see the [SDK versioning strategy document](https://developer.box.com/tooling/sdks/sdk-versioning). Follow developer changelog for future updates.
+
+---
+
+### What’s New Compared to [Java SDK Gen](https://github.com/box/box-java-sdk-gen) `v0.8.1`
+
+#### ⚠ BREAKING CHANGES
+
+* Change names of unions (box/box-codegen[#787](https://github.com/box/box-java-sdk/issues/787)) ([#1359](https://github.com/box/box-java-sdk/issues/1359)) ([114e778](https://github.com/box/box-java-sdk/commit/114e7785031e19fb58933f231e656a991b5effb7))
+* Remove unused models from schemas (box/box-openapi[#547](https://github.com/box/box-java-sdk/issues/547)) ([#1354](https://github.com/box/box-java-sdk/issues/1354)) ([e031308](https://github.com/box/box-java-sdk/commit/e031308f102137351238bf3823372150d3927442)), closes [box/box-openapi#542](https://github.com/box/box-openapi/issues/542) [box/box-openapi#544](https://github.com/box/box-openapi/issues/544) [box/box-codegen#781](https://github.com/box/box-codegen/issues/781) [box/box-openapi#545](https://github.com/box/box-openapi/issues/545) [box/box-codegen#782](https://github.com/box/box-codegen/issues/782)
+* Replace `Date` with `OffsetDateTime` (box/box-codegen[#826](https://github.com/box/box-java-sdk/issues/826)) ([#1419](https://github.com/box/box-java-sdk/issues/1419)) ([ed04407](https://github.com/box/box-java-sdk/commit/ed04407e8effa8811bc85023783097f8a95e5223))
+
+#### New Features and Enhancements
+
+* Add proxy support (box/box-codegen[#830](https://github.com/box/box-java-sdk/issues/830)) ([#1424](https://github.com/box/box-java-sdk/issues/1424)) ([cc53247](https://github.com/box/box-java-sdk/commit/cc532475cdaf5ec3fd710149b41a6e7b04dcd32f))
+
+For more details check [migration guide](https://github.com/box/box-java-sdk/blob/sdk-gen/migration-guides/from-box-java-sdk-gen-v0-to-box-java-sdk-v10.md) from `box-java-sdk-gen` `v0` to `box-java-sdk` `v10`.
+
 ### [4.16.3](https://github.com/box/box-java-sdk/compare/v4.16.2...v4.16.3) (2025-07-23)
 
 
