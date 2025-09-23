@@ -14,151 +14,161 @@ import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 
-/**
- * {@link BoxRetentionPolicy} related unit tests.
- */
+/** {@link BoxRetentionPolicy} related unit tests. */
 public class BoxRetentionPolicyTest {
 
-    @Rule
-    public WireMockRule wireMockRule = new WireMockRule(wireMockConfig().dynamicHttpsPort().httpDisabled(true));
-    private final BoxAPIConnection api = TestUtils.getAPIConnection();
+  @Rule
+  public WireMockRule wireMockRule =
+      new WireMockRule(wireMockConfig().dynamicHttpsPort().httpDisabled(true));
 
-    @Before
-    public void setUpBaseUrl() {
-        api.setMaxRetryAttempts(1);
-        api.setBaseURL(format("https://localhost:%d", wireMockRule.httpsPort()));
-    }
+  private final BoxAPIConnection api = TestUtils.getAPIConnection();
 
-    @Test
-    public void testGetAllRetentionPoliciesSucceeds() {
-        final String getAllRetentionPoliciesURL = "/2.0/retention_policies";
-        final String firstRetentionPolicyID = "12345";
-        final String firstRetentionPolicyName = "A Retention Policy";
-        final int firstRetentionPolicyLength = 30;
-        final String secondRetentionPolicyID = "32421";
-        final String secondRetentionPolicyName = "A Retention Policy 2";
-        final int secondRetentionPolicyLength = 1;
+  @Before
+  public void setUpBaseUrl() {
+    api.setMaxRetryAttempts(1);
+    api.setBaseURL(format("https://localhost:%d", wireMockRule.httpsPort()));
+  }
 
-        String result = TestUtils.getFixture("BoxRetentionPolicy/GetAllRetentionPolicies200");
+  @Test
+  public void testGetAllRetentionPoliciesSucceeds() {
+    final String getAllRetentionPoliciesURL = "/2.0/retention_policies";
+    final String firstRetentionPolicyID = "12345";
+    final String firstRetentionPolicyName = "A Retention Policy";
+    final int firstRetentionPolicyLength = 30;
+    final String secondRetentionPolicyID = "32421";
+    final String secondRetentionPolicyName = "A Retention Policy 2";
+    final int secondRetentionPolicyLength = 1;
 
-        wireMockRule.stubFor(WireMock.get(WireMock.urlPathEqualTo(getAllRetentionPoliciesURL))
-            .willReturn(WireMock.aResponse()
-                .withHeader("Content-Type", APPLICATION_JSON)
-                .withBody(result)));
+    String result = TestUtils.getFixture("BoxRetentionPolicy/GetAllRetentionPolicies200");
 
-        Iterator<BoxRetentionPolicy.Info> policies = BoxRetentionPolicy.getAll(this.api).iterator();
-        BoxRetentionPolicy.Info firstRetentionPolicy = policies.next();
+    wireMockRule.stubFor(
+        WireMock.get(WireMock.urlPathEqualTo(getAllRetentionPoliciesURL))
+            .willReturn(
+                WireMock.aResponse()
+                    .withHeader("Content-Type", APPLICATION_JSON)
+                    .withBody(result)));
 
-        assertEquals(firstRetentionPolicyID, firstRetentionPolicy.getID());
-        assertEquals(firstRetentionPolicyName, firstRetentionPolicy.getPolicyName());
-        assertEquals(firstRetentionPolicyLength, firstRetentionPolicy.getRetentionLength());
+    Iterator<BoxRetentionPolicy.Info> policies = BoxRetentionPolicy.getAll(this.api).iterator();
+    BoxRetentionPolicy.Info firstRetentionPolicy = policies.next();
 
-        BoxRetentionPolicy.Info secondRetentionPolicy = policies.next();
+    assertEquals(firstRetentionPolicyID, firstRetentionPolicy.getID());
+    assertEquals(firstRetentionPolicyName, firstRetentionPolicy.getPolicyName());
+    assertEquals(firstRetentionPolicyLength, firstRetentionPolicy.getRetentionLength());
 
-        assertEquals(secondRetentionPolicyID, secondRetentionPolicy.getID());
-        assertEquals(secondRetentionPolicyName, secondRetentionPolicy.getPolicyName());
-        assertEquals(secondRetentionPolicyLength, secondRetentionPolicy.getRetentionLength());
-    }
+    BoxRetentionPolicy.Info secondRetentionPolicy = policies.next();
 
-    @Test
-    public void testGetRetentionPolicyInfoSucceeds() {
-        final String policyName = "A Retention Policy";
-        final String policyStatus = "active";
-        final String dispositionAction = "remove_retention";
-        final String retentionPolicyID = "12345";
-        final String getRetentionPolicyInfoURL = "/2.0/retention_policies/" + retentionPolicyID;
-        final String description = "description";
-        final RetentionPolicyParams.RetentionType retentionType = RetentionPolicyParams.RetentionType.NON_MODIFIABLE;
+    assertEquals(secondRetentionPolicyID, secondRetentionPolicy.getID());
+    assertEquals(secondRetentionPolicyName, secondRetentionPolicy.getPolicyName());
+    assertEquals(secondRetentionPolicyLength, secondRetentionPolicy.getRetentionLength());
+  }
 
-        String result = TestUtils.getFixture("BoxRetentionPolicy/GetRetentionPolicyInfo200");
+  @Test
+  public void testGetRetentionPolicyInfoSucceeds() {
+    final String policyName = "A Retention Policy";
+    final String policyStatus = "active";
+    final String dispositionAction = "remove_retention";
+    final String retentionPolicyID = "12345";
+    final String getRetentionPolicyInfoURL = "/2.0/retention_policies/" + retentionPolicyID;
+    final String description = "description";
+    final RetentionPolicyParams.RetentionType retentionType =
+        RetentionPolicyParams.RetentionType.NON_MODIFIABLE;
 
-        wireMockRule.stubFor(WireMock.get(WireMock.urlPathEqualTo(getRetentionPolicyInfoURL))
-            .willReturn(WireMock.aResponse()
-                .withHeader("Content-Type", APPLICATION_JSON)
-                .withBody(result)));
+    String result = TestUtils.getFixture("BoxRetentionPolicy/GetRetentionPolicyInfo200");
 
-        BoxRetentionPolicy policy = new BoxRetentionPolicy(this.api, retentionPolicyID);
-        BoxRetentionPolicy.Info policyInfo = policy.getInfo("policy_name", "status");
+    wireMockRule.stubFor(
+        WireMock.get(WireMock.urlPathEqualTo(getRetentionPolicyInfoURL))
+            .willReturn(
+                WireMock.aResponse()
+                    .withHeader("Content-Type", APPLICATION_JSON)
+                    .withBody(result)));
 
-        assertEquals(policyName, policyInfo.getPolicyName());
-        assertEquals(policyStatus, policyInfo.getStatus());
-        assertEquals(retentionPolicyID, policyInfo.getID());
-        assertEquals(dispositionAction, policyInfo.getDispositionAction());
-        assertEquals(description, policyInfo.getDescription());
-        assertEquals(retentionType, policyInfo.getRetentionType());
-        assertTrue(policyInfo.getAreOwnersNotified());
-        assertTrue(policyInfo.getCanOwnerExtendRetention());
-    }
+    BoxRetentionPolicy policy = new BoxRetentionPolicy(this.api, retentionPolicyID);
+    BoxRetentionPolicy.Info policyInfo = policy.getInfo("policy_name", "status");
 
-    @Test
-    public void testCreateRetentionPolicySucceeds() {
-        final String policyID = "12345";
-        final String policyName = "Test Retention Policy";
-        final String policyType = "indefinite";
-        final String dispositionAction = "remove_retention";
-        final String createRetentionPolicyURL = "/2.0/retention_policies";
-        final String createdByLogin = "test@user.com";
-        final String policyStatus = "active";
-        final String description = "description";
-        final RetentionPolicyParams.RetentionType retentionType = RetentionPolicyParams.RetentionType.MODIFIABLE;
+    assertEquals(policyName, policyInfo.getPolicyName());
+    assertEquals(policyStatus, policyInfo.getStatus());
+    assertEquals(retentionPolicyID, policyInfo.getID());
+    assertEquals(dispositionAction, policyInfo.getDispositionAction());
+    assertEquals(description, policyInfo.getDescription());
+    assertEquals(retentionType, policyInfo.getRetentionType());
+    assertTrue(policyInfo.getAreOwnersNotified());
+    assertTrue(policyInfo.getCanOwnerExtendRetention());
+  }
 
-        String result = TestUtils.getFixture("BoxRetentionPolicy/CreateRetentionPolicy201");
+  @Test
+  public void testCreateRetentionPolicySucceeds() {
+    final String policyID = "12345";
+    final String policyName = "Test Retention Policy";
+    final String policyType = "indefinite";
+    final String dispositionAction = "remove_retention";
+    final String createRetentionPolicyURL = "/2.0/retention_policies";
+    final String createdByLogin = "test@user.com";
+    final String policyStatus = "active";
+    final String description = "description";
+    final RetentionPolicyParams.RetentionType retentionType =
+        RetentionPolicyParams.RetentionType.MODIFIABLE;
 
-        wireMockRule.stubFor(WireMock.post(WireMock.urlPathEqualTo(createRetentionPolicyURL))
-            .willReturn(WireMock.aResponse()
-                .withHeader("Content-Type", APPLICATION_JSON)
-                .withBody(result)));
+    String result = TestUtils.getFixture("BoxRetentionPolicy/CreateRetentionPolicy201");
 
-        RetentionPolicyParams optionalParams = new RetentionPolicyParams();
-        optionalParams.setDescription(description);
-        optionalParams.setRetentionType(retentionType);
-        BoxRetentionPolicy.Info policyInfo = BoxRetentionPolicy.createIndefinitePolicy(
-                this.api, policyName, optionalParams
-        );
+    wireMockRule.stubFor(
+        WireMock.post(WireMock.urlPathEqualTo(createRetentionPolicyURL))
+            .willReturn(
+                WireMock.aResponse()
+                    .withHeader("Content-Type", APPLICATION_JSON)
+                    .withBody(result)));
 
-        assertEquals(policyName, policyInfo.getPolicyName());
-        assertEquals(policyType, policyInfo.getPolicyType());
-        assertEquals(dispositionAction, policyInfo.getDispositionAction());
-        assertEquals(createdByLogin, policyInfo.getCreatedBy().getLogin());
-        assertEquals(policyID, policyInfo.getID());
-        assertEquals(policyStatus, policyInfo.getStatus());
-        assertEquals(description, policyInfo.getDescription());
-        assertEquals(retentionType, policyInfo.getRetentionType());
-    }
+    RetentionPolicyParams optionalParams = new RetentionPolicyParams();
+    optionalParams.setDescription(description);
+    optionalParams.setRetentionType(retentionType);
+    BoxRetentionPolicy.Info policyInfo =
+        BoxRetentionPolicy.createIndefinitePolicy(this.api, policyName, optionalParams);
 
-    @Test
-    public void testUpdateRetentionPolicyInfoSendsCorrectJson() {
-        final String policyID = "12345";
-        final String updateRetentionPolicyURL = "/2.0/retention_policies/" + policyID;
-        final String updatedPolicyName = "New Policy Name";
-        final String updatedPolicyStatus = "retired";
-        final String updatedDescription = "updated description";
-        final int updatedRetentionLength = 44;
-        final RetentionPolicyParams.RetentionType updatedRetentionType =
-                RetentionPolicyParams.RetentionType.NON_MODIFIABLE;
+    assertEquals(policyName, policyInfo.getPolicyName());
+    assertEquals(policyType, policyInfo.getPolicyType());
+    assertEquals(dispositionAction, policyInfo.getDispositionAction());
+    assertEquals(createdByLogin, policyInfo.getCreatedBy().getLogin());
+    assertEquals(policyID, policyInfo.getID());
+    assertEquals(policyStatus, policyInfo.getStatus());
+    assertEquals(description, policyInfo.getDescription());
+    assertEquals(retentionType, policyInfo.getRetentionType());
+  }
 
-        JsonObject retentionPolicyObject = new JsonObject()
+  @Test
+  public void testUpdateRetentionPolicyInfoSendsCorrectJson() {
+    final String policyID = "12345";
+    final String updateRetentionPolicyURL = "/2.0/retention_policies/" + policyID;
+    final String updatedPolicyName = "New Policy Name";
+    final String updatedPolicyStatus = "retired";
+    final String updatedDescription = "updated description";
+    final int updatedRetentionLength = 44;
+    final RetentionPolicyParams.RetentionType updatedRetentionType =
+        RetentionPolicyParams.RetentionType.NON_MODIFIABLE;
+
+    JsonObject retentionPolicyObject =
+        new JsonObject()
             .add("policy_name", updatedPolicyName)
             .add("status", updatedPolicyStatus)
             .add("description", updatedDescription)
             .add("retention_length", updatedRetentionLength)
             .add("retention_type", updatedRetentionType.toJSONString());
 
-        String result = TestUtils.getFixture("BoxRetentionPolicy/UpdateRetentionPolicyInfo200");
+    String result = TestUtils.getFixture("BoxRetentionPolicy/UpdateRetentionPolicyInfo200");
 
-        wireMockRule.stubFor(WireMock.put(WireMock.urlPathEqualTo(updateRetentionPolicyURL))
+    wireMockRule.stubFor(
+        WireMock.put(WireMock.urlPathEqualTo(updateRetentionPolicyURL))
             .withRequestBody(WireMock.equalToJson(retentionPolicyObject.toString()))
-            .willReturn(WireMock.aResponse()
-                .withHeader("Content-Type", APPLICATION_JSON)
-                .withBody(result)));
+            .willReturn(
+                WireMock.aResponse()
+                    .withHeader("Content-Type", APPLICATION_JSON)
+                    .withBody(result)));
 
-        BoxRetentionPolicy policy = new BoxRetentionPolicy(this.api, policyID);
-        BoxRetentionPolicy.Info policyInfo = policy.new Info();
-        policyInfo.setPolicyName(updatedPolicyName);
-        policyInfo.setStatus(updatedPolicyStatus);
-        policyInfo.setDescription(updatedDescription);
-        policyInfo.setRetentionLength(updatedRetentionLength);
-        policyInfo.setRetentionTypeToNonModifiable();
-        policy.updateInfo(policyInfo);
-    }
+    BoxRetentionPolicy policy = new BoxRetentionPolicy(this.api, policyID);
+    BoxRetentionPolicy.Info policyInfo = policy.new Info();
+    policyInfo.setPolicyName(updatedPolicyName);
+    policyInfo.setStatus(updatedPolicyStatus);
+    policyInfo.setDescription(updatedDescription);
+    policyInfo.setRetentionLength(updatedRetentionLength);
+    policyInfo.setRetentionTypeToNonModifiable();
+    policy.updateInfo(policyInfo);
+  }
 }

@@ -11,111 +11,112 @@ import java.net.URL;
 /**
  * Used to make HTTP requests containing JSON to the Box API.
  *
- * <p>This request type extends BoxAPIRequest to provide additional functionality for handling JSON strings. It
- * automatically sets the appropriate "Content-Type" HTTP headers and allows the JSON in the request to be logged.</p>
+ * <p>This request type extends BoxAPIRequest to provide additional functionality for handling JSON
+ * strings. It automatically sets the appropriate "Content-Type" HTTP headers and allows the JSON in
+ * the request to be logged.
  */
 public class BoxJSONRequest extends BoxAPIRequest {
-    private JsonValue jsonValue;
+  private JsonValue jsonValue;
 
-    protected BoxJSONRequest(BoxAPIConnection api, URL url, String method, String mediaType) {
-        super(api, url, method, mediaType);
+  protected BoxJSONRequest(BoxAPIConnection api, URL url, String method, String mediaType) {
+    super(api, url, method, mediaType);
+  }
+
+  /**
+   * Constructs an authenticated BoxJSONRequest using a provided BoxAPIConnection.
+   *
+   * @param api an API connection for authenticating the request.
+   * @param url the URL of the request.
+   * @param method the HTTP method of the request.
+   */
+  public BoxJSONRequest(BoxAPIConnection api, URL url, String method) {
+    this(api, url, method, APPLICATION_JSON);
+  }
+
+  /**
+   * Constructs an authenticated BoxJSONRequest using a provided BoxAPIConnection.
+   *
+   * @param api an API connection for authenticating the request.
+   * @param url the URL of the request.
+   * @param method the HTTP method of the request.
+   */
+  public BoxJSONRequest(BoxAPIConnection api, URL url, HttpMethod method) {
+    this(api, url, method.name());
+  }
+
+  /**
+   * Constructs an authenticated BoxJSONRequest.
+   *
+   * @param url the URL of the request.
+   * @param method the HTTP method of the request.
+   */
+  public BoxJSONRequest(URL url, HttpMethod method) {
+    this(null, url, method);
+  }
+
+  /**
+   * Sets the body of this request to a given JSON string.
+   *
+   * @param body the JSON string to use as the body.
+   */
+  @Override
+  public void setBody(String body) {
+    super.setBody(body);
+    this.jsonValue = Json.parse(body);
+  }
+
+  /**
+   * Sets the body of this request to a given JsonObject.
+   *
+   * @param body the JsonObject to use as the body.
+   */
+  public void setBody(JsonObject body) {
+    super.setBody(body.toString());
+    this.jsonValue = body;
+  }
+
+  /**
+   * Gets the body of this request as a JsonObject.
+   *
+   * @return body represented as JsonObject.
+   */
+  public JsonObject getBodyAsJsonObject() {
+    if (this.jsonValue.isObject()) {
+      return this.jsonValue.asObject();
     }
 
-    /**
-     * Constructs an authenticated BoxJSONRequest using a provided BoxAPIConnection.
-     *
-     * @param api    an API connection for authenticating the request.
-     * @param url    the URL of the request.
-     * @param method the HTTP method of the request.
-     */
-    public BoxJSONRequest(BoxAPIConnection api, URL url, String method) {
-        this(api, url, method, APPLICATION_JSON);
-    }
+    return null;
+  }
 
-    /**
-     * Constructs an authenticated BoxJSONRequest using a provided BoxAPIConnection.
-     *
-     * @param api    an API connection for authenticating the request.
-     * @param url    the URL of the request.
-     * @param method the HTTP method of the request.
-     */
-    public BoxJSONRequest(BoxAPIConnection api, URL url, HttpMethod method) {
-        this(api, url, method.name());
-    }
+  /**
+   * Gets the body of this request as a {@link JsonValue}.
+   *
+   * @return body represented as JsonValue
+   */
+  public JsonValue getBodyAsJsonValue() {
+    return this.jsonValue;
+  }
 
-    /**
-     * Constructs an authenticated BoxJSONRequest.
-     *
-     * @param url    the URL of the request.
-     * @param method the HTTP method of the request.
-     */
-    public BoxJSONRequest(URL url, HttpMethod method) {
-        this(null, url, method);
-    }
+  @Override
+  public BoxJSONResponse send() {
+    return convert(super.send());
+  }
 
-    /**
-     * Sets the body of this request to a given JSON string.
-     *
-     * @param body the JSON string to use as the body.
-     */
-    @Override
-    public void setBody(String body) {
-        super.setBody(body);
-        this.jsonValue = Json.parse(body);
-    }
+  @Override
+  public BoxJSONResponse send(ProgressListener listener) {
+    return convert(super.send(listener));
+  }
 
-    /**
-     * Sets the body of this request to a given JsonObject.
-     *
-     * @param body the JsonObject to use as the body.
-     */
-    public void setBody(JsonObject body) {
-        super.setBody(body.toString());
-        this.jsonValue = body;
+  private BoxJSONResponse convert(BoxAPIResponse response) {
+    if (response instanceof BoxJSONResponse) {
+      return (BoxJSONResponse) response;
+    } else {
+      return new BoxJSONResponse(response);
     }
+  }
 
-    /**
-     * Gets the body of this request as a JsonObject.
-     *
-     * @return body represented as JsonObject.
-     */
-    public JsonObject getBodyAsJsonObject() {
-        if (this.jsonValue.isObject()) {
-            return this.jsonValue.asObject();
-        }
-
-        return null;
-    }
-
-    /**
-     * Gets the body of this request as a {@link JsonValue}.
-     *
-     * @return body represented as JsonValue
-     */
-    public JsonValue getBodyAsJsonValue() {
-        return this.jsonValue;
-    }
-
-    @Override
-    public BoxJSONResponse send() {
-        return convert(super.send());
-    }
-
-    @Override
-    public BoxJSONResponse send(ProgressListener listener) {
-        return convert(super.send(listener));
-    }
-
-    private BoxJSONResponse convert(BoxAPIResponse response) {
-        if (response instanceof BoxJSONResponse) {
-            return (BoxJSONResponse) response;
-        } else {
-            return new BoxJSONResponse(response);
-        }
-    }
-
-    @Override
-    protected String bodyToString() {
-        return this.jsonValue != null ? this.jsonValue.toString() : null;
-    }
+  @Override
+  protected String bodyToString() {
+    return this.jsonValue != null ? this.jsonValue.toString() : null;
+  }
 }

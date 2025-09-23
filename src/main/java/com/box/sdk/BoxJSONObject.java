@@ -8,232 +8,230 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * The abstract base class for all types that contain JSON data returned by the Box API. The most common implementation
- * of BoxJSONObject is {@link BoxResource.Info} and its subclasses. Changes made to a BoxJSONObject will be tracked
- * locally until the pending changes are sent back to Box in order to avoid unnecessary network requests.
+ * The abstract base class for all types that contain JSON data returned by the Box API. The most
+ * common implementation of BoxJSONObject is {@link BoxResource.Info} and its subclasses. Changes
+ * made to a BoxJSONObject will be tracked locally until the pending changes are sent back to Box in
+ * order to avoid unnecessary network requests.
  */
 public abstract class BoxJSONObject {
-    /**
-     * A map of other BoxJSONObjects which will be lazily converted to a JsonObject once getPendingChanges is called.
-     * This allows changes to be made to a child BoxJSONObject and still have those changes reflected in the JSON
-     * string.
-     */
-    private final Map<String, BoxJSONObject> children;
-    /**
-     * The JsonObject that contains any local pending changes. When getPendingChanges is called, this object will be
-     * encoded to a JSON string.
-     */
-    private JsonObject pendingChanges;
-    /**
-     * The current JSON object.
-     */
-    private JsonObject jsonObject;
+  /**
+   * A map of other BoxJSONObjects which will be lazily converted to a JsonObject once
+   * getPendingChanges is called. This allows changes to be made to a child BoxJSONObject and still
+   * have those changes reflected in the JSON string.
+   */
+  private final Map<String, BoxJSONObject> children;
+  /**
+   * The JsonObject that contains any local pending changes. When getPendingChanges is called, this
+   * object will be encoded to a JSON string.
+   */
+  private JsonObject pendingChanges;
+  /** The current JSON object. */
+  private JsonObject jsonObject;
 
-    /**
-     * Constructs an empty BoxJSONObject.
-     */
-    public BoxJSONObject() {
-        this.children = new HashMap<String, BoxJSONObject>();
+  /** Constructs an empty BoxJSONObject. */
+  public BoxJSONObject() {
+    this.children = new HashMap<String, BoxJSONObject>();
+  }
+
+  /**
+   * Constructs a BoxJSONObject by decoding it from a JSON string.
+   *
+   * @param json the JSON string to decode.
+   */
+  public BoxJSONObject(String json) {
+    this(Json.parse(json).asObject());
+  }
+
+  /**
+   * Constructs a BoxJSONObject using an already parsed JSON object.
+   *
+   * @param jsonObject the parsed JSON object.
+   */
+  BoxJSONObject(JsonObject jsonObject) {
+    this();
+
+    this.update(jsonObject);
+  }
+
+  /** Clears any pending changes from this JSON object. */
+  public void clearPendingChanges() {
+    this.pendingChanges = null;
+  }
+
+  /**
+   * Gets a JSON string containing any pending changes to this object that can be sent back to the
+   * Box API.
+   *
+   * @return a JSON string containing the pending changes.
+   */
+  public String getPendingChanges() {
+    JsonObject jsonObject = this.getPendingJSONObject();
+    if (jsonObject == null) {
+      return null;
     }
 
-    /**
-     * Constructs a BoxJSONObject by decoding it from a JSON string.
-     *
-     * @param json the JSON string to decode.
-     */
-    public BoxJSONObject(String json) {
-        this(Json.parse(json).asObject());
+    return jsonObject.toString();
+  }
+
+  /**
+   * Gets a JSON string containing any pending changes to this object that can be sent back to the
+   * Box API.
+   *
+   * @return a JSON string containing the pending changes.
+   */
+  public JsonObject getPendingChangesAsJsonObject() {
+    return this.getPendingJSONObject();
+  }
+
+  /**
+   * Invoked with a JSON member whenever this object is updated or created from a JSON object.
+   *
+   * <p>Subclasses should override this method in order to parse any JSON members it knows about.
+   * This method is a no-op by default.
+   *
+   * @param member the JSON member to be parsed.
+   */
+  void parseJSONMember(JsonObject.Member member) {}
+
+  /**
+   * Adds a pending field change that needs to be sent to the API. It will be included in the JSON
+   * string the next time {@link #getPendingChanges} is called.
+   *
+   * @param key the name of the field.
+   * @param value the new boolean value of the field.
+   */
+  void addPendingChange(String key, boolean value) {
+    if (this.pendingChanges == null) {
+      this.pendingChanges = new JsonObject();
     }
 
-    /**
-     * Constructs a BoxJSONObject using an already parsed JSON object.
-     *
-     * @param jsonObject the parsed JSON object.
-     */
-    BoxJSONObject(JsonObject jsonObject) {
-        this();
+    this.pendingChanges.set(key, value);
+  }
 
-        this.update(jsonObject);
+  /**
+   * Adds a pending field change that needs to be sent to the API. It will be included in the JSON
+   * string the next time {@link #getPendingChanges} is called.
+   *
+   * @param key the name of the field.
+   * @param value the new String value of the field.
+   */
+  void addPendingChange(String key, String value) {
+    this.addPendingChange(key, Json.value(value));
+  }
+
+  /**
+   * Adds a pending field change that needs to be sent to the API. It will be included in the JSON
+   * string the next time {@link #getPendingChanges} is called.
+   *
+   * @param key the name of the field.
+   * @param value the new long value of the field.
+   */
+  void addPendingChange(String key, long value) {
+    this.addPendingChange(key, Json.value(value));
+  }
+
+  /**
+   * Adds a pending field change that needs to be sent to the API. It will be included in the JSON
+   * string the next time {@link #getPendingChanges} is called.
+   *
+   * @param key the name of the field.
+   * @param value the new JsonArray value of the field.
+   */
+  void addPendingChange(String key, JsonArray value) {
+    this.addPendingChange(key, (JsonValue) value);
+  }
+
+  /**
+   * Adds a pending field change that needs to be sent to the API. It will be included in the JSON
+   * string the next time {@link #getPendingChanges} is called.
+   *
+   * @param key the name of the field.
+   * @param value the new JsonObject value of the field.
+   */
+  void addPendingChange(String key, JsonObject value) {
+    this.addPendingChange(key, (JsonValue) value);
+  }
+
+  void addChildObject(String fieldName, BoxJSONObject child) {
+    if (child == null) {
+      this.addPendingChange(fieldName, Json.NULL);
+    } else {
+      this.children.put(fieldName, child);
+    }
+  }
+
+  void removeChildObject(String fieldName) {
+    this.children.remove(fieldName);
+  }
+
+  /**
+   * Adds a pending field change that needs to be sent to the API. It will be included in the JSON
+   * string the next time {@link #getPendingChanges} is called.
+   *
+   * @param key the name of the field.
+   * @param value the JsonValue of the field.
+   */
+  private void addPendingChange(String key, JsonValue value) {
+    if (this.pendingChanges == null) {
+      this.pendingChanges = new JsonObject();
     }
 
-    /**
-     * Clears any pending changes from this JSON object.
-     */
-    public void clearPendingChanges() {
-        this.pendingChanges = null;
+    this.pendingChanges.set(key, value);
+  }
+
+  void removePendingChange(String key) {
+    if (this.pendingChanges != null) {
+      this.pendingChanges.remove(key);
+    }
+  }
+
+  /**
+   * Updates this BoxJSONObject using the information in a JSON object and preserves the JSON
+   * object.
+   *
+   * @param jsonObject the JSON object containing updated information.
+   */
+  void update(JsonObject jsonObject) {
+    this.jsonObject = jsonObject;
+
+    for (JsonObject.Member member : jsonObject) {
+      if (member.getValue().isNull()) {
+        continue;
+      }
+
+      this.parseJSONMember(member);
     }
 
-    /**
-     * Gets a JSON string containing any pending changes to this object that can be sent back to the Box API.
-     *
-     * @return a JSON string containing the pending changes.
-     */
-    public String getPendingChanges() {
-        JsonObject jsonObject = this.getPendingJSONObject();
-        if (jsonObject == null) {
-            return null;
-        }
+    this.clearPendingChanges();
+  }
 
-        return jsonObject.toString();
-    }
-
-    /**
-     * Gets a JSON string containing any pending changes to this object that can be sent back to the Box API.
-     *
-     * @return a JSON string containing the pending changes.
-     */
-    public JsonObject getPendingChangesAsJsonObject() {
-        return this.getPendingJSONObject();
-    }
-
-    /**
-     * Invoked with a JSON member whenever this object is updated or created from a JSON object.
-     *
-     * <p>Subclasses should override this method in order to parse any JSON members it knows about. This method is a
-     * no-op by default.</p>
-     *
-     * @param member the JSON member to be parsed.
-     */
-    void parseJSONMember(JsonObject.Member member) {
-    }
-
-    /**
-     * Adds a pending field change that needs to be sent to the API. It will be included in the JSON string the next
-     * time {@link #getPendingChanges} is called.
-     *
-     * @param key   the name of the field.
-     * @param value the new boolean value of the field.
-     */
-    void addPendingChange(String key, boolean value) {
+  /**
+   * Gets a JsonObject containing any pending changes to this object that can be sent back to the
+   * Box API.
+   *
+   * @return a JsonObject containing the pending changes.
+   */
+  protected JsonObject getPendingJSONObject() {
+    for (Map.Entry<String, BoxJSONObject> entry : this.children.entrySet()) {
+      BoxJSONObject child = entry.getValue();
+      JsonObject jsonObject = child.getPendingJSONObject();
+      if (jsonObject != null) {
         if (this.pendingChanges == null) {
-            this.pendingChanges = new JsonObject();
+          this.pendingChanges = new JsonObject();
         }
 
-        this.pendingChanges.set(key, value);
+        this.pendingChanges.set(entry.getKey(), jsonObject);
+      }
     }
+    return this.pendingChanges;
+  }
 
-    /**
-     * Adds a pending field change that needs to be sent to the API. It will be included in the JSON string the next
-     * time {@link #getPendingChanges} is called.
-     *
-     * @param key   the name of the field.
-     * @param value the new String value of the field.
-     */
-    void addPendingChange(String key, String value) {
-        this.addPendingChange(key, Json.value(value));
-    }
-
-    /**
-     * Adds a pending field change that needs to be sent to the API. It will be included in the JSON string the next
-     * time {@link #getPendingChanges} is called.
-     *
-     * @param key   the name of the field.
-     * @param value the new long value of the field.
-     */
-    void addPendingChange(String key, long value) {
-        this.addPendingChange(key, Json.value(value));
-    }
-
-    /**
-     * Adds a pending field change that needs to be sent to the API. It will be included in the JSON string the next
-     * time {@link #getPendingChanges} is called.
-     *
-     * @param key   the name of the field.
-     * @param value the new JsonArray value of the field.
-     */
-    void addPendingChange(String key, JsonArray value) {
-        this.addPendingChange(key, (JsonValue) value);
-    }
-
-    /**
-     * Adds a pending field change that needs to be sent to the API. It will be included in the JSON string the next
-     * time {@link #getPendingChanges} is called.
-     *
-     * @param key   the name of the field.
-     * @param value the new JsonObject value of the field.
-     */
-    void addPendingChange(String key, JsonObject value) {
-        this.addPendingChange(key, (JsonValue) value);
-    }
-
-    void addChildObject(String fieldName, BoxJSONObject child) {
-        if (child == null) {
-            this.addPendingChange(fieldName, Json.NULL);
-        } else {
-            this.children.put(fieldName, child);
-        }
-    }
-
-    void removeChildObject(String fieldName) {
-        this.children.remove(fieldName);
-    }
-
-    /**
-     * Adds a pending field change that needs to be sent to the API. It will be included in the JSON string the next
-     * time {@link #getPendingChanges} is called.
-     *
-     * @param key   the name of the field.
-     * @param value the JsonValue of the field.
-     */
-    private void addPendingChange(String key, JsonValue value) {
-        if (this.pendingChanges == null) {
-            this.pendingChanges = new JsonObject();
-        }
-
-        this.pendingChanges.set(key, value);
-    }
-
-    void removePendingChange(String key) {
-        if (this.pendingChanges != null) {
-            this.pendingChanges.remove(key);
-        }
-    }
-
-    /**
-     * Updates this BoxJSONObject using the information in a JSON object and preserves the JSON object.
-     *
-     * @param jsonObject the JSON object containing updated information.
-     */
-    void update(JsonObject jsonObject) {
-        this.jsonObject = jsonObject;
-
-        for (JsonObject.Member member : jsonObject) {
-            if (member.getValue().isNull()) {
-                continue;
-            }
-
-            this.parseJSONMember(member);
-        }
-
-        this.clearPendingChanges();
-    }
-
-    /**
-     * Gets a JsonObject containing any pending changes to this object that can be sent back to the Box API.
-     *
-     * @return a JsonObject containing the pending changes.
-     */
-    protected JsonObject getPendingJSONObject() {
-        for (Map.Entry<String, BoxJSONObject> entry : this.children.entrySet()) {
-            BoxJSONObject child = entry.getValue();
-            JsonObject jsonObject = child.getPendingJSONObject();
-            if (jsonObject != null) {
-                if (this.pendingChanges == null) {
-                    this.pendingChanges = new JsonObject();
-                }
-
-                this.pendingChanges.set(entry.getKey(), jsonObject);
-            }
-        }
-        return this.pendingChanges;
-    }
-
-    /**
-     * Converts the JSON object into a string literal.
-     *
-     * @return a string representation of the JSON object.
-     */
-    public String getJson() {
-        return this.jsonObject.toString();
-    }
+  /**
+   * Converts the JSON object into a string literal.
+   *
+   * @return a string representation of the JSON object.
+   */
+  public String getJson() {
+    return this.jsonObject.toString();
+  }
 }

@@ -18,28 +18,29 @@ import org.junit.Rule;
 import org.junit.Test;
 
 public class BoxJSONRequestTest {
-    @Rule
-    public WireMockRule wireMockRule = new WireMockRule(wireMockConfig().dynamicHttpsPort().httpDisabled(true));
+  @Rule
+  public WireMockRule wireMockRule =
+      new WireMockRule(wireMockConfig().dynamicHttpsPort().httpDisabled(true));
 
-    @Test
-    public void shouldHandleApiResponse() {
-        stubFor(get(urlEqualTo("/")).willReturn(aResponse().withStatus(202)));
-        Time mockTime = mock(Time.class);
-        BackoffCounter backoffCounter = new BackoffCounter(mockTime);
+  @Test
+  public void shouldHandleApiResponse() {
+    stubFor(get(urlEqualTo("/")).willReturn(aResponse().withStatus(202)));
+    Time mockTime = mock(Time.class);
+    BackoffCounter backoffCounter = new BackoffCounter(mockTime);
 
-        BoxAPIConnection api = createConnectionWith(boxMockUrl().toString());
-        BoxJSONRequest request = new BoxJSONRequest(api, boxMockUrl(), "GET");
-        request.setBackoffCounter(backoffCounter);
+    BoxAPIConnection api = createConnectionWith(boxMockUrl().toString());
+    BoxJSONRequest request = new BoxJSONRequest(api, boxMockUrl(), "GET");
+    request.setBackoffCounter(backoffCounter);
 
-        BoxJSONResponse response = request.send();
-        assertThat(response.getResponseCode(), is(202));
+    BoxJSONResponse response = request.send();
+    assertThat(response.getResponseCode(), is(202));
+  }
+
+  private URL boxMockUrl() {
+    try {
+      return new URL(format("https://localhost:%d/", wireMockRule.httpsPort()));
+    } catch (MalformedURLException e) {
+      throw new RuntimeException(e);
     }
-
-    private URL boxMockUrl() {
-        try {
-            return new URL(format("https://localhost:%d/", wireMockRule.httpsPort()));
-        } catch (MalformedURLException e) {
-            throw new RuntimeException(e);
-        }
-    }
+  }
 }

@@ -25,220 +25,231 @@ import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 
-/**
- * {@link BoxStoragePolicyAssignment} related tests
- */
+/** {@link BoxStoragePolicyAssignment} related tests */
 public class BoxStoragePolicyAssignmentTest {
 
-    @Rule
-    public WireMockRule wireMockRule = new WireMockRule(wireMockConfig().dynamicHttpsPort().httpDisabled(true));
-    BoxAPIConnection api = TestUtils.getAPIConnection();
+  @Rule
+  public WireMockRule wireMockRule =
+      new WireMockRule(wireMockConfig().dynamicHttpsPort().httpDisabled(true));
 
-    @Before
-    public void setUpBaseUrl() {
-        api.setMaxRetryAttempts(1);
-        api.setBaseURL(format("https://localhost:%d", wireMockRule.httpsPort()));
-    }
+  BoxAPIConnection api = TestUtils.getAPIConnection();
 
-    @Test
-    public void testCreateAssignmentParseAllFieldsCorrectly() {
+  @Before
+  public void setUpBaseUrl() {
+    api.setMaxRetryAttempts(1);
+    api.setBaseURL(format("https://localhost:%d", wireMockRule.httpsPort()));
+  }
 
-        final String storagePolicyAssignmentID = "user_1111";
-        final String storagePolicyAssignedToType = "user";
-        final String storagePolicyAssignedToID = "5678";
-        final String storagePolicyType = "storage_policy";
-        final String storagePolicyID = "1234";
+  @Test
+  public void testCreateAssignmentParseAllFieldsCorrectly() {
 
-        JsonObject assignedToObject = new JsonObject()
+    final String storagePolicyAssignmentID = "user_1111";
+    final String storagePolicyAssignedToType = "user";
+    final String storagePolicyAssignedToID = "5678";
+    final String storagePolicyType = "storage_policy";
+    final String storagePolicyID = "1234";
+
+    JsonObject assignedToObject =
+        new JsonObject()
             .add("type", storagePolicyAssignedToType)
             .add("id", storagePolicyAssignedToID);
 
-        JsonObject storagePolicyObject = new JsonObject()
-            .add("type", storagePolicyType)
-            .add("id", storagePolicyID);
+    JsonObject storagePolicyObject =
+        new JsonObject().add("type", storagePolicyType).add("id", storagePolicyID);
 
-        JsonObject mockJSON = new JsonObject()
+    JsonObject mockJSON =
+        new JsonObject()
             .add("type", storagePolicyAssignedToType)
             .add("id", storagePolicyAssignmentID)
             .add("assigned_to", assignedToObject)
             .add("storage_policy", storagePolicyObject);
 
-        wireMockRule.stubFor(post(urlEqualTo("/2.0/storage_policy_assignments"))
-            .willReturn(aResponse()
-                .withHeader("Content-Type", APPLICATION_JSON)
-                .withBody(mockJSON.toString())));
+    wireMockRule.stubFor(
+        post(urlEqualTo("/2.0/storage_policy_assignments"))
+            .willReturn(
+                aResponse()
+                    .withHeader("Content-Type", APPLICATION_JSON)
+                    .withBody(mockJSON.toString())));
 
-        BoxStoragePolicyAssignment.Info assignmentInfo =
-            BoxStoragePolicyAssignment.create(this.api, storagePolicyID, storagePolicyAssignedToID);
-        assertThat(assignmentInfo.getID(), is(equalTo(mockJSON.get("id").asString())));
-        assertThat(assignmentInfo.getStoragePolicyID(),
-            is(equalTo(mockJSON.get("storage_policy").asObject().get("id").asString())));
-        assertThat(assignmentInfo.getAssignedToType(),
-            is(equalTo(mockJSON.get("assigned_to").asObject().get("type").asString())));
-    }
+    BoxStoragePolicyAssignment.Info assignmentInfo =
+        BoxStoragePolicyAssignment.create(this.api, storagePolicyID, storagePolicyAssignedToID);
+    assertThat(assignmentInfo.getID(), is(equalTo(mockJSON.get("id").asString())));
+    assertThat(
+        assignmentInfo.getStoragePolicyID(),
+        is(equalTo(mockJSON.get("storage_policy").asObject().get("id").asString())));
+    assertThat(
+        assignmentInfo.getAssignedToType(),
+        is(equalTo(mockJSON.get("assigned_to").asObject().get("type").asString())));
+  }
 
-    @Test
-    public void testGetStorageAssignmentInfoParseAllFieldsCorrectly() {
-        final String assignmentID = "12345";
-        final String storagePolicyType = "storage_policy";
-        final String storagePolicyID = "11";
-        final String assignedToType = "user";
-        final String assignedToID = "22";
+  @Test
+  public void testGetStorageAssignmentInfoParseAllFieldsCorrectly() {
+    final String assignmentID = "12345";
+    final String storagePolicyType = "storage_policy";
+    final String storagePolicyID = "11";
+    final String assignedToType = "user";
+    final String assignedToID = "22";
 
-        String result = TestUtils.getFixture("BoxStoragePolicy/Get_Storage_Policy_Assignments_200");
+    String result = TestUtils.getFixture("BoxStoragePolicy/Get_Storage_Policy_Assignments_200");
 
-        wireMockRule.stubFor(get(urlPathEqualTo("/2.0/storage_policy_assignments"))
+    wireMockRule.stubFor(
+        get(urlPathEqualTo("/2.0/storage_policy_assignments"))
             .withQueryParam("resolved_for_id", WireMock.equalTo(assignedToID))
             .withQueryParam("resolved_for_type", WireMock.equalTo(assignedToType))
-            .willReturn(aResponse()
-                .withHeader("Content-Type", APPLICATION_JSON)
-                .withBody(result)));
+            .willReturn(aResponse().withHeader("Content-Type", APPLICATION_JSON).withBody(result)));
 
-        BoxStoragePolicyAssignment.Info info = BoxStoragePolicyAssignment.getAssignmentForTarget(this.api,
-            assignedToType, assignedToID);
+    BoxStoragePolicyAssignment.Info info =
+        BoxStoragePolicyAssignment.getAssignmentForTarget(this.api, assignedToType, assignedToID);
 
-        assertEquals(assignmentID, info.getID());
-        assertEquals(storagePolicyType, info.getStoragePolicyType());
-        assertEquals(storagePolicyID, info.getStoragePolicyID());
-        assertEquals(storagePolicyID, info.getStoragePolicyID());
-        assertEquals(storagePolicyType, info.getStoragePolicyType());
-    }
+    assertEquals(assignmentID, info.getID());
+    assertEquals(storagePolicyType, info.getStoragePolicyType());
+    assertEquals(storagePolicyID, info.getStoragePolicyID());
+    assertEquals(storagePolicyID, info.getStoragePolicyID());
+    assertEquals(storagePolicyType, info.getStoragePolicyType());
+  }
 
-    @Test
-    public void testGetStorageAssignmentInfoWithIDParseAllFieldsCorrectly() {
-        final String assignmentType = "storage_policy_assignment";
-        final String assignmentID = "user_1111";
-        final String assignedToType = "user";
-        final String assignedToID = "5678";
-        final String storagePolicyID = "1234";
-        final String storagePolicyType = "storage_policy";
+  @Test
+  public void testGetStorageAssignmentInfoWithIDParseAllFieldsCorrectly() {
+    final String assignmentType = "storage_policy_assignment";
+    final String assignmentID = "user_1111";
+    final String assignedToType = "user";
+    final String assignedToID = "5678";
+    final String storagePolicyID = "1234";
+    final String storagePolicyType = "storage_policy";
 
-        JsonObject assignedToObject = new JsonObject()
-            .add("type", assignedToType)
-            .add("id", assignedToID);
+    JsonObject assignedToObject =
+        new JsonObject().add("type", assignedToType).add("id", assignedToID);
 
-        JsonObject storagePolicyObject = new JsonObject()
-            .add("type", storagePolicyType)
-            .add("id", storagePolicyID);
+    JsonObject storagePolicyObject =
+        new JsonObject().add("type", storagePolicyType).add("id", storagePolicyID);
 
-        JsonObject mockJSON = new JsonObject()
+    JsonObject mockJSON =
+        new JsonObject()
             .add("type", assignmentType)
             .add("id", assignmentID)
             .add("assigned_to", assignedToObject)
             .add("storage_policy", storagePolicyObject);
 
-        wireMockRule.stubFor(get(urlEqualTo("/2.0/storage_policy_assignments/" + assignmentID))
-            .willReturn(aResponse()
-                .withHeader("Content-Type", APPLICATION_JSON)
-                .withBody(mockJSON.toString())));
+    wireMockRule.stubFor(
+        get(urlEqualTo("/2.0/storage_policy_assignments/" + assignmentID))
+            .willReturn(
+                aResponse()
+                    .withHeader("Content-Type", APPLICATION_JSON)
+                    .withBody(mockJSON.toString())));
 
-        BoxStoragePolicyAssignment assignment = new BoxStoragePolicyAssignment(this.api, assignmentID);
-        BoxStoragePolicyAssignment.Info assignmentInfo = assignment.getInfo();
-        assertThat(assignmentInfo.getID(), is(equalTo(mockJSON.get("id").asString())));
-        assertThat(assignmentInfo.getStoragePolicyID(),
-            is(equalTo(mockJSON.get("storage_policy").asObject().get("id").asString())));
-        assertThat(assignmentInfo.getAssignedToType(),
-            is(equalTo(mockJSON.get("assigned_to").asObject().get("type").asString())));
-    }
+    BoxStoragePolicyAssignment assignment = new BoxStoragePolicyAssignment(this.api, assignmentID);
+    BoxStoragePolicyAssignment.Info assignmentInfo = assignment.getInfo();
+    assertThat(assignmentInfo.getID(), is(equalTo(mockJSON.get("id").asString())));
+    assertThat(
+        assignmentInfo.getStoragePolicyID(),
+        is(equalTo(mockJSON.get("storage_policy").asObject().get("id").asString())));
+    assertThat(
+        assignmentInfo.getAssignedToType(),
+        is(equalTo(mockJSON.get("assigned_to").asObject().get("type").asString())));
+  }
 
-    @Test
-    public void testDeleteStorageAssignmentSendsCorrectRequest() {
+  @Test
+  public void testDeleteStorageAssignmentSendsCorrectRequest() {
 
-        final String assignmentID = "user_1111";
-        final String assignmentURL = "/2.0/storage_policy_assignments/" + assignmentID;
+    final String assignmentID = "user_1111";
+    final String assignmentURL = "/2.0/storage_policy_assignments/" + assignmentID;
 
-        stubFor(delete(urlEqualTo(assignmentURL)).willReturn(aResponse().withStatus(204)));
+    stubFor(delete(urlEqualTo(assignmentURL)).willReturn(aResponse().withStatus(204)));
 
-        BoxStoragePolicyAssignment assignment = new BoxStoragePolicyAssignment(this.api, assignmentID);
-        assignment.delete();
+    BoxStoragePolicyAssignment assignment = new BoxStoragePolicyAssignment(this.api, assignmentID);
+    assignment.delete();
 
-        verify(deleteRequestedFor(urlEqualTo(assignmentURL)).withRequestBody(WireMock.absent()));
-    }
+    verify(deleteRequestedFor(urlEqualTo(assignmentURL)).withRequestBody(WireMock.absent()));
+  }
 
-    @Test
-    public void testUpdateStorageAssignmentInfoParseAllFieldsCorrectly() {
-        final String assignmentID = "user_1111";
-        final String assignmentType = "storage_policy_assignment";
-        final String assignedToType = "user";
-        final String assignedToID = "7777";
-        final String storagePolicyType = "storage_policy";
-        final String storagePolicyID = "12345";
+  @Test
+  public void testUpdateStorageAssignmentInfoParseAllFieldsCorrectly() {
+    final String assignmentID = "user_1111";
+    final String assignmentType = "storage_policy_assignment";
+    final String assignedToType = "user";
+    final String assignedToID = "7777";
+    final String storagePolicyType = "storage_policy";
+    final String storagePolicyID = "12345";
 
-        JsonObject assignedToObject = new JsonObject()
-            .add("type", assignedToType)
-            .add("id", assignedToID);
+    JsonObject assignedToObject =
+        new JsonObject().add("type", assignedToType).add("id", assignedToID);
 
-        JsonObject storagePolicyObject = new JsonObject()
-            .add("type", storagePolicyType)
-            .add("id", storagePolicyID);
+    JsonObject storagePolicyObject =
+        new JsonObject().add("type", storagePolicyType).add("id", storagePolicyID);
 
-        JsonObject mockJSON = new JsonObject()
+    JsonObject mockJSON =
+        new JsonObject()
             .add("type", assignmentType)
             .add("id", assignmentID)
             .add("assigned_to", assignedToObject)
             .add("storage_policy", storagePolicyObject);
 
-        wireMockRule.stubFor(put(urlEqualTo("/2.0/storage_policy_assignments/" + assignmentID))
-            .willReturn(aResponse()
-                .withHeader("Content-Type", APPLICATION_JSON)
-                .withBody(mockJSON.toString())));
+    wireMockRule.stubFor(
+        put(urlEqualTo("/2.0/storage_policy_assignments/" + assignmentID))
+            .willReturn(
+                aResponse()
+                    .withHeader("Content-Type", APPLICATION_JSON)
+                    .withBody(mockJSON.toString())));
 
-        BoxStoragePolicyAssignment storagePolicyAssignment = new BoxStoragePolicyAssignment(this.api, assignmentID);
-        BoxStoragePolicyAssignment.Info info = storagePolicyAssignment.new Info();
-        info.setStoragePolicyID(storagePolicyID);
-        storagePolicyAssignment.updateInfo(info);
+    BoxStoragePolicyAssignment storagePolicyAssignment =
+        new BoxStoragePolicyAssignment(this.api, assignmentID);
+    BoxStoragePolicyAssignment.Info info = storagePolicyAssignment.new Info();
+    info.setStoragePolicyID(storagePolicyID);
+    storagePolicyAssignment.updateInfo(info);
 
-        assertThat(info.getID(), is(equalTo(mockJSON.get("id").asString())));
-        assertThat(info.getStoragePolicyID(),
-            is(equalTo(mockJSON.get("storage_policy").asObject().get("id").asString())));
-    }
+    assertThat(info.getID(), is(equalTo(mockJSON.get("id").asString())));
+    assertThat(
+        info.getStoragePolicyID(),
+        is(equalTo(mockJSON.get("storage_policy").asObject().get("id").asString())));
+  }
 
-    @Test
-    public void testAssignStorageAssignmentInfoParseAllFieldsCorrectly() {
-        final String assignedToType = "user";
-        final String assignedToID = "22";
-        final String storagePolicyID = "11";
+  @Test
+  public void testAssignStorageAssignmentInfoParseAllFieldsCorrectly() {
+    final String assignedToType = "user";
+    final String assignedToID = "22";
+    final String storagePolicyID = "11";
 
-        String result = TestUtils.getFixture("BoxStoragePolicy/Get_Storage_Policy_Assignments_200");
+    String result = TestUtils.getFixture("BoxStoragePolicy/Get_Storage_Policy_Assignments_200");
 
-        wireMockRule.stubFor(get(urlPathEqualTo("/2.0/storage_policy_assignments"))
+    wireMockRule.stubFor(
+        get(urlPathEqualTo("/2.0/storage_policy_assignments"))
             .withQueryParam("resolved_for_id", WireMock.equalTo(assignedToID))
             .withQueryParam("resolved_for_type", WireMock.equalTo(assignedToType))
-            .willReturn(aResponse()
-                .withHeader("Content-Type", APPLICATION_JSON)
-                .withBody(result)));
+            .willReturn(aResponse().withHeader("Content-Type", APPLICATION_JSON).withBody(result)));
 
-        BoxStoragePolicyAssignment.Info assignmentInfo =
-            BoxStoragePolicyAssignment.assign(this.api, storagePolicyID, assignedToID);
+    BoxStoragePolicyAssignment.Info assignmentInfo =
+        BoxStoragePolicyAssignment.assign(this.api, storagePolicyID, assignedToID);
 
-        assertEquals(assignmentInfo.getStoragePolicyID(), storagePolicyID);
-    }
+    assertEquals(assignmentInfo.getStoragePolicyID(), storagePolicyID);
+  }
 
-    @Test
-    public void testAssignStorageAssignmentInfoIsEnterpriseParseAllFieldsCorrectly() {
-        final String assignedToType = "enterprise";
-        final String assignedToID = "22";
-        final String storagePolicyID = "11";
+  @Test
+  public void testAssignStorageAssignmentInfoIsEnterpriseParseAllFieldsCorrectly() {
+    final String assignedToType = "enterprise";
+    final String assignedToID = "22";
+    final String storagePolicyID = "11";
 
-        String policyResult = TestUtils.getFixture("BoxStoragePolicy/Get_Storage_Policy_Assignments_200");
+    String policyResult =
+        TestUtils.getFixture("BoxStoragePolicy/Get_Storage_Policy_Assignments_200");
 
-        wireMockRule.stubFor(get(urlPathEqualTo("/2.0/storage_policy_assignments"))
+    wireMockRule.stubFor(
+        get(urlPathEqualTo("/2.0/storage_policy_assignments"))
             .withQueryParam("resolved_for_id", WireMock.equalTo(assignedToID))
             .withQueryParam("resolved_for_type", WireMock.equalTo("user"))
-            .willReturn(aResponse()
-                .withHeader("Content-Type", APPLICATION_JSON)
-                .withBody(policyResult)));
+            .willReturn(
+                aResponse().withHeader("Content-Type", APPLICATION_JSON).withBody(policyResult)));
 
-        String assignResult = TestUtils.getFixture("BoxStoragePolicy/Get_Storage_Policy_Assignments_200");
+    String assignResult =
+        TestUtils.getFixture("BoxStoragePolicy/Get_Storage_Policy_Assignments_200");
 
-        wireMockRule.stubFor(post(urlPathEqualTo("/2.0/storage_policy_assignments"))
-            .willReturn(aResponse()
-                .withHeader("Content-Type", APPLICATION_JSON)
-                .withBody(assignResult)));
+    wireMockRule.stubFor(
+        post(urlPathEqualTo("/2.0/storage_policy_assignments"))
+            .willReturn(
+                aResponse().withHeader("Content-Type", APPLICATION_JSON).withBody(assignResult)));
 
-        BoxStoragePolicyAssignment.Info assignmentInfo =
-            BoxStoragePolicyAssignment.assign(this.api, storagePolicyID, assignedToID);
+    BoxStoragePolicyAssignment.Info assignmentInfo =
+        BoxStoragePolicyAssignment.assign(this.api, storagePolicyID, assignedToID);
 
-        assertEquals(assignedToType, assignmentInfo.getAssignedToType());
-    }
+    assertEquals(assignedToType, assignmentInfo.getAssignedToType());
+  }
 }

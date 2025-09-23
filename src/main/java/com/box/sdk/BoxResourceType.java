@@ -18,14 +18,11 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 public @interface BoxResourceType {
 
-    // Bug in checkstyle: Unused Javadoc tag.
-    // TODO checkstyle: need re-evaluation after checkstyle update
-    //CHECKSTYLE:OFF
+  // Bug in checkstyle: Unused Javadoc tag.
+  // TODO checkstyle: need re-evaluation after checkstyle update
+  // CHECKSTYLE:OFF
 
-    /**
-     * @return Type of resource (e.g.: folder, file, comment, etc...).
-     */
-    //CHECKSTYLE:ON
-    String value();
-
+  /** @return Type of resource (e.g.: folder, file, comment, etc...). */
+  // CHECKSTYLE:ON
+  String value();
 }

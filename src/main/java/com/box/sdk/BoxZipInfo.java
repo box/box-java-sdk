@@ -9,107 +9,104 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-/**
- * Represents items that have naming conflicts when creating a zip file.
- */
+/** Represents items that have naming conflicts when creating a zip file. */
 public class BoxZipInfo extends BoxJSONObject {
-    private URL downloadURL;
-    private URL statusURL;
-    private Date expiresAt;
-    private List<BoxZipConflict> nameConflicts;
+  private URL downloadURL;
+  private URL statusURL;
+  private Date expiresAt;
+  private List<BoxZipConflict> nameConflicts;
 
-    /**
-     * Constructs a BoxZipDownloadStatus with default settings.
-     */
-    public BoxZipInfo() {
-    }
+  /** Constructs a BoxZipDownloadStatus with default settings. */
+  public BoxZipInfo() {}
 
-    /**
-     * Constructs a BoxZipDownloadStatus from a JSON string.
-     *
-     * @param json the JSON encoded enterprise.
-     */
-    public BoxZipInfo(String json) {
-        super(json);
-    }
+  /**
+   * Constructs a BoxZipDownloadStatus from a JSON string.
+   *
+   * @param json the JSON encoded enterprise.
+   */
+  public BoxZipInfo(String json) {
+    super(json);
+  }
 
-    BoxZipInfo(JsonObject jsonObject) {
-        super(jsonObject);
-    }
+  BoxZipInfo(JsonObject jsonObject) {
+    super(jsonObject);
+  }
 
-    /**
-     * Gets the ID of the item that has the conflict.
-     *
-     * @return the ID of the item that has the conflict.
-     */
-    public URL getDownloadURL() {
-        return this.downloadURL;
-    }
+  /**
+   * Gets the ID of the item that has the conflict.
+   *
+   * @return the ID of the item that has the conflict.
+   */
+  public URL getDownloadURL() {
+    return this.downloadURL;
+  }
 
-    /**
-     * Gets the type of the item that has the conflict.
-     *
-     * @return the type of the item that has the conflict.
-     */
-    public URL getStatusURL() {
-        return this.statusURL;
-    }
+  /**
+   * Gets the type of the item that has the conflict.
+   *
+   * @return the type of the item that has the conflict.
+   */
+  public URL getStatusURL() {
+    return this.statusURL;
+  }
 
-    /**
-     * Gets the original name of the item that has the conflict.
-     *
-     * @return the original name of the item that has the conflict.
-     */
-    public Date getExpiresAt() {
-        return this.expiresAt;
-    }
+  /**
+   * Gets the original name of the item that has the conflict.
+   *
+   * @return the original name of the item that has the conflict.
+   */
+  public Date getExpiresAt() {
+    return this.expiresAt;
+  }
 
-    /**
-     * Gets the new name of the item when it downloads that resolves the conflict.
-     *
-     * @return the new name of the item when it downloads that resolves the conflict.
-     */
-    public List<BoxZipConflict> getNameConflicts() {
-        return this.nameConflicts;
-    }
+  /**
+   * Gets the new name of the item when it downloads that resolves the conflict.
+   *
+   * @return the new name of the item when it downloads that resolves the conflict.
+   */
+  public List<BoxZipConflict> getNameConflicts() {
+    return this.nameConflicts;
+  }
 
-    @Override
-    void parseJSONMember(JsonObject.Member member) {
-        JsonValue value = member.getValue();
-        String memberName = member.getName();
+  @Override
+  void parseJSONMember(JsonObject.Member member) {
+    JsonValue value = member.getValue();
+    String memberName = member.getName();
+    try {
+      if (memberName.equals("download_url")) {
         try {
-            if (memberName.equals("download_url")) {
-                try {
-                    String urlString = value.asString();
-                    this.downloadURL = new URL(urlString);
-                } catch (MalformedURLException e) {
-                    throw new BoxAPIException("Couldn't parse download url for zip", e);
-                }
-            } else if (memberName.equals("status_url")) {
-                try {
-                    String urlString = value.asString();
-                    this.statusURL = new URL(urlString);
-                } catch (MalformedURLException e) {
-                    throw new BoxAPIException("Couldn't parse status url for zip", e);
-                }
-            } else if (memberName.equals("expires_at")) {
-                this.expiresAt = BoxDateFormat.parse(value.asString());
-            } else if (memberName.equals("name_conflicts")) {
-                this.nameConflicts = this.parseNameConflicts(value.asArray());
-            }
-        } catch (Exception e) {
-            throw new BoxDeserializationException(memberName, value.toString(), e);
+          String urlString = value.asString();
+          this.downloadURL = new URL(urlString);
+        } catch (MalformedURLException e) {
+          throw new BoxAPIException("Couldn't parse download url for zip", e);
         }
+      } else if (memberName.equals("status_url")) {
+        try {
+          String urlString = value.asString();
+          this.statusURL = new URL(urlString);
+        } catch (MalformedURLException e) {
+          throw new BoxAPIException("Couldn't parse status url for zip", e);
+        }
+      } else if (memberName.equals("expires_at")) {
+        this.expiresAt = BoxDateFormat.parse(value.asString());
+      } else if (memberName.equals("name_conflicts")) {
+        this.nameConflicts = this.parseNameConflicts(value.asArray());
+      }
+    } catch (Exception e) {
+      throw new BoxDeserializationException(memberName, value.toString(), e);
     }
+  }
 
-    private List<BoxZipConflict> parseNameConflicts(JsonArray jsonArray) {
-        List<BoxZipConflict> nameConflicts = new ArrayList<BoxZipConflict>(jsonArray.size());
-        for (JsonValue conflict : jsonArray) {
-            // We create a "conflictObj"  with the arbitrary key name "conflict" in order to allow BoxZipConflict
-            // to later parse the object to create `List<BoxZipConflictItem> items` (since it can't take in an array)
-            JsonObject conflictObj = new JsonObject().add("conflict", conflict);
-            nameConflicts.add(new BoxZipConflict(conflictObj));
-        }
-        return nameConflicts;
+  private List<BoxZipConflict> parseNameConflicts(JsonArray jsonArray) {
+    List<BoxZipConflict> nameConflicts = new ArrayList<BoxZipConflict>(jsonArray.size());
+    for (JsonValue conflict : jsonArray) {
+      // We create a "conflictObj"  with the arbitrary key name "conflict" in order to allow
+      // BoxZipConflict
+      // to later parse the object to create `List<BoxZipConflictItem> items` (since it can't take
+      // in an array)
+      JsonObject conflictObj = new JsonObject().add("conflict", conflict);
+      nameConflicts.add(new BoxZipConflict(conflictObj));
     }
+    return nameConflicts;
+  }
 }

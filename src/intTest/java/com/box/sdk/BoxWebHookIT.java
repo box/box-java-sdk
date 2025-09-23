@@ -33,181 +33,218 @@ import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-/**
- * {@link BoxWebHook} related integration tests.
- */
+/** {@link BoxWebHook} related integration tests. */
 public class BoxWebHookIT {
 
-    @BeforeClass
-    public static void setup() {
-        setupUniqeFolder();
+  @BeforeClass
+  public static void setup() {
+    setupUniqeFolder();
+  }
+
+  @AfterClass
+  public static void afterClass() {
+    removeUniqueFolder();
+  }
+
+  @Test
+  public void createWebHookFileSucceeds() throws IOException {
+    BoxAPIConnection api = jwtApiForServiceAccount();
+    String fileName = "[createWebhook] Test File.txt";
+
+    BoxFile uploadedFile = null;
+
+    try {
+      uploadedFile = uploadFileToUniqueFolderWithSomeContent(api, fileName);
+      URL address = new URL("https://www.google.com");
+      BoxWebHook.Info info =
+          BoxWebHook.create(
+              uploadedFile,
+              address,
+              BoxWebHook.Trigger.FILE_PREVIEWED,
+              BoxWebHook.Trigger.FILE_LOCKED);
+
+      assertThat(info.getID(), is(notNullValue()));
+      assertThat(info.getAddress(), is(equalTo(address)));
+      assertThat(
+          info.getTarget().getType(), is(equalTo(BoxResource.getResourceType(BoxFile.class))));
+      assertThat(info.getTarget().getId(), is(equalTo(uploadedFile.getID())));
+      assertThat(
+          info.getTriggers(),
+          is(
+              equalTo(
+                  this.toSet(
+                      new BoxWebHook.Trigger[] {
+                        BoxWebHook.Trigger.FILE_PREVIEWED, BoxWebHook.Trigger.FILE_LOCKED
+                      }))));
+
+      info.getResource().delete();
+    } finally {
+      deleteFile(uploadedFile);
     }
+  }
 
-    @AfterClass
-    public static void afterClass() {
-        removeUniqueFolder();
+  @Test
+  public void createWebHookFolderSucceeds() throws IOException {
+    BoxAPIConnection api = jwtApiForServiceAccount();
+    BoxFolder rootFolder = getUniqueFolder(api);
+    String folderName = "[createWebhook] Folder";
+    BoxFolder folder = null;
+
+    try {
+      folder = rootFolder.createFolder(folderName).getResource();
+      URL address = new URL("https://www.google.com");
+      BoxWebHook.Info info = BoxWebHook.create(folder, address, FOLDER_DOWNLOADED, FOLDER_COPIED);
+
+      assertThat(info.getID(), is(notNullValue()));
+      assertThat(info.getAddress(), is(equalTo(address)));
+      assertThat(
+          info.getTarget().getType(), is(equalTo(BoxResource.getResourceType(BoxFolder.class))));
+      assertThat(info.getTarget().getId(), is(equalTo(folder.getID())));
+      assertThat(
+          info.getTriggers(),
+          is(equalTo(this.toSet(new BoxWebHook.Trigger[] {FOLDER_COPIED, FOLDER_DOWNLOADED}))));
+
+      info.getResource().delete();
+    } finally {
+      deleteFolder(folder);
     }
+  }
 
-    @Test
-    public void createWebHookFileSucceeds() throws IOException {
-        BoxAPIConnection api = jwtApiForServiceAccount();
-        String fileName = "[createWebhook] Test File.txt";
+  @Test
+  public void listWebHooksSucceeds() throws IOException {
+    BoxAPIConnection api = jwtApiForServiceAccount();
+    String fileName = "[listWebhooks] Test File.txt";
+    BoxFile uploadedFile = null;
 
-        BoxFile uploadedFile = null;
+    try {
+      uploadedFile = uploadFileToUniqueFolderWithSomeContent(api, fileName);
+      URL address = new URL("https://www.google.com");
+      BoxWebHook.Info info =
+          BoxWebHook.create(uploadedFile, address, BoxWebHook.Trigger.FILE_PREVIEWED);
+      Iterable<BoxWebHook.Info> webhooks = BoxWebHook.all(api);
 
-        try {
-            uploadedFile = uploadFileToUniqueFolderWithSomeContent(api, fileName);
-            URL address = new URL("https://www.google.com");
-            BoxWebHook.Info info = BoxWebHook.create(uploadedFile, address,
-                BoxWebHook.Trigger.FILE_PREVIEWED, BoxWebHook.Trigger.FILE_LOCKED);
+      assertThat(
+          webhooks, hasItem(Matchers.<BoxWebHook.Info>hasProperty("ID", equalTo(info.getID()))));
 
-            assertThat(info.getID(), is(notNullValue()));
-            assertThat(info.getAddress(), is(equalTo(address)));
-            assertThat(info.getTarget().getType(), is(equalTo(BoxResource.getResourceType(BoxFile.class))));
-            assertThat(info.getTarget().getId(), is(equalTo(uploadedFile.getID())));
-            assertThat(info.getTriggers(), is(equalTo(this.toSet(
-                new BoxWebHook.Trigger[]{BoxWebHook.Trigger.FILE_PREVIEWED, BoxWebHook.Trigger.FILE_LOCKED}))));
+      info.getResource().delete();
 
-            info.getResource().delete();
-        } finally {
-            deleteFile(uploadedFile);
-        }
+      webhooks = BoxWebHook.all(api);
+      assertThat(
+          webhooks,
+          not(hasItem(Matchers.<BoxWebHook.Info>hasProperty("ID", equalTo(info.getID())))));
+    } finally {
+      deleteFile(uploadedFile);
     }
+  }
 
-    @Test
-    public void createWebHookFolderSucceeds() throws IOException {
-        BoxAPIConnection api = jwtApiForServiceAccount();
-        BoxFolder rootFolder = getUniqueFolder(api);
-        String folderName = "[createWebhook] Folder";
-        BoxFolder folder = null;
+  @Test
+  public void updateWebHookInfoSucceeds() throws IOException {
+    BoxAPIConnection api = jwtApiForServiceAccount();
+    BoxFolder rootFolder = BoxFolder.getRootFolder(api);
+    String fileName = "[updateWebHookInfoSucceeds] Test File.txt";
+    byte[] fileBytes = "Non-empty string".getBytes(StandardCharsets.UTF_8);
 
-        try {
-            folder = rootFolder.createFolder(folderName).getResource();
-            URL address = new URL("https://www.google.com");
-            BoxWebHook.Info info = BoxWebHook.create(folder, address, FOLDER_DOWNLOADED, FOLDER_COPIED);
+    InputStream uploadStream = new ByteArrayInputStream(fileBytes);
+    BoxFile uploadedFile = rootFolder.uploadFile(uploadStream, fileName).getResource();
 
-            assertThat(info.getID(), is(notNullValue()));
-            assertThat(info.getAddress(), is(equalTo(address)));
-            assertThat(info.getTarget().getType(), is(equalTo(BoxResource.getResourceType(BoxFolder.class))));
-            assertThat(info.getTarget().getId(), is(equalTo(folder.getID())));
-            assertThat(info.getTriggers(),
-                is(equalTo(this.toSet(new BoxWebHook.Trigger[]{FOLDER_COPIED, FOLDER_DOWNLOADED}))));
+    try {
+      URL address = new URL("https://www.google.com");
+      BoxWebHook webHook =
+          BoxWebHook.create(
+                  uploadedFile,
+                  address,
+                  BoxWebHook.Trigger.FILE_PREVIEWED,
+                  BoxWebHook.Trigger.FILE_LOCKED)
+              .getResource();
 
-            info.getResource().delete();
-        } finally {
-            deleteFolder(folder);
-        }
+      URL newAddress = new URL("https://www.yahoo.com");
+
+      BoxWebHook.Info newInfo = webHook.new Info();
+      newInfo.setTriggers(BoxWebHook.Trigger.FILE_UNLOCKED);
+      newInfo.setAddress(newAddress);
+
+      webHook.updateInfo(newInfo);
+
+      assertThat(newInfo.getAddress(), is(equalTo(newAddress)));
+      assertThat(
+          newInfo.getTriggers(),
+          is(equalTo(this.toSet(new BoxWebHook.Trigger[] {BoxWebHook.Trigger.FILE_UNLOCKED}))));
+
+      webHook.delete();
+    } finally {
+      deleteFile(uploadedFile);
     }
+  }
 
-    @Test
-    public void listWebHooksSucceeds() throws IOException {
-        BoxAPIConnection api = jwtApiForServiceAccount();
-        String fileName = "[listWebhooks] Test File.txt";
-        BoxFile uploadedFile = null;
+  @Test
+  public void createWebHookSignRequestOnFileSucceeds() throws IOException {
+    BoxAPIConnection api = jwtApiForServiceAccount();
+    String fileName = "file_to_sign.pdf";
 
-        try {
-            uploadedFile = uploadFileToUniqueFolderWithSomeContent(api, fileName);
-            URL address = new URL("https://www.google.com");
-            BoxWebHook.Info info = BoxWebHook.create(uploadedFile, address, BoxWebHook.Trigger.FILE_PREVIEWED);
-            Iterable<BoxWebHook.Info> webhooks = BoxWebHook.all(api);
+    BoxFile file = null;
+    try {
+      file = uploadSampleFileToUniqueFolder(api, fileName);
+      URL address = new URL("https://www.google.com");
 
-            assertThat(webhooks, hasItem(Matchers.<BoxWebHook.Info>hasProperty("ID", equalTo(info.getID()))));
+      BoxWebHook.Info webHookInfo =
+          BoxWebHook.create(
+              file, address, SIGN_REQUEST_DECLINED, SIGN_REQUEST_EXPIRED, SIGN_REQUEST_COMPLETED);
 
-            info.getResource().delete();
-
-            webhooks = BoxWebHook.all(api);
-            assertThat(webhooks, not(hasItem(Matchers.<BoxWebHook.Info>hasProperty("ID", equalTo(info.getID())))));
-        } finally {
-            deleteFile(uploadedFile);
-        }
+      assertThat(webHookInfo.getID(), is(notNullValue()));
+      assertThat(webHookInfo.getAddress(), is(equalTo(address)));
+      assertThat(
+          webHookInfo.getTarget().getType(),
+          is(equalTo(BoxResource.getResourceType(BoxFile.class))));
+      assertThat(webHookInfo.getTarget().getId(), is(equalTo(file.getID())));
+      assertThat(
+          webHookInfo.getTriggers(),
+          is(
+              equalTo(
+                  this.toSet(
+                      new BoxWebHook.Trigger[] {
+                        SIGN_REQUEST_DECLINED, SIGN_REQUEST_EXPIRED, SIGN_REQUEST_COMPLETED
+                      }))));
+    } finally {
+      deleteFile(file);
     }
+  }
 
-    @Test
-    public void updateWebHookInfoSucceeds() throws IOException {
-        BoxAPIConnection api = jwtApiForServiceAccount();
-        BoxFolder rootFolder = BoxFolder.getRootFolder(api);
-        String fileName = "[updateWebHookInfoSucceeds] Test File.txt";
-        byte[] fileBytes = "Non-empty string".getBytes(StandardCharsets.UTF_8);
+  @Test
+  public void createWebHookSignRequestOnFolderSucceeds() throws IOException {
+    BoxAPIConnection api = jwtApiForServiceAccount();
 
-        InputStream uploadStream = new ByteArrayInputStream(fileBytes);
-        BoxFile uploadedFile = rootFolder.uploadFile(uploadStream, fileName).getResource();
+    BoxFolder folder = null;
+    try {
+      folder =
+          getUniqueFolder(api)
+              .createFolder(randomizeName("createWebHookSignRequestOnFolderSucceeds"))
+              .getResource();
+      URL address = new URL("https://www.google.com");
 
-        try {
-            URL address = new URL("https://www.google.com");
-            BoxWebHook webHook = BoxWebHook.create(uploadedFile, address,
-                BoxWebHook.Trigger.FILE_PREVIEWED, BoxWebHook.Trigger.FILE_LOCKED).getResource();
+      BoxWebHook.Info webHookInfo =
+          BoxWebHook.create(
+              folder, address, SIGN_REQUEST_DECLINED, SIGN_REQUEST_EXPIRED, SIGN_REQUEST_COMPLETED);
 
-            URL newAddress = new URL("https://www.yahoo.com");
-
-            BoxWebHook.Info newInfo = webHook.new Info();
-            newInfo.setTriggers(BoxWebHook.Trigger.FILE_UNLOCKED);
-            newInfo.setAddress(newAddress);
-
-            webHook.updateInfo(newInfo);
-
-            assertThat(newInfo.getAddress(), is(equalTo(newAddress)));
-            assertThat(newInfo.getTriggers(), is(equalTo(
-                this.toSet(new BoxWebHook.Trigger[]{BoxWebHook.Trigger.FILE_UNLOCKED})
-            )));
-
-            webHook.delete();
-        } finally {
-            deleteFile(uploadedFile);
-        }
+      assertThat(webHookInfo.getID(), is(notNullValue()));
+      assertThat(webHookInfo.getAddress(), is(equalTo(address)));
+      assertThat(
+          webHookInfo.getTarget().getType(),
+          is(equalTo(BoxResource.getResourceType(BoxFolder.class))));
+      assertThat(webHookInfo.getTarget().getId(), is(equalTo(folder.getID())));
+      assertThat(
+          webHookInfo.getTriggers(),
+          is(
+              equalTo(
+                  this.toSet(
+                      new BoxWebHook.Trigger[] {
+                        SIGN_REQUEST_DECLINED, SIGN_REQUEST_EXPIRED, SIGN_REQUEST_COMPLETED
+                      }))));
+    } finally {
+      deleteFolder(folder);
     }
+  }
 
-    @Test
-    public void createWebHookSignRequestOnFileSucceeds() throws IOException {
-        BoxAPIConnection api = jwtApiForServiceAccount();
-        String fileName = "file_to_sign.pdf";
-
-        BoxFile file = null;
-        try {
-            file = uploadSampleFileToUniqueFolder(api, fileName);
-            URL address = new URL("https://www.google.com");
-
-            BoxWebHook.Info webHookInfo = BoxWebHook.create(
-                file, address, SIGN_REQUEST_DECLINED, SIGN_REQUEST_EXPIRED, SIGN_REQUEST_COMPLETED
-            );
-
-            assertThat(webHookInfo.getID(), is(notNullValue()));
-            assertThat(webHookInfo.getAddress(), is(equalTo(address)));
-            assertThat(webHookInfo.getTarget().getType(), is(equalTo(BoxResource.getResourceType(BoxFile.class))));
-            assertThat(webHookInfo.getTarget().getId(), is(equalTo(file.getID())));
-            assertThat(webHookInfo.getTriggers(), is(equalTo(this.toSet(
-                new BoxWebHook.Trigger[]{SIGN_REQUEST_DECLINED, SIGN_REQUEST_EXPIRED, SIGN_REQUEST_COMPLETED}))));
-        } finally {
-            deleteFile(file);
-        }
-    }
-
-    @Test
-    public void createWebHookSignRequestOnFolderSucceeds() throws IOException {
-        BoxAPIConnection api = jwtApiForServiceAccount();
-
-        BoxFolder folder = null;
-        try {
-            folder = getUniqueFolder(api)
-                .createFolder(randomizeName("createWebHookSignRequestOnFolderSucceeds"))
-                .getResource();
-            URL address = new URL("https://www.google.com");
-
-            BoxWebHook.Info webHookInfo = BoxWebHook.create(
-                folder, address, SIGN_REQUEST_DECLINED, SIGN_REQUEST_EXPIRED, SIGN_REQUEST_COMPLETED
-            );
-
-            assertThat(webHookInfo.getID(), is(notNullValue()));
-            assertThat(webHookInfo.getAddress(), is(equalTo(address)));
-            assertThat(webHookInfo.getTarget().getType(), is(equalTo(BoxResource.getResourceType(BoxFolder.class))));
-            assertThat(webHookInfo.getTarget().getId(), is(equalTo(folder.getID())));
-            assertThat(webHookInfo.getTriggers(), is(equalTo(this.toSet(
-                new BoxWebHook.Trigger[]{SIGN_REQUEST_DECLINED, SIGN_REQUEST_EXPIRED, SIGN_REQUEST_COMPLETED}))));
-        } finally {
-            deleteFolder(folder);
-        }
-    }
-
-    private <T> Set<T> toSet(T[] values) {
-        return new HashSet<>(Arrays.asList(values));
-    }
+  private <T> Set<T> toSet(T[] values) {
+    return new HashSet<>(Arrays.asList(values));
+  }
 }

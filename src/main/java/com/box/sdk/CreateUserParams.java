@@ -3,367 +3,373 @@ package com.box.sdk;
 import java.util.HashMap;
 import java.util.Map;
 
-/**
- * Contains optional parameters for creating a new enterprise user on Box.
- */
+/** Contains optional parameters for creating a new enterprise user on Box. */
 public class CreateUserParams {
-    private Boolean canSeeManagedUsers;
-    private Boolean isExemptFromDeviceLimits;
-    private Boolean isExemptFromLoginVerification;
-    private Boolean isPlatformAccessOnly;
-    private Boolean isSyncEnabled;
-    private Boolean isExternalCollabRestricted;
-    private BoxUser.Role role;
-    private BoxUser.Status status;
-    private Long spaceAmount;
-    private String address;
-    private String jobTitle;
-    private String language;
-    private String phone;
-    private String timezone;
-    private String externalAppUserId;
-    private Map<String, String> trackingCodes;
+  private Boolean canSeeManagedUsers;
+  private Boolean isExemptFromDeviceLimits;
+  private Boolean isExemptFromLoginVerification;
+  private Boolean isPlatformAccessOnly;
+  private Boolean isSyncEnabled;
+  private Boolean isExternalCollabRestricted;
+  private BoxUser.Role role;
+  private BoxUser.Status status;
+  private Long spaceAmount;
+  private String address;
+  private String jobTitle;
+  private String language;
+  private String phone;
+  private String timezone;
+  private String externalAppUserId;
+  private Map<String, String> trackingCodes;
 
-    /**
-     * Gets whether or not the new user will be able to see other enterprise users in their contact list.
-     *
-     * @return true if the new user will be able to see other enterprise users in their contact list; otherwise false.
-     */
-    public Boolean getCanSeeManagedUsers() {
-        return this.canSeeManagedUsers;
-    }
+  /**
+   * Gets whether or not the new user will be able to see other enterprise users in their contact
+   * list.
+   *
+   * @return true if the new user will be able to see other enterprise users in their contact list;
+   *     otherwise false.
+   */
+  public Boolean getCanSeeManagedUsers() {
+    return this.canSeeManagedUsers;
+  }
 
-    /**
-     * Sets whether or not the new user will be able to see other enterprise users in their contact list.
-     *
-     * @param canSeeManagedUsers whether or not the new user will be able to see other enterprise users in their
-     *                           contact list.
-     * @return this CreateUserParams object for chaining.
-     */
-    public CreateUserParams setCanSeeManagedUsers(boolean canSeeManagedUsers) {
-        this.canSeeManagedUsers = canSeeManagedUsers;
-        return this;
-    }
+  /**
+   * Sets whether or not the new user will be able to see other enterprise users in their contact
+   * list.
+   *
+   * @param canSeeManagedUsers whether or not the new user will be able to see other enterprise
+   *     users in their contact list.
+   * @return this CreateUserParams object for chaining.
+   */
+  public CreateUserParams setCanSeeManagedUsers(boolean canSeeManagedUsers) {
+    this.canSeeManagedUsers = canSeeManagedUsers;
+    return this;
+  }
 
-    /**
-     * Gets whether or not the new user will be exempt from Enterprise device limits.
-     *
-     * @return true if the new user will be exempt from Enterprise device limits; otherwise false.
-     */
-    public Boolean getIsExemptFromDeviceLimits() {
-        return this.isExemptFromDeviceLimits;
-    }
+  /**
+   * Gets whether or not the new user will be exempt from Enterprise device limits.
+   *
+   * @return true if the new user will be exempt from Enterprise device limits; otherwise false.
+   */
+  public Boolean getIsExemptFromDeviceLimits() {
+    return this.isExemptFromDeviceLimits;
+  }
 
-    /**
-     * Sets whether or not the new user will be exempt from Enterprise device limits.
-     *
-     * @param isExemptFromDeviceLimits whether or not the new user will be exempt from Enterprise device limits.
-     * @return this CreateUserParams object for chaining.
-     */
-    public CreateUserParams setIsExemptFromDeviceLimits(boolean isExemptFromDeviceLimits) {
-        this.isExemptFromDeviceLimits = isExemptFromDeviceLimits;
-        return this;
-    }
+  /**
+   * Sets whether or not the new user will be exempt from Enterprise device limits.
+   *
+   * @param isExemptFromDeviceLimits whether or not the new user will be exempt from Enterprise
+   *     device limits.
+   * @return this CreateUserParams object for chaining.
+   */
+  public CreateUserParams setIsExemptFromDeviceLimits(boolean isExemptFromDeviceLimits) {
+    this.isExemptFromDeviceLimits = isExemptFromDeviceLimits;
+    return this;
+  }
 
-    /**
-     * Gets whether or not the new user will be required to use two-factor authentication.
-     *
-     * @return true if the new user will be required to use two-factor authentication; otherwise false.
-     */
-    public Boolean getIsExemptFromLoginVerification() {
-        return this.isExemptFromLoginVerification;
-    }
+  /**
+   * Gets whether or not the new user will be required to use two-factor authentication.
+   *
+   * @return true if the new user will be required to use two-factor authentication; otherwise
+   *     false.
+   */
+  public Boolean getIsExemptFromLoginVerification() {
+    return this.isExemptFromLoginVerification;
+  }
 
-    /**
-     * Sets whether or not the new user will be required to use two-factor authentication.
-     *
-     * @param isExemptFromLoginVerification whether or not the new user will be required to use two-factor
-     *                                      authentication.
-     * @return this CreateUserParams object for chaining.
-     */
-    public CreateUserParams setIsExemptFromLoginVerification(boolean isExemptFromLoginVerification) {
-        this.isExemptFromLoginVerification = isExemptFromLoginVerification;
-        return this;
-    }
+  /**
+   * Sets whether or not the new user will be required to use two-factor authentication.
+   *
+   * @param isExemptFromLoginVerification whether or not the new user will be required to use
+   *     two-factor authentication.
+   * @return this CreateUserParams object for chaining.
+   */
+  public CreateUserParams setIsExemptFromLoginVerification(boolean isExemptFromLoginVerification) {
+    this.isExemptFromLoginVerification = isExemptFromLoginVerification;
+    return this;
+  }
 
-    /**
-     * Gets whether or not the user we are creating is an app user with Box Developer Edition.
-     *
-     * @return true if the new user is an app user for Box Developer Addition; otherwise false.
-     */
-    public Boolean getIsPlatformAccessOnly() {
-        return this.isPlatformAccessOnly;
-    }
+  /**
+   * Gets whether or not the user we are creating is an app user with Box Developer Edition.
+   *
+   * @return true if the new user is an app user for Box Developer Addition; otherwise false.
+   */
+  public Boolean getIsPlatformAccessOnly() {
+    return this.isPlatformAccessOnly;
+  }
 
-    /**
-     * Sets whether or not the user we are creating is an app user with Box Developer Edition.
-     *
-     * @param isPlatformAccessOnly whether or not the user we are creating is an app user with Box Developer
-     *                             Edition.
-     * @return this CreateUserParams object for chaining.
-     */
-    public CreateUserParams setIsPlatformAccessOnly(boolean isPlatformAccessOnly) {
-        this.isPlatformAccessOnly = isPlatformAccessOnly;
-        return this;
-    }
+  /**
+   * Sets whether or not the user we are creating is an app user with Box Developer Edition.
+   *
+   * @param isPlatformAccessOnly whether or not the user we are creating is an app user with Box
+   *     Developer Edition.
+   * @return this CreateUserParams object for chaining.
+   */
+  public CreateUserParams setIsPlatformAccessOnly(boolean isPlatformAccessOnly) {
+    this.isPlatformAccessOnly = isPlatformAccessOnly;
+    return this;
+  }
 
-    /**
-     * Gets whether or not the new user will be able to use Box Sync.
-     *
-     * @return true if the new user will be able to use Box Sync; otherwise false.
-     */
-    public Boolean getIsSyncEnabled() {
-        return this.isSyncEnabled;
-    }
+  /**
+   * Gets whether or not the new user will be able to use Box Sync.
+   *
+   * @return true if the new user will be able to use Box Sync; otherwise false.
+   */
+  public Boolean getIsSyncEnabled() {
+    return this.isSyncEnabled;
+  }
 
-    /**
-     * Sets whether or not the new user will be able to use Box Sync.
-     *
-     * @param isSyncEnabled whether or not the new user will be able to use Box Sync.
-     * @return this CreateUserParams object for chaining.
-     */
-    public CreateUserParams setIsSyncEnabled(boolean isSyncEnabled) {
-        this.isSyncEnabled = isSyncEnabled;
-        return this;
-    }
+  /**
+   * Sets whether or not the new user will be able to use Box Sync.
+   *
+   * @param isSyncEnabled whether or not the new user will be able to use Box Sync.
+   * @return this CreateUserParams object for chaining.
+   */
+  public CreateUserParams setIsSyncEnabled(boolean isSyncEnabled) {
+    this.isSyncEnabled = isSyncEnabled;
+    return this;
+  }
 
-    /**
-     * Gets what the new user's enterprise role will be.
-     *
-     * @return what the new user's enterprise role will be.
-     */
-    public BoxUser.Role getRole() {
-        return this.role;
-    }
+  /**
+   * Gets what the new user's enterprise role will be.
+   *
+   * @return what the new user's enterprise role will be.
+   */
+  public BoxUser.Role getRole() {
+    return this.role;
+  }
 
-    /**
-     * Sets what the new user's enterprise role will be.
-     *
-     * @param role what the new user's enterprise role will be.
-     * @return this CreateUserParams object for chaining.
-     */
-    public CreateUserParams setRole(BoxUser.Role role) {
-        this.role = role;
-        return this;
-    }
+  /**
+   * Sets what the new user's enterprise role will be.
+   *
+   * @param role what the new user's enterprise role will be.
+   * @return this CreateUserParams object for chaining.
+   */
+  public CreateUserParams setRole(BoxUser.Role role) {
+    this.role = role;
+    return this;
+  }
 
-    /**
-     * Gets what the new user's account status will be.
-     *
-     * @return what the new user's account status will be.
-     */
-    public BoxUser.Status getStatus() {
-        return this.status;
-    }
+  /**
+   * Gets what the new user's account status will be.
+   *
+   * @return what the new user's account status will be.
+   */
+  public BoxUser.Status getStatus() {
+    return this.status;
+  }
 
-    /**
-     * Sets what the new user's account status will be.
-     *
-     * @param status what the new user's account status will be.
-     * @return this CreateUserParams object for chaining.
-     */
-    public CreateUserParams setStatus(BoxUser.Status status) {
-        this.status = status;
-        return this;
-    }
+  /**
+   * Sets what the new user's account status will be.
+   *
+   * @param status what the new user's account status will be.
+   * @return this CreateUserParams object for chaining.
+   */
+  public CreateUserParams setStatus(BoxUser.Status status) {
+    this.status = status;
+    return this;
+  }
 
-    /**
-     * Gets what the new user's total available space will be in bytes.
-     *
-     * @return what the new user's total available space will be in bytes.
-     */
-    public Long getSpaceAmount() {
-        return this.spaceAmount;
-    }
+  /**
+   * Gets what the new user's total available space will be in bytes.
+   *
+   * @return what the new user's total available space will be in bytes.
+   */
+  public Long getSpaceAmount() {
+    return this.spaceAmount;
+  }
 
-    /**
-     * Sets what the new user's total available space will be in bytes.
-     *
-     * @param spaceAmount what the new user's total available space will be in bytes.
-     * @return this CreateUserParams object for chaining.
-     */
-    public CreateUserParams setSpaceAmount(long spaceAmount) {
-        this.spaceAmount = spaceAmount;
-        return this;
-    }
+  /**
+   * Sets what the new user's total available space will be in bytes.
+   *
+   * @param spaceAmount what the new user's total available space will be in bytes.
+   * @return this CreateUserParams object for chaining.
+   */
+  public CreateUserParams setSpaceAmount(long spaceAmount) {
+    this.spaceAmount = spaceAmount;
+    return this;
+  }
 
-    /**
-     * Gets what the address of the new user will be.
-     *
-     * @return what the address of the new user will be.
-     */
-    public String getAddress() {
-        return this.address;
-    }
+  /**
+   * Gets what the address of the new user will be.
+   *
+   * @return what the address of the new user will be.
+   */
+  public String getAddress() {
+    return this.address;
+  }
 
-    /**
-     * Sets what the address of the new user will be.
-     *
-     * @param address what the address of the new user will be.
-     * @return this CreateUserParams object for chaining.
-     */
-    public CreateUserParams setAddress(String address) {
-        this.address = address;
-        return this;
-    }
+  /**
+   * Sets what the address of the new user will be.
+   *
+   * @param address what the address of the new user will be.
+   * @return this CreateUserParams object for chaining.
+   */
+  public CreateUserParams setAddress(String address) {
+    this.address = address;
+    return this;
+  }
 
-    /**
-     * Gets what the job title of the new user will be.
-     *
-     * @return what the job title of the new user will be.
-     */
-    public String getJobTitle() {
-        return this.jobTitle;
-    }
+  /**
+   * Gets what the job title of the new user will be.
+   *
+   * @return what the job title of the new user will be.
+   */
+  public String getJobTitle() {
+    return this.jobTitle;
+  }
 
-    /**
-     * Sets what the job title of the new user will be.
-     *
-     * @param jobTitle what the job title of the new user will be.
-     * @return this CreateUserParams object for chaining.
-     */
-    public CreateUserParams setJobTitle(String jobTitle) {
-        this.jobTitle = jobTitle;
-        return this;
-    }
+  /**
+   * Sets what the job title of the new user will be.
+   *
+   * @param jobTitle what the job title of the new user will be.
+   * @return this CreateUserParams object for chaining.
+   */
+  public CreateUserParams setJobTitle(String jobTitle) {
+    this.jobTitle = jobTitle;
+    return this;
+  }
 
-    /**
-     * Gets what the language of the new user will be.
-     *
-     * @return what the language of the new user will be.
-     */
-    public String getLanguage() {
-        return this.language;
-    }
+  /**
+   * Gets what the language of the new user will be.
+   *
+   * @return what the language of the new user will be.
+   */
+  public String getLanguage() {
+    return this.language;
+  }
 
-    /**
-     * Sets what the language of the new user will be.
-     *
-     * @param language what the language of the new user will be.
-     * @return this CreateUserParams object for chaining.
-     */
-    public CreateUserParams setLanguage(String language) {
-        this.language = language;
-        return this;
-    }
+  /**
+   * Sets what the language of the new user will be.
+   *
+   * @param language what the language of the new user will be.
+   * @return this CreateUserParams object for chaining.
+   */
+  public CreateUserParams setLanguage(String language) {
+    this.language = language;
+    return this;
+  }
 
-    /**
-     * Gets what the phone number of the new user will be.
-     *
-     * @return what the phone number of the new user will be.
-     */
-    public String getPhone() {
-        return this.phone;
-    }
+  /**
+   * Gets what the phone number of the new user will be.
+   *
+   * @return what the phone number of the new user will be.
+   */
+  public String getPhone() {
+    return this.phone;
+  }
 
-    /**
-     * Sets what the phone number of the new user will be.
-     *
-     * @param phone what the phone number of the new user will be.
-     * @return this CreateUserParams object for chaining.
-     */
-    public CreateUserParams setPhone(String phone) {
-        this.phone = phone;
-        return this;
-    }
+  /**
+   * Sets what the phone number of the new user will be.
+   *
+   * @param phone what the phone number of the new user will be.
+   * @return this CreateUserParams object for chaining.
+   */
+  public CreateUserParams setPhone(String phone) {
+    this.phone = phone;
+    return this;
+  }
 
-    /**
-     * Gets what the timezone of the new user will be.
-     *
-     * @return what the timezone of the new user will be.
-     */
-    public String getTimezone() {
-        return this.timezone;
-    }
+  /**
+   * Gets what the timezone of the new user will be.
+   *
+   * @return what the timezone of the new user will be.
+   */
+  public String getTimezone() {
+    return this.timezone;
+  }
 
-    /**
-     * Sets what the timezone of the new user will be.
-     *
-     * @param timezone what the timezone of the new user will be.
-     * @return this CreateUserParams object for chaining.
-     */
-    public CreateUserParams setTimezone(String timezone) {
-        this.timezone = timezone;
-        return this;
-    }
+  /**
+   * Sets what the timezone of the new user will be.
+   *
+   * @param timezone what the timezone of the new user will be.
+   * @return this CreateUserParams object for chaining.
+   */
+  public CreateUserParams setTimezone(String timezone) {
+    this.timezone = timezone;
+    return this;
+  }
 
-    /**
-     * Gets the external app user id that has been set for the app user.
-     *
-     * @return the external app user id.
-     */
-    public String getExternalAppUserId() {
-        return this.externalAppUserId;
-    }
+  /**
+   * Gets the external app user id that has been set for the app user.
+   *
+   * @return the external app user id.
+   */
+  public String getExternalAppUserId() {
+    return this.externalAppUserId;
+  }
 
-    /**
-     * Sets the external app user id.
-     *
-     * @param externalAppUserId external app user id.
-     * @return this CreateUserParams object for chaining.
-     */
-    public CreateUserParams setExternalAppUserId(String externalAppUserId) {
-        this.externalAppUserId = externalAppUserId;
-        return this;
-    }
+  /**
+   * Sets the external app user id.
+   *
+   * @param externalAppUserId external app user id.
+   * @return this CreateUserParams object for chaining.
+   */
+  public CreateUserParams setExternalAppUserId(String externalAppUserId) {
+    this.externalAppUserId = externalAppUserId;
+    return this;
+  }
 
-    /**
-     * Gets whether this user is allowed or not to collaborate with users outside their enterprise.
-     *
-     * @return true if the user is not able to collaborate with users outside their enterpise; otherwise false.
-     */
-    public Boolean getIsExternalCollabRestricted() {
-        return this.isExternalCollabRestricted;
-    }
+  /**
+   * Gets whether this user is allowed or not to collaborate with users outside their enterprise.
+   *
+   * @return true if the user is not able to collaborate with users outside their enterpise;
+   *     otherwise false.
+   */
+  public Boolean getIsExternalCollabRestricted() {
+    return this.isExternalCollabRestricted;
+  }
 
-    /**
-     * Sets whether this user is allowed or not to collaborate with users outside their enterprise.
-     *
-     * @param isExternalCollabRestricted whether the user is allowed to collaborate with users outside their enterprise.
-     * @return this CreateUserParams object for chaining.
-     */
-    public CreateUserParams setIsExternalCollabRestricted(boolean isExternalCollabRestricted) {
-        this.isExternalCollabRestricted = isExternalCollabRestricted;
-        return this;
-    }
+  /**
+   * Sets whether this user is allowed or not to collaborate with users outside their enterprise.
+   *
+   * @param isExternalCollabRestricted whether the user is allowed to collaborate with users outside
+   *     their enterprise.
+   * @return this CreateUserParams object for chaining.
+   */
+  public CreateUserParams setIsExternalCollabRestricted(boolean isExternalCollabRestricted) {
+    this.isExternalCollabRestricted = isExternalCollabRestricted;
+    return this;
+  }
 
-    /**
-     * Gets the map of tracking codes. Tracking codes allow an admin to generate reports from the admin console and
-     * assign an attribute to a specific group of users. This setting must be enabled for an
-     * enterprise before it can be used.
-     *
-     * @return map of tracking codes.
-     */
-    public Map<String, String> getTrackingCodes() {
-        return this.trackingCodes;
-    }
+  /**
+   * Gets the map of tracking codes. Tracking codes allow an admin to generate reports from the
+   * admin console and assign an attribute to a specific group of users. This setting must be
+   * enabled for an enterprise before it can be used.
+   *
+   * @return map of tracking codes.
+   */
+  public Map<String, String> getTrackingCodes() {
+    return this.trackingCodes;
+  }
 
-    /**
-     * Sets the map of tracking codes. Tracking codes allow an admin to generate reports from the admin console and
-     * assign an attribute to a specific group of users. This setting must be enabled for an
-     * enterprise before it can be used.
-     *
-     * @param trackingCodes map of tracking codes.
-     * @return this CreateUserParams object for chaining.
-     */
-    public CreateUserParams setTrackingCodes(Map<String, String> trackingCodes) {
-        this.trackingCodes = trackingCodes;
-        return this;
-    }
+  /**
+   * Sets the map of tracking codes. Tracking codes allow an admin to generate reports from the
+   * admin console and assign an attribute to a specific group of users. This setting must be
+   * enabled for an enterprise before it can be used.
+   *
+   * @param trackingCodes map of tracking codes.
+   * @return this CreateUserParams object for chaining.
+   */
+  public CreateUserParams setTrackingCodes(Map<String, String> trackingCodes) {
+    this.trackingCodes = trackingCodes;
+    return this;
+  }
 
-    /**
-     * Add an element the map of tracking codes. Tracking codes allow an admin to generate reports from the admin
-     * console and assign an attribute to a specific group of users. This setting must be enabled for an
-     * enterprise before it can be used.
-     * @param key of a tracking code
-     * @param value of a tracking code
-     * @return this CreateUserParams object for chaining.
-     */
-    public CreateUserParams addTrackingCode(String key, String value) {
-        if (this.trackingCodes == null) {
-            this.trackingCodes = new HashMap<>();
-        }
-        this.trackingCodes.put(key, value);
-        return this;
+  /**
+   * Add an element the map of tracking codes. Tracking codes allow an admin to generate reports
+   * from the admin console and assign an attribute to a specific group of users. This setting must
+   * be enabled for an enterprise before it can be used.
+   *
+   * @param key of a tracking code
+   * @param value of a tracking code
+   * @return this CreateUserParams object for chaining.
+   */
+  public CreateUserParams addTrackingCode(String key, String value) {
+    if (this.trackingCodes == null) {
+      this.trackingCodes = new HashMap<>();
     }
+    this.trackingCodes.put(key, value);
+    return this;
+  }
 }

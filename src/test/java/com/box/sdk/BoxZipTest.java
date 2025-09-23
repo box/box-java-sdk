@@ -1,6 +1,5 @@
 package com.box.sdk;
 
-
 import static com.box.sdk.http.ContentType.APPLICATION_JSON;
 import static com.github.tomakehurst.wiremock.core.WireMockConfiguration.wireMockConfig;
 import static java.lang.String.format;
@@ -18,64 +17,64 @@ import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 
-/**
- * {@link BoxZip} related unit tests.
- */
+/** {@link BoxZip} related unit tests. */
 public class BoxZipTest {
-    @Rule
-    public WireMockRule wireMockRule = new WireMockRule(wireMockConfig().dynamicHttpsPort().httpDisabled(true));
-    private final BoxAPIConnection api = TestUtils.getAPIConnection();
+  @Rule
+  public WireMockRule wireMockRule =
+      new WireMockRule(wireMockConfig().dynamicHttpsPort().httpDisabled(true));
 
-    @Before
-    public void setUpBaseUrl() {
-        api.setMaxRetryAttempts(1);
-        api.setBaseURL(format("https://localhost:%d", wireMockRule.httpsPort()));
-    }
+  private final BoxAPIConnection api = TestUtils.getAPIConnection();
 
-    @Test
-    public void createZipSucceeds() throws ParseException {
-        final String fileID = "466239504569";
-        final String folderID = "466239504580";
-        final String downloadFileName = "test";
+  @Before
+  public void setUpBaseUrl() {
+    api.setMaxRetryAttempts(1);
+    api.setBaseURL(format("https://localhost:%d", wireMockRule.httpsPort()));
+  }
 
-        final String downloadURL = "https://api.box.com/zip_downloads/124hfiowk3fa8kmrwh/content";
-        final String statusURL = "https://api.box.com/zip_downloads/124hfiowk3fa8kmrwh/status";
-        final Date expiresAt = BoxDateFormat.parse("2018-04-25T11:00:18-07:00");
+  @Test
+  public void createZipSucceeds() throws ParseException {
+    final String fileID = "466239504569";
+    final String folderID = "466239504580";
+    final String downloadFileName = "test";
 
-        ArrayList<BoxZipItem> items = new ArrayList<>();
-        JsonArray itemsBody = new JsonArray();
-        BoxZipItem file = new BoxZipItem("file", fileID);
-        BoxZipItem folder = new BoxZipItem("folder", folderID);
-        items.add(file);
-        items.add(folder);
-        itemsBody.add(file.getJSONObject()).add(folder.getJSONObject());
+    final String downloadURL = "https://api.box.com/zip_downloads/124hfiowk3fa8kmrwh/content";
+    final String statusURL = "https://api.box.com/zip_downloads/124hfiowk3fa8kmrwh/status";
+    final Date expiresAt = BoxDateFormat.parse("2018-04-25T11:00:18-07:00");
 
-        JsonObject body = new JsonObject()
-            .add("items", itemsBody)
-            .add("download_file_name", downloadFileName);
+    ArrayList<BoxZipItem> items = new ArrayList<>();
+    JsonArray itemsBody = new JsonArray();
+    BoxZipItem file = new BoxZipItem("file", fileID);
+    BoxZipItem folder = new BoxZipItem("folder", folderID);
+    items.add(file);
+    items.add(folder);
+    itemsBody.add(file.getJSONObject()).add(folder.getJSONObject());
 
-        String result = TestUtils.getFixture("BoxZip/CreateZipFile202");
+    JsonObject body =
+        new JsonObject().add("items", itemsBody).add("download_file_name", downloadFileName);
 
-        wireMockRule.stubFor(WireMock.post(WireMock.urlPathEqualTo("/2.0/zip_downloads"))
+    String result = TestUtils.getFixture("BoxZip/CreateZipFile202");
+
+    wireMockRule.stubFor(
+        WireMock.post(WireMock.urlPathEqualTo("/2.0/zip_downloads"))
             .withRequestBody(WireMock.equalToJson(body.toString()))
-            .willReturn(WireMock.aResponse()
-                .withHeader("Content-Type", APPLICATION_JSON)
-                .withBody(result)));
+            .willReturn(
+                WireMock.aResponse()
+                    .withHeader("Content-Type", APPLICATION_JSON)
+                    .withBody(result)));
 
-        BoxZip zip = new BoxZip(this.api);
-        BoxZipInfo zipInfo = zip.create(downloadFileName, items);
-        BoxZipConflict conflict1 = zipInfo.getNameConflicts().get(0);
-        List<BoxZipConflictItem> conflict1Items = conflict1.getItems();
+    BoxZip zip = new BoxZip(this.api);
+    BoxZipInfo zipInfo = zip.create(downloadFileName, items);
+    BoxZipConflict conflict1 = zipInfo.getNameConflicts().get(0);
+    List<BoxZipConflictItem> conflict1Items = conflict1.getItems();
 
-        assertEquals(downloadURL, zipInfo.getDownloadURL().toString());
-        assertEquals(statusURL, zipInfo.getStatusURL().toString());
-        assertEquals(expiresAt, zipInfo.getExpiresAt());
-        assertEquals("100", conflict1Items.get(0).getID());
-        assertEquals("salary.pdf", conflict1Items.get(0).getOriginalName());
-        assertEquals("aqc823.pdf", conflict1Items.get(0).getDownloadName());
-        assertEquals("200", conflict1Items.get(1).getID());
-        assertEquals("salary.pdf", conflict1Items.get(1).getOriginalName());
-        assertEquals("aci23s.pdf", conflict1Items.get(1).getDownloadName());
-    }
+    assertEquals(downloadURL, zipInfo.getDownloadURL().toString());
+    assertEquals(statusURL, zipInfo.getStatusURL().toString());
+    assertEquals(expiresAt, zipInfo.getExpiresAt());
+    assertEquals("100", conflict1Items.get(0).getID());
+    assertEquals("salary.pdf", conflict1Items.get(0).getOriginalName());
+    assertEquals("aqc823.pdf", conflict1Items.get(0).getDownloadName());
+    assertEquals("200", conflict1Items.get(1).getID());
+    assertEquals("salary.pdf", conflict1Items.get(1).getOriginalName());
+    assertEquals("aci23s.pdf", conflict1Items.get(1).getDownloadName());
+  }
 }
-

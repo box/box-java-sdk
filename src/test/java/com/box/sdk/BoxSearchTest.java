@@ -18,103 +18,113 @@ import org.junit.Rule;
 import org.junit.Test;
 
 public class BoxSearchTest {
-    @Rule
-    public WireMockRule wireMockRule = new WireMockRule(wireMockConfig().dynamicHttpsPort().httpDisabled(true));
-    private final BoxAPIConnection api = TestUtils.getAPIConnection();
+  @Rule
+  public WireMockRule wireMockRule =
+      new WireMockRule(wireMockConfig().dynamicHttpsPort().httpDisabled(true));
 
-    @Before
-    public void setUpBaseUrl() {
-        api.setMaxRetryAttempts(1);
-        api.setBaseURL(format("https://localhost:%d", wireMockRule.httpsPort()));
-    }
+  private final BoxAPIConnection api = TestUtils.getAPIConnection();
 
-    @Test
-    public void searchWithQueryRequestsCorrectFields() {
-        String query = "A query";
+  @Before
+  public void setUpBaseUrl() {
+    api.setMaxRetryAttempts(1);
+    api.setBaseURL(format("https://localhost:%d", wireMockRule.httpsPort()));
+  }
 
-        stubFor(get(urlPathEqualTo("/2.0/search"))
+  @Test
+  public void searchWithQueryRequestsCorrectFields() {
+    String query = "A query";
+
+    stubFor(
+        get(urlPathEqualTo("/2.0/search"))
             .withQueryParam("query", WireMock.equalTo(query))
             .withQueryParam("limit", WireMock.equalTo("10"))
             .withQueryParam("offset", WireMock.equalTo("10"))
-            .willReturn(aResponse()
-                .withHeader("Content-Type", APPLICATION_JSON)
-                .withBody("{\"total_count\": 1, \"offset\": 10, \"limit\": 10, \"entries\":"
-                    + "[{\"type\": \"file\", \"id\": \"0\"}]}")));
+            .willReturn(
+                aResponse()
+                    .withHeader("Content-Type", APPLICATION_JSON)
+                    .withBody(
+                        "{\"total_count\": 1, \"offset\": 10, \"limit\": 10, \"entries\":"
+                            + "[{\"type\": \"file\", \"id\": \"0\"}]}")));
 
-        BoxSearch boxSearch = new BoxSearch(api);
-        BoxSearchParameters searchParams = new BoxSearchParameters();
+    BoxSearch boxSearch = new BoxSearch(api);
+    BoxSearchParameters searchParams = new BoxSearchParameters();
 
-        searchParams.setQuery(query);
+    searchParams.setQuery(query);
 
-        PartialCollection<BoxItem.Info> searchResults = boxSearch.searchRange(10, 10, searchParams);
+    PartialCollection<BoxItem.Info> searchResults = boxSearch.searchRange(10, 10, searchParams);
 
-        assertThat(searchResults.size(), is(1));
-    }
+    assertThat(searchResults.size(), is(1));
+  }
 
-    @Test
-    public void searchWithMetadataRequestsCorrectFiltersAndFields() {
+  @Test
+  public void searchWithMetadataRequestsCorrectFiltersAndFields() {
 
-        final String filters = "[{\"templateKey\":\"test\",\"scope\":\"enterprise\","
+    final String filters =
+        "[{\"templateKey\":\"test\",\"scope\":\"enterprise\","
             + "\"filters\":{\"number\":{\"gt\":12,\"lt\":19},\"test\":\"example\"}}]";
 
-        stubFor(get(urlPathEqualTo("/2.0/search"))
+    stubFor(
+        get(urlPathEqualTo("/2.0/search"))
             .withQueryParam("type", WireMock.equalTo("file"))
             .withQueryParam("mdfilters", WireMock.equalTo(filters))
             .withQueryParam("limit", WireMock.equalTo("10"))
             .withQueryParam("offset", WireMock.equalTo("10"))
-            .willReturn(aResponse()
-                .withHeader("Content-Type", APPLICATION_JSON)
-                .withBody("{\"total_count\": 1, \"offset\": 10, \"limit\": 10, \"entries\":"
-                    + "[{\"type\": \"file\", \"id\": \"0\"}]}")));
+            .willReturn(
+                aResponse()
+                    .withHeader("Content-Type", APPLICATION_JSON)
+                    .withBody(
+                        "{\"total_count\": 1, \"offset\": 10, \"limit\": 10, \"entries\":"
+                            + "[{\"type\": \"file\", \"id\": \"0\"}]}")));
 
-        BoxSearch boxSearch = new BoxSearch(api);
-        BoxSearchParameters searchParams = new BoxSearchParameters();
+    BoxSearch boxSearch = new BoxSearch(api);
+    BoxSearchParameters searchParams = new BoxSearchParameters();
 
-        searchParams.setType("file");
-        BoxMetadataFilter metadataFilter = new BoxMetadataFilter();
-        metadataFilter.setScope("enterprise");
-        metadataFilter.setTemplateKey("test");
-        SizeRange sizeRange = new SizeRange(12, 19);
-        metadataFilter.addNumberRangeFilter("number", sizeRange);
-        metadataFilter.addFilter("test", "example");
-        searchParams.setMetadataFilter(metadataFilter);
+    searchParams.setType("file");
+    BoxMetadataFilter metadataFilter = new BoxMetadataFilter();
+    metadataFilter.setScope("enterprise");
+    metadataFilter.setTemplateKey("test");
+    SizeRange sizeRange = new SizeRange(12, 19);
+    metadataFilter.addNumberRangeFilter("number", sizeRange);
+    metadataFilter.addFilter("test", "example");
+    searchParams.setMetadataFilter(metadataFilter);
 
-        PartialCollection<BoxItem.Info> searchResults = boxSearch.searchRange(10, 10, searchParams);
+    PartialCollection<BoxItem.Info> searchResults = boxSearch.searchRange(10, 10, searchParams);
 
-        assertThat(searchResults.size(), is(1));
-    }
+    assertThat(searchResults.size(), is(1));
+  }
 
-    @Test
-    public void searchIncludeSharedLinksRequestsCorrectFields() {
-        String query = "A query";
+  @Test
+  public void searchIncludeSharedLinksRequestsCorrectFields() {
+    String query = "A query";
 
-        String result = TestUtils.getFixture("BoxSearch/GetSearchItemsIncludingSharedLinks200");
+    String result = TestUtils.getFixture("BoxSearch/GetSearchItemsIncludingSharedLinks200");
 
-        stubFor(get(urlPathEqualTo("/2.0/search"))
+    stubFor(
+        get(urlPathEqualTo("/2.0/search"))
             .withQueryParam("query", WireMock.equalTo(query))
             .withQueryParam("include_recent_shared_links", WireMock.equalTo("true"))
             .withQueryParam("limit", WireMock.equalTo("10"))
             .withQueryParam("offset", WireMock.equalTo("10"))
-            .willReturn(aResponse()
-                .withHeader("Content-Type", APPLICATION_JSON)
-                .withBody(result)));
+            .willReturn(aResponse().withHeader("Content-Type", APPLICATION_JSON).withBody(result)));
 
-        BoxSearch boxSearch = new BoxSearch(api);
-        BoxSearchParameters searchParams = new BoxSearchParameters();
+    BoxSearch boxSearch = new BoxSearch(api);
+    BoxSearchParameters searchParams = new BoxSearchParameters();
 
-        searchParams.setQuery(query);
+    searchParams.setQuery(query);
 
-        PartialCollection<BoxSearchSharedLink> searchResults = boxSearch.searchRangeIncludeSharedLinks(10,
-            10, searchParams);
-        Iterator<BoxSearchSharedLink> searchResultsIterator = searchResults.iterator();
-        BoxSearchSharedLink searchItem = searchResultsIterator.next();
+    PartialCollection<BoxSearchSharedLink> searchResults =
+        boxSearch.searchRangeIncludeSharedLinks(10, 10, searchParams);
+    Iterator<BoxSearchSharedLink> searchResultsIterator = searchResults.iterator();
+    BoxSearchSharedLink searchItem = searchResultsIterator.next();
 
-        assertThat(searchResults.size(), is(1));
-        assertThat(searchItem.getType(), is("search_result"));
-        assertThat(searchItem.getItem().getID(), is("12345"));
-        assertThat(searchItem.getItem().getSharedLink().getURL(),
-            is("https://www.box.com/s/vspke7y05sb214wjokpk"));
-        assertThat(searchItem.getAccessibleViaSharedLink().toString(),
-            is("https://www.box.com/s/vspke7y05sb214wjokpk"));
-    }
+    assertThat(searchResults.size(), is(1));
+    assertThat(searchItem.getType(), is("search_result"));
+    assertThat(searchItem.getItem().getID(), is("12345"));
+    assertThat(
+        searchItem.getItem().getSharedLink().getURL(),
+        is("https://www.box.com/s/vspke7y05sb214wjokpk"));
+    assertThat(
+        searchItem.getAccessibleViaSharedLink().toString(),
+        is("https://www.box.com/s/vspke7y05sb214wjokpk"));
+  }
 }
