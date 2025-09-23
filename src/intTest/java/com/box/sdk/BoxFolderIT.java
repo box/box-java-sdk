@@ -64,911 +64,981 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-/**
- * {@link BoxFolder} related integration tests.
- */
+/** {@link BoxFolder} related integration tests. */
 public class BoxFolderIT {
 
-    private static final String GMAIL_COM_DOMAIN = "gmail.com";
-    private static final String YAHOO_COM_DOMAIN = "yahoo.com";
+  private static final String GMAIL_COM_DOMAIN = "gmail.com";
+  private static final String YAHOO_COM_DOMAIN = "yahoo.com";
 
-    @BeforeClass
-    public static void setup() {
-        setupUniqeFolder();
+  @BeforeClass
+  public static void setup() {
+    setupUniqeFolder();
+  }
+
+  @AfterClass
+  public static void tearDown() {
+    removeUniqueFolder();
+  }
+
+  @Before
+  public void clearAllowedDomains() {
+    removeAllowedDomains(GMAIL_COM_DOMAIN, YAHOO_COM_DOMAIN);
+  }
+
+  @Test
+  public void creatingAndDeletingFolderSucceeds() {
+    BoxAPIConnection api = jwtApiForServiceAccount();
+    BoxFolder rootFolder = getUniqueFolder(api);
+    BoxFolder childFolder =
+        rootFolder.createFolder("[creatingAndDeletingFolderSucceeds] Ĥȅľľő Ƒŕőďő").getResource();
+
+    assertThat(
+        rootFolder,
+        hasItem(Matchers.<BoxItem.Info>hasProperty("ID", equalTo(childFolder.getID()))));
+
+    childFolder.delete(false);
+    assertThat(
+        rootFolder,
+        not(hasItem(Matchers.<BoxItem.Info>hasProperty("ID", equalTo(childFolder.getID())))));
+  }
+
+  @Test
+  public void getFolderInfoReturnsCorrectInfo() {
+    BoxAPIConnection api = jwtApiForServiceAccount();
+    BoxUser currentUser = BoxUser.getCurrentUser(api);
+    final String expectedName = "[getFolderInfoReturnsCorrectInfo] Child Folder";
+    final String expectedCreatedByID = currentUser.getID();
+    BoxFolder childFolder = null;
+
+    BoxFolder rootFolder = getUniqueFolder(api);
+    final String expectedParentFolderID = rootFolder.getID();
+    final String expectedParentFolderName = rootFolder.getInfo().getName();
+
+    try {
+      childFolder = rootFolder.createFolder(expectedName).getResource();
+      BoxFolder.Info info = childFolder.getInfo(BoxItem.ALL_FIELDS);
+
+      String actualName = info.getName();
+      String actualCreatedByID = info.getCreatedBy().getID();
+      String actualParentFolderID = info.getParent().getID();
+      String actualParentFolderName = info.getParent().getName();
+      List<BoxFolder.Info> actualPathCollection = info.getPathCollection();
+
+      assertThat(expectedName, equalTo(actualName));
+      assertThat(expectedCreatedByID, equalTo(actualCreatedByID));
+      assertThat(expectedParentFolderID, equalTo(actualParentFolderID));
+      assertThat(expectedParentFolderName, equalTo(actualParentFolderName));
+      assertThat(
+          actualPathCollection, hasItem(Matchers.<BoxFolder.Info>hasProperty("ID", equalTo("0"))));
+      assertThat(info.getPermissions(), is(equalTo(EnumSet.allOf(BoxFolder.Permission.class))));
+      assertThat(info.getItemStatus(), is(equalTo("active")));
+    } finally {
+      this.deleteFolder(childFolder);
     }
+  }
 
-    @AfterClass
-    public static void tearDown() {
-        removeUniqueFolder();
-    }
+  @Test
+  public void getInfoWithOnlyTheNameField() {
+    BoxAPIConnection api = jwtApiForServiceAccount();
+    BoxFolder rootFolder = getUniqueFolder(api);
+    final String expectedName = UniqueTestFolder.getUniqueFolderName();
 
-    @Before
-    public void clearAllowedDomains() {
-        removeAllowedDomains(GMAIL_COM_DOMAIN, YAHOO_COM_DOMAIN);
-    }
+    BoxFolder.Info rootFolderInfo = rootFolder.getInfo("name");
 
-    @Test
-    public void creatingAndDeletingFolderSucceeds() {
-        BoxAPIConnection api = jwtApiForServiceAccount();
-        BoxFolder rootFolder = getUniqueFolder(api);
-        BoxFolder childFolder =
-            rootFolder.createFolder("[creatingAndDeletingFolderSucceeds] Ĥȅľľő Ƒŕőďő").getResource();
+    assertThat(expectedName, equalTo(rootFolderInfo.getName()));
+    assertThat(rootFolderInfo.getDescription(), is(nullValue()));
+    assertThat(rootFolderInfo.getSize(), is(0L));
+  }
 
-        assertThat(rootFolder,
-            hasItem(Matchers.<BoxItem.Info>hasProperty("ID", equalTo(childFolder.getID()))));
+  @Test
+  public void iterateWithOnlyTheNameField() {
+    final String expectedName = "[iterateWithOnlyTheNameField] Child Folder";
+    BoxAPIConnection api = jwtApiForServiceAccount();
+    BoxFolder rootFolder = getUniqueFolder(api);
+    BoxFolder childFolder = null;
 
-        childFolder.delete(false);
-        assertThat(rootFolder,
-            not(hasItem(Matchers.<BoxItem.Info>hasProperty("ID", equalTo(childFolder.getID())))));
-    }
+    try {
+      childFolder = rootFolder.createFolder(expectedName).getResource();
 
-    @Test
-    public void getFolderInfoReturnsCorrectInfo() {
-        BoxAPIConnection api = jwtApiForServiceAccount();
-        BoxUser currentUser = BoxUser.getCurrentUser(api);
-        final String expectedName = "[getFolderInfoReturnsCorrectInfo] Child Folder";
-        final String expectedCreatedByID = currentUser.getID();
-        BoxFolder childFolder = null;
-
-        BoxFolder rootFolder = getUniqueFolder(api);
-        final String expectedParentFolderID = rootFolder.getID();
-        final String expectedParentFolderName = rootFolder.getInfo().getName();
-
-        try {
-            childFolder = rootFolder.createFolder(expectedName).getResource();
-            BoxFolder.Info info = childFolder.getInfo(BoxItem.ALL_FIELDS);
-
-            String actualName = info.getName();
-            String actualCreatedByID = info.getCreatedBy().getID();
-            String actualParentFolderID = info.getParent().getID();
-            String actualParentFolderName = info.getParent().getName();
-            List<BoxFolder.Info> actualPathCollection = info.getPathCollection();
-
-            assertThat(expectedName, equalTo(actualName));
-            assertThat(expectedCreatedByID, equalTo(actualCreatedByID));
-            assertThat(expectedParentFolderID, equalTo(actualParentFolderID));
-            assertThat(expectedParentFolderName, equalTo(actualParentFolderName));
-            assertThat(actualPathCollection, hasItem(Matchers.<BoxFolder.Info>hasProperty("ID", equalTo("0"))));
-            assertThat(info.getPermissions(), is(equalTo(EnumSet.allOf(BoxFolder.Permission.class))));
-            assertThat(info.getItemStatus(), is(equalTo("active")));
-        } finally {
-            this.deleteFolder(childFolder);
+      Iterable<BoxItem.Info> children = rootFolder.getChildren("name");
+      boolean found = false;
+      for (BoxItem.Info childInfo : children) {
+        if (childInfo.getID().equals(childFolder.getID())) {
+          found = true;
+          assertThat(childInfo.getName(), is(equalTo(expectedName)));
+          assertThat(childInfo.getSize(), is(equalTo(0L)));
+          assertThat(childInfo.getDescription(), is(nullValue()));
         }
+      }
+      assertThat(found, is(true));
+    } finally {
+      this.deleteFolder(childFolder);
     }
+  }
 
-    @Test
-    public void getInfoWithOnlyTheNameField() {
-        BoxAPIConnection api = jwtApiForServiceAccount();
-        BoxFolder rootFolder = getUniqueFolder(api);
-        final String expectedName = UniqueTestFolder.getUniqueFolderName();
+  @Test
+  public void uploadFileSucceeds() {
+    BoxAPIConnection api = jwtApiForServiceAccount();
+    BoxFolder rootFolder = getUniqueFolder(api);
+    BoxFile uploadedFile = null;
 
-        BoxFolder.Info rootFolderInfo = rootFolder.getInfo("name");
+    try {
+      uploadedFile = uploadFileToUniqueFolderWithSomeContent(api, randomizeName("Test File"));
 
-        assertThat(expectedName, equalTo(rootFolderInfo.getName()));
-        assertThat(rootFolderInfo.getDescription(), is(nullValue()));
-        assertThat(rootFolderInfo.getSize(), is(0L));
+      assertThat(
+          rootFolder,
+          hasItem(Matchers.<BoxItem.Info>hasProperty("ID", equalTo(uploadedFile.getID()))));
+    } finally {
+      this.deleteFile(uploadedFile);
+      assertThat(
+          rootFolder,
+          not(hasItem(Matchers.<BoxItem.Info>hasProperty("ID", equalTo(uploadedFile.getID())))));
     }
+  }
 
-    @Test
-    public void iterateWithOnlyTheNameField() {
-        final String expectedName = "[iterateWithOnlyTheNameField] Child Folder";
-        BoxAPIConnection api = jwtApiForServiceAccount();
-        BoxFolder rootFolder = getUniqueFolder(api);
-        BoxFolder childFolder = null;
+  @Test
+  public void uploadFileUploadFileCallbackSucceeds() {
+    BoxAPIConnection api = jwtApiForServiceAccount();
+    BoxFolder rootFolder = getUniqueFolder(api);
+    BoxFile uploadedFile = null;
+    final AtomicReference<Boolean> callbackWasCalled = new AtomicReference<>(false);
 
-        try {
-            childFolder = rootFolder.createFolder(expectedName).getResource();
+    try {
 
-            Iterable<BoxItem.Info> children = rootFolder.getChildren("name");
-            boolean found = false;
-            for (BoxItem.Info childInfo : children) {
-                if (childInfo.getID().equals(childFolder.getID())) {
-                    found = true;
-                    assertThat(childInfo.getName(), is(equalTo(expectedName)));
-                    assertThat(childInfo.getSize(), is(equalTo(0L)));
-                    assertThat(childInfo.getDescription(), is(nullValue()));
-                }
-            }
-            assertThat(found, is(true));
-        } finally {
-            this.deleteFolder(childFolder);
-        }
+      final String fileContent = randomizeName("Test file");
+      uploadedFile =
+          rootFolder
+              .uploadFile(
+                  outputStream -> {
+                    outputStream.write(fileContent.getBytes());
+                    callbackWasCalled.set(true);
+                  },
+                  "Test File.txt")
+              .getResource();
+
+      assertThat(
+          rootFolder,
+          hasItem(Matchers.<BoxItem.Info>hasProperty("ID", equalTo(uploadedFile.getID()))));
+      assertTrue("Callback was not called", callbackWasCalled.get());
+    } finally {
+      this.deleteFile(uploadedFile);
     }
+  }
 
-    @Test
-    public void uploadFileSucceeds() {
-        BoxAPIConnection api = jwtApiForServiceAccount();
-        BoxFolder rootFolder = getUniqueFolder(api);
-        BoxFile uploadedFile = null;
+  @Test
+  public void uploadFileWithCreatedAndModifiedDatesSucceeds() {
+    BoxAPIConnection api = jwtApiForServiceAccount();
+    BoxFolder rootFolder = getUniqueFolder(api);
+    SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssXXX");
+    dateFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
+    BoxFile uploadedFile = null;
+    try {
+      Date created = new Date(1415318114);
+      Date modified = new Date(1315318114);
+      final String fileContent = "Test file";
+      InputStream stream = new ByteArrayInputStream(fileContent.getBytes(StandardCharsets.UTF_8));
+      FileUploadParams params =
+          new FileUploadParams()
+              .setName("[uploadFileWithCreatedAndModifiedDatesSucceeds] Test File.txt")
+              .setContent(stream)
+              .setModified(modified)
+              .setCreated(created);
+      BoxFile.Info info = rootFolder.uploadFile(params);
+      uploadedFile = info.getResource();
 
-        try {
-            uploadedFile = uploadFileToUniqueFolderWithSomeContent(api, randomizeName("Test File"));
-
-            assertThat(rootFolder, hasItem(Matchers.<BoxItem.Info>hasProperty("ID", equalTo(uploadedFile.getID()))));
-        } finally {
-            this.deleteFile(uploadedFile);
-            assertThat(rootFolder,
-                not(hasItem(Matchers.<BoxItem.Info>hasProperty("ID", equalTo(uploadedFile.getID())))));
-        }
+      assertThat(
+          dateFormat.format(info.getContentCreatedAt()), is(equalTo(dateFormat.format(created))));
+      assertThat(
+          dateFormat.format(info.getContentModifiedAt()), is(equalTo(dateFormat.format(modified))));
+      assertThat(
+          rootFolder,
+          hasItem(Matchers.<BoxItem.Info>hasProperty("ID", equalTo(uploadedFile.getID()))));
+    } finally {
+      this.deleteFile(uploadedFile);
     }
+  }
 
-    @Test
-    public void uploadFileUploadFileCallbackSucceeds() {
-        BoxAPIConnection api = jwtApiForServiceAccount();
-        BoxFolder rootFolder = getUniqueFolder(api);
-        BoxFile uploadedFile = null;
-        final AtomicReference<Boolean> callbackWasCalled = new AtomicReference<>(false);
+  @Test
+  public void updateFolderInfoSucceeds() {
+    BoxAPIConnection api = jwtApiForServiceAccount();
+    BoxFolder rootFolder = getUniqueFolder(api);
+    final String originalName = "[updateFolderInfoSucceeds] Child Folder";
+    final String updatedName = "[updateFolderInfoSucceeds] Updated Child Folder";
+    BoxFolder childFolder = null;
 
-        try {
-
-            final String fileContent = randomizeName("Test file");
-            uploadedFile = rootFolder.uploadFile(outputStream -> {
-                outputStream.write(fileContent.getBytes());
-                callbackWasCalled.set(true);
-            }, "Test File.txt").getResource();
-
-            assertThat(rootFolder, hasItem(Matchers.<BoxItem.Info>hasProperty("ID", equalTo(uploadedFile.getID()))));
-            assertTrue("Callback was not called", callbackWasCalled.get());
-        } finally {
-            this.deleteFile(uploadedFile);
-        }
+    try {
+      BoxFolder.Info info = rootFolder.createFolder(originalName);
+      childFolder = info.getResource();
+      info.setName(updatedName);
+      childFolder.updateInfo(info);
+      assertThat(info.getName(), equalTo(updatedName));
+    } finally {
+      this.deleteFolder(childFolder);
+      assertThat(
+          rootFolder,
+          not(hasItem(Matchers.<BoxItem.Info>hasProperty("ID", equalTo(childFolder.getID())))));
     }
+  }
 
+  @Test
+  public void updateCanNonOwnersViewCollaboratorsSucceeds() {
+    BoxAPIConnection api = jwtApiForServiceAccount();
+    BoxFolder rootFolder = getUniqueFolder(api);
+    final String name = "[updateCanNonOwnersViewCollaboratorsSucceeds] Child Folder";
+    BoxFolder childFolder = null;
 
-    @Test
-    public void uploadFileWithCreatedAndModifiedDatesSucceeds() {
-        BoxAPIConnection api = jwtApiForServiceAccount();
-        BoxFolder rootFolder = getUniqueFolder(api);
-        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssXXX");
-        dateFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
-        BoxFile uploadedFile = null;
-        try {
-            Date created = new Date(1415318114);
-            Date modified = new Date(1315318114);
-            final String fileContent = "Test file";
-            InputStream stream = new ByteArrayInputStream(fileContent.getBytes(StandardCharsets.UTF_8));
-            FileUploadParams params = new FileUploadParams()
-                .setName("[uploadFileWithCreatedAndModifiedDatesSucceeds] Test File.txt").setContent(stream)
-                .setModified(modified).setCreated(created);
-            BoxFile.Info info = rootFolder.uploadFile(params);
-            uploadedFile = info.getResource();
+    try {
+      BoxFolder.Info info = rootFolder.createFolder(name);
+      childFolder = info.getResource();
+      boolean getCanNonOwnersViewCollaborators =
+          childFolder
+              .getInfo("can_non_owners_view_collaborators")
+              .getCanNonOwnersViewCollaborators();
+      // need to set both
+      info.setCanNonOwnersViewCollaborators(!getCanNonOwnersViewCollaborators);
+      info.setCanNonOwnersInvite(!getCanNonOwnersViewCollaborators);
+      childFolder.updateInfo(info);
 
-            assertThat(dateFormat.format(info.getContentCreatedAt()), is(equalTo(dateFormat.format(created))));
-            assertThat(dateFormat.format(info.getContentModifiedAt()), is(equalTo(dateFormat.format(modified))));
-            assertThat(rootFolder, hasItem(Matchers.<BoxItem.Info>hasProperty("ID", equalTo(uploadedFile.getID()))));
-        } finally {
-            this.deleteFile(uploadedFile);
-        }
+      assertThat(
+          info.getCanNonOwnersViewCollaborators(), equalTo(!getCanNonOwnersViewCollaborators));
+      assertThat(info.getCanNonOwnersInvite(), equalTo(!getCanNonOwnersViewCollaborators));
+    } finally {
+      this.deleteFolder(childFolder);
+      assertThat(
+          rootFolder,
+          not(hasItem(Matchers.<BoxItem.Info>hasProperty("ID", equalTo(childFolder.getID())))));
     }
+  }
 
-    @Test
-    public void updateFolderInfoSucceeds() {
-        BoxAPIConnection api = jwtApiForServiceAccount();
-        BoxFolder rootFolder = getUniqueFolder(api);
-        final String originalName = "[updateFolderInfoSucceeds] Child Folder";
-        final String updatedName = "[updateFolderInfoSucceeds] Updated Child Folder";
-        BoxFolder childFolder = null;
+  @Test
+  public void copyFolderToSameDestinationWithNewNameSucceeds() {
+    BoxAPIConnection api = jwtApiForServiceAccount();
+    BoxFolder rootFolder = getUniqueFolder(api);
+    final String originalName = "[copyFolderToSameDestinationWithNewNameSucceeds] Child Folder";
+    final String newName = "[copyFolderToSameDestinationWithNewNameSucceeds] New Child Folder";
+    BoxFolder originalFolder = null;
+    BoxFolder copiedFolder = null;
+    try {
+      originalFolder = rootFolder.createFolder(originalName).getResource();
+      BoxFolder.Info copiedFolderInfo = originalFolder.copy(rootFolder, newName);
+      copiedFolder = copiedFolderInfo.getResource();
 
-        try {
-            BoxFolder.Info info = rootFolder.createFolder(originalName);
-            childFolder = info.getResource();
-            info.setName(updatedName);
-            childFolder.updateInfo(info);
-            assertThat(info.getName(), equalTo(updatedName));
-        } finally {
-            this.deleteFolder(childFolder);
-            assertThat(rootFolder,
-                not(hasItem(Matchers.<BoxItem.Info>hasProperty("ID", equalTo(childFolder.getID())))));
-        }
+      assertThat(copiedFolderInfo.getName(), is(equalTo(newName)));
+      assertThat(
+          rootFolder,
+          hasItem(Matchers.<BoxItem.Info>hasProperty("ID", equalTo(originalFolder.getID()))));
+      assertThat(
+          rootFolder,
+          hasItem(Matchers.<BoxItem.Info>hasProperty("ID", equalTo(copiedFolder.getID()))));
+    } finally {
+      this.deleteFolder(originalFolder);
+      this.deleteFolder(copiedFolder);
+      assertThat(
+          rootFolder,
+          not(hasItem(Matchers.<BoxItem.Info>hasProperty("ID", equalTo(originalFolder.getID())))));
+      assertThat(
+          rootFolder,
+          not(hasItem(Matchers.<BoxItem.Info>hasProperty("ID", equalTo(copiedFolder.getID())))));
     }
+  }
 
-    @Test
-    public void updateCanNonOwnersViewCollaboratorsSucceeds() {
-        BoxAPIConnection api = jwtApiForServiceAccount();
-        BoxFolder rootFolder = getUniqueFolder(api);
-        final String name = "[updateCanNonOwnersViewCollaboratorsSucceeds] Child Folder";
-        BoxFolder childFolder = null;
+  @Test
+  public void moveFolderSucceeds() {
+    BoxAPIConnection api = jwtApiForServiceAccount();
+    BoxFolder rootFolder = getUniqueFolder(api);
+    final String child1Name = "[moveFolderSucceeds] Child Folder";
+    final String child2Name = "[moveFolderSucceeds] Child Folder 2";
+    BoxFolder childFolder1 = null;
 
-        try {
-            BoxFolder.Info info = rootFolder.createFolder(name);
-            childFolder = info.getResource();
-            boolean getCanNonOwnersViewCollaborators = childFolder.getInfo("can_non_owners_view_collaborators")
-                .getCanNonOwnersViewCollaborators();
-            // need to set both
-            info.setCanNonOwnersViewCollaborators(!getCanNonOwnersViewCollaborators);
-            info.setCanNonOwnersInvite(!getCanNonOwnersViewCollaborators);
-            childFolder.updateInfo(info);
+    try {
+      childFolder1 = rootFolder.createFolder(child1Name).getResource();
+      BoxFolder childFolder2 = rootFolder.createFolder(child2Name).getResource();
 
-            assertThat(info.getCanNonOwnersViewCollaborators(), equalTo(!getCanNonOwnersViewCollaborators));
-            assertThat(info.getCanNonOwnersInvite(), equalTo(!getCanNonOwnersViewCollaborators));
-        } finally {
-            this.deleteFolder(childFolder);
-            assertThat(rootFolder,
-                not(hasItem(Matchers.<BoxItem.Info>hasProperty("ID", equalTo(childFolder.getID())))));
-        }
+      assertThat(
+          rootFolder,
+          hasItem(Matchers.<BoxItem.Info>hasProperty("ID", equalTo(childFolder1.getID()))));
+      assertThat(
+          rootFolder,
+          hasItem(Matchers.<BoxItem.Info>hasProperty("ID", equalTo(childFolder2.getID()))));
+
+      childFolder2.move(childFolder1);
+
+      assertThat(
+          childFolder1,
+          hasItem(Matchers.<BoxItem.Info>hasProperty("ID", equalTo(childFolder2.getID()))));
+      assertThat(
+          rootFolder,
+          not(hasItem(Matchers.<BoxItem.Info>hasProperty("ID", equalTo(childFolder2.getID())))));
+    } finally {
+      this.deleteFolder(childFolder1);
+      assertThat(
+          rootFolder,
+          not(hasItem(Matchers.<BoxItem.Info>hasProperty("ID", equalTo(childFolder1.getID())))));
     }
+  }
 
-    @Test
-    public void copyFolderToSameDestinationWithNewNameSucceeds() {
-        BoxAPIConnection api = jwtApiForServiceAccount();
-        BoxFolder rootFolder = getUniqueFolder(api);
-        final String originalName = "[copyFolderToSameDestinationWithNewNameSucceeds] Child Folder";
-        final String newName = "[copyFolderToSameDestinationWithNewNameSucceeds] New Child Folder";
-        BoxFolder originalFolder = null;
-        BoxFolder copiedFolder = null;
-        try {
-            originalFolder = rootFolder.createFolder(originalName).getResource();
-            BoxFolder.Info copiedFolderInfo = originalFolder.copy(rootFolder, newName);
-            copiedFolder = copiedFolderInfo.getResource();
+  @Test
+  public void renameFolderSucceeds() {
+    BoxAPIConnection api = jwtApiForServiceAccount();
+    BoxFolder rootFolder = getUniqueFolder(api);
+    final String originalName = "[renameFolderSucceeds] Original Name";
+    final String newName = "[renameFolderSucceeds] New Name";
+    BoxFolder childFolder = null;
 
-            assertThat(copiedFolderInfo.getName(), is(equalTo(newName)));
-            assertThat(rootFolder, hasItem(Matchers.<BoxItem.Info>hasProperty("ID", equalTo(originalFolder.getID()))));
-            assertThat(rootFolder, hasItem(Matchers.<BoxItem.Info>hasProperty("ID", equalTo(copiedFolder.getID()))));
-        } finally {
-            this.deleteFolder(originalFolder);
-            this.deleteFolder(copiedFolder);
-            assertThat(rootFolder,
-                not(hasItem(Matchers.<BoxItem.Info>hasProperty("ID", equalTo(originalFolder.getID())))));
-            assertThat(rootFolder,
-                not(hasItem(Matchers.<BoxItem.Info>hasProperty("ID", equalTo(copiedFolder.getID())))));
-        }
+    try {
+      childFolder = rootFolder.createFolder(originalName).getResource();
+
+      childFolder.rename(newName);
+
+      BoxFolder.Info childFolderInfo = childFolder.getInfo();
+      assertThat(childFolderInfo.getName(), is(equalTo(newName)));
+    } finally {
+      this.deleteFolder(childFolder);
     }
+  }
 
-    @Test
-    public void moveFolderSucceeds() {
-        BoxAPIConnection api = jwtApiForServiceAccount();
-        BoxFolder rootFolder = getUniqueFolder(api);
-        final String child1Name = "[moveFolderSucceeds] Child Folder";
-        final String child2Name = "[moveFolderSucceeds] Child Folder 2";
-        BoxFolder childFolder1 = null;
+  @Test
+  public void addCollaboratorSucceeds() {
+    BoxAPIConnection api = jwtApiForServiceAccount();
+    BoxFolder rootFolder = getUniqueFolder(api);
+    String folderName = "[addCollaborationToFolderSucceeds] Test Folder";
+    String collaboratorLogin = TestConfig.getCollaborator();
+    Role collaboratorRole = Role.CO_OWNER;
+    BoxFolder folder = null;
 
-        try {
-            childFolder1 = rootFolder.createFolder(child1Name).getResource();
-            BoxFolder childFolder2 = rootFolder.createFolder(child2Name).getResource();
+    try {
+      folder = rootFolder.createFolder(folderName).getResource();
 
-            assertThat(rootFolder, hasItem(Matchers.<BoxItem.Info>hasProperty("ID", equalTo(childFolder1.getID()))));
-            assertThat(rootFolder, hasItem(Matchers.<BoxItem.Info>hasProperty("ID", equalTo(childFolder2.getID()))));
+      BoxCollaboration.Info collabInfo = folder.collaborate(collaboratorLogin, collaboratorRole);
+      BoxUser.Info accessibleBy = (BoxUser.Info) collabInfo.getAccessibleBy();
 
-            childFolder2.move(childFolder1);
-
-            assertThat(childFolder1,
-                hasItem(Matchers.<BoxItem.Info>hasProperty("ID", equalTo(childFolder2.getID()))));
-            assertThat(rootFolder,
-                not(hasItem(Matchers.<BoxItem.Info>hasProperty("ID", equalTo(childFolder2.getID())))));
-        } finally {
-            this.deleteFolder(childFolder1);
-            assertThat(rootFolder,
-                not(hasItem(Matchers.<BoxItem.Info>hasProperty("ID", equalTo(childFolder1.getID())))));
-        }
+      assertThat(accessibleBy.getLogin(), is(equalTo(collaboratorLogin)));
+      assertThat(collabInfo.getRole(), is(equalTo(collaboratorRole)));
+    } finally {
+      this.deleteFolder(folder);
     }
+  }
 
-    @Test
-    public void renameFolderSucceeds() {
-        BoxAPIConnection api = jwtApiForServiceAccount();
-        BoxFolder rootFolder = getUniqueFolder(api);
-        final String originalName = "[renameFolderSucceeds] Original Name";
-        final String newName = "[renameFolderSucceeds] New Name";
-        BoxFolder childFolder = null;
+  @Test
+  public void addCollaborationsWithAttributesSucceeds() {
+    BoxAPIConnection api = jwtApiForServiceAccount();
+    BoxFolder rootFolder = getUniqueFolder(api);
+    String folderName = "[getCollaborationsSucceeds] Test Folder";
+    BoxFolder folder = null;
+    BoxCollaborationAllowlist allowGmail = null;
+    BoxCollaborationAllowlist allowYahoo = null;
 
-        try {
-            childFolder = rootFolder.createFolder(originalName).getResource();
+    try {
+      folder = rootFolder.createFolder(folderName).getResource();
+      allowGmail = BoxCollaborationAllowlist.create(api, GMAIL_COM_DOMAIN, INBOUND).getResource();
+      allowYahoo = BoxCollaborationAllowlist.create(api, YAHOO_COM_DOMAIN, INBOUND).getResource();
+      // fails because of canViewPath = true - https://jira.inside-box.net/browse/CONTENT-1431
+      BoxCollaboration.Info collabInfo =
+          folder.collaborate("karthik2001123@yahoo.com", Role.CO_OWNER, false, false);
+      String collabID = collabInfo.getID();
 
-            childFolder.rename(newName);
+      // fails because of canViewPath = true - https://jira.inside-box.net/browse/CONTENT-1431
+      BoxCollaboration.Info collabInfo2 =
+          folder.collaborate("davidsmaynard@gmail.com", Role.VIEWER, false, false);
 
-            BoxFolder.Info childFolderInfo = childFolder.getInfo();
-            assertThat(childFolderInfo.getName(), is(equalTo(newName)));
-        } finally {
-            this.deleteFolder(childFolder);
-        }
+      Collection<BoxCollaboration.Info> collaborations = folder.getCollaborations();
+
+      assertThat(collaborations, hasSize(2));
+      assertThat(
+          collaborations,
+          hasItem(Matchers.<BoxCollaboration.Info>hasProperty("ID", equalTo(collabID))));
+      assertThat(
+          collaborations,
+          hasItem(Matchers.<BoxCollaboration.Info>hasProperty("ID", equalTo(collabInfo2.getID()))));
+    } finally {
+      this.deleteFolder(folder);
+      this.deleteCollaborationAllowList(allowGmail);
+      this.deleteCollaborationAllowList(allowYahoo);
     }
+  }
 
-    @Test
-    public void addCollaboratorSucceeds() {
-        BoxAPIConnection api = jwtApiForServiceAccount();
-        BoxFolder rootFolder = getUniqueFolder(api);
-        String folderName = "[addCollaborationToFolderSucceeds] Test Folder";
-        String collaboratorLogin = TestConfig.getCollaborator();
-        Role collaboratorRole = Role.CO_OWNER;
-        BoxFolder folder = null;
+  @Test
+  public void getCollaborationsHasCorrectCollaborations() {
+    BoxAPIConnection api = jwtApiForServiceAccount();
+    BoxFolder rootFolder = getUniqueFolder(api);
+    String folderName = "[getCollaborationsHasCorrectCollaborations] Test Folder";
+    BoxFolder folder = null;
+    BoxCollaborationAllowlist allowGmail = null;
 
-        try {
-            folder = rootFolder.createFolder(folderName).getResource();
+    try {
+      folder = rootFolder.createFolder(folderName).getResource();
+      allowGmail = BoxCollaborationAllowlist.create(api, GMAIL_COM_DOMAIN, INBOUND).getResource();
+      BoxCollaboration.Info collabInfo =
+          folder.collaborate(TestConfig.getCollaborator(), Role.CO_OWNER);
+      String collabID = collabInfo.getID();
 
-            BoxCollaboration.Info collabInfo = folder.collaborate(collaboratorLogin, collaboratorRole);
-            BoxUser.Info accessibleBy = (BoxUser.Info) collabInfo.getAccessibleBy();
+      Collection<BoxCollaboration.Info> collaborations = folder.getCollaborations();
 
-            assertThat(accessibleBy.getLogin(), is(equalTo(collaboratorLogin)));
-            assertThat(collabInfo.getRole(), is(equalTo(collaboratorRole)));
-        } finally {
-            this.deleteFolder(folder);
-        }
+      assertThat(collaborations, hasSize(1));
+      assertThat(
+          collaborations,
+          hasItem(Matchers.<BoxCollaboration.Info>hasProperty("ID", equalTo(collabID))));
+    } finally {
+      this.deleteFolder(folder);
+      this.deleteCollaborationAllowList(allowGmail);
     }
+  }
 
-    @Test
-    public void addCollaborationsWithAttributesSucceeds() {
-        BoxAPIConnection api = jwtApiForServiceAccount();
-        BoxFolder rootFolder = getUniqueFolder(api);
-        String folderName = "[getCollaborationsSucceeds] Test Folder";
-        BoxFolder folder = null;
-        BoxCollaborationAllowlist allowGmail = null;
-        BoxCollaborationAllowlist allowYahoo = null;
+  @Test
+  public void setFolderUploadEmailSucceeds() {
+    BoxAPIConnection api = jwtApiForServiceAccount();
+    BoxFolder rootFolder = getUniqueFolder(api);
+    String folderName = "[setFolderUploadEmailSucceeds] Test Folder";
+    BoxFolder folder = null;
 
-        try {
-            folder = rootFolder.createFolder(folderName).getResource();
-            allowGmail = BoxCollaborationAllowlist.create(api, GMAIL_COM_DOMAIN, INBOUND).getResource();
-            allowYahoo = BoxCollaborationAllowlist.create(api, YAHOO_COM_DOMAIN, INBOUND).getResource();
-            //fails because of canViewPath = true - https://jira.inside-box.net/browse/CONTENT-1431
-            BoxCollaboration.Info collabInfo =
-                folder.collaborate("karthik2001123@yahoo.com", Role.CO_OWNER, false, false);
-            String collabID = collabInfo.getID();
+    try {
+      BoxUploadEmail uploadEmail = new BoxUploadEmail();
+      uploadEmail.setAccess(BoxUploadEmail.Access.OPEN);
 
-            //fails because of canViewPath = true - https://jira.inside-box.net/browse/CONTENT-1431
-            BoxCollaboration.Info collabInfo2 =
-                folder.collaborate("davidsmaynard@gmail.com", Role.VIEWER, false, false);
+      folder = rootFolder.createFolder(folderName).getResource();
+      BoxFolder.Info info = folder.new Info();
+      info.setUploadEmail(uploadEmail);
+      folder.updateInfo(info);
 
-            Collection<BoxCollaboration.Info> collaborations = folder.getCollaborations();
+      BoxUploadEmail updatedEmailInfo = info.getUploadEmail();
+      assertThat(updatedEmailInfo.getEmail(), not(is(emptyOrNullString())));
+      assertThat(updatedEmailInfo.getAccess(), is(equalTo(BoxUploadEmail.Access.OPEN)));
 
-            assertThat(collaborations, hasSize(2));
-            assertThat(collaborations,
-                hasItem(Matchers.<BoxCollaboration.Info>hasProperty("ID", equalTo(collabID))));
-            assertThat(collaborations,
-                hasItem(Matchers.<BoxCollaboration.Info>hasProperty("ID", equalTo(collabInfo2.getID()))));
-        } finally {
-            this.deleteFolder(folder);
-            this.deleteCollaborationAllowList(allowGmail);
-            this.deleteCollaborationAllowList(allowYahoo);
-        }
+      info.setUploadEmail(null);
+      uploadEmail = info.getUploadEmail();
+      assertThat(uploadEmail, is(nullValue()));
+    } finally {
+      this.deleteFolder(folder);
     }
+  }
 
-    @Test
-    public void getCollaborationsHasCorrectCollaborations() {
-        BoxAPIConnection api = jwtApiForServiceAccount();
-        BoxFolder rootFolder = getUniqueFolder(api);
-        String folderName = "[getCollaborationsHasCorrectCollaborations] Test Folder";
-        BoxFolder folder = null;
-        BoxCollaborationAllowlist allowGmail = null;
+  @Test
+  public void getSharedItemAndItsChildrenSucceeds() {
+    BoxAPIConnection api = jwtApiForServiceAccount();
+    BoxFolder rootFolder = getUniqueFolder(api);
+    String folderName = "[getSharedItemAndItsChildrenSucceeds] Test Folder";
+    String childFolderName = "[getSharedItemAndItsChildrenSucceeds] Child Folder";
+    BoxFolder folder = null;
 
-        try {
-            folder = rootFolder.createFolder(folderName).getResource();
-            allowGmail = BoxCollaborationAllowlist.create(api, GMAIL_COM_DOMAIN, INBOUND).getResource();
-            BoxCollaboration.Info collabInfo = folder.collaborate(TestConfig.getCollaborator(), Role.CO_OWNER);
-            String collabID = collabInfo.getID();
+    try {
+      folder = rootFolder.createFolder(folderName).getResource();
+      BoxFolder childFolder = folder.createFolder(childFolderName).getResource();
+      assertThat(
+          folder.getInfo("is_accessible_via_shared_link").getIsAccessibleViaSharedLink(),
+          is(false));
+      BoxSharedLink sharedLink = folder.createSharedLink(new BoxSharedLinkRequest().access(OPEN));
 
-            Collection<BoxCollaboration.Info> collaborations = folder.getCollaborations();
+      BoxFolder.Info sharedItem = (BoxFolder.Info) BoxItem.getSharedItem(api, sharedLink.getURL());
 
-            assertThat(collaborations, hasSize(1));
-            assertThat(collaborations,
-                hasItem(Matchers.<BoxCollaboration.Info>hasProperty("ID", equalTo(collabID))));
-        } finally {
-            this.deleteFolder(folder);
-            this.deleteCollaborationAllowList(allowGmail);
-        }
+      assertThat(sharedItem.getID(), is(equalTo(folder.getID())));
+      assertThat(
+          sharedItem.getResource(),
+          hasItem(Matchers.<BoxItem.Info>hasProperty("ID", equalTo(childFolder.getID()))));
+      assertThat(
+          folder.getInfo("is_accessible_via_shared_link").getIsAccessibleViaSharedLink(), is(true));
+    } finally {
+      this.deleteFolder(folder);
     }
+  }
 
-    @Test
-    public void setFolderUploadEmailSucceeds() {
-        BoxAPIConnection api = jwtApiForServiceAccount();
-        BoxFolder rootFolder = getUniqueFolder(api);
-        String folderName = "[setFolderUploadEmailSucceeds] Test Folder";
-        BoxFolder folder = null;
+  @Test
+  public void createWebLinkSucceeds() throws MalformedURLException {
+    BoxAPIConnection api = jwtApiForServiceAccount();
+    BoxFolder rootFolder = getUniqueFolder(api);
 
-        try {
-            BoxUploadEmail uploadEmail = new BoxUploadEmail();
-            uploadEmail.setAccess(BoxUploadEmail.Access.OPEN);
+    BoxWebLink createdWebLink =
+        rootFolder
+            .createWebLink(
+                "[createWebLinkSucceeds] Test Web Link",
+                new URL("https://api.box.com"),
+                "[createWebLinkSucceeds] Test Web Link")
+            .getResource();
 
-            folder = rootFolder.createFolder(folderName).getResource();
-            BoxFolder.Info info = folder.new Info();
-            info.setUploadEmail(uploadEmail);
-            folder.updateInfo(info);
+    assertThat(
+        rootFolder,
+        hasItem(Matchers.<BoxItem.Info>hasProperty("ID", equalTo(createdWebLink.getID()))));
 
-            BoxUploadEmail updatedEmailInfo = info.getUploadEmail();
-            assertThat(updatedEmailInfo.getEmail(), not(is(emptyOrNullString())));
-            assertThat(updatedEmailInfo.getAccess(), is(equalTo(BoxUploadEmail.Access.OPEN)));
+    createdWebLink.delete();
+    assertThat(
+        rootFolder,
+        not(hasItem(Matchers.<BoxItem.Info>hasProperty("ID", equalTo(createdWebLink.getID())))));
+  }
 
-            info.setUploadEmail(null);
-            uploadEmail = info.getUploadEmail();
-            assertThat(uploadEmail, is(nullValue()));
-        } finally {
-            this.deleteFolder(folder);
-        }
-    }
+  @Test
+  public void createWebLinkWithNoNameSucceeds() throws MalformedURLException {
+    BoxAPIConnection api = jwtApiForServiceAccount();
+    BoxFolder rootFolder = getUniqueFolder(api);
 
-    @Test
-    public void getSharedItemAndItsChildrenSucceeds() {
-        BoxAPIConnection api = jwtApiForServiceAccount();
-        BoxFolder rootFolder = getUniqueFolder(api);
-        String folderName = "[getSharedItemAndItsChildrenSucceeds] Test Folder";
-        String childFolderName = "[getSharedItemAndItsChildrenSucceeds] Child Folder";
-        BoxFolder folder = null;
-
-        try {
-            folder = rootFolder.createFolder(folderName).getResource();
-            BoxFolder childFolder = folder.createFolder(childFolderName).getResource();
-            assertThat(
-                folder.getInfo("is_accessible_via_shared_link").getIsAccessibleViaSharedLink(),
-                is(false)
-            );
-            BoxSharedLink sharedLink = folder.createSharedLink(new BoxSharedLinkRequest().access(OPEN));
-
-            BoxFolder.Info sharedItem = (BoxFolder.Info) BoxItem.getSharedItem(api, sharedLink.getURL());
-
-            assertThat(sharedItem.getID(), is(equalTo(folder.getID())));
-            assertThat(sharedItem.getResource(),
-                hasItem(Matchers.<BoxItem.Info>hasProperty("ID", equalTo(childFolder.getID()))));
-            assertThat(
-                folder.getInfo("is_accessible_via_shared_link").getIsAccessibleViaSharedLink(),
-                is(true)
-            );
-        } finally {
-            this.deleteFolder(folder);
-        }
-    }
-
-    @Test
-    public void createWebLinkSucceeds() throws MalformedURLException {
-        BoxAPIConnection api = jwtApiForServiceAccount();
-        BoxFolder rootFolder = getUniqueFolder(api);
-
-        BoxWebLink createdWebLink = rootFolder.createWebLink("[createWebLinkSucceeds] Test Web Link",
-            new URL("https://api.box.com"), "[createWebLinkSucceeds] Test Web Link").getResource();
-
-        assertThat(rootFolder, hasItem(Matchers.<BoxItem.Info>hasProperty("ID", equalTo(createdWebLink.getID()))));
-
-        createdWebLink.delete();
-        assertThat(rootFolder, not(hasItem(Matchers.<BoxItem.Info>hasProperty("ID", equalTo(createdWebLink.getID())))));
-    }
-
-    @Test
-    public void createWebLinkWithNoNameSucceeds() throws MalformedURLException {
-        BoxAPIConnection api = jwtApiForServiceAccount();
-        BoxFolder rootFolder = getUniqueFolder(api);
-
-        BoxWebLink createdWebLink = rootFolder
+    BoxWebLink createdWebLink =
+        rootFolder
             .createWebLink(new URL("https://api.box.com"), "[createWebLinkSucceeds] Test Web Link")
             .getResource();
 
-        assertThat(rootFolder, hasItem(Matchers.<BoxItem.Info>hasProperty("ID", equalTo(createdWebLink.getID()))));
+    assertThat(
+        rootFolder,
+        hasItem(Matchers.<BoxItem.Info>hasProperty("ID", equalTo(createdWebLink.getID()))));
 
-        createdWebLink.delete();
-        assertThat(rootFolder, not(hasItem(Matchers.<BoxItem.Info>hasProperty("ID", equalTo(createdWebLink.getID())))));
-    }
+    createdWebLink.delete();
+    assertThat(
+        rootFolder,
+        not(hasItem(Matchers.<BoxItem.Info>hasProperty("ID", equalTo(createdWebLink.getID())))));
+  }
 
-    @Test
-    public void createWebLinkWithNoDescriptionSucceeds() throws MalformedURLException {
-        BoxAPIConnection api = jwtApiForServiceAccount();
-        BoxFolder rootFolder = getUniqueFolder(api);
+  @Test
+  public void createWebLinkWithNoDescriptionSucceeds() throws MalformedURLException {
+    BoxAPIConnection api = jwtApiForServiceAccount();
+    BoxFolder rootFolder = getUniqueFolder(api);
 
-        BoxWebLink createdWebLink = rootFolder
+    BoxWebLink createdWebLink =
+        rootFolder
             .createWebLink("[createWebLinkSucceeds] Test Web Link", new URL("https://api.box.com"))
             .getResource();
 
-        assertThat(rootFolder, hasItem(Matchers.<BoxItem.Info>hasProperty("ID", equalTo(createdWebLink.getID()))));
+    assertThat(
+        rootFolder,
+        hasItem(Matchers.<BoxItem.Info>hasProperty("ID", equalTo(createdWebLink.getID()))));
 
-        createdWebLink.delete();
-        assertThat(rootFolder, not(hasItem(Matchers.<BoxItem.Info>hasProperty("ID", equalTo(createdWebLink.getID())))));
-    }
+    createdWebLink.delete();
+    assertThat(
+        rootFolder,
+        not(hasItem(Matchers.<BoxItem.Info>hasProperty("ID", equalTo(createdWebLink.getID())))));
+  }
 
-    @Test
-    public void createWebLinkWithNoNameOrDescriptionSucceeds() throws MalformedURLException {
-        BoxAPIConnection api = jwtApiForServiceAccount();
-        BoxFolder rootFolder = getUniqueFolder(api);
+  @Test
+  public void createWebLinkWithNoNameOrDescriptionSucceeds() throws MalformedURLException {
+    BoxAPIConnection api = jwtApiForServiceAccount();
+    BoxFolder rootFolder = getUniqueFolder(api);
 
-        BoxWebLink createdWebLink = rootFolder.createWebLink(new URL("https://api.box.com")).getResource();
+    BoxWebLink createdWebLink =
+        rootFolder.createWebLink(new URL("https://api.box.com")).getResource();
 
-        assertThat(rootFolder, hasItem(Matchers.<BoxItem.Info>hasProperty("ID", equalTo(createdWebLink.getID()))));
+    assertThat(
+        rootFolder,
+        hasItem(Matchers.<BoxItem.Info>hasProperty("ID", equalTo(createdWebLink.getID()))));
 
-        createdWebLink.delete();
-        assertThat(rootFolder, not(hasItem(Matchers.<BoxItem.Info>hasProperty("ID", equalTo(createdWebLink.getID())))));
-    }
+    createdWebLink.delete();
+    assertThat(
+        rootFolder,
+        not(hasItem(Matchers.<BoxItem.Info>hasProperty("ID", equalTo(createdWebLink.getID())))));
+  }
 
-
-    @Test
-    public void createPropertiesMetadataSucceeds() {
-        BoxAPIConnection api = jwtApiForServiceAccount();
-        BoxFolder rootFolder = getUniqueFolder(api);
-        final String key = "/testKey";
-        final String value = "testValue";
-        final String folderName = "[createPropertiesMetadataSucceeds] Metadata Folder "
+  @Test
+  public void createPropertiesMetadataSucceeds() {
+    BoxAPIConnection api = jwtApiForServiceAccount();
+    BoxFolder rootFolder = getUniqueFolder(api);
+    final String key = "/testKey";
+    final String value = "testValue";
+    final String folderName =
+        "[createPropertiesMetadataSucceeds] Metadata Folder "
             + Calendar.getInstance().getTimeInMillis();
-        BoxFolder folder = null;
+    BoxFolder folder = null;
 
-        try {
-            Metadata md = new Metadata();
-            md.add(key, value);
-            folder = rootFolder.createFolder(folderName).getResource();
-            Metadata createdMD = folder.createMetadata(md);
+    try {
+      Metadata md = new Metadata();
+      md.add(key, value);
+      folder = rootFolder.createFolder(folderName).getResource();
+      Metadata createdMD = folder.createMetadata(md);
 
-            assertThat(createdMD.getString(key), is(equalTo(value)));
-        } finally {
-            this.deleteFolder(folder);
-        }
+      assertThat(createdMD.getString(key), is(equalTo(value)));
+    } finally {
+      this.deleteFolder(folder);
     }
+  }
 
-    @Test
-    public void getMetadataOnInfoSucceeds() {
-        BoxAPIConnection api = jwtApiForServiceAccount();
-        BoxFolder rootFolder = getUniqueFolder(api);
-        final String key = "/testKey";
-        final String value = "testValue";
-        final String folderName = "[createPropertiesMetadataSucceeds] Metadata Folder "
+  @Test
+  public void getMetadataOnInfoSucceeds() {
+    BoxAPIConnection api = jwtApiForServiceAccount();
+    BoxFolder rootFolder = getUniqueFolder(api);
+    final String key = "/testKey";
+    final String value = "testValue";
+    final String folderName =
+        "[createPropertiesMetadataSucceeds] Metadata Folder "
             + Calendar.getInstance().getTimeInMillis();
-        BoxFolder folder = null;
+    BoxFolder folder = null;
 
-        try {
-            Metadata md = new Metadata();
-            md.add(key, value);
-            folder = rootFolder.createFolder(folderName).getResource();
-            folder.createMetadata(md);
-            Metadata actualMD = folder.getInfo("metadata.global.properties")
-                .getMetadata("properties", "global");
-            assertNotNull("Metadata should not be null for this folder", actualMD);
-        } catch (BoxAPIException e) {
-            fail("Metadata should have been present on this folder");
-        } finally {
-            this.deleteFolder(folder);
-        }
+    try {
+      Metadata md = new Metadata();
+      md.add(key, value);
+      folder = rootFolder.createFolder(folderName).getResource();
+      folder.createMetadata(md);
+      Metadata actualMD =
+          folder.getInfo("metadata.global.properties").getMetadata("properties", "global");
+      assertNotNull("Metadata should not be null for this folder", actualMD);
+    } catch (BoxAPIException e) {
+      fail("Metadata should have been present on this folder");
+    } finally {
+      this.deleteFolder(folder);
     }
+  }
 
-    @Test
-    public void deletePropertiesMetadataSucceeds() {
-        BoxAPIConnection api = jwtApiForServiceAccount();
-        BoxFolder rootFolder = getUniqueFolder(api);
-        final String key = "/testKey";
-        final String value = "testValue";
-        final String folderName = "[createPropertiesMetadataSucceeds] Metadata Folder "
+  @Test
+  public void deletePropertiesMetadataSucceeds() {
+    BoxAPIConnection api = jwtApiForServiceAccount();
+    BoxFolder rootFolder = getUniqueFolder(api);
+    final String key = "/testKey";
+    final String value = "testValue";
+    final String folderName =
+        "[createPropertiesMetadataSucceeds] Metadata Folder "
             + Calendar.getInstance().getTimeInMillis();
 
-        Metadata md = new Metadata();
-        md.add(key, value);
-        BoxFolder folder = rootFolder.createFolder(folderName).getResource();
-        folder.createMetadata(md);
-        folder.deleteMetadata();
+    Metadata md = new Metadata();
+    md.add(key, value);
+    BoxFolder folder = rootFolder.createFolder(folderName).getResource();
+    folder.createMetadata(md);
+    folder.deleteMetadata();
 
-        try {
-            folder.getMetadata();
-            fail("Metadata was not removed");
-        } catch (BoxAPIException e) {
-            assertThat(e.getResponseCode(), is(equalTo(404)));
-        } finally {
-            folder.delete(false);
-        }
+    try {
+      folder.getMetadata();
+      fail("Metadata was not removed");
+    } catch (BoxAPIException e) {
+      assertThat(e.getResponseCode(), is(equalTo(404)));
+    } finally {
+      folder.delete(false);
     }
+  }
 
-    /**
-     * Verifies the fix for issue #325.
-     */
-    @Test
-    public void sharedLinkInfoHasEffectiveAccess() {
-        BoxAPIConnection api = jwtApiForServiceAccount();
-        BoxFolder rootFolder = getUniqueFolder(api);
-        BoxFolder folder = null;
-        try {
-            folder = rootFolder.createFolder("[sharedLinkInfoHasEffectiveAccess] Test Folder").getResource();
-            BoxSharedLink sharedLink = folder.createSharedLink(new BoxSharedLinkRequest().access(OPEN));
+  /** Verifies the fix for issue #325. */
+  @Test
+  public void sharedLinkInfoHasEffectiveAccess() {
+    BoxAPIConnection api = jwtApiForServiceAccount();
+    BoxFolder rootFolder = getUniqueFolder(api);
+    BoxFolder folder = null;
+    try {
+      folder =
+          rootFolder.createFolder("[sharedLinkInfoHasEffectiveAccess] Test Folder").getResource();
+      BoxSharedLink sharedLink = folder.createSharedLink(new BoxSharedLinkRequest().access(OPEN));
 
-            assertThat(sharedLink, Matchers.hasProperty("effectiveAccess"));
-            assertThat(sharedLink.getEffectiveAccess(), equalTo(BoxSharedLink.Access.OPEN));
-        } finally {
-            this.deleteFolder(folder);
-        }
-
+      assertThat(sharedLink, Matchers.hasProperty("effectiveAccess"));
+      assertThat(sharedLink.getEffectiveAccess(), equalTo(BoxSharedLink.Access.OPEN));
+    } finally {
+      this.deleteFolder(folder);
     }
+  }
 
-    @Test
-    public void uploadSessionAbortFlowSuccess() {
-        BoxAPIConnection api = jwtApiForServiceAccount();
-        BoxFolder rootFolder = getUniqueFolder(api);
+  @Test
+  public void uploadSessionAbortFlowSuccess() {
+    BoxAPIConnection api = jwtApiForServiceAccount();
+    BoxFolder rootFolder = getUniqueFolder(api);
 
-        String fileName = randomizeName("LargeFile.txt");
+    String fileName = randomizeName("LargeFile.txt");
 
-        BoxFileUploadSession.Info session = rootFolder.createUploadSession(fileName, 25_000_000);
-        assertNotNull(session.getUploadSessionId());
-        assertNotNull(session.getSessionExpiresAt());
+    BoxFileUploadSession.Info session = rootFolder.createUploadSession(fileName, 25_000_000);
+    assertNotNull(session.getUploadSessionId());
+    assertNotNull(session.getSessionExpiresAt());
 
-        BoxFileUploadSession.Endpoints endpoints = session.getSessionEndpoints();
-        assertNotNull(endpoints);
-        assertNotNull(endpoints.getUploadPartEndpoint());
-        assertNotNull(endpoints.getStatusEndpoint());
-        assertNotNull(endpoints.getListPartsEndpoint());
-        assertNotNull(endpoints.getCommitEndpoint());
-        assertNotNull(endpoints.getAbortEndpoint());
+    BoxFileUploadSession.Endpoints endpoints = session.getSessionEndpoints();
+    assertNotNull(endpoints);
+    assertNotNull(endpoints.getUploadPartEndpoint());
+    assertNotNull(endpoints.getStatusEndpoint());
+    assertNotNull(endpoints.getListPartsEndpoint());
+    assertNotNull(endpoints.getCommitEndpoint());
+    assertNotNull(endpoints.getAbortEndpoint());
 
-        //Verify the status of the session
-        this.getUploadSessionStatus(session.getResource());
+    // Verify the status of the session
+    this.getUploadSessionStatus(session.getResource());
 
-        //Verify the delete session
-        this.abortUploadSession(session.getResource());
+    // Verify the delete session
+    this.abortUploadSession(session.getResource());
+  }
+
+  @Test
+  public void uploadLargeFileWithAttributes() throws Exception {
+    BoxAPIConnection api = jwtApiForServiceAccount();
+    BoxFolder rootFolder = getUniqueFolder(api);
+    File file = FileUtils.generate(randomizeName("LargeFile.txt"), 21_000_000);
+    FileInputStream stream = new FileInputStream(file);
+    BoxFile fileUploaded = null;
+
+    try {
+      Map<String, String> fileAttributes = new HashMap<>();
+      fileAttributes.put("content_modified_at", "2017-04-08T00:58:08Z");
+
+      BoxFile.Info info =
+          rootFolder.uploadLargeFile(stream, "large", file.length(), fileAttributes);
+      fileUploaded = info.getResource();
+      assertNotNull(fileUploaded);
+
+      assertEquals(1491613088000L, info.getContentModifiedAt().getTime());
+    } finally {
+      this.deleteFile(fileUploaded);
     }
+  }
 
-    @Test
-    public void uploadLargeFileWithAttributes() throws Exception {
-        BoxAPIConnection api = jwtApiForServiceAccount();
-        BoxFolder rootFolder = getUniqueFolder(api);
-        File file = FileUtils.generate(randomizeName("LargeFile.txt"), 21_000_000);
-        FileInputStream stream = new FileInputStream(file);
-        BoxFile fileUploaded = null;
+  @Test
+  public void setsVanityNameOnASharedLink() {
+    BoxAPIConnection api = jwtApiForServiceAccount();
+    BoxFolder rootFolder = getUniqueFolder(api);
+    BoxFolder sharedFolder = null;
+    try {
+      sharedFolder = rootFolder.createFolder(UUID.randomUUID().toString()).getResource();
 
-        try {
-            Map<String, String> fileAttributes = new HashMap<>();
-            fileAttributes.put("content_modified_at", "2017-04-08T00:58:08Z");
+      String vanityName = "myCustomName-" + System.currentTimeMillis();
+      BoxSharedLinkRequest request =
+          new BoxSharedLinkRequest()
+              .permissions(true, true)
+              .access(OPEN)
+              .vanityName(vanityName)
+              .password("my-very-secret-password");
+      BoxSharedLink linkWithVanityName = sharedFolder.createSharedLink(request);
 
-            BoxFile.Info info = rootFolder.uploadLargeFile(stream, "large", file.length(), fileAttributes);
-            fileUploaded = info.getResource();
-            assertNotNull(fileUploaded);
-
-            assertEquals(1491613088000L, info.getContentModifiedAt().getTime());
-        } finally {
-            this.deleteFile(fileUploaded);
-        }
+      assertThat(linkWithVanityName.getVanityName(), is(vanityName));
+      assertThat(sharedFolder.getInfo().getSharedLink().getVanityName(), is(vanityName));
+      assertThat(linkWithVanityName.getPermissions().getCanDownload(), is(true));
+      assertThat(linkWithVanityName.getPermissions().getCanPreview(), is(true));
+      assertThat(linkWithVanityName.getAccess(), is(OPEN));
+      assertThat(linkWithVanityName.getIsPasswordEnabled(), is(true));
+    } finally {
+      this.deleteFolder(sharedFolder);
     }
+  }
 
-    @Test
-    public void setsVanityNameOnASharedLink() {
-        BoxAPIConnection api = jwtApiForServiceAccount();
-        BoxFolder rootFolder = getUniqueFolder(api);
-        BoxFolder sharedFolder = null;
-        try {
-            sharedFolder = rootFolder.createFolder(UUID.randomUUID().toString()).getResource();
+  @Test
+  public void iterateWithOffset() {
+    final String expectedName = "[iterateWithOnlyTheNameField] Child Folder";
+    BoxAPIConnection api = jwtApiForServiceAccount();
+    BoxFolder rootFolder = getUniqueFolder(api);
+    BoxFolder childFolder = null;
 
-            String vanityName = "myCustomName-" + System.currentTimeMillis();
-            BoxSharedLinkRequest request = new BoxSharedLinkRequest()
-                .permissions(true, true)
-                .access(OPEN)
-                .vanityName(vanityName)
-                .password("my-very-secret-password");
-            BoxSharedLink linkWithVanityName = sharedFolder.createSharedLink(request);
+    try {
+      childFolder = rootFolder.createFolder(expectedName).getResource();
+      for (int i = 1; i <= 3; i++) {
+        uploadFileWithSomeContent("sample_file_" + i, childFolder);
+      }
 
-            assertThat(linkWithVanityName.getVanityName(), is(vanityName));
-            assertThat(sharedFolder.getInfo().getSharedLink().getVanityName(), is(vanityName));
-            assertThat(linkWithVanityName.getPermissions().getCanDownload(), is(true));
-            assertThat(linkWithVanityName.getPermissions().getCanPreview(), is(true));
-            assertThat(linkWithVanityName.getAccess(), is(OPEN));
-            assertThat(linkWithVanityName.getIsPasswordEnabled(), is(true));
-        } finally {
-            this.deleteFolder(sharedFolder);
-        }
+      Iterable<BoxItem.Info> page = childFolder.getChildren("name", ASC, 1, 1);
+      assertThat(getNames(page), contains("sample_file_2", "sample_file_3"));
+
+    } finally {
+      this.deleteFolder(childFolder);
     }
+  }
 
-    @Test
-    public void iterateWithOffset() {
-        final String expectedName = "[iterateWithOnlyTheNameField] Child Folder";
-        BoxAPIConnection api = jwtApiForServiceAccount();
-        BoxFolder rootFolder = getUniqueFolder(api);
-        BoxFolder childFolder = null;
+  @Test
+  public void iterateWithOffsetUsingNewIterator() {
+    final String expectedName = "[iterateWithOnlyTheNameField] Child Folder";
+    BoxAPIConnection api = jwtApiForServiceAccount();
+    BoxFolder rootFolder = getUniqueFolder(api);
+    BoxFolder childFolder = null;
 
-        try {
-            childFolder = rootFolder.createFolder(expectedName).getResource();
-            for (int i = 1; i <= 3; i++) {
-                uploadFileWithSomeContent("sample_file_" + i, childFolder);
-            }
+    try {
+      childFolder = rootFolder.createFolder(expectedName).getResource();
+      for (int i = 1; i <= 3; i++) {
+        uploadFileWithSomeContent("sample_file_" + i, childFolder);
+      }
 
-            Iterable<BoxItem.Info> page = childFolder.getChildren("name", ASC, 1, 1);
-            assertThat(getNames(page), contains("sample_file_2", "sample_file_3"));
+      Iterable<BoxItem.Info> page = childFolder.getChildren(ascending("name"), offset(1, 1));
+      assertThat(getNames(page), contains("sample_file_2", "sample_file_3"));
 
-        } finally {
-            this.deleteFolder(childFolder);
-        }
+    } finally {
+      this.deleteFolder(childFolder);
     }
+  }
 
-    @Test
-    public void iterateWithOffsetUsingNewIterator() {
-        final String expectedName = "[iterateWithOnlyTheNameField] Child Folder";
-        BoxAPIConnection api = jwtApiForServiceAccount();
-        BoxFolder rootFolder = getUniqueFolder(api);
-        BoxFolder childFolder = null;
+  @Test
+  public void iterateWithMarker() {
+    final String expectedName = "[iterateWithOnlyTheNameField] Child Folder";
+    BoxAPIConnection api = jwtApiForServiceAccount();
+    BoxFolder rootFolder = getUniqueFolder(api);
+    BoxFolder childFolder = null;
 
-        try {
-            childFolder = rootFolder.createFolder(expectedName).getResource();
-            for (int i = 1; i <= 3; i++) {
-                uploadFileWithSomeContent("sample_file_" + i, childFolder);
-            }
+    try {
+      childFolder = rootFolder.createFolder(expectedName).getResource();
+      for (int i = 1; i <= 2; i++) {
+        uploadFileWithSomeContent("sample_file_" + i, childFolder);
+      }
 
-            Iterable<BoxItem.Info> page = childFolder.getChildren(ascending("name"), offset(1, 1));
-            assertThat(getNames(page), contains("sample_file_2", "sample_file_3"));
+      Iterable<BoxItem.Info> page = childFolder.getChildren(none(), marker(1));
+      assertThat(getNames(page), contains("sample_file_1", "sample_file_2"));
 
-        } finally {
-            this.deleteFolder(childFolder);
-        }
+    } finally {
+      this.deleteFolder(childFolder);
     }
+  }
 
-    @Test
-    public void iterateWithMarker() {
-        final String expectedName = "[iterateWithOnlyTheNameField] Child Folder";
-        BoxAPIConnection api = jwtApiForServiceAccount();
-        BoxFolder rootFolder = getUniqueFolder(api);
-        BoxFolder childFolder = null;
+  @Test
+  public void uploadFileVersionInSeparateThreadsSucceeds()
+      throws IOException, InterruptedException {
+    BoxAPIConnection api = jwtApiForServiceAccount();
+    Semaphore semaphore = new Semaphore(0);
 
-        try {
-            childFolder = rootFolder.createFolder(expectedName).getResource();
-            for (int i = 1; i <= 2; i++) {
-                uploadFileWithSomeContent("sample_file_" + i, childFolder);
-            }
+    PipedOutputStream outputStream = new PipedOutputStream();
+    PipedInputStream inputStream = new PipedInputStream();
+    outputStream.connect(inputStream);
 
-            Iterable<BoxItem.Info> page = childFolder.getChildren(none(), marker(1));
-            assertThat(getNames(page), contains("sample_file_1", "sample_file_2"));
+    String fileContent = "This is only a test";
+    final BoxFile uploadedFile =
+        uploadFileToUniqueFolder(api, randomizeName("Test File"), fileContent);
 
-        } finally {
-            this.deleteFolder(childFolder);
-        }
-    }
-
-    @Test
-    public void uploadFileVersionInSeparateThreadsSucceeds() throws IOException, InterruptedException {
-        BoxAPIConnection api = jwtApiForServiceAccount();
-        Semaphore semaphore = new Semaphore(0);
-
-        PipedOutputStream outputStream = new PipedOutputStream();
-        PipedInputStream inputStream = new PipedInputStream();
-        outputStream.connect(inputStream);
-
-        String fileContent = "This is only a test";
-        final BoxFile uploadedFile = uploadFileToUniqueFolder(api, randomizeName("Test File"), fileContent);
-
-        new Thread(
+    new Thread(
             () -> {
+              try {
+                new BoxFile(api, uploadedFile.getID()).download(outputStream);
+              } finally {
                 try {
-                    new BoxFile(api, uploadedFile.getID()).download(outputStream);
-                } finally {
-                    try {
-                        outputStream.close();
-                    } catch (IOException e) {
-                        throw new RuntimeException(e);
-                    }
-                }
-            }).start();
-
-        new Thread(
-            () -> {
-                new BoxFile(api, uploadedFile.getID()).uploadNewVersion(inputStream);
-                try {
-                    inputStream.close();
-                    semaphore.release();
+                  outputStream.close();
                 } catch (IOException e) {
-                    throw new RuntimeException(e);
+                  throw new RuntimeException(e);
                 }
-            }).start();
+              }
+            })
+        .start();
 
-
-        semaphore.acquire();
-        ByteArrayOutputStream output = new ByteArrayOutputStream();
-        new BoxFile(api, uploadedFile.getID()).download(output);
-        assertThat(output.toString(), is(fileContent));
-    }
-
-    @Test
-    public void uploadFileVersionWithProgressInSeparateThreadsSucceeds() throws IOException, InterruptedException {
-        BoxAPIConnection api = jwtApiForServiceAccount();
-        Semaphore semaphore = new Semaphore(0);
-
-        PipedOutputStream outputStream = new PipedOutputStream();
-        PipedInputStream inputStream = new PipedInputStream();
-        outputStream.connect(inputStream);
-        AtomicLong bytesUploaded = new AtomicLong(0);
-        ProgressListener progressListener = (numBytes, totalBytes) -> bytesUploaded.set(numBytes);
-
-        String fileContent = "This is only a test";
-        long fileSize = fileContent.getBytes(UTF_8).length;
-
-        final BoxFile uploadedFile = uploadFileToUniqueFolder(api, randomizeName("Test File"), fileContent);
-
-        new Thread(
+    new Thread(
             () -> {
-                try {
-                    new BoxFile(api, uploadedFile.getID()).download(outputStream);
-                } finally {
-                    semaphore.release();
-                }
-            }).start();
-
-        new Thread(
-            () -> {
-                new BoxFile(api, uploadedFile.getID())
-                    .uploadNewVersion(inputStream, new Date(), fileSize, progressListener);
+              new BoxFile(api, uploadedFile.getID()).uploadNewVersion(inputStream);
+              try {
+                inputStream.close();
                 semaphore.release();
-            }).start();
+              } catch (IOException e) {
+                throw new RuntimeException(e);
+              }
+            })
+        .start();
 
+    semaphore.acquire();
+    ByteArrayOutputStream output = new ByteArrayOutputStream();
+    new BoxFile(api, uploadedFile.getID()).download(output);
+    assertThat(output.toString(), is(fileContent));
+  }
 
-        semaphore.acquire(2);
-        ByteArrayOutputStream output = new ByteArrayOutputStream();
-        new BoxFile(api, uploadedFile.getID()).download(output);
-        assertThat(output.toString(), is(fileContent));
-        assertThat(bytesUploaded.get(), is(fileSize));
-    }
+  @Test
+  public void uploadFileVersionWithProgressInSeparateThreadsSucceeds()
+      throws IOException, InterruptedException {
+    BoxAPIConnection api = jwtApiForServiceAccount();
+    Semaphore semaphore = new Semaphore(0);
 
-    @Test
-    public void uploadFileInSeparateThreadSucceeds() throws IOException, InterruptedException {
-        BoxAPIConnection api = jwtApiForServiceAccount();
-        Semaphore semaphore = new Semaphore(0);
+    PipedOutputStream outputStream = new PipedOutputStream();
+    PipedInputStream inputStream = new PipedInputStream();
+    outputStream.connect(inputStream);
+    AtomicLong bytesUploaded = new AtomicLong(0);
+    ProgressListener progressListener = (numBytes, totalBytes) -> bytesUploaded.set(numBytes);
 
-        PipedOutputStream outputStream = new PipedOutputStream();
-        PipedInputStream inputStream = new PipedInputStream();
-        outputStream.connect(inputStream);
+    String fileContent = "This is only a test";
+    long fileSize = fileContent.getBytes(UTF_8).length;
 
-        String fileContent = "Test";
-        byte[] bytes = fileContent.getBytes(UTF_8);
+    final BoxFile uploadedFile =
+        uploadFileToUniqueFolder(api, randomizeName("Test File"), fileContent);
 
-        AtomicReference<String> uploadedFileId = new AtomicReference<>();
-
-        new Thread(
+    new Thread(
             () -> {
-                IntStream.range(0, bytes.length)
-                    .forEach(i -> {
+              try {
+                new BoxFile(api, uploadedFile.getID()).download(outputStream);
+              } finally {
+                semaphore.release();
+              }
+            })
+        .start();
+
+    new Thread(
+            () -> {
+              new BoxFile(api, uploadedFile.getID())
+                  .uploadNewVersion(inputStream, new Date(), fileSize, progressListener);
+              semaphore.release();
+            })
+        .start();
+
+    semaphore.acquire(2);
+    ByteArrayOutputStream output = new ByteArrayOutputStream();
+    new BoxFile(api, uploadedFile.getID()).download(output);
+    assertThat(output.toString(), is(fileContent));
+    assertThat(bytesUploaded.get(), is(fileSize));
+  }
+
+  @Test
+  public void uploadFileInSeparateThreadSucceeds() throws IOException, InterruptedException {
+    BoxAPIConnection api = jwtApiForServiceAccount();
+    Semaphore semaphore = new Semaphore(0);
+
+    PipedOutputStream outputStream = new PipedOutputStream();
+    PipedInputStream inputStream = new PipedInputStream();
+    outputStream.connect(inputStream);
+
+    String fileContent = "Test";
+    byte[] bytes = fileContent.getBytes(UTF_8);
+
+    AtomicReference<String> uploadedFileId = new AtomicReference<>();
+
+    new Thread(
+            () -> {
+              IntStream.range(0, bytes.length)
+                  .forEach(
+                      i -> {
                         try {
-                            outputStream.write(bytes[i]);
-                            Thread.sleep(100);
+                          outputStream.write(bytes[i]);
+                          Thread.sleep(100);
                         } catch (InterruptedException | IOException e) {
-                            throw new RuntimeException(e);
+                          throw new RuntimeException(e);
                         }
-                    });
-                try {
-                    outputStream.close();
-                    semaphore.release();
-                } catch (IOException e) {
-                    throw new RuntimeException(e);
-                }
-            }).start();
+                      });
+              try {
+                outputStream.close();
+                semaphore.release();
+              } catch (IOException e) {
+                throw new RuntimeException(e);
+              }
+            })
+        .start();
 
-        new Thread(
+    new Thread(
             () -> {
-                BoxFile.Info uploadedFile = getUniqueFolder(api)
-                    .uploadFile(inputStream, randomizeName("dynamic_upload"));
-                uploadedFileId.set(uploadedFile.getID());
-                try {
-                    inputStream.close();
-                    semaphore.release();
-                } catch (IOException e) {
-                    throw new RuntimeException(e);
-                }
-            }).start();
+              BoxFile.Info uploadedFile =
+                  getUniqueFolder(api).uploadFile(inputStream, randomizeName("dynamic_upload"));
+              uploadedFileId.set(uploadedFile.getID());
+              try {
+                inputStream.close();
+                semaphore.release();
+              } catch (IOException e) {
+                throw new RuntimeException(e);
+              }
+            })
+        .start();
 
+    semaphore.acquire(2);
+    ByteArrayOutputStream output = new ByteArrayOutputStream();
+    new BoxFile(api, uploadedFileId.get()).download(output);
+    assertThat(output.toString(), is(fileContent));
+  }
 
-        semaphore.acquire(2);
-        ByteArrayOutputStream output = new ByteArrayOutputStream();
-        new BoxFile(api, uploadedFileId.get()).download(output);
-        assertThat(output.toString(), is(fileContent));
+  private Collection<String> getNames(Iterable<BoxItem.Info> page) {
+    Collection<String> result = new ArrayList<>();
+    for (BoxItem.Info info : page) {
+      result.add(info.getName());
     }
+    return result;
+  }
 
-    private Collection<String> getNames(Iterable<BoxItem.Info> page) {
-        Collection<String> result = new ArrayList<>();
-        for (BoxItem.Info info : page) {
-            result.add(info.getName());
-        }
-        return result;
+  private void getUploadSessionStatus(BoxFileUploadSession session) {
+    assertNotNull(session);
+    BoxFileUploadSession.Info sessionInfo = session.getStatus();
+    assertNotNull(sessionInfo.getSessionExpiresAt());
+  }
+
+  private void abortUploadSession(BoxFileUploadSession session) {
+    session.abort();
+
+    try {
+      session.getStatus();
+      fail("Upload session is not deleted");
+    } catch (BoxAPIException apiEx) {
+      assertEquals(apiEx.getResponseCode(), 404);
     }
+  }
 
-    private void getUploadSessionStatus(BoxFileUploadSession session) {
-        assertNotNull(session);
-        BoxFileUploadSession.Info sessionInfo = session.getStatus();
-        assertNotNull(sessionInfo.getSessionExpiresAt());
+  private void deleteFolder(BoxFolder folder) {
+    if (folder != null) {
+      folder.delete(true);
     }
+  }
 
-    private void abortUploadSession(BoxFileUploadSession session) {
-        session.abort();
-
-        try {
-            session.getStatus();
-            fail("Upload session is not deleted");
-        } catch (BoxAPIException apiEx) {
-            assertEquals(apiEx.getResponseCode(), 404);
-        }
+  private void deleteFile(BoxFile file) {
+    if (file != null) {
+      file.delete();
     }
+  }
 
-    private void deleteFolder(BoxFolder folder) {
-        if (folder != null) {
-            folder.delete(true);
-        }
+  private void deleteCollaborationAllowList(BoxCollaborationAllowlist collaborationAllowList) {
+    if (collaborationAllowList != null) {
+      collaborationAllowList.delete();
     }
-
-
-    private void deleteFile(BoxFile file) {
-        if (file != null) {
-            file.delete();
-        }
-    }
-
-    private void deleteCollaborationAllowList(BoxCollaborationAllowlist collaborationAllowList) {
-        if (collaborationAllowList != null) {
-            collaborationAllowList.delete();
-        }
-    }
+  }
 }

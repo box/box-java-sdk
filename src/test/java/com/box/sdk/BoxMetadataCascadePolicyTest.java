@@ -15,125 +15,139 @@ import org.junit.Test;
 
 public class BoxMetadataCascadePolicyTest {
 
-    @Rule
-    public WireMockRule wireMockRule = new WireMockRule(wireMockConfig().dynamicHttpsPort().httpDisabled(true));
-    private final BoxAPIConnection api = TestUtils.getAPIConnection();
+  @Rule
+  public WireMockRule wireMockRule =
+      new WireMockRule(wireMockConfig().dynamicHttpsPort().httpDisabled(true));
 
-    @Before
-    public void setUpBaseUrl() {
-        api.setMaxRetryAttempts(1);
-        api.setBaseURL(format("https://localhost:%d", wireMockRule.httpsPort()));
-    }
+  private final BoxAPIConnection api = TestUtils.getAPIConnection();
 
-    @Test
-    public void testCreateMetadataCascadePolicySucceedsSendsCorrectJson() {
-        final String cascadePolicyURL = "/2.0/metadata_cascade_policies";
-        final String folderID = "22222";
-        final String scope = "enterprise_11111";
-        final String templateKey = "testTemplate";
-        JsonObject cascadeObject = new JsonObject()
+  @Before
+  public void setUpBaseUrl() {
+    api.setMaxRetryAttempts(1);
+    api.setBaseURL(format("https://localhost:%d", wireMockRule.httpsPort()));
+  }
+
+  @Test
+  public void testCreateMetadataCascadePolicySucceedsSendsCorrectJson() {
+    final String cascadePolicyURL = "/2.0/metadata_cascade_policies";
+    final String folderID = "22222";
+    final String scope = "enterprise_11111";
+    final String templateKey = "testTemplate";
+    JsonObject cascadeObject =
+        new JsonObject()
             .add("folder_id", folderID)
             .add("scope", scope)
             .add("templateKey", templateKey);
 
-        String result = TestUtils.getFixture("BoxMetadataCascadePolicy/CreateMetadataCascadePolicies201");
+    String result =
+        TestUtils.getFixture("BoxMetadataCascadePolicy/CreateMetadataCascadePolicies201");
 
-        wireMockRule.stubFor(WireMock.post(WireMock.urlPathEqualTo(cascadePolicyURL))
+    wireMockRule.stubFor(
+        WireMock.post(WireMock.urlPathEqualTo(cascadePolicyURL))
             .withRequestBody(WireMock.equalToJson(cascadeObject.toString()))
-            .willReturn(WireMock.aResponse()
-                .withHeader("Content-Type", APPLICATION_JSON)
-                .withBody(result)));
+            .willReturn(
+                WireMock.aResponse()
+                    .withHeader("Content-Type", APPLICATION_JSON)
+                    .withBody(result)));
 
-        BoxMetadataCascadePolicy.Info metadataCascadePolicyInfo = BoxMetadataCascadePolicy.create(this.api, folderID,
-            scope, templateKey);
+    BoxMetadataCascadePolicy.Info metadataCascadePolicyInfo =
+        BoxMetadataCascadePolicy.create(this.api, folderID, scope, templateKey);
 
-        assertEquals(folderID, metadataCascadePolicyInfo.getParent().getID());
-        assertEquals(scope, metadataCascadePolicyInfo.getScope());
-        assertEquals(templateKey, metadataCascadePolicyInfo.getTemplateKey());
-    }
+    assertEquals(folderID, metadataCascadePolicyInfo.getParent().getID());
+    assertEquals(scope, metadataCascadePolicyInfo.getScope());
+    assertEquals(templateKey, metadataCascadePolicyInfo.getTemplateKey());
+  }
 
-    @Test
-    public void testGetAllMetadataCascadePoliciesSucceeds() {
-        final String folderID = "22222";
-        final String cascadePolicyID = "84113349-794d-445c-b93c-d8481b223434";
-        final String enterpriseID = "11111";
-        final String scope = "enterprise_11111";
-        final String templateKey = "testTemplate";
-        final String cascadePoliciesURL = "/2.0/metadata_cascade_policies";
+  @Test
+  public void testGetAllMetadataCascadePoliciesSucceeds() {
+    final String folderID = "22222";
+    final String cascadePolicyID = "84113349-794d-445c-b93c-d8481b223434";
+    final String enterpriseID = "11111";
+    final String scope = "enterprise_11111";
+    final String templateKey = "testTemplate";
+    final String cascadePoliciesURL = "/2.0/metadata_cascade_policies";
 
-        String result = TestUtils.getFixture("BoxMetadataCascadePolicy/GetAllMetadataCascadePolicies200");
+    String result =
+        TestUtils.getFixture("BoxMetadataCascadePolicy/GetAllMetadataCascadePolicies200");
 
-        wireMockRule.stubFor(WireMock.get(WireMock.urlPathEqualTo(cascadePoliciesURL))
-            .willReturn(WireMock.aResponse()
-                .withHeader("Content-Type", APPLICATION_JSON)
-                .withBody(result)));
+    wireMockRule.stubFor(
+        WireMock.get(WireMock.urlPathEqualTo(cascadePoliciesURL))
+            .willReturn(
+                WireMock.aResponse()
+                    .withHeader("Content-Type", APPLICATION_JSON)
+                    .withBody(result)));
 
-        Iterator<BoxMetadataCascadePolicy.Info> metadataCascadePolicies =
-            BoxMetadataCascadePolicy.getAll(this.api, folderID).iterator();
+    Iterator<BoxMetadataCascadePolicy.Info> metadataCascadePolicies =
+        BoxMetadataCascadePolicy.getAll(this.api, folderID).iterator();
 
-        BoxMetadataCascadePolicy.Info firstCascadePolicy = metadataCascadePolicies.next();
+    BoxMetadataCascadePolicy.Info firstCascadePolicy = metadataCascadePolicies.next();
 
-        assertEquals(folderID, firstCascadePolicy.getParent().getID());
-        assertEquals(cascadePolicyID, firstCascadePolicy.getID());
-        assertEquals(enterpriseID, firstCascadePolicy.getOwnerEnterprise().getID());
-        assertEquals(scope, firstCascadePolicy.getScope());
-        assertEquals(templateKey, firstCascadePolicy.getTemplateKey());
-    }
+    assertEquals(folderID, firstCascadePolicy.getParent().getID());
+    assertEquals(cascadePolicyID, firstCascadePolicy.getID());
+    assertEquals(enterpriseID, firstCascadePolicy.getOwnerEnterprise().getID());
+    assertEquals(scope, firstCascadePolicy.getScope());
+    assertEquals(templateKey, firstCascadePolicy.getTemplateKey());
+  }
 
-    @Test
-    public void testGetAMetadataCascadePolicySucceeds() {
-        final String cascadePolicyID = "84113349-794d-445c-b93c-d8481b223434";
-        final String enterpriseID = "11111";
-        final String parentID = "22222";
-        final String scope = "enterprise_11111";
-        final String templateKey = "testTemplate";
-        final String cascadePolicyURL = "/2.0/metadata_cascade_policies/" + cascadePolicyID;
+  @Test
+  public void testGetAMetadataCascadePolicySucceeds() {
+    final String cascadePolicyID = "84113349-794d-445c-b93c-d8481b223434";
+    final String enterpriseID = "11111";
+    final String parentID = "22222";
+    final String scope = "enterprise_11111";
+    final String templateKey = "testTemplate";
+    final String cascadePolicyURL = "/2.0/metadata_cascade_policies/" + cascadePolicyID;
 
-        String result = TestUtils.getFixture("BoxMetadataCascadePolicy/GetMetadataCascadePoliciesID200");
+    String result =
+        TestUtils.getFixture("BoxMetadataCascadePolicy/GetMetadataCascadePoliciesID200");
 
-        wireMockRule.stubFor(WireMock.get(WireMock.urlPathEqualTo(cascadePolicyURL))
-            .willReturn(WireMock.aResponse()
-                .withHeader("Content-Type", APPLICATION_JSON)
-                .withBody(result)));
+    wireMockRule.stubFor(
+        WireMock.get(WireMock.urlPathEqualTo(cascadePolicyURL))
+            .willReturn(
+                WireMock.aResponse()
+                    .withHeader("Content-Type", APPLICATION_JSON)
+                    .withBody(result)));
 
-        BoxMetadataCascadePolicy metadataCascadePolicy = new BoxMetadataCascadePolicy(this.api, cascadePolicyID);
-        BoxMetadataCascadePolicy.Info metadataCascadePolicyInfo = metadataCascadePolicy.getInfo();
+    BoxMetadataCascadePolicy metadataCascadePolicy =
+        new BoxMetadataCascadePolicy(this.api, cascadePolicyID);
+    BoxMetadataCascadePolicy.Info metadataCascadePolicyInfo = metadataCascadePolicy.getInfo();
 
-        assertEquals(enterpriseID, metadataCascadePolicyInfo.getOwnerEnterprise().getID());
-        assertEquals(parentID, metadataCascadePolicyInfo.getParent().getID());
-        assertEquals(scope, metadataCascadePolicyInfo.getScope());
-        assertEquals(templateKey, metadataCascadePolicyInfo.getTemplateKey());
-    }
+    assertEquals(enterpriseID, metadataCascadePolicyInfo.getOwnerEnterprise().getID());
+    assertEquals(parentID, metadataCascadePolicyInfo.getParent().getID());
+    assertEquals(scope, metadataCascadePolicyInfo.getScope());
+    assertEquals(templateKey, metadataCascadePolicyInfo.getTemplateKey());
+  }
 
-    @Test
-    public void testForceApplyMetadataCascadePolicySucceedsAndSendsCorrectJson() {
-        final String conflictResolution = "none";
-        final String cascadePolicyID = "84113349-794d-445c-b93c-d8481b223434";
-        final String forceApplyURL = "/2.0/metadata_cascade_policies/" + cascadePolicyID + "/apply";
+  @Test
+  public void testForceApplyMetadataCascadePolicySucceedsAndSendsCorrectJson() {
+    final String conflictResolution = "none";
+    final String cascadePolicyID = "84113349-794d-445c-b93c-d8481b223434";
+    final String forceApplyURL = "/2.0/metadata_cascade_policies/" + cascadePolicyID + "/apply";
 
-        JsonObject policyObject = new JsonObject()
-            .add("conflict_resolution", conflictResolution);
+    JsonObject policyObject = new JsonObject().add("conflict_resolution", conflictResolution);
 
-        wireMockRule.stubFor(WireMock.post(WireMock.urlPathEqualTo(forceApplyURL))
+    wireMockRule.stubFor(
+        WireMock.post(WireMock.urlPathEqualTo(forceApplyURL))
             .withRequestBody(WireMock.equalToJson(policyObject.toString()))
-            .willReturn(WireMock.aResponse()
-                .withStatus(202)));
+            .willReturn(WireMock.aResponse().withStatus(202)));
 
-        BoxMetadataCascadePolicy metadataCascadePolicy = new BoxMetadataCascadePolicy(this.api, cascadePolicyID);
-        metadataCascadePolicy.forceApply(conflictResolution);
-    }
+    BoxMetadataCascadePolicy metadataCascadePolicy =
+        new BoxMetadataCascadePolicy(this.api, cascadePolicyID);
+    metadataCascadePolicy.forceApply(conflictResolution);
+  }
 
-    @Test
-    public void testDeleteMetadataCascadePolicySendsCorrectRequest() {
-        final String cascadePolicyID = "84113349-794d-445c-b93c-d8481b223434";
-        final String cascadePolicyURL = "/2.0/metadata_cascade_policies/" + cascadePolicyID;
+  @Test
+  public void testDeleteMetadataCascadePolicySendsCorrectRequest() {
+    final String cascadePolicyID = "84113349-794d-445c-b93c-d8481b223434";
+    final String cascadePolicyURL = "/2.0/metadata_cascade_policies/" + cascadePolicyID;
 
-        wireMockRule.stubFor(WireMock.delete(WireMock.urlPathEqualTo(cascadePolicyURL))
-            .willReturn(WireMock.aResponse()
-                .withHeader("Content-Type", APPLICATION_JSON)
-                .withStatus(204)));
+    wireMockRule.stubFor(
+        WireMock.delete(WireMock.urlPathEqualTo(cascadePolicyURL))
+            .willReturn(
+                WireMock.aResponse().withHeader("Content-Type", APPLICATION_JSON).withStatus(204)));
 
-        BoxMetadataCascadePolicy metadataCascadePolicy = new BoxMetadataCascadePolicy(this.api, cascadePolicyID);
-        metadataCascadePolicy.delete();
-    }
+    BoxMetadataCascadePolicy metadataCascadePolicy =
+        new BoxMetadataCascadePolicy(this.api, cascadePolicyID);
+    metadataCascadePolicy.delete();
+  }
 }

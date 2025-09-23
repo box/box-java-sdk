@@ -18,126 +18,140 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 
 public class BoxCollaborationAllowlistTest {
-    @Rule
-    public WireMockRule wireMockRule = new WireMockRule(wireMockConfig().dynamicHttpsPort().httpDisabled(true));
-    private final BoxAPIConnection api = TestUtils.getAPIConnection();
+  @Rule
+  public WireMockRule wireMockRule =
+      new WireMockRule(wireMockConfig().dynamicHttpsPort().httpDisabled(true));
 
-    @Before
-    public void setUpBaseUrl() {
-        api.setMaxRetryAttempts(1);
-        api.setBaseURL(format("https://localhost:%d", wireMockRule.httpsPort()));
-    }
+  private final BoxAPIConnection api = TestUtils.getAPIConnection();
 
-    @Test
-    public void testDeleteAllowlistForDomainSucceeds() {
-        final String whitelistID = "12345";
-        final String deleteAllowlistURL = "/2.0/collaboration_whitelist_entries/" + whitelistID;
+  @Before
+  public void setUpBaseUrl() {
+    api.setMaxRetryAttempts(1);
+    api.setBaseURL(format("https://localhost:%d", wireMockRule.httpsPort()));
+  }
 
-        wireMockRule.stubFor(WireMock.delete(WireMock.urlPathEqualTo(deleteAllowlistURL))
-            .willReturn(WireMock.aResponse()
-                .withHeader("Content-Type", APPLICATION_JSON)
-                .withStatus(204)));
+  @Test
+  public void testDeleteAllowlistForDomainSucceeds() {
+    final String whitelistID = "12345";
+    final String deleteAllowlistURL = "/2.0/collaboration_whitelist_entries/" + whitelistID;
 
-        new BoxCollaborationAllowlist(this.api, whitelistID).delete();
-    }
+    wireMockRule.stubFor(
+        WireMock.delete(WireMock.urlPathEqualTo(deleteAllowlistURL))
+            .willReturn(
+                WireMock.aResponse().withHeader("Content-Type", APPLICATION_JSON).withStatus(204)));
 
-    @Test
-    public void testGetAllowlistInfoForAllDomainsSucceeds() {
-        final String whitelistURL = "/2.0/collaboration_whitelist_entries";
-        final String firstAllowlistID = "1111";
-        final String firstAllowlistDomain = "test.com";
-        final String firstAllowlistDirection = "both";
+    new BoxCollaborationAllowlist(this.api, whitelistID).delete();
+  }
 
-        String result = TestUtils.getFixture("BoxCollaborationAllowlist/GetAllowlistInfoForAllDomains200");
+  @Test
+  public void testGetAllowlistInfoForAllDomainsSucceeds() {
+    final String whitelistURL = "/2.0/collaboration_whitelist_entries";
+    final String firstAllowlistID = "1111";
+    final String firstAllowlistDomain = "test.com";
+    final String firstAllowlistDirection = "both";
 
-        wireMockRule.stubFor(WireMock.get(WireMock.urlPathEqualTo(whitelistURL))
-            .willReturn(WireMock.aResponse()
-                .withHeader("Content-Type", APPLICATION_JSON)
-                .withBody(result)));
+    String result =
+        TestUtils.getFixture("BoxCollaborationAllowlist/GetAllowlistInfoForAllDomains200");
 
-        Iterator<BoxCollaborationAllowlist.Info> iterator = BoxCollaborationAllowlist.getAll(this.api).iterator();
-        BoxCollaborationAllowlist.Info firstAllowlistInfo = iterator.next();
+    wireMockRule.stubFor(
+        WireMock.get(WireMock.urlPathEqualTo(whitelistURL))
+            .willReturn(
+                WireMock.aResponse()
+                    .withHeader("Content-Type", APPLICATION_JSON)
+                    .withBody(result)));
 
-        assertEquals(firstAllowlistID, firstAllowlistInfo.getID());
-        assertEquals(firstAllowlistDomain, firstAllowlistInfo.getDomain());
-        assertEquals(firstAllowlistDirection, firstAllowlistInfo.getDirection().toString());
-    }
+    Iterator<BoxCollaborationAllowlist.Info> iterator =
+        BoxCollaborationAllowlist.getAll(this.api).iterator();
+    BoxCollaborationAllowlist.Info firstAllowlistInfo = iterator.next();
 
-    @Test
-    public void testGetAllowlistInfoForADomainSucceeds() {
-        final String whitelistID = "12345";
-        final String getAllowlistInfoURL = "/2.0/collaboration_whitelist_entries/" + whitelistID;
-        final String whitelistDomain = "example.com";
-        final String whitelistDirection = "both";
+    assertEquals(firstAllowlistID, firstAllowlistInfo.getID());
+    assertEquals(firstAllowlistDomain, firstAllowlistInfo.getDomain());
+    assertEquals(firstAllowlistDirection, firstAllowlistInfo.getDirection().toString());
+  }
 
-        String result = TestUtils.getFixture("BoxCollaborationAllowlist/GetAllowlistInfoForADomain200");
+  @Test
+  public void testGetAllowlistInfoForADomainSucceeds() {
+    final String whitelistID = "12345";
+    final String getAllowlistInfoURL = "/2.0/collaboration_whitelist_entries/" + whitelistID;
+    final String whitelistDomain = "example.com";
+    final String whitelistDirection = "both";
 
-        wireMockRule.stubFor(WireMock.get(WireMock.urlPathEqualTo(getAllowlistInfoURL))
-            .willReturn(WireMock.aResponse()
-                .withHeader("Content-Type", APPLICATION_JSON)
-                .withBody(result)));
+    String result = TestUtils.getFixture("BoxCollaborationAllowlist/GetAllowlistInfoForADomain200");
 
-        BoxCollaborationAllowlist.Info whitelistInfo = new BoxCollaborationAllowlist(this.api, whitelistID).getInfo();
+    wireMockRule.stubFor(
+        WireMock.get(WireMock.urlPathEqualTo(getAllowlistInfoURL))
+            .willReturn(
+                WireMock.aResponse()
+                    .withHeader("Content-Type", APPLICATION_JSON)
+                    .withBody(result)));
 
-        assertEquals(whitelistID, whitelistInfo.getID());
-        assertEquals(whitelistDomain, whitelistInfo.getDomain());
-        assertEquals(whitelistDirection, whitelistInfo.getDirection().toString());
-    }
+    BoxCollaborationAllowlist.Info whitelistInfo =
+        new BoxCollaborationAllowlist(this.api, whitelistID).getInfo();
 
-    @Test
-    public void testCreateAllowlistForDomainSucceedsAndSendsCorrectJson() {
-        final String whitelistURL = "/2.0/collaboration_whitelist_entries";
-        final String domainToAllowlist = "example.com";
-        final String whitelistDirection = "both";
-        final String whitelistType = "collaboration_whitelist_entry";
-        final String whitelistID = "12345";
-        final String whitelistedEnterpriseName = "Example";
+    assertEquals(whitelistID, whitelistInfo.getID());
+    assertEquals(whitelistDomain, whitelistInfo.getDomain());
+    assertEquals(whitelistDirection, whitelistInfo.getDirection().toString());
+  }
 
-        JsonObject whitelistObject = new JsonObject()
-            .add("domain", domainToAllowlist)
-            .add("direction", whitelistDirection);
+  @Test
+  public void testCreateAllowlistForDomainSucceedsAndSendsCorrectJson() {
+    final String whitelistURL = "/2.0/collaboration_whitelist_entries";
+    final String domainToAllowlist = "example.com";
+    final String whitelistDirection = "both";
+    final String whitelistType = "collaboration_whitelist_entry";
+    final String whitelistID = "12345";
+    final String whitelistedEnterpriseName = "Example";
 
-        String result = TestUtils.getFixture("BoxCollaborationAllowlist/CreateAllowlistForDomain201");
+    JsonObject whitelistObject =
+        new JsonObject().add("domain", domainToAllowlist).add("direction", whitelistDirection);
 
-        wireMockRule.stubFor(WireMock.post(WireMock.urlPathEqualTo(whitelistURL))
+    String result = TestUtils.getFixture("BoxCollaborationAllowlist/CreateAllowlistForDomain201");
+
+    wireMockRule.stubFor(
+        WireMock.post(WireMock.urlPathEqualTo(whitelistURL))
             .withRequestBody(WireMock.equalToJson(whitelistObject.toString()))
-            .willReturn(WireMock.aResponse()
-                .withHeader("Content-Type", APPLICATION_JSON)
-                .withBody(result)));
+            .willReturn(
+                WireMock.aResponse()
+                    .withHeader("Content-Type", APPLICATION_JSON)
+                    .withBody(result)));
 
-        BoxCollaborationAllowlist.Info collabAllowlistInfo = BoxCollaborationAllowlist.create(this.api,
-            domainToAllowlist, BoxCollaborationAllowlist.AllowlistDirection.BOTH);
+    BoxCollaborationAllowlist.Info collabAllowlistInfo =
+        BoxCollaborationAllowlist.create(
+            this.api, domainToAllowlist, BoxCollaborationAllowlist.AllowlistDirection.BOTH);
 
-        assertEquals(whitelistType, collabAllowlistInfo.getType());
-        assertEquals(whitelistID, collabAllowlistInfo.getID());
-        assertEquals(whitelistDirection, collabAllowlistInfo.getDirection().toString());
-        assertEquals(domainToAllowlist, collabAllowlistInfo.getDomain());
-        assertEquals(whitelistedEnterpriseName, collabAllowlistInfo.getEnterprise().getName());
+    assertEquals(whitelistType, collabAllowlistInfo.getType());
+    assertEquals(whitelistID, collabAllowlistInfo.getID());
+    assertEquals(whitelistDirection, collabAllowlistInfo.getDirection().toString());
+    assertEquals(domainToAllowlist, collabAllowlistInfo.getDomain());
+    assertEquals(whitelistedEnterpriseName, collabAllowlistInfo.getEnterprise().getName());
+  }
+
+  @RunWith(Parameterized.class)
+  public static class EnumValueChecker {
+    private final String inputString;
+    private final BoxCollaborationAllowlist.AllowlistDirection expectedResult;
+
+    public EnumValueChecker(
+        String inputString, BoxCollaborationAllowlist.AllowlistDirection expectedResult) {
+      this.inputString = inputString;
+      this.expectedResult = expectedResult;
     }
 
-    @RunWith(Parameterized.class)
-    public static class EnumValueChecker {
-        private final String inputString;
-        private final BoxCollaborationAllowlist.AllowlistDirection expectedResult;
-
-        public EnumValueChecker(String inputString, BoxCollaborationAllowlist.AllowlistDirection expectedResult) {
-            this.inputString = inputString;
-            this.expectedResult = expectedResult;
-        }
-
-        @Parameterized.Parameters
-        public static List<Object[]> enumValues() {
-            return Arrays.asList(new Object[][]{
-                {"inbound", BoxCollaborationAllowlist.AllowlistDirection.INBOUND},
-                {"outbound", BoxCollaborationAllowlist.AllowlistDirection.OUTBOUND},
-                {"both", BoxCollaborationAllowlist.AllowlistDirection.BOTH}
-            });
-        }
-
-        @Test
-        public void whitelistDirectionTest() {
-            assertEquals(this.expectedResult,
-                BoxCollaborationAllowlist.AllowlistDirection.fromDirection(this.inputString));
-        }
+    @Parameterized.Parameters
+    public static List<Object[]> enumValues() {
+      return Arrays.asList(
+          new Object[][] {
+            {"inbound", BoxCollaborationAllowlist.AllowlistDirection.INBOUND},
+            {"outbound", BoxCollaborationAllowlist.AllowlistDirection.OUTBOUND},
+            {"both", BoxCollaborationAllowlist.AllowlistDirection.BOTH}
+          });
     }
+
+    @Test
+    public void whitelistDirectionTest() {
+      assertEquals(
+          this.expectedResult,
+          BoxCollaborationAllowlist.AllowlistDirection.fromDirection(this.inputString));
+    }
+  }
 }

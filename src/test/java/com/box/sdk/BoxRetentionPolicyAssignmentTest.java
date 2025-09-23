@@ -13,342 +13,366 @@ import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 
-/**
- * {@link BoxRetentionPolicyAssignment} related unit tests.
- */
+/** {@link BoxRetentionPolicyAssignment} related unit tests. */
 public class BoxRetentionPolicyAssignmentTest {
 
-    @Rule
-    public WireMockRule wireMockRule = new WireMockRule(wireMockConfig().dynamicHttpsPort().httpDisabled(true));
-    private final BoxAPIConnection api = TestUtils.getAPIConnection();
+  @Rule
+  public WireMockRule wireMockRule =
+      new WireMockRule(wireMockConfig().dynamicHttpsPort().httpDisabled(true));
 
-    @Before
-    public void setUpBaseUrl() {
-        api.setMaxRetryAttempts(1);
-        api.setBaseURL(format("https://localhost:%d", wireMockRule.httpsPort()));
-    }
+  private final BoxAPIConnection api = TestUtils.getAPIConnection();
 
-    @Test
-    public void testGetPolicyAssignmentForEnterpriseSucceeds() {
-        final String assignmentID = "12345";
-        final String policyID = "1111";
-        final String getAssignmentsURL = "/2.0/retention_policies/" + policyID + "/assignments";
+  @Before
+  public void setUpBaseUrl() {
+    api.setMaxRetryAttempts(1);
+    api.setBaseURL(format("https://localhost:%d", wireMockRule.httpsPort()));
+  }
 
-        String result = TestUtils.getFixture("BoxRetentionPolicy/GetRetentionPolicyAssignment200");
+  @Test
+  public void testGetPolicyAssignmentForEnterpriseSucceeds() {
+    final String assignmentID = "12345";
+    final String policyID = "1111";
+    final String getAssignmentsURL = "/2.0/retention_policies/" + policyID + "/assignments";
 
-        wireMockRule.stubFor(WireMock.get(WireMock.urlPathEqualTo(getAssignmentsURL))
+    String result = TestUtils.getFixture("BoxRetentionPolicy/GetRetentionPolicyAssignment200");
+
+    wireMockRule.stubFor(
+        WireMock.get(WireMock.urlPathEqualTo(getAssignmentsURL))
             .withQueryParam("type", WireMock.containing("enterprise"))
-            .willReturn(WireMock.aResponse()
-                .withHeader("Content-Type", APPLICATION_JSON)
-                .withBody(result)));
+            .willReturn(
+                WireMock.aResponse()
+                    .withHeader("Content-Type", APPLICATION_JSON)
+                    .withBody(result)));
 
-        BoxRetentionPolicy policy = new BoxRetentionPolicy(this.api, policyID);
-        Iterator<BoxRetentionPolicyAssignment.Info> enterpriseAssignments =
-            policy.getEnterpriseAssignments().iterator();
+    BoxRetentionPolicy policy = new BoxRetentionPolicy(this.api, policyID);
+    Iterator<BoxRetentionPolicyAssignment.Info> enterpriseAssignments =
+        policy.getEnterpriseAssignments().iterator();
 
-        BoxRetentionPolicyAssignment.Info assignmentInfo = enterpriseAssignments.next();
+    BoxRetentionPolicyAssignment.Info assignmentInfo = enterpriseAssignments.next();
 
-        assertEquals(assignmentID, assignmentInfo.getID());
-    }
+    assertEquals(assignmentID, assignmentInfo.getID());
+  }
 
-    @Test
-    public void testGetPolicyAssignmentForFolderSucceeds() {
-        final String assignmentID = "12345";
-        final String policyID = "1111";
-        final String getAssignmentsURL = "/2.0/retention_policies/" + policyID + "/assignments";
+  @Test
+  public void testGetPolicyAssignmentForFolderSucceeds() {
+    final String assignmentID = "12345";
+    final String policyID = "1111";
+    final String getAssignmentsURL = "/2.0/retention_policies/" + policyID + "/assignments";
 
-        String result = TestUtils.getFixture("BoxRetentionPolicy/GetRetentionPolicyAssignment200");
+    String result = TestUtils.getFixture("BoxRetentionPolicy/GetRetentionPolicyAssignment200");
 
-        wireMockRule.stubFor(WireMock.get(WireMock.urlPathEqualTo(getAssignmentsURL))
+    wireMockRule.stubFor(
+        WireMock.get(WireMock.urlPathEqualTo(getAssignmentsURL))
             .withQueryParam("type", WireMock.containing("folder"))
-            .willReturn(WireMock.aResponse()
-                .withHeader("Content-Type", APPLICATION_JSON)
-                .withBody(result)));
+            .willReturn(
+                WireMock.aResponse()
+                    .withHeader("Content-Type", APPLICATION_JSON)
+                    .withBody(result)));
 
-        BoxRetentionPolicy policy = new BoxRetentionPolicy(this.api, policyID);
-        Iterator<BoxRetentionPolicyAssignment.Info> folderAssignments =
-            policy.getFolderAssignments().iterator();
+    BoxRetentionPolicy policy = new BoxRetentionPolicy(this.api, policyID);
+    Iterator<BoxRetentionPolicyAssignment.Info> folderAssignments =
+        policy.getFolderAssignments().iterator();
 
-        BoxRetentionPolicyAssignment.Info assignmentInfo = folderAssignments.next();
+    BoxRetentionPolicyAssignment.Info assignmentInfo = folderAssignments.next();
 
-        assertEquals(assignmentID, assignmentInfo.getID());
-    }
+    assertEquals(assignmentID, assignmentInfo.getID());
+  }
 
-    @Test
-    public void testGetAllPolicyAssignmentsSucceeds() {
-        final String policyID = "1111";
-        final String getAssignmentsURL = "/2.0/retention_policies/" + policyID + "/assignments";
-        final String firstAssignmentID = "12345";
-        final String secondAssignmentID = "42342";
+  @Test
+  public void testGetAllPolicyAssignmentsSucceeds() {
+    final String policyID = "1111";
+    final String getAssignmentsURL = "/2.0/retention_policies/" + policyID + "/assignments";
+    final String firstAssignmentID = "12345";
+    final String secondAssignmentID = "42342";
 
-        String result = TestUtils.getFixture("BoxRetentionPolicy/GetAllRetentionPolicyAssignments200");
+    String result = TestUtils.getFixture("BoxRetentionPolicy/GetAllRetentionPolicyAssignments200");
 
-        wireMockRule.stubFor(WireMock.get(WireMock.urlPathEqualTo(getAssignmentsURL))
-            .willReturn(WireMock.aResponse()
-                .withHeader("Content-Type", APPLICATION_JSON)
-                .withBody(result)));
+    wireMockRule.stubFor(
+        WireMock.get(WireMock.urlPathEqualTo(getAssignmentsURL))
+            .willReturn(
+                WireMock.aResponse()
+                    .withHeader("Content-Type", APPLICATION_JSON)
+                    .withBody(result)));
 
-        BoxRetentionPolicy policy = new BoxRetentionPolicy(this.api, policyID);
-        Iterator<BoxRetentionPolicyAssignment.Info> assignments =
-            policy.getEnterpriseAssignments().iterator();
+    BoxRetentionPolicy policy = new BoxRetentionPolicy(this.api, policyID);
+    Iterator<BoxRetentionPolicyAssignment.Info> assignments =
+        policy.getEnterpriseAssignments().iterator();
 
+    BoxRetentionPolicyAssignment.Info firstAssignmentInfo = assignments.next();
 
-        BoxRetentionPolicyAssignment.Info firstAssignmentInfo = assignments.next();
+    assertEquals(firstAssignmentID, firstAssignmentInfo.getID());
 
-        assertEquals(firstAssignmentID, firstAssignmentInfo.getID());
+    BoxRetentionPolicyAssignment.Info secondAssignmentInfo = assignments.next();
 
-        BoxRetentionPolicyAssignment.Info secondAssignmentInfo = assignments.next();
+    assertEquals(secondAssignmentID, secondAssignmentInfo.getID());
+  }
 
-        assertEquals(secondAssignmentID, secondAssignmentInfo.getID());
-    }
+  @Test
+  public void testCreateRetentionPolicyAssignmentSucceedsAndSendsCorrectJson() {
+    final String assignmentID = "12345";
+    final String assignmentURL = "/2.0/retention_policy_assignments";
+    final String policyID = "1111";
+    final String policyName = "A Retention Policy";
+    final String assignedByLogin = "test@user.com";
+    final String startDateField = "upload_date";
 
-    @Test
-    public void testCreateRetentionPolicyAssignmentSucceedsAndSendsCorrectJson() {
-        final String assignmentID = "12345";
-        final String assignmentURL = "/2.0/retention_policy_assignments";
-        final String policyID = "1111";
-        final String policyName = "A Retention Policy";
-        final String assignedByLogin = "test@user.com";
-        final String startDateField = "upload_date";
+    JsonObject assignToObject = new JsonObject().add("type", "enterprise");
 
-        JsonObject assignToObject = new JsonObject()
-            .add("type", "enterprise");
+    JsonObject assignmentObject =
+        new JsonObject().add("policy_id", policyID).add("assign_to", assignToObject);
 
-        JsonObject assignmentObject = new JsonObject()
-            .add("policy_id", policyID)
-            .add("assign_to", assignToObject);
+    String result =
+        TestUtils.getFixture("BoxRetentionPolicy/CreateRetentionPolicyAssignmentForEnterprise201");
 
-        String result = TestUtils.getFixture("BoxRetentionPolicy/CreateRetentionPolicyAssignmentForEnterprise201");
-
-        wireMockRule.stubFor(WireMock.post(WireMock.urlPathEqualTo(assignmentURL))
+    wireMockRule.stubFor(
+        WireMock.post(WireMock.urlPathEqualTo(assignmentURL))
             .withRequestBody(WireMock.equalToJson(assignmentObject.toString()))
-            .willReturn(WireMock.aResponse()
-                .withHeader("Content-Type", APPLICATION_JSON)
-                .withBody(result)));
+            .willReturn(
+                WireMock.aResponse()
+                    .withHeader("Content-Type", APPLICATION_JSON)
+                    .withBody(result)));
 
-        BoxRetentionPolicy policy = new BoxRetentionPolicy(this.api, policyID);
-        BoxRetentionPolicyAssignment.Info enterpriseAssignmentInfo = policy.assignToEnterprise();
+    BoxRetentionPolicy policy = new BoxRetentionPolicy(this.api, policyID);
+    BoxRetentionPolicyAssignment.Info enterpriseAssignmentInfo = policy.assignToEnterprise();
 
-        assertEquals(assignmentID, enterpriseAssignmentInfo.getID());
-        assertEquals(policyName, enterpriseAssignmentInfo.getRetentionPolicy().getPolicyName());
-        assertEquals(assignedByLogin, enterpriseAssignmentInfo.getAssignedBy().getLogin());
-        assertEquals(startDateField, enterpriseAssignmentInfo.getStartDateField());
-    }
+    assertEquals(assignmentID, enterpriseAssignmentInfo.getID());
+    assertEquals(policyName, enterpriseAssignmentInfo.getRetentionPolicy().getPolicyName());
+    assertEquals(assignedByLogin, enterpriseAssignmentInfo.getAssignedBy().getLogin());
+    assertEquals(startDateField, enterpriseAssignmentInfo.getStartDateField());
+  }
 
-    @Test
-    public void testCreateRetentionPolicyAssignmentToMetadataTemplate() {
-        final String assignmentID = "12345";
-        final String assignmentURL = "/2.0/retention_policy_assignments";
-        final String policyID = "1111";
-        final String metadataTemplateID = "c5c3a90a-7530-44c9-a47a-e522473a8d06";
-        final String metadataTemplateDateFieldId = "68144df9-597b-4ccb-b1ca-b981eaa321c4";
+  @Test
+  public void testCreateRetentionPolicyAssignmentToMetadataTemplate() {
+    final String assignmentID = "12345";
+    final String assignmentURL = "/2.0/retention_policy_assignments";
+    final String policyID = "1111";
+    final String metadataTemplateID = "c5c3a90a-7530-44c9-a47a-e522473a8d06";
+    final String metadataTemplateDateFieldId = "68144df9-597b-4ccb-b1ca-b981eaa321c4";
 
-        JsonObject assignToObject = new JsonObject()
-            .add("type", "metadata_template")
-            .add("id", metadataTemplateID);
+    JsonObject assignToObject =
+        new JsonObject().add("type", "metadata_template").add("id", metadataTemplateID);
 
-        JsonObject assignmentObject = new JsonObject()
+    JsonObject assignmentObject =
+        new JsonObject()
             .add("policy_id", policyID)
             .add("assign_to", assignToObject)
             .add("start_date_field", metadataTemplateDateFieldId);
 
-        String result = TestUtils.getFixture(
+    String result =
+        TestUtils.getFixture(
             "BoxRetentionPolicy/CreateRetentionPolicyAssignmentForMetadataTemplate201");
 
-        wireMockRule.stubFor(WireMock.post(WireMock.urlPathEqualTo(assignmentURL))
+    wireMockRule.stubFor(
+        WireMock.post(WireMock.urlPathEqualTo(assignmentURL))
             .withRequestBody(WireMock.equalToJson(assignmentObject.toString()))
-            .willReturn(WireMock.aResponse()
-                .withHeader("Content-Type", APPLICATION_JSON)
-                .withBody(result)));
+            .willReturn(
+                WireMock.aResponse()
+                    .withHeader("Content-Type", APPLICATION_JSON)
+                    .withBody(result)));
 
-        BoxRetentionPolicy policy = new BoxRetentionPolicy(this.api, policyID);
-        BoxRetentionPolicyAssignment.Info enterpriseAssignmentInfo = policy.assignToMetadataTemplate(
-            metadataTemplateID, metadataTemplateDateFieldId);
+    BoxRetentionPolicy policy = new BoxRetentionPolicy(this.api, policyID);
+    BoxRetentionPolicyAssignment.Info enterpriseAssignmentInfo =
+        policy.assignToMetadataTemplate(metadataTemplateID, metadataTemplateDateFieldId);
 
-        assertEquals(assignmentID, enterpriseAssignmentInfo.getID());
-        assertEquals(policyID, enterpriseAssignmentInfo.getRetentionPolicy().getID());
-        assertEquals(metadataTemplateID, enterpriseAssignmentInfo.getAssignedToID());
-        assertEquals(metadataTemplateDateFieldId, enterpriseAssignmentInfo.getStartDateField());
-    }
+    assertEquals(assignmentID, enterpriseAssignmentInfo.getID());
+    assertEquals(policyID, enterpriseAssignmentInfo.getRetentionPolicy().getID());
+    assertEquals(metadataTemplateID, enterpriseAssignmentInfo.getAssignedToID());
+    assertEquals(metadataTemplateDateFieldId, enterpriseAssignmentInfo.getStartDateField());
+  }
 
-    @Test
-    public void testCreateRetentionPolicyAssignmentToMetadataTemplateWithoutStartDateField() {
-        final String assignmentID = "12345";
-        final String assignmentURL = "/2.0/retention_policy_assignments";
-        final String policyID = "1111";
-        final String metadataTemplateID = "c5c3a90a-7530-44c9-a47a-e522473a8d06";
+  @Test
+  public void testCreateRetentionPolicyAssignmentToMetadataTemplateWithoutStartDateField() {
+    final String assignmentID = "12345";
+    final String assignmentURL = "/2.0/retention_policy_assignments";
+    final String policyID = "1111";
+    final String metadataTemplateID = "c5c3a90a-7530-44c9-a47a-e522473a8d06";
 
-        JsonObject assignToObject = new JsonObject()
-            .add("type", "metadata_template")
-            .add("id", metadataTemplateID);
+    JsonObject assignToObject =
+        new JsonObject().add("type", "metadata_template").add("id", metadataTemplateID);
 
-        JsonObject assignmentObject = new JsonObject()
-            .add("policy_id", policyID)
-            .add("assign_to", assignToObject);
+    JsonObject assignmentObject =
+        new JsonObject().add("policy_id", policyID).add("assign_to", assignToObject);
 
-        String result = TestUtils.getFixture(
+    String result =
+        TestUtils.getFixture(
             "BoxRetentionPolicy/CreateRetentionPolicyAssignmentForMetadataTemplateWithoutStartDateField201");
 
-        wireMockRule.stubFor(WireMock.post(WireMock.urlPathEqualTo(assignmentURL))
+    wireMockRule.stubFor(
+        WireMock.post(WireMock.urlPathEqualTo(assignmentURL))
             .withRequestBody(WireMock.equalToJson(assignmentObject.toString()))
-            .willReturn(WireMock.aResponse()
-                .withHeader("Content-Type", APPLICATION_JSON)
-                .withBody(result)));
+            .willReturn(
+                WireMock.aResponse()
+                    .withHeader("Content-Type", APPLICATION_JSON)
+                    .withBody(result)));
 
-        BoxRetentionPolicy policy = new BoxRetentionPolicy(this.api, policyID);
-        BoxRetentionPolicyAssignment.Info enterpriseAssignmentInfo
-            = policy.assignToMetadataTemplate(metadataTemplateID);
+    BoxRetentionPolicy policy = new BoxRetentionPolicy(this.api, policyID);
+    BoxRetentionPolicyAssignment.Info enterpriseAssignmentInfo =
+        policy.assignToMetadataTemplate(metadataTemplateID);
 
-        assertEquals(assignmentID, enterpriseAssignmentInfo.getID());
-        assertEquals(policyID, enterpriseAssignmentInfo.getRetentionPolicy().getID());
-        assertEquals(metadataTemplateID, enterpriseAssignmentInfo.getAssignedToID());
-        assertEquals("upload_date", enterpriseAssignmentInfo.getStartDateField());
-    }
+    assertEquals(assignmentID, enterpriseAssignmentInfo.getID());
+    assertEquals(policyID, enterpriseAssignmentInfo.getRetentionPolicy().getID());
+    assertEquals(metadataTemplateID, enterpriseAssignmentInfo.getAssignedToID());
+    assertEquals("upload_date", enterpriseAssignmentInfo.getStartDateField());
+  }
 
-    @Test
-    public void testGetRetentionPolicyAssignmentInfoSucceeds() {
-        final String assignmentID = "12345";
-        String assignmentURL = "/2.0/retention_policy_assignments/" + assignmentID;
-        final String retentionPolicyID = "1111";
-        final String assignedByLogin = "test@user.com";
-        final String startDateField = "upload_date";
+  @Test
+  public void testGetRetentionPolicyAssignmentInfoSucceeds() {
+    final String assignmentID = "12345";
+    String assignmentURL = "/2.0/retention_policy_assignments/" + assignmentID;
+    final String retentionPolicyID = "1111";
+    final String assignedByLogin = "test@user.com";
+    final String startDateField = "upload_date";
 
-        String result = TestUtils.getFixture("BoxRetentionPolicy/GetRetentionPolicyAssignmentInfo200");
+    String result = TestUtils.getFixture("BoxRetentionPolicy/GetRetentionPolicyAssignmentInfo200");
 
-        wireMockRule.stubFor(WireMock.get(WireMock.urlPathEqualTo(assignmentURL))
-            .willReturn(WireMock.aResponse()
-                .withHeader("Content-Type", APPLICATION_JSON)
-                .withBody(result)));
+    wireMockRule.stubFor(
+        WireMock.get(WireMock.urlPathEqualTo(assignmentURL))
+            .willReturn(
+                WireMock.aResponse()
+                    .withHeader("Content-Type", APPLICATION_JSON)
+                    .withBody(result)));
 
-        BoxRetentionPolicyAssignment assignment = new BoxRetentionPolicyAssignment(this.api, assignmentID);
-        BoxRetentionPolicyAssignment.Info assignmentInfo = assignment.getInfo("assigned_to");
+    BoxRetentionPolicyAssignment assignment =
+        new BoxRetentionPolicyAssignment(this.api, assignmentID);
+    BoxRetentionPolicyAssignment.Info assignmentInfo = assignment.getInfo("assigned_to");
 
-        assertEquals(assignmentID, assignmentInfo.getID());
-        assertEquals(retentionPolicyID, assignmentInfo.getRetentionPolicy().getID());
-        assertEquals(assignedByLogin, assignmentInfo.getAssignedBy().getLogin());
-        assertEquals(startDateField, assignmentInfo.getStartDateField());
-    }
+    assertEquals(assignmentID, assignmentInfo.getID());
+    assertEquals(retentionPolicyID, assignmentInfo.getRetentionPolicy().getID());
+    assertEquals(assignedByLogin, assignmentInfo.getAssignedBy().getLogin());
+    assertEquals(startDateField, assignmentInfo.getStartDateField());
+  }
 
-    @Test
-    public void testGetAllFileVersionRetentionsSucceeds() {
-        String versionRetentionURL = "/2.0/file_version_retentions";
-        final String firstRetentionID = "12345";
-        final String secondRetentionID = "32442";
+  @Test
+  public void testGetAllFileVersionRetentionsSucceeds() {
+    String versionRetentionURL = "/2.0/file_version_retentions";
+    final String firstRetentionID = "12345";
+    final String secondRetentionID = "32442";
 
-        String result = TestUtils.getFixture("BoxRetentionPolicy/GetAllFileVersionRetentions200");
+    String result = TestUtils.getFixture("BoxRetentionPolicy/GetAllFileVersionRetentions200");
 
-        wireMockRule.stubFor(WireMock.get(WireMock.urlPathEqualTo(versionRetentionURL))
-            .willReturn(WireMock.aResponse()
-                .withHeader("Content-Type", APPLICATION_JSON)
-                .withBody(result)));
+    wireMockRule.stubFor(
+        WireMock.get(WireMock.urlPathEqualTo(versionRetentionURL))
+            .willReturn(
+                WireMock.aResponse()
+                    .withHeader("Content-Type", APPLICATION_JSON)
+                    .withBody(result)));
 
-        BoxFileVersionRetention.QueryFilter filter = new BoxFileVersionRetention.QueryFilter();
-        Iterator<BoxFileVersionRetention.Info> retentions
-            = BoxFileVersionRetention.getRetentions(this.api, filter, "file", "applied_at").iterator();
+    BoxFileVersionRetention.QueryFilter filter = new BoxFileVersionRetention.QueryFilter();
+    Iterator<BoxFileVersionRetention.Info> retentions =
+        BoxFileVersionRetention.getRetentions(this.api, filter, "file", "applied_at").iterator();
 
-        BoxFileVersionRetention.Info firstRetention = retentions.next();
+    BoxFileVersionRetention.Info firstRetention = retentions.next();
 
-        assertEquals(firstRetentionID, firstRetention.getID());
+    assertEquals(firstRetentionID, firstRetention.getID());
 
-        BoxFileVersionRetention.Info secondRetention = retentions.next();
+    BoxFileVersionRetention.Info secondRetention = retentions.next();
 
-        assertEquals(secondRetentionID, secondRetention.getID());
-    }
+    assertEquals(secondRetentionID, secondRetention.getID());
+  }
 
-    @Test
-    public void testGetFileRetentionInfoSucceeds() {
-        final String retentionID = "12345";
-        final String versionRetentionURL = "/2.0/file_version_retentions/" + retentionID;
-        final String retentionPolicyID = "1111";
-        final String retentionPolicyName = "test2";
-        final String fileVersionID = "2222";
+  @Test
+  public void testGetFileRetentionInfoSucceeds() {
+    final String retentionID = "12345";
+    final String versionRetentionURL = "/2.0/file_version_retentions/" + retentionID;
+    final String retentionPolicyID = "1111";
+    final String retentionPolicyName = "test2";
+    final String fileVersionID = "2222";
 
-        String result = TestUtils.getFixture("BoxRetentionPolicy/GetFileRetentionInfo200");
+    String result = TestUtils.getFixture("BoxRetentionPolicy/GetFileRetentionInfo200");
 
-        wireMockRule.stubFor(WireMock.get(WireMock.urlPathEqualTo(versionRetentionURL))
-            .willReturn(WireMock.aResponse()
-                .withHeader("Content-Type", APPLICATION_JSON)
-                .withBody(result)));
+    wireMockRule.stubFor(
+        WireMock.get(WireMock.urlPathEqualTo(versionRetentionURL))
+            .willReturn(
+                WireMock.aResponse()
+                    .withHeader("Content-Type", APPLICATION_JSON)
+                    .withBody(result)));
 
-        BoxFileVersionRetention policy = new BoxFileVersionRetention(this.api, retentionID);
-        BoxFileVersionRetention.Info policyInfo = policy.getInfo();
+    BoxFileVersionRetention policy = new BoxFileVersionRetention(this.api, retentionID);
+    BoxFileVersionRetention.Info policyInfo = policy.getInfo();
 
-        assertEquals(retentionID, policyInfo.getID());
-        assertEquals(retentionPolicyID, policyInfo.getWinningPolicy().getID());
-        assertEquals(retentionPolicyName, policyInfo.getWinningPolicy().getPolicyName());
-        assertEquals(fileVersionID, policyInfo.getFileVersion().getID());
-    }
+    assertEquals(retentionID, policyInfo.getID());
+    assertEquals(retentionPolicyID, policyInfo.getWinningPolicy().getID());
+    assertEquals(retentionPolicyName, policyInfo.getWinningPolicy().getPolicyName());
+    assertEquals(fileVersionID, policyInfo.getFileVersion().getID());
+  }
 
-    @Test
-    public void testGetFilesUnderRetentionSucceeds() {
-        final String retentionAssignmentID = "12345";
-        final String filesUnderRetentionURL = "/2.0/retention_policy_assignments/"
-            + retentionAssignmentID + "/files_under_retention";
-        final String fileId = "12345";
-        final String fileName = "Contract.pdf";
-        final String fileVersionID = "123456";
+  @Test
+  public void testGetFilesUnderRetentionSucceeds() {
+    final String retentionAssignmentID = "12345";
+    final String filesUnderRetentionURL =
+        "/2.0/retention_policy_assignments/" + retentionAssignmentID + "/files_under_retention";
+    final String fileId = "12345";
+    final String fileName = "Contract.pdf";
+    final String fileVersionID = "123456";
 
-        String result = TestUtils.getFixture("BoxRetentionPolicy/GetFilesUnderRetention200");
+    String result = TestUtils.getFixture("BoxRetentionPolicy/GetFilesUnderRetention200");
 
-        wireMockRule.stubFor(WireMock.get(WireMock.urlPathEqualTo(filesUnderRetentionURL))
-            .willReturn(WireMock.aResponse()
-                .withHeader("Content-Type", APPLICATION_JSON)
-                .withBody(result)));
+    wireMockRule.stubFor(
+        WireMock.get(WireMock.urlPathEqualTo(filesUnderRetentionURL))
+            .willReturn(
+                WireMock.aResponse()
+                    .withHeader("Content-Type", APPLICATION_JSON)
+                    .withBody(result)));
 
-        BoxRetentionPolicyAssignment retetionAssignment =
-            new BoxRetentionPolicyAssignment(this.api, retentionAssignmentID);
-        Iterator<BoxFile.Info> filesUnderRetention = retetionAssignment.getFilesUnderRetention().iterator();
+    BoxRetentionPolicyAssignment retetionAssignment =
+        new BoxRetentionPolicyAssignment(this.api, retentionAssignmentID);
+    Iterator<BoxFile.Info> filesUnderRetention =
+        retetionAssignment.getFilesUnderRetention().iterator();
 
-        BoxFile.Info firstFileUnderRetention = filesUnderRetention.next();
+    BoxFile.Info firstFileUnderRetention = filesUnderRetention.next();
 
-        assertEquals(fileId, firstFileUnderRetention.getID());
-        assertEquals(fileName, firstFileUnderRetention.getName());
-        assertEquals(fileVersionID, firstFileUnderRetention.getVersion().getVersionID());
-    }
+    assertEquals(fileId, firstFileUnderRetention.getID());
+    assertEquals(fileName, firstFileUnderRetention.getName());
+    assertEquals(fileVersionID, firstFileUnderRetention.getVersion().getVersionID());
+  }
 
-    @Test
-    public void testGetFileVersionsUnderRetentionSucceeds() {
-        final String retentionAssignmentID = "12345";
-        final String filesUnderRetentionURL = "/2.0/retention_policy_assignments/"
-            + retentionAssignmentID + "/file_versions_under_retention";
-        final String fileId = "123456";
-        final String fileName = "Contract.pdf";
-        final String fileVersionID = "1234567";
+  @Test
+  public void testGetFileVersionsUnderRetentionSucceeds() {
+    final String retentionAssignmentID = "12345";
+    final String filesUnderRetentionURL =
+        "/2.0/retention_policy_assignments/"
+            + retentionAssignmentID
+            + "/file_versions_under_retention";
+    final String fileId = "123456";
+    final String fileName = "Contract.pdf";
+    final String fileVersionID = "1234567";
 
-        String result = TestUtils.getFixture("BoxRetentionPolicy/GetFileVersionsUnderRetention200");
+    String result = TestUtils.getFixture("BoxRetentionPolicy/GetFileVersionsUnderRetention200");
 
-        wireMockRule.stubFor(WireMock.get(WireMock.urlPathEqualTo(filesUnderRetentionURL))
-            .willReturn(WireMock.aResponse()
-                .withHeader("Content-Type", APPLICATION_JSON)
-                .withBody(result)));
+    wireMockRule.stubFor(
+        WireMock.get(WireMock.urlPathEqualTo(filesUnderRetentionURL))
+            .willReturn(
+                WireMock.aResponse()
+                    .withHeader("Content-Type", APPLICATION_JSON)
+                    .withBody(result)));
 
-        BoxRetentionPolicyAssignment retetionAssignment =
-            new BoxRetentionPolicyAssignment(this.api, retentionAssignmentID);
-        Iterator<BoxFile.Info> fileVersionsUnderRetention =
-            retetionAssignment.getFileVersionsUnderRetention().iterator();
+    BoxRetentionPolicyAssignment retetionAssignment =
+        new BoxRetentionPolicyAssignment(this.api, retentionAssignmentID);
+    Iterator<BoxFile.Info> fileVersionsUnderRetention =
+        retetionAssignment.getFileVersionsUnderRetention().iterator();
 
-        BoxFile.Info firstFileVersionUnderRetention = fileVersionsUnderRetention.next();
+    BoxFile.Info firstFileVersionUnderRetention = fileVersionsUnderRetention.next();
 
-        assertEquals(fileId, firstFileVersionUnderRetention.getID());
-        assertEquals(fileId, firstFileVersionUnderRetention.getVersion().getFileID());
-        assertEquals(fileName, firstFileVersionUnderRetention.getName());
-        assertEquals(fileVersionID, firstFileVersionUnderRetention.getVersion().getVersionID());
-    }
+    assertEquals(fileId, firstFileVersionUnderRetention.getID());
+    assertEquals(fileId, firstFileVersionUnderRetention.getVersion().getFileID());
+    assertEquals(fileName, firstFileVersionUnderRetention.getName());
+    assertEquals(fileVersionID, firstFileVersionUnderRetention.getVersion().getVersionID());
+  }
 
-    @Test
-    public void testDeleteRetentionPolicyAssignmentSucceeds() {
-        final String retentionAssignmentID = "12345";
-        final String retentionPolicyAssignmentURL = "/2.0/retention_policy_assignments/" + retentionAssignmentID;
+  @Test
+  public void testDeleteRetentionPolicyAssignmentSucceeds() {
+    final String retentionAssignmentID = "12345";
+    final String retentionPolicyAssignmentURL =
+        "/2.0/retention_policy_assignments/" + retentionAssignmentID;
 
-        wireMockRule.stubFor(WireMock.delete(WireMock.urlPathEqualTo(retentionPolicyAssignmentURL))
-            .willReturn(WireMock.noContent()
-                .withStatus(204)
-                .withHeader("Content-Type", APPLICATION_JSON)
-            ));
+    wireMockRule.stubFor(
+        WireMock.delete(WireMock.urlPathEqualTo(retentionPolicyAssignmentURL))
+            .willReturn(
+                WireMock.noContent().withStatus(204).withHeader("Content-Type", APPLICATION_JSON)));
 
-        BoxRetentionPolicyAssignment retetionAssignment =
-            new BoxRetentionPolicyAssignment(this.api, retentionAssignmentID);
+    BoxRetentionPolicyAssignment retetionAssignment =
+        new BoxRetentionPolicyAssignment(this.api, retentionAssignmentID);
 
-        retetionAssignment.delete();
-    }
+    retetionAssignment.delete();
+  }
 }
