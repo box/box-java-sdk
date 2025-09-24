@@ -14,82 +14,87 @@ import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 
-/**
- * {@link BoxDevicePin} related unit tests.
- */
+/** {@link BoxDevicePin} related unit tests. */
 public class BoxDevicePinTest {
 
-    @Rule
-    public WireMockRule wireMockRule = new WireMockRule(wireMockConfig().dynamicHttpsPort().httpDisabled(true));
-    private final BoxAPIConnection api = TestUtils.getAPIConnection();
+  @Rule
+  public WireMockRule wireMockRule =
+      new WireMockRule(wireMockConfig().dynamicHttpsPort().httpDisabled(true));
 
-    @Before
-    public void setUpBaseUrl() {
-        api.setMaxRetryAttempts(1);
-        api.setBaseURL(format("https://localhost:%d", wireMockRule.httpsPort()));
-    }
+  private final BoxAPIConnection api = TestUtils.getAPIConnection();
 
-    @Test
-    public void testDeleteDevicePinSendsCorrectRequest() {
-        final String devicePinID = "12345";
-        final String deleteDevicePinURL = "/2.0/device_pinners/" + devicePinID;
+  @Before
+  public void setUpBaseUrl() {
+    api.setMaxRetryAttempts(1);
+    api.setBaseURL(format("https://localhost:%d", wireMockRule.httpsPort()));
+  }
 
-        wireMockRule.stubFor(delete(WireMock.urlPathEqualTo(deleteDevicePinURL))
-            .willReturn(WireMock.aResponse()
-                .withHeader("Content-Type", APPLICATION_JSON)
-                .withStatus(204)));
+  @Test
+  public void testDeleteDevicePinSendsCorrectRequest() {
+    final String devicePinID = "12345";
+    final String deleteDevicePinURL = "/2.0/device_pinners/" + devicePinID;
 
-        BoxDevicePin devicePin = new BoxDevicePin(this.api, devicePinID);
-        devicePin.delete();
-    }
+    wireMockRule.stubFor(
+        delete(WireMock.urlPathEqualTo(deleteDevicePinURL))
+            .willReturn(
+                WireMock.aResponse().withHeader("Content-Type", APPLICATION_JSON).withStatus(204)));
 
-    @Test
-    public void testGetDevicePinInfoSucceeds() {
-        final String devicePinID = "12345";
-        final String devicePinURL = "/2.0/device_pinners/" + devicePinID;
-        final String ownedByUserName = "Test User";
-        final String ownedByUserLogin = "test@user.com";
-        final String productName = "iPhone";
+    BoxDevicePin devicePin = new BoxDevicePin(this.api, devicePinID);
+    devicePin.delete();
+  }
 
-        String result = TestUtils.getFixture("BoxDevicePin/GetDevicePinInfo200");
+  @Test
+  public void testGetDevicePinInfoSucceeds() {
+    final String devicePinID = "12345";
+    final String devicePinURL = "/2.0/device_pinners/" + devicePinID;
+    final String ownedByUserName = "Test User";
+    final String ownedByUserLogin = "test@user.com";
+    final String productName = "iPhone";
 
-        wireMockRule.stubFor(get(WireMock.urlPathEqualTo(devicePinURL))
-            .willReturn(WireMock.aResponse()
-                .withHeader("Content-Type", APPLICATION_JSON)
-                .withBody(result)));
+    String result = TestUtils.getFixture("BoxDevicePin/GetDevicePinInfo200");
 
-        BoxDevicePin devicePin = new BoxDevicePin(this.api, devicePinID);
-        BoxDevicePin.Info devicePinInfo = devicePin.getInfo();
+    wireMockRule.stubFor(
+        get(WireMock.urlPathEqualTo(devicePinURL))
+            .willReturn(
+                WireMock.aResponse()
+                    .withHeader("Content-Type", APPLICATION_JSON)
+                    .withBody(result)));
 
-        assertEquals(devicePinID, devicePinInfo.getID());
-        assertEquals(ownedByUserName, devicePinInfo.getOwnedBy().getName());
-        assertEquals(ownedByUserLogin, devicePinInfo.getOwnedBy().getLogin());
-        assertEquals(productName, devicePinInfo.getProductName());
-    }
+    BoxDevicePin devicePin = new BoxDevicePin(this.api, devicePinID);
+    BoxDevicePin.Info devicePinInfo = devicePin.getInfo();
 
-    @Test
-    public void testGetAllEnterpriseDevicePinsSucceeds() {
-        final String enterpriseID = "1111";
-        final String getAllDevicePinsURL = "/2.0/enterprises/" + enterpriseID + "/device_pinners";
-        final String firstDevicePinID = "12345";
-        final String firstDevicePinProductName = "iPad";
-        final String secondDevicePinOwnedByLogin = "example@user.com";
+    assertEquals(devicePinID, devicePinInfo.getID());
+    assertEquals(ownedByUserName, devicePinInfo.getOwnedBy().getName());
+    assertEquals(ownedByUserLogin, devicePinInfo.getOwnedBy().getLogin());
+    assertEquals(productName, devicePinInfo.getProductName());
+  }
 
-        String result = TestUtils.getFixture("BoxDevicePin/GetAllEnterpriseDevicePins200");
+  @Test
+  public void testGetAllEnterpriseDevicePinsSucceeds() {
+    final String enterpriseID = "1111";
+    final String getAllDevicePinsURL = "/2.0/enterprises/" + enterpriseID + "/device_pinners";
+    final String firstDevicePinID = "12345";
+    final String firstDevicePinProductName = "iPad";
+    final String secondDevicePinOwnedByLogin = "example@user.com";
 
-        wireMockRule.stubFor(get(WireMock.urlPathEqualTo(getAllDevicePinsURL))
-            .willReturn(WireMock.aResponse()
-                .withHeader("Content-Type", APPLICATION_JSON)
-                .withBody(result)));
+    String result = TestUtils.getFixture("BoxDevicePin/GetAllEnterpriseDevicePins200");
 
-        Iterator<BoxDevicePin.Info> iterator = BoxDevicePin.getEnterpriceDevicePins(this.api, enterpriseID).iterator();
-        BoxDevicePin.Info firstDevicePin = iterator.next();
+    wireMockRule.stubFor(
+        get(WireMock.urlPathEqualTo(getAllDevicePinsURL))
+            .willReturn(
+                WireMock.aResponse()
+                    .withHeader("Content-Type", APPLICATION_JSON)
+                    .withBody(result)));
 
-        assertEquals(firstDevicePinID, firstDevicePin.getID());
-        assertEquals(firstDevicePinProductName, firstDevicePin.getProductName());
+    Iterator<BoxDevicePin.Info> iterator =
+        BoxDevicePin.getEnterpriceDevicePins(this.api, enterpriseID).iterator();
+    BoxDevicePin.Info firstDevicePin = iterator.next();
 
-        BoxDevicePin.Info secondDevicePin = iterator.next();
+    assertEquals(firstDevicePinID, firstDevicePin.getID());
+    assertEquals(firstDevicePinProductName, firstDevicePin.getProductName());
 
-        assertEquals(secondDevicePinOwnedByLogin, secondDevicePin.getOwnedBy().getLogin());
-    }
+    BoxDevicePin.Info secondDevicePin = iterator.next();
+
+    assertEquals(secondDevicePinOwnedByLogin, secondDevicePin.getOwnedBy().getLogin());
+  }
 }

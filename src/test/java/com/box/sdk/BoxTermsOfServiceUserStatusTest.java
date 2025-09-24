@@ -14,38 +14,42 @@ import org.junit.Test;
 
 public class BoxTermsOfServiceUserStatusTest {
 
-    @Rule
-    public WireMockRule wireMockRule = new WireMockRule(wireMockConfig().dynamicHttpsPort().httpDisabled(true));
-    private final BoxAPIConnection api = TestUtils.getAPIConnection();
+  @Rule
+  public WireMockRule wireMockRule =
+      new WireMockRule(wireMockConfig().dynamicHttpsPort().httpDisabled(true));
 
-    @Before
-    public void setUpBaseUrl() {
-        api.setMaxRetryAttempts(1);
-        api.setBaseURL(format("https://localhost:%d", wireMockRule.httpsPort()));
-    }
+  private final BoxAPIConnection api = TestUtils.getAPIConnection();
 
-    @Test
-    public void testGetUserStatusInfoOnTermsOfServiceSucceeds() {
-        final String statusID = "5678";
-        final String tosID = "1234";
-        final String userID = "7777";
-        final String userLogin = "test@example.com";
-        final String statusURL = "/2.0/terms_of_service_user_statuses";
+  @Before
+  public void setUpBaseUrl() {
+    api.setMaxRetryAttempts(1);
+    api.setBaseURL(format("https://localhost:%d", wireMockRule.httpsPort()));
+  }
 
-        String result = TestUtils.getFixture("BoxTermsOfService/GetTermsOfServiceForUserStatuses200");
+  @Test
+  public void testGetUserStatusInfoOnTermsOfServiceSucceeds() {
+    final String statusID = "5678";
+    final String tosID = "1234";
+    final String userID = "7777";
+    final String userLogin = "test@example.com";
+    final String statusURL = "/2.0/terms_of_service_user_statuses";
 
-        wireMockRule.stubFor(WireMock.get(WireMock.urlPathEqualTo(statusURL))
+    String result = TestUtils.getFixture("BoxTermsOfService/GetTermsOfServiceForUserStatuses200");
+
+    wireMockRule.stubFor(
+        WireMock.get(WireMock.urlPathEqualTo(statusURL))
             .withQueryParam("tos_id", WireMock.containing(tosID))
-            .willReturn(WireMock.aResponse()
-                .withHeader("Content-Type", APPLICATION_JSON)
-                .withBody(result)));
+            .willReturn(
+                WireMock.aResponse()
+                    .withHeader("Content-Type", APPLICATION_JSON)
+                    .withBody(result)));
 
-        List<BoxTermsOfServiceUserStatus.Info> tosUserStatusInfo =
-            BoxTermsOfServiceUserStatus.getInfo(this.api, tosID, userID);
+    List<BoxTermsOfServiceUserStatus.Info> tosUserStatusInfo =
+        BoxTermsOfServiceUserStatus.getInfo(this.api, tosID, userID);
 
-        Assert.assertEquals(statusID, tosUserStatusInfo.get(0).getID());
-        Assert.assertEquals(tosID, tosUserStatusInfo.get(0).getTermsOfService().getID());
-        Assert.assertEquals(userID, tosUserStatusInfo.get(0).getUser().getID());
-        Assert.assertEquals(userLogin, tosUserStatusInfo.get(0).getUser().getLogin());
-    }
+    Assert.assertEquals(statusID, tosUserStatusInfo.get(0).getID());
+    Assert.assertEquals(tosID, tosUserStatusInfo.get(0).getTermsOfService().getID());
+    Assert.assertEquals(userID, tosUserStatusInfo.get(0).getUser().getID());
+    Assert.assertEquals(userLogin, tosUserStatusInfo.get(0).getUser().getLogin());
+  }
 }
