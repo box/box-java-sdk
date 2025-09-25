@@ -31,7 +31,7 @@ We use a modified version of [Semantic Versioning](https://semver.org/) for all 
 
 ### Supported Version
 
-Only the current MAJOR version of SDK is supported. New features, functionality, bug fixes, and security updates will only be added to the current MAJOR version.
+Currently, we support the v10 version and v4 version of the SDK. New features, functionality, bug fixes, and security updates will only be added to these versions.
 
 A current release is on the leading edge of our SDK development, and is intended for customers who are in active development and want the latest and greatest features.  Instead of stating a release date for a new feature, we set a fixed minor or patch release cadence of maximum 2-3 months (while we may release more often). At the same time, there is no schedule for major or breaking release. Instead, we will communicate one quarter in advance the upcoming breaking change to allow customers to plan for the upgrade. We always recommend that all users run the latest available minor release for whatever major version is in use. We highly recommend upgrading to the latest SDK major release at the earliest convenient time and before the EOL date.
 
@@ -39,6 +39,8 @@ A current release is on the leading edge of our SDK development, and is intended
 
 | Version | Supported Environments                                  | State     | First Release | EOL/Terminated |
 |---------|---------------------------------------------------------|-----------|---------------|----------------|
+| 10      | Java 8 and up                                           | Supported | 17 Sep 2025   | TBD            |
+| 5       | Java 8 and up                                           | Supported | Q4 2025       | TBD            |
 | 4       | Java 8 and up                                           | Supported | 17 Jan 2023   | TBD            |
 | 3       | Java 8 and up                                           | EOL       | 17 Jan 2022   | 17 Jan 2023    |
 | 2       |                                                         | EOL       | 07 Jan 2016   | 17 Jan 2022    |
