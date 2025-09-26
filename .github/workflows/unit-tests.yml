@@ -29,4 +29,4 @@ jobs:
       - name: Upload coverage to Coveralls
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: ./gradlew jacocoTestReport overallsJacoco --stacktrace
+        run: ./gradlew coverallsJacoco --stacktrace
