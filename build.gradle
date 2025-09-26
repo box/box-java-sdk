@@ -263,7 +263,7 @@ publishing {
             pom {
                 artifactId = project.getArchivesBaseName()
                 name = "Box Java SDK"
-                description = "The Box SDK for Java."
+                description = "Official Box Java SDK."
                 url = "https://opensource.box.com/box-java-sdk/"
                 packaging = "jar"
                 licenses {
@@ -275,7 +275,7 @@ publishing {
                 developers {
                     developer {
                         id = "box"
-                        name = "Box"
+                        name = "box"
                         email = "sdks@box.com"
                     }
                 }
@@ -299,12 +299,12 @@ signing {
     required { !version.endsWith("SNAPSHOT") && gradle.taskGraph.hasTask("publish") }
     // we are switching to gpg-agent and not using Java-based implementation because of
     // org.bouncycastle:bc-fips:1.0.2.1 libray preset in our Docker machines which is
-    // not comaptible with Gradle implementation
+    // not compatible with Gradle implementation
     useGpgCmd()
     sign publishing.publications.boxJavaSdk
 }
 
-def centralUsername =  project.findProperty("centralUsername")
+def centralUsername = project.findProperty("centralUsername")
 def centralPassword = project.findProperty("centralPassword")
 jreleaser {
     signing {
@@ -314,9 +314,9 @@ jreleaser {
         maven {
             mavenCentral {
                 sonatype {
+                    active = "ALWAYS"
+                    url = "https://central.sonatype.com/api/v1/publisher"
                     sign = false
-                    active = 'RELEASE'
-                    url = 'https://central.sonatype.com/api/v1/publisher'
                     stagingRepository('build/staging-deploy')
                     username = centralUsername
                     password = centralPassword
