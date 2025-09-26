@@ -344,4 +344,7 @@ jacocoTestReport {
     }
 }
 
-coverallsJacoco.dependsOn jacocoTestReport
+coverallsJacoco {
+    sourceDirs = files("src/main/java")
+    jacocoReportPath = file("${buildDir}/reports/jacoco/test/jacocoTestReport.xml")
+}
