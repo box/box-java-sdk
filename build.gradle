@@ -201,18 +201,6 @@ tasks.register('integrationTestsAll') {
     group = "Verification"
 }
 
-jacoco {
-    toolVersion = "0.8.10"
-    reportsDirectory = file("$buildDir/reports/jacoco")
-}
-
-jacocoTestReport {
-    reports {
-        xml.required = true // coveralls plugin depends on xml format report
-        html.required = true
-    }
-}
-
 tasks.withType(JavaCompile) {
     options.compilerArgs << "-Xlint:all"
 
@@ -340,5 +328,18 @@ idea {
     module {
         sourceDirs -= file("src/intTest/java")
         testSourceDirs += file("src/intTest/java")
+    }
+}
+
+jacoco {
+    toolVersion = "0.8.10"
+    reportsDirectory = file("$buildDir/reports/jacoco")
+}
+
+jacocoTestReport {
+    dependsOn test
+    reports {
+        xml.required = true // coveralls plugin depends on xml format report
+        html.required = true
     }
 }
