@@ -24,9 +24,7 @@ jobs:
           cache: 'gradle'
       - name: Build and test
         run: ./gradlew check --stacktrace
-      - name: Generate JaCoCo report
-        run: ./gradlew jacocoTestReport --stacktrace
-      - name: Upload coverage to Coveralls
+      - name: Coverage
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: ./gradlew coverallsJacoco --stacktrace
+        run: ./gradlew cjacocoTestReport overallsJacoco --stacktrace
