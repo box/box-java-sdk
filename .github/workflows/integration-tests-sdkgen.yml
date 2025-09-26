@@ -1,4 +1,4 @@
-name: build
+name: Integration tests sdkgen
 on:
   pull_request:
     branches:

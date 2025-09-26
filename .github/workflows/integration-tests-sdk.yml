@@ -1,13 +1,8 @@
-name: Integration tests
-
+name: Integration tests sdk
 on:
-  push:
-    branches:
-      - combined-sdk
   pull_request:
     branches:
       - combined-sdk
-
 jobs:
   core:
     runs-on: ubuntu-latest
