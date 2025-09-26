@@ -193,6 +193,18 @@ tasks.register('smokeTestGen', Test) {
     }
 }
 
+tasks.withType(Test) {
+    testLogging {
+        exceptionFormat = "full"
+    }
+
+    jacoco {
+        destinationFile = file("$buildDir/jacoco/test.exec")
+    }
+
+    outputs.upToDateWhen { false }
+}
+
 
 // Combined task to run both sets
 tasks.register('integrationTestsAll') {
@@ -212,16 +224,7 @@ tasks.withType(JavaCompile) {
 }
 
 test {
-    useJUnitPlatform()
-    testLogging {
-        exceptionFormat = "full"
-    }
-
-    jacoco {
-        destinationFile = file("$buildDir/jacoco/test.exec")
-    }
-
-    outputs.upToDateWhen { false }
+    useJUnit()
 }
 
 
