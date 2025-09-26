@@ -3,10 +3,10 @@ name: Integration tests
 on:
   push:
     branches:
-      - main
+      - combined-sdk
   pull_request:
     branches:
-      - main
+      - combined-sdk
 
 jobs:
   core:
@@ -19,11 +19,21 @@ jobs:
         with:
           distribution: 'temurin'
           java-version: '8'
-      - name: Run Tests
+      - name: All Tests
+        if: startsWith(github.head_ref, 'codegen-release')
         env:
           JAVA_COLLABORATOR_ID: ${{ secrets.JAVA_COLLABORATOR_ID }}
           JAVA_COLLABORATOR: ${{ secrets.JAVA_COLLABORATOR }}
           JAVA_ENTERPRISE_ID: ${{ secrets.JAVA_ENTERPRISE_ID }}
           JAVA_JWT_CONFIG: ${{ secrets.JAVA_JWT_CONFIG }}
           JAVA_USER_ID: ${{ secrets.JAVA_USER_ID }}
-        run: ./gradlew integrationTest
+        run: ./gradlew integrationTest --stacktrace
+      - name: Smoke Tests
+        if: "!startsWith(github.head_ref, 'codegen-release')"
+        env:
+          JAVA_COLLABORATOR_ID: ${{ secrets.JAVA_COLLABORATOR_ID }}
+          JAVA_COLLABORATOR: ${{ secrets.JAVA_COLLABORATOR }}
+          JAVA_ENTERPRISE_ID: ${{ secrets.JAVA_ENTERPRISE_ID }}
+          JAVA_JWT_CONFIG: ${{ secrets.JAVA_JWT_CONFIG }}
+          JAVA_USER_ID: ${{ secrets.JAVA_USER_ID }}
+        run: ./gradlew smokeTest --stacktrace

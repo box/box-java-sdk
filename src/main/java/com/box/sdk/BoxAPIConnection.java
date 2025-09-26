@@ -1272,7 +1272,7 @@ public class BoxAPIConnection {
   /**
    * Used to override default SSL certification handling. For example, you can provide your own
    * trust manager or hostname verifier to allow self-signed certificates. You can check examples <a
-   * href="https://github.com/box/box-java-sdk/blob/main/doc/configuration.md#ssl-configuration">here</a>.
+   * href="https://github.com/box/box-java-sdk/blob/combined-sdk/docs/sdk/configuration.md#ssl-configuration">here</a>.
    *
    * @param trustManager TrustManager that verifies certificates are valid.
    * @param hostnameVerifier HostnameVerifier that allows you to specify what hostnames are allowed.

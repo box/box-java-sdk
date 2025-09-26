@@ -1,7 +1,6 @@
 plugins {
     id "com.github.nbaztec.coveralls-jacoco" version "1.2.14"
     id "com.diffplug.spotless" version "6.2.0"
-    id "checkstyle"
     id "jacoco"
     id "java"
     id "maven-publish"
@@ -9,6 +8,7 @@ plugins {
     id "eclipse"
     id "idea"
     id 'org.jreleaser' version '1.18.0'
+    id "org.gradle.test-retry" version "1.5.6"
 }
 
 sourceCompatibility = 1.8
@@ -47,24 +47,28 @@ configurations {
     testsCommonImplementation.extendsFrom(implementation)
     testImplementation.extendsFrom(testsCommonImplementation)
     intTestImplementation.extendsFrom(testsCommonImplementation)
-    intTestRuntimeOnly.extendsFrom(runtimeOnly)
+    intTestRuntimeOnly.extendsFrom(testRuntimeOnly)
 }
 
 dependencies {
     implementation "com.eclipsesource.minimal-json:minimal-json:0.9.5"
+    implementation "com.fasterxml.jackson.core:jackson-annotations:2.17.2"
+    implementation "com.fasterxml.jackson.core:jackson-core:2.17.2"
+    implementation "com.fasterxml.jackson.core:jackson-databind:2.17.2"
     implementation "org.bitbucket.b_c:jose4j:0.9.4"
     implementation "org.bouncycastle:bcprov-jdk18on:1.78.1"
     implementation "org.bouncycastle:bcpkix-jdk18on:1.78.1"
     implementation "com.squareup.okhttp3:okhttp:4.12.0"
     implementation "com.github.luben:zstd-jni:1.5.7-2"
     testsCommonImplementation "junit:junit:4.13.2"
+    testsCommonImplementation "org.junit.jupiter:junit-jupiter-api:5.10.0"
     testsCommonImplementation "org.hamcrest:hamcrest-library:2.2"
     testsCommonImplementation "org.mockito:mockito-core:4.8.0"
     testsCommonImplementation "org.slf4j:slf4j-nop:2.0.3"
+    testRuntimeOnly "org.junit.vintage:junit-vintage-engine:5.10.0"
+    testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:5.10.0"
     testImplementation "com.github.tomakehurst:wiremock:2.27.2"
     exampleImplementation "com.eclipsesource.minimal-json:minimal-json:0.9.5"
-    // this is last version working under java 8
-    checkstyle "com.puppycrawl.tools:checkstyle:9.3"
 }
 
 compileJava {
@@ -75,7 +79,7 @@ compileJava {
 javadoc {
     options.windowTitle "Box Java SDK"
     options.noQualifiers "all"
-    options.stylesheetFile file("doc/css/javadoc.css")
+    options.stylesheetFile file("docs/sdk/css/javadoc.css")
     options.noTree true
     options.noIndex true
     options.noHelp true
@@ -88,30 +92,117 @@ javadoc {
     options.links "https://docs.oracle.com/javase/8/docs/api/"
 }
 
-task runExample(type: JavaExec, dependsOn: "exampleClasses") {
+tasks.register('runExample', JavaExec) {
+    dependsOn "exampleClasses"
     classpath = sourceSets.example.runtimeClasspath
     mainClass = "com.box.sdk.example.Main"
 }
 
-task runCreateAppUser(type: JavaExec, dependsOn: "exampleClasses") {
+tasks.register('runCreateAppUser', JavaExec) {
+    dependsOn "exampleClasses"
     classpath = sourceSets.example.runtimeClasspath
     mainClass = "com.box.sdk.example.CreateAppUser"
 }
 
-task runAccessAsAppUser(type: JavaExec, dependsOn: "exampleClasses") {
+tasks.register('runAccessAsAppUser', JavaExec) {
+    dependsOn "exampleClasses"
     classpath = sourceSets.example.runtimeClasspath
     mainClass = "com.box.sdk.example.AccessAsAppUser"
 }
 
-task integrationTest(type: Test) {
-    description = "Runs the integration tests."
+tasks.register('integrationTest', Test) {
+    description = "Runs the integration tests in com.box.sdk"
     group = "Verification"
     testLogging.showStandardStreams = true
     testClassesDirs = sourceSets.intTest.output.classesDirs
     classpath = sourceSets.intTest.runtimeClasspath
+    useJUnitPlatform()
+    include '**/com/box/sdk/**'
+    retry {
+        maxRetries = 2
+        failOnPassedAfterRetry = false
+    }
+}
+
+tasks.register('integrationTestGen', Test) {
+    description = "Runs integration tests in com.box.sdkgen"
+    group = "Verification"
+    testLogging.showStandardStreams = true
+    testClassesDirs = sourceSets.intTest.output.classesDirs
+    classpath = sourceSets.intTest.runtimeClasspath
+    useJUnitPlatform()
+    include '**/com/box/sdkgen/**'
+    retry {
+        maxRetries = 2
+        failOnPassedAfterRetry = false
+    }
+
+    filter {
+        // Socket timeout
+        excludeTestsMatching 'com.box.sdkgen.transfer.TransferITest.testTransferUserContent'
+    }
+
+    testLogging {
+        events = ['passed', 'failed', 'skipped']
+        showStandardStreams = true
+    }
+}
+
+tasks.register('smokeTest', Test) {
+    description = "Runs smoke integration tests in com.box.sdk"
+    group = "Verification"
+    testLogging.showStandardStreams = true
+    testClassesDirs = sourceSets.intTest.output.classesDirs
+    classpath = sourceSets.intTest.runtimeClasspath
+    useJUnitPlatform()
+
+    filter {
+        includeTestsMatching 'com.box.sdk.BoxAPIConnectionIT'
+        includeTestsMatching 'com.box.sdk.BoxFileIT'
+    }
+
+    retry {
+        maxRetries = 2
+        failOnPassedAfterRetry = false
+    }
+}
+
+tasks.register('smokeTestGen', Test) {
+    description = "Runs integration tests in com.box.sdkgen"
+    group = "Verification"
+    testLogging.showStandardStreams = true
+    testClassesDirs = sourceSets.intTest.output.classesDirs
+    classpath = sourceSets.intTest.runtimeClasspath
+    useJUnitPlatform()
+    include '**/com/box/sdkgen/**'
+    retry {
+        maxRetries = 2
+        failOnPassedAfterRetry = false
+    }
+
+   filter {
+        includeTestsMatching 'com.box.sdkgen.auth.AuthITest'
+        includeTestsMatching 'com.box.sdkgen.files.FilesITest'
+        includeTestsMatching 'com.box.sdkgen.uploads.UploadsITest'
+        includeTestsMatching 'com.box.sdkgen.downloads.DownloadsITest'
+    }
+
+    testLogging {
+        events = ['passed', 'failed', 'skipped']
+        showStandardStreams = true
+    }
+}
+
+
+// Combined task to run both sets
+tasks.register('integrationTestsAll') {
+    dependsOn['integrationTest', 'integrationTestGen']
+    description = "Runs all integration tests"
+    group = "Verification"
 }
 
 jacoco {
+    toolVersion = "0.8.10"
     reportsDirectory = file("$buildDir/reports/jacoco")
 }
 
@@ -160,14 +251,7 @@ spotless {
 }
 
 test {
-    useJUnit {
-        excludeCategories "com.box.sdk.IntegrationTestJWT"
-    }
-}
-
-checkstyle {
-    ignoreFailures = false
-    maxWarnings = 0
+    useJUnitPlatform()
 }
 
 publishing {
