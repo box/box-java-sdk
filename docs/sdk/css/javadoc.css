@@ -1,0 +1,488 @@
+body {
+    color: #333;
+    font-family: 'Helvetica Neue', Calibri, sans-serif;
+    margin: 0;
+}
+hr {
+    display: none;
+}
+caption {
+    display: none;
+}
+a:link,
+a:visited {
+    text-decoration: none;
+    color: rgb(26, 116, 186);
+}
+a:hover,
+a:focus {
+    text-decoration: none;
+    color: rgb(22, 100, 160);
+}
+a:active {
+    text-decoration: none;
+    color: #4c6b87;
+}
+a[name] {
+    color: #353833;
+}
+a[name]:hover {
+    text-decoration: none;
+    color: #353833;
+}
+pre {
+    font-family: Menlo, Consolas, monospace;
+    font-size: 1em;
+}
+code {
+    font-family: Menlo, Consolas, monospace;
+    font-size: 1em;
+}
+h1 {
+    font-size: 2em;
+}
+h2 {
+    font-size: 1.7em;
+}
+h3 {
+    font-size: 1.5em;
+}
+h4 {
+    font-size: 1.2em;
+}
+h5 {
+    font-size: 1.1em;
+}
+h6 {
+    font-size: 1.1em;
+}
+ul {
+    list-style-type: disc;
+}
+table tr td dt code {
+    vertical-align: top;
+}
+sup {
+    font-size: .6em;
+}
+h3 a:link,
+h3 a:visited {
+    text-decoration: none;
+    color: rgb(153, 153, 153);
+}
+h3 a:hover,
+h3 a:focus {
+    text-decoration: none;
+    color: rgb(169, 169, 169);
+}
+tbody:first-of-type tr:nth-child(odd) {
+    background: #f3f3f3
+}
+tbody:nth-of-type(2) tr:nth-child(even) {
+    background: #f3f3f3
+}
+tbody:first-of-type tr:first-child {
+    font-size: 1.2em
+}
+.constantValuesContainer h2 {
+    margin: 0 0 0 .5882em;
+}
+.details {
+    margin: 1em;
+}
+.clear {
+    clear: both;
+    height: 0px;
+    overflow: hidden;
+}
+.aboutLanguage {
+    float: right;
+    padding: 0px 21px;
+    font-size: .8em;
+    z-index: 200;
+    margin-top: -7px;
+}
+.legalCopy {
+    margin-left: .5em;
+}
+.bar a,
+.bar a:link,
+.bar a:visited,
+.bar a:active {
+    color: #FFFFFF;
+    text-decoration: none;
+}
+.bar a:hover,
+.bar a:focus {
+    color: #bb7a2a;
+}
+.tab {
+    background-color: #0066FF;
+    background-image: url(resources/titlebar.gif);
+    background-position: left top;
+    background-repeat: no-repeat;
+    color: #ffffff;
+    padding: 8px;
+    width: 5em;
+    font-weight: bold;
+}
+.bar {
+    display: none;
+}
+ul.navList,
+ul.subNavList {
+    float: left;
+    margin: 0 25px 0 0;
+    padding: 0;
+}
+ul.navList li {
+    list-style: none;
+    float: left;
+    padding: 3px 6px;
+}
+ul.subNavList li {
+    list-style: none;
+    float: left;
+    font-size: 90%;
+}
+.topNav a:link,
+.topNav a:active,
+.topNav a:visited,
+.bottomNav a:link,
+.bottomNav a:active,
+.bottomNav a:visited {
+    color: rgb(153, 153, 153);
+    text-decoration: none;
+}
+.topNav a:hover,
+.bottomNav a:hover {
+    text-decoration: none;
+    color: #fff;
+}
+.navBarCell1Rev {
+    font-weight: bold;
+}
+.header,
+.footer {
+    clear: both;
+    margin: 1em;
+}
+.indexHeader {
+    margin: 10px;
+    position: relative;
+}
+.indexHeader h1 {
+    font-size: 1.3em;
+}
+.subTitle {
+    display: none;
+}
+.header ul {
+    margin: 0 0 25px 0;
+    padding: 0;
+}
+.footer ul {
+    margin: 20px 0 5px 0;
+}
+.header ul li,
+.footer ul li {
+    list-style: none;
+    font-size: 1.2em;
+}
+.header .docSummary ~ p {
+    display: none;
+}
+ul.blockList ul.blockList ul.blockList li.blockList h3 {
+    background-color: rgb(64, 64, 64);
+    color: #fff;
+    font-size: 1.2em;
+    padding: .5em 1em .5em 1em;
+}
+ul.blockList ul.blockList li.blockList h3 {
+    display: none;
+}
+ul.blockList li.blockList h2 {
+    padding: 0px 0 20px 0;
+}
+div.summary ul.blockList li.blockList ul.blockList li.blockList ul.blockList code {
+    display: block;
+    margin: 1em;
+}
+div.summary ul.blockList li.blockList ul.blockList li.blockList ul.blockList li.blockList h3 {
+    display: block;
+}
+.contentContainer,
+.sourceContainer,
+.classUseContainer,
+.serializedFormContainer,
+.constantValuesContainer {
+    clear: both;
+    position: relative;
+}
+.indexContainer {
+    margin: 10px;
+    position: relative;
+    font-size: 1.0em;
+}
+.indexContainer h2 {
+    font-size: 1.1em;
+    padding: 0 0 3px 0;
+}
+.indexContainer ul {
+    margin: 0;
+    padding: 0;
+}
+.indexContainer ul li {
+    list-style: none;
+}
+.contentContainer .description dl dt,
+.contentContainer .details dl dt,
+.serializedFormContainer dl dt {
+    font-size: 1.1em;
+    font-weight: bold;
+    margin: 10px 0 0 0;
+    color: #4E4E4E;
+}
+.contentContainer .description dl dd,
+.contentContainer .details dl dd,
+.serializedFormContainer dl dd {
+    margin: 10px 0 10px 20px;
+}
+.serializedFormContainer dl.nameValue dt {
+    margin-left: 1px;
+    font-size: 1.1em;
+    display: inline;
+    font-weight: bold;
+}
+.serializedFormContainer dl.nameValue dd {
+    margin: 0 0 0 1px;
+    font-size: 1.1em;
+    display: inline;
+}
+ul.horizontal li {
+    display: inline;
+    font-size: 0.9em;
+}
+ul.inheritance {
+    margin-left: 1em;
+    padding: 0;
+}
+ul.inheritance li {
+    display: inline;
+    list-style: none;
+}
+ul.inheritance li ul.inheritance {
+    margin-left: 15px;
+    padding-left: 15px;
+    padding-top: 1px;
+}
+ul.blockList,
+ul.blockListLast {
+    margin: 1em 0 1em 0;
+    padding: 0;
+}
+ul.blockList h4,
+ul.blockListLast h4 {
+    background-color: rgb(64, 64, 64);
+    color: #fff;
+    margin: 0 -.8333em 0 -.8333em;
+    padding: .5em 1em .5em 1em;
+}
+ul.blockList li.blockList,
+ul.blockListLast li.blockList {
+    list-style: none;
+    margin-bottom: 25px;
+}
+ul.blockList ul.blockList ul.blockList ul.blockList li.blockList {
+    margin-left: 0;
+    padding-left: 0;
+    padding-bottom: 15px;
+    border: none;
+    border-bottom: 1px solid #9eadc0;
+}
+ul.blockList ul.blockList ul.blockList ul.blockList li.blockListLast {
+    list-style: none;
+    border-bottom: none;
+    padding-bottom: 0;
+}
+table tr td dl,
+table tr td dl dt,
+table tr td dl dd {
+    margin-top: 0;
+    margin-bottom: 1px;
+}
+.contentContainer table,
+.classUseContainer table,
+.constantValuesContainer table {
+    width: 100%;
+}
+.contentContainer ul li table,
+.classUseContainer ul li table,
+.constantValuesContainer ul li table {
+    width: 100%;
+}
+.contentContainer .description table,
+.contentContainer .details table {
+    border-bottom: none;
+}
+.contentContainer ul li table th.colOne,
+.contentContainer ul li table th.colFirst,
+.contentContainer ul li table th.colLast,
+.classUseContainer ul li table th,
+.constantValuesContainer ul li table th,
+.contentContainer ul li table td.colOne,
+.contentContainer ul li table td.colFirst,
+.contentContainer ul li table td.colLast,
+.classUseContainer ul li table td,
+.constantValuesContainer ul li table td {
+    vertical-align: top;
+}
+a[name="package_description"] ~ * {
+    display: none;
+}
+.overviewSummary caption,
+.packageSummary caption,
+.contentContainer ul.blockList li.blockList caption,
+.summary caption,
+.classUseContainer caption,
+.constantValuesContainer caption {
+    position: relative;
+    text-align: left;
+    background-repeat: no-repeat;
+    color: #FFFFFF;
+    font-weight: bold;
+    clear: none;
+    overflow: hidden;
+    padding: 0px;
+    margin: 0px;
+}
+caption a:link,
+caption a:hover,
+caption a:active,
+caption a:visited {
+    color: #FFFFFF;
+}
+.overviewSummary caption span,
+.packageSummary caption span,
+.contentContainer ul.blockList li.blockList caption span,
+.summary caption span,
+.classUseContainer caption span,
+.constantValuesContainer caption span {
+    white-space: nowrap;
+    padding-top: 8px;
+    padding-left: 8px;
+    display: block;
+    float: left;
+    background-image: url(resources/titlebar.gif);
+    height: 18px;
+}
+.overviewSummary .tabEnd,
+.packageSummary .tabEnd,
+.contentContainer ul.blockList li.blockList .tabEnd,
+.summary .tabEnd,
+.classUseContainer .tabEnd,
+.constantValuesContainer .tabEnd {
+    width: 10px;
+    background-image: url(resources/titlebar_end.gif);
+    background-repeat: no-repeat;
+    background-position: top right;
+    position: relative;
+    float: left;
+}
+ul.blockList ul.blockList li.blockList table {
+    width: 100%;
+}
+.tableSubHeadingColor {
+    background-color: #EEEEFF;
+}
+.rowColor {
+    background-color: #ffffff;
+}
+.overviewSummary td,
+.packageSummary td,
+.contentContainer ul.blockList li.blockList td,
+.summary td,
+.classUseContainer td,
+.constantValuesContainer td {
+    text-align: left;
+    padding: .5em 1em .5em 1em;
+}
+th.colFirst,
+th.colLast,
+th.colOne,
+.constantValuesContainer th {
+    background: rgb(64, 64, 64);
+    color: #fff;
+    text-align: left;
+    padding: .5em 1em .5em 1em;
+}
+td.colOne a:link,
+td.colOne a:active,
+td.colOne a:visited,
+td.colOne a:hover,
+td.colFirst a:link,
+td.colFirst a:active,
+td.colFirst a:visited,
+td.colFirst a:hover,
+td.colLast a:link,
+td.colLast a:active,
+td.colLast a:visited,
+td.colLast a:hover,
+.constantValuesContainer td a:link,
+.constantValuesContainer td a:active,
+.constantValuesContainer td a:visited,
+.constantValuesContainer td a:hover {
+    font-weight: bold;
+}
+td.colFirst,
+th.colFirst {
+    white-space: nowrap;
+}
+table.overviewSummary {
+    padding: 0px;
+    margin-left: 0px;
+}
+table.overviewSummary td.colFirst,
+table.overviewSummary th.colFirst,
+table.overviewSummary td.colOne,
+table.overviewSummary th.colOne {
+    width: 25%;
+    vertical-align: middle;
+}
+table.packageSummary td.colFirst,
+table.overviewSummary th.colFirst {
+    width: 25%;
+    vertical-align: middle;
+}
+div.description {
+    margin: 1em;
+}
+.description pre {
+    margin-top: 0;
+}
+.description .block {
+    margin: 2em 0 2em 0;
+}
+.deprecatedContent {
+    margin: 0;
+    padding: 10px 0;
+}
+.docSummary {
+    padding: 0;
+}
+.sourceLineNo {
+    color: green;
+    padding: 0 30px 0 0;
+}
+h1.hidden {
+    visibility: hidden;
+    overflow: hidden;
+    font-size: .9em;
+}
+.block {
+    display: block;
+    margin: 3px 0 0 0;
+}
+.strong {
+    font-weight: bold;
+}
