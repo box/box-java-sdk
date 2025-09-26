@@ -211,7 +211,8 @@ tasks.withType(JavaCompile) {
     }
 }
 
-tasks.withType(Test) {
+test {
+    useJUnitPlatform()
     testLogging {
         exceptionFormat = "full"
     }
@@ -223,19 +224,9 @@ tasks.withType(Test) {
     outputs.upToDateWhen { false }
 }
 
+
 tasks.withType(GenerateModuleMetadata) {
     enabled = false
-}
-
-jacoco {
-    reportsDirectory = file("$buildDir/reports/jacoco")
-}
-
-jacocoTestReport {
-    reports {
-        xml.required = true // coveralls plugin depends on xml format report
-        html.required = true
-    }
 }
 
 artifacts {
@@ -247,10 +238,6 @@ spotless {
         googleJavaFormat "1.7"
         target "src/**/*.java"
     }
-}
-
-test {
-    useJUnitPlatform()
 }
 
 publishing {
@@ -342,9 +329,4 @@ jacocoTestReport {
         xml.required = true // coveralls plugin depends on xml format report
         html.required = true
     }
-}
-
-coverallsJacoco {
-    sourceDirs = files("src/main/java")
-    jacocoReportPath = file("${buildDir}/reports/jacoco/test/jacocoTestReport.xml")
 }
