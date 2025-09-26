@@ -111,17 +111,6 @@ task integrationTest(type: Test) {
     classpath = sourceSets.intTest.runtimeClasspath
 }
 
-jacoco {
-    reportsDirectory = file("$buildDir/reports/jacoco")
-}
-
-jacocoTestReport {
-    reports {
-        xml.required = true // coveralls plugin depends on xml format report
-        html.required = true
-    }
-}
-
 tasks.withType(JavaCompile) {
     options.compilerArgs << "-Xlint:all"
 
@@ -146,6 +135,17 @@ tasks.withType(Test) {
 
 tasks.withType(GenerateModuleMetadata) {
     enabled = false
+}
+
+jacoco {
+    reportsDirectory = file("$buildDir/reports/jacoco")
+}
+
+jacocoTestReport {
+    reports {
+        xml.required = true // coveralls plugin depends on xml format report
+        html.required = true
+    }
 }
 
 artifacts {
