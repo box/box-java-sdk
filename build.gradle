@@ -322,7 +322,6 @@ idea {
 }
 
 jacoco {
-    toolVersion = "0.8.10"
     reportsDirectory = file("$buildDir/reports/jacoco")
 }
 
