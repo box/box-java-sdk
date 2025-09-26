@@ -343,3 +343,7 @@ jacocoTestReport {
         html.required = true
     }
 }
+
+coverallsJacoco {
+    dependsOn jacocoTestReport
+}
