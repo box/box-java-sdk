@@ -239,6 +239,17 @@ tasks.withType(GenerateModuleMetadata) {
     enabled = false
 }
 
+jacoco {
+    reportsDirectory = file("$buildDir/reports/jacoco")
+}
+
+jacocoTestReport {
+    reports {
+        xml.required = true // coveralls plugin depends on xml format report
+        html.required = true
+    }
+}
+
 artifacts {
     archives sourcesJar, javadocJar
 }
