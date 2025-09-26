@@ -23,8 +23,10 @@ jobs:
           java-version: ${{ matrix.java }}
           cache: 'gradle'
       - name: Build and test
-        run: ./gradlew clean test --stacktrace
-      - name: Coverage
+        run: ./gradlew check --stacktrace
+      - name: Generate JaCoCo report
+        run: ./gradlew jacocoTestReport --stacktrace
+      - name: Upload coverage to Coveralls
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: ./gradlew jacocoTestReport coverallsJacoco --stacktrace
+        run: ./gradlew coverallsJacoco --stacktrace
