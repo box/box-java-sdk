@@ -344,6 +344,4 @@ jacocoTestReport {
     }
 }
 
-coverallsJacoco {
-    dependsOn jacocoTestReport
-}
+coverallsJacoco.dependsOn jacocoTestReport
