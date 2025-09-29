@@ -1,10 +1,10 @@
-name: build-main
+name: Unit tests and Coverage
 on:
   pull_request:
     types: [ opened, synchronize ]
   push:
     branches:
-      - main
+      - combined-sdk
 jobs:
   build-and-test:
     runs-on: ubuntu-latest
@@ -24,7 +24,9 @@ jobs:
           cache: 'gradle'
       - name: Build and test
         run: ./gradlew check --stacktrace
-      - name: Coverage
+      - name: Generate JaCoCo report
+        run: ./gradlew jacocoTestReport --stacktrace
+      - name: Upload coverage to Coveralls
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: ./gradlew jacocoTestReport coverallsJacoco
+        run: ./gradlew coverallsJacoco --stacktrace

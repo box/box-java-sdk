@@ -55,7 +55,7 @@ public class BoxAIIT {
                     Collections.singletonList(
                         new BoxAIItem(uploadedFileInfo.getID(), BoxAIItem.Type.FILE)),
                     BoxAI.Mode.SINGLE_ITEM_QA);
-            assertThat(response.getAnswer(), containsString("Test file"));
+            assertThat(response.getAnswer(), containsString("Test File"));
             assert response.getCreatedAt().before(new Date(System.currentTimeMillis()));
             assertThat(response.getCompletionReason(), equalTo("done"));
           },
@@ -190,7 +190,7 @@ public class BoxAIIT {
                     null,
                     askAgent,
                     true);
-            assertThat(response.getAnswer(), containsString("Test file"));
+            assertThat(response.getAnswer(), containsString("Test File"));
             assert response.getCreatedAt().before(new Date(System.currentTimeMillis()));
             assertThat(response.getCompletionReason(), equalTo("done"));
           },

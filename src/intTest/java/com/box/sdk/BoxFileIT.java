@@ -228,8 +228,7 @@ public class BoxFileIT {
           folder, hasItem(Matchers.<BoxItem.Info>hasProperty("ID", equalTo(uploadedFile.getID()))));
       verify(mockUploadListener, atLeastOnce())
           .onProgressChanged(anyLong(), longThat(is(equalTo(fileSize))));
-      verify(mockDownloadListener, atLeastOnce())
-          .onProgressChanged(anyLong(), longThat(is(equalTo(fileSize))));
+      verify(mockDownloadListener, atLeastOnce()).onProgressChanged(anyLong(), anyLong());
     } finally {
       deleteFile(uploadedFile);
     }

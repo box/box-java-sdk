@@ -75,7 +75,7 @@ public class BoxClassificationTemplateIT {
             api, Metadata.ENTERPRISE_METADATA_SCOPE, Metadata.CLASSIFICATION_TEMPLATE_KEY, updates);
     MetadataTemplate.Option updatedOption =
         updatedTemplate.getFields().get(0).getOptionsObjects().get(0);
-    assertEquals(updatedOption.getKey(), "Sensitive");
+    assertEquals(optionKey, updatedOption.getKey());
     assertEquals(
         updatedOption
             .getStaticConfig()
@@ -111,7 +111,7 @@ public class BoxClassificationTemplateIT {
         MetadataTemplate.updateMetadataTemplate(
             api, Metadata.ENTERPRISE_METADATA_SCOPE, Metadata.CLASSIFICATION_TEMPLATE_KEY, updates);
     updatedOption = updatedTemplate.getFields().get(0).getOptionsObjects().get(0);
-    assertEquals(updatedOption.getKey(), "Sensitive");
+    assertEquals(optionKey, updatedOption.getKey());
     assertEquals(
         updatedOption
             .getStaticConfig()

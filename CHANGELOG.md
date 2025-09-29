@@ -288,7 +288,7 @@ The most important change this release includes is the replacement of the HTTP l
 * `BoxEvent.Type` is replaced with `EventType`
 * Removing deprecated methods from `BoxFile`, `BoxFileVersionRetention`, `BoxFolder`, `BoxGroup`, `BoxGroupMembership`,`BoxItem`, `BoxRetentionPolicy`, `BoxTask`, `BoxUser`, `BoxWebLink`, `EventLog`, `Metadata` and `MetadataTemplate`.
 
-Migration details can be found [here](doc/upgrades/3.x.x%20to%204.x.x.md).
+Migration details can be found [here](migration-guides/3.x.x%20to%204.x.x.md).
 
 ### New Features and Enhancements:
 
