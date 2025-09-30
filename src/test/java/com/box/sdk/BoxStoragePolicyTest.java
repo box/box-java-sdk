@@ -14,60 +14,60 @@ import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 
-/**
- * {@link BoxStoragePolicy} related tests.
- */
+/** {@link BoxStoragePolicy} related tests. */
 public class BoxStoragePolicyTest {
 
-    @Rule
-    public WireMockRule wireMockRule = new WireMockRule(wireMockConfig().dynamicHttpsPort().httpDisabled(true));
-    BoxAPIConnection api = TestUtils.getAPIConnection();
+  @Rule
+  public WireMockRule wireMockRule =
+      new WireMockRule(wireMockConfig().dynamicHttpsPort().httpDisabled(true));
 
-    @Before
-    public void setUpBaseUrl() {
-        api.setMaxRetryAttempts(1);
-        api.setBaseURL(format("https://localhost:%d", wireMockRule.httpsPort()));
-    }
+  BoxAPIConnection api = TestUtils.getAPIConnection();
 
-    @Test
-    public void testGetInfoParseAllFieldsCorrectly() {
-        final String storagePolicyID = "11";
-        final String storagePolicyName = "AWS Frankfurt / AWS Dublin with in region Uploads/Downloads/Previews";
+  @Before
+  public void setUpBaseUrl() {
+    api.setMaxRetryAttempts(1);
+    api.setBaseURL(format("https://localhost:%d", wireMockRule.httpsPort()));
+  }
 
-        String result = TestUtils.getFixture("BoxStoragePolicy/Get_A_Storage_Policy_200");
+  @Test
+  public void testGetInfoParseAllFieldsCorrectly() {
+    final String storagePolicyID = "11";
+    final String storagePolicyName =
+        "AWS Frankfurt / AWS Dublin with in region Uploads/Downloads/Previews";
 
-        wireMockRule.stubFor(get(urlEqualTo("/2.0/storage_policies/" + storagePolicyID))
-            .willReturn(aResponse()
-                .withHeader("Content-Type", APPLICATION_JSON)
-                .withBody(result)));
+    String result = TestUtils.getFixture("BoxStoragePolicy/Get_A_Storage_Policy_200");
 
-        BoxStoragePolicy storagePolicy = new BoxStoragePolicy(this.api, storagePolicyID);
-        BoxStoragePolicy.Info storagePolicyInfo = storagePolicy.getInfo();
-        assertEquals(storagePolicyID, storagePolicyInfo.getID());
-        assertEquals(storagePolicyName, storagePolicyInfo.getStoragePolicyName());
-    }
+    wireMockRule.stubFor(
+        get(urlEqualTo("/2.0/storage_policies/" + storagePolicyID))
+            .willReturn(aResponse().withHeader("Content-Type", APPLICATION_JSON).withBody(result)));
 
-    @Test
-    public void testGetStoragePoliciesParseAllFieldsCorrectly() {
-        final String firstStoragePolicyID = "11";
-        final String firstStoragePolicyName = "AWS Montreal / AWS Dublin";
-        final String secondStoragePolicyID = "22";
-        final String secondStoragePolicyName = "AWS Frankfurt / AWS Dublin with in region Uploads/Downloads/Previews";
+    BoxStoragePolicy storagePolicy = new BoxStoragePolicy(this.api, storagePolicyID);
+    BoxStoragePolicy.Info storagePolicyInfo = storagePolicy.getInfo();
+    assertEquals(storagePolicyID, storagePolicyInfo.getID());
+    assertEquals(storagePolicyName, storagePolicyInfo.getStoragePolicyName());
+  }
 
-        String result = TestUtils.getFixture("BoxStoragePolicy/Get_All_Storage_Policies_200");
+  @Test
+  public void testGetStoragePoliciesParseAllFieldsCorrectly() {
+    final String firstStoragePolicyID = "11";
+    final String firstStoragePolicyName = "AWS Montreal / AWS Dublin";
+    final String secondStoragePolicyID = "22";
+    final String secondStoragePolicyName =
+        "AWS Frankfurt / AWS Dublin with in region Uploads/Downloads/Previews";
 
-        wireMockRule.stubFor(get(urlEqualTo("/2.0/storage_policies?limit=100"))
-            .willReturn(aResponse()
-                .withHeader("Content-Type", APPLICATION_JSON)
-                .withBody(result)));
+    String result = TestUtils.getFixture("BoxStoragePolicy/Get_All_Storage_Policies_200");
 
-        Iterator<BoxStoragePolicy.Info> storagePolcies = BoxStoragePolicy.getAll(this.api).iterator();
-        BoxStoragePolicy.Info firstStoragePolicyInfo = storagePolcies.next();
-        assertEquals(firstStoragePolicyID, firstStoragePolicyInfo.getID());
-        assertEquals(firstStoragePolicyName, firstStoragePolicyInfo.getStoragePolicyName());
+    wireMockRule.stubFor(
+        get(urlEqualTo("/2.0/storage_policies?limit=100"))
+            .willReturn(aResponse().withHeader("Content-Type", APPLICATION_JSON).withBody(result)));
 
-        BoxStoragePolicy.Info secondStoragePolicyInfo = storagePolcies.next();
-        assertEquals(secondStoragePolicyID, secondStoragePolicyInfo.getID());
-        assertEquals(secondStoragePolicyName, secondStoragePolicyInfo.getStoragePolicyName());
-    }
+    Iterator<BoxStoragePolicy.Info> storagePolcies = BoxStoragePolicy.getAll(this.api).iterator();
+    BoxStoragePolicy.Info firstStoragePolicyInfo = storagePolcies.next();
+    assertEquals(firstStoragePolicyID, firstStoragePolicyInfo.getID());
+    assertEquals(firstStoragePolicyName, firstStoragePolicyInfo.getStoragePolicyName());
+
+    BoxStoragePolicy.Info secondStoragePolicyInfo = storagePolcies.next();
+    assertEquals(secondStoragePolicyID, secondStoragePolicyInfo.getID());
+    assertEquals(secondStoragePolicyName, secondStoragePolicyInfo.getStoragePolicyName());
+  }
 }

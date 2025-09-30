@@ -12,100 +12,103 @@ import java.util.HashMap;
 import java.util.Map;
 import org.junit.Test;
 
-/**
- * {@link BoxGroupMembership} related integration tests.
- */
+/** {@link BoxGroupMembership} related integration tests. */
 public class BoxGroupMembershipIT {
 
-    @Test
-    public void getInfoSucceeds() {
-        final String groupName = "[getGroupMembershipInfoSucceeds] Test Group "
-            + Calendar.getInstance().getTimeInMillis();
-        BoxAPIConnection api = jwtApiForServiceAccount();
-        BoxUser user = BoxUser.getCurrentUser(api);
-        BoxGroupMembership.GroupRole role = BoxGroupMembership.GroupRole.MEMBER;
+  @Test
+  public void getInfoSucceeds() {
+    final String groupName =
+        "[getGroupMembershipInfoSucceeds] Test Group " + Calendar.getInstance().getTimeInMillis();
+    BoxAPIConnection api = jwtApiForServiceAccount();
+    BoxUser user = BoxUser.getCurrentUser(api);
+    BoxGroupMembership.GroupRole role = BoxGroupMembership.GroupRole.MEMBER;
 
-        BoxGroup.Info groupInfo = BoxGroup.createGroup(api, groupName);
-        BoxUser.Info userInfo = user.getInfo();
-        BoxGroup group = groupInfo.getResource();
+    BoxGroup.Info groupInfo = BoxGroup.createGroup(api, groupName);
+    BoxUser.Info userInfo = user.getInfo();
+    BoxGroup group = groupInfo.getResource();
 
-        BoxGroupMembership membership = group.addMembership(user, role).getResource();
-        BoxGroupMembership.Info membershipInfo = membership.getInfo();
+    BoxGroupMembership membership = group.addMembership(user, role).getResource();
+    BoxGroupMembership.Info membershipInfo = membership.getInfo();
 
-        assertThat(membershipInfo.getUser().getID(), is(equalTo(user.getID())));
-        assertThat(membershipInfo.getUser().getName(), is(equalTo(userInfo.getName())));
-        assertThat(membershipInfo.getUser().getLogin(), is(equalTo(userInfo.getLogin())));
-        assertThat(membershipInfo.getGroup().getID(), is(equalTo(group.getID())));
-        assertThat(membershipInfo.getGroup().getName(), is(equalTo(groupInfo.getName())));
-        assertThat(membershipInfo.getGroupRole(), is(equalTo(role)));
+    assertThat(membershipInfo.getUser().getID(), is(equalTo(user.getID())));
+    assertThat(membershipInfo.getUser().getName(), is(equalTo(userInfo.getName())));
+    assertThat(membershipInfo.getUser().getLogin(), is(equalTo(userInfo.getLogin())));
+    assertThat(membershipInfo.getGroup().getID(), is(equalTo(group.getID())));
+    assertThat(membershipInfo.getGroup().getName(), is(equalTo(groupInfo.getName())));
+    assertThat(membershipInfo.getGroupRole(), is(equalTo(role)));
 
-        deleteGroup(group);
-    }
+    deleteGroup(group);
+  }
 
-    @Test
-    public void updateInfoSucceeds() {
-        BoxAPIConnection api = jwtApiForServiceAccount();
-        String groupName = "[updateGroupMembershipInfoSucceeds] Test Group";
-        BoxUser user = BoxUser.getCurrentUser(api);
-        BoxGroupMembership.GroupRole originalRole = BoxGroupMembership.GroupRole.MEMBER;
-        BoxGroupMembership.GroupRole newRole = BoxGroupMembership.GroupRole.ADMIN;
+  @Test
+  public void updateInfoSucceeds() {
+    BoxAPIConnection api = jwtApiForServiceAccount();
+    String groupName = "[updateGroupMembershipInfoSucceeds] Test Group";
+    BoxUser user = BoxUser.getCurrentUser(api);
+    BoxGroupMembership.GroupRole originalRole = BoxGroupMembership.GroupRole.MEMBER;
+    BoxGroupMembership.GroupRole newRole = BoxGroupMembership.GroupRole.ADMIN;
 
-        Map<Permission, Boolean> configurablePermissions = new HashMap<>();
-        configurablePermissions.put(Permission.CAN_CREATE_ACCOUNTS, false);
+    Map<Permission, Boolean> configurablePermissions = new HashMap<>();
+    configurablePermissions.put(Permission.CAN_CREATE_ACCOUNTS, false);
 
-        BoxGroup group = BoxGroup.createGroup(api, groupName).getResource();
+    BoxGroup group = BoxGroup.createGroup(api, groupName).getResource();
 
-        BoxGroupMembership.Info membershipInfo = group.addMembership(user, originalRole);
+    BoxGroupMembership.Info membershipInfo = group.addMembership(user, originalRole);
 
-        assertThat(membershipInfo.getGroupRole(), is(equalTo(originalRole)));
+    assertThat(membershipInfo.getGroupRole(), is(equalTo(originalRole)));
 
-        BoxGroupMembership membership = membershipInfo.getResource();
-        membershipInfo.setGroupRole(newRole);
-        membershipInfo.setConfigurablePermissions(configurablePermissions);
-        membership.updateInfo(membershipInfo);
+    BoxGroupMembership membership = membershipInfo.getResource();
+    membershipInfo.setGroupRole(newRole);
+    membershipInfo.setConfigurablePermissions(configurablePermissions);
+    membership.updateInfo(membershipInfo);
 
-        assertThat(membershipInfo.getGroupRole(), is(equalTo(newRole)));
-        assertThat(membershipInfo.getConfigurablePermissions().get(Permission.CAN_CREATE_ACCOUNTS),
-            is(equalTo(false)));
+    assertThat(membershipInfo.getGroupRole(), is(equalTo(newRole)));
+    assertThat(
+        membershipInfo.getConfigurablePermissions().get(Permission.CAN_CREATE_ACCOUNTS),
+        is(equalTo(false)));
 
-        deleteGroup(group);
-    }
+    deleteGroup(group);
+  }
 
-    @Test
-    public void addWithConfigurablePermissionsSucceds() {
-        BoxAPIConnection api = jwtApiForServiceAccount();
-        String groupName = "[addWithConfigurablePermissionsSucceeds] Test Group";
-        BoxUser user = BoxUser.getCurrentUser(api);
-        BoxGroupMembership.GroupRole role = BoxGroupMembership.GroupRole.ADMIN;
+  @Test
+  public void addWithConfigurablePermissionsSucceds() {
+    BoxAPIConnection api = jwtApiForServiceAccount();
+    String groupName = "[addWithConfigurablePermissionsSucceeds] Test Group";
+    BoxUser user = BoxUser.getCurrentUser(api);
+    BoxGroupMembership.GroupRole role = BoxGroupMembership.GroupRole.ADMIN;
 
-        Map<Permission, Boolean> configurablePermissions = new HashMap<>();
-        configurablePermissions.put(Permission.CAN_CREATE_ACCOUNTS, false);
+    Map<Permission, Boolean> configurablePermissions = new HashMap<>();
+    configurablePermissions.put(Permission.CAN_CREATE_ACCOUNTS, false);
 
-        BoxGroup group = BoxGroup.createGroup(api, groupName).getResource();
+    BoxGroup group = BoxGroup.createGroup(api, groupName).getResource();
 
-        BoxGroupMembership.Info membershipInfo = group.addMembership(user, role, configurablePermissions);
+    BoxGroupMembership.Info membershipInfo =
+        group.addMembership(user, role, configurablePermissions);
 
-        assertThat(membershipInfo.getConfigurablePermissions().get(Permission.CAN_CREATE_ACCOUNTS),
-            is(equalTo(false)));
-        assertThat(membershipInfo.getConfigurablePermissions().get(Permission.CAN_EDIT_ACCOUNTS),
-            is(equalTo(true)));
+    assertThat(
+        membershipInfo.getConfigurablePermissions().get(Permission.CAN_CREATE_ACCOUNTS),
+        is(equalTo(false)));
+    assertThat(
+        membershipInfo.getConfigurablePermissions().get(Permission.CAN_EDIT_ACCOUNTS),
+        is(equalTo(true)));
 
-        deleteGroup(group);
-    }
+    deleteGroup(group);
+  }
 
-    @Test
-    public void deleteSucceeds() {
-        BoxAPIConnection api = jwtApiForServiceAccount();
-        String groupName = "[deleteGroupMembershipSucceeds] Test Group " + Calendar.getInstance().getTimeInMillis();
-        BoxUser user = BoxUser.getCurrentUser(api);
-        BoxGroupMembership.GroupRole originalRole = BoxGroupMembership.GroupRole.MEMBER;
+  @Test
+  public void deleteSucceeds() {
+    BoxAPIConnection api = jwtApiForServiceAccount();
+    String groupName =
+        "[deleteGroupMembershipSucceeds] Test Group " + Calendar.getInstance().getTimeInMillis();
+    BoxUser user = BoxUser.getCurrentUser(api);
+    BoxGroupMembership.GroupRole originalRole = BoxGroupMembership.GroupRole.MEMBER;
 
-        BoxGroup group = BoxGroup.createGroup(api, groupName).getResource();
+    BoxGroup group = BoxGroup.createGroup(api, groupName).getResource();
 
-        BoxGroupMembership.Info membershipInfo = group.addMembership(user, originalRole);
-        BoxGroupMembership membership = membershipInfo.getResource();
-        membership.delete();
+    BoxGroupMembership.Info membershipInfo = group.addMembership(user, originalRole);
+    BoxGroupMembership membership = membershipInfo.getResource();
+    membership.delete();
 
-        deleteGroup(group);
-    }
+    deleteGroup(group);
+  }
 }

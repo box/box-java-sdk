@@ -8,183 +8,179 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.Properties;
 
-
 final class TestConfig {
-    private static Properties configProperties = null;
-    private static String accessToken = null;
-    private static String refreshToken = null;
-    private static String clientID = null;
-    private static String clientSecret = null;
-    private static String collaborator = null;
-    private static String collaboratorID = null;
-    private static String enterpriseID = null;
-    private static String privateKey = null;
-    private static String privateKeyPassword = null;
-    private static String publicKeyID = null;
-    private static String transactionalAccessToken = null;
-    private static String userID = null;
+  private static Properties configProperties = null;
+  private static String accessToken = null;
+  private static String refreshToken = null;
+  private static String clientID = null;
+  private static String clientSecret = null;
+  private static String collaborator = null;
+  private static String collaboratorID = null;
+  private static String enterpriseID = null;
+  private static String privateKey = null;
+  private static String privateKeyPassword = null;
+  private static String publicKeyID = null;
+  private static String transactionalAccessToken = null;
+  private static String userID = null;
 
-    private TestConfig() {
+  private TestConfig() {}
+
+  public static String getAccessToken() {
+    if (accessToken == null || accessToken.equals("")) {
+      accessToken = getProperty("accessToken");
     }
 
-    public static String getAccessToken() {
-        if (accessToken == null || accessToken.equals("")) {
-            accessToken = getProperty("accessToken");
-        }
+    return accessToken;
+  }
 
-        return accessToken;
+  public static void setAccessToken(String accessToken) {
+    TestConfig.accessToken = accessToken;
+  }
+
+  public static String getRefreshToken() {
+    if (refreshToken == null || refreshToken.equals("")) {
+      refreshToken = getProperty("refreshToken");
     }
 
-    public static void setAccessToken(String accessToken) {
-        TestConfig.accessToken = accessToken;
+    return refreshToken;
+  }
+
+  public static void setRefreshToken(String refreshToken) {
+    TestConfig.refreshToken = refreshToken;
+  }
+
+  public static String getClientID() {
+    if (clientID == null || clientID.equals("")) {
+      clientID = getProperty("clientID");
     }
 
-    public static String getRefreshToken() {
-        if (refreshToken == null || refreshToken.equals("")) {
-            refreshToken = getProperty("refreshToken");
-        }
+    return clientID;
+  }
 
-        return refreshToken;
+  public static String getClientSecret() {
+    if (clientSecret == null || clientSecret.equals("")) {
+      clientSecret = getProperty("clientSecret");
     }
 
-    public static void setRefreshToken(String refreshToken) {
-        TestConfig.refreshToken = refreshToken;
+    return clientSecret;
+  }
+
+  public static String getCollaborator() {
+    if (collaborator == null || collaborator.isEmpty()) {
+      collaborator = System.getenv("JAVA_COLLABORATOR");
+    }
+    if (collaborator == null || collaborator.isEmpty()) {
+      collaborator = getProperty("collaborator");
     }
 
-    public static String getClientID() {
-        if (clientID == null || clientID.equals("")) {
-            clientID = getProperty("clientID");
-        }
+    return collaborator;
+  }
 
-        return clientID;
+  public static String getCollaboratorID() {
+    if (collaboratorID == null || collaboratorID.isEmpty()) {
+      collaboratorID = System.getenv("JAVA_COLLABORATOR_ID");
+    }
+    if (collaboratorID == null || collaboratorID.isEmpty()) {
+      collaboratorID = getProperty("collaboratorID");
     }
 
-    public static String getClientSecret() {
-        if (clientSecret == null || clientSecret.equals("")) {
-            clientSecret = getProperty("clientSecret");
-        }
+    return collaboratorID;
+  }
 
-        return clientSecret;
+  public static String getEnterpriseID() {
+    if (enterpriseID == null || enterpriseID.isEmpty()) {
+      enterpriseID = System.getenv("JAVA_ENTERPRISE_ID");
+    }
+    if (enterpriseID == null || enterpriseID.isEmpty()) {
+      enterpriseID = getProperty("enterpriseID");
     }
 
-    public static String getCollaborator() {
-        if (collaborator == null || collaborator.isEmpty()) {
-            collaborator = System.getenv("JAVA_COLLABORATOR");
-        }
-        if (collaborator == null || collaborator.isEmpty()) {
-            collaborator = getProperty("collaborator");
-        }
+    return enterpriseID;
+  }
 
-        return collaborator;
+  public static String getPrivateKey() {
+    if (privateKey == null || privateKey.equals("")) {
+      privateKey = getProperty("privateKey");
     }
 
-    public static String getCollaboratorID() {
-        if (collaboratorID == null || collaboratorID.isEmpty()) {
-            collaboratorID = System.getenv("JAVA_COLLABORATOR_ID");
-        }
-        if (collaboratorID == null || collaboratorID.isEmpty()) {
-            collaboratorID = getProperty("collaboratorID");
-        }
+    return privateKey;
+  }
 
-        return collaboratorID;
+  public static String getPrivateKeyPassword() {
+    if (privateKeyPassword == null || privateKeyPassword.equals("")) {
+      privateKeyPassword = getProperty("privateKeyPassword");
     }
 
-    public static String getEnterpriseID() {
-        if (enterpriseID == null || enterpriseID.isEmpty()) {
-            enterpriseID = System.getenv("JAVA_ENTERPRISE_ID");
-        }
-        if (enterpriseID == null || enterpriseID.isEmpty()) {
-            enterpriseID = getProperty("enterpriseID");
-        }
+    return privateKeyPassword;
+  }
 
-        return enterpriseID;
+  public static String getPublicKeyID() {
+    if (publicKeyID == null || publicKeyID.equals("")) {
+      publicKeyID = getProperty("publicKeyID");
     }
 
-    public static String getPrivateKey() {
-        if (privateKey == null || privateKey.equals("")) {
-            privateKey = getProperty("privateKey");
-        }
+    return publicKeyID;
+  }
 
-        return privateKey;
+  public static String getTransactionalAccessToken() {
+    if (transactionalAccessToken == null || transactionalAccessToken.equals("")) {
+      transactionalAccessToken = getProperty("transactionalAccessToken");
     }
 
-    public static String getPrivateKeyPassword() {
-        if (privateKeyPassword == null || privateKeyPassword.equals("")) {
-            privateKeyPassword = getProperty("privateKeyPassword");
-        }
+    return transactionalAccessToken;
+  }
 
-        return privateKeyPassword;
+  public static String getUserId() {
+    if (userID == null || userID.isEmpty()) {
+      userID = System.getenv("JAVA_USER_ID");
+    }
+    if (userID == null || userID.isEmpty()) {
+      userID = getProperty("userID");
     }
 
-    public static String getPublicKeyID() {
-        if (publicKeyID == null || publicKeyID.equals("")) {
-            publicKeyID = getProperty("publicKeyID");
-        }
+    return userID;
+  }
 
-        return publicKeyID;
+  private static String getProperty(String name) {
+    Properties configProperties = loadProperties();
+    String value = configProperties.getProperty(name);
+    if (value.equals("")) {
+      throw new IllegalStateException(
+          "The " + name + " property wasn't set in " + "src/test/config/config.properties.");
     }
 
-    public static String getTransactionalAccessToken() {
-        if (transactionalAccessToken == null || transactionalAccessToken.equals("")) {
-            transactionalAccessToken = getProperty("transactionalAccessToken");
-        }
+    return value;
+  }
 
-        return transactionalAccessToken;
+  private static Properties loadProperties() {
+    if (configProperties != null) {
+      return configProperties;
     }
 
-    public static String getUserId() {
-        if (userID == null || userID.isEmpty()) {
-            userID = System.getenv("JAVA_USER_ID");
-        }
-        if (userID == null || userID.isEmpty()) {
-            userID = getProperty("userID");
-        }
+    configProperties = new Properties();
 
-        return userID;
+    try (InputStream input = Files.newInputStream(Paths.get("src/test/config/config.properties"))) {
+      configProperties.load(input);
+    } catch (IOException e) {
+      throw new IllegalStateException("Couldn't open \"src/test/config/config.properties\".", e);
     }
 
-    private static String getProperty(String name) {
-        Properties configProperties = loadProperties();
-        String value = configProperties.getProperty(name);
-        if (value.equals("")) {
-            throw new IllegalStateException("The " + name + " property wasn't set in "
-                + "src/test/config/config.properties.");
-        }
+    return configProperties;
+  }
 
-        return value;
+  /** Util function to help get JSON fixtures for tests. */
+  public static String getFixture(String fixtureName) throws IOException {
+    String fixtureFullPath = "./src/test/Fixtures/" + fixtureName + ".json";
+    try (BufferedReader reader = new BufferedReader(new FileReader(fixtureFullPath))) {
+      StringBuilder builder = new StringBuilder();
+      String line = reader.readLine();
+
+      while (line != null) {
+        builder.append(line);
+        builder.append("\n");
+        line = reader.readLine();
+      }
+      return builder.toString();
     }
-
-    private static Properties loadProperties() {
-        if (configProperties != null) {
-            return configProperties;
-        }
-
-        configProperties = new Properties();
-
-        try (InputStream input = Files.newInputStream(Paths.get("src/test/config/config.properties"))) {
-            configProperties.load(input);
-        } catch (IOException e) {
-            throw new IllegalStateException("Couldn't open \"src/test/config/config.properties\".", e);
-        }
-
-        return configProperties;
-    }
-
-    /**
-     * Util function to help get JSON fixtures for tests.
-     */
-    public static String getFixture(String fixtureName) throws IOException {
-        String fixtureFullPath = "./src/test/Fixtures/" + fixtureName + ".json";
-        try (BufferedReader reader = new BufferedReader(new FileReader(fixtureFullPath))) {
-            StringBuilder builder = new StringBuilder();
-            String line = reader.readLine();
-
-            while (line != null) {
-                builder.append(line);
-                builder.append("\n");
-                line = reader.readLine();
-            }
-            return builder.toString();
-        }
-    }
+  }
 }

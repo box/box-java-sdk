@@ -16,70 +16,68 @@ import org.junit.Before;
 import org.junit.Test;
 
 public class BoxCollaborationAllowlistIT {
-    private static final String DOMAIN_NAME = randomizeName("test") + ".com";
+  private static final String DOMAIN_NAME = randomizeName("test") + ".com";
 
-    @Before
-    public void beforeClass() {
-        removeAllowedDomains(DOMAIN_NAME);
-    }
+  @Before
+  public void beforeClass() {
+    removeAllowedDomains(DOMAIN_NAME);
+  }
 
-    @Test
-    public void createCollaborationAllowlistSucceeds() {
-        final String type = "collaboration_whitelist_entry";
+  @Test
+  public void createCollaborationAllowlistSucceeds() {
+    final String type = "collaboration_whitelist_entry";
 
-        BoxAPIConnection api = jwtApiForServiceAccount();
-        BoxCollaborationAllowlist.Info domainAllowlist = BoxCollaborationAllowlist.create(
+    BoxAPIConnection api = jwtApiForServiceAccount();
+    BoxCollaborationAllowlist.Info domainAllowlist =
+        BoxCollaborationAllowlist.create(
             api,
             "createCollaborationAllowlistSucceeds." + DOMAIN_NAME,
-            BoxCollaborationAllowlist.AllowlistDirection.BOTH
-        );
+            BoxCollaborationAllowlist.AllowlistDirection.BOTH);
 
-        assertThat(domainAllowlist, is(notNullValue()));
-        assertEquals(domainAllowlist.getDirection(), BoxCollaborationAllowlist.AllowlistDirection.BOTH);
-        assertEquals(domainAllowlist.getType(), type);
+    assertThat(domainAllowlist, is(notNullValue()));
+    assertEquals(domainAllowlist.getDirection(), BoxCollaborationAllowlist.AllowlistDirection.BOTH);
+    assertEquals(domainAllowlist.getType(), type);
+  }
+
+  @Test
+  public void getAllCollaborationAllowlistsSucceeds() {
+    final String whitelistType = "collaboration_whitelist_entry";
+
+    BoxAPIConnection api = jwtApiForServiceAccount();
+    BoxCollaborationAllowlist.create(
+        api,
+        "getAllCollaborationAllowlistsSucceeds." + DOMAIN_NAME,
+        BoxCollaborationAllowlist.AllowlistDirection.BOTH);
+
+    Iterable<BoxCollaborationAllowlist.Info> whitelists = BoxCollaborationAllowlist.getAll(api);
+    List<BoxCollaborationAllowlist.Info> whitelistList = newArrayList(whitelists);
+
+    assertThat(whitelistList, is(not(Matchers.empty())));
+    for (BoxCollaborationAllowlist.Info whitelistInfo : whitelistList) {
+      assertThat(whitelistInfo, is(notNullValue()));
+      assertEquals(whitelistInfo.getType(), whitelistType);
     }
+  }
 
-    @Test
-    public void getAllCollaborationAllowlistsSucceeds() {
-        final String whitelistType = "collaboration_whitelist_entry";
+  @Test
+  public void getAllCollaborationAllowlistsAdditionalParamsSucceeds() {
+    BoxAPIConnection api = jwtApiForServiceAccount();
 
-        BoxAPIConnection api = jwtApiForServiceAccount();
-        BoxCollaborationAllowlist.create(
-            api,
-            "getAllCollaborationAllowlistsSucceeds." + DOMAIN_NAME,
-            BoxCollaborationAllowlist.AllowlistDirection.BOTH
-        );
+    BoxCollaborationAllowlist.create(
+        api,
+        "getAllCollaborationAllowlistsAdditionalParamsSucceeds." + DOMAIN_NAME,
+        BoxCollaborationAllowlist.AllowlistDirection.BOTH);
 
-        Iterable<BoxCollaborationAllowlist.Info> whitelists = BoxCollaborationAllowlist.getAll(api);
-        List<BoxCollaborationAllowlist.Info> whitelistList = newArrayList(whitelists);
+    Iterable<BoxCollaborationAllowlist.Info> whitelists = BoxCollaborationAllowlist.getAll(api, 10);
+    List<BoxCollaborationAllowlist.Info> whitelistList = newArrayList(whitelists);
+    assertThat(whitelistList, is(not(Matchers.empty())));
+  }
 
-        assertThat(whitelistList, is(not(Matchers.empty())));
-        for (BoxCollaborationAllowlist.Info whitelistInfo : whitelistList) {
-            assertThat(whitelistInfo, is(notNullValue()));
-            assertEquals(whitelistInfo.getType(), whitelistType);
-        }
+  private <T> List<T> newArrayList(Iterable<T> iterable) {
+    List<T> result = new ArrayList<>();
+    for (T i : iterable) {
+      result.add(i);
     }
-
-    @Test
-    public void getAllCollaborationAllowlistsAdditionalParamsSucceeds() {
-        BoxAPIConnection api = jwtApiForServiceAccount();
-
-        BoxCollaborationAllowlist.create(
-            api,
-            "getAllCollaborationAllowlistsAdditionalParamsSucceeds." + DOMAIN_NAME,
-            BoxCollaborationAllowlist.AllowlistDirection.BOTH
-        );
-
-        Iterable<BoxCollaborationAllowlist.Info> whitelists = BoxCollaborationAllowlist.getAll(api, 10);
-        List<BoxCollaborationAllowlist.Info> whitelistList = newArrayList(whitelists);
-        assertThat(whitelistList, is(not(Matchers.empty())));
-    }
-
-    private <T> List<T> newArrayList(Iterable<T> iterable) {
-        List<T> result = new ArrayList<>();
-        for (T i : iterable) {
-            result.add(i);
-        }
-        return result;
-    }
+    return result;
+  }
 }

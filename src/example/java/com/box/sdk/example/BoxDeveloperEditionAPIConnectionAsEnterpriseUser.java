@@ -13,31 +13,34 @@ import java.io.Reader;
 
 public final class BoxDeveloperEditionAPIConnectionAsEnterpriseUser {
 
-    private static final String USER_ID = "";
-    private static final int MAX_DEPTH = 1;
-    private static final int MAX_CACHE_ENTRIES = 100;
+  private static final String USER_ID = "";
+  private static final int MAX_DEPTH = 1;
+  private static final int MAX_CACHE_ENTRIES = 100;
 
-    private static BoxDeveloperEditionAPIConnection api;
+  private static BoxDeveloperEditionAPIConnection api;
 
-    private BoxDeveloperEditionAPIConnectionAsEnterpriseUser() {
-    }
+  private BoxDeveloperEditionAPIConnectionAsEnterpriseUser() {}
 
-    public static void main(String[] args) throws IOException {
-        // Limit logging messages to prevent polluting the output.
-        BoxLogger.defaultLogger().setLevelToWarning();
+  public static void main(String[] args) throws IOException {
+    // Limit logging messages to prevent polluting the output.
+    BoxLogger.defaultLogger().setLevelToWarning();
 
-        //It is a best practice to use an access token cache to prevent unneeded requests to Box for access tokens.
-        //For production applications it is recommended to use a distributed cache like Memcached or Redis, and to
-        //implement IAccessTokenCache to store and retrieve access tokens appropriately for your environment.
-        IAccessTokenCache accessTokenCache = new InMemoryLRUAccessTokenCache(MAX_CACHE_ENTRIES);
+    // It is a best practice to use an access token cache to prevent unneeded requests to Box for
+    // access tokens.
+    // For production applications it is recommended to use a distributed cache like Memcached or
+    // Redis, and to
+    // implement IAccessTokenCache to store and retrieve access tokens appropriately for your
+    // environment.
+    IAccessTokenCache accessTokenCache = new InMemoryLRUAccessTokenCache(MAX_CACHE_ENTRIES);
 
-        Reader reader = new FileReader("src/example/config/config.json");
-        BoxConfig boxConfig = BoxConfig.readFrom(reader);
+    Reader reader = new FileReader("src/example/config/config.json");
+    BoxConfig boxConfig = BoxConfig.readFrom(reader);
 
-        api = new BoxDeveloperEditionAPIConnection(USER_ID, DeveloperEditionEntityType.USER, boxConfig,
-            accessTokenCache);
+    api =
+        new BoxDeveloperEditionAPIConnection(
+            USER_ID, DeveloperEditionEntityType.USER, boxConfig, accessTokenCache);
 
-        BoxUser.Info userInfo = BoxUser.getCurrentUser(api).getInfo();
-        System.out.format("Welcome, %s!\n\n", userInfo.getName());
-    }
+    BoxUser.Info userInfo = BoxUser.getCurrentUser(api).getInfo();
+    System.out.format("Welcome, %s!\n\n", userInfo.getName());
+  }
 }
