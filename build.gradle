@@ -57,7 +57,7 @@ test {
 
     filter {
       // Socket timeout
-      excludeTestsMatching 'com.box.sdkgen.test.transfer.TransferITest.testTransferUserContent'
+      excludeTestsMatching 'com.box.sdkgen.transfer.TransferITest.testTransferUserContent'
   }
 
 }
