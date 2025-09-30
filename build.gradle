@@ -52,8 +52,8 @@ configurations {
 dependencies {
     implementation "com.eclipsesource.minimal-json:minimal-json:0.9.5"
     implementation "org.bitbucket.b_c:jose4j:0.9.4"
-    implementation "org.bouncycastle:bcprov-jdk18on:1.78.1"
-    implementation "org.bouncycastle:bcpkix-jdk18on:1.78.1"
+    implementation "org.bouncycastle:bcprov-jdk18on:1.82.0"
+    implementation "org.bouncycastle:bcpkix-jdk18on:1.82.0"
     implementation "com.squareup.okhttp3:okhttp:4.12.0"
     implementation "com.github.luben:zstd-jni:1.5.7-2"
     testsCommonImplementation "junit:junit:4.13.2"
