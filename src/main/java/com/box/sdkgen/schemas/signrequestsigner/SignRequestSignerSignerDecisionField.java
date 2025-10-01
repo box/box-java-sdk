@@ -15,6 +15,7 @@ import java.util.Objects;
 @JsonFilter("nullablePropertyFilter")
 public class SignRequestSignerSignerDecisionField extends SerializableObject {
 
+  /** Type of decision made by the signer. */
   @JsonDeserialize(
       using =
           SignRequestSignerSignerDecisionTypeField
@@ -25,11 +26,13 @@ public class SignRequestSignerSignerDecisionField extends SerializableObject {
               .SignRequestSignerSignerDecisionTypeFieldSerializer.class)
   protected EnumWrapper<SignRequestSignerSignerDecisionTypeField> type;
 
+  /** Date and Time that the decision was made. */
   @JsonProperty("finalized_at")
   @JsonSerialize(using = DateTimeUtils.DateTimeSerializer.class)
   @JsonDeserialize(using = DateTimeUtils.DateTimeDeserializer.class)
   protected OffsetDateTime finalizedAt;
 
+  /** Additional info about the decision, such as the decline reason from the signer. */
   @JsonProperty("additional_info")
   @Nullable
   protected String additionalInfo;

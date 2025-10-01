@@ -8,6 +8,7 @@ import java.util.Objects;
 @JsonFilter("nullablePropertyFilter")
 public class UpdateTermsOfServiceStatusForUserByIdRequestBody extends SerializableObject {
 
+  /** Whether the user has accepted the terms. */
   @JsonProperty("is_accepted")
   protected final boolean isAccepted;
 

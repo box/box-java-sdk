@@ -10,22 +10,31 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.List;
 import java.util.Objects;
 
+/** The schema for a Signer object used on the body of a Box Sign request object. */
 @JsonFilter("nullablePropertyFilter")
 public class SignRequestSigner extends SignRequestCreateSigner {
 
+  /** Set to `true` if the signer views the document. */
   @JsonProperty("has_viewed_document")
   protected Boolean hasViewedDocument;
 
+  /** Final decision made by the signer. */
   @JsonProperty("signer_decision")
   @Nullable
   protected SignRequestSignerSignerDecisionField signerDecision;
 
   protected List<SignRequestSignerInput> inputs;
 
+  /** URL to direct a signer to for signing. */
   @JsonProperty("embed_url")
   @Nullable
   protected String embedUrl;
 
+  /**
+   * This URL is specifically designed for signing documents within an HTML `iframe` tag. It will be
+   * returned in the response only if the `embed_url_external_user_id` parameter was passed in the
+   * `create Box Sign request` call.
+   */
   @JsonProperty("iframeable_embed_url")
   @Nullable
   protected String iframeableEmbedUrl;

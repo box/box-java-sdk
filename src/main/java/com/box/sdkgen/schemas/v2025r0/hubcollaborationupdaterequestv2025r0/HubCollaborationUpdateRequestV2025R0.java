@@ -5,9 +5,14 @@ import com.box.sdkgen.internal.SerializableObject;
 import com.fasterxml.jackson.annotation.JsonFilter;
 import java.util.Objects;
 
+/** Request body for updating an existing Box Hub collaboration. */
 @JsonFilter("nullablePropertyFilter")
 public class HubCollaborationUpdateRequestV2025R0 extends SerializableObject {
 
+  /**
+   * The level of access granted to a Box Hub. Possible values are `editor`, `viewer`, and
+   * `co-owner`.
+   */
   protected String role;
 
   public HubCollaborationUpdateRequestV2025R0() {

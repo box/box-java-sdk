@@ -9,8 +9,10 @@ import java.util.Objects;
 public class CreateRetentionPolicyAssignmentRequestBodyFilterFieldsField
     extends SerializableObject {
 
+  /** The metadata attribute key id. */
   protected String field;
 
+  /** The metadata attribute field id. For value, only enum and multiselect types are supported. */
   protected String value;
 
   public CreateRetentionPolicyAssignmentRequestBodyFilterFieldsField() {

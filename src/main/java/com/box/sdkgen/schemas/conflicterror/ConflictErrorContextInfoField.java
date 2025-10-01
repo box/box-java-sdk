@@ -10,6 +10,7 @@ import java.util.Objects;
 @JsonFilter("nullablePropertyFilter")
 public class ConflictErrorContextInfoField extends SerializableObject {
 
+  /** A list of the file conflicts that caused this error. */
   protected List<FileConflict> conflicts;
 
   public ConflictErrorContextInfoField() {

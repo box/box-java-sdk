@@ -12,12 +12,14 @@ import java.util.Objects;
 @JsonFilter("nullablePropertyFilter")
 public class StatusSkillCardSkillField extends SerializableObject {
 
+  /** The value will always be `service`. */
   @JsonDeserialize(
       using = StatusSkillCardSkillTypeField.StatusSkillCardSkillTypeFieldDeserializer.class)
   @JsonSerialize(
       using = StatusSkillCardSkillTypeField.StatusSkillCardSkillTypeFieldSerializer.class)
   protected EnumWrapper<StatusSkillCardSkillTypeField> type;
 
+  /** A custom identifier that represent the service that applied this metadata. */
   protected final String id;
 
   public StatusSkillCardSkillField(@JsonProperty("id") String id) {

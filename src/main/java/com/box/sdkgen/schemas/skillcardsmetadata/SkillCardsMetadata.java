@@ -8,33 +8,52 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.List;
 import java.util.Objects;
 
+/** The metadata assigned to a using for Box skills. */
 @JsonFilter("nullablePropertyFilter")
 public class SkillCardsMetadata extends SerializableObject {
 
+  /** Whether the user can edit this metadata. */
   @JsonProperty("$canEdit")
   protected Boolean canEdit;
 
+  /** A UUID to identify the metadata object. */
   @JsonProperty("$id")
   protected String id;
 
+  /** An ID for the parent folder. */
   @JsonProperty("$parent")
   protected String parent;
 
+  /** An ID for the scope in which this template has been applied. */
   @JsonProperty("$scope")
   protected String scope;
 
+  /** The name of the template. */
   @JsonProperty("$template")
   protected String template;
 
+  /**
+   * A unique identifier for the "type" of this instance. This is an internal system property and
+   * should not be used by a client application.
+   */
   @JsonProperty("$type")
   protected String type;
 
+  /**
+   * The last-known version of the template of the object. This is an internal system property and
+   * should not be used by a client application.
+   */
   @JsonProperty("$typeVersion")
   protected Long typeVersion;
 
+  /**
+   * The version of the metadata object. Starts at 0 and increases every time a user-defined
+   * property is modified.
+   */
   @JsonProperty("$version")
   protected Long version;
 
+  /** A list of Box Skill cards that have been applied to this file. */
   protected List<SkillCard> cards;
 
   public SkillCardsMetadata() {

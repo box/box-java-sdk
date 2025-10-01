@@ -7,9 +7,11 @@ import com.fasterxml.jackson.annotation.JsonFilter;
 import java.util.List;
 import java.util.Objects;
 
+/** List of Shield List objects. */
 @JsonFilter("nullablePropertyFilter")
 public class ShieldListsV2025R0 extends SerializableObject {
 
+  /** A list of shield list objects. */
   protected List<ShieldListMiniV2025R0> entries;
 
   public ShieldListsV2025R0() {

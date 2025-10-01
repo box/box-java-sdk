@@ -13,6 +13,13 @@ import java.util.Objects;
 @JsonFilter("nullablePropertyFilter")
 public class CreateMetadataTemplateRequestBodyFieldsField extends SerializableObject {
 
+  /**
+   * The type of field. The basic fields are a `string` field for text, a `float` field for numbers,
+   * and a `date` fields to present the user with a date-time picker.
+   *
+   * <p>Additionally, metadata templates support an `enum` field for a basic list of items, and `
+   * multiSelect` field for a similar list of items where the user can select more than one value.
+   */
   @JsonDeserialize(
       using =
           CreateMetadataTemplateRequestBodyFieldsTypeField
@@ -23,14 +30,28 @@ public class CreateMetadataTemplateRequestBodyFieldsField extends SerializableOb
               .CreateMetadataTemplateRequestBodyFieldsTypeFieldSerializer.class)
   protected final EnumWrapper<CreateMetadataTemplateRequestBodyFieldsTypeField> type;
 
+  /**
+   * A unique identifier for the field. The identifier must be unique within the template to which
+   * it belongs.
+   */
   protected final String key;
 
+  /** The display name of the field as it is shown to the user in the web and mobile apps. */
   protected final String displayName;
 
+  /** A description of the field. This is not shown to the user. */
   protected String description;
 
+  /**
+   * Whether this field is hidden in the UI for the user and can only be set through the API
+   * instead.
+   */
   protected Boolean hidden;
 
+  /**
+   * A list of options for this field. This is used in combination with the `enum` and `multiSelect`
+   * field types.
+   */
   protected List<CreateMetadataTemplateRequestBodyFieldsOptionsField> options;
 
   public CreateMetadataTemplateRequestBodyFieldsField(

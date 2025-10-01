@@ -13,11 +13,14 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import java.time.OffsetDateTime;
 import java.util.Objects;
 
+/** A task assignment defines which task is assigned to which user to complete. */
 @JsonFilter("nullablePropertyFilter")
 public class TaskAssignment extends SerializableObject {
 
+  /** The unique identifier for this task assignment. */
   protected String id;
 
+  /** The value will always be `task_assignment`. */
   @JsonDeserialize(using = TaskAssignmentTypeField.TaskAssignmentTypeFieldDeserializer.class)
   @JsonSerialize(using = TaskAssignmentTypeField.TaskAssignmentTypeFieldSerializer.class)
   protected EnumWrapper<TaskAssignmentTypeField> type;
@@ -27,23 +30,37 @@ public class TaskAssignment extends SerializableObject {
   @JsonProperty("assigned_to")
   protected UserMini assignedTo;
 
+  /**
+   * A message that will is included with the task assignment. This is visible to the assigned user
+   * in the web and mobile UI.
+   */
   protected String message;
 
+  /**
+   * The date at which this task assignment was completed. This will be `null` if the task is not
+   * completed yet.
+   */
   @JsonProperty("completed_at")
   @JsonSerialize(using = DateTimeUtils.DateTimeSerializer.class)
   @JsonDeserialize(using = DateTimeUtils.DateTimeDeserializer.class)
   protected OffsetDateTime completedAt;
 
+  /** The date at which this task was assigned to the user. */
   @JsonProperty("assigned_at")
   @JsonSerialize(using = DateTimeUtils.DateTimeSerializer.class)
   @JsonDeserialize(using = DateTimeUtils.DateTimeDeserializer.class)
   protected OffsetDateTime assignedAt;
 
+  /** The date at which the assigned user was reminded of this task assignment. */
   @JsonProperty("reminded_at")
   @JsonSerialize(using = DateTimeUtils.DateTimeSerializer.class)
   @JsonDeserialize(using = DateTimeUtils.DateTimeDeserializer.class)
   protected OffsetDateTime remindedAt;
 
+  /**
+   * The current state of the assignment. The available states depend on the `action` value of the
+   * task object.
+   */
   @JsonDeserialize(
       using =
           TaskAssignmentResolutionStateField.TaskAssignmentResolutionStateFieldDeserializer.class)

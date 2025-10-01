@@ -8,6 +8,7 @@ import java.util.Objects;
 @JsonFilter("nullablePropertyFilter")
 public class RestoreFileFromTrashRequestBody extends SerializableObject {
 
+  /** An optional new name for the file. */
   protected String name;
 
   protected RestoreFileFromTrashRequestBodyParentField parent;

@@ -12,6 +12,7 @@ import java.util.Objects;
 @JsonFilter("nullablePropertyFilter")
 public class CreateCollaborationRequestBodyAccessibleByField extends SerializableObject {
 
+  /** The type of collaborator to invite. */
   @JsonDeserialize(
       using =
           CreateCollaborationRequestBodyAccessibleByTypeField
@@ -22,8 +23,18 @@ public class CreateCollaborationRequestBodyAccessibleByField extends Serializabl
               .CreateCollaborationRequestBodyAccessibleByTypeFieldSerializer.class)
   protected final EnumWrapper<CreateCollaborationRequestBodyAccessibleByTypeField> type;
 
+  /**
+   * The ID of the user or group.
+   *
+   * <p>Alternatively, use `login` to specify a user by email address.
+   */
   protected String id;
 
+  /**
+   * The email address of the user to grant access to the item.
+   *
+   * <p>Alternatively, use `id` to specify a user by user ID.
+   */
   protected String login;
 
   public CreateCollaborationRequestBodyAccessibleByField(

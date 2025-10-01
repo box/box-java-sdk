@@ -6,9 +6,11 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.Map;
 import java.util.Objects;
 
+/** The schema for for creating a Box Doc Gen job request. */
 @JsonFilter("nullablePropertyFilter")
 public class DocGenDocumentGenerationDataV2025R0 extends SerializableObject {
 
+  /** File name of the output file. */
   @JsonProperty("generated_file_name")
   protected final String generatedFileName;
 

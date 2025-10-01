@@ -14,29 +14,77 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import java.time.OffsetDateTime;
 import java.util.Objects;
 
+/**
+ * A standard representation of a file request, as returned from any file request API endpoints by
+ * default.
+ */
 @JsonFilter("nullablePropertyFilter")
 public class FileRequest extends SerializableObject {
 
+  /** The unique identifier for this file request. */
   protected final String id;
 
+  /** The value will always be `file_request`. */
   @JsonDeserialize(using = FileRequestTypeField.FileRequestTypeFieldDeserializer.class)
   @JsonSerialize(using = FileRequestTypeField.FileRequestTypeFieldSerializer.class)
   protected EnumWrapper<FileRequestTypeField> type;
 
+  /**
+   * The title of file request. This is shown in the Box UI to users uploading files.
+   *
+   * <p>This defaults to title of the file request that was copied to create this file request.
+   */
   protected String title;
 
+  /**
+   * The optional description of this file request. This is shown in the Box UI to users uploading
+   * files.
+   *
+   * <p>This defaults to description of the file request that was copied to create this file
+   * request.
+   */
   @Nullable protected String description;
 
+  /**
+   * The status of the file request. This defaults to `active`.
+   *
+   * <p>When the status is set to `inactive`, the file request will no longer accept new
+   * submissions, and any visitor to the file request URL will receive a `HTTP 404` status code.
+   *
+   * <p>This defaults to status of file request that was copied to create this file request.
+   */
   @JsonDeserialize(using = FileRequestStatusField.FileRequestStatusFieldDeserializer.class)
   @JsonSerialize(using = FileRequestStatusField.FileRequestStatusFieldSerializer.class)
   protected EnumWrapper<FileRequestStatusField> status;
 
+  /**
+   * Whether a file request submitter is required to provide their email address.
+   *
+   * <p>When this setting is set to true, the Box UI will show an email field on the file request
+   * form.
+   *
+   * <p>This defaults to setting of file request that was copied to create this file request.
+   */
   @JsonProperty("is_email_required")
   protected Boolean isEmailRequired;
 
+  /**
+   * Whether a file request submitter is required to provide a description of the files they are
+   * submitting.
+   *
+   * <p>When this setting is set to true, the Box UI will show a description field on the file
+   * request form.
+   *
+   * <p>This defaults to setting of file request that was copied to create this file request.
+   */
   @JsonProperty("is_description_required")
   protected Boolean isDescriptionRequired;
 
+  /**
+   * The date after which a file request will no longer accept new submissions.
+   *
+   * <p>After this date, the `status` will automatically be set to `inactive`.
+   */
   @JsonProperty("expires_at")
   @JsonSerialize(using = DateTimeUtils.DateTimeSerializer.class)
   @JsonDeserialize(using = DateTimeUtils.DateTimeDeserializer.class)
@@ -44,13 +92,24 @@ public class FileRequest extends SerializableObject {
 
   protected final FolderMini folder;
 
+  /**
+   * The generated URL for this file request. This URL can be shared with users to let them upload
+   * files to the associated folder.
+   */
   protected String url;
 
+  /**
+   * The HTTP `etag` of this file. This can be used in combination with the `If-Match` header when
+   * updating a file request. By providing that header, a change will only be performed on the file
+   * request if the `etag` on the file request still matches the `etag` provided in the `If-Match`
+   * header.
+   */
   @Nullable protected String etag;
 
   @JsonProperty("created_by")
   protected UserMini createdBy;
 
+  /** The date and time when the file request was created. */
   @JsonProperty("created_at")
   @JsonSerialize(using = DateTimeUtils.DateTimeSerializer.class)
   @JsonDeserialize(using = DateTimeUtils.DateTimeDeserializer.class)
@@ -59,6 +118,7 @@ public class FileRequest extends SerializableObject {
   @JsonProperty("updated_by")
   protected UserMini updatedBy;
 
+  /** The date and time when the file request was last updated. */
   @JsonProperty("updated_at")
   @JsonSerialize(using = DateTimeUtils.DateTimeSerializer.class)
   @JsonDeserialize(using = DateTimeUtils.DateTimeDeserializer.class)

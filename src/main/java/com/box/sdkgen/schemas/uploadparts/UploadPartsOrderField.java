@@ -11,8 +11,10 @@ import java.util.Objects;
 @JsonFilter("nullablePropertyFilter")
 public class UploadPartsOrderField extends SerializableObject {
 
+  /** The field to order by. */
   protected String by;
 
+  /** The direction to order by, either ascending or descending. */
   @JsonDeserialize(
       using = UploadPartsOrderDirectionField.UploadPartsOrderDirectionFieldDeserializer.class)
   @JsonSerialize(

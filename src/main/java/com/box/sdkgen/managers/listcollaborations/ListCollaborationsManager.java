@@ -31,20 +31,60 @@ public class ListCollaborationsManager {
     this.networkSession = builder.networkSession;
   }
 
+  /**
+   * Retrieves a list of pending and active collaborations for a file. This returns all the users
+   * that have access to the file or have been invited to the file.
+   *
+   * @param fileId The unique identifier that represents a file.
+   *     <p>The ID for any file can be determined by visiting a file in the web application and
+   *     copying the ID from the URL. For example, for the URL `https://*.app.box.com/files/123` the
+   *     `file_id` is `123`. Example: "12345"
+   */
   public Collaborations getFileCollaborations(String fileId) {
     return getFileCollaborations(
         fileId, new GetFileCollaborationsQueryParams(), new GetFileCollaborationsHeaders());
   }
 
+  /**
+   * Retrieves a list of pending and active collaborations for a file. This returns all the users
+   * that have access to the file or have been invited to the file.
+   *
+   * @param fileId The unique identifier that represents a file.
+   *     <p>The ID for any file can be determined by visiting a file in the web application and
+   *     copying the ID from the URL. For example, for the URL `https://*.app.box.com/files/123` the
+   *     `file_id` is `123`. Example: "12345"
+   * @param queryParams Query parameters of getFileCollaborations method
+   */
   public Collaborations getFileCollaborations(
       String fileId, GetFileCollaborationsQueryParams queryParams) {
     return getFileCollaborations(fileId, queryParams, new GetFileCollaborationsHeaders());
   }
 
+  /**
+   * Retrieves a list of pending and active collaborations for a file. This returns all the users
+   * that have access to the file or have been invited to the file.
+   *
+   * @param fileId The unique identifier that represents a file.
+   *     <p>The ID for any file can be determined by visiting a file in the web application and
+   *     copying the ID from the URL. For example, for the URL `https://*.app.box.com/files/123` the
+   *     `file_id` is `123`. Example: "12345"
+   * @param headers Headers of getFileCollaborations method
+   */
   public Collaborations getFileCollaborations(String fileId, GetFileCollaborationsHeaders headers) {
     return getFileCollaborations(fileId, new GetFileCollaborationsQueryParams(), headers);
   }
 
+  /**
+   * Retrieves a list of pending and active collaborations for a file. This returns all the users
+   * that have access to the file or have been invited to the file.
+   *
+   * @param fileId The unique identifier that represents a file.
+   *     <p>The ID for any file can be determined by visiting a file in the web application and
+   *     copying the ID from the URL. For example, for the URL `https://*.app.box.com/files/123` the
+   *     `file_id` is `123`. Example: "12345"
+   * @param queryParams Query parameters of getFileCollaborations method
+   * @param headers Headers of getFileCollaborations method
+   */
   public Collaborations getFileCollaborations(
       String fileId,
       GetFileCollaborationsQueryParams queryParams,
@@ -77,21 +117,61 @@ public class ListCollaborationsManager {
     return JsonManager.deserialize(response.getData(), Collaborations.class);
   }
 
+  /**
+   * Retrieves a list of pending and active collaborations for a folder. This returns all the users
+   * that have access to the folder or have been invited to the folder.
+   *
+   * @param folderId The unique identifier that represent a folder.
+   *     <p>The ID for any folder can be determined by visiting this folder in the web application
+   *     and copying the ID from the URL. For example, for the URL
+   *     `https://*.app.box.com/folder/123` the `folder_id` is `123`. Example: "12345"
+   */
   public Collaborations getFolderCollaborations(String folderId) {
     return getFolderCollaborations(
         folderId, new GetFolderCollaborationsQueryParams(), new GetFolderCollaborationsHeaders());
   }
 
+  /**
+   * Retrieves a list of pending and active collaborations for a folder. This returns all the users
+   * that have access to the folder or have been invited to the folder.
+   *
+   * @param folderId The unique identifier that represent a folder.
+   *     <p>The ID for any folder can be determined by visiting this folder in the web application
+   *     and copying the ID from the URL. For example, for the URL
+   *     `https://*.app.box.com/folder/123` the `folder_id` is `123`. Example: "12345"
+   * @param queryParams Query parameters of getFolderCollaborations method
+   */
   public Collaborations getFolderCollaborations(
       String folderId, GetFolderCollaborationsQueryParams queryParams) {
     return getFolderCollaborations(folderId, queryParams, new GetFolderCollaborationsHeaders());
   }
 
+  /**
+   * Retrieves a list of pending and active collaborations for a folder. This returns all the users
+   * that have access to the folder or have been invited to the folder.
+   *
+   * @param folderId The unique identifier that represent a folder.
+   *     <p>The ID for any folder can be determined by visiting this folder in the web application
+   *     and copying the ID from the URL. For example, for the URL
+   *     `https://*.app.box.com/folder/123` the `folder_id` is `123`. Example: "12345"
+   * @param headers Headers of getFolderCollaborations method
+   */
   public Collaborations getFolderCollaborations(
       String folderId, GetFolderCollaborationsHeaders headers) {
     return getFolderCollaborations(folderId, new GetFolderCollaborationsQueryParams(), headers);
   }
 
+  /**
+   * Retrieves a list of pending and active collaborations for a folder. This returns all the users
+   * that have access to the folder or have been invited to the folder.
+   *
+   * @param folderId The unique identifier that represent a folder.
+   *     <p>The ID for any folder can be determined by visiting this folder in the web application
+   *     and copying the ID from the URL. For example, for the URL
+   *     `https://*.app.box.com/folder/123` the `folder_id` is `123`. Example: "12345"
+   * @param queryParams Query parameters of getFolderCollaborations method
+   * @param headers Headers of getFolderCollaborations method
+   */
   public Collaborations getFolderCollaborations(
       String folderId,
       GetFolderCollaborationsQueryParams queryParams,
@@ -124,10 +204,21 @@ public class ListCollaborationsManager {
     return JsonManager.deserialize(response.getData(), Collaborations.class);
   }
 
+  /**
+   * Retrieves all pending collaboration invites for this user.
+   *
+   * @param queryParams Query parameters of getCollaborations method
+   */
   public CollaborationsOffsetPaginated getCollaborations(GetCollaborationsQueryParams queryParams) {
     return getCollaborations(queryParams, new GetCollaborationsHeaders());
   }
 
+  /**
+   * Retrieves all pending collaboration invites for this user.
+   *
+   * @param queryParams Query parameters of getCollaborations method
+   * @param headers Headers of getCollaborations method
+   */
   public CollaborationsOffsetPaginated getCollaborations(
       GetCollaborationsQueryParams queryParams, GetCollaborationsHeaders headers) {
     Map<String, String> queryParamsMap =
@@ -157,21 +248,61 @@ public class ListCollaborationsManager {
     return JsonManager.deserialize(response.getData(), CollaborationsOffsetPaginated.class);
   }
 
+  /**
+   * Retrieves all the collaborations for a group. The user must have admin permissions to inspect
+   * enterprise's groups.
+   *
+   * <p>Each collaboration object has details on which files or folders the group has access to and
+   * with what role.
+   *
+   * @param groupId The ID of the group. Example: "57645"
+   */
   public CollaborationsOffsetPaginated getGroupCollaborations(String groupId) {
     return getGroupCollaborations(
         groupId, new GetGroupCollaborationsQueryParams(), new GetGroupCollaborationsHeaders());
   }
 
+  /**
+   * Retrieves all the collaborations for a group. The user must have admin permissions to inspect
+   * enterprise's groups.
+   *
+   * <p>Each collaboration object has details on which files or folders the group has access to and
+   * with what role.
+   *
+   * @param groupId The ID of the group. Example: "57645"
+   * @param queryParams Query parameters of getGroupCollaborations method
+   */
   public CollaborationsOffsetPaginated getGroupCollaborations(
       String groupId, GetGroupCollaborationsQueryParams queryParams) {
     return getGroupCollaborations(groupId, queryParams, new GetGroupCollaborationsHeaders());
   }
 
+  /**
+   * Retrieves all the collaborations for a group. The user must have admin permissions to inspect
+   * enterprise's groups.
+   *
+   * <p>Each collaboration object has details on which files or folders the group has access to and
+   * with what role.
+   *
+   * @param groupId The ID of the group. Example: "57645"
+   * @param headers Headers of getGroupCollaborations method
+   */
   public CollaborationsOffsetPaginated getGroupCollaborations(
       String groupId, GetGroupCollaborationsHeaders headers) {
     return getGroupCollaborations(groupId, new GetGroupCollaborationsQueryParams(), headers);
   }
 
+  /**
+   * Retrieves all the collaborations for a group. The user must have admin permissions to inspect
+   * enterprise's groups.
+   *
+   * <p>Each collaboration object has details on which files or folders the group has access to and
+   * with what role.
+   *
+   * @param groupId The ID of the group. Example: "57645"
+   * @param queryParams Query parameters of getGroupCollaborations method
+   * @param headers Headers of getGroupCollaborations method
+   */
   public CollaborationsOffsetPaginated getGroupCollaborations(
       String groupId,
       GetGroupCollaborationsQueryParams queryParams,

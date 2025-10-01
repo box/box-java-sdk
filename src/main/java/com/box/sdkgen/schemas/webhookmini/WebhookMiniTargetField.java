@@ -11,8 +11,10 @@ import java.util.Objects;
 @JsonFilter("nullablePropertyFilter")
 public class WebhookMiniTargetField extends SerializableObject {
 
+  /** The ID of the item to trigger a webhook. */
   protected String id;
 
+  /** The type of item to trigger a webhook. */
   @JsonDeserialize(using = WebhookMiniTargetTypeField.WebhookMiniTargetTypeFieldDeserializer.class)
   @JsonSerialize(using = WebhookMiniTargetTypeField.WebhookMiniTargetTypeFieldSerializer.class)
   protected EnumWrapper<WebhookMiniTargetTypeField> type;

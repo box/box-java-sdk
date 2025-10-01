@@ -14,10 +14,13 @@ import java.util.Objects;
 @JsonFilter("nullablePropertyFilter")
 public class CreateGroupMembershipRequestBody extends SerializableObject {
 
+  /** The user to add to the group. */
   protected final CreateGroupMembershipRequestBodyUserField user;
 
+  /** The group to add the user to. */
   protected final CreateGroupMembershipRequestBodyGroupField group;
 
+  /** The role of the user in the group. */
   @JsonDeserialize(
       using =
           CreateGroupMembershipRequestBodyRoleField
@@ -28,6 +31,16 @@ public class CreateGroupMembershipRequestBody extends SerializableObject {
               .CreateGroupMembershipRequestBodyRoleFieldSerializer.class)
   protected EnumWrapper<CreateGroupMembershipRequestBodyRoleField> role;
 
+  /**
+   * Custom configuration for the permissions an admin if a group will receive. This option has no
+   * effect on members with a role of `member`.
+   *
+   * <p>Setting these permissions overwrites the default access levels of an admin.
+   *
+   * <p>Specifying a value of `null` for this object will disable all configurable permissions.
+   * Specifying permissions will set them accordingly, omitted permissions will be enabled by
+   * default.
+   */
   @JsonProperty("configurable_permissions")
   @Nullable
   protected Map<String, Boolean> configurablePermissions;

@@ -13,8 +13,17 @@ import java.util.Objects;
 @JsonFilter("nullablePropertyFilter")
 public class UploadFileVersionRequestBodyAttributesField extends SerializableObject {
 
+  /**
+   * An optional new name for the file. If specified, the file will be renamed when the new version
+   * is uploaded.
+   */
   protected final String name;
 
+  /**
+   * Defines the time the file was last modified at.
+   *
+   * <p>If not set, the upload time will be used.
+   */
   @JsonProperty("content_modified_at")
   @JsonSerialize(using = DateTimeUtils.DateTimeSerializer.class)
   @JsonDeserialize(using = DateTimeUtils.DateTimeDeserializer.class)

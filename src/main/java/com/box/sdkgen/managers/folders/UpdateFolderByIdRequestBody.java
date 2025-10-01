@@ -14,10 +14,26 @@ import java.util.Objects;
 @JsonFilter("nullablePropertyFilter")
 public class UpdateFolderByIdRequestBody extends SerializableObject {
 
+  /**
+   * The optional new name for this folder.
+   *
+   * <p>The following restrictions to folder names apply: names containing non-printable ASCII
+   * characters, forward and backward slashes (`/`, `\`), names with trailing spaces, and names `.`
+   * and `..` are not allowed.
+   *
+   * <p>Folder names must be unique within their parent folder. The name check is case-insensitive,
+   * so a folder named `New Folder` cannot be created in a parent folder that already contains a
+   * folder named `new folder`.
+   */
   protected String name;
 
+  /** The optional description of this folder. */
   protected String description;
 
+  /**
+   * Specifies whether a folder should be synced to a user's device or not. This is used by Box Sync
+   * (discontinued) and is not used by Box Drive.
+   */
   @JsonDeserialize(
       using =
           UpdateFolderByIdRequestBodySyncStateField
@@ -29,6 +45,10 @@ public class UpdateFolderByIdRequestBody extends SerializableObject {
   @JsonProperty("sync_state")
   protected EnumWrapper<UpdateFolderByIdRequestBodySyncStateField> syncState;
 
+  /**
+   * Specifies if users who are not the owner of the folder can invite new collaborators to the
+   * folder.
+   */
   @JsonProperty("can_non_owners_invite")
   protected Boolean canNonOwnersInvite;
 
@@ -41,13 +61,45 @@ public class UpdateFolderByIdRequestBody extends SerializableObject {
   @Nullable
   protected UpdateFolderByIdRequestBodyFolderUploadEmailField folderUploadEmail;
 
+  /**
+   * The tags for this item. These tags are shown in the Box web app and mobile apps next to an
+   * item.
+   *
+   * <p>To add or remove a tag, retrieve the item's current tags, modify them, and then update this
+   * field.
+   *
+   * <p>There is a limit of 100 tags per item, and 10,000 unique tags per enterprise.
+   */
   protected List<String> tags;
 
+  /**
+   * Specifies if new invites to this folder are restricted to users within the enterprise. This
+   * does not affect existing collaborations.
+   */
   @JsonProperty("is_collaboration_restricted_to_enterprise")
   protected Boolean isCollaborationRestrictedToEnterprise;
 
+  /**
+   * An array of collections to make this folder a member of. Currently we only support the
+   * `favorites` collection.
+   *
+   * <p>To get the ID for a collection, use the [List all collections][1] endpoint.
+   *
+   * <p>Passing an empty array `[]` or `null` will remove the folder from all collections.
+   *
+   * <p>[1]: e://get-collections
+   */
   @Nullable protected List<UpdateFolderByIdRequestBodyCollectionsField> collections;
 
+  /**
+   * Restricts collaborators who are not the owner of this folder from viewing other collaborations
+   * on this folder.
+   *
+   * <p>It also restricts non-owners from inviting new collaborators.
+   *
+   * <p>When setting this field to `false`, it is required to also set
+   * `can_non_owners_invite_collaborators` to `false` if it has not already been set.
+   */
   @JsonProperty("can_non_owners_view_collaborators")
   protected Boolean canNonOwnersViewCollaborators;
 

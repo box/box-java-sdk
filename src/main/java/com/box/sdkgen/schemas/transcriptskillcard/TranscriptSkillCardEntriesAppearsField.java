@@ -8,6 +8,7 @@ import java.util.Objects;
 @JsonFilter("nullablePropertyFilter")
 public class TranscriptSkillCardEntriesAppearsField extends SerializableObject {
 
+  /** The time in seconds when an entry should start appearing on a timeline. */
   protected Long start;
 
   public TranscriptSkillCardEntriesAppearsField() {

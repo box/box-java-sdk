@@ -10,16 +10,28 @@ import java.util.Objects;
 @JsonFilter("nullablePropertyFilter")
 public class AiExtractStructuredFieldsField extends SerializableObject {
 
+  /** A unique identifier for the field. */
   protected final String key;
 
+  /** A description of the field. */
   protected String description;
 
+  /** The display name of the field. */
   protected String displayName;
 
+  /** The context about the key that may include how to find and format it. */
   protected String prompt;
 
+  /**
+   * The type of the field. It include but is not limited to string, float, date, enum, and
+   * multiSelect.
+   */
   protected String type;
 
+  /**
+   * A list of options for this field. This is most often used in combination with the enum and
+   * multiSelect field types.
+   */
   protected List<AiExtractStructuredFieldsOptionsField> options;
 
   public AiExtractStructuredFieldsField(@JsonProperty("key") String key) {

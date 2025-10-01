@@ -6,18 +6,33 @@ import com.fasterxml.jackson.annotation.JsonFilter;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.Objects;
 
+/** The base representation of a metadata instance. */
 @JsonFilter("nullablePropertyFilter")
 public class MetadataBase extends SerializableObject {
 
+  /**
+   * The identifier of the item that this metadata instance has been attached to. This combines the
+   * `type` and the `id` of the parent in the form `{type}_{id}`.
+   */
   @JsonProperty("$parent")
   protected String parent;
 
+  /** The name of the template. */
   @JsonProperty("$template")
   protected String template;
 
+  /**
+   * An ID for the scope in which this template has been applied. This will be
+   * `enterprise_{enterprise_id}` for templates defined for use in this enterprise, and `global` for
+   * general templates that are available to all enterprises using Box.
+   */
   @JsonProperty("$scope")
   protected String scope;
 
+  /**
+   * The version of the metadata instance. This version starts at 0 and increases every time a
+   * user-defined property is modified.
+   */
   @JsonProperty("$version")
   protected Long version;
 

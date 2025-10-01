@@ -9,8 +9,13 @@ import java.util.Objects;
 @JsonFilter("nullablePropertyFilter")
 public class AddClassificationRequestBodyDataField extends SerializableObject {
 
+  /**
+   * The label of the classification as shown in the web and mobile interfaces. This is the only
+   * field required to add a classification.
+   */
   protected final String key;
 
+  /** A static configuration for the classification. */
   protected AddClassificationRequestBodyDataStaticConfigField staticConfig;
 
   public AddClassificationRequestBodyDataField(@JsonProperty("key") String key) {

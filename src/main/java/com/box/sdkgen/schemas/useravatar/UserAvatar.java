@@ -6,9 +6,11 @@ import com.fasterxml.jackson.annotation.JsonFilter;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.Objects;
 
+/** A resource holding URLs to the avatar uploaded to a Box application. */
 @JsonFilter("nullablePropertyFilter")
 public class UserAvatar extends SerializableObject {
 
+  /** Represents an object with user avatar URLs. */
   @JsonProperty("pic_urls")
   protected UserAvatarPicUrlsField picUrls;
 

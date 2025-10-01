@@ -11,6 +11,7 @@ import java.util.Objects;
 @JsonFilter("nullablePropertyFilter")
 public class MetadataCascadePolicyParentField extends SerializableObject {
 
+  /** The value will always be `folder`. */
   @JsonDeserialize(
       using =
           MetadataCascadePolicyParentTypeField.MetadataCascadePolicyParentTypeFieldDeserializer
@@ -20,6 +21,7 @@ public class MetadataCascadePolicyParentField extends SerializableObject {
           MetadataCascadePolicyParentTypeField.MetadataCascadePolicyParentTypeFieldSerializer.class)
   protected EnumWrapper<MetadataCascadePolicyParentTypeField> type;
 
+  /** The ID of the folder the policy is applied to. */
   protected String id;
 
   public MetadataCascadePolicyParentField() {

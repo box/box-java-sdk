@@ -8,11 +8,14 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import java.util.Objects;
 
+/** A reference to an enterprise, used when nested within another resource. */
 @JsonFilter("nullablePropertyFilter")
 public class EnterpriseReferenceV2025R0 extends SerializableObject {
 
+  /** The unique identifier for this enterprise. */
   protected String id;
 
+  /** The value will always be `enterprise`. */
   @JsonDeserialize(
       using =
           EnterpriseReferenceV2025R0TypeField.EnterpriseReferenceV2025R0TypeFieldDeserializer.class)

@@ -11,28 +11,39 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import java.util.Map;
 import java.util.Objects;
 
+/** A generic error. */
 @JsonFilter("nullablePropertyFilter")
 public class ClientError extends SerializableObject {
 
+  /** The value will always be `error`. */
   @JsonDeserialize(using = ClientErrorTypeField.ClientErrorTypeFieldDeserializer.class)
   @JsonSerialize(using = ClientErrorTypeField.ClientErrorTypeFieldSerializer.class)
   protected EnumWrapper<ClientErrorTypeField> type;
 
+  /** The HTTP status of the response. */
   protected Integer status;
 
+  /** A Box-specific error code. */
   @JsonDeserialize(using = ClientErrorCodeField.ClientErrorCodeFieldDeserializer.class)
   @JsonSerialize(using = ClientErrorCodeField.ClientErrorCodeFieldSerializer.class)
   protected EnumWrapper<ClientErrorCodeField> code;
 
+  /** A short message describing the error. */
   protected String message;
 
+  /**
+   * A free-form object that contains additional context about the error. The possible fields are
+   * defined on a per-endpoint basis. `message` is only one example.
+   */
   @JsonProperty("context_info")
   @Nullable
   protected Map<String, Object> contextInfo;
 
+  /** A URL that links to more information about why this error occurred. */
   @JsonProperty("help_url")
   protected String helpUrl;
 
+  /** A unique identifier for this response, which can be used when contacting Box support. */
   @JsonProperty("request_id")
   protected String requestId;
 

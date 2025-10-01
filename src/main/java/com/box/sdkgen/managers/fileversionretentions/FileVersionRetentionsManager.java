@@ -31,20 +31,63 @@ public class FileVersionRetentionsManager {
     this.networkSession = builder.networkSession;
   }
 
+  /**
+   * Retrieves all file version retentions for the given enterprise.
+   *
+   * <p>**Note**: File retention API is now **deprecated**. To get information about files and file
+   * versions under retention, see [files under
+   * retention](e://get-retention-policy-assignments-id-files-under-retention) or [file versions
+   * under retention](e://get-retention-policy-assignments-id-file-versions-under-retention)
+   * endpoints.
+   */
   public FileVersionRetentions getFileVersionRetentions() {
     return getFileVersionRetentions(
         new GetFileVersionRetentionsQueryParams(), new GetFileVersionRetentionsHeaders());
   }
 
+  /**
+   * Retrieves all file version retentions for the given enterprise.
+   *
+   * <p>**Note**: File retention API is now **deprecated**. To get information about files and file
+   * versions under retention, see [files under
+   * retention](e://get-retention-policy-assignments-id-files-under-retention) or [file versions
+   * under retention](e://get-retention-policy-assignments-id-file-versions-under-retention)
+   * endpoints.
+   *
+   * @param queryParams Query parameters of getFileVersionRetentions method
+   */
   public FileVersionRetentions getFileVersionRetentions(
       GetFileVersionRetentionsQueryParams queryParams) {
     return getFileVersionRetentions(queryParams, new GetFileVersionRetentionsHeaders());
   }
 
+  /**
+   * Retrieves all file version retentions for the given enterprise.
+   *
+   * <p>**Note**: File retention API is now **deprecated**. To get information about files and file
+   * versions under retention, see [files under
+   * retention](e://get-retention-policy-assignments-id-files-under-retention) or [file versions
+   * under retention](e://get-retention-policy-assignments-id-file-versions-under-retention)
+   * endpoints.
+   *
+   * @param headers Headers of getFileVersionRetentions method
+   */
   public FileVersionRetentions getFileVersionRetentions(GetFileVersionRetentionsHeaders headers) {
     return getFileVersionRetentions(new GetFileVersionRetentionsQueryParams(), headers);
   }
 
+  /**
+   * Retrieves all file version retentions for the given enterprise.
+   *
+   * <p>**Note**: File retention API is now **deprecated**. To get information about files and file
+   * versions under retention, see [files under
+   * retention](e://get-retention-policy-assignments-id-files-under-retention) or [file versions
+   * under retention](e://get-retention-policy-assignments-id-file-versions-under-retention)
+   * endpoints.
+   *
+   * @param queryParams Query parameters of getFileVersionRetentions method
+   * @param headers Headers of getFileVersionRetentions method
+   */
   public FileVersionRetentions getFileVersionRetentions(
       GetFileVersionRetentionsQueryParams queryParams, GetFileVersionRetentionsHeaders headers) {
     Map<String, String> queryParamsMap =
@@ -78,11 +121,34 @@ public class FileVersionRetentionsManager {
     return JsonManager.deserialize(response.getData(), FileVersionRetentions.class);
   }
 
+  /**
+   * Returns information about a file version retention.
+   *
+   * <p>**Note**: File retention API is now **deprecated**. To get information about files and file
+   * versions under retention, see [files under
+   * retention](e://get-retention-policy-assignments-id-files-under-retention) or [file versions
+   * under retention](e://get-retention-policy-assignments-id-file-versions-under-retention)
+   * endpoints.
+   *
+   * @param fileVersionRetentionId The ID of the file version retention. Example: "3424234"
+   */
   public FileVersionRetention getFileVersionRetentionById(String fileVersionRetentionId) {
     return getFileVersionRetentionById(
         fileVersionRetentionId, new GetFileVersionRetentionByIdHeaders());
   }
 
+  /**
+   * Returns information about a file version retention.
+   *
+   * <p>**Note**: File retention API is now **deprecated**. To get information about files and file
+   * versions under retention, see [files under
+   * retention](e://get-retention-policy-assignments-id-files-under-retention) or [file versions
+   * under retention](e://get-retention-policy-assignments-id-file-versions-under-retention)
+   * endpoints.
+   *
+   * @param fileVersionRetentionId The ID of the file version retention. Example: "3424234"
+   * @param headers Headers of getFileVersionRetentionById method
+   */
   public FileVersionRetention getFileVersionRetentionById(
       String fileVersionRetentionId, GetFileVersionRetentionByIdHeaders headers) {
     Map<String, String> headersMap = prepareParams(mergeMaps(mapOf(), headers.getExtraHeaders()));

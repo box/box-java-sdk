@@ -9,19 +9,27 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.List;
 import java.util.Objects;
 
+/** List of AI Agents with pagination. */
 @JsonFilter("nullablePropertyFilter")
 public class AiMultipleAgentResponse extends SerializableObject {
 
+  /**
+   * The limit that was used for these entries. This will be the same as the `limit` query parameter
+   * unless that value exceeded the maximum value allowed. The maximum value varies by API.
+   */
   protected Long limit;
 
+  /** The marker for the start of the next page of results. */
   @JsonProperty("next_marker")
   @Nullable
   protected String nextMarker;
 
+  /** The marker for the start of the previous page of results. */
   @JsonProperty("prev_marker")
   @Nullable
   protected String prevMarker;
 
+  /** The list of AI Agents. */
   protected final List<AiSingleAgentResponseFull> entries;
 
   public AiMultipleAgentResponse(@JsonProperty("entries") List<AiSingleAgentResponseFull> entries) {

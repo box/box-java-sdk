@@ -11,9 +11,11 @@ import com.fasterxml.jackson.annotation.JsonFilter;
 import java.util.List;
 import java.util.Objects;
 
+/** AI agent basic tool used to generate text. */
 @JsonFilter("nullablePropertyFilter")
 public class AiStudioAgentBasicGenToolResponse extends AiStudioAgentBasicGenTool {
 
+  /** Warnings concerning tool. */
   protected List<String> warnings;
 
   public AiStudioAgentBasicGenToolResponse() {

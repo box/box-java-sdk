@@ -8,6 +8,10 @@ import java.util.Objects;
 @JsonFilter("nullablePropertyFilter")
 public class FileFullRepresentationsEntriesInfoField extends SerializableObject {
 
+  /**
+   * The API URL that can be used to get more info on this file representation. Make sure to make an
+   * authenticated API call to this endpoint.
+   */
   protected String url;
 
   public FileFullRepresentationsEntriesInfoField() {

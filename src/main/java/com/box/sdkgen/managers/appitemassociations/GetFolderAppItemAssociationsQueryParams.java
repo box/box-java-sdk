@@ -2,10 +2,18 @@ package com.box.sdkgen.managers.appitemassociations;
 
 public class GetFolderAppItemAssociationsQueryParams {
 
+  /** The maximum number of items to return per page. */
   public Long limit;
 
+  /**
+   * Defines the position marker at which to begin returning results. This is used when paginating
+   * using marker-based pagination.
+   *
+   * <p>This requires `usemarker` to be set to `true`.
+   */
   public String marker;
 
+  /** If given, returns only app items for this application type. */
   public String applicationType;
 
   public GetFolderAppItemAssociationsQueryParams() {}

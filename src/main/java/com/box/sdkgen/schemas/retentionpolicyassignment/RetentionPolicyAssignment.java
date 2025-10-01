@@ -15,11 +15,18 @@ import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.Objects;
 
+/**
+ * A retention assignment represents a rule specifying the files a retention policy retains.
+ * Assignments can retain files based on their folder or metadata, or hold all files in the
+ * enterprise.
+ */
 @JsonFilter("nullablePropertyFilter")
 public class RetentionPolicyAssignment extends SerializableObject {
 
+  /** The unique identifier for a retention policy assignment. */
   protected final String id;
 
+  /** The value will always be `retention_policy_assignment`. */
   @JsonDeserialize(
       using =
           RetentionPolicyAssignmentTypeField.RetentionPolicyAssignmentTypeFieldDeserializer.class)
@@ -30,9 +37,17 @@ public class RetentionPolicyAssignment extends SerializableObject {
   @JsonProperty("retention_policy")
   protected RetentionPolicyMini retentionPolicy;
 
+  /**
+   * The `type` and `id` of the content that is under retention. The `type` can either be `folder`
+   * `enterprise`, or `metadata_template`.
+   */
   @JsonProperty("assigned_to")
   protected RetentionPolicyAssignmentAssignedToField assignedTo;
 
+  /**
+   * An array of field objects. Values are only returned if the `assigned_to` type is
+   * `metadata_template`. Otherwise, the array is blank.
+   */
   @JsonProperty("filter_fields")
   @Nullable
   protected List<RetentionPolicyAssignmentFilterFieldsField> filterFields;
@@ -40,11 +55,16 @@ public class RetentionPolicyAssignment extends SerializableObject {
   @JsonProperty("assigned_by")
   protected UserMini assignedBy;
 
+  /** When the retention policy assignment object was created. */
   @JsonProperty("assigned_at")
   @JsonSerialize(using = DateTimeUtils.DateTimeSerializer.class)
   @JsonDeserialize(using = DateTimeUtils.DateTimeDeserializer.class)
   protected OffsetDateTime assignedAt;
 
+  /**
+   * The date the retention policy assignment begins. If the `assigned_to` type is
+   * `metadata_template`, this field can be a date field's metadata attribute key id.
+   */
   @JsonProperty("start_date_field")
   protected String startDateField;
 

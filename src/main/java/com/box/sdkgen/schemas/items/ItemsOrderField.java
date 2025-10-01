@@ -11,8 +11,10 @@ import java.util.Objects;
 @JsonFilter("nullablePropertyFilter")
 public class ItemsOrderField extends SerializableObject {
 
+  /** The field to order by. */
   protected String by;
 
+  /** The direction to order by, either ascending or descending. */
   @JsonDeserialize(using = ItemsOrderDirectionField.ItemsOrderDirectionFieldDeserializer.class)
   @JsonSerialize(using = ItemsOrderDirectionField.ItemsOrderDirectionFieldSerializer.class)
   protected EnumWrapper<ItemsOrderDirectionField> direction;

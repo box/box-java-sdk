@@ -8,6 +8,7 @@ import java.util.Objects;
 @JsonFilter("nullablePropertyFilter")
 public class CreateInviteRequestBodyEnterpriseField extends SerializableObject {
 
+  /** The ID of the enterprise. */
   protected final String id;
 
   public CreateInviteRequestBodyEnterpriseField(@JsonProperty("id") String id) {

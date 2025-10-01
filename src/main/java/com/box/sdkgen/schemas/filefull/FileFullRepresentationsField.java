@@ -9,6 +9,7 @@ import java.util.Objects;
 @JsonFilter("nullablePropertyFilter")
 public class FileFullRepresentationsField extends SerializableObject {
 
+  /** A list of files. */
   protected List<FileFullRepresentationsEntriesField> entries;
 
   public FileFullRepresentationsField() {

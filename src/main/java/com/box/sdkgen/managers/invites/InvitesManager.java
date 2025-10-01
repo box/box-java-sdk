@@ -30,19 +30,71 @@ public class InvitesManager {
     this.networkSession = builder.networkSession;
   }
 
+  /**
+   * Invites an existing external user to join an enterprise.
+   *
+   * <p>The existing user can not be part of another enterprise and must already have a Box account.
+   * Once invited, the user will receive an email and are prompted to accept the invitation within
+   * the Box web application.
+   *
+   * <p>This method requires the "Manage An Enterprise" scope enabled for the application, which can
+   * be enabled within the developer console.
+   *
+   * @param requestBody Request body of createInvite method
+   */
   public Invite createInvite(CreateInviteRequestBody requestBody) {
     return createInvite(requestBody, new CreateInviteQueryParams(), new CreateInviteHeaders());
   }
 
+  /**
+   * Invites an existing external user to join an enterprise.
+   *
+   * <p>The existing user can not be part of another enterprise and must already have a Box account.
+   * Once invited, the user will receive an email and are prompted to accept the invitation within
+   * the Box web application.
+   *
+   * <p>This method requires the "Manage An Enterprise" scope enabled for the application, which can
+   * be enabled within the developer console.
+   *
+   * @param requestBody Request body of createInvite method
+   * @param queryParams Query parameters of createInvite method
+   */
   public Invite createInvite(
       CreateInviteRequestBody requestBody, CreateInviteQueryParams queryParams) {
     return createInvite(requestBody, queryParams, new CreateInviteHeaders());
   }
 
+  /**
+   * Invites an existing external user to join an enterprise.
+   *
+   * <p>The existing user can not be part of another enterprise and must already have a Box account.
+   * Once invited, the user will receive an email and are prompted to accept the invitation within
+   * the Box web application.
+   *
+   * <p>This method requires the "Manage An Enterprise" scope enabled for the application, which can
+   * be enabled within the developer console.
+   *
+   * @param requestBody Request body of createInvite method
+   * @param headers Headers of createInvite method
+   */
   public Invite createInvite(CreateInviteRequestBody requestBody, CreateInviteHeaders headers) {
     return createInvite(requestBody, new CreateInviteQueryParams(), headers);
   }
 
+  /**
+   * Invites an existing external user to join an enterprise.
+   *
+   * <p>The existing user can not be part of another enterprise and must already have a Box account.
+   * Once invited, the user will receive an email and are prompted to accept the invitation within
+   * the Box web application.
+   *
+   * <p>This method requires the "Manage An Enterprise" scope enabled for the application, which can
+   * be enabled within the developer console.
+   *
+   * @param requestBody Request body of createInvite method
+   * @param queryParams Query parameters of createInvite method
+   * @param headers Headers of createInvite method
+   */
   public Invite createInvite(
       CreateInviteRequestBody requestBody,
       CreateInviteQueryParams queryParams,
@@ -69,18 +121,42 @@ public class InvitesManager {
     return JsonManager.deserialize(response.getData(), Invite.class);
   }
 
+  /**
+   * Returns the status of a user invite.
+   *
+   * @param inviteId The ID of an invite. Example: "213723"
+   */
   public Invite getInviteById(String inviteId) {
     return getInviteById(inviteId, new GetInviteByIdQueryParams(), new GetInviteByIdHeaders());
   }
 
+  /**
+   * Returns the status of a user invite.
+   *
+   * @param inviteId The ID of an invite. Example: "213723"
+   * @param queryParams Query parameters of getInviteById method
+   */
   public Invite getInviteById(String inviteId, GetInviteByIdQueryParams queryParams) {
     return getInviteById(inviteId, queryParams, new GetInviteByIdHeaders());
   }
 
+  /**
+   * Returns the status of a user invite.
+   *
+   * @param inviteId The ID of an invite. Example: "213723"
+   * @param headers Headers of getInviteById method
+   */
   public Invite getInviteById(String inviteId, GetInviteByIdHeaders headers) {
     return getInviteById(inviteId, new GetInviteByIdQueryParams(), headers);
   }
 
+  /**
+   * Returns the status of a user invite.
+   *
+   * @param inviteId The ID of an invite. Example: "213723"
+   * @param queryParams Query parameters of getInviteById method
+   * @param headers Headers of getInviteById method
+   */
   public Invite getInviteById(
       String inviteId, GetInviteByIdQueryParams queryParams, GetInviteByIdHeaders headers) {
     Map<String, String> queryParamsMap =

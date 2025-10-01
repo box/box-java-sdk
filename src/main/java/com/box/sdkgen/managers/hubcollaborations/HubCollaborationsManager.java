@@ -33,11 +33,22 @@ public class HubCollaborationsManager {
     this.networkSession = builder.networkSession;
   }
 
+  /**
+   * Retrieves all collaborations for a Box Hub.
+   *
+   * @param queryParams Query parameters of getHubCollaborationsV2025R0 method
+   */
   public HubCollaborationsV2025R0 getHubCollaborationsV2025R0(
       GetHubCollaborationsV2025R0QueryParams queryParams) {
     return getHubCollaborationsV2025R0(queryParams, new GetHubCollaborationsV2025R0Headers());
   }
 
+  /**
+   * Retrieves all collaborations for a Box Hub.
+   *
+   * @param queryParams Query parameters of getHubCollaborationsV2025R0 method
+   * @param headers Headers of getHubCollaborationsV2025R0 method
+   */
   public HubCollaborationsV2025R0 getHubCollaborationsV2025R0(
       GetHubCollaborationsV2025R0QueryParams queryParams,
       GetHubCollaborationsV2025R0Headers headers) {
@@ -71,11 +82,26 @@ public class HubCollaborationsManager {
     return JsonManager.deserialize(response.getData(), HubCollaborationsV2025R0.class);
   }
 
+  /**
+   * Adds a collaboration for a single user or a single group to a Box Hub.
+   *
+   * <p>Collaborations can be created using email address, user IDs, or group IDs.
+   *
+   * @param requestBody Request body of createHubCollaborationV2025R0 method
+   */
   public HubCollaborationV2025R0 createHubCollaborationV2025R0(
       HubCollaborationCreateRequestV2025R0 requestBody) {
     return createHubCollaborationV2025R0(requestBody, new CreateHubCollaborationV2025R0Headers());
   }
 
+  /**
+   * Adds a collaboration for a single user or a single group to a Box Hub.
+   *
+   * <p>Collaborations can be created using email address, user IDs, or group IDs.
+   *
+   * @param requestBody Request body of createHubCollaborationV2025R0 method
+   * @param headers Headers of createHubCollaborationV2025R0 method
+   */
   public HubCollaborationV2025R0 createHubCollaborationV2025R0(
       HubCollaborationCreateRequestV2025R0 requestBody,
       CreateHubCollaborationV2025R0Headers headers) {
@@ -104,11 +130,22 @@ public class HubCollaborationsManager {
     return JsonManager.deserialize(response.getData(), HubCollaborationV2025R0.class);
   }
 
+  /**
+   * Retrieves details for a Box Hub collaboration by collaboration ID.
+   *
+   * @param hubCollaborationId The ID of the hub collaboration. Example: "1234"
+   */
   public HubCollaborationV2025R0 getHubCollaborationByIdV2025R0(String hubCollaborationId) {
     return getHubCollaborationByIdV2025R0(
         hubCollaborationId, new GetHubCollaborationByIdV2025R0Headers());
   }
 
+  /**
+   * Retrieves details for a Box Hub collaboration by collaboration ID.
+   *
+   * @param hubCollaborationId The ID of the hub collaboration. Example: "1234"
+   * @param headers Headers of getHubCollaborationByIdV2025R0 method
+   */
   public HubCollaborationV2025R0 getHubCollaborationByIdV2025R0(
       String hubCollaborationId, GetHubCollaborationByIdV2025R0Headers headers) {
     Map<String, String> headersMap =
@@ -135,12 +172,25 @@ public class HubCollaborationsManager {
     return JsonManager.deserialize(response.getData(), HubCollaborationV2025R0.class);
   }
 
+  /**
+   * Updates a Box Hub collaboration. Can be used to change the Box Hub role.
+   *
+   * @param hubCollaborationId The ID of the hub collaboration. Example: "1234"
+   * @param requestBody Request body of updateHubCollaborationByIdV2025R0 method
+   */
   public HubCollaborationV2025R0 updateHubCollaborationByIdV2025R0(
       String hubCollaborationId, HubCollaborationUpdateRequestV2025R0 requestBody) {
     return updateHubCollaborationByIdV2025R0(
         hubCollaborationId, requestBody, new UpdateHubCollaborationByIdV2025R0Headers());
   }
 
+  /**
+   * Updates a Box Hub collaboration. Can be used to change the Box Hub role.
+   *
+   * @param hubCollaborationId The ID of the hub collaboration. Example: "1234"
+   * @param requestBody Request body of updateHubCollaborationByIdV2025R0 method
+   * @param headers Headers of updateHubCollaborationByIdV2025R0 method
+   */
   public HubCollaborationV2025R0 updateHubCollaborationByIdV2025R0(
       String hubCollaborationId,
       HubCollaborationUpdateRequestV2025R0 requestBody,
@@ -171,11 +221,22 @@ public class HubCollaborationsManager {
     return JsonManager.deserialize(response.getData(), HubCollaborationV2025R0.class);
   }
 
+  /**
+   * Deletes a single Box Hub collaboration.
+   *
+   * @param hubCollaborationId The ID of the hub collaboration. Example: "1234"
+   */
   public void deleteHubCollaborationByIdV2025R0(String hubCollaborationId) {
     deleteHubCollaborationByIdV2025R0(
         hubCollaborationId, new DeleteHubCollaborationByIdV2025R0Headers());
   }
 
+  /**
+   * Deletes a single Box Hub collaboration.
+   *
+   * @param hubCollaborationId The ID of the hub collaboration. Example: "1234"
+   * @param headers Headers of deleteHubCollaborationByIdV2025R0 method
+   */
   public void deleteHubCollaborationByIdV2025R0(
       String hubCollaborationId, DeleteHubCollaborationByIdV2025R0Headers headers) {
     Map<String, String> headersMap =

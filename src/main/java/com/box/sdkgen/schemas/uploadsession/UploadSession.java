@@ -11,26 +11,45 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import java.time.OffsetDateTime;
 import java.util.Objects;
 
+/** An upload session for chunk uploading a file. */
 @JsonFilter("nullablePropertyFilter")
 public class UploadSession extends SerializableObject {
 
+  /** The unique identifier for this session. */
   protected String id;
 
+  /** The value will always be `upload_session`. */
   @JsonDeserialize(using = UploadSessionTypeField.UploadSessionTypeFieldDeserializer.class)
   @JsonSerialize(using = UploadSessionTypeField.UploadSessionTypeFieldSerializer.class)
   protected EnumWrapper<UploadSessionTypeField> type;
 
+  /** The date and time when this session expires. */
   @JsonProperty("session_expires_at")
   @JsonSerialize(using = DateTimeUtils.DateTimeSerializer.class)
   @JsonDeserialize(using = DateTimeUtils.DateTimeDeserializer.class)
   protected OffsetDateTime sessionExpiresAt;
 
+  /**
+   * The size in bytes that must be used for all parts of of the upload.
+   *
+   * <p>Only the last part is allowed to be of a smaller size.
+   */
   @JsonProperty("part_size")
   protected Long partSize;
 
+  /**
+   * The total number of parts expected in this upload session, as determined by the file size and
+   * part size.
+   */
   @JsonProperty("total_parts")
   protected Integer totalParts;
 
+  /**
+   * The number of parts that have been uploaded and processed by the server. This starts at `0`.
+   *
+   * <p>When committing a file files, inspecting this property can provide insight if all parts have
+   * been uploaded correctly.
+   */
   @JsonProperty("num_parts_processed")
   protected Integer numPartsProcessed;
 

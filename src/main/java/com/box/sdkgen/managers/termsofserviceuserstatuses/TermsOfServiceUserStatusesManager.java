@@ -31,11 +31,24 @@ public class TermsOfServiceUserStatusesManager {
     this.networkSession = builder.networkSession;
   }
 
+  /**
+   * Retrieves an overview of users and their status for a terms of service, including Whether they
+   * have accepted the terms and when.
+   *
+   * @param queryParams Query parameters of getTermsOfServiceUserStatuses method
+   */
   public TermsOfServiceUserStatuses getTermsOfServiceUserStatuses(
       GetTermsOfServiceUserStatusesQueryParams queryParams) {
     return getTermsOfServiceUserStatuses(queryParams, new GetTermsOfServiceUserStatusesHeaders());
   }
 
+  /**
+   * Retrieves an overview of users and their status for a terms of service, including Whether they
+   * have accepted the terms and when.
+   *
+   * @param queryParams Query parameters of getTermsOfServiceUserStatuses method
+   * @param headers Headers of getTermsOfServiceUserStatuses method
+   */
   public TermsOfServiceUserStatuses getTermsOfServiceUserStatuses(
       GetTermsOfServiceUserStatusesQueryParams queryParams,
       GetTermsOfServiceUserStatusesHeaders headers) {
@@ -64,12 +77,23 @@ public class TermsOfServiceUserStatusesManager {
     return JsonManager.deserialize(response.getData(), TermsOfServiceUserStatuses.class);
   }
 
+  /**
+   * Sets the status for a terms of service for a user.
+   *
+   * @param requestBody Request body of createTermsOfServiceStatusForUser method
+   */
   public TermsOfServiceUserStatus createTermsOfServiceStatusForUser(
       CreateTermsOfServiceStatusForUserRequestBody requestBody) {
     return createTermsOfServiceStatusForUser(
         requestBody, new CreateTermsOfServiceStatusForUserHeaders());
   }
 
+  /**
+   * Sets the status for a terms of service for a user.
+   *
+   * @param requestBody Request body of createTermsOfServiceStatusForUser method
+   * @param headers Headers of createTermsOfServiceStatusForUser method
+   */
   public TermsOfServiceUserStatus createTermsOfServiceStatusForUser(
       CreateTermsOfServiceStatusForUserRequestBody requestBody,
       CreateTermsOfServiceStatusForUserHeaders headers) {
@@ -94,6 +118,12 @@ public class TermsOfServiceUserStatusesManager {
     return JsonManager.deserialize(response.getData(), TermsOfServiceUserStatus.class);
   }
 
+  /**
+   * Updates the status for a terms of service for a user.
+   *
+   * @param termsOfServiceUserStatusId The ID of the terms of service status. Example: "324234"
+   * @param requestBody Request body of updateTermsOfServiceStatusForUserById method
+   */
   public TermsOfServiceUserStatus updateTermsOfServiceStatusForUserById(
       String termsOfServiceUserStatusId,
       UpdateTermsOfServiceStatusForUserByIdRequestBody requestBody) {
@@ -103,6 +133,13 @@ public class TermsOfServiceUserStatusesManager {
         new UpdateTermsOfServiceStatusForUserByIdHeaders());
   }
 
+  /**
+   * Updates the status for a terms of service for a user.
+   *
+   * @param termsOfServiceUserStatusId The ID of the terms of service status. Example: "324234"
+   * @param requestBody Request body of updateTermsOfServiceStatusForUserById method
+   * @param headers Headers of updateTermsOfServiceStatusForUserById method
+   */
   public TermsOfServiceUserStatus updateTermsOfServiceStatusForUserById(
       String termsOfServiceUserStatusId,
       UpdateTermsOfServiceStatusForUserByIdRequestBody requestBody,

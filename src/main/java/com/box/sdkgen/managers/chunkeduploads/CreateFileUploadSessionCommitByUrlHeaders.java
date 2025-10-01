@@ -6,12 +6,33 @@ import java.util.Map;
 
 public class CreateFileUploadSessionCommitByUrlHeaders {
 
+  /**
+   * The [RFC3230][1] message digest of the whole file.
+   *
+   * <p>Only SHA1 is supported. The SHA1 digest must be Base64 encoded. The format of this header is
+   * as `sha=BASE64_ENCODED_DIGEST`.
+   *
+   * <p>[1]: https://tools.ietf.org/html/rfc3230
+   */
   public final String digest;
 
+  /**
+   * Ensures this item hasn't recently changed before making changes.
+   *
+   * <p>Pass in the item's last observed `etag` value into this header and the endpoint will fail
+   * with a `412 Precondition Failed` if it has changed since.
+   */
   public String ifMatch;
 
+  /**
+   * Ensures an item is only returned if it has changed.
+   *
+   * <p>Pass in the item's last observed `etag` value into this header and the endpoint will fail
+   * with a `304 Not Modified` if the item has not changed since.
+   */
   public String ifNoneMatch;
 
+  /** Extra headers that will be included in the HTTP request. */
   public Map<String, String> extraHeaders;
 
   public CreateFileUploadSessionCommitByUrlHeaders(String digest) {

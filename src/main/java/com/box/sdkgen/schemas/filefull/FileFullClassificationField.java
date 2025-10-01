@@ -8,10 +8,16 @@ import java.util.Objects;
 @JsonFilter("nullablePropertyFilter")
 public class FileFullClassificationField extends SerializableObject {
 
+  /** The name of the classification. */
   protected String name;
 
+  /** An explanation of the meaning of this classification. */
   protected String definition;
 
+  /**
+   * The color that is used to display the classification label in a user-interface. Colors are
+   * defined by the admin or co-admin who created the classification in the Box web app.
+   */
   protected String color;
 
   public FileFullClassificationField() {

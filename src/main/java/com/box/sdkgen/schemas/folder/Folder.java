@@ -14,15 +14,24 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import java.time.OffsetDateTime;
 import java.util.Objects;
 
+/** A standard representation of a folder, as returned from any folder API endpoints by default. */
 @JsonFilter("nullablePropertyFilter")
 public class Folder extends FolderMini {
 
+  /**
+   * The date and time when the folder was created. This value may be `null` for some folders such
+   * as the root folder or the trash folder.
+   */
   @JsonProperty("created_at")
   @JsonSerialize(using = DateTimeUtils.DateTimeSerializer.class)
   @JsonDeserialize(using = DateTimeUtils.DateTimeDeserializer.class)
   @Nullable
   protected OffsetDateTime createdAt;
 
+  /**
+   * The date and time when the folder was last updated. This value may be `null` for some folders
+   * such as the root folder or the trash folder.
+   */
   @JsonProperty("modified_at")
   @JsonSerialize(using = DateTimeUtils.DateTimeSerializer.class)
   @JsonDeserialize(using = DateTimeUtils.DateTimeDeserializer.class)
@@ -31,6 +40,11 @@ public class Folder extends FolderMini {
 
   protected String description;
 
+  /**
+   * The folder size in bytes.
+   *
+   * <p>Be careful parsing this integer as its value can get very large.
+   */
   protected Long size;
 
   @JsonProperty("path_collection")
@@ -42,24 +56,28 @@ public class Folder extends FolderMini {
   @JsonProperty("modified_by")
   protected UserMini modifiedBy;
 
+  /** The time at which this folder was put in the trash. */
   @JsonProperty("trashed_at")
   @JsonSerialize(using = DateTimeUtils.DateTimeSerializer.class)
   @JsonDeserialize(using = DateTimeUtils.DateTimeDeserializer.class)
   @Nullable
   protected OffsetDateTime trashedAt;
 
+  /** The time at which this folder is expected to be purged from the trash. */
   @JsonProperty("purged_at")
   @JsonSerialize(using = DateTimeUtils.DateTimeSerializer.class)
   @JsonDeserialize(using = DateTimeUtils.DateTimeDeserializer.class)
   @Nullable
   protected OffsetDateTime purgedAt;
 
+  /** The date and time at which this folder was originally created. */
   @JsonProperty("content_created_at")
   @JsonSerialize(using = DateTimeUtils.DateTimeSerializer.class)
   @JsonDeserialize(using = DateTimeUtils.DateTimeDeserializer.class)
   @Nullable
   protected OffsetDateTime contentCreatedAt;
 
+  /** The date and time at which this folder was last updated. */
   @JsonProperty("content_modified_at")
   @JsonSerialize(using = DateTimeUtils.DateTimeSerializer.class)
   @JsonDeserialize(using = DateTimeUtils.DateTimeDeserializer.class)
@@ -73,12 +91,33 @@ public class Folder extends FolderMini {
   @Nullable
   protected FolderSharedLinkField sharedLink;
 
+  /**
+   * The `folder_upload_email` parameter is not `null` if one of the following options is **true**:
+   *
+   * <p>* The **Allow uploads to this folder via email** and the **Only allow email uploads from
+   * collaborators in this folder** are [enabled for a folder in the Admin
+   * Console](https://support.box.com/hc/en-us/articles/360043697534-Upload-to-Box-Through-Email),
+   * and the user has at least **Upload** permissions granted.
+   *
+   * <p>* The **Allow uploads to this folder via email** setting is enabled for a folder in the
+   * Admin Console, and the **Only allow email uploads from collaborators in this folder** setting
+   * is deactivated (unchecked).
+   *
+   * <p>If the conditions are not met, the parameter will have the following value:
+   * `folder_upload_email: null`.
+   */
   @JsonProperty("folder_upload_email")
   @Nullable
   protected FolderFolderUploadEmailField folderUploadEmail;
 
   @Nullable protected FolderMini parent;
 
+  /**
+   * Defines if this item has been deleted or not.
+   *
+   * <p>* `active` when the item has is not in the trash * `trashed` when the item has been moved to
+   * the trash but not deleted * `deleted` when the item has been permanently deleted.
+   */
   @JsonDeserialize(using = FolderItemStatusField.FolderItemStatusFieldDeserializer.class)
   @JsonSerialize(using = FolderItemStatusField.FolderItemStatusFieldSerializer.class)
   @JsonProperty("item_status")

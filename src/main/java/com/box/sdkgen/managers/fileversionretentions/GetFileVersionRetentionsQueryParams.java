@@ -4,20 +4,35 @@ import com.box.sdkgen.serialization.json.EnumWrapper;
 
 public class GetFileVersionRetentionsQueryParams {
 
+  /** Filters results by files with this ID. */
   public String fileId;
 
+  /** Filters results by file versions with this ID. */
   public String fileVersionId;
 
+  /** Filters results by the retention policy with this ID. */
   public String policyId;
 
+  /** Filters results by the retention policy with this disposition action. */
   public EnumWrapper<GetFileVersionRetentionsQueryParamsDispositionActionField> dispositionAction;
 
+  /**
+   * Filters results by files that will have their disposition come into effect before this date.
+   */
   public String dispositionBefore;
 
+  /** Filters results by files that will have their disposition come into effect after this date. */
   public String dispositionAfter;
 
+  /** The maximum number of items to return per page. */
   public Long limit;
 
+  /**
+   * Defines the position marker at which to begin returning results. This is used when paginating
+   * using marker-based pagination.
+   *
+   * <p>This requires `usemarker` to be set to `true`.
+   */
   public String marker;
 
   public GetFileVersionRetentionsQueryParams() {}

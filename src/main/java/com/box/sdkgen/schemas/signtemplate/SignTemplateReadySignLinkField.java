@@ -10,19 +10,28 @@ import java.util.Objects;
 @JsonFilter("nullablePropertyFilter")
 public class SignTemplateReadySignLinkField extends SerializableObject {
 
+  /** The URL that can be sent to signers. */
   protected String url;
 
+  /** Request name. */
   @Nullable protected String name;
 
+  /** Extra instructions for all signers. */
   @Nullable protected String instructions;
 
+  /**
+   * The destination folder to place final, signed document and signing log. Only `ID` and `type`
+   * fields are required. The root folder, folder ID `0`, cannot be used.
+   */
   @JsonProperty("folder_id")
   @Nullable
   protected String folderId;
 
+  /** Whether to disable notifications when a signer has signed. */
   @JsonProperty("is_notification_disabled")
   protected Boolean isNotificationDisabled;
 
+  /** Whether the ready sign link is enabled or not. */
   @JsonProperty("is_active")
   protected Boolean isActive;
 

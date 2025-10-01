@@ -10,8 +10,18 @@ import java.util.Objects;
 public class UpdateClassificationRequestBodyDataStaticConfigClassificationField
     extends SerializableObject {
 
+  /** A longer description of the classification. */
   protected String classificationDefinition;
 
+  /**
+   * An internal Box identifier used to assign a color to a classification label.
+   *
+   * <p>Mapping between a `colorID` and a color may change without notice. Currently, the color
+   * mappings are as follows.
+   *
+   * <p>* `0`: Yellow. * `1`: Orange. * `2`: Watermelon red. * `3`: Purple rain. * `4`: Light blue.
+   * * `5`: Dark blue. * `6`: Light green. * `7`: Gray.
+   */
   @JsonProperty("colorID")
   protected Long colorId;
 

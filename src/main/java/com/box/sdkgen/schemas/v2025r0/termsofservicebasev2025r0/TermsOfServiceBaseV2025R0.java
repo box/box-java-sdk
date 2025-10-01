@@ -9,11 +9,14 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import java.util.Objects;
 
+/** The root-level record that is supposed to represent a single Terms of Service. */
 @JsonFilter("nullablePropertyFilter")
 public class TermsOfServiceBaseV2025R0 extends SerializableObject {
 
+  /** The unique identifier for this terms of service. */
   protected final String id;
 
+  /** The value will always be `terms_of_service`. */
   @JsonDeserialize(
       using =
           TermsOfServiceBaseV2025R0TypeField.TermsOfServiceBaseV2025R0TypeFieldDeserializer.class)

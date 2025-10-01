@@ -11,14 +11,24 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.List;
 import java.util.Objects;
 
+/** AI Extract Structured Request object. */
 @JsonFilter("nullablePropertyFilter")
 public class AiExtractStructured extends SerializableObject {
 
+  /** The items to be processed by the LLM. Currently you can use files only. */
   protected final List<AiItemBase> items;
 
+  /**
+   * The metadata template containing the fields to extract. For your request to work, you must
+   * provide either `metadata_template` or `fields`, but not both.
+   */
   @JsonProperty("metadata_template")
   protected AiExtractStructuredMetadataTemplateField metadataTemplate;
 
+  /**
+   * The fields to be extracted from the provided items. For your request to work, you must provide
+   * either `metadata_template` or `fields`, but not both.
+   */
   protected List<AiExtractStructuredFieldsField> fields;
 
   @JsonProperty("ai_agent")

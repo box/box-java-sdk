@@ -14,11 +14,24 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import java.time.OffsetDateTime;
 import java.util.Objects;
 
+/**
+ * A retention policy blocks permanent deletion of content for a specified amount of time. Admins
+ * can apply policies to specified folders, or an entire enterprise. A file version retention is a
+ * record for a retained file version. To use this feature, you must have the manage retention
+ * policies scope enabled for your API key in your application management console.
+ *
+ * <p>**Note**: File retention API is now **deprecated**. To get information about files and file
+ * versions under retention, see [files under
+ * retention](e://get-retention-policy-assignments-id-files-under-retention) or [file versions under
+ * retention](e://get-retention-policy-assignments-id-file-versions-under-retention) endpoints.
+ */
 @JsonFilter("nullablePropertyFilter")
 public class FileVersionRetention extends SerializableObject {
 
+  /** The unique identifier for this file version retention. */
   protected String id;
 
+  /** The value will always be `file_version_retention`. */
   @JsonDeserialize(
       using = FileVersionRetentionTypeField.FileVersionRetentionTypeFieldDeserializer.class)
   @JsonSerialize(
@@ -30,11 +43,13 @@ public class FileVersionRetention extends SerializableObject {
 
   protected FileMini file;
 
+  /** When this file version retention object was created. */
   @JsonProperty("applied_at")
   @JsonSerialize(using = DateTimeUtils.DateTimeSerializer.class)
   @JsonDeserialize(using = DateTimeUtils.DateTimeDeserializer.class)
   protected OffsetDateTime appliedAt;
 
+  /** When the retention expires on this file version retention. */
   @JsonProperty("disposition_at")
   @JsonSerialize(using = DateTimeUtils.DateTimeSerializer.class)
   @JsonDeserialize(using = DateTimeUtils.DateTimeDeserializer.class)

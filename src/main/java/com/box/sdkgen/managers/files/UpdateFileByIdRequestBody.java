@@ -15,8 +15,20 @@ import java.util.Objects;
 @JsonFilter("nullablePropertyFilter")
 public class UpdateFileByIdRequestBody extends SerializableObject {
 
+  /**
+   * An optional different name for the file. This can be used to rename the file.
+   *
+   * <p>File names must be unique within their parent folder. The name check is case-insensitive, so
+   * a file named `New File` cannot be created in a parent folder that already contains a folder
+   * named `new file`.
+   */
   protected String name;
 
+  /**
+   * The description for a file. This can be seen in the right-hand sidebar panel when viewing a
+   * file in the Box web app. Additionally, this index is used in the search index of the file,
+   * allowing users to find the file by the content in the description.
+   */
   protected String description;
 
   protected UpdateFileByIdRequestBodyParentField parent;
@@ -25,17 +37,47 @@ public class UpdateFileByIdRequestBody extends SerializableObject {
   @Nullable
   protected UpdateFileByIdRequestBodySharedLinkField sharedLink;
 
+  /**
+   * Defines a lock on an item. This prevents the item from being moved, renamed, or otherwise
+   * changed by anyone other than the user who created the lock.
+   *
+   * <p>Set this to `null` to remove the lock.
+   */
   @Nullable protected UpdateFileByIdRequestBodyLockField lock;
 
+  /**
+   * The retention expiration timestamp for the given file. This date cannot be shortened once set
+   * on a file.
+   */
   @JsonProperty("disposition_at")
   @JsonSerialize(using = DateTimeUtils.DateTimeSerializer.class)
   @JsonDeserialize(using = DateTimeUtils.DateTimeDeserializer.class)
   protected OffsetDateTime dispositionAt;
 
+  /** Defines who can download a file. */
   protected UpdateFileByIdRequestBodyPermissionsField permissions;
 
+  /**
+   * An array of collections to make this file a member of. Currently we only support the
+   * `favorites` collection.
+   *
+   * <p>To get the ID for a collection, use the [List all collections][1] endpoint.
+   *
+   * <p>Passing an empty array `[]` or `null` will remove the file from all collections.
+   *
+   * <p>[1]: e://get-collections
+   */
   @Nullable protected List<UpdateFileByIdRequestBodyCollectionsField> collections;
 
+  /**
+   * The tags for this item. These tags are shown in the Box web app and mobile apps next to an
+   * item.
+   *
+   * <p>To add or remove a tag, retrieve the item's current tags, modify them, and then update this
+   * field.
+   *
+   * <p>There is a limit of 100 tags per item, and 10,000 unique tags per enterprise.
+   */
   protected List<String> tags;
 
   public UpdateFileByIdRequestBody() {

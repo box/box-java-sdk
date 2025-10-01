@@ -7,9 +7,11 @@ import com.fasterxml.jackson.annotation.JsonFilter;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.Objects;
 
+/** A mini representation of a file version, used when nested within another resource. */
 @JsonFilter("nullablePropertyFilter")
 public class FileVersionMini extends FileVersionBase {
 
+  /** The SHA1 hash of this version of the file. */
   protected String sha1;
 
   public FileVersionMini(@JsonProperty("id") String id) {

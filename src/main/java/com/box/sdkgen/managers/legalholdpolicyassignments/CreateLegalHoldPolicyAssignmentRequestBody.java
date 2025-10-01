@@ -8,9 +8,11 @@ import java.util.Objects;
 @JsonFilter("nullablePropertyFilter")
 public class CreateLegalHoldPolicyAssignmentRequestBody extends SerializableObject {
 
+  /** The ID of the policy to assign. */
   @JsonProperty("policy_id")
   protected final String policyId;
 
+  /** The item to assign the policy to. */
   @JsonProperty("assign_to")
   protected final CreateLegalHoldPolicyAssignmentRequestBodyAssignToField assignTo;
 

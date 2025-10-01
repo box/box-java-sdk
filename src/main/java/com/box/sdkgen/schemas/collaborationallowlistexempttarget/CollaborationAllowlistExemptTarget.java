@@ -12,11 +12,17 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import java.time.OffsetDateTime;
 import java.util.Objects;
 
+/**
+ * The user that is exempt from any of the restrictions imposed by the list of allowed collaboration
+ * domains for this enterprise.
+ */
 @JsonFilter("nullablePropertyFilter")
 public class CollaborationAllowlistExemptTarget extends SerializableObject {
 
+  /** The unique identifier for this exemption. */
   protected String id;
 
+  /** The value will always be `collaboration_whitelist_exempt_target`. */
   @JsonDeserialize(
       using =
           CollaborationAllowlistExemptTargetTypeField
@@ -31,11 +37,13 @@ public class CollaborationAllowlistExemptTarget extends SerializableObject {
 
   protected UserMini user;
 
+  /** The time the entry was created. */
   @JsonProperty("created_at")
   @JsonSerialize(using = DateTimeUtils.DateTimeSerializer.class)
   @JsonDeserialize(using = DateTimeUtils.DateTimeDeserializer.class)
   protected OffsetDateTime createdAt;
 
+  /** The time the entry was modified. */
   @JsonProperty("modified_at")
   @JsonSerialize(using = DateTimeUtils.DateTimeSerializer.class)
   @JsonDeserialize(using = DateTimeUtils.DateTimeDeserializer.class)

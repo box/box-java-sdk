@@ -6,8 +6,13 @@ import java.util.Map;
 
 public class UploadFileHeaders {
 
+  /**
+   * An optional header containing the SHA1 hash of the file to ensure that the file was not
+   * corrupted in transit.
+   */
   public String contentMd5;
 
+  /** Extra headers that will be included in the HTTP request. */
   public Map<String, String> extraHeaders;
 
   public UploadFileHeaders() {

@@ -30,6 +30,13 @@ public class SharedLinksAppItemsManager {
     this.networkSession = builder.networkSession;
   }
 
+  /**
+   * Returns the app item represented by a shared link.
+   *
+   * <p>The link can originate from the current enterprise or another.
+   *
+   * @param headers Headers of findAppItemForSharedLink method
+   */
   public AppItem findAppItemForSharedLink(FindAppItemForSharedLinkHeaders headers) {
     Map<String, String> headersMap =
         prepareParams(

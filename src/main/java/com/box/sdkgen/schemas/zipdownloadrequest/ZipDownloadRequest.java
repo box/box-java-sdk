@@ -7,11 +7,17 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.List;
 import java.util.Objects;
 
+/** A request to create a `zip` archive to download. */
 @JsonFilter("nullablePropertyFilter")
 public class ZipDownloadRequest extends SerializableObject {
 
+  /** A list of items to add to the `zip` archive. These can be folders or files. */
   protected final List<ZipDownloadRequestItemsField> items;
 
+  /**
+   * The optional name of the `zip` archive. This name will be appended by the `.zip` file
+   * extension, for example `January Financials.zip`.
+   */
   @JsonProperty("download_file_name")
   protected String downloadFileName;
 

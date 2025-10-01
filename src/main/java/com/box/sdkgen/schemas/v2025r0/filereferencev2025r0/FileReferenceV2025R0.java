@@ -9,15 +9,18 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import java.util.Objects;
 
+/** File reference. */
 @JsonFilter("nullablePropertyFilter")
 public class FileReferenceV2025R0 extends SerializableObject {
 
+  /** The value will always be `file`. */
   @JsonDeserialize(
       using = FileReferenceV2025R0TypeField.FileReferenceV2025R0TypeFieldDeserializer.class)
   @JsonSerialize(
       using = FileReferenceV2025R0TypeField.FileReferenceV2025R0TypeFieldSerializer.class)
   protected EnumWrapper<FileReferenceV2025R0TypeField> type;
 
+  /** ID of the object. */
   protected final String id;
 
   public FileReferenceV2025R0(@JsonProperty("id") String id) {

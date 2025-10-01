@@ -11,16 +11,20 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import java.util.Objects;
 
+/** The AppItem that triggered an event in the event stream. */
 @JsonFilter("nullablePropertyFilter")
 public class AppItemEventSource extends SerializableObject {
 
+  /** The id of the `AppItem`. */
   protected final String id;
 
+  /** The type of the source that this event represents. Can only be `app_item`. */
   @JsonDeserialize(
       using = AppItemEventSourceTypeField.AppItemEventSourceTypeFieldDeserializer.class)
   @JsonSerialize(using = AppItemEventSourceTypeField.AppItemEventSourceTypeFieldSerializer.class)
   protected EnumWrapper<AppItemEventSourceTypeField> type;
 
+  /** The type of the `AppItem`. */
   @JsonProperty("app_item_type")
   protected final String appItemType;
 

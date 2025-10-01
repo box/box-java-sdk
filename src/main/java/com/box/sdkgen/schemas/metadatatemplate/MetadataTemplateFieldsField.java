@@ -13,22 +13,47 @@ import java.util.Objects;
 @JsonFilter("nullablePropertyFilter")
 public class MetadataTemplateFieldsField extends SerializableObject {
 
+  /**
+   * The type of field. The basic fields are a `string` field for text, a `float` field for numbers,
+   * and a `date` fields to present the user with a date-time picker.
+   *
+   * <p>Additionally, metadata templates support an `enum` field for a basic list of items, and `
+   * multiSelect` field for a similar list of items where the user can select more than one value.
+   *
+   * <p>**Note**: The `integer` value is deprecated. It is still present in the response, but cannot
+   * be used in the POST request.
+   */
   @JsonDeserialize(
       using = MetadataTemplateFieldsTypeField.MetadataTemplateFieldsTypeFieldDeserializer.class)
   @JsonSerialize(
       using = MetadataTemplateFieldsTypeField.MetadataTemplateFieldsTypeFieldSerializer.class)
   protected final EnumWrapper<MetadataTemplateFieldsTypeField> type;
 
+  /**
+   * A unique identifier for the field. The identifier must be unique within the template to which
+   * it belongs.
+   */
   protected final String key;
 
+  /** The display name of the field as it is shown to the user in the web and mobile apps. */
   protected final String displayName;
 
+  /** A description of the field. This is not shown to the user. */
   protected String description;
 
+  /**
+   * Whether this field is hidden in the UI for the user and can only be set through the API
+   * instead.
+   */
   protected Boolean hidden;
 
+  /**
+   * A list of options for this field. This is used in combination with the `enum` and `multiSelect`
+   * field types.
+   */
   protected List<MetadataTemplateFieldsOptionsField> options;
 
+  /** The unique ID of the metadata template field. */
   protected String id;
 
   public MetadataTemplateFieldsField(

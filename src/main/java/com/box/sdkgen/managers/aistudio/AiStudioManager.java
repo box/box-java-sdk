@@ -32,18 +32,35 @@ public class AiStudioManager {
     this.networkSession = builder.networkSession;
   }
 
+  /** Lists AI agents based on the provided parameters. */
   public AiMultipleAgentResponse getAiAgents() {
     return getAiAgents(new GetAiAgentsQueryParams(), new GetAiAgentsHeaders());
   }
 
+  /**
+   * Lists AI agents based on the provided parameters.
+   *
+   * @param queryParams Query parameters of getAiAgents method
+   */
   public AiMultipleAgentResponse getAiAgents(GetAiAgentsQueryParams queryParams) {
     return getAiAgents(queryParams, new GetAiAgentsHeaders());
   }
 
+  /**
+   * Lists AI agents based on the provided parameters.
+   *
+   * @param headers Headers of getAiAgents method
+   */
   public AiMultipleAgentResponse getAiAgents(GetAiAgentsHeaders headers) {
     return getAiAgents(new GetAiAgentsQueryParams(), headers);
   }
 
+  /**
+   * Lists AI agents based on the provided parameters.
+   *
+   * @param queryParams Query parameters of getAiAgents method
+   * @param headers Headers of getAiAgents method
+   */
   public AiMultipleAgentResponse getAiAgents(
       GetAiAgentsQueryParams queryParams, GetAiAgentsHeaders headers) {
     Map<String, String> queryParamsMap =
@@ -73,10 +90,23 @@ public class AiStudioManager {
     return JsonManager.deserialize(response.getData(), AiMultipleAgentResponse.class);
   }
 
+  /**
+   * Creates an AI agent. At least one of the following capabilities must be provided: `ask`,
+   * `text_gen`, `extract`.
+   *
+   * @param requestBody Request body of createAiAgent method
+   */
   public AiSingleAgentResponseFull createAiAgent(CreateAiAgent requestBody) {
     return createAiAgent(requestBody, new CreateAiAgentHeaders());
   }
 
+  /**
+   * Creates an AI agent. At least one of the following capabilities must be provided: `ask`,
+   * `text_gen`, `extract`.
+   *
+   * @param requestBody Request body of createAiAgent method
+   * @param headers Headers of createAiAgent method
+   */
   public AiSingleAgentResponseFull createAiAgent(
       CreateAiAgent requestBody, CreateAiAgentHeaders headers) {
     Map<String, String> headersMap = prepareParams(mergeMaps(mapOf(), headers.getExtraHeaders()));
@@ -98,10 +128,23 @@ public class AiStudioManager {
     return JsonManager.deserialize(response.getData(), AiSingleAgentResponseFull.class);
   }
 
+  /**
+   * Updates an AI agent.
+   *
+   * @param agentId The ID of the agent to update. Example: "1234"
+   * @param requestBody Request body of updateAiAgentById method
+   */
   public AiSingleAgentResponseFull updateAiAgentById(String agentId, CreateAiAgent requestBody) {
     return updateAiAgentById(agentId, requestBody, new UpdateAiAgentByIdHeaders());
   }
 
+  /**
+   * Updates an AI agent.
+   *
+   * @param agentId The ID of the agent to update. Example: "1234"
+   * @param requestBody Request body of updateAiAgentById method
+   * @param headers Headers of updateAiAgentById method
+   */
   public AiSingleAgentResponseFull updateAiAgentById(
       String agentId, CreateAiAgent requestBody, UpdateAiAgentByIdHeaders headers) {
     Map<String, String> headersMap = prepareParams(mergeMaps(mapOf(), headers.getExtraHeaders()));
@@ -126,19 +169,43 @@ public class AiStudioManager {
     return JsonManager.deserialize(response.getData(), AiSingleAgentResponseFull.class);
   }
 
+  /**
+   * Gets an AI Agent using the `agent_id` parameter.
+   *
+   * @param agentId The agent id to get. Example: "1234"
+   */
   public AiSingleAgentResponseFull getAiAgentById(String agentId) {
     return getAiAgentById(agentId, new GetAiAgentByIdQueryParams(), new GetAiAgentByIdHeaders());
   }
 
+  /**
+   * Gets an AI Agent using the `agent_id` parameter.
+   *
+   * @param agentId The agent id to get. Example: "1234"
+   * @param queryParams Query parameters of getAiAgentById method
+   */
   public AiSingleAgentResponseFull getAiAgentById(
       String agentId, GetAiAgentByIdQueryParams queryParams) {
     return getAiAgentById(agentId, queryParams, new GetAiAgentByIdHeaders());
   }
 
+  /**
+   * Gets an AI Agent using the `agent_id` parameter.
+   *
+   * @param agentId The agent id to get. Example: "1234"
+   * @param headers Headers of getAiAgentById method
+   */
   public AiSingleAgentResponseFull getAiAgentById(String agentId, GetAiAgentByIdHeaders headers) {
     return getAiAgentById(agentId, new GetAiAgentByIdQueryParams(), headers);
   }
 
+  /**
+   * Gets an AI Agent using the `agent_id` parameter.
+   *
+   * @param agentId The agent id to get. Example: "1234"
+   * @param queryParams Query parameters of getAiAgentById method
+   * @param headers Headers of getAiAgentById method
+   */
   public AiSingleAgentResponseFull getAiAgentById(
       String agentId, GetAiAgentByIdQueryParams queryParams, GetAiAgentByIdHeaders headers) {
     Map<String, String> queryParamsMap =
@@ -164,10 +231,21 @@ public class AiStudioManager {
     return JsonManager.deserialize(response.getData(), AiSingleAgentResponseFull.class);
   }
 
+  /**
+   * Deletes an AI agent using the provided parameters.
+   *
+   * @param agentId The ID of the agent to delete. Example: "1234"
+   */
   public void deleteAiAgentById(String agentId) {
     deleteAiAgentById(agentId, new DeleteAiAgentByIdHeaders());
   }
 
+  /**
+   * Deletes an AI agent using the provided parameters.
+   *
+   * @param agentId The ID of the agent to delete. Example: "1234"
+   * @param headers Headers of deleteAiAgentById method
+   */
   public void deleteAiAgentById(String agentId, DeleteAiAgentByIdHeaders headers) {
     Map<String, String> headersMap = prepareParams(mergeMaps(mapOf(), headers.getExtraHeaders()));
     FetchResponse response =

@@ -7,6 +7,7 @@ import com.fasterxml.jackson.annotation.JsonFilter;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.Objects;
 
+/** A shield information barrier reference for requests and responses. */
 @JsonFilter("nullablePropertyFilter")
 public class ShieldInformationBarrierReference extends SerializableObject {
 

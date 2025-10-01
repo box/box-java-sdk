@@ -9,11 +9,17 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import java.util.Objects;
 
+/**
+ * The bare basic representation of a file version, the minimal amount of fields returned when using
+ * the `fields` query parameter.
+ */
 @JsonFilter("nullablePropertyFilter")
 public class FileVersionBaseV2025R0 extends SerializableObject {
 
+  /** The unique identifier that represent a file version. */
   protected final String id;
 
+  /** The value will always be `file_version`. */
   @JsonDeserialize(
       using = FileVersionBaseV2025R0TypeField.FileVersionBaseV2025R0TypeFieldDeserializer.class)
   @JsonSerialize(

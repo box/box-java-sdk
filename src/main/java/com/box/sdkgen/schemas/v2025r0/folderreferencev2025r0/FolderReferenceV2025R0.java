@@ -9,15 +9,18 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import java.util.Objects;
 
+/** Folder reference. */
 @JsonFilter("nullablePropertyFilter")
 public class FolderReferenceV2025R0 extends SerializableObject {
 
+  /** The value will always be `folder`. */
   @JsonDeserialize(
       using = FolderReferenceV2025R0TypeField.FolderReferenceV2025R0TypeFieldDeserializer.class)
   @JsonSerialize(
       using = FolderReferenceV2025R0TypeField.FolderReferenceV2025R0TypeFieldSerializer.class)
   protected EnumWrapper<FolderReferenceV2025R0TypeField> type;
 
+  /** ID of the folder. */
   protected final String id;
 
   public FolderReferenceV2025R0(@JsonProperty("id") String id) {

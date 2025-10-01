@@ -9,12 +9,16 @@ import java.util.Objects;
 @JsonFilter("nullablePropertyFilter")
 public class LegalHoldPolicyAssignmentCountsField extends SerializableObject {
 
+  /** The number of users this policy is applied to. */
   protected Long user;
 
+  /** The number of folders this policy is applied to. */
   protected Long folder;
 
+  /** The number of files this policy is applied to. */
   protected Long file;
 
+  /** The number of file versions this policy is applied to. */
   @JsonProperty("file_version")
   protected Long fileVersion;
 

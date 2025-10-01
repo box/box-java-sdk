@@ -10,9 +10,16 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import java.util.Objects;
 
+/**
+ * The schema for an integration mapping mapped item object for type Slack.
+ *
+ * <p>Depending if Box for Slack is installed at the org or workspace level, provide **either**
+ * `slack_org_id` **or** `slack_workspace_id`. Do not use both parameters at the same time.
+ */
 @JsonFilter("nullablePropertyFilter")
 public class IntegrationMappingPartnerItemSlack extends SerializableObject {
 
+  /** Type of the mapped item referenced in `id`. */
   @JsonDeserialize(
       using =
           IntegrationMappingPartnerItemSlackTypeField
@@ -23,12 +30,21 @@ public class IntegrationMappingPartnerItemSlack extends SerializableObject {
               .IntegrationMappingPartnerItemSlackTypeFieldSerializer.class)
   protected EnumWrapper<IntegrationMappingPartnerItemSlackTypeField> type;
 
+  /** ID of the mapped item (of type referenced in `type`). */
   protected final String id;
 
+  /**
+   * ID of the Slack workspace with which the item is associated. Use this parameter if Box for
+   * Slack is installed at a workspace level. Do not use `slack_org_id` at the same time.
+   */
   @JsonProperty("slack_workspace_id")
   @Nullable
   protected String slackWorkspaceId;
 
+  /**
+   * ID of the Slack org with which the item is associated. Use this parameter if Box for Slack is
+   * installed at the org level. Do not use `slack_workspace_id` at the same time.
+   */
   @JsonProperty("slack_org_id")
   @Nullable
   protected String slackOrgId;

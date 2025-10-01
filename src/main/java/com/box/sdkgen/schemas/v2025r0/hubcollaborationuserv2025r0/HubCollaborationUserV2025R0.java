@@ -7,11 +7,20 @@ import com.fasterxml.jackson.annotation.JsonFilter;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.Objects;
 
+/** A mini representation of a user, can be returned only when the status is `pending`. */
 @JsonFilter("nullablePropertyFilter")
 public class HubCollaborationUserV2025R0 extends UserBaseV2025R0 {
 
+  /**
+   * The display name of this user. If the collaboration status is `pending`, an empty string is
+   * returned.
+   */
   protected String name;
 
+  /**
+   * The primary email address of this user. If the collaboration status is `pending`, an empty
+   * string is returned.
+   */
   protected String login;
 
   public HubCollaborationUserV2025R0(@JsonProperty("id") String id) {

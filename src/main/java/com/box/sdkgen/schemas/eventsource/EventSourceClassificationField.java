@@ -8,6 +8,7 @@ import java.util.Objects;
 @JsonFilter("nullablePropertyFilter")
 public class EventSourceClassificationField extends SerializableObject {
 
+  /** The classification's name. */
   protected String name;
 
   public EventSourceClassificationField() {

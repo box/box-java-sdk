@@ -10,9 +10,11 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import java.util.List;
 import java.util.Objects;
 
+/** Representation of content of a Shield List that contains integrations data. */
 @JsonFilter("nullablePropertyFilter")
 public class ShieldListContentIntegrationV2025R0 extends SerializableObject {
 
+  /** The type of content in the shield list. */
   @JsonDeserialize(
       using =
           ShieldListContentIntegrationV2025R0TypeField
@@ -23,6 +25,7 @@ public class ShieldListContentIntegrationV2025R0 extends SerializableObject {
               .ShieldListContentIntegrationV2025R0TypeFieldSerializer.class)
   protected EnumWrapper<ShieldListContentIntegrationV2025R0TypeField> type;
 
+  /** List of integration. */
   protected final List<ShieldListContentIntegrationV2025R0IntegrationsField> integrations;
 
   public ShieldListContentIntegrationV2025R0(

@@ -10,13 +10,30 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import java.util.Objects;
 
+/**
+ * The bare basic representation of a folder, the minimal amount of fields returned when using the
+ * `fields` query parameter.
+ */
 @JsonFilter("nullablePropertyFilter")
 public class FolderBase extends SerializableObject {
 
+  /**
+   * The unique identifier that represent a folder.
+   *
+   * <p>The ID for any folder can be determined by visiting a folder in the web application and
+   * copying the ID from the URL. For example, for the URL `https://*.app.box.com/folders/123` the
+   * `folder_id` is `123`.
+   */
   protected final String id;
 
+  /**
+   * The HTTP `etag` of this folder. This can be used within some API endpoints in the `If-Match`
+   * and `If-None-Match` headers to only perform changes on the folder if (no) changes have
+   * happened.
+   */
   @Nullable protected String etag;
 
+  /** The value will always be `folder`. */
   @JsonDeserialize(using = FolderBaseTypeField.FolderBaseTypeFieldDeserializer.class)
   @JsonSerialize(using = FolderBaseTypeField.FolderBaseTypeFieldSerializer.class)
   protected EnumWrapper<FolderBaseTypeField> type;

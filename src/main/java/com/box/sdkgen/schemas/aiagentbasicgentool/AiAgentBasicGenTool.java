@@ -11,9 +11,14 @@ import com.fasterxml.jackson.annotation.JsonFilter;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.Objects;
 
+/** AI agent basic tool used to generate text. */
 @JsonFilter("nullablePropertyFilter")
 public class AiAgentBasicGenTool extends AiAgentLongTextToolTextGen {
 
+  /**
+   * How the content should be included in a request to the LLM. Input for `{content}` is optional,
+   * depending on the use.
+   */
   @JsonProperty("content_template")
   protected String contentTemplate;
 

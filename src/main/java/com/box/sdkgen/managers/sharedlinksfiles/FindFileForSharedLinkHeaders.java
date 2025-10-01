@@ -6,10 +6,24 @@ import java.util.Map;
 
 public class FindFileForSharedLinkHeaders {
 
+  /**
+   * Ensures an item is only returned if it has changed.
+   *
+   * <p>Pass in the item's last observed `etag` value into this header and the endpoint will fail
+   * with a `304 Not Modified` if the item has not changed since.
+   */
   public String ifNoneMatch;
 
+  /**
+   * A header containing the shared link and optional password for the shared link.
+   *
+   * <p>The format for this header is as follows:
+   *
+   * <p>`shared_link=[link]&amp;shared_link_password=[password]`.
+   */
   public final String boxapi;
 
+  /** Extra headers that will be included in the HTTP request. */
   public Map<String, String> extraHeaders;
 
   public FindFileForSharedLinkHeaders(String boxapi) {

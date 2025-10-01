@@ -9,9 +9,15 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import java.util.Objects;
 
+/** A request for a new OAuth 2.0 token. */
 @JsonFilter("nullablePropertyFilter")
 public class PostOAuth2Token extends SerializableObject {
 
+  /**
+   * The type of request being made, either using a client-side obtained authorization code, a
+   * refresh token, a JWT assertion, client credentials grant or another access token for the
+   * purpose of downscoping a token.
+   */
   @JsonDeserialize(
       using = PostOAuth2TokenGrantTypeField.PostOAuth2TokenGrantTypeFieldDeserializer.class)
   @JsonSerialize(
@@ -19,22 +25,64 @@ public class PostOAuth2Token extends SerializableObject {
   @JsonProperty("grant_type")
   protected final EnumWrapper<PostOAuth2TokenGrantTypeField> grantType;
 
+  /**
+   * The Client ID of the application requesting an access token.
+   *
+   * <p>Used in combination with `authorization_code`, `client_credentials`, or
+   * `urn:ietf:params:oauth:grant-type:jwt-bearer` as the `grant_type`.
+   */
   @JsonProperty("client_id")
   protected String clientId;
 
+  /**
+   * The client secret of the application requesting an access token.
+   *
+   * <p>Used in combination with `authorization_code`, `client_credentials`, or
+   * `urn:ietf:params:oauth:grant-type:jwt-bearer` as the `grant_type`.
+   */
   @JsonProperty("client_secret")
   protected String clientSecret;
 
+  /**
+   * The client-side authorization code passed to your application by Box in the browser redirect
+   * after the user has successfully granted your application permission to make API calls on their
+   * behalf.
+   *
+   * <p>Used in combination with `authorization_code` as the `grant_type`.
+   */
   protected String code;
 
+  /**
+   * A refresh token used to get a new access token with.
+   *
+   * <p>Used in combination with `refresh_token` as the `grant_type`.
+   */
   @JsonProperty("refresh_token")
   protected String refreshToken;
 
+  /**
+   * A JWT assertion for which to request a new access token.
+   *
+   * <p>Used in combination with `urn:ietf:params:oauth:grant-type:jwt-bearer` as the `grant_type`.
+   */
   protected String assertion;
 
+  /**
+   * The token to exchange for a downscoped token. This can be a regular access token, a JWT
+   * assertion, or an app token.
+   *
+   * <p>Used in combination with `urn:ietf:params:oauth:grant-type:token-exchange` as the
+   * `grant_type`.
+   */
   @JsonProperty("subject_token")
   protected String subjectToken;
 
+  /**
+   * The type of `subject_token` passed in.
+   *
+   * <p>Used in combination with `urn:ietf:params:oauth:grant-type:token-exchange` as the
+   * `grant_type`.
+   */
   @JsonDeserialize(
       using =
           PostOAuth2TokenSubjectTokenTypeField.PostOAuth2TokenSubjectTokenTypeFieldDeserializer
@@ -45,9 +93,21 @@ public class PostOAuth2Token extends SerializableObject {
   @JsonProperty("subject_token_type")
   protected EnumWrapper<PostOAuth2TokenSubjectTokenTypeField> subjectTokenType;
 
+  /**
+   * The token used to create an annotator token. This is a JWT assertion.
+   *
+   * <p>Used in combination with `urn:ietf:params:oauth:grant-type:token-exchange` as the
+   * `grant_type`.
+   */
   @JsonProperty("actor_token")
   protected String actorToken;
 
+  /**
+   * The type of `actor_token` passed in.
+   *
+   * <p>Used in combination with `urn:ietf:params:oauth:grant-type:token-exchange` as the
+   * `grant_type`.
+   */
   @JsonDeserialize(
       using =
           PostOAuth2TokenActorTokenTypeField.PostOAuth2TokenActorTokenTypeFieldDeserializer.class)
@@ -56,10 +116,18 @@ public class PostOAuth2Token extends SerializableObject {
   @JsonProperty("actor_token_type")
   protected EnumWrapper<PostOAuth2TokenActorTokenTypeField> actorTokenType;
 
+  /**
+   * The space-delimited list of scopes that you want apply to the new access token.
+   *
+   * <p>The `subject_token` will need to have all of these scopes or the call will error with **401
+   * Unauthorized**..
+   */
   protected String scope;
 
+  /** Full URL for the file that the token should be generated for. */
   protected String resource;
 
+  /** Used in combination with `client_credentials` as the `grant_type`. */
   @JsonDeserialize(
       using =
           PostOAuth2TokenBoxSubjectTypeField.PostOAuth2TokenBoxSubjectTypeFieldDeserializer.class)
@@ -68,9 +136,14 @@ public class PostOAuth2Token extends SerializableObject {
   @JsonProperty("box_subject_type")
   protected EnumWrapper<PostOAuth2TokenBoxSubjectTypeField> boxSubjectType;
 
+  /**
+   * Used in combination with `client_credentials` as the `grant_type`. Value is determined by
+   * `box_subject_type`. If `user` use user ID and if `enterprise` use enterprise ID.
+   */
   @JsonProperty("box_subject_id")
   protected String boxSubjectId;
 
+  /** Full URL of the shared link on the file or folder that the token should be generated for. */
   @JsonProperty("box_shared_link")
   protected String boxSharedLink;
 

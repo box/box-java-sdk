@@ -11,16 +11,20 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import java.time.OffsetDateTime;
 import java.util.Objects;
 
+/** AI response. */
 @JsonFilter("nullablePropertyFilter")
 public class AiResponse extends SerializableObject {
 
+  /** The answer provided by the LLM. */
   protected final String answer;
 
+  /** The ISO date formatted timestamp of when the answer to the prompt was created. */
   @JsonProperty("created_at")
   @JsonSerialize(using = DateTimeUtils.DateTimeSerializer.class)
   @JsonDeserialize(using = DateTimeUtils.DateTimeDeserializer.class)
   protected final OffsetDateTime createdAt;
 
+  /** The reason the response finishes. */
   @JsonProperty("completion_reason")
   protected String completionReason;
 

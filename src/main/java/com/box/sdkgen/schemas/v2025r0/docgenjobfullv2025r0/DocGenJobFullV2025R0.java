@@ -13,9 +13,11 @@ import com.fasterxml.jackson.annotation.JsonFilter;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.Objects;
 
+/** A full representation of a Box Doc Gen job. */
 @JsonFilter("nullablePropertyFilter")
 public class DocGenJobFullV2025R0 extends DocGenJobV2025R0 {
 
+  /** Time of job creation. */
   @JsonProperty("created_at")
   protected String createdAt;
 
@@ -24,6 +26,7 @@ public class DocGenJobFullV2025R0 extends DocGenJobV2025R0 {
 
   protected final EnterpriseReferenceV2025R0 enterprise;
 
+  /** Source of the request. */
   protected final String source;
 
   public DocGenJobFullV2025R0(

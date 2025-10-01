@@ -10,18 +10,22 @@ import java.util.Objects;
 @JsonFilter("nullablePropertyFilter")
 public class SignTemplateCustomBrandingField extends SerializableObject {
 
+  /** Name of the company. */
   @JsonProperty("company_name")
   @Nullable
   protected String companyName;
 
+  /** Custom branding logo URI in the form of a base64 image. */
   @JsonProperty("logo_uri")
   @Nullable
   protected String logoUri;
 
+  /** Custom branding color in hex. */
   @JsonProperty("branding_color")
   @Nullable
   protected String brandingColor;
 
+  /** Content of the email footer. */
   @JsonProperty("email_footer_text")
   @Nullable
   protected String emailFooterText;

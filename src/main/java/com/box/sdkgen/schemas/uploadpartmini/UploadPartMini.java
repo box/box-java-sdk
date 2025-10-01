@@ -6,14 +6,21 @@ import com.fasterxml.jackson.annotation.JsonFilter;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.Objects;
 
+/** The basic representation of an upload session chunk. */
 @JsonFilter("nullablePropertyFilter")
 public class UploadPartMini extends SerializableObject {
 
+  /** The unique ID of the chunk. */
   @JsonProperty("part_id")
   protected String partId;
 
+  /**
+   * The offset of the chunk within the file in bytes. The lower bound of the position of the chunk
+   * within the file.
+   */
   protected Long offset;
 
+  /** The size of the chunk in bytes. */
   protected Long size;
 
   public UploadPartMini() {

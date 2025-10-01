@@ -6,9 +6,15 @@ import com.fasterxml.jackson.annotation.JsonFilter;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.Objects;
 
+/** The schema for an integration mapping options object for Slack type. */
 @JsonFilter("nullablePropertyFilter")
 public class IntegrationMappingSlackOptions extends SerializableObject {
 
+  /**
+   * Indicates whether or not channel member access to the underlying box item should be
+   * automatically managed. Depending on type of channel, access is managed through creating
+   * collaborations or shared links.
+   */
   @JsonProperty("is_access_management_disabled")
   protected Boolean isAccessManagementDisabled;
 

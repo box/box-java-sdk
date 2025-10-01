@@ -10,9 +10,11 @@ import com.fasterxml.jackson.annotation.JsonFilter;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.Objects;
 
+/** AI agent processor used to handle basic text. */
 @JsonFilter("nullablePropertyFilter")
 public class AiStudioAgentBasicTextTool extends AiAgentBasicTextTool {
 
+  /** True if system message contains custom instructions placeholder, false otherwise. */
   @JsonProperty("is_custom_instructions_included")
   protected Boolean isCustomInstructionsIncluded;
 

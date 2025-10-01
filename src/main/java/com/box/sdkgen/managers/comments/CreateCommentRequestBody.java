@@ -9,11 +9,27 @@ import java.util.Objects;
 @JsonFilter("nullablePropertyFilter")
 public class CreateCommentRequestBody extends SerializableObject {
 
+  /**
+   * The text of the comment.
+   *
+   * <p>To mention a user, use the `tagged_message` parameter instead.
+   */
   protected final String message;
 
+  /**
+   * The text of the comment, including `&#64;[user_id:name]` somewhere in the message to mention
+   * another user, which will send them an email notification, letting them know they have been
+   * mentioned.
+   *
+   * <p>The `user_id` is the target user's ID, where the `name` can be any custom phrase. In the Box
+   * UI this name will link to the user's profile.
+   *
+   * <p>If you are not mentioning another user, use `message` instead.
+   */
   @JsonProperty("tagged_message")
   protected String taggedMessage;
 
+  /** The item to attach the comment to. */
   protected final CreateCommentRequestBodyItemField item;
 
   public CreateCommentRequestBody(

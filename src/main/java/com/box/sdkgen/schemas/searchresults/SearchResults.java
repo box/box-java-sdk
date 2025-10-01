@@ -11,20 +11,35 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import java.util.List;
 import java.util.Objects;
 
+/** A list of files, folders and web links that matched the search query. */
 @JsonFilter("nullablePropertyFilter")
 public class SearchResults extends SerializableObject {
 
+  /**
+   * One greater than the offset of the last entry in the search results. The total number of
+   * entries in the collection may be less than `total_count`.
+   */
   @JsonProperty("total_count")
   protected Long totalCount;
 
+  /**
+   * The limit that was used for this search. This will be the same as the `limit` query parameter
+   * unless that value exceeded the maximum value allowed.
+   */
   protected Long limit;
 
+  /**
+   * The 0-based offset of the first entry in this set. This will be the same as the `offset` query
+   * parameter used.
+   */
   protected Long offset;
 
+  /** Specifies the response as search result items without shared links. */
   @JsonDeserialize(using = SearchResultsTypeField.SearchResultsTypeFieldDeserializer.class)
   @JsonSerialize(using = SearchResultsTypeField.SearchResultsTypeFieldSerializer.class)
   protected EnumWrapper<SearchResultsTypeField> type;
 
+  /** The search results for the query provided. */
   protected List<SearchResultItem> entries;
 
   public SearchResults() {

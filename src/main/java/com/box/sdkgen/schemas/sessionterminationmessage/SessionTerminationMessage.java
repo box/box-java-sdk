@@ -5,9 +5,11 @@ import com.box.sdkgen.internal.SerializableObject;
 import com.fasterxml.jackson.annotation.JsonFilter;
 import java.util.Objects;
 
+/** A message informing about the termination job status. */
 @JsonFilter("nullablePropertyFilter")
 public class SessionTerminationMessage extends SerializableObject {
 
+  /** The unique identifier for the termination job status. */
   protected String message;
 
   public SessionTerminationMessage() {

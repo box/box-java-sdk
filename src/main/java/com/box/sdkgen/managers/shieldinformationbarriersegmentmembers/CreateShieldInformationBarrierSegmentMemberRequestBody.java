@@ -14,6 +14,7 @@ import java.util.Objects;
 @JsonFilter("nullablePropertyFilter")
 public class CreateShieldInformationBarrierSegmentMemberRequestBody extends SerializableObject {
 
+  /** A type of the shield barrier segment member. */
   @JsonDeserialize(
       using =
           CreateShieldInformationBarrierSegmentMemberRequestBodyTypeField
@@ -27,11 +28,13 @@ public class CreateShieldInformationBarrierSegmentMemberRequestBody extends Seri
   @JsonProperty("shield_information_barrier")
   protected ShieldInformationBarrierBase shieldInformationBarrier;
 
+  /** The `type` and `id` of the requested shield information barrier segment. */
   @JsonProperty("shield_information_barrier_segment")
   protected final
   CreateShieldInformationBarrierSegmentMemberRequestBodyShieldInformationBarrierSegmentField
       shieldInformationBarrierSegment;
 
+  /** User to which restriction will be applied. */
   protected final UserBase user;
 
   public CreateShieldInformationBarrierSegmentMemberRequestBody(

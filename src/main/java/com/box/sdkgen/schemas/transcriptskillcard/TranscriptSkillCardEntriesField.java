@@ -9,8 +9,16 @@ import java.util.Objects;
 @JsonFilter("nullablePropertyFilter")
 public class TranscriptSkillCardEntriesField extends SerializableObject {
 
+  /**
+   * The text of the entry. This would be the transcribed text assigned to the entry on the
+   * timeline.
+   */
   protected String text;
 
+  /**
+   * Defines when a transcribed bit of text appears. This only includes a start time and no end
+   * time.
+   */
   protected List<TranscriptSkillCardEntriesAppearsField> appears;
 
   public TranscriptSkillCardEntriesField() {

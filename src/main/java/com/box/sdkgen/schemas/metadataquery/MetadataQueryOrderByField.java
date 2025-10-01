@@ -12,9 +12,20 @@ import java.util.Objects;
 @JsonFilter("nullablePropertyFilter")
 public class MetadataQueryOrderByField extends SerializableObject {
 
+  /**
+   * The metadata template field to order by.
+   *
+   * <p>The `field_key` represents the `key` value of a field from the metadata template being
+   * searched for.
+   */
   @JsonProperty("field_key")
   protected String fieldKey;
 
+  /**
+   * The direction to order by, either ascending or descending.
+   *
+   * <p>The `ordering` direction must be the same for each item in the array.
+   */
   @JsonDeserialize(
       using =
           MetadataQueryOrderByDirectionField.MetadataQueryOrderByDirectionFieldDeserializer.class)

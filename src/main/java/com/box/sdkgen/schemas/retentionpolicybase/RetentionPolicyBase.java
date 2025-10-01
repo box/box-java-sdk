@@ -9,11 +9,14 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import java.util.Objects;
 
+/** A base representation of a retention policy. */
 @JsonFilter("nullablePropertyFilter")
 public class RetentionPolicyBase extends SerializableObject {
 
+  /** The unique identifier that represents a retention policy. */
   protected final String id;
 
+  /** The value will always be `retention_policy`. */
   @JsonDeserialize(
       using = RetentionPolicyBaseTypeField.RetentionPolicyBaseTypeFieldDeserializer.class)
   @JsonSerialize(using = RetentionPolicyBaseTypeField.RetentionPolicyBaseTypeFieldSerializer.class)

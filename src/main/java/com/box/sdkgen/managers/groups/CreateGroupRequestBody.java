@@ -12,15 +12,47 @@ import java.util.Objects;
 @JsonFilter("nullablePropertyFilter")
 public class CreateGroupRequestBody extends SerializableObject {
 
+  /** The name of the new group to be created. This name must be unique within the enterprise. */
   protected final String name;
 
+  /**
+   * Keeps track of which external source this group is coming, for example `Active Directory`, or
+   * `Okta`.
+   *
+   * <p>Setting this will also prevent Box admins from editing the group name and its members
+   * directly via the Box web application.
+   *
+   * <p>This is desirable for one-way syncing of groups.
+   */
   protected String provenance;
 
+  /**
+   * An arbitrary identifier that can be used by external group sync tools to link this Box Group to
+   * an external group.
+   *
+   * <p>Example values of this field could be an **Active Directory Object ID** or a **Google Group
+   * ID**.
+   *
+   * <p>We recommend you use of this field in order to avoid issues when group names are updated in
+   * either Box or external systems.
+   */
   @JsonProperty("external_sync_identifier")
   protected String externalSyncIdentifier;
 
+  /** A human readable description of the group. */
   protected String description;
 
+  /**
+   * Specifies who can invite the group to collaborate on folders.
+   *
+   * <p>When set to `admins_only` the enterprise admin, co-admins, and the group's admin can invite
+   * the group.
+   *
+   * <p>When set to `admins_and_members` all the admins listed above and group members can invite
+   * the group.
+   *
+   * <p>When set to `all_managed_users` all managed users in the enterprise can invite the group.
+   */
   @JsonDeserialize(
       using =
           CreateGroupRequestBodyInvitabilityLevelField
@@ -32,6 +64,13 @@ public class CreateGroupRequestBody extends SerializableObject {
   @JsonProperty("invitability_level")
   protected EnumWrapper<CreateGroupRequestBodyInvitabilityLevelField> invitabilityLevel;
 
+  /**
+   * Specifies who can see the members of the group.
+   *
+   * <p>* `admins_only` - the enterprise admin, co-admins, group's group admin. *
+   * `admins_and_members` - all admins and group members. * `all_managed_users` - all managed users
+   * in the enterprise.
+   */
   @JsonDeserialize(
       using =
           CreateGroupRequestBodyMemberViewabilityLevelField

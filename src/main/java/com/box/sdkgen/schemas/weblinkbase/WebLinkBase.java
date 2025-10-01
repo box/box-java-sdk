@@ -9,15 +9,25 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import java.util.Objects;
 
+/**
+ * Web links are objects that point to URLs. These objects are also known as bookmarks within the
+ * Box web application.
+ *
+ * <p>Web link objects are treated similarly to file objects, they will also support most actions
+ * that apply to regular files.
+ */
 @JsonFilter("nullablePropertyFilter")
 public class WebLinkBase extends SerializableObject {
 
+  /** The unique identifier for this web link. */
   protected final String id;
 
+  /** The value will always be `web_link`. */
   @JsonDeserialize(using = WebLinkBaseTypeField.WebLinkBaseTypeFieldDeserializer.class)
   @JsonSerialize(using = WebLinkBaseTypeField.WebLinkBaseTypeFieldSerializer.class)
   protected EnumWrapper<WebLinkBaseTypeField> type;
 
+  /** The entity tag of this web link. Used with `If-Match` headers. */
   protected String etag;
 
   public WebLinkBase(@JsonProperty("id") String id) {

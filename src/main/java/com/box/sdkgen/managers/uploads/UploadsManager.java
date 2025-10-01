@@ -34,11 +34,38 @@ public class UploadsManager {
     this.networkSession = builder.networkSession;
   }
 
+  /**
+   * Update a file's content. For file sizes over 50MB we recommend using the Chunk Upload APIs.
+   *
+   * <p>The `attributes` part of the body must come **before** the `file` part. Requests that do not
+   * follow this format when uploading the file will receive a HTTP `400` error with a
+   * `metadata_after_file_contents` error code.
+   *
+   * @param fileId The unique identifier that represents a file.
+   *     <p>The ID for any file can be determined by visiting a file in the web application and
+   *     copying the ID from the URL. For example, for the URL `https://*.app.box.com/files/123` the
+   *     `file_id` is `123`. Example: "12345"
+   * @param requestBody Request body of uploadFileVersion method
+   */
   public Files uploadFileVersion(String fileId, UploadFileVersionRequestBody requestBody) {
     return uploadFileVersion(
         fileId, requestBody, new UploadFileVersionQueryParams(), new UploadFileVersionHeaders());
   }
 
+  /**
+   * Update a file's content. For file sizes over 50MB we recommend using the Chunk Upload APIs.
+   *
+   * <p>The `attributes` part of the body must come **before** the `file` part. Requests that do not
+   * follow this format when uploading the file will receive a HTTP `400` error with a
+   * `metadata_after_file_contents` error code.
+   *
+   * @param fileId The unique identifier that represents a file.
+   *     <p>The ID for any file can be determined by visiting a file in the web application and
+   *     copying the ID from the URL. For example, for the URL `https://*.app.box.com/files/123` the
+   *     `file_id` is `123`. Example: "12345"
+   * @param requestBody Request body of uploadFileVersion method
+   * @param queryParams Query parameters of uploadFileVersion method
+   */
   public Files uploadFileVersion(
       String fileId,
       UploadFileVersionRequestBody requestBody,
@@ -46,11 +73,40 @@ public class UploadsManager {
     return uploadFileVersion(fileId, requestBody, queryParams, new UploadFileVersionHeaders());
   }
 
+  /**
+   * Update a file's content. For file sizes over 50MB we recommend using the Chunk Upload APIs.
+   *
+   * <p>The `attributes` part of the body must come **before** the `file` part. Requests that do not
+   * follow this format when uploading the file will receive a HTTP `400` error with a
+   * `metadata_after_file_contents` error code.
+   *
+   * @param fileId The unique identifier that represents a file.
+   *     <p>The ID for any file can be determined by visiting a file in the web application and
+   *     copying the ID from the URL. For example, for the URL `https://*.app.box.com/files/123` the
+   *     `file_id` is `123`. Example: "12345"
+   * @param requestBody Request body of uploadFileVersion method
+   * @param headers Headers of uploadFileVersion method
+   */
   public Files uploadFileVersion(
       String fileId, UploadFileVersionRequestBody requestBody, UploadFileVersionHeaders headers) {
     return uploadFileVersion(fileId, requestBody, new UploadFileVersionQueryParams(), headers);
   }
 
+  /**
+   * Update a file's content. For file sizes over 50MB we recommend using the Chunk Upload APIs.
+   *
+   * <p>The `attributes` part of the body must come **before** the `file` part. Requests that do not
+   * follow this format when uploading the file will receive a HTTP `400` error with a
+   * `metadata_after_file_contents` error code.
+   *
+   * @param fileId The unique identifier that represents a file.
+   *     <p>The ID for any file can be determined by visiting a file in the web application and
+   *     copying the ID from the URL. For example, for the URL `https://*.app.box.com/files/123` the
+   *     `file_id` is `123`. Example: "12345"
+   * @param requestBody Request body of uploadFileVersion method
+   * @param queryParams Query parameters of uploadFileVersion method
+   * @param headers Headers of uploadFileVersion method
+   */
   public Files uploadFileVersion(
       String fileId,
       UploadFileVersionRequestBody requestBody,
@@ -97,19 +153,42 @@ public class UploadsManager {
     return JsonManager.deserialize(response.getData(), Files.class);
   }
 
+  /**
+   * Performs a check to verify that a file will be accepted by Box before you upload the entire
+   * file.
+   */
   public UploadUrl preflightFileUploadCheck() {
     return preflightFileUploadCheck(
         new PreflightFileUploadCheckRequestBody(), new PreflightFileUploadCheckHeaders());
   }
 
+  /**
+   * Performs a check to verify that a file will be accepted by Box before you upload the entire
+   * file.
+   *
+   * @param requestBody Request body of preflightFileUploadCheck method
+   */
   public UploadUrl preflightFileUploadCheck(PreflightFileUploadCheckRequestBody requestBody) {
     return preflightFileUploadCheck(requestBody, new PreflightFileUploadCheckHeaders());
   }
 
+  /**
+   * Performs a check to verify that a file will be accepted by Box before you upload the entire
+   * file.
+   *
+   * @param headers Headers of preflightFileUploadCheck method
+   */
   public UploadUrl preflightFileUploadCheck(PreflightFileUploadCheckHeaders headers) {
     return preflightFileUploadCheck(new PreflightFileUploadCheckRequestBody(), headers);
   }
 
+  /**
+   * Performs a check to verify that a file will be accepted by Box before you upload the entire
+   * file.
+   *
+   * @param requestBody Request body of preflightFileUploadCheck method
+   * @param headers Headers of preflightFileUploadCheck method
+   */
   public UploadUrl preflightFileUploadCheck(
       PreflightFileUploadCheckRequestBody requestBody, PreflightFileUploadCheckHeaders headers) {
     Map<String, String> headersMap = prepareParams(mergeMaps(mapOf(), headers.getExtraHeaders()));
@@ -133,18 +212,58 @@ public class UploadsManager {
     return JsonManager.deserialize(response.getData(), UploadUrl.class);
   }
 
+  /**
+   * Uploads a small file to Box. For file sizes over 50MB we recommend using the Chunk Upload APIs.
+   *
+   * <p>The `attributes` part of the body must come **before** the `file` part. Requests that do not
+   * follow this format when uploading the file will receive a HTTP `400` error with a
+   * `metadata_after_file_contents` error code.
+   *
+   * @param requestBody Request body of uploadFile method
+   */
   public Files uploadFile(UploadFileRequestBody requestBody) {
     return uploadFile(requestBody, new UploadFileQueryParams(), new UploadFileHeaders());
   }
 
+  /**
+   * Uploads a small file to Box. For file sizes over 50MB we recommend using the Chunk Upload APIs.
+   *
+   * <p>The `attributes` part of the body must come **before** the `file` part. Requests that do not
+   * follow this format when uploading the file will receive a HTTP `400` error with a
+   * `metadata_after_file_contents` error code.
+   *
+   * @param requestBody Request body of uploadFile method
+   * @param queryParams Query parameters of uploadFile method
+   */
   public Files uploadFile(UploadFileRequestBody requestBody, UploadFileQueryParams queryParams) {
     return uploadFile(requestBody, queryParams, new UploadFileHeaders());
   }
 
+  /**
+   * Uploads a small file to Box. For file sizes over 50MB we recommend using the Chunk Upload APIs.
+   *
+   * <p>The `attributes` part of the body must come **before** the `file` part. Requests that do not
+   * follow this format when uploading the file will receive a HTTP `400` error with a
+   * `metadata_after_file_contents` error code.
+   *
+   * @param requestBody Request body of uploadFile method
+   * @param headers Headers of uploadFile method
+   */
   public Files uploadFile(UploadFileRequestBody requestBody, UploadFileHeaders headers) {
     return uploadFile(requestBody, new UploadFileQueryParams(), headers);
   }
 
+  /**
+   * Uploads a small file to Box. For file sizes over 50MB we recommend using the Chunk Upload APIs.
+   *
+   * <p>The `attributes` part of the body must come **before** the `file` part. Requests that do not
+   * follow this format when uploading the file will receive a HTTP `400` error with a
+   * `metadata_after_file_contents` error code.
+   *
+   * @param requestBody Request body of uploadFile method
+   * @param queryParams Query parameters of uploadFile method
+   * @param headers Headers of uploadFile method
+   */
   public Files uploadFile(
       UploadFileRequestBody requestBody,
       UploadFileQueryParams queryParams,
@@ -186,6 +305,11 @@ public class UploadsManager {
     return JsonManager.deserialize(response.getData(), Files.class);
   }
 
+  /**
+   * Upload a file with a preflight check
+   *
+   * @param requestBody The requestBody parameter
+   */
   public Files uploadWithPreflightCheck(UploadWithPreflightCheckRequestBody requestBody) {
     return uploadWithPreflightCheck(
         requestBody,
@@ -193,6 +317,12 @@ public class UploadsManager {
         new UploadWithPreflightCheckHeaders());
   }
 
+  /**
+   * Upload a file with a preflight check
+   *
+   * @param requestBody The requestBody parameter
+   * @param queryParams Query parameters of uploadFile method
+   */
   public Files uploadWithPreflightCheck(
       UploadWithPreflightCheckRequestBody requestBody,
       UploadWithPreflightCheckQueryParams queryParams) {
@@ -200,12 +330,25 @@ public class UploadsManager {
         requestBody, queryParams, new UploadWithPreflightCheckHeaders());
   }
 
+  /**
+   * Upload a file with a preflight check
+   *
+   * @param requestBody The requestBody parameter
+   * @param headers Headers of uploadFile method
+   */
   public Files uploadWithPreflightCheck(
       UploadWithPreflightCheckRequestBody requestBody, UploadWithPreflightCheckHeaders headers) {
     return uploadWithPreflightCheck(
         requestBody, new UploadWithPreflightCheckQueryParams(), headers);
   }
 
+  /**
+   * Upload a file with a preflight check
+   *
+   * @param requestBody The requestBody parameter
+   * @param queryParams Query parameters of uploadFile method
+   * @param headers Headers of uploadFile method
+   */
   public Files uploadWithPreflightCheck(
       UploadWithPreflightCheckRequestBody requestBody,
       UploadWithPreflightCheckQueryParams queryParams,

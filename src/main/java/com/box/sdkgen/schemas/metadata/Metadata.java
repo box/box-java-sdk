@@ -4,6 +4,7 @@ import com.box.sdkgen.schemas.metadatabase.MetadataBase;
 import com.fasterxml.jackson.annotation.JsonFilter;
 import java.util.Objects;
 
+/** An instance of a metadata template, which has been applied to a file or folder. */
 @JsonFilter("nullablePropertyFilter")
 public class Metadata extends MetadataBase {
 

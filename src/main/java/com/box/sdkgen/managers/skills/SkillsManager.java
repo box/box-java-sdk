@@ -30,10 +30,27 @@ public class SkillsManager {
     this.networkSession = builder.networkSession;
   }
 
+  /**
+   * List the Box Skills metadata cards that are attached to a file.
+   *
+   * @param fileId The unique identifier that represents a file.
+   *     <p>The ID for any file can be determined by visiting a file in the web application and
+   *     copying the ID from the URL. For example, for the URL `https://*.app.box.com/files/123` the
+   *     `file_id` is `123`. Example: "12345"
+   */
   public SkillCardsMetadata getBoxSkillCardsOnFile(String fileId) {
     return getBoxSkillCardsOnFile(fileId, new GetBoxSkillCardsOnFileHeaders());
   }
 
+  /**
+   * List the Box Skills metadata cards that are attached to a file.
+   *
+   * @param fileId The unique identifier that represents a file.
+   *     <p>The ID for any file can be determined by visiting a file in the web application and
+   *     copying the ID from the URL. For example, for the URL `https://*.app.box.com/files/123` the
+   *     `file_id` is `123`. Example: "12345"
+   * @param headers Headers of getBoxSkillCardsOnFile method
+   */
   public SkillCardsMetadata getBoxSkillCardsOnFile(
       String fileId, GetBoxSkillCardsOnFileHeaders headers) {
     Map<String, String> headersMap = prepareParams(mergeMaps(mapOf(), headers.getExtraHeaders()));
@@ -57,11 +74,30 @@ public class SkillsManager {
     return JsonManager.deserialize(response.getData(), SkillCardsMetadata.class);
   }
 
+  /**
+   * Applies one or more Box Skills metadata cards to a file.
+   *
+   * @param fileId The unique identifier that represents a file.
+   *     <p>The ID for any file can be determined by visiting a file in the web application and
+   *     copying the ID from the URL. For example, for the URL `https://*.app.box.com/files/123` the
+   *     `file_id` is `123`. Example: "12345"
+   * @param requestBody Request body of createBoxSkillCardsOnFile method
+   */
   public SkillCardsMetadata createBoxSkillCardsOnFile(
       String fileId, CreateBoxSkillCardsOnFileRequestBody requestBody) {
     return createBoxSkillCardsOnFile(fileId, requestBody, new CreateBoxSkillCardsOnFileHeaders());
   }
 
+  /**
+   * Applies one or more Box Skills metadata cards to a file.
+   *
+   * @param fileId The unique identifier that represents a file.
+   *     <p>The ID for any file can be determined by visiting a file in the web application and
+   *     copying the ID from the URL. For example, for the URL `https://*.app.box.com/files/123` the
+   *     `file_id` is `123`. Example: "12345"
+   * @param requestBody Request body of createBoxSkillCardsOnFile method
+   * @param headers Headers of createBoxSkillCardsOnFile method
+   */
   public SkillCardsMetadata createBoxSkillCardsOnFile(
       String fileId,
       CreateBoxSkillCardsOnFileRequestBody requestBody,
@@ -89,11 +125,30 @@ public class SkillsManager {
     return JsonManager.deserialize(response.getData(), SkillCardsMetadata.class);
   }
 
+  /**
+   * Updates one or more Box Skills metadata cards to a file.
+   *
+   * @param fileId The unique identifier that represents a file.
+   *     <p>The ID for any file can be determined by visiting a file in the web application and
+   *     copying the ID from the URL. For example, for the URL `https://*.app.box.com/files/123` the
+   *     `file_id` is `123`. Example: "12345"
+   * @param requestBody Request body of updateBoxSkillCardsOnFile method
+   */
   public SkillCardsMetadata updateBoxSkillCardsOnFile(
       String fileId, List<UpdateBoxSkillCardsOnFileRequestBody> requestBody) {
     return updateBoxSkillCardsOnFile(fileId, requestBody, new UpdateBoxSkillCardsOnFileHeaders());
   }
 
+  /**
+   * Updates one or more Box Skills metadata cards to a file.
+   *
+   * @param fileId The unique identifier that represents a file.
+   *     <p>The ID for any file can be determined by visiting a file in the web application and
+   *     copying the ID from the URL. For example, for the URL `https://*.app.box.com/files/123` the
+   *     `file_id` is `123`. Example: "12345"
+   * @param requestBody Request body of updateBoxSkillCardsOnFile method
+   * @param headers Headers of updateBoxSkillCardsOnFile method
+   */
   public SkillCardsMetadata updateBoxSkillCardsOnFile(
       String fileId,
       List<UpdateBoxSkillCardsOnFileRequestBody> requestBody,
@@ -121,10 +176,27 @@ public class SkillsManager {
     return JsonManager.deserialize(response.getData(), SkillCardsMetadata.class);
   }
 
+  /**
+   * Removes any Box Skills cards metadata from a file.
+   *
+   * @param fileId The unique identifier that represents a file.
+   *     <p>The ID for any file can be determined by visiting a file in the web application and
+   *     copying the ID from the URL. For example, for the URL `https://*.app.box.com/files/123` the
+   *     `file_id` is `123`. Example: "12345"
+   */
   public void deleteBoxSkillCardsFromFile(String fileId) {
     deleteBoxSkillCardsFromFile(fileId, new DeleteBoxSkillCardsFromFileHeaders());
   }
 
+  /**
+   * Removes any Box Skills cards metadata from a file.
+   *
+   * @param fileId The unique identifier that represents a file.
+   *     <p>The ID for any file can be determined by visiting a file in the web application and
+   *     copying the ID from the URL. For example, for the URL `https://*.app.box.com/files/123` the
+   *     `file_id` is `123`. Example: "12345"
+   * @param headers Headers of deleteBoxSkillCardsFromFile method
+   */
   public void deleteBoxSkillCardsFromFile(
       String fileId, DeleteBoxSkillCardsFromFileHeaders headers) {
     Map<String, String> headersMap = prepareParams(mergeMaps(mapOf(), headers.getExtraHeaders()));
@@ -147,11 +219,26 @@ public class SkillsManager {
                     .build());
   }
 
+  /**
+   * An alternative method that can be used to overwrite and update all Box Skill metadata cards on
+   * a file.
+   *
+   * @param skillId The ID of the skill to apply this metadata for. Example: "33243242"
+   * @param requestBody Request body of updateAllSkillCardsOnFile method
+   */
   public void updateAllSkillCardsOnFile(
       String skillId, UpdateAllSkillCardsOnFileRequestBody requestBody) {
     updateAllSkillCardsOnFile(skillId, requestBody, new UpdateAllSkillCardsOnFileHeaders());
   }
 
+  /**
+   * An alternative method that can be used to overwrite and update all Box Skill metadata cards on
+   * a file.
+   *
+   * @param skillId The ID of the skill to apply this metadata for. Example: "33243242"
+   * @param requestBody Request body of updateAllSkillCardsOnFile method
+   * @param headers Headers of updateAllSkillCardsOnFile method
+   */
   public void updateAllSkillCardsOnFile(
       String skillId,
       UpdateAllSkillCardsOnFileRequestBody requestBody,

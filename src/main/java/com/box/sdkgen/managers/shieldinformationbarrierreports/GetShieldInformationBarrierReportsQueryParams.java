@@ -2,10 +2,18 @@ package com.box.sdkgen.managers.shieldinformationbarrierreports;
 
 public class GetShieldInformationBarrierReportsQueryParams {
 
+  /** The ID of the shield information barrier. */
   public final String shieldInformationBarrierId;
 
+  /**
+   * Defines the position marker at which to begin returning results. This is used when paginating
+   * using marker-based pagination.
+   *
+   * <p>This requires `usemarker` to be set to `true`.
+   */
   public String marker;
 
+  /** The maximum number of items to return per page. */
   public Long limit;
 
   public GetShieldInformationBarrierReportsQueryParams(String shieldInformationBarrierId) {

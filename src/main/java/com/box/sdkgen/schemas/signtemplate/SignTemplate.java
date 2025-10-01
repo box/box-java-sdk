@@ -14,25 +14,47 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import java.util.List;
 import java.util.Objects;
 
+/** A Box Sign template object. */
 @JsonFilter("nullablePropertyFilter")
 public class SignTemplate extends SerializableObject {
 
+  /** The value will always be `sign-template`. */
   @JsonDeserialize(using = SignTemplateTypeField.SignTemplateTypeFieldDeserializer.class)
   @JsonSerialize(using = SignTemplateTypeField.SignTemplateTypeFieldSerializer.class)
   protected EnumWrapper<SignTemplateTypeField> type;
 
+  /** Template identifier. */
   protected String id;
 
+  /** The name of the template. */
   @Nullable protected String name;
 
+  /**
+   * Subject of signature request email. This is cleaned by sign request. If this field is not
+   * passed, a default subject will be used.
+   */
   @JsonProperty("email_subject")
   @Nullable
   protected String emailSubject;
 
+  /**
+   * Message to include in signature request email. The field is cleaned through sanitization of
+   * specific characters. However, some html tags are allowed. Links included in the message are
+   * also converted to hyperlinks in the email. The message may contain the following html tags
+   * including `a`, `abbr`, `acronym`, `b`, `blockquote`, `code`, `em`, `i`, `ul`, `li`, `ol`, and
+   * `strong`. Be aware that when the text to html ratio is too high, the email may end up in spam
+   * filters. Custom styles on these tags are not allowed. If this field is not passed, a default
+   * message will be used.
+   */
   @JsonProperty("email_message")
   @Nullable
   protected String emailMessage;
 
+  /**
+   * Set the number of days after which the created signature request will automatically expire if
+   * not completed. By default, we do not apply any expiration date on signature requests, and the
+   * signature request does not expire.
+   */
   @JsonProperty("days_valid")
   @Nullable
   protected Long daysValid;
@@ -40,33 +62,69 @@ public class SignTemplate extends SerializableObject {
   @JsonProperty("parent_folder")
   protected FolderMini parentFolder;
 
+  /**
+   * List of files to create a signing document from. Only the ID and type fields are required for
+   * each file.
+   */
   @JsonProperty("source_files")
   protected List<FileMini> sourceFiles;
 
+  /** Indicates if the template input fields are editable or not. */
   @JsonProperty("are_fields_locked")
   protected Boolean areFieldsLocked;
 
+  /**
+   * Indicates if the template document options are editable or not, for example renaming the
+   * document.
+   */
   @JsonProperty("are_options_locked")
   protected Boolean areOptionsLocked;
 
+  /** Indicates if the template signers are editable or not. */
   @JsonProperty("are_recipients_locked")
   protected Boolean areRecipientsLocked;
 
+  /** Indicates if the template email settings are editable or not. */
   @JsonProperty("are_email_settings_locked")
   protected Boolean areEmailSettingsLocked;
 
+  /**
+   * Indicates if the template files are editable or not. This includes deleting or renaming
+   * template files.
+   */
   @JsonProperty("are_files_locked")
   protected Boolean areFilesLocked;
 
+  /**
+   * Array of signers for the template.
+   *
+   * <p>**Note**: It may happen that some signers specified in the template belong to conflicting
+   * [segments](r://shield-information-barrier-segment-member) (user groups). This means that due to
+   * the security policies, users are assigned to segments to prevent exchanges or communication
+   * that could lead to ethical conflicts. In such a case, an attempt to send a sign request based
+   * on a template that lists signers in conflicting segments will result in an error.
+   *
+   * <p>Read more about [segments and ethical
+   * walls](https://support.box.com/hc/en-us/articles/9920431507603-Understanding-Information-Barriers#h_01GFVJEHQA06N7XEZ4GCZ9GFAQ).
+   */
   protected List<TemplateSigner> signers;
 
+  /** Additional information on which fields are required and which fields are not editable. */
   @JsonProperty("additional_info")
   protected SignTemplateAdditionalInfoField additionalInfo;
 
+  /**
+   * Box's ready-sign link feature enables you to create a link to a signature request that you've
+   * created from a template. Use this link when you want to post a signature request on a public
+   * form — such as an email, social media post, or web page — without knowing who the signers will
+   * be. Note: The ready-sign link feature is limited to Enterprise Plus customers and not available
+   * to Box Verified Enterprises.
+   */
   @JsonProperty("ready_sign_link")
   @Nullable
   protected SignTemplateReadySignLinkField readySignLink;
 
+  /** Custom branding applied to notifications and signature requests. */
   @JsonProperty("custom_branding")
   @Nullable
   protected SignTemplateCustomBrandingField customBranding;

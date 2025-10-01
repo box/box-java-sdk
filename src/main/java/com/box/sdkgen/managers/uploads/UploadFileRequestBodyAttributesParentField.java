@@ -8,6 +8,7 @@ import java.util.Objects;
 @JsonFilter("nullablePropertyFilter")
 public class UploadFileRequestBodyAttributesParentField extends SerializableObject {
 
+  /** The id of the parent folder. Use `0` for the user's root folder. */
   protected final String id;
 
   public UploadFileRequestBodyAttributesParentField(@JsonProperty("id") String id) {

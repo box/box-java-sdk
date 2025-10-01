@@ -9,6 +9,7 @@ import java.util.Objects;
 public class CreateClassificationTemplateRequestBodyFieldsOptionsStaticConfigField
     extends SerializableObject {
 
+  /** Additional information about the classification. */
   protected CreateClassificationTemplateRequestBodyFieldsOptionsStaticConfigClassificationField
       classification;
 

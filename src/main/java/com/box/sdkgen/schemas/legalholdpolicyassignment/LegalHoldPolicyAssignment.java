@@ -17,6 +17,13 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import java.time.OffsetDateTime;
 import java.util.Objects;
 
+/**
+ * Legal Hold Assignments are used to assign Legal Hold Policies to Users, Folders, Files, or File
+ * Versions.
+ *
+ * <p>Creating a Legal Hold Assignment puts a hold on the File-Versions that belong to the
+ * Assignment's 'apply-to' entity.
+ */
 @JsonFilter("nullablePropertyFilter")
 public class LegalHoldPolicyAssignment extends LegalHoldPolicyAssignmentBase {
 
@@ -29,11 +36,17 @@ public class LegalHoldPolicyAssignment extends LegalHoldPolicyAssignmentBase {
   @JsonProperty("assigned_by")
   protected UserMini assignedBy;
 
+  /** When the legal hold policy assignment object was created. */
   @JsonProperty("assigned_at")
   @JsonSerialize(using = DateTimeUtils.DateTimeSerializer.class)
   @JsonDeserialize(using = DateTimeUtils.DateTimeDeserializer.class)
   protected OffsetDateTime assignedAt;
 
+  /**
+   * When the assignment release request was sent. (Because it can take time for an assignment to
+   * fully delete, this isn't quite the same time that the assignment is fully deleted). If null,
+   * Assignment was not deleted.
+   */
   @JsonProperty("deleted_at")
   @JsonSerialize(using = DateTimeUtils.DateTimeSerializer.class)
   @JsonDeserialize(using = DateTimeUtils.DateTimeDeserializer.class)

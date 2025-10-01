@@ -8,12 +8,15 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.List;
 import java.util.Objects;
 
+/** A list of real-time servers that can be used for long-polling. */
 @JsonFilter("nullablePropertyFilter")
 public class RealtimeServers extends SerializableObject {
 
+  /** The number of items in this response. */
   @JsonProperty("chunk_size")
   protected Long chunkSize;
 
+  /** A list of real-time servers. */
   protected List<RealtimeServer> entries;
 
   public RealtimeServers() {

@@ -7,6 +7,7 @@ import com.box.sdkgen.serialization.json.EnumWrapper;
 import com.fasterxml.jackson.annotation.JsonFilter;
 import java.util.Objects;
 
+/** A mini representation of a shield information barrier segment member object. */
 @JsonFilter("nullablePropertyFilter")
 public class ShieldInformationBarrierSegmentMemberMini
     extends ShieldInformationBarrierSegmentMemberBase {

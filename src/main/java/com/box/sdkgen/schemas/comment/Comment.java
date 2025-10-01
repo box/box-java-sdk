@@ -12,22 +12,27 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import java.time.OffsetDateTime;
 import java.util.Objects;
 
+/** Standard representation of a comment. */
 @JsonFilter("nullablePropertyFilter")
 public class Comment extends CommentBase {
 
+  /** Whether or not this comment is a reply to another comment. */
   @JsonProperty("is_reply_comment")
   protected Boolean isReplyComment;
 
+  /** The text of the comment, as provided by the user. */
   protected String message;
 
   @JsonProperty("created_by")
   protected UserMini createdBy;
 
+  /** The time this comment was created. */
   @JsonProperty("created_at")
   @JsonSerialize(using = DateTimeUtils.DateTimeSerializer.class)
   @JsonDeserialize(using = DateTimeUtils.DateTimeDeserializer.class)
   protected OffsetDateTime createdAt;
 
+  /** The time this comment was last modified. */
   @JsonProperty("modified_at")
   @JsonSerialize(using = DateTimeUtils.DateTimeSerializer.class)
   @JsonDeserialize(using = DateTimeUtils.DateTimeDeserializer.class)

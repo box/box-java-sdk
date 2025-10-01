@@ -12,6 +12,7 @@ import java.util.Objects;
 @JsonFilter("nullablePropertyFilter")
 public class CreateTermsOfServiceRequestBody extends SerializableObject {
 
+  /** Whether this terms of service is active. */
   @JsonDeserialize(
       using =
           CreateTermsOfServiceRequestBodyStatusField
@@ -22,6 +23,7 @@ public class CreateTermsOfServiceRequestBody extends SerializableObject {
               .CreateTermsOfServiceRequestBodyStatusFieldSerializer.class)
   protected final EnumWrapper<CreateTermsOfServiceRequestBodyStatusField> status;
 
+  /** The type of user to set the terms of service for. */
   @JsonDeserialize(
       using =
           CreateTermsOfServiceRequestBodyTosTypeField
@@ -33,6 +35,11 @@ public class CreateTermsOfServiceRequestBody extends SerializableObject {
   @JsonProperty("tos_type")
   protected EnumWrapper<CreateTermsOfServiceRequestBodyTosTypeField> tosType;
 
+  /**
+   * The terms of service text to display to users.
+   *
+   * <p>The text can be set to empty if the `status` is set to `disabled`.
+   */
   protected final String text;
 
   public CreateTermsOfServiceRequestBody(

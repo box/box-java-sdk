@@ -20,11 +20,18 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import java.time.OffsetDateTime;
 import java.util.Objects;
 
+/**
+ * Collaborations define access permissions for users and groups to files and folders, similar to
+ * access control lists. A collaboration object grants a user or group access to a file or folder
+ * with permissions defined by a specific role.
+ */
 @JsonFilter("nullablePropertyFilter")
 public class Collaboration extends SerializableObject {
 
+  /** The unique identifier for this collaboration. */
   protected final String id;
 
+  /** The value will always be `collaboration`. */
   @JsonDeserialize(using = CollaborationTypeField.CollaborationTypeFieldDeserializer.class)
   @JsonSerialize(using = CollaborationTypeField.CollaborationTypeFieldSerializer.class)
   protected EnumWrapper<CollaborationTypeField> type;
@@ -38,27 +45,43 @@ public class Collaboration extends SerializableObject {
   @JsonProperty("accessible_by")
   protected CollaborationAccessGrantee accessibleBy;
 
+  /**
+   * The email address used to invite an unregistered collaborator, if they are not a registered
+   * user.
+   */
   @JsonProperty("invite_email")
   @Nullable
   protected String inviteEmail;
 
+  /** The level of access granted. */
   @JsonDeserialize(using = CollaborationRoleField.CollaborationRoleFieldDeserializer.class)
   @JsonSerialize(using = CollaborationRoleField.CollaborationRoleFieldSerializer.class)
   protected EnumWrapper<CollaborationRoleField> role;
 
+  /** When the collaboration will expire, or `null` if no expiration date is set. */
   @JsonProperty("expires_at")
   @JsonSerialize(using = DateTimeUtils.DateTimeSerializer.class)
   @JsonDeserialize(using = DateTimeUtils.DateTimeDeserializer.class)
   @Nullable
   protected OffsetDateTime expiresAt;
 
+  /**
+   * If set to `true`, collaborators have access to shared items, but such items won't be visible in
+   * the All Files list. Additionally, collaborators won't see the path to the root folder for the
+   * shared item.
+   */
   @JsonProperty("is_access_only")
   protected Boolean isAccessOnly;
 
+  /**
+   * The status of the collaboration invitation. If the status is `pending`, `login` and `name`
+   * return an empty string.
+   */
   @JsonDeserialize(using = CollaborationStatusField.CollaborationStatusFieldDeserializer.class)
   @JsonSerialize(using = CollaborationStatusField.CollaborationStatusFieldSerializer.class)
   protected EnumWrapper<CollaborationStatusField> status;
 
+  /** When the `status` of the collaboration object changed to `accepted` or `rejected`. */
   @JsonProperty("acknowledged_at")
   @JsonSerialize(using = DateTimeUtils.DateTimeSerializer.class)
   @JsonDeserialize(using = DateTimeUtils.DateTimeDeserializer.class)
@@ -67,11 +90,13 @@ public class Collaboration extends SerializableObject {
   @JsonProperty("created_by")
   protected UserCollaborations createdBy;
 
+  /** When the collaboration object was created. */
   @JsonProperty("created_at")
   @JsonSerialize(using = DateTimeUtils.DateTimeSerializer.class)
   @JsonDeserialize(using = DateTimeUtils.DateTimeDeserializer.class)
   protected OffsetDateTime createdAt;
 
+  /** When the collaboration object was last modified. */
   @JsonProperty("modified_at")
   @JsonSerialize(using = DateTimeUtils.DateTimeSerializer.class)
   @JsonDeserialize(using = DateTimeUtils.DateTimeDeserializer.class)

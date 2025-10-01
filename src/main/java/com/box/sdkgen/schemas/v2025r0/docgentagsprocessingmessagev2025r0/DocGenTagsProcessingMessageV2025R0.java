@@ -5,9 +5,11 @@ import com.fasterxml.jackson.annotation.JsonFilter;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.Objects;
 
+/** A message informing the user that document tags are still being processed. */
 @JsonFilter("nullablePropertyFilter")
 public class DocGenTagsProcessingMessageV2025R0 extends SerializableObject {
 
+  /** A message informing the user that document tags are still being processed. */
   protected final String message;
 
   public DocGenTagsProcessingMessageV2025R0(@JsonProperty("message") String message) {

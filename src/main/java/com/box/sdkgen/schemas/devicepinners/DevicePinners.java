@@ -8,16 +8,24 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.List;
 import java.util.Objects;
 
+/** A list of device pins. */
 @JsonFilter("nullablePropertyFilter")
 public class DevicePinners extends SerializableObject {
 
+  /** A list of device pins. */
   protected List<DevicePinner> entries;
 
+  /**
+   * The limit that was used for these entries. This will be the same as the `limit` query parameter
+   * unless that value exceeded the maximum value allowed.
+   */
   protected Long limit;
 
+  /** The marker for the start of the next page of results. */
   @JsonProperty("next_marker")
   protected Long nextMarker;
 
+  /** The order by which items are returned. */
   protected List<DevicePinnersOrderField> order;
 
   public DevicePinners() {

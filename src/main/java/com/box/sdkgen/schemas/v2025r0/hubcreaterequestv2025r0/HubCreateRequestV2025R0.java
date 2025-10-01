@@ -6,11 +6,14 @@ import com.fasterxml.jackson.annotation.JsonFilter;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.Objects;
 
+/** Request schema for creating a new Box Hub. */
 @JsonFilter("nullablePropertyFilter")
 public class HubCreateRequestV2025R0 extends SerializableObject {
 
+  /** Title of the Box Hub. It cannot be empty and should be less than 50 characters. */
   protected final String title;
 
+  /** Description of the Box Hub. */
   protected String description;
 
   public HubCreateRequestV2025R0(@JsonProperty("title") String title) {

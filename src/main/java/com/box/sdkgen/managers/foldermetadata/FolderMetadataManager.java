@@ -31,10 +31,29 @@ public class FolderMetadataManager {
     this.networkSession = builder.networkSession;
   }
 
+  /**
+   * Retrieves all metadata for a given folder. This can not be used on the root folder with ID `0`.
+   *
+   * @param folderId The unique identifier that represent a folder.
+   *     <p>The ID for any folder can be determined by visiting this folder in the web application
+   *     and copying the ID from the URL. For example, for the URL
+   *     `https://*.app.box.com/folder/123` the `folder_id` is `123`.
+   *     <p>The root folder of a Box account is always represented by the ID `0`. Example: "12345"
+   */
   public Metadatas getFolderMetadata(String folderId) {
     return getFolderMetadata(folderId, new GetFolderMetadataHeaders());
   }
 
+  /**
+   * Retrieves all metadata for a given folder. This can not be used on the root folder with ID `0`.
+   *
+   * @param folderId The unique identifier that represent a folder.
+   *     <p>The ID for any folder can be determined by visiting this folder in the web application
+   *     and copying the ID from the URL. For example, for the URL
+   *     `https://*.app.box.com/folder/123` the `folder_id` is `123`.
+   *     <p>The root folder of a Box account is always represented by the ID `0`. Example: "12345"
+   * @param headers Headers of getFolderMetadata method
+   */
   public Metadatas getFolderMetadata(String folderId, GetFolderMetadataHeaders headers) {
     Map<String, String> headersMap = prepareParams(mergeMaps(mapOf(), headers.getExtraHeaders()));
     FetchResponse response =
@@ -57,11 +76,36 @@ public class FolderMetadataManager {
     return JsonManager.deserialize(response.getData(), Metadatas.class);
   }
 
+  /**
+   * Retrieves the instance of a metadata template that has been applied to a folder. This can not
+   * be used on the root folder with ID `0`.
+   *
+   * @param folderId The unique identifier that represent a folder.
+   *     <p>The ID for any folder can be determined by visiting this folder in the web application
+   *     and copying the ID from the URL. For example, for the URL
+   *     `https://*.app.box.com/folder/123` the `folder_id` is `123`.
+   *     <p>The root folder of a Box account is always represented by the ID `0`. Example: "12345"
+   * @param scope The scope of the metadata template. Example: "global"
+   * @param templateKey The name of the metadata template. Example: "properties"
+   */
   public MetadataFull getFolderMetadataById(
       String folderId, GetFolderMetadataByIdScope scope, String templateKey) {
     return getFolderMetadataById(folderId, scope, templateKey, new GetFolderMetadataByIdHeaders());
   }
 
+  /**
+   * Retrieves the instance of a metadata template that has been applied to a folder. This can not
+   * be used on the root folder with ID `0`.
+   *
+   * @param folderId The unique identifier that represent a folder.
+   *     <p>The ID for any folder can be determined by visiting this folder in the web application
+   *     and copying the ID from the URL. For example, for the URL
+   *     `https://*.app.box.com/folder/123` the `folder_id` is `123`.
+   *     <p>The root folder of a Box account is always represented by the ID `0`. Example: "12345"
+   * @param scope The scope of the metadata template. Example: "global"
+   * @param templateKey The name of the metadata template. Example: "properties"
+   * @param headers Headers of getFolderMetadataById method
+   */
   public MetadataFull getFolderMetadataById(
       String folderId,
       GetFolderMetadataByIdScope scope,
@@ -91,6 +135,24 @@ public class FolderMetadataManager {
     return JsonManager.deserialize(response.getData(), MetadataFull.class);
   }
 
+  /**
+   * Applies an instance of a metadata template to a folder.
+   *
+   * <p>In most cases only values that are present in the metadata template will be accepted, except
+   * for the `global.properties` template which accepts any key-value pair.
+   *
+   * <p>To display the metadata template in the Box web app the enterprise needs to be configured to
+   * enable **Cascading Folder Level Metadata** for the user in the admin console.
+   *
+   * @param folderId The unique identifier that represent a folder.
+   *     <p>The ID for any folder can be determined by visiting this folder in the web application
+   *     and copying the ID from the URL. For example, for the URL
+   *     `https://*.app.box.com/folder/123` the `folder_id` is `123`.
+   *     <p>The root folder of a Box account is always represented by the ID `0`. Example: "12345"
+   * @param scope The scope of the metadata template. Example: "global"
+   * @param templateKey The name of the metadata template. Example: "properties"
+   * @param requestBody Request body of createFolderMetadataById method
+   */
   public MetadataFull createFolderMetadataById(
       String folderId,
       CreateFolderMetadataByIdScope scope,
@@ -100,6 +162,25 @@ public class FolderMetadataManager {
         folderId, scope, templateKey, requestBody, new CreateFolderMetadataByIdHeaders());
   }
 
+  /**
+   * Applies an instance of a metadata template to a folder.
+   *
+   * <p>In most cases only values that are present in the metadata template will be accepted, except
+   * for the `global.properties` template which accepts any key-value pair.
+   *
+   * <p>To display the metadata template in the Box web app the enterprise needs to be configured to
+   * enable **Cascading Folder Level Metadata** for the user in the admin console.
+   *
+   * @param folderId The unique identifier that represent a folder.
+   *     <p>The ID for any folder can be determined by visiting this folder in the web application
+   *     and copying the ID from the URL. For example, for the URL
+   *     `https://*.app.box.com/folder/123` the `folder_id` is `123`.
+   *     <p>The root folder of a Box account is always represented by the ID `0`. Example: "12345"
+   * @param scope The scope of the metadata template. Example: "global"
+   * @param templateKey The name of the metadata template. Example: "properties"
+   * @param requestBody Request body of createFolderMetadataById method
+   * @param headers Headers of createFolderMetadataById method
+   */
   public MetadataFull createFolderMetadataById(
       String folderId,
       CreateFolderMetadataByIdScope scope,
@@ -132,6 +213,25 @@ public class FolderMetadataManager {
     return JsonManager.deserialize(response.getData(), MetadataFull.class);
   }
 
+  /**
+   * Updates a piece of metadata on a folder.
+   *
+   * <p>The metadata instance can only be updated if the template has already been applied to the
+   * folder before. When editing metadata, only values that match the metadata template schema will
+   * be accepted.
+   *
+   * <p>The update is applied atomically. If any errors occur during the application of the
+   * operations, the metadata instance will not be changed.
+   *
+   * @param folderId The unique identifier that represent a folder.
+   *     <p>The ID for any folder can be determined by visiting this folder in the web application
+   *     and copying the ID from the URL. For example, for the URL
+   *     `https://*.app.box.com/folder/123` the `folder_id` is `123`.
+   *     <p>The root folder of a Box account is always represented by the ID `0`. Example: "12345"
+   * @param scope The scope of the metadata template. Example: "global"
+   * @param templateKey The name of the metadata template. Example: "properties"
+   * @param requestBody Request body of updateFolderMetadataById method
+   */
   public MetadataFull updateFolderMetadataById(
       String folderId,
       UpdateFolderMetadataByIdScope scope,
@@ -141,6 +241,26 @@ public class FolderMetadataManager {
         folderId, scope, templateKey, requestBody, new UpdateFolderMetadataByIdHeaders());
   }
 
+  /**
+   * Updates a piece of metadata on a folder.
+   *
+   * <p>The metadata instance can only be updated if the template has already been applied to the
+   * folder before. When editing metadata, only values that match the metadata template schema will
+   * be accepted.
+   *
+   * <p>The update is applied atomically. If any errors occur during the application of the
+   * operations, the metadata instance will not be changed.
+   *
+   * @param folderId The unique identifier that represent a folder.
+   *     <p>The ID for any folder can be determined by visiting this folder in the web application
+   *     and copying the ID from the URL. For example, for the URL
+   *     `https://*.app.box.com/folder/123` the `folder_id` is `123`.
+   *     <p>The root folder of a Box account is always represented by the ID `0`. Example: "12345"
+   * @param scope The scope of the metadata template. Example: "global"
+   * @param templateKey The name of the metadata template. Example: "properties"
+   * @param requestBody Request body of updateFolderMetadataById method
+   * @param headers Headers of updateFolderMetadataById method
+   */
   public MetadataFull updateFolderMetadataById(
       String folderId,
       UpdateFolderMetadataByIdScope scope,
@@ -173,11 +293,34 @@ public class FolderMetadataManager {
     return JsonManager.deserialize(response.getData(), MetadataFull.class);
   }
 
+  /**
+   * Deletes a piece of folder metadata.
+   *
+   * @param folderId The unique identifier that represent a folder.
+   *     <p>The ID for any folder can be determined by visiting this folder in the web application
+   *     and copying the ID from the URL. For example, for the URL
+   *     `https://*.app.box.com/folder/123` the `folder_id` is `123`.
+   *     <p>The root folder of a Box account is always represented by the ID `0`. Example: "12345"
+   * @param scope The scope of the metadata template. Example: "global"
+   * @param templateKey The name of the metadata template. Example: "properties"
+   */
   public void deleteFolderMetadataById(
       String folderId, DeleteFolderMetadataByIdScope scope, String templateKey) {
     deleteFolderMetadataById(folderId, scope, templateKey, new DeleteFolderMetadataByIdHeaders());
   }
 
+  /**
+   * Deletes a piece of folder metadata.
+   *
+   * @param folderId The unique identifier that represent a folder.
+   *     <p>The ID for any folder can be determined by visiting this folder in the web application
+   *     and copying the ID from the URL. For example, for the URL
+   *     `https://*.app.box.com/folder/123` the `folder_id` is `123`.
+   *     <p>The root folder of a Box account is always represented by the ID `0`. Example: "12345"
+   * @param scope The scope of the metadata template. Example: "global"
+   * @param templateKey The name of the metadata template. Example: "properties"
+   * @param headers Headers of deleteFolderMetadataById method
+   */
   public void deleteFolderMetadataById(
       String folderId,
       DeleteFolderMetadataByIdScope scope,

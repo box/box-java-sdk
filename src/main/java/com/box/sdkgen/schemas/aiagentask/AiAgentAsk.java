@@ -12,9 +12,11 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import java.util.Objects;
 
+/** The AI agent used to handle queries. */
 @JsonFilter("nullablePropertyFilter")
 public class AiAgentAsk extends SerializableObject {
 
+  /** The type of AI agent used to handle queries. */
   @JsonDeserialize(using = AiAgentAskTypeField.AiAgentAskTypeFieldDeserializer.class)
   @JsonSerialize(using = AiAgentAskTypeField.AiAgentAskTypeFieldSerializer.class)
   protected EnumWrapper<AiAgentAskTypeField> type;

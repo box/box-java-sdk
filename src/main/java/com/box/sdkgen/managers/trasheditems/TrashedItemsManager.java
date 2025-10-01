@@ -30,18 +30,61 @@ public class TrashedItemsManager {
     this.networkSession = builder.networkSession;
   }
 
+  /**
+   * Retrieves the files and folders that have been moved to the trash.
+   *
+   * <p>Any attribute in the full files or folders objects can be passed in with the `fields`
+   * parameter to retrieve those specific attributes that are not returned by default.
+   *
+   * <p>This endpoint defaults to use offset-based pagination, yet also supports marker-based
+   * pagination using the `marker` parameter.
+   */
   public Items getTrashedItems() {
     return getTrashedItems(new GetTrashedItemsQueryParams(), new GetTrashedItemsHeaders());
   }
 
+  /**
+   * Retrieves the files and folders that have been moved to the trash.
+   *
+   * <p>Any attribute in the full files or folders objects can be passed in with the `fields`
+   * parameter to retrieve those specific attributes that are not returned by default.
+   *
+   * <p>This endpoint defaults to use offset-based pagination, yet also supports marker-based
+   * pagination using the `marker` parameter.
+   *
+   * @param queryParams Query parameters of getTrashedItems method
+   */
   public Items getTrashedItems(GetTrashedItemsQueryParams queryParams) {
     return getTrashedItems(queryParams, new GetTrashedItemsHeaders());
   }
 
+  /**
+   * Retrieves the files and folders that have been moved to the trash.
+   *
+   * <p>Any attribute in the full files or folders objects can be passed in with the `fields`
+   * parameter to retrieve those specific attributes that are not returned by default.
+   *
+   * <p>This endpoint defaults to use offset-based pagination, yet also supports marker-based
+   * pagination using the `marker` parameter.
+   *
+   * @param headers Headers of getTrashedItems method
+   */
   public Items getTrashedItems(GetTrashedItemsHeaders headers) {
     return getTrashedItems(new GetTrashedItemsQueryParams(), headers);
   }
 
+  /**
+   * Retrieves the files and folders that have been moved to the trash.
+   *
+   * <p>Any attribute in the full files or folders objects can be passed in with the `fields`
+   * parameter to retrieve those specific attributes that are not returned by default.
+   *
+   * <p>This endpoint defaults to use offset-based pagination, yet also supports marker-based
+   * pagination using the `marker` parameter.
+   *
+   * @param queryParams Query parameters of getTrashedItems method
+   * @param headers Headers of getTrashedItems method
+   */
   public Items getTrashedItems(
       GetTrashedItemsQueryParams queryParams, GetTrashedItemsHeaders headers) {
     Map<String, String> queryParamsMap =

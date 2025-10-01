@@ -9,15 +9,22 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.List;
 import java.util.Objects;
 
+/** List of Shield Information Barrier Segment objects. */
 @JsonFilter("nullablePropertyFilter")
 public class ShieldInformationBarrierSegments extends SerializableObject {
 
+  /**
+   * The limit that was used for these entries. This will be the same as the `limit` query parameter
+   * unless that value exceeded the maximum value allowed. The maximum value varies by API.
+   */
   protected Long limit;
 
+  /** The marker for the start of the next page of results. */
   @JsonProperty("next_marker")
   @Nullable
   protected String nextMarker;
 
+  /** A list of shield information barrier segments. */
   protected List<ShieldInformationBarrierSegment> entries;
 
   public ShieldInformationBarrierSegments() {

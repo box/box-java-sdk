@@ -14,6 +14,10 @@ import java.util.Objects;
 @JsonFilter("nullablePropertyFilter")
 public class UpdateMetadataTemplateRequestBody extends SerializableObject {
 
+  /**
+   * The type of change to perform on the template. Some of these are hazardous as they will change
+   * existing templates.
+   */
   @JsonDeserialize(
       using =
           UpdateMetadataTemplateRequestBodyOpField
@@ -24,18 +28,42 @@ public class UpdateMetadataTemplateRequestBody extends SerializableObject {
               .UpdateMetadataTemplateRequestBodyOpFieldSerializer.class)
   protected final EnumWrapper<UpdateMetadataTemplateRequestBodyOpField> op;
 
+  /** The data for the operation. This will vary depending on the operation being performed. */
   protected Map<String, Object> data;
 
+  /**
+   * For operations that affect a single field this defines the key of the field that is affected.
+   */
   protected String fieldKey;
 
+  /**
+   * For operations that affect multiple fields this defines the keys of the fields that are
+   * affected.
+   */
   protected List<String> fieldKeys;
 
+  /**
+   * For operations that affect a single `enum` option this defines the key of the option that is
+   * affected.
+   */
   protected String enumOptionKey;
 
+  /**
+   * For operations that affect multiple `enum` options this defines the keys of the options that
+   * are affected.
+   */
   protected List<String> enumOptionKeys;
 
+  /**
+   * For operations that affect a single multi select option this defines the key of the option that
+   * is affected.
+   */
   protected String multiSelectOptionKey;
 
+  /**
+   * For operations that affect multiple multi select options this defines the keys of the options
+   * that are affected.
+   */
   protected List<String> multiSelectOptionKeys;
 
   public UpdateMetadataTemplateRequestBody(UpdateMetadataTemplateRequestBodyOpField op) {

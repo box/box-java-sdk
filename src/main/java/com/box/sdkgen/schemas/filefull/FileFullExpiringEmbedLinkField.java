@@ -14,12 +14,15 @@ import java.util.Objects;
 @JsonFilter("nullablePropertyFilter")
 public class FileFullExpiringEmbedLinkField extends SerializableObject {
 
+  /** The requested access token. */
   @JsonProperty("access_token")
   protected String accessToken;
 
+  /** The time in seconds by which this token will expire. */
   @JsonProperty("expires_in")
   protected Long expiresIn;
 
+  /** The type of access token returned. */
   @JsonDeserialize(
       using =
           FileFullExpiringEmbedLinkTokenTypeField
@@ -31,9 +34,17 @@ public class FileFullExpiringEmbedLinkField extends SerializableObject {
   @JsonProperty("token_type")
   protected EnumWrapper<FileFullExpiringEmbedLinkTokenTypeField> tokenType;
 
+  /**
+   * The permissions that this access token permits, providing a list of resources (files, folders,
+   * etc) and the scopes permitted for each of those resources.
+   */
   @JsonProperty("restricted_to")
   protected List<ResourceScope> restrictedTo;
 
+  /**
+   * The actual expiring embed URL for this file, constructed from the file ID and access tokens
+   * specified in this object.
+   */
   protected String url;
 
   public FileFullExpiringEmbedLinkField() {

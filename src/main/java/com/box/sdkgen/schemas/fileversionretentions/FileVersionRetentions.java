@@ -9,19 +9,34 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.List;
 import java.util.Objects;
 
+/**
+ * A list of file version retentions.
+ *
+ * <p>**Note**: File retention API is now **deprecated**. To get information about files and file
+ * versions under retention, see [files under
+ * retention](e://get-retention-policy-assignments-id-files-under-retention) or [file versions under
+ * retention](e://get-retention-policy-assignments-id-file-versions-under-retention) endpoints.
+ */
 @JsonFilter("nullablePropertyFilter")
 public class FileVersionRetentions extends SerializableObject {
 
+  /**
+   * The limit that was used for these entries. This will be the same as the `limit` query parameter
+   * unless that value exceeded the maximum value allowed. The maximum value varies by API.
+   */
   protected Long limit;
 
+  /** The marker for the start of the next page of results. */
   @JsonProperty("next_marker")
   @Nullable
   protected String nextMarker;
 
+  /** The marker for the start of the previous page of results. */
   @JsonProperty("prev_marker")
   @Nullable
   protected String prevMarker;
 
+  /** A list of file version retentions. */
   protected List<FileVersionRetention> entries;
 
   public FileVersionRetentions() {

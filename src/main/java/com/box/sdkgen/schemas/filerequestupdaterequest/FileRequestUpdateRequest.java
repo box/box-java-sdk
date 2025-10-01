@@ -11,13 +11,34 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import java.time.OffsetDateTime;
 import java.util.Objects;
 
+/** The request body to update a file request. */
 @JsonFilter("nullablePropertyFilter")
 public class FileRequestUpdateRequest extends SerializableObject {
 
+  /**
+   * An optional new title for the file request. This can be used to change the title of the file
+   * request.
+   *
+   * <p>This will default to the value on the existing file request.
+   */
   protected String title;
 
+  /**
+   * An optional new description for the file request. This can be used to change the description of
+   * the file request.
+   *
+   * <p>This will default to the value on the existing file request.
+   */
   protected String description;
 
+  /**
+   * An optional new status of the file request.
+   *
+   * <p>When the status is set to `inactive`, the file request will no longer accept new
+   * submissions, and any visitor to the file request URL will receive a `HTTP 404` status code.
+   *
+   * <p>This will default to the value on the existing file request.
+   */
   @JsonDeserialize(
       using =
           FileRequestUpdateRequestStatusField.FileRequestUpdateRequestStatusFieldDeserializer.class)
@@ -26,12 +47,36 @@ public class FileRequestUpdateRequest extends SerializableObject {
           FileRequestUpdateRequestStatusField.FileRequestUpdateRequestStatusFieldSerializer.class)
   protected EnumWrapper<FileRequestUpdateRequestStatusField> status;
 
+  /**
+   * Whether a file request submitter is required to provide their email address.
+   *
+   * <p>When this setting is set to true, the Box UI will show an email field on the file request
+   * form.
+   *
+   * <p>This will default to the value on the existing file request.
+   */
   @JsonProperty("is_email_required")
   protected Boolean isEmailRequired;
 
+  /**
+   * Whether a file request submitter is required to provide a description of the files they are
+   * submitting.
+   *
+   * <p>When this setting is set to true, the Box UI will show a description field on the file
+   * request form.
+   *
+   * <p>This will default to the value on the existing file request.
+   */
   @JsonProperty("is_description_required")
   protected Boolean isDescriptionRequired;
 
+  /**
+   * The date after which a file request will no longer accept new submissions.
+   *
+   * <p>After this date, the `status` will automatically be set to `inactive`.
+   *
+   * <p>This will default to the value on the existing file request.
+   */
   @JsonProperty("expires_at")
   @JsonSerialize(using = DateTimeUtils.DateTimeSerializer.class)
   @JsonDeserialize(using = DateTimeUtils.DateTimeDeserializer.class)

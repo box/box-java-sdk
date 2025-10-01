@@ -11,8 +11,10 @@ import java.util.Objects;
 @JsonFilter("nullablePropertyFilter")
 public class CollaborationAllowlistEntryEnterpriseField extends SerializableObject {
 
+  /** The unique identifier for this enterprise. */
   protected String id;
 
+  /** The value will always be `enterprise`. */
   @JsonDeserialize(
       using =
           CollaborationAllowlistEntryEnterpriseTypeField
@@ -23,6 +25,7 @@ public class CollaborationAllowlistEntryEnterpriseField extends SerializableObje
               .CollaborationAllowlistEntryEnterpriseTypeFieldSerializer.class)
   protected EnumWrapper<CollaborationAllowlistEntryEnterpriseTypeField> type;
 
+  /** The name of the enterprise. */
   protected String name;
 
   public CollaborationAllowlistEntryEnterpriseField() {

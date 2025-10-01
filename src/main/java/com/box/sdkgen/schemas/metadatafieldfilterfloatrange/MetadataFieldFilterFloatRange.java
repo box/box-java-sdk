@@ -5,11 +5,23 @@ import com.box.sdkgen.internal.SerializableObject;
 import com.fasterxml.jackson.annotation.JsonFilter;
 import java.util.Objects;
 
+/**
+ * Specifies which `float` field on the template to filter the search results by, specifying a range
+ * of values that can match.
+ */
 @JsonFilter("nullablePropertyFilter")
 public class MetadataFieldFilterFloatRange extends SerializableObject {
 
+  /**
+   * Specifies the (inclusive) upper bound for the metadata field value. The value of a field must
+   * be lower than (`lt`) or equal to this value for the search query to match this template.
+   */
   protected Double lt;
 
+  /**
+   * Specifies the (inclusive) lower bound for the metadata field value. The value of a field must
+   * be greater than (`gt`) or equal to this value for the search query to match this template.
+   */
   protected Double gt;
 
   public MetadataFieldFilterFloatRange() {

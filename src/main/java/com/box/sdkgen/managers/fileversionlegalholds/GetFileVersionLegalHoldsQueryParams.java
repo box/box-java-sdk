@@ -2,10 +2,18 @@ package com.box.sdkgen.managers.fileversionlegalholds;
 
 public class GetFileVersionLegalHoldsQueryParams {
 
+  /** The ID of the legal hold policy to get the file version legal holds for. */
   public final String policyId;
 
+  /**
+   * Defines the position marker at which to begin returning results. This is used when paginating
+   * using marker-based pagination.
+   *
+   * <p>This requires `usemarker` to be set to `true`.
+   */
   public String marker;
 
+  /** The maximum number of items to return per page. */
   public Long limit;
 
   public GetFileVersionLegalHoldsQueryParams(String policyId) {

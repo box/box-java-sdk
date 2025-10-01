@@ -8,24 +8,34 @@ import java.util.Objects;
 @JsonFilter("nullablePropertyFilter")
 public class FolderFullPermissionsField extends SerializableObject {
 
+  /** Specifies if the current user can delete this item. */
   @JsonProperty("can_delete")
   protected final boolean canDelete;
 
+  /** Specifies if the current user can download this item. */
   @JsonProperty("can_download")
   protected final boolean canDownload;
 
+  /**
+   * Specifies if the current user can invite new users to collaborate on this item, and if the user
+   * can update the role of a user already collaborated on this item.
+   */
   @JsonProperty("can_invite_collaborator")
   protected final boolean canInviteCollaborator;
 
+  /** Specifies if the user can rename this item. */
   @JsonProperty("can_rename")
   protected final boolean canRename;
 
+  /** Specifies if the user can change the access level of an existing shared link on this item. */
   @JsonProperty("can_set_share_access")
   protected final boolean canSetShareAccess;
 
+  /** Specifies if the user can create a shared link for this item. */
   @JsonProperty("can_share")
   protected final boolean canShare;
 
+  /** Specifies if the user can upload into this folder. */
   @JsonProperty("can_upload")
   protected final boolean canUpload;
 

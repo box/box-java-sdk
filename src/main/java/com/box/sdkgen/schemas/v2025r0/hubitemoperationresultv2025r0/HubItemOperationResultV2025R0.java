@@ -9,15 +9,19 @@ import com.box.sdkgen.schemas.v2025r0.weblinkreferencev2025r0.WeblinkReferenceV2
 import com.fasterxml.jackson.annotation.JsonFilter;
 import java.util.Objects;
 
+/** Result of a Box Hub item operation. */
 @JsonFilter("nullablePropertyFilter")
 public class HubItemOperationResultV2025R0 extends SerializableObject {
 
+  /** The action performed on the item. */
   protected String action;
 
   protected HubItemReferenceV2025R0 item;
 
+  /** The HTTP status code of the operation. */
   protected Long status;
 
+  /** Error message if the operation failed. */
   protected String error;
 
   public HubItemOperationResultV2025R0() {

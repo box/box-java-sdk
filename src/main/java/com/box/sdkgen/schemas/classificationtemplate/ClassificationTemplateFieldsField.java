@@ -13,8 +13,10 @@ import java.util.Objects;
 @JsonFilter("nullablePropertyFilter")
 public class ClassificationTemplateFieldsField extends SerializableObject {
 
+  /** The unique ID of the field. */
   protected final String id;
 
+  /** The array item type. */
   @JsonDeserialize(
       using =
           ClassificationTemplateFieldsTypeField.ClassificationTemplateFieldsTypeFieldDeserializer
@@ -25,6 +27,7 @@ public class ClassificationTemplateFieldsField extends SerializableObject {
               .class)
   protected EnumWrapper<ClassificationTemplateFieldsTypeField> type;
 
+  /** Defines classifications available in the enterprise. */
   @JsonDeserialize(
       using =
           ClassificationTemplateFieldsKeyField.ClassificationTemplateFieldsKeyFieldDeserializer
@@ -34,6 +37,7 @@ public class ClassificationTemplateFieldsField extends SerializableObject {
           ClassificationTemplateFieldsKeyField.ClassificationTemplateFieldsKeyFieldSerializer.class)
   protected EnumWrapper<ClassificationTemplateFieldsKeyField> key;
 
+  /** The value will always be `Classification`. */
   @JsonDeserialize(
       using =
           ClassificationTemplateFieldsDisplayNameField
@@ -44,8 +48,10 @@ public class ClassificationTemplateFieldsField extends SerializableObject {
               .ClassificationTemplateFieldsDisplayNameFieldSerializer.class)
   protected EnumWrapper<ClassificationTemplateFieldsDisplayNameField> displayName;
 
+  /** Classifications are always visible to web and mobile users. */
   protected Boolean hidden;
 
+  /** A list of classifications available in this enterprise. */
   protected final List<ClassificationTemplateFieldsOptionsField> options;
 
   public ClassificationTemplateFieldsField(

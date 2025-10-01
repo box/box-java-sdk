@@ -6,15 +6,19 @@ import com.fasterxml.jackson.annotation.JsonFilter;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.Objects;
 
+/** A request to revoke an OAuth 2.0 token. */
 @JsonFilter("nullablePropertyFilter")
 public class PostOAuth2Revoke extends SerializableObject {
 
+  /** The Client ID of the application requesting to revoke the access token. */
   @JsonProperty("client_id")
   protected String clientId;
 
+  /** The client secret of the application requesting to revoke an access token. */
   @JsonProperty("client_secret")
   protected String clientSecret;
 
+  /** The access token to revoke. */
   protected String token;
 
   public PostOAuth2Revoke() {

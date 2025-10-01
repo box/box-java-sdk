@@ -8,8 +8,10 @@ import java.util.Objects;
 @JsonFilter("nullablePropertyFilter")
 public class TemplateSignerInputDimensionsField extends SerializableObject {
 
+  /** Relative width to the page the input is on, ranging from 0 to 1. */
   protected Double width;
 
+  /** Relative height to the page the input is on, ranging from 0 to 1. */
   protected Double height;
 
   public TemplateSignerInputDimensionsField() {

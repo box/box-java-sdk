@@ -10,6 +10,7 @@ import java.util.Objects;
 @JsonFilter("nullablePropertyFilter")
 public class CreateBoxSkillCardsOnFileRequestBody extends SerializableObject {
 
+  /** A list of Box Skill cards to apply to this file. */
   protected final List<SkillCard> cards;
 
   public CreateBoxSkillCardsOnFileRequestBody(@JsonProperty("cards") List<SkillCard> cards) {

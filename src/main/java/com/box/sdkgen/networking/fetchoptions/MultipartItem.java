@@ -3,16 +3,22 @@ package com.box.sdkgen.networking.fetchoptions;
 import com.fasterxml.jackson.databind.JsonNode;
 import java.io.InputStream;
 
+/** Multipart item for multipart data */
 public class MultipartItem {
 
+  /** Name of the part */
   public final String partName;
 
+  /** Data of the part */
   public JsonNode data;
 
+  /** File stream of the part */
   public InputStream fileStream;
 
+  /** File name of the part */
   public String fileName;
 
+  /** Content type of the part */
   public String contentType;
 
   public MultipartItem(String partName) {

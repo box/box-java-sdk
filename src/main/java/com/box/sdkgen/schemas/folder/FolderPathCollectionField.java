@@ -10,9 +10,11 @@ import java.util.Objects;
 @JsonFilter("nullablePropertyFilter")
 public class FolderPathCollectionField extends SerializableObject {
 
+  /** The number of folders in this list. */
   @JsonProperty("total_count")
   protected final long totalCount;
 
+  /** The parent folders for this item. */
   protected final List<FolderMini> entries;
 
   public FolderPathCollectionField(

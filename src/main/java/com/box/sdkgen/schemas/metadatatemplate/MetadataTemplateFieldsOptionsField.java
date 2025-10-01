@@ -9,8 +9,13 @@ import java.util.Objects;
 @JsonFilter("nullablePropertyFilter")
 public class MetadataTemplateFieldsOptionsField extends SerializableObject {
 
+  /**
+   * The text value of the option. This represents both the display name of the option and the
+   * internal key used when updating templates.
+   */
   protected final String key;
 
+  /** The internal unique identifier of the option. */
   protected String id;
 
   public MetadataTemplateFieldsOptionsField(@JsonProperty("key") String key) {

@@ -12,6 +12,7 @@ import java.util.Objects;
 @JsonFilter("nullablePropertyFilter")
 public class FileRequestCopyRequestFolderField extends SerializableObject {
 
+  /** The value will always be `folder`. */
   @JsonDeserialize(
       using =
           FileRequestCopyRequestFolderTypeField.FileRequestCopyRequestFolderTypeFieldDeserializer
@@ -22,6 +23,7 @@ public class FileRequestCopyRequestFolderField extends SerializableObject {
               .class)
   protected EnumWrapper<FileRequestCopyRequestFolderTypeField> type;
 
+  /** The ID of the folder to associate the new file request to. */
   protected final String id;
 
   public FileRequestCopyRequestFolderField(@JsonProperty("id") String id) {

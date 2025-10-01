@@ -13,14 +13,17 @@ import java.util.Objects;
 @JsonFilter("nullablePropertyFilter")
 public class WorkflowFlowsOutcomesField extends SerializableObject {
 
+  /** The identifier of the outcome. */
   protected String id;
 
+  /** The outcomes resource type. */
   @JsonDeserialize(
       using = WorkflowFlowsOutcomesTypeField.WorkflowFlowsOutcomesTypeFieldDeserializer.class)
   @JsonSerialize(
       using = WorkflowFlowsOutcomesTypeField.WorkflowFlowsOutcomesTypeFieldSerializer.class)
   protected EnumWrapper<WorkflowFlowsOutcomesTypeField> type;
 
+  /** The name of the outcome. */
   protected String name;
 
   @JsonDeserialize(
@@ -33,6 +36,10 @@ public class WorkflowFlowsOutcomesField extends SerializableObject {
   @JsonProperty("action_type")
   protected EnumWrapper<WorkflowFlowsOutcomesActionTypeField> actionType;
 
+  /**
+   * If `action_type` is `assign_task` and the task is rejected, returns a list of outcomes to
+   * complete.
+   */
   @JsonProperty("if_rejected")
   protected List<WorkflowFlowsOutcomesIfRejectedField> ifRejected;
 

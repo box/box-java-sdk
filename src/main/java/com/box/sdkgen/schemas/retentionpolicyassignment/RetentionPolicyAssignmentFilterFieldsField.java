@@ -9,8 +9,10 @@ import java.util.Objects;
 @JsonFilter("nullablePropertyFilter")
 public class RetentionPolicyAssignmentFilterFieldsField extends SerializableObject {
 
+  /** The metadata attribute key id. */
   @Nullable protected String field;
 
+  /** The metadata attribute field id. For value, only enum and multiselect types are supported. */
   @Nullable protected String value;
 
   public RetentionPolicyAssignmentFilterFieldsField() {

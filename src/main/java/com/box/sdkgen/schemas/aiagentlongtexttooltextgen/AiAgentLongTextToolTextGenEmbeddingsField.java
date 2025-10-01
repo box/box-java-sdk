@@ -8,6 +8,7 @@ import java.util.Objects;
 @JsonFilter("nullablePropertyFilter")
 public class AiAgentLongTextToolTextGenEmbeddingsField extends SerializableObject {
 
+  /** The model used for the AI agent for calculating embeddings. */
   protected String model;
 
   protected AiAgentLongTextToolTextGenEmbeddingsStrategyField strategy;

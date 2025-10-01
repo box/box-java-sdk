@@ -32,18 +32,54 @@ public class FilesManager {
     this.networkSession = builder.networkSession;
   }
 
+  /**
+   * Retrieves the details about a file.
+   *
+   * @param fileId The unique identifier that represents a file.
+   *     <p>The ID for any file can be determined by visiting a file in the web application and
+   *     copying the ID from the URL. For example, for the URL `https://*.app.box.com/files/123` the
+   *     `file_id` is `123`. Example: "12345"
+   */
   public FileFull getFileById(String fileId) {
     return getFileById(fileId, new GetFileByIdQueryParams(), new GetFileByIdHeaders());
   }
 
+  /**
+   * Retrieves the details about a file.
+   *
+   * @param fileId The unique identifier that represents a file.
+   *     <p>The ID for any file can be determined by visiting a file in the web application and
+   *     copying the ID from the URL. For example, for the URL `https://*.app.box.com/files/123` the
+   *     `file_id` is `123`. Example: "12345"
+   * @param queryParams Query parameters of getFileById method
+   */
   public FileFull getFileById(String fileId, GetFileByIdQueryParams queryParams) {
     return getFileById(fileId, queryParams, new GetFileByIdHeaders());
   }
 
+  /**
+   * Retrieves the details about a file.
+   *
+   * @param fileId The unique identifier that represents a file.
+   *     <p>The ID for any file can be determined by visiting a file in the web application and
+   *     copying the ID from the URL. For example, for the URL `https://*.app.box.com/files/123` the
+   *     `file_id` is `123`. Example: "12345"
+   * @param headers Headers of getFileById method
+   */
   public FileFull getFileById(String fileId, GetFileByIdHeaders headers) {
     return getFileById(fileId, new GetFileByIdQueryParams(), headers);
   }
 
+  /**
+   * Retrieves the details about a file.
+   *
+   * @param fileId The unique identifier that represents a file.
+   *     <p>The ID for any file can be determined by visiting a file in the web application and
+   *     copying the ID from the URL. For example, for the URL `https://*.app.box.com/files/123` the
+   *     `file_id` is `123`. Example: "12345"
+   * @param queryParams Query parameters of getFileById method
+   * @param headers Headers of getFileById method
+   */
   public FileFull getFileById(
       String fileId, GetFileByIdQueryParams queryParams, GetFileByIdHeaders headers) {
     Map<String, String> queryParamsMap =
@@ -76,6 +112,15 @@ public class FilesManager {
     return JsonManager.deserialize(response.getData(), FileFull.class);
   }
 
+  /**
+   * Updates a file. This can be used to rename or move a file, create a shared link, or lock a
+   * file.
+   *
+   * @param fileId The unique identifier that represents a file.
+   *     <p>The ID for any file can be determined by visiting a file in the web application and
+   *     copying the ID from the URL. For example, for the URL `https://*.app.box.com/files/123` the
+   *     `file_id` is `123`. Example: "12345"
+   */
   public FileFull updateFileById(String fileId) {
     return updateFileById(
         fileId,
@@ -84,36 +129,111 @@ public class FilesManager {
         new UpdateFileByIdHeaders());
   }
 
+  /**
+   * Updates a file. This can be used to rename or move a file, create a shared link, or lock a
+   * file.
+   *
+   * @param fileId The unique identifier that represents a file.
+   *     <p>The ID for any file can be determined by visiting a file in the web application and
+   *     copying the ID from the URL. For example, for the URL `https://*.app.box.com/files/123` the
+   *     `file_id` is `123`. Example: "12345"
+   * @param requestBody Request body of updateFileById method
+   */
   public FileFull updateFileById(String fileId, UpdateFileByIdRequestBody requestBody) {
     return updateFileById(
         fileId, requestBody, new UpdateFileByIdQueryParams(), new UpdateFileByIdHeaders());
   }
 
+  /**
+   * Updates a file. This can be used to rename or move a file, create a shared link, or lock a
+   * file.
+   *
+   * @param fileId The unique identifier that represents a file.
+   *     <p>The ID for any file can be determined by visiting a file in the web application and
+   *     copying the ID from the URL. For example, for the URL `https://*.app.box.com/files/123` the
+   *     `file_id` is `123`. Example: "12345"
+   * @param queryParams Query parameters of updateFileById method
+   */
   public FileFull updateFileById(String fileId, UpdateFileByIdQueryParams queryParams) {
     return updateFileById(
         fileId, new UpdateFileByIdRequestBody(), queryParams, new UpdateFileByIdHeaders());
   }
 
+  /**
+   * Updates a file. This can be used to rename or move a file, create a shared link, or lock a
+   * file.
+   *
+   * @param fileId The unique identifier that represents a file.
+   *     <p>The ID for any file can be determined by visiting a file in the web application and
+   *     copying the ID from the URL. For example, for the URL `https://*.app.box.com/files/123` the
+   *     `file_id` is `123`. Example: "12345"
+   * @param requestBody Request body of updateFileById method
+   * @param queryParams Query parameters of updateFileById method
+   */
   public FileFull updateFileById(
       String fileId, UpdateFileByIdRequestBody requestBody, UpdateFileByIdQueryParams queryParams) {
     return updateFileById(fileId, requestBody, queryParams, new UpdateFileByIdHeaders());
   }
 
+  /**
+   * Updates a file. This can be used to rename or move a file, create a shared link, or lock a
+   * file.
+   *
+   * @param fileId The unique identifier that represents a file.
+   *     <p>The ID for any file can be determined by visiting a file in the web application and
+   *     copying the ID from the URL. For example, for the URL `https://*.app.box.com/files/123` the
+   *     `file_id` is `123`. Example: "12345"
+   * @param headers Headers of updateFileById method
+   */
   public FileFull updateFileById(String fileId, UpdateFileByIdHeaders headers) {
     return updateFileById(
         fileId, new UpdateFileByIdRequestBody(), new UpdateFileByIdQueryParams(), headers);
   }
 
+  /**
+   * Updates a file. This can be used to rename or move a file, create a shared link, or lock a
+   * file.
+   *
+   * @param fileId The unique identifier that represents a file.
+   *     <p>The ID for any file can be determined by visiting a file in the web application and
+   *     copying the ID from the URL. For example, for the URL `https://*.app.box.com/files/123` the
+   *     `file_id` is `123`. Example: "12345"
+   * @param requestBody Request body of updateFileById method
+   * @param headers Headers of updateFileById method
+   */
   public FileFull updateFileById(
       String fileId, UpdateFileByIdRequestBody requestBody, UpdateFileByIdHeaders headers) {
     return updateFileById(fileId, requestBody, new UpdateFileByIdQueryParams(), headers);
   }
 
+  /**
+   * Updates a file. This can be used to rename or move a file, create a shared link, or lock a
+   * file.
+   *
+   * @param fileId The unique identifier that represents a file.
+   *     <p>The ID for any file can be determined by visiting a file in the web application and
+   *     copying the ID from the URL. For example, for the URL `https://*.app.box.com/files/123` the
+   *     `file_id` is `123`. Example: "12345"
+   * @param queryParams Query parameters of updateFileById method
+   * @param headers Headers of updateFileById method
+   */
   public FileFull updateFileById(
       String fileId, UpdateFileByIdQueryParams queryParams, UpdateFileByIdHeaders headers) {
     return updateFileById(fileId, new UpdateFileByIdRequestBody(), queryParams, headers);
   }
 
+  /**
+   * Updates a file. This can be used to rename or move a file, create a shared link, or lock a
+   * file.
+   *
+   * @param fileId The unique identifier that represents a file.
+   *     <p>The ID for any file can be determined by visiting a file in the web application and
+   *     copying the ID from the URL. For example, for the URL `https://*.app.box.com/files/123` the
+   *     `file_id` is `123`. Example: "12345"
+   * @param requestBody Request body of updateFileById method
+   * @param queryParams Query parameters of updateFileById method
+   * @param headers Headers of updateFileById method
+   */
   public FileFull updateFileById(
       String fileId,
       UpdateFileByIdRequestBody requestBody,
@@ -148,10 +268,33 @@ public class FilesManager {
     return JsonManager.deserialize(response.getData(), FileFull.class);
   }
 
+  /**
+   * Deletes a file, either permanently or by moving it to the trash.
+   *
+   * <p>The enterprise settings determine whether the item will be permanently deleted from Box or
+   * moved to the trash.
+   *
+   * @param fileId The unique identifier that represents a file.
+   *     <p>The ID for any file can be determined by visiting a file in the web application and
+   *     copying the ID from the URL. For example, for the URL `https://*.app.box.com/files/123` the
+   *     `file_id` is `123`. Example: "12345"
+   */
   public void deleteFileById(String fileId) {
     deleteFileById(fileId, new DeleteFileByIdHeaders());
   }
 
+  /**
+   * Deletes a file, either permanently or by moving it to the trash.
+   *
+   * <p>The enterprise settings determine whether the item will be permanently deleted from Box or
+   * moved to the trash.
+   *
+   * @param fileId The unique identifier that represents a file.
+   *     <p>The ID for any file can be determined by visiting a file in the web application and
+   *     copying the ID from the URL. For example, for the URL `https://*.app.box.com/files/123` the
+   *     `file_id` is `123`. Example: "12345"
+   * @param headers Headers of deleteFileById method
+   */
   public void deleteFileById(String fileId, DeleteFileByIdHeaders headers) {
     Map<String, String> headersMap =
         prepareParams(
@@ -176,20 +319,60 @@ public class FilesManager {
                     .build());
   }
 
+  /**
+   * Creates a copy of a file.
+   *
+   * @param fileId The unique identifier that represents a file.
+   *     <p>The ID for any file can be determined by visiting a file in the web application and
+   *     copying the ID from the URL. For example, for the URL `https://*.app.box.com/files/123` the
+   *     `file_id` is `123`. Example: "12345"
+   * @param requestBody Request body of copyFile method
+   */
   public FileFull copyFile(String fileId, CopyFileRequestBody requestBody) {
     return copyFile(fileId, requestBody, new CopyFileQueryParams(), new CopyFileHeaders());
   }
 
+  /**
+   * Creates a copy of a file.
+   *
+   * @param fileId The unique identifier that represents a file.
+   *     <p>The ID for any file can be determined by visiting a file in the web application and
+   *     copying the ID from the URL. For example, for the URL `https://*.app.box.com/files/123` the
+   *     `file_id` is `123`. Example: "12345"
+   * @param requestBody Request body of copyFile method
+   * @param queryParams Query parameters of copyFile method
+   */
   public FileFull copyFile(
       String fileId, CopyFileRequestBody requestBody, CopyFileQueryParams queryParams) {
     return copyFile(fileId, requestBody, queryParams, new CopyFileHeaders());
   }
 
+  /**
+   * Creates a copy of a file.
+   *
+   * @param fileId The unique identifier that represents a file.
+   *     <p>The ID for any file can be determined by visiting a file in the web application and
+   *     copying the ID from the URL. For example, for the URL `https://*.app.box.com/files/123` the
+   *     `file_id` is `123`. Example: "12345"
+   * @param requestBody Request body of copyFile method
+   * @param headers Headers of copyFile method
+   */
   public FileFull copyFile(
       String fileId, CopyFileRequestBody requestBody, CopyFileHeaders headers) {
     return copyFile(fileId, requestBody, new CopyFileQueryParams(), headers);
   }
 
+  /**
+   * Creates a copy of a file.
+   *
+   * @param fileId The unique identifier that represents a file.
+   *     <p>The ID for any file can be determined by visiting a file in the web application and
+   *     copying the ID from the URL. For example, for the URL `https://*.app.box.com/files/123` the
+   *     `file_id` is `123`. Example: "12345"
+   * @param requestBody Request body of copyFile method
+   * @param queryParams Query parameters of copyFile method
+   * @param headers Headers of copyFile method
+   */
   public FileFull copyFile(
       String fileId,
       CopyFileRequestBody requestBody,
@@ -221,11 +404,48 @@ public class FilesManager {
     return JsonManager.deserialize(response.getData(), FileFull.class);
   }
 
+  /**
+   * Retrieves a thumbnail, or smaller image representation, of a file.
+   *
+   * <p>Sizes of `32x32`,`64x64`, `128x128`, and `256x256` can be returned in the `.png` format and
+   * sizes of `32x32`, `160x160`, and `320x320` can be returned in the `.jpg` format.
+   *
+   * <p>Thumbnails can be generated for the image and video file formats listed [found on our
+   * community site][1].
+   *
+   * <p>[1]:
+   * https://community.box.com/t5/Migrating-and-Previewing-Content/File-Types-and-Fonts-Supported-in-Box-Content-Preview/ta-p/327
+   *
+   * @param fileId The unique identifier that represents a file.
+   *     <p>The ID for any file can be determined by visiting a file in the web application and
+   *     copying the ID from the URL. For example, for the URL `https://*.app.box.com/files/123` the
+   *     `file_id` is `123`. Example: "12345"
+   * @param extension The file format for the thumbnail. Example: "png"
+   */
   public String getFileThumbnailUrl(String fileId, GetFileThumbnailUrlExtension extension) {
     return getFileThumbnailUrl(
         fileId, extension, new GetFileThumbnailUrlQueryParams(), new GetFileThumbnailUrlHeaders());
   }
 
+  /**
+   * Retrieves a thumbnail, or smaller image representation, of a file.
+   *
+   * <p>Sizes of `32x32`,`64x64`, `128x128`, and `256x256` can be returned in the `.png` format and
+   * sizes of `32x32`, `160x160`, and `320x320` can be returned in the `.jpg` format.
+   *
+   * <p>Thumbnails can be generated for the image and video file formats listed [found on our
+   * community site][1].
+   *
+   * <p>[1]:
+   * https://community.box.com/t5/Migrating-and-Previewing-Content/File-Types-and-Fonts-Supported-in-Box-Content-Preview/ta-p/327
+   *
+   * @param fileId The unique identifier that represents a file.
+   *     <p>The ID for any file can be determined by visiting a file in the web application and
+   *     copying the ID from the URL. For example, for the URL `https://*.app.box.com/files/123` the
+   *     `file_id` is `123`. Example: "12345"
+   * @param extension The file format for the thumbnail. Example: "png"
+   * @param queryParams Query parameters of getFileThumbnailById method
+   */
   public String getFileThumbnailUrl(
       String fileId,
       GetFileThumbnailUrlExtension extension,
@@ -233,11 +453,50 @@ public class FilesManager {
     return getFileThumbnailUrl(fileId, extension, queryParams, new GetFileThumbnailUrlHeaders());
   }
 
+  /**
+   * Retrieves a thumbnail, or smaller image representation, of a file.
+   *
+   * <p>Sizes of `32x32`,`64x64`, `128x128`, and `256x256` can be returned in the `.png` format and
+   * sizes of `32x32`, `160x160`, and `320x320` can be returned in the `.jpg` format.
+   *
+   * <p>Thumbnails can be generated for the image and video file formats listed [found on our
+   * community site][1].
+   *
+   * <p>[1]:
+   * https://community.box.com/t5/Migrating-and-Previewing-Content/File-Types-and-Fonts-Supported-in-Box-Content-Preview/ta-p/327
+   *
+   * @param fileId The unique identifier that represents a file.
+   *     <p>The ID for any file can be determined by visiting a file in the web application and
+   *     copying the ID from the URL. For example, for the URL `https://*.app.box.com/files/123` the
+   *     `file_id` is `123`. Example: "12345"
+   * @param extension The file format for the thumbnail. Example: "png"
+   * @param headers Headers of getFileThumbnailById method
+   */
   public String getFileThumbnailUrl(
       String fileId, GetFileThumbnailUrlExtension extension, GetFileThumbnailUrlHeaders headers) {
     return getFileThumbnailUrl(fileId, extension, new GetFileThumbnailUrlQueryParams(), headers);
   }
 
+  /**
+   * Retrieves a thumbnail, or smaller image representation, of a file.
+   *
+   * <p>Sizes of `32x32`,`64x64`, `128x128`, and `256x256` can be returned in the `.png` format and
+   * sizes of `32x32`, `160x160`, and `320x320` can be returned in the `.jpg` format.
+   *
+   * <p>Thumbnails can be generated for the image and video file formats listed [found on our
+   * community site][1].
+   *
+   * <p>[1]:
+   * https://community.box.com/t5/Migrating-and-Previewing-Content/File-Types-and-Fonts-Supported-in-Box-Content-Preview/ta-p/327
+   *
+   * @param fileId The unique identifier that represents a file.
+   *     <p>The ID for any file can be determined by visiting a file in the web application and
+   *     copying the ID from the URL. For example, for the URL `https://*.app.box.com/files/123` the
+   *     `file_id` is `123`. Example: "12345"
+   * @param extension The file format for the thumbnail. Example: "png"
+   * @param queryParams Query parameters of getFileThumbnailById method
+   * @param headers Headers of getFileThumbnailById method
+   */
   public String getFileThumbnailUrl(
       String fileId,
       GetFileThumbnailUrlExtension extension,
@@ -280,6 +539,24 @@ public class FilesManager {
     throw new BoxSDKError("No location header in response");
   }
 
+  /**
+   * Retrieves a thumbnail, or smaller image representation, of a file.
+   *
+   * <p>Sizes of `32x32`,`64x64`, `128x128`, and `256x256` can be returned in the `.png` format and
+   * sizes of `32x32`, `160x160`, and `320x320` can be returned in the `.jpg` format.
+   *
+   * <p>Thumbnails can be generated for the image and video file formats listed [found on our
+   * community site][1].
+   *
+   * <p>[1]:
+   * https://community.box.com/t5/Migrating-and-Previewing-Content/File-Types-and-Fonts-Supported-in-Box-Content-Preview/ta-p/327
+   *
+   * @param fileId The unique identifier that represents a file.
+   *     <p>The ID for any file can be determined by visiting a file in the web application and
+   *     copying the ID from the URL. For example, for the URL `https://*.app.box.com/files/123` the
+   *     `file_id` is `123`. Example: "12345"
+   * @param extension The file format for the thumbnail. Example: "png"
+   */
   public InputStream getFileThumbnailById(String fileId, GetFileThumbnailByIdExtension extension) {
     return getFileThumbnailById(
         fileId,
@@ -288,6 +565,25 @@ public class FilesManager {
         new GetFileThumbnailByIdHeaders());
   }
 
+  /**
+   * Retrieves a thumbnail, or smaller image representation, of a file.
+   *
+   * <p>Sizes of `32x32`,`64x64`, `128x128`, and `256x256` can be returned in the `.png` format and
+   * sizes of `32x32`, `160x160`, and `320x320` can be returned in the `.jpg` format.
+   *
+   * <p>Thumbnails can be generated for the image and video file formats listed [found on our
+   * community site][1].
+   *
+   * <p>[1]:
+   * https://community.box.com/t5/Migrating-and-Previewing-Content/File-Types-and-Fonts-Supported-in-Box-Content-Preview/ta-p/327
+   *
+   * @param fileId The unique identifier that represents a file.
+   *     <p>The ID for any file can be determined by visiting a file in the web application and
+   *     copying the ID from the URL. For example, for the URL `https://*.app.box.com/files/123` the
+   *     `file_id` is `123`. Example: "12345"
+   * @param extension The file format for the thumbnail. Example: "png"
+   * @param queryParams Query parameters of getFileThumbnailById method
+   */
   public InputStream getFileThumbnailById(
       String fileId,
       GetFileThumbnailByIdExtension extension,
@@ -295,11 +591,50 @@ public class FilesManager {
     return getFileThumbnailById(fileId, extension, queryParams, new GetFileThumbnailByIdHeaders());
   }
 
+  /**
+   * Retrieves a thumbnail, or smaller image representation, of a file.
+   *
+   * <p>Sizes of `32x32`,`64x64`, `128x128`, and `256x256` can be returned in the `.png` format and
+   * sizes of `32x32`, `160x160`, and `320x320` can be returned in the `.jpg` format.
+   *
+   * <p>Thumbnails can be generated for the image and video file formats listed [found on our
+   * community site][1].
+   *
+   * <p>[1]:
+   * https://community.box.com/t5/Migrating-and-Previewing-Content/File-Types-and-Fonts-Supported-in-Box-Content-Preview/ta-p/327
+   *
+   * @param fileId The unique identifier that represents a file.
+   *     <p>The ID for any file can be determined by visiting a file in the web application and
+   *     copying the ID from the URL. For example, for the URL `https://*.app.box.com/files/123` the
+   *     `file_id` is `123`. Example: "12345"
+   * @param extension The file format for the thumbnail. Example: "png"
+   * @param headers Headers of getFileThumbnailById method
+   */
   public InputStream getFileThumbnailById(
       String fileId, GetFileThumbnailByIdExtension extension, GetFileThumbnailByIdHeaders headers) {
     return getFileThumbnailById(fileId, extension, new GetFileThumbnailByIdQueryParams(), headers);
   }
 
+  /**
+   * Retrieves a thumbnail, or smaller image representation, of a file.
+   *
+   * <p>Sizes of `32x32`,`64x64`, `128x128`, and `256x256` can be returned in the `.png` format and
+   * sizes of `32x32`, `160x160`, and `320x320` can be returned in the `.jpg` format.
+   *
+   * <p>Thumbnails can be generated for the image and video file formats listed [found on our
+   * community site][1].
+   *
+   * <p>[1]:
+   * https://community.box.com/t5/Migrating-and-Previewing-Content/File-Types-and-Fonts-Supported-in-Box-Content-Preview/ta-p/327
+   *
+   * @param fileId The unique identifier that represents a file.
+   *     <p>The ID for any file can be determined by visiting a file in the web application and
+   *     copying the ID from the URL. For example, for the URL `https://*.app.box.com/files/123` the
+   *     `file_id` is `123`. Example: "12345"
+   * @param extension The file format for the thumbnail. Example: "png"
+   * @param queryParams Query parameters of getFileThumbnailById method
+   * @param headers Headers of getFileThumbnailById method
+   */
   public InputStream getFileThumbnailById(
       String fileId,
       GetFileThumbnailByIdExtension extension,

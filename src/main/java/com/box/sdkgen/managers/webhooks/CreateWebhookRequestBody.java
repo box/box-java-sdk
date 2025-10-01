@@ -22,10 +22,13 @@ import java.util.Objects;
 @JsonFilter("nullablePropertyFilter")
 public class CreateWebhookRequestBody extends SerializableObject {
 
+  /** The item that will trigger the webhook. */
   protected final CreateWebhookRequestBodyTargetField target;
 
+  /** The URL that is notified by this webhook. */
   protected final String address;
 
+  /** An array of event names that this webhook is to be triggered for. */
   @JsonDeserialize(using = TriggersDeserializer.class)
   @JsonSerialize(using = TriggersSerializer.class)
   protected final List<EnumWrapper<CreateWebhookRequestBodyTriggersField>> triggers;

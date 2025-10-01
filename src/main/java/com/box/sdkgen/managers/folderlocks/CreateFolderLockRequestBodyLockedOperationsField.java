@@ -8,8 +8,10 @@ import java.util.Objects;
 @JsonFilter("nullablePropertyFilter")
 public class CreateFolderLockRequestBodyLockedOperationsField extends SerializableObject {
 
+  /** Whether moving the folder should be locked. */
   protected final boolean move;
 
+  /** Whether deleting the folder should be locked. */
   protected final boolean delete;
 
   public CreateFolderLockRequestBodyLockedOperationsField(

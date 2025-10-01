@@ -31,18 +31,35 @@ public class StoragePoliciesManager {
     this.networkSession = builder.networkSession;
   }
 
+  /** Fetches all the storage policies in the enterprise. */
   public StoragePolicies getStoragePolicies() {
     return getStoragePolicies(new GetStoragePoliciesQueryParams(), new GetStoragePoliciesHeaders());
   }
 
+  /**
+   * Fetches all the storage policies in the enterprise.
+   *
+   * @param queryParams Query parameters of getStoragePolicies method
+   */
   public StoragePolicies getStoragePolicies(GetStoragePoliciesQueryParams queryParams) {
     return getStoragePolicies(queryParams, new GetStoragePoliciesHeaders());
   }
 
+  /**
+   * Fetches all the storage policies in the enterprise.
+   *
+   * @param headers Headers of getStoragePolicies method
+   */
   public StoragePolicies getStoragePolicies(GetStoragePoliciesHeaders headers) {
     return getStoragePolicies(new GetStoragePoliciesQueryParams(), headers);
   }
 
+  /**
+   * Fetches all the storage policies in the enterprise.
+   *
+   * @param queryParams Query parameters of getStoragePolicies method
+   * @param headers Headers of getStoragePolicies method
+   */
   public StoragePolicies getStoragePolicies(
       GetStoragePoliciesQueryParams queryParams, GetStoragePoliciesHeaders headers) {
     Map<String, String> queryParamsMap =
@@ -71,10 +88,21 @@ public class StoragePoliciesManager {
     return JsonManager.deserialize(response.getData(), StoragePolicies.class);
   }
 
+  /**
+   * Fetches a specific storage policy.
+   *
+   * @param storagePolicyId The ID of the storage policy. Example: "34342"
+   */
   public StoragePolicy getStoragePolicyById(String storagePolicyId) {
     return getStoragePolicyById(storagePolicyId, new GetStoragePolicyByIdHeaders());
   }
 
+  /**
+   * Fetches a specific storage policy.
+   *
+   * @param storagePolicyId The ID of the storage policy. Example: "34342"
+   * @param headers Headers of getStoragePolicyById method
+   */
   public StoragePolicy getStoragePolicyById(
       String storagePolicyId, GetStoragePolicyByIdHeaders headers) {
     Map<String, String> headersMap = prepareParams(mergeMaps(mapOf(), headers.getExtraHeaders()));

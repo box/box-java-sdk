@@ -31,12 +31,25 @@ public class ExternalUsersManager {
     this.networkSession = builder.networkSession;
   }
 
+  /**
+   * Delete external users from current user enterprise. This will remove each external user from
+   * all invited collaborations within the current enterprise.
+   *
+   * @param requestBody Request body of submitJobToDeleteExternalUsersV2025R0 method
+   */
   public ExternalUsersSubmitDeleteJobResponseV2025R0 submitJobToDeleteExternalUsersV2025R0(
       ExternalUsersSubmitDeleteJobRequestV2025R0 requestBody) {
     return submitJobToDeleteExternalUsersV2025R0(
         requestBody, new SubmitJobToDeleteExternalUsersV2025R0Headers());
   }
 
+  /**
+   * Delete external users from current user enterprise. This will remove each external user from
+   * all invited collaborations within the current enterprise.
+   *
+   * @param requestBody Request body of submitJobToDeleteExternalUsersV2025R0 method
+   * @param headers Headers of submitJobToDeleteExternalUsersV2025R0 method
+   */
   public ExternalUsersSubmitDeleteJobResponseV2025R0 submitJobToDeleteExternalUsersV2025R0(
       ExternalUsersSubmitDeleteJobRequestV2025R0 requestBody,
       SubmitJobToDeleteExternalUsersV2025R0Headers headers) {

@@ -10,9 +10,11 @@ import com.fasterxml.jackson.annotation.JsonFilter;
 import java.util.List;
 import java.util.Objects;
 
+/** AI agent processor used to handle basic text. */
 @JsonFilter("nullablePropertyFilter")
 public class AiStudioAgentBasicTextToolResponse extends AiStudioAgentBasicTextTool {
 
+  /** Warnings concerning tool. */
   protected List<String> warnings;
 
   public AiStudioAgentBasicTextToolResponse() {
