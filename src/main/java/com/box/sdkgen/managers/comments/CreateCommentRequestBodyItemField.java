@@ -11,8 +11,10 @@ import java.util.Objects;
 @JsonFilter("nullablePropertyFilter")
 public class CreateCommentRequestBodyItemField extends SerializableObject {
 
+  /** The ID of the item. */
   protected final String id;
 
+  /** The type of the item that this comment will be placed on. */
   @JsonDeserialize(
       using =
           CreateCommentRequestBodyItemTypeField.CreateCommentRequestBodyItemTypeFieldDeserializer

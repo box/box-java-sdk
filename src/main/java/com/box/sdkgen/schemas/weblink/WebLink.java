@@ -14,32 +14,44 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import java.time.OffsetDateTime;
 import java.util.Objects;
 
+/**
+ * Web links are objects that point to URLs. These objects are also known as bookmarks within the
+ * Box web application.
+ *
+ * <p>Web link objects are treated similarly to file objects, they will also support most actions
+ * that apply to regular files.
+ */
 @JsonFilter("nullablePropertyFilter")
 public class WebLink extends WebLinkMini {
 
   protected FolderMini parent;
 
+  /** The description accompanying the web link. This is visible within the Box web application. */
   protected String description;
 
   @JsonProperty("path_collection")
   protected WebLinkPathCollectionField pathCollection;
 
+  /** When this file was created on Box’s servers. */
   @JsonProperty("created_at")
   @JsonSerialize(using = DateTimeUtils.DateTimeSerializer.class)
   @JsonDeserialize(using = DateTimeUtils.DateTimeDeserializer.class)
   protected OffsetDateTime createdAt;
 
+  /** When this file was last updated on the Box servers. */
   @JsonProperty("modified_at")
   @JsonSerialize(using = DateTimeUtils.DateTimeSerializer.class)
   @JsonDeserialize(using = DateTimeUtils.DateTimeDeserializer.class)
   protected OffsetDateTime modifiedAt;
 
+  /** When this file was moved to the trash. */
   @JsonProperty("trashed_at")
   @JsonSerialize(using = DateTimeUtils.DateTimeSerializer.class)
   @JsonDeserialize(using = DateTimeUtils.DateTimeDeserializer.class)
   @Nullable
   protected OffsetDateTime trashedAt;
 
+  /** When this file will be permanently deleted. */
   @JsonProperty("purged_at")
   @JsonSerialize(using = DateTimeUtils.DateTimeSerializer.class)
   @JsonDeserialize(using = DateTimeUtils.DateTimeDeserializer.class)
@@ -58,6 +70,10 @@ public class WebLink extends WebLinkMini {
   @JsonProperty("shared_link")
   protected WebLinkSharedLinkField sharedLink;
 
+  /**
+   * Whether this item is deleted or not. Values include `active`, `trashed` if the file has been
+   * moved to the trash, and `deleted` if the file has been permanently deleted.
+   */
   @JsonDeserialize(using = WebLinkItemStatusField.WebLinkItemStatusFieldDeserializer.class)
   @JsonSerialize(using = WebLinkItemStatusField.WebLinkItemStatusFieldSerializer.class)
   @JsonProperty("item_status")

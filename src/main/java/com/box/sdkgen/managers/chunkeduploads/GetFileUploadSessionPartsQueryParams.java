@@ -2,8 +2,14 @@ package com.box.sdkgen.managers.chunkeduploads;
 
 public class GetFileUploadSessionPartsQueryParams {
 
+  /**
+   * The offset of the item at which to begin the response.
+   *
+   * <p>Queries with offset parameter value exceeding 10000 will be rejected with a 400 response.
+   */
   public Long offset;
 
+  /** The maximum number of items to return per page. */
   public Long limit;
 
   public GetFileUploadSessionPartsQueryParams() {}

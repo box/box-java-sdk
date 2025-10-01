@@ -9,10 +9,13 @@ import java.util.Objects;
 @JsonFilter("nullablePropertyFilter")
 public class RetentionPolicyAssignmentCountsField extends SerializableObject {
 
+  /** The number of enterprise assignments this policy has. The maximum value is 1. */
   protected Long enterprise;
 
+  /** The number of folder assignments this policy has. */
   protected Long folder;
 
+  /** The number of metadata template assignments this policy has. */
   @JsonProperty("metadata_template")
   protected Long metadataTemplate;
 

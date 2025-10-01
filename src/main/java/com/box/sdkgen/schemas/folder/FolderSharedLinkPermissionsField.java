@@ -8,12 +8,31 @@ import java.util.Objects;
 @JsonFilter("nullablePropertyFilter")
 public class FolderSharedLinkPermissionsField extends SerializableObject {
 
+  /**
+   * Defines if the shared link allows for the item to be downloaded. For shared links on folders,
+   * this also applies to any items in the folder.
+   *
+   * <p>This value can be set to `true` when the effective access level is set to `open` or
+   * `company`, not `collaborators`.
+   */
   @JsonProperty("can_download")
   protected final boolean canDownload;
 
+  /**
+   * Defines if the shared link allows for the item to be previewed.
+   *
+   * <p>This value is always `true`. For shared links on folders this also applies to any items in
+   * the folder.
+   */
   @JsonProperty("can_preview")
   protected final boolean canPreview;
 
+  /**
+   * Defines if the shared link allows for the item to be edited.
+   *
+   * <p>This value can only be `true` if `can_download` is also `true` and if the item has a type of
+   * `file`.
+   */
   @JsonProperty("can_edit")
   protected final boolean canEdit;
 

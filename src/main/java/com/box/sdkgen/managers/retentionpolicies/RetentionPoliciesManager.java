@@ -31,19 +31,36 @@ public class RetentionPoliciesManager {
     this.networkSession = builder.networkSession;
   }
 
+  /** Retrieves all of the retention policies for an enterprise. */
   public RetentionPolicies getRetentionPolicies() {
     return getRetentionPolicies(
         new GetRetentionPoliciesQueryParams(), new GetRetentionPoliciesHeaders());
   }
 
+  /**
+   * Retrieves all of the retention policies for an enterprise.
+   *
+   * @param queryParams Query parameters of getRetentionPolicies method
+   */
   public RetentionPolicies getRetentionPolicies(GetRetentionPoliciesQueryParams queryParams) {
     return getRetentionPolicies(queryParams, new GetRetentionPoliciesHeaders());
   }
 
+  /**
+   * Retrieves all of the retention policies for an enterprise.
+   *
+   * @param headers Headers of getRetentionPolicies method
+   */
   public RetentionPolicies getRetentionPolicies(GetRetentionPoliciesHeaders headers) {
     return getRetentionPolicies(new GetRetentionPoliciesQueryParams(), headers);
   }
 
+  /**
+   * Retrieves all of the retention policies for an enterprise.
+   *
+   * @param queryParams Query parameters of getRetentionPolicies method
+   * @param headers Headers of getRetentionPolicies method
+   */
   public RetentionPolicies getRetentionPolicies(
       GetRetentionPoliciesQueryParams queryParams, GetRetentionPoliciesHeaders headers) {
     Map<String, String> queryParamsMap =
@@ -75,10 +92,21 @@ public class RetentionPoliciesManager {
     return JsonManager.deserialize(response.getData(), RetentionPolicies.class);
   }
 
+  /**
+   * Creates a retention policy.
+   *
+   * @param requestBody Request body of createRetentionPolicy method
+   */
   public RetentionPolicy createRetentionPolicy(CreateRetentionPolicyRequestBody requestBody) {
     return createRetentionPolicy(requestBody, new CreateRetentionPolicyHeaders());
   }
 
+  /**
+   * Creates a retention policy.
+   *
+   * @param requestBody Request body of createRetentionPolicy method
+   * @param headers Headers of createRetentionPolicy method
+   */
   public RetentionPolicy createRetentionPolicy(
       CreateRetentionPolicyRequestBody requestBody, CreateRetentionPolicyHeaders headers) {
     Map<String, String> headersMap = prepareParams(mergeMaps(mapOf(), headers.getExtraHeaders()));
@@ -102,6 +130,11 @@ public class RetentionPoliciesManager {
     return JsonManager.deserialize(response.getData(), RetentionPolicy.class);
   }
 
+  /**
+   * Retrieves a retention policy.
+   *
+   * @param retentionPolicyId The ID of the retention policy. Example: "982312"
+   */
   public RetentionPolicy getRetentionPolicyById(String retentionPolicyId) {
     return getRetentionPolicyById(
         retentionPolicyId,
@@ -109,18 +142,37 @@ public class RetentionPoliciesManager {
         new GetRetentionPolicyByIdHeaders());
   }
 
+  /**
+   * Retrieves a retention policy.
+   *
+   * @param retentionPolicyId The ID of the retention policy. Example: "982312"
+   * @param queryParams Query parameters of getRetentionPolicyById method
+   */
   public RetentionPolicy getRetentionPolicyById(
       String retentionPolicyId, GetRetentionPolicyByIdQueryParams queryParams) {
     return getRetentionPolicyById(
         retentionPolicyId, queryParams, new GetRetentionPolicyByIdHeaders());
   }
 
+  /**
+   * Retrieves a retention policy.
+   *
+   * @param retentionPolicyId The ID of the retention policy. Example: "982312"
+   * @param headers Headers of getRetentionPolicyById method
+   */
   public RetentionPolicy getRetentionPolicyById(
       String retentionPolicyId, GetRetentionPolicyByIdHeaders headers) {
     return getRetentionPolicyById(
         retentionPolicyId, new GetRetentionPolicyByIdQueryParams(), headers);
   }
 
+  /**
+   * Retrieves a retention policy.
+   *
+   * @param retentionPolicyId The ID of the retention policy. Example: "982312"
+   * @param queryParams Query parameters of getRetentionPolicyById method
+   * @param headers Headers of getRetentionPolicyById method
+   */
   public RetentionPolicy getRetentionPolicyById(
       String retentionPolicyId,
       GetRetentionPolicyByIdQueryParams queryParams,
@@ -148,6 +200,11 @@ public class RetentionPoliciesManager {
     return JsonManager.deserialize(response.getData(), RetentionPolicy.class);
   }
 
+  /**
+   * Updates a retention policy.
+   *
+   * @param retentionPolicyId The ID of the retention policy. Example: "982312"
+   */
   public RetentionPolicy updateRetentionPolicyById(String retentionPolicyId) {
     return updateRetentionPolicyById(
         retentionPolicyId,
@@ -155,18 +212,37 @@ public class RetentionPoliciesManager {
         new UpdateRetentionPolicyByIdHeaders());
   }
 
+  /**
+   * Updates a retention policy.
+   *
+   * @param retentionPolicyId The ID of the retention policy. Example: "982312"
+   * @param requestBody Request body of updateRetentionPolicyById method
+   */
   public RetentionPolicy updateRetentionPolicyById(
       String retentionPolicyId, UpdateRetentionPolicyByIdRequestBody requestBody) {
     return updateRetentionPolicyById(
         retentionPolicyId, requestBody, new UpdateRetentionPolicyByIdHeaders());
   }
 
+  /**
+   * Updates a retention policy.
+   *
+   * @param retentionPolicyId The ID of the retention policy. Example: "982312"
+   * @param headers Headers of updateRetentionPolicyById method
+   */
   public RetentionPolicy updateRetentionPolicyById(
       String retentionPolicyId, UpdateRetentionPolicyByIdHeaders headers) {
     return updateRetentionPolicyById(
         retentionPolicyId, new UpdateRetentionPolicyByIdRequestBody(), headers);
   }
 
+  /**
+   * Updates a retention policy.
+   *
+   * @param retentionPolicyId The ID of the retention policy. Example: "982312"
+   * @param requestBody Request body of updateRetentionPolicyById method
+   * @param headers Headers of updateRetentionPolicyById method
+   */
   public RetentionPolicy updateRetentionPolicyById(
       String retentionPolicyId,
       UpdateRetentionPolicyByIdRequestBody requestBody,
@@ -193,10 +269,21 @@ public class RetentionPoliciesManager {
     return JsonManager.deserialize(response.getData(), RetentionPolicy.class);
   }
 
+  /**
+   * Permanently deletes a retention policy.
+   *
+   * @param retentionPolicyId The ID of the retention policy. Example: "982312"
+   */
   public void deleteRetentionPolicyById(String retentionPolicyId) {
     deleteRetentionPolicyById(retentionPolicyId, new DeleteRetentionPolicyByIdHeaders());
   }
 
+  /**
+   * Permanently deletes a retention policy.
+   *
+   * @param retentionPolicyId The ID of the retention policy. Example: "982312"
+   * @param headers Headers of deleteRetentionPolicyById method
+   */
   public void deleteRetentionPolicyById(
       String retentionPolicyId, DeleteRetentionPolicyByIdHeaders headers) {
     Map<String, String> headersMap = prepareParams(mergeMaps(mapOf(), headers.getExtraHeaders()));

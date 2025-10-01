@@ -15,11 +15,14 @@ import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.Objects;
 
+/** File version legal hold is an entity representing all holds on a File Version. */
 @JsonFilter("nullablePropertyFilter")
 public class FileVersionLegalHold extends SerializableObject {
 
+  /** The unique identifier for this file version legal hold. */
   protected String id;
 
+  /** The value will always be `file_version_legal_hold`. */
   @JsonDeserialize(
       using = FileVersionLegalHoldTypeField.FileVersionLegalHoldTypeFieldDeserializer.class)
   @JsonSerialize(
@@ -31,9 +34,11 @@ public class FileVersionLegalHold extends SerializableObject {
 
   protected FileMini file;
 
+  /** List of assignments contributing to this Hold. */
   @JsonProperty("legal_hold_policy_assignments")
   protected List<LegalHoldPolicyAssignment> legalHoldPolicyAssignments;
 
+  /** Time that this File-Version-Legal-Hold was deleted. */
   @JsonProperty("deleted_at")
   @JsonSerialize(using = DateTimeUtils.DateTimeSerializer.class)
   @JsonDeserialize(using = DateTimeUtils.DateTimeDeserializer.class)

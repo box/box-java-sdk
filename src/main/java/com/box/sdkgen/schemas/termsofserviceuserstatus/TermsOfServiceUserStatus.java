@@ -13,11 +13,14 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import java.time.OffsetDateTime;
 import java.util.Objects;
 
+/** The association between a Terms of Service and a user. */
 @JsonFilter("nullablePropertyFilter")
 public class TermsOfServiceUserStatus extends SerializableObject {
 
+  /** The unique identifier for this terms of service user status. */
   protected final String id;
 
+  /** The value will always be `terms_of_service_user_status`. */
   @JsonDeserialize(
       using = TermsOfServiceUserStatusTypeField.TermsOfServiceUserStatusTypeFieldDeserializer.class)
   @JsonSerialize(
@@ -28,14 +31,17 @@ public class TermsOfServiceUserStatus extends SerializableObject {
 
   protected UserMini user;
 
+  /** If the user has accepted the terms of services. */
   @JsonProperty("is_accepted")
   protected Boolean isAccepted;
 
+  /** When the legal item was created. */
   @JsonProperty("created_at")
   @JsonSerialize(using = DateTimeUtils.DateTimeSerializer.class)
   @JsonDeserialize(using = DateTimeUtils.DateTimeDeserializer.class)
   protected OffsetDateTime createdAt;
 
+  /** When the legal item was modified. */
   @JsonProperty("modified_at")
   @JsonSerialize(using = DateTimeUtils.DateTimeSerializer.class)
   @JsonDeserialize(using = DateTimeUtils.DateTimeDeserializer.class)

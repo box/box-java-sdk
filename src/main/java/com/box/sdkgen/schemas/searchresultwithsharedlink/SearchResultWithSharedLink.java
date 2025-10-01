@@ -10,14 +10,27 @@ import com.fasterxml.jackson.annotation.JsonFilter;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.Objects;
 
+/**
+ * A single of files, folder or web link that matched the search query, including the additional
+ * information about the shared link through which the item has been shared with the user.
+ *
+ * <p>This response format is only returned when the `include_recent_shared_links` query parameter
+ * has been set to `true`.
+ */
 @JsonFilter("nullablePropertyFilter")
 public class SearchResultWithSharedLink extends SerializableObject {
 
+  /**
+   * The optional shared link through which the user has access to this item. This value is only
+   * returned for items for which the user has recently accessed the file through a shared link. For
+   * all other items this value will return `null`.
+   */
   @JsonProperty("accessible_via_shared_link")
   protected String accessibleViaSharedLink;
 
   protected SearchResultWithSharedLinkItem item;
 
+  /** The result type. The value is always `search_result`. */
   protected String type;
 
   public SearchResultWithSharedLink() {

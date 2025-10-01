@@ -7,12 +7,14 @@ import com.fasterxml.jackson.annotation.JsonFilter;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.Objects;
 
+/** A mini representation of a file version, used when nested under another resource. */
 @JsonFilter("nullablePropertyFilter")
 public class FolderMini extends FolderBase {
 
   @JsonProperty("sequence_id")
   protected String sequenceId;
 
+  /** The name of the folder. */
   protected String name;
 
   public FolderMini(@JsonProperty("id") String id) {

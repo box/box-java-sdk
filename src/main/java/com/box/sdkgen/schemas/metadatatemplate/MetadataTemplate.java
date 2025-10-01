@@ -10,25 +10,49 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import java.util.List;
 import java.util.Objects;
 
+/** A template for metadata that can be applied to files and folders. */
 @JsonFilter("nullablePropertyFilter")
 public class MetadataTemplate extends SerializableObject {
 
+  /** The ID of the metadata template. */
   protected final String id;
 
+  /** The value will always be `metadata_template`. */
   @JsonDeserialize(using = MetadataTemplateTypeField.MetadataTemplateTypeFieldDeserializer.class)
   @JsonSerialize(using = MetadataTemplateTypeField.MetadataTemplateTypeFieldSerializer.class)
   protected EnumWrapper<MetadataTemplateTypeField> type;
 
+  /**
+   * The scope of the metadata template can either be `global` or `enterprise_*`. The `global` scope
+   * is used for templates that are available to any Box enterprise. The `enterprise_*` scope
+   * represents templates that have been created within a specific enterprise, where `*` will be the
+   * ID of that enterprise.
+   */
   protected String scope;
 
+  /**
+   * A unique identifier for the template. This identifier is unique across the `scope` of the
+   * enterprise to which the metadata template is being applied, yet is not necessarily unique
+   * across different enterprises.
+   */
   protected String templateKey;
 
+  /** The display name of the template. This can be seen in the Box web app and mobile apps. */
   protected String displayName;
 
+  /**
+   * Defines if this template is visible in the Box web app UI, or if it is purely intended for
+   * usage through the API.
+   */
   protected Boolean hidden;
 
+  /**
+   * An ordered list of template fields which are part of the template. Each field can be a regular
+   * text field, date field, number field, as well as a single or multi-select list.
+   */
   protected List<MetadataTemplateFieldsField> fields;
 
+  /** Whether or not to include the metadata when a file or folder is copied. */
   protected Boolean copyInstanceOnItemCopy;
 
   public MetadataTemplate(@JsonProperty("id") String id) {

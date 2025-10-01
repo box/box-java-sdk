@@ -9,10 +9,21 @@ import java.util.Objects;
 @JsonFilter("nullablePropertyFilter")
 public class HubCollaborationCreateRequestV2025R0AccessibleByField extends SerializableObject {
 
+  /** The type of collaborator to invite. Possible values are `user` or `group`. */
   protected final String type;
 
+  /**
+   * The ID of the user or group.
+   *
+   * <p>Alternatively, use `login` to specify a user by email address.
+   */
   protected String id;
 
+  /**
+   * The email address of the user who gets access to the item.
+   *
+   * <p>Alternatively, use `id` to specify a user by user ID.
+   */
   protected String login;
 
   public HubCollaborationCreateRequestV2025R0AccessibleByField(@JsonProperty("type") String type) {

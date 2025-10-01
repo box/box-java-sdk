@@ -2,12 +2,16 @@ package com.box.sdkgen.managers.files;
 
 public class GetFileThumbnailUrlQueryParams {
 
+  /** The minimum height of the thumbnail. */
   public Long minHeight;
 
+  /** The minimum width of the thumbnail. */
   public Long minWidth;
 
+  /** The maximum height of the thumbnail. */
   public Long maxHeight;
 
+  /** The maximum width of the thumbnail. */
   public Long maxWidth;
 
   public GetFileThumbnailUrlQueryParams() {}

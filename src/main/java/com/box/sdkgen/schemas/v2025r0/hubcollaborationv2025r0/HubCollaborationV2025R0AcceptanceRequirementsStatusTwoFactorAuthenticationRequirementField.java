@@ -12,9 +12,17 @@ public
 class HubCollaborationV2025R0AcceptanceRequirementsStatusTwoFactorAuthenticationRequirementField
     extends SerializableObject {
 
+  /**
+   * Whether or not the enterprise that owns the content requires two-factor authentication to be
+   * enabled in order to collaborate on the content.
+   */
   @JsonProperty("enterprise_has_two_factor_auth_enabled")
   protected Boolean enterpriseHasTwoFactorAuthEnabled;
 
+  /**
+   * Whether or not the user has two-factor authentication enabled. The field is `null` when
+   * two-factor authentication is not required.
+   */
   @JsonProperty("user_has_two_factor_authentication_enabled")
   @Nullable
   protected Boolean userHasTwoFactorAuthenticationEnabled;

@@ -31,24 +31,47 @@ public class CollaborationAllowlistEntriesManager {
     this.networkSession = builder.networkSession;
   }
 
+  /**
+   * Returns the list domains that have been deemed safe to create collaborations for within the
+   * current enterprise.
+   */
   public CollaborationAllowlistEntries getCollaborationWhitelistEntries() {
     return getCollaborationWhitelistEntries(
         new GetCollaborationWhitelistEntriesQueryParams(),
         new GetCollaborationWhitelistEntriesHeaders());
   }
 
+  /**
+   * Returns the list domains that have been deemed safe to create collaborations for within the
+   * current enterprise.
+   *
+   * @param queryParams Query parameters of getCollaborationWhitelistEntries method
+   */
   public CollaborationAllowlistEntries getCollaborationWhitelistEntries(
       GetCollaborationWhitelistEntriesQueryParams queryParams) {
     return getCollaborationWhitelistEntries(
         queryParams, new GetCollaborationWhitelistEntriesHeaders());
   }
 
+  /**
+   * Returns the list domains that have been deemed safe to create collaborations for within the
+   * current enterprise.
+   *
+   * @param headers Headers of getCollaborationWhitelistEntries method
+   */
   public CollaborationAllowlistEntries getCollaborationWhitelistEntries(
       GetCollaborationWhitelistEntriesHeaders headers) {
     return getCollaborationWhitelistEntries(
         new GetCollaborationWhitelistEntriesQueryParams(), headers);
   }
 
+  /**
+   * Returns the list domains that have been deemed safe to create collaborations for within the
+   * current enterprise.
+   *
+   * @param queryParams Query parameters of getCollaborationWhitelistEntries method
+   * @param headers Headers of getCollaborationWhitelistEntries method
+   */
   public CollaborationAllowlistEntries getCollaborationWhitelistEntries(
       GetCollaborationWhitelistEntriesQueryParams queryParams,
       GetCollaborationWhitelistEntriesHeaders headers) {
@@ -77,12 +100,23 @@ public class CollaborationAllowlistEntriesManager {
     return JsonManager.deserialize(response.getData(), CollaborationAllowlistEntries.class);
   }
 
+  /**
+   * Creates a new entry in the list of allowed domains to allow collaboration for.
+   *
+   * @param requestBody Request body of createCollaborationWhitelistEntry method
+   */
   public CollaborationAllowlistEntry createCollaborationWhitelistEntry(
       CreateCollaborationWhitelistEntryRequestBody requestBody) {
     return createCollaborationWhitelistEntry(
         requestBody, new CreateCollaborationWhitelistEntryHeaders());
   }
 
+  /**
+   * Creates a new entry in the list of allowed domains to allow collaboration for.
+   *
+   * @param requestBody Request body of createCollaborationWhitelistEntry method
+   * @param headers Headers of createCollaborationWhitelistEntry method
+   */
   public CollaborationAllowlistEntry createCollaborationWhitelistEntry(
       CreateCollaborationWhitelistEntryRequestBody requestBody,
       CreateCollaborationWhitelistEntryHeaders headers) {
@@ -107,12 +141,25 @@ public class CollaborationAllowlistEntriesManager {
     return JsonManager.deserialize(response.getData(), CollaborationAllowlistEntry.class);
   }
 
+  /**
+   * Returns a domain that has been deemed safe to create collaborations for within the current
+   * enterprise.
+   *
+   * @param collaborationWhitelistEntryId The ID of the entry in the list. Example: "213123"
+   */
   public CollaborationAllowlistEntry getCollaborationWhitelistEntryById(
       String collaborationWhitelistEntryId) {
     return getCollaborationWhitelistEntryById(
         collaborationWhitelistEntryId, new GetCollaborationWhitelistEntryByIdHeaders());
   }
 
+  /**
+   * Returns a domain that has been deemed safe to create collaborations for within the current
+   * enterprise.
+   *
+   * @param collaborationWhitelistEntryId The ID of the entry in the list. Example: "213123"
+   * @param headers Headers of getCollaborationWhitelistEntryById method
+   */
   public CollaborationAllowlistEntry getCollaborationWhitelistEntryById(
       String collaborationWhitelistEntryId, GetCollaborationWhitelistEntryByIdHeaders headers) {
     Map<String, String> headersMap = prepareParams(mergeMaps(mapOf(), headers.getExtraHeaders()));
@@ -135,11 +182,24 @@ public class CollaborationAllowlistEntriesManager {
     return JsonManager.deserialize(response.getData(), CollaborationAllowlistEntry.class);
   }
 
+  /**
+   * Removes a domain from the list of domains that have been deemed safe to create collaborations
+   * for within the current enterprise.
+   *
+   * @param collaborationWhitelistEntryId The ID of the entry in the list. Example: "213123"
+   */
   public void deleteCollaborationWhitelistEntryById(String collaborationWhitelistEntryId) {
     deleteCollaborationWhitelistEntryById(
         collaborationWhitelistEntryId, new DeleteCollaborationWhitelistEntryByIdHeaders());
   }
 
+  /**
+   * Removes a domain from the list of domains that have been deemed safe to create collaborations
+   * for within the current enterprise.
+   *
+   * @param collaborationWhitelistEntryId The ID of the entry in the list. Example: "213123"
+   * @param headers Headers of deleteCollaborationWhitelistEntryById method
+   */
   public void deleteCollaborationWhitelistEntryById(
       String collaborationWhitelistEntryId, DeleteCollaborationWhitelistEntryByIdHeaders headers) {
     Map<String, String> headersMap = prepareParams(mergeMaps(mapOf(), headers.getExtraHeaders()));

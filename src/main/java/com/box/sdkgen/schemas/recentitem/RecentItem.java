@@ -15,13 +15,16 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import java.time.OffsetDateTime;
 import java.util.Objects;
 
+/** A recent item accessed by a user. */
 @JsonFilter("nullablePropertyFilter")
 public class RecentItem extends SerializableObject {
 
+  /** The value will always be `recent_item`. */
   protected String type;
 
   protected RecentItemResource item;
 
+  /** The most recent type of access the user performed on the item. */
   @JsonDeserialize(
       using = RecentItemInteractionTypeField.RecentItemInteractionTypeFieldDeserializer.class)
   @JsonSerialize(
@@ -29,11 +32,16 @@ public class RecentItem extends SerializableObject {
   @JsonProperty("interaction_type")
   protected EnumWrapper<RecentItemInteractionTypeField> interactionType;
 
+  /** The time of the most recent interaction. */
   @JsonProperty("interacted_at")
   @JsonSerialize(using = DateTimeUtils.DateTimeSerializer.class)
   @JsonDeserialize(using = DateTimeUtils.DateTimeDeserializer.class)
   protected OffsetDateTime interactedAt;
 
+  /**
+   * If the item was accessed through a shared link it will appear here, otherwise this will be
+   * null.
+   */
   @JsonProperty("interaction_shared_link")
   protected String interactionSharedLink;
 

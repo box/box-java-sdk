@@ -8,6 +8,7 @@ import java.util.Objects;
 @JsonFilter("nullablePropertyFilter")
 public class CreateCollaborationWhitelistExemptTargetRequestBody extends SerializableObject {
 
+  /** The user to exempt. */
   protected final CreateCollaborationWhitelistExemptTargetRequestBodyUserField user;
 
   public CreateCollaborationWhitelistExemptTargetRequestBody(

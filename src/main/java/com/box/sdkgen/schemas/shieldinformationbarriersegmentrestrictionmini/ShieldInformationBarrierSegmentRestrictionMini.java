@@ -7,14 +7,17 @@ import com.fasterxml.jackson.annotation.JsonFilter;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.Objects;
 
+/** A mini representation of a segment restriction object for the shield information barrier. */
 @JsonFilter("nullablePropertyFilter")
 public class ShieldInformationBarrierSegmentRestrictionMini
     extends ShieldInformationBarrierSegmentRestrictionBase {
 
+  /** The `type` and `id` of the requested shield information barrier segment. */
   @JsonProperty("shield_information_barrier_segment")
   protected final ShieldInformationBarrierSegmentRestrictionMiniShieldInformationBarrierSegmentField
       shieldInformationBarrierSegment;
 
+  /** The `type` and `id` of the restricted shield information barrier segment. */
   @JsonProperty("restricted_segment")
   protected final ShieldInformationBarrierSegmentRestrictionMiniRestrictedSegmentField
       restrictedSegment;

@@ -8,13 +8,26 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.List;
 import java.util.Objects;
 
+/** A page of files and folders that matched the metadata query. */
 @JsonFilter("nullablePropertyFilter")
 public class MetadataQueryResults extends SerializableObject {
 
+  /**
+   * The mini representation of the files and folders that match the search terms.
+   *
+   * <p>By default, this endpoint returns only the most basic info about the items. To get
+   * additional fields for each item, including any of the metadata, use the `fields` attribute in
+   * the query.
+   */
   protected List<MetadataQueryResultItem> entries;
 
+  /**
+   * The limit that was used for this search. This will be the same as the `limit` query parameter
+   * unless that value exceeded the maximum value allowed.
+   */
   protected Long limit;
 
+  /** The marker for the start of the next page of results. */
   @JsonProperty("next_marker")
   protected String nextMarker;
 

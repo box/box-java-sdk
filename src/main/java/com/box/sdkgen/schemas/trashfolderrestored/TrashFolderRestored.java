@@ -14,13 +14,27 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import java.time.OffsetDateTime;
 import java.util.Objects;
 
+/** Represents a folder restored from the trash. */
 @JsonFilter("nullablePropertyFilter")
 public class TrashFolderRestored extends SerializableObject {
 
+  /**
+   * The unique identifier that represent a folder.
+   *
+   * <p>The ID for any folder can be determined by visiting a folder in the web application and
+   * copying the ID from the URL. For example, for the URL `https://*.app.box.com/folders/123` the
+   * `folder_id` is `123`.
+   */
   protected String id;
 
+  /**
+   * The HTTP `etag` of this folder. This can be used within some API endpoints in the `If-Match`
+   * and `If-None-Match` headers to only perform changes on the folder if (no) changes have
+   * happened.
+   */
   @Nullable protected String etag;
 
+  /** The value will always be `folder`. */
   @JsonDeserialize(
       using = TrashFolderRestoredTypeField.TrashFolderRestoredTypeFieldDeserializer.class)
   @JsonSerialize(using = TrashFolderRestoredTypeField.TrashFolderRestoredTypeFieldSerializer.class)
@@ -29,14 +43,23 @@ public class TrashFolderRestored extends SerializableObject {
   @JsonProperty("sequence_id")
   protected String sequenceId;
 
+  /** The name of the folder. */
   protected String name;
 
+  /**
+   * The date and time when the folder was created. This value may be `null` for some folders such
+   * as the root folder or the trash folder.
+   */
   @JsonProperty("created_at")
   @JsonSerialize(using = DateTimeUtils.DateTimeSerializer.class)
   @JsonDeserialize(using = DateTimeUtils.DateTimeDeserializer.class)
   @Nullable
   protected OffsetDateTime createdAt;
 
+  /**
+   * The date and time when the folder was last updated. This value may be `null` for some folders
+   * such as the root folder or the trash folder.
+   */
   @JsonProperty("modified_at")
   @JsonSerialize(using = DateTimeUtils.DateTimeSerializer.class)
   @JsonDeserialize(using = DateTimeUtils.DateTimeDeserializer.class)
@@ -45,6 +68,11 @@ public class TrashFolderRestored extends SerializableObject {
 
   protected String description;
 
+  /**
+   * The folder size in bytes.
+   *
+   * <p>Be careful parsing this integer as its value can get very large.
+   */
   protected Long size;
 
   @JsonProperty("path_collection")
@@ -56,20 +84,27 @@ public class TrashFolderRestored extends SerializableObject {
   @JsonProperty("modified_by")
   protected UserMini modifiedBy;
 
+  /** The time at which this folder was put in the trash - becomes `null` after restore. */
   @JsonProperty("trashed_at")
   @Nullable
   protected String trashedAt;
 
+  /**
+   * The time at which this folder is expected to be purged from the trash - becomes `null` after
+   * restore.
+   */
   @JsonProperty("purged_at")
   @Nullable
   protected String purgedAt;
 
+  /** The date and time at which this folder was originally created. */
   @JsonProperty("content_created_at")
   @JsonSerialize(using = DateTimeUtils.DateTimeSerializer.class)
   @JsonDeserialize(using = DateTimeUtils.DateTimeDeserializer.class)
   @Nullable
   protected OffsetDateTime contentCreatedAt;
 
+  /** The date and time at which this folder was last updated. */
   @JsonProperty("content_modified_at")
   @JsonSerialize(using = DateTimeUtils.DateTimeSerializer.class)
   @JsonDeserialize(using = DateTimeUtils.DateTimeDeserializer.class)
@@ -79,16 +114,30 @@ public class TrashFolderRestored extends SerializableObject {
   @JsonProperty("owned_by")
   protected UserMini ownedBy;
 
+  /**
+   * The shared link for this file. This will be `null` if a folder had been trashed, even though
+   * the original shared link does become active again.
+   */
   @JsonProperty("shared_link")
   @Nullable
   protected String sharedLink;
 
+  /**
+   * The folder upload email for this folder. This will be `null` if a folder has been trashed, even
+   * though the original upload email does become active again.
+   */
   @JsonProperty("folder_upload_email")
   @Nullable
   protected String folderUploadEmail;
 
   protected FolderMini parent;
 
+  /**
+   * Defines if this item has been deleted or not.
+   *
+   * <p>* `active` when the item has is not in the trash, * `trashed` when the item has been moved
+   * to the trash but not deleted, * `deleted` when the item has been permanently deleted.
+   */
   @JsonDeserialize(
       using =
           TrashFolderRestoredItemStatusField.TrashFolderRestoredItemStatusFieldDeserializer.class)

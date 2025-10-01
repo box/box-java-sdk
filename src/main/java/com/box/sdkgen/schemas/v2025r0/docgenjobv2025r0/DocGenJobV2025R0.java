@@ -12,6 +12,7 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import java.util.Objects;
 
+/** A standard representation of a Box Doc Gen job. */
 @JsonFilter("nullablePropertyFilter")
 public class DocGenJobV2025R0 extends DocGenJobBaseV2025R0 {
 
@@ -29,11 +30,13 @@ public class DocGenJobV2025R0 extends DocGenJobBaseV2025R0 {
   @JsonProperty("output_file_version")
   protected FileVersionBaseV2025R0 outputFileVersion;
 
+  /** Status of the job. */
   @JsonDeserialize(
       using = DocGenJobV2025R0StatusField.DocGenJobV2025R0StatusFieldDeserializer.class)
   @JsonSerialize(using = DocGenJobV2025R0StatusField.DocGenJobV2025R0StatusFieldSerializer.class)
   protected final EnumWrapper<DocGenJobV2025R0StatusField> status;
 
+  /** Type of the generated file. */
   @JsonProperty("output_type")
   protected final String outputType;
 

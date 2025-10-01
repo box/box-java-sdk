@@ -7,9 +7,11 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.List;
 import java.util.Objects;
 
+/** Request to submit a job to delete external users from the current enterprise. */
 @JsonFilter("nullablePropertyFilter")
 public class ExternalUsersSubmitDeleteJobRequestV2025R0 extends SerializableObject {
 
+  /** List of external users to delete. */
   @JsonProperty("external_users")
   protected final List<UserReferenceV2025R0> externalUsers;
 

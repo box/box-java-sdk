@@ -8,6 +8,7 @@ import java.util.Objects;
 @JsonFilter("nullablePropertyFilter")
 public class TransferOwnedFolderRequestBody extends SerializableObject {
 
+  /** The user who the folder will be transferred to. */
   @JsonProperty("owned_by")
   protected final TransferOwnedFolderRequestBodyOwnedByField ownedBy;
 

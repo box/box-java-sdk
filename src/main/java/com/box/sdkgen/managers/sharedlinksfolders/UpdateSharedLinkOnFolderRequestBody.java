@@ -9,6 +9,7 @@ import java.util.Objects;
 @JsonFilter("nullablePropertyFilter")
 public class UpdateSharedLinkOnFolderRequestBody extends SerializableObject {
 
+  /** The settings for the shared link to update. */
   @JsonProperty("shared_link")
   protected UpdateSharedLinkOnFolderRequestBodySharedLinkField sharedLink;
 

@@ -12,8 +12,10 @@ import java.util.Objects;
 public class ShieldInformationBarrierSegmentMemberShieldInformationBarrierSegmentField
     extends SerializableObject {
 
+  /** The ID reference of the requesting shield information barrier segment. */
   protected String id;
 
+  /** The type of the shield information barrier segment. */
   @JsonDeserialize(
       using =
           ShieldInformationBarrierSegmentMemberShieldInformationBarrierSegmentTypeField

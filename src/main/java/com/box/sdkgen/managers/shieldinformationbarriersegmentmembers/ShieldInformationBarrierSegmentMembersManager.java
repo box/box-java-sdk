@@ -31,6 +31,12 @@ public class ShieldInformationBarrierSegmentMembersManager {
     this.networkSession = builder.networkSession;
   }
 
+  /**
+   * Retrieves a shield information barrier segment member by its ID.
+   *
+   * @param shieldInformationBarrierSegmentMemberId The ID of the shield information barrier segment
+   *     Member. Example: "7815"
+   */
   public ShieldInformationBarrierSegmentMember getShieldInformationBarrierSegmentMemberById(
       String shieldInformationBarrierSegmentMemberId) {
     return getShieldInformationBarrierSegmentMemberById(
@@ -38,6 +44,13 @@ public class ShieldInformationBarrierSegmentMembersManager {
         new GetShieldInformationBarrierSegmentMemberByIdHeaders());
   }
 
+  /**
+   * Retrieves a shield information barrier segment member by its ID.
+   *
+   * @param shieldInformationBarrierSegmentMemberId The ID of the shield information barrier segment
+   *     Member. Example: "7815"
+   * @param headers Headers of getShieldInformationBarrierSegmentMemberById method
+   */
   public ShieldInformationBarrierSegmentMember getShieldInformationBarrierSegmentMemberById(
       String shieldInformationBarrierSegmentMemberId,
       GetShieldInformationBarrierSegmentMemberByIdHeaders headers) {
@@ -61,6 +74,12 @@ public class ShieldInformationBarrierSegmentMembersManager {
     return JsonManager.deserialize(response.getData(), ShieldInformationBarrierSegmentMember.class);
   }
 
+  /**
+   * Deletes a shield information barrier segment member based on provided ID.
+   *
+   * @param shieldInformationBarrierSegmentMemberId The ID of the shield information barrier segment
+   *     Member. Example: "7815"
+   */
   public void deleteShieldInformationBarrierSegmentMemberById(
       String shieldInformationBarrierSegmentMemberId) {
     deleteShieldInformationBarrierSegmentMemberById(
@@ -68,6 +87,13 @@ public class ShieldInformationBarrierSegmentMembersManager {
         new DeleteShieldInformationBarrierSegmentMemberByIdHeaders());
   }
 
+  /**
+   * Deletes a shield information barrier segment member based on provided ID.
+   *
+   * @param shieldInformationBarrierSegmentMemberId The ID of the shield information barrier segment
+   *     Member. Example: "7815"
+   * @param headers Headers of deleteShieldInformationBarrierSegmentMemberById method
+   */
   public void deleteShieldInformationBarrierSegmentMemberById(
       String shieldInformationBarrierSegmentMemberId,
       DeleteShieldInformationBarrierSegmentMemberByIdHeaders headers) {
@@ -90,12 +116,23 @@ public class ShieldInformationBarrierSegmentMembersManager {
                     .build());
   }
 
+  /**
+   * Lists shield information barrier segment members based on provided segment IDs.
+   *
+   * @param queryParams Query parameters of getShieldInformationBarrierSegmentMembers method
+   */
   public ShieldInformationBarrierSegmentMembers getShieldInformationBarrierSegmentMembers(
       GetShieldInformationBarrierSegmentMembersQueryParams queryParams) {
     return getShieldInformationBarrierSegmentMembers(
         queryParams, new GetShieldInformationBarrierSegmentMembersHeaders());
   }
 
+  /**
+   * Lists shield information barrier segment members based on provided segment IDs.
+   *
+   * @param queryParams Query parameters of getShieldInformationBarrierSegmentMembers method
+   * @param headers Headers of getShieldInformationBarrierSegmentMembers method
+   */
   public ShieldInformationBarrierSegmentMembers getShieldInformationBarrierSegmentMembers(
       GetShieldInformationBarrierSegmentMembersQueryParams queryParams,
       GetShieldInformationBarrierSegmentMembersHeaders headers) {
@@ -128,12 +165,23 @@ public class ShieldInformationBarrierSegmentMembersManager {
         response.getData(), ShieldInformationBarrierSegmentMembers.class);
   }
 
+  /**
+   * Creates a new shield information barrier segment member.
+   *
+   * @param requestBody Request body of createShieldInformationBarrierSegmentMember method
+   */
   public ShieldInformationBarrierSegmentMember createShieldInformationBarrierSegmentMember(
       CreateShieldInformationBarrierSegmentMemberRequestBody requestBody) {
     return createShieldInformationBarrierSegmentMember(
         requestBody, new CreateShieldInformationBarrierSegmentMemberHeaders());
   }
 
+  /**
+   * Creates a new shield information barrier segment member.
+   *
+   * @param requestBody Request body of createShieldInformationBarrierSegmentMember method
+   * @param headers Headers of createShieldInformationBarrierSegmentMember method
+   */
   public ShieldInformationBarrierSegmentMember createShieldInformationBarrierSegmentMember(
       CreateShieldInformationBarrierSegmentMemberRequestBody requestBody,
       CreateShieldInformationBarrierSegmentMemberHeaders headers) {

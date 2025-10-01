@@ -8,11 +8,14 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import java.util.Objects;
 
+/** A base representation of a shield information barrier report object. */
 @JsonFilter("nullablePropertyFilter")
 public class ShieldInformationBarrierReportBase extends SerializableObject {
 
+  /** The unique identifier for the shield information barrier report. */
   protected String id;
 
+  /** The type of the shield information barrier report. */
   @JsonDeserialize(
       using =
           ShieldInformationBarrierReportBaseTypeField

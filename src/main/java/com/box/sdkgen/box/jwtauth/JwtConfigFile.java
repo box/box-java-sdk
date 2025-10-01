@@ -9,12 +9,15 @@ import java.util.Objects;
 @JsonFilter("nullablePropertyFilter")
 public class JwtConfigFile extends SerializableObject {
 
+  /** Enterprise ID */
   @JsonProperty("enterpriseID")
   protected String enterpriseId;
 
+  /** User ID */
   @JsonProperty("userID")
   protected String userId;
 
+  /** App settings */
   protected final JwtConfigAppSettings boxAppSettings;
 
   public JwtConfigFile(@JsonProperty("boxAppSettings") JwtConfigAppSettings boxAppSettings) {

@@ -10,6 +10,7 @@ import java.util.Objects;
 @JsonFilter("nullablePropertyFilter")
 public class CreateFileUploadSessionCommitByUrlRequestBody extends SerializableObject {
 
+  /** The list details for the uploaded parts. */
   protected final List<UploadPart> parts;
 
   public CreateFileUploadSessionCommitByUrlRequestBody(

@@ -12,18 +12,22 @@ import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.Objects;
 
+/** A skill card that contains a set of keywords. */
 @JsonFilter("nullablePropertyFilter")
 public class KeywordSkillCard extends SerializableObject {
 
+  /** The optional date and time this card was created at. */
   @JsonProperty("created_at")
   @JsonSerialize(using = DateTimeUtils.DateTimeSerializer.class)
   @JsonDeserialize(using = DateTimeUtils.DateTimeDeserializer.class)
   protected OffsetDateTime createdAt;
 
+  /** The value will always be `skill_card`. */
   @JsonDeserialize(using = KeywordSkillCardTypeField.KeywordSkillCardTypeFieldDeserializer.class)
   @JsonSerialize(using = KeywordSkillCardTypeField.KeywordSkillCardTypeFieldSerializer.class)
   protected EnumWrapper<KeywordSkillCardTypeField> type;
 
+  /** The value will always be `keyword`. */
   @JsonDeserialize(
       using =
           KeywordSkillCardSkillCardTypeField.KeywordSkillCardSkillCardTypeFieldDeserializer.class)
@@ -32,13 +36,19 @@ public class KeywordSkillCard extends SerializableObject {
   @JsonProperty("skill_card_type")
   protected EnumWrapper<KeywordSkillCardSkillCardTypeField> skillCardType;
 
+  /** The title of the card. */
   @JsonProperty("skill_card_title")
   protected KeywordSkillCardSkillCardTitleField skillCardTitle;
 
+  /** The service that applied this metadata. */
   protected final KeywordSkillCardSkillField skill;
 
+  /**
+   * The invocation of this service, used to track which instance of a service applied the metadata.
+   */
   protected final KeywordSkillCardInvocationField invocation;
 
+  /** An list of entries in the metadata card. */
   protected final List<KeywordSkillCardEntriesField> entries;
 
   public KeywordSkillCard(

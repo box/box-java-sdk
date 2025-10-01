@@ -30,10 +30,33 @@ public class SharedLinksWebLinksManager {
     this.networkSession = builder.networkSession;
   }
 
+  /**
+   * Returns the web link represented by a shared link.
+   *
+   * <p>A shared web link can be represented by a shared link, which can originate within the
+   * current enterprise or within another.
+   *
+   * <p>This endpoint allows an application to retrieve information about a shared web link when
+   * only given a shared link.
+   *
+   * @param headers Headers of findWebLinkForSharedLink method
+   */
   public WebLink findWebLinkForSharedLink(FindWebLinkForSharedLinkHeaders headers) {
     return findWebLinkForSharedLink(new FindWebLinkForSharedLinkQueryParams(), headers);
   }
 
+  /**
+   * Returns the web link represented by a shared link.
+   *
+   * <p>A shared web link can be represented by a shared link, which can originate within the
+   * current enterprise or within another.
+   *
+   * <p>This endpoint allows an application to retrieve information about a shared web link when
+   * only given a shared link.
+   *
+   * @param queryParams Query parameters of findWebLinkForSharedLink method
+   * @param headers Headers of findWebLinkForSharedLink method
+   */
   public WebLink findWebLinkForSharedLink(
       FindWebLinkForSharedLinkQueryParams queryParams, FindWebLinkForSharedLinkHeaders headers) {
     Map<String, String> queryParamsMap =
@@ -64,11 +87,24 @@ public class SharedLinksWebLinksManager {
     return JsonManager.deserialize(response.getData(), WebLink.class);
   }
 
+  /**
+   * Gets the information for a shared link on a web link.
+   *
+   * @param webLinkId The ID of the web link. Example: "12345"
+   * @param queryParams Query parameters of getSharedLinkForWebLink method
+   */
   public WebLink getSharedLinkForWebLink(
       String webLinkId, GetSharedLinkForWebLinkQueryParams queryParams) {
     return getSharedLinkForWebLink(webLinkId, queryParams, new GetSharedLinkForWebLinkHeaders());
   }
 
+  /**
+   * Gets the information for a shared link on a web link.
+   *
+   * @param webLinkId The ID of the web link. Example: "12345"
+   * @param queryParams Query parameters of getSharedLinkForWebLink method
+   * @param headers Headers of getSharedLinkForWebLink method
+   */
   public WebLink getSharedLinkForWebLink(
       String webLinkId,
       GetSharedLinkForWebLinkQueryParams queryParams,
@@ -97,6 +133,12 @@ public class SharedLinksWebLinksManager {
     return JsonManager.deserialize(response.getData(), WebLink.class);
   }
 
+  /**
+   * Adds a shared link to a web link.
+   *
+   * @param webLinkId The ID of the web link. Example: "12345"
+   * @param queryParams Query parameters of addShareLinkToWebLink method
+   */
   public WebLink addShareLinkToWebLink(
       String webLinkId, AddShareLinkToWebLinkQueryParams queryParams) {
     return addShareLinkToWebLink(
@@ -106,6 +148,13 @@ public class SharedLinksWebLinksManager {
         new AddShareLinkToWebLinkHeaders());
   }
 
+  /**
+   * Adds a shared link to a web link.
+   *
+   * @param webLinkId The ID of the web link. Example: "12345"
+   * @param requestBody Request body of addShareLinkToWebLink method
+   * @param queryParams Query parameters of addShareLinkToWebLink method
+   */
   public WebLink addShareLinkToWebLink(
       String webLinkId,
       AddShareLinkToWebLinkRequestBody requestBody,
@@ -114,6 +163,13 @@ public class SharedLinksWebLinksManager {
         webLinkId, requestBody, queryParams, new AddShareLinkToWebLinkHeaders());
   }
 
+  /**
+   * Adds a shared link to a web link.
+   *
+   * @param webLinkId The ID of the web link. Example: "12345"
+   * @param queryParams Query parameters of addShareLinkToWebLink method
+   * @param headers Headers of addShareLinkToWebLink method
+   */
   public WebLink addShareLinkToWebLink(
       String webLinkId,
       AddShareLinkToWebLinkQueryParams queryParams,
@@ -122,6 +178,14 @@ public class SharedLinksWebLinksManager {
         webLinkId, new AddShareLinkToWebLinkRequestBody(), queryParams, headers);
   }
 
+  /**
+   * Adds a shared link to a web link.
+   *
+   * @param webLinkId The ID of the web link. Example: "12345"
+   * @param requestBody Request body of addShareLinkToWebLink method
+   * @param queryParams Query parameters of addShareLinkToWebLink method
+   * @param headers Headers of addShareLinkToWebLink method
+   */
   public WebLink addShareLinkToWebLink(
       String webLinkId,
       AddShareLinkToWebLinkRequestBody requestBody,
@@ -153,6 +217,12 @@ public class SharedLinksWebLinksManager {
     return JsonManager.deserialize(response.getData(), WebLink.class);
   }
 
+  /**
+   * Updates a shared link on a web link.
+   *
+   * @param webLinkId The ID of the web link. Example: "12345"
+   * @param queryParams Query parameters of updateSharedLinkOnWebLink method
+   */
   public WebLink updateSharedLinkOnWebLink(
       String webLinkId, UpdateSharedLinkOnWebLinkQueryParams queryParams) {
     return updateSharedLinkOnWebLink(
@@ -162,6 +232,13 @@ public class SharedLinksWebLinksManager {
         new UpdateSharedLinkOnWebLinkHeaders());
   }
 
+  /**
+   * Updates a shared link on a web link.
+   *
+   * @param webLinkId The ID of the web link. Example: "12345"
+   * @param requestBody Request body of updateSharedLinkOnWebLink method
+   * @param queryParams Query parameters of updateSharedLinkOnWebLink method
+   */
   public WebLink updateSharedLinkOnWebLink(
       String webLinkId,
       UpdateSharedLinkOnWebLinkRequestBody requestBody,
@@ -170,6 +247,13 @@ public class SharedLinksWebLinksManager {
         webLinkId, requestBody, queryParams, new UpdateSharedLinkOnWebLinkHeaders());
   }
 
+  /**
+   * Updates a shared link on a web link.
+   *
+   * @param webLinkId The ID of the web link. Example: "12345"
+   * @param queryParams Query parameters of updateSharedLinkOnWebLink method
+   * @param headers Headers of updateSharedLinkOnWebLink method
+   */
   public WebLink updateSharedLinkOnWebLink(
       String webLinkId,
       UpdateSharedLinkOnWebLinkQueryParams queryParams,
@@ -178,6 +262,14 @@ public class SharedLinksWebLinksManager {
         webLinkId, new UpdateSharedLinkOnWebLinkRequestBody(), queryParams, headers);
   }
 
+  /**
+   * Updates a shared link on a web link.
+   *
+   * @param webLinkId The ID of the web link. Example: "12345"
+   * @param requestBody Request body of updateSharedLinkOnWebLink method
+   * @param queryParams Query parameters of updateSharedLinkOnWebLink method
+   * @param headers Headers of updateSharedLinkOnWebLink method
+   */
   public WebLink updateSharedLinkOnWebLink(
       String webLinkId,
       UpdateSharedLinkOnWebLinkRequestBody requestBody,
@@ -209,6 +301,12 @@ public class SharedLinksWebLinksManager {
     return JsonManager.deserialize(response.getData(), WebLink.class);
   }
 
+  /**
+   * Removes a shared link from a web link.
+   *
+   * @param webLinkId The ID of the web link. Example: "12345"
+   * @param queryParams Query parameters of removeSharedLinkFromWebLink method
+   */
   public WebLink removeSharedLinkFromWebLink(
       String webLinkId, RemoveSharedLinkFromWebLinkQueryParams queryParams) {
     return removeSharedLinkFromWebLink(
@@ -218,6 +316,13 @@ public class SharedLinksWebLinksManager {
         new RemoveSharedLinkFromWebLinkHeaders());
   }
 
+  /**
+   * Removes a shared link from a web link.
+   *
+   * @param webLinkId The ID of the web link. Example: "12345"
+   * @param requestBody Request body of removeSharedLinkFromWebLink method
+   * @param queryParams Query parameters of removeSharedLinkFromWebLink method
+   */
   public WebLink removeSharedLinkFromWebLink(
       String webLinkId,
       RemoveSharedLinkFromWebLinkRequestBody requestBody,
@@ -226,6 +331,13 @@ public class SharedLinksWebLinksManager {
         webLinkId, requestBody, queryParams, new RemoveSharedLinkFromWebLinkHeaders());
   }
 
+  /**
+   * Removes a shared link from a web link.
+   *
+   * @param webLinkId The ID of the web link. Example: "12345"
+   * @param queryParams Query parameters of removeSharedLinkFromWebLink method
+   * @param headers Headers of removeSharedLinkFromWebLink method
+   */
   public WebLink removeSharedLinkFromWebLink(
       String webLinkId,
       RemoveSharedLinkFromWebLinkQueryParams queryParams,
@@ -234,6 +346,14 @@ public class SharedLinksWebLinksManager {
         webLinkId, new RemoveSharedLinkFromWebLinkRequestBody(), queryParams, headers);
   }
 
+  /**
+   * Removes a shared link from a web link.
+   *
+   * @param webLinkId The ID of the web link. Example: "12345"
+   * @param requestBody Request body of removeSharedLinkFromWebLink method
+   * @param queryParams Query parameters of removeSharedLinkFromWebLink method
+   * @param headers Headers of removeSharedLinkFromWebLink method
+   */
   public WebLink removeSharedLinkFromWebLink(
       String webLinkId,
       RemoveSharedLinkFromWebLinkRequestBody requestBody,

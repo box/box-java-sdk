@@ -8,14 +8,20 @@ import com.fasterxml.jackson.annotation.JsonFilter;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.Objects;
 
+/** A mini representation of a file, used when nested under another resource. */
 @JsonFilter("nullablePropertyFilter")
 public class FileMini extends FileBase {
 
   @JsonProperty("sequence_id")
   protected String sequenceId;
 
+  /** The name of the file. */
   protected String name;
 
+  /**
+   * The SHA1 hash of the file. This can be used to compare the contents of a file on Box with a
+   * local file.
+   */
   protected String sha1;
 
   @JsonProperty("file_version")

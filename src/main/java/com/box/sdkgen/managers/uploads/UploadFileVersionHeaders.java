@@ -6,10 +6,21 @@ import java.util.Map;
 
 public class UploadFileVersionHeaders {
 
+  /**
+   * Ensures this item hasn't recently changed before making changes.
+   *
+   * <p>Pass in the item's last observed `etag` value into this header and the endpoint will fail
+   * with a `412 Precondition Failed` if it has changed since.
+   */
   public String ifMatch;
 
+  /**
+   * An optional header containing the SHA1 hash of the file to ensure that the file was not
+   * corrupted in transit.
+   */
   public String contentMd5;
 
+  /** Extra headers that will be included in the HTTP request. */
   public Map<String, String> extraHeaders;
 
   public UploadFileVersionHeaders() {

@@ -10,9 +10,11 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import java.util.List;
 import java.util.Objects;
 
+/** Representation of content of a Shield List that contains domains data. */
 @JsonFilter("nullablePropertyFilter")
 public class ShieldListContentDomainV2025R0 extends SerializableObject {
 
+  /** The type of content in the shield list. */
   @JsonDeserialize(
       using =
           ShieldListContentDomainV2025R0TypeField
@@ -23,6 +25,7 @@ public class ShieldListContentDomainV2025R0 extends SerializableObject {
               .class)
   protected EnumWrapper<ShieldListContentDomainV2025R0TypeField> type;
 
+  /** List of domain. */
   protected final List<String> domains;
 
   public ShieldListContentDomainV2025R0(@JsonProperty("domains") List<String> domains) {

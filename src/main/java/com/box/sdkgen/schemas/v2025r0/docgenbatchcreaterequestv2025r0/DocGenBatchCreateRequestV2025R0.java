@@ -10,6 +10,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.List;
 import java.util.Objects;
 
+/** The schema for creating a Box Doc Gen job batch request. */
 @JsonFilter("nullablePropertyFilter")
 public class DocGenBatchCreateRequestV2025R0 extends SerializableObject {
 
@@ -18,12 +19,16 @@ public class DocGenBatchCreateRequestV2025R0 extends SerializableObject {
   @JsonProperty("file_version")
   protected FileVersionBaseV2025R0 fileVersion;
 
+  /**
+   * Source of input. The value has to be `api` for all the API-based document generation requests.
+   */
   @JsonProperty("input_source")
   protected final String inputSource;
 
   @JsonProperty("destination_folder")
   protected final DocGenBatchCreateRequestV2025R0DestinationFolderField destinationFolder;
 
+  /** Type of the output file. */
   @JsonProperty("output_type")
   protected final String outputType;
 

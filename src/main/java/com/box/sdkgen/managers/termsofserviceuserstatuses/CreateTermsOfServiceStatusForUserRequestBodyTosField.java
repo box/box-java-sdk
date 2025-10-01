@@ -12,6 +12,7 @@ import java.util.Objects;
 @JsonFilter("nullablePropertyFilter")
 public class CreateTermsOfServiceStatusForUserRequestBodyTosField extends SerializableObject {
 
+  /** The type of object. */
   @JsonDeserialize(
       using =
           CreateTermsOfServiceStatusForUserRequestBodyTosTypeField
@@ -22,6 +23,7 @@ public class CreateTermsOfServiceStatusForUserRequestBodyTosField extends Serial
               .CreateTermsOfServiceStatusForUserRequestBodyTosTypeFieldSerializer.class)
   protected EnumWrapper<CreateTermsOfServiceStatusForUserRequestBodyTosTypeField> type;
 
+  /** The ID of terms of service. */
   protected final String id;
 
   public CreateTermsOfServiceStatusForUserRequestBodyTosField(@JsonProperty("id") String id) {

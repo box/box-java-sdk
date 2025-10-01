@@ -9,6 +9,7 @@ import java.util.Objects;
 public class CreateCollaborationWhitelistExemptTargetRequestBodyUserField
     extends SerializableObject {
 
+  /** The ID of the user to exempt. */
   protected final String id;
 
   public CreateCollaborationWhitelistExemptTargetRequestBodyUserField(

@@ -6,13 +6,17 @@ import com.fasterxml.jackson.annotation.JsonFilter;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.Objects;
 
+/** A generic metadata operation error. */
 @JsonFilter("nullablePropertyFilter")
 public class MetadataError extends SerializableObject {
 
+  /** A Box-specific error code. */
   protected String code;
 
+  /** A short message describing the error. */
   protected String message;
 
+  /** A unique identifier for this response, which can be used when contacting Box support. */
   @JsonProperty("request_id")
   protected String requestId;
 

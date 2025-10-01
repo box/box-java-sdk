@@ -8,11 +8,14 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import java.util.Objects;
 
+/** A mini representation of a enterprise, used when nested within another resource. */
 @JsonFilter("nullablePropertyFilter")
 public class EnterpriseBase extends SerializableObject {
 
+  /** The unique identifier for this enterprise. */
   protected String id;
 
+  /** The value will always be `enterprise`. */
   @JsonDeserialize(using = EnterpriseBaseTypeField.EnterpriseBaseTypeFieldDeserializer.class)
   @JsonSerialize(using = EnterpriseBaseTypeField.EnterpriseBaseTypeFieldSerializer.class)
   protected EnumWrapper<EnterpriseBaseTypeField> type;

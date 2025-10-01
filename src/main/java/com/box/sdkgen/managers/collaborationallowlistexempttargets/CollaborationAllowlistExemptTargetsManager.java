@@ -31,24 +31,41 @@ public class CollaborationAllowlistExemptTargetsManager {
     this.networkSession = builder.networkSession;
   }
 
+  /** Returns a list of users who have been exempt from the collaboration domain restrictions. */
   public CollaborationAllowlistExemptTargets getCollaborationWhitelistExemptTargets() {
     return getCollaborationWhitelistExemptTargets(
         new GetCollaborationWhitelistExemptTargetsQueryParams(),
         new GetCollaborationWhitelistExemptTargetsHeaders());
   }
 
+  /**
+   * Returns a list of users who have been exempt from the collaboration domain restrictions.
+   *
+   * @param queryParams Query parameters of getCollaborationWhitelistExemptTargets method
+   */
   public CollaborationAllowlistExemptTargets getCollaborationWhitelistExemptTargets(
       GetCollaborationWhitelistExemptTargetsQueryParams queryParams) {
     return getCollaborationWhitelistExemptTargets(
         queryParams, new GetCollaborationWhitelistExemptTargetsHeaders());
   }
 
+  /**
+   * Returns a list of users who have been exempt from the collaboration domain restrictions.
+   *
+   * @param headers Headers of getCollaborationWhitelistExemptTargets method
+   */
   public CollaborationAllowlistExemptTargets getCollaborationWhitelistExemptTargets(
       GetCollaborationWhitelistExemptTargetsHeaders headers) {
     return getCollaborationWhitelistExemptTargets(
         new GetCollaborationWhitelistExemptTargetsQueryParams(), headers);
   }
 
+  /**
+   * Returns a list of users who have been exempt from the collaboration domain restrictions.
+   *
+   * @param queryParams Query parameters of getCollaborationWhitelistExemptTargets method
+   * @param headers Headers of getCollaborationWhitelistExemptTargets method
+   */
   public CollaborationAllowlistExemptTargets getCollaborationWhitelistExemptTargets(
       GetCollaborationWhitelistExemptTargetsQueryParams queryParams,
       GetCollaborationWhitelistExemptTargetsHeaders headers) {
@@ -77,12 +94,23 @@ public class CollaborationAllowlistExemptTargetsManager {
     return JsonManager.deserialize(response.getData(), CollaborationAllowlistExemptTargets.class);
   }
 
+  /**
+   * Exempts a user from the restrictions set out by the allowed list of domains for collaborations.
+   *
+   * @param requestBody Request body of createCollaborationWhitelistExemptTarget method
+   */
   public CollaborationAllowlistExemptTarget createCollaborationWhitelistExemptTarget(
       CreateCollaborationWhitelistExemptTargetRequestBody requestBody) {
     return createCollaborationWhitelistExemptTarget(
         requestBody, new CreateCollaborationWhitelistExemptTargetHeaders());
   }
 
+  /**
+   * Exempts a user from the restrictions set out by the allowed list of domains for collaborations.
+   *
+   * @param requestBody Request body of createCollaborationWhitelistExemptTarget method
+   * @param headers Headers of createCollaborationWhitelistExemptTarget method
+   */
   public CollaborationAllowlistExemptTarget createCollaborationWhitelistExemptTarget(
       CreateCollaborationWhitelistExemptTargetRequestBody requestBody,
       CreateCollaborationWhitelistExemptTargetHeaders headers) {
@@ -107,6 +135,12 @@ public class CollaborationAllowlistExemptTargetsManager {
     return JsonManager.deserialize(response.getData(), CollaborationAllowlistExemptTarget.class);
   }
 
+  /**
+   * Returns a users who has been exempt from the collaboration domain restrictions.
+   *
+   * @param collaborationWhitelistExemptTargetId The ID of the exemption to the list. Example:
+   *     "984923"
+   */
   public CollaborationAllowlistExemptTarget getCollaborationWhitelistExemptTargetById(
       String collaborationWhitelistExemptTargetId) {
     return getCollaborationWhitelistExemptTargetById(
@@ -114,6 +148,13 @@ public class CollaborationAllowlistExemptTargetsManager {
         new GetCollaborationWhitelistExemptTargetByIdHeaders());
   }
 
+  /**
+   * Returns a users who has been exempt from the collaboration domain restrictions.
+   *
+   * @param collaborationWhitelistExemptTargetId The ID of the exemption to the list. Example:
+   *     "984923"
+   * @param headers Headers of getCollaborationWhitelistExemptTargetById method
+   */
   public CollaborationAllowlistExemptTarget getCollaborationWhitelistExemptTargetById(
       String collaborationWhitelistExemptTargetId,
       GetCollaborationWhitelistExemptTargetByIdHeaders headers) {
@@ -137,6 +178,13 @@ public class CollaborationAllowlistExemptTargetsManager {
     return JsonManager.deserialize(response.getData(), CollaborationAllowlistExemptTarget.class);
   }
 
+  /**
+   * Removes a user's exemption from the restrictions set out by the allowed list of domains for
+   * collaborations.
+   *
+   * @param collaborationWhitelistExemptTargetId The ID of the exemption to the list. Example:
+   *     "984923"
+   */
   public void deleteCollaborationWhitelistExemptTargetById(
       String collaborationWhitelistExemptTargetId) {
     deleteCollaborationWhitelistExemptTargetById(
@@ -144,6 +192,14 @@ public class CollaborationAllowlistExemptTargetsManager {
         new DeleteCollaborationWhitelistExemptTargetByIdHeaders());
   }
 
+  /**
+   * Removes a user's exemption from the restrictions set out by the allowed list of domains for
+   * collaborations.
+   *
+   * @param collaborationWhitelistExemptTargetId The ID of the exemption to the list. Example:
+   *     "984923"
+   * @param headers Headers of deleteCollaborationWhitelistExemptTargetById method
+   */
   public void deleteCollaborationWhitelistExemptTargetById(
       String collaborationWhitelistExemptTargetId,
       DeleteCollaborationWhitelistExemptTargetByIdHeaders headers) {

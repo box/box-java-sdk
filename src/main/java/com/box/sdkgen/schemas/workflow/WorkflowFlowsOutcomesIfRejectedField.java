@@ -12,8 +12,10 @@ import java.util.Objects;
 @JsonFilter("nullablePropertyFilter")
 public class WorkflowFlowsOutcomesIfRejectedField extends SerializableObject {
 
+  /** The identifier of the outcome. */
   protected String id;
 
+  /** The outcomes resource type. */
   @JsonDeserialize(
       using =
           WorkflowFlowsOutcomesIfRejectedTypeField
@@ -24,6 +26,7 @@ public class WorkflowFlowsOutcomesIfRejectedField extends SerializableObject {
               .WorkflowFlowsOutcomesIfRejectedTypeFieldSerializer.class)
   protected EnumWrapper<WorkflowFlowsOutcomesIfRejectedTypeField> type;
 
+  /** The name of the outcome. */
   protected String name;
 
   @JsonDeserialize(

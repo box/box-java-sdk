@@ -7,9 +7,11 @@ import com.fasterxml.jackson.annotation.JsonFilter;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.Objects;
 
+/** A Box Doc Gen template object. */
 @JsonFilter("nullablePropertyFilter")
 public class DocGenTemplateV2025R0 extends DocGenTemplateBaseV2025R0 {
 
+  /** The name of the template. */
   @JsonProperty("file_name")
   @Nullable
   protected String fileName;

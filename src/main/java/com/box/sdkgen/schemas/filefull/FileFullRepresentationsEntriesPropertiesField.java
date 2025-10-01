@@ -8,10 +8,13 @@ import java.util.Objects;
 @JsonFilter("nullablePropertyFilter")
 public class FileFullRepresentationsEntriesPropertiesField extends SerializableObject {
 
+  /** The width by height size of this representation in pixels. */
   protected String dimensions;
 
+  /** Indicates if the representation is build up out of multiple pages. */
   protected String paged;
 
+  /** Indicates if the representation can be used as a thumbnail of the file. */
   protected String thumb;
 
   public FileFullRepresentationsEntriesPropertiesField() {

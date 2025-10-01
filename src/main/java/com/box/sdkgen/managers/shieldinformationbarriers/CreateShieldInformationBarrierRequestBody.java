@@ -9,6 +9,7 @@ import java.util.Objects;
 @JsonFilter("nullablePropertyFilter")
 public class CreateShieldInformationBarrierRequestBody extends SerializableObject {
 
+  /** The `type` and `id` of enterprise this barrier is under. */
   protected final EnterpriseBase enterprise;
 
   public CreateShieldInformationBarrierRequestBody(

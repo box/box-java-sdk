@@ -5,11 +5,14 @@ import com.box.sdkgen.internal.SerializableObject;
 import com.fasterxml.jackson.annotation.JsonFilter;
 import java.util.Objects;
 
+/** Request schema for copying a Box Hub. */
 @JsonFilter("nullablePropertyFilter")
 public class HubCopyRequestV2025R0 extends SerializableObject {
 
+  /** Title of the Box Hub. It cannot be empty and should be less than 50 characters. */
   protected String title;
 
+  /** Description of the Box Hub. */
   protected String description;
 
   public HubCopyRequestV2025R0() {

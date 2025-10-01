@@ -11,8 +11,10 @@ import java.util.Objects;
 @JsonFilter("nullablePropertyFilter")
 public class UpdateShieldInformationBarrierStatusRequestBody extends SerializableObject {
 
+  /** The ID of the shield information barrier. */
   protected final String id;
 
+  /** The desired status for the shield information barrier. */
   @JsonDeserialize(
       using =
           UpdateShieldInformationBarrierStatusRequestBodyStatusField

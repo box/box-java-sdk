@@ -14,57 +14,89 @@ import java.util.Objects;
 @JsonFilter("nullablePropertyFilter")
 public class CreateUserRequestBody extends SerializableObject {
 
+  /** The name of the user. */
   protected final String name;
 
+  /**
+   * The email address the user uses to log in
+   *
+   * <p>Required, unless `is_platform_access_only` is set to `true`.
+   */
   protected String login;
 
+  /** Specifies that the user is an app user. */
   @JsonProperty("is_platform_access_only")
   protected Boolean isPlatformAccessOnly;
 
+  /** The user’s enterprise role. */
   @JsonDeserialize(
       using = CreateUserRequestBodyRoleField.CreateUserRequestBodyRoleFieldDeserializer.class)
   @JsonSerialize(
       using = CreateUserRequestBodyRoleField.CreateUserRequestBodyRoleFieldSerializer.class)
   protected EnumWrapper<CreateUserRequestBodyRoleField> role;
 
+  /**
+   * The language of the user, formatted in modified version of the [ISO
+   * 639-1](/guides/api-calls/language-codes) format.
+   */
   protected String language;
 
+  /** Whether the user can use Box Sync. */
   @JsonProperty("is_sync_enabled")
   protected Boolean isSyncEnabled;
 
+  /** The user’s job title. */
   @JsonProperty("job_title")
   protected String jobTitle;
 
+  /** The user’s phone number. */
   protected String phone;
 
+  /** The user’s address. */
   protected String address;
 
+  /** The user’s total available space in bytes. Set this to `-1` to indicate unlimited storage. */
   @JsonProperty("space_amount")
   protected Long spaceAmount;
 
+  /**
+   * Tracking codes allow an admin to generate reports from the admin console and assign an
+   * attribute to a specific group of users. This setting must be enabled for an enterprise before
+   * it can be used.
+   */
   @JsonProperty("tracking_codes")
   protected List<TrackingCode> trackingCodes;
 
+  /** Whether the user can see other enterprise users in their contact list. */
   @JsonProperty("can_see_managed_users")
   protected Boolean canSeeManagedUsers;
 
+  /** The user's timezone. */
   protected String timezone;
 
+  /** Whether the user is allowed to collaborate with users outside their enterprise. */
   @JsonProperty("is_external_collab_restricted")
   protected Boolean isExternalCollabRestricted;
 
+  /** Whether to exempt the user from enterprise device limits. */
   @JsonProperty("is_exempt_from_device_limits")
   protected Boolean isExemptFromDeviceLimits;
 
+  /** Whether the user must use two-factor authentication. */
   @JsonProperty("is_exempt_from_login_verification")
   protected Boolean isExemptFromLoginVerification;
 
+  /** The user's account status. */
   @JsonDeserialize(
       using = CreateUserRequestBodyStatusField.CreateUserRequestBodyStatusFieldDeserializer.class)
   @JsonSerialize(
       using = CreateUserRequestBodyStatusField.CreateUserRequestBodyStatusFieldSerializer.class)
   protected EnumWrapper<CreateUserRequestBodyStatusField> status;
 
+  /**
+   * An external identifier for an app user, which can be used to look up the user. This can be used
+   * to tie user IDs from external identity providers to Box users.
+   */
   @JsonProperty("external_app_user_id")
   protected String externalAppUserId;
 

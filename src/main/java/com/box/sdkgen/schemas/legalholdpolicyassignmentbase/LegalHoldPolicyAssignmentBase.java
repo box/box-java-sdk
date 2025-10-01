@@ -8,11 +8,20 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import java.util.Objects;
 
+/**
+ * Legal Hold Assignments are used to assign Legal Hold Policies to Users, Folders, Files, or File
+ * Versions.
+ *
+ * <p>Creating a Legal Hold Assignment puts a hold on the File-Versions that belong to the
+ * Assignment's 'apply-to' entity.
+ */
 @JsonFilter("nullablePropertyFilter")
 public class LegalHoldPolicyAssignmentBase extends SerializableObject {
 
+  /** The unique identifier for this legal hold assignment. */
   protected String id;
 
+  /** The value will always be `legal_hold_policy_assignment`. */
   @JsonDeserialize(
       using =
           LegalHoldPolicyAssignmentBaseTypeField.LegalHoldPolicyAssignmentBaseTypeFieldDeserializer

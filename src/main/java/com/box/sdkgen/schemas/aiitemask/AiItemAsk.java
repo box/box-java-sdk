@@ -9,15 +9,19 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import java.util.Objects;
 
+/** The item to be processed by the LLM for ask requests. */
 @JsonFilter("nullablePropertyFilter")
 public class AiItemAsk extends SerializableObject {
 
+  /** The ID of the file. */
   protected final String id;
 
+  /** The type of the item. A `hubs` item must be used as a single item. */
   @JsonDeserialize(using = AiItemAskTypeField.AiItemAskTypeFieldDeserializer.class)
   @JsonSerialize(using = AiItemAskTypeField.AiItemAskTypeFieldSerializer.class)
   protected final EnumWrapper<AiItemAskTypeField> type;
 
+  /** The content of the item, often the text representation. */
   protected String content;
 
   public AiItemAsk(String id, AiItemAskTypeField type) {

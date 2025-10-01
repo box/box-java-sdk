@@ -13,6 +13,10 @@ import java.util.Objects;
 @JsonFilter("nullablePropertyFilter")
 public class CreateClassificationTemplateRequestBody extends SerializableObject {
 
+  /**
+   * The scope in which to create the classifications. This should be `enterprise` or
+   * `enterprise_{id}` where `id` is the unique ID of the enterprise.
+   */
   @JsonDeserialize(
       using =
           CreateClassificationTemplateRequestBodyScopeField
@@ -23,6 +27,7 @@ public class CreateClassificationTemplateRequestBody extends SerializableObject 
               .CreateClassificationTemplateRequestBodyScopeFieldSerializer.class)
   protected EnumWrapper<CreateClassificationTemplateRequestBodyScopeField> scope;
 
+  /** Defines the list of metadata templates. */
   @JsonDeserialize(
       using =
           CreateClassificationTemplateRequestBodyTemplateKeyField
@@ -33,6 +38,7 @@ public class CreateClassificationTemplateRequestBody extends SerializableObject 
               .CreateClassificationTemplateRequestBodyTemplateKeyFieldSerializer.class)
   protected EnumWrapper<CreateClassificationTemplateRequestBodyTemplateKeyField> templateKey;
 
+  /** The name of the template as shown in web and mobile interfaces. */
   @JsonDeserialize(
       using =
           CreateClassificationTemplateRequestBodyDisplayNameField
@@ -43,10 +49,16 @@ public class CreateClassificationTemplateRequestBody extends SerializableObject 
               .CreateClassificationTemplateRequestBodyDisplayNameFieldSerializer.class)
   protected EnumWrapper<CreateClassificationTemplateRequestBodyDisplayNameField> displayName;
 
+  /** Determines if the classification template is hidden or available on web and mobile devices. */
   protected Boolean hidden;
 
+  /** Determines if classifications are copied along when the file or folder is copied. */
   protected Boolean copyInstanceOnItemCopy;
 
+  /**
+   * The classification template requires exactly one field, which holds all the valid
+   * classification values.
+   */
   protected final List<CreateClassificationTemplateRequestBodyFieldsField> fields;
 
   public CreateClassificationTemplateRequestBody(

@@ -31,12 +31,25 @@ public class ShieldInformationBarrierSegmentsManager {
     this.networkSession = builder.networkSession;
   }
 
+  /**
+   * Retrieves shield information barrier segment based on provided ID..
+   *
+   * @param shieldInformationBarrierSegmentId The ID of the shield information barrier segment.
+   *     Example: "3423"
+   */
   public ShieldInformationBarrierSegment getShieldInformationBarrierSegmentById(
       String shieldInformationBarrierSegmentId) {
     return getShieldInformationBarrierSegmentById(
         shieldInformationBarrierSegmentId, new GetShieldInformationBarrierSegmentByIdHeaders());
   }
 
+  /**
+   * Retrieves shield information barrier segment based on provided ID..
+   *
+   * @param shieldInformationBarrierSegmentId The ID of the shield information barrier segment.
+   *     Example: "3423"
+   * @param headers Headers of getShieldInformationBarrierSegmentById method
+   */
   public ShieldInformationBarrierSegment getShieldInformationBarrierSegmentById(
       String shieldInformationBarrierSegmentId,
       GetShieldInformationBarrierSegmentByIdHeaders headers) {
@@ -60,11 +73,24 @@ public class ShieldInformationBarrierSegmentsManager {
     return JsonManager.deserialize(response.getData(), ShieldInformationBarrierSegment.class);
   }
 
+  /**
+   * Deletes the shield information barrier segment based on provided ID.
+   *
+   * @param shieldInformationBarrierSegmentId The ID of the shield information barrier segment.
+   *     Example: "3423"
+   */
   public void deleteShieldInformationBarrierSegmentById(String shieldInformationBarrierSegmentId) {
     deleteShieldInformationBarrierSegmentById(
         shieldInformationBarrierSegmentId, new DeleteShieldInformationBarrierSegmentByIdHeaders());
   }
 
+  /**
+   * Deletes the shield information barrier segment based on provided ID.
+   *
+   * @param shieldInformationBarrierSegmentId The ID of the shield information barrier segment.
+   *     Example: "3423"
+   * @param headers Headers of deleteShieldInformationBarrierSegmentById method
+   */
   public void deleteShieldInformationBarrierSegmentById(
       String shieldInformationBarrierSegmentId,
       DeleteShieldInformationBarrierSegmentByIdHeaders headers) {
@@ -87,6 +113,12 @@ public class ShieldInformationBarrierSegmentsManager {
                     .build());
   }
 
+  /**
+   * Updates the shield information barrier segment based on provided ID..
+   *
+   * @param shieldInformationBarrierSegmentId The ID of the shield information barrier segment.
+   *     Example: "3423"
+   */
   public ShieldInformationBarrierSegment updateShieldInformationBarrierSegmentById(
       String shieldInformationBarrierSegmentId) {
     return updateShieldInformationBarrierSegmentById(
@@ -95,6 +127,13 @@ public class ShieldInformationBarrierSegmentsManager {
         new UpdateShieldInformationBarrierSegmentByIdHeaders());
   }
 
+  /**
+   * Updates the shield information barrier segment based on provided ID..
+   *
+   * @param shieldInformationBarrierSegmentId The ID of the shield information barrier segment.
+   *     Example: "3423"
+   * @param requestBody Request body of updateShieldInformationBarrierSegmentById method
+   */
   public ShieldInformationBarrierSegment updateShieldInformationBarrierSegmentById(
       String shieldInformationBarrierSegmentId,
       UpdateShieldInformationBarrierSegmentByIdRequestBody requestBody) {
@@ -104,6 +143,13 @@ public class ShieldInformationBarrierSegmentsManager {
         new UpdateShieldInformationBarrierSegmentByIdHeaders());
   }
 
+  /**
+   * Updates the shield information barrier segment based on provided ID..
+   *
+   * @param shieldInformationBarrierSegmentId The ID of the shield information barrier segment.
+   *     Example: "3423"
+   * @param headers Headers of updateShieldInformationBarrierSegmentById method
+   */
   public ShieldInformationBarrierSegment updateShieldInformationBarrierSegmentById(
       String shieldInformationBarrierSegmentId,
       UpdateShieldInformationBarrierSegmentByIdHeaders headers) {
@@ -113,6 +159,14 @@ public class ShieldInformationBarrierSegmentsManager {
         headers);
   }
 
+  /**
+   * Updates the shield information barrier segment based on provided ID..
+   *
+   * @param shieldInformationBarrierSegmentId The ID of the shield information barrier segment.
+   *     Example: "3423"
+   * @param requestBody Request body of updateShieldInformationBarrierSegmentById method
+   * @param headers Headers of updateShieldInformationBarrierSegmentById method
+   */
   public ShieldInformationBarrierSegment updateShieldInformationBarrierSegmentById(
       String shieldInformationBarrierSegmentId,
       UpdateShieldInformationBarrierSegmentByIdRequestBody requestBody,
@@ -139,12 +193,25 @@ public class ShieldInformationBarrierSegmentsManager {
     return JsonManager.deserialize(response.getData(), ShieldInformationBarrierSegment.class);
   }
 
+  /**
+   * Retrieves a list of shield information barrier segment objects for the specified Information
+   * Barrier ID.
+   *
+   * @param queryParams Query parameters of getShieldInformationBarrierSegments method
+   */
   public ShieldInformationBarrierSegments getShieldInformationBarrierSegments(
       GetShieldInformationBarrierSegmentsQueryParams queryParams) {
     return getShieldInformationBarrierSegments(
         queryParams, new GetShieldInformationBarrierSegmentsHeaders());
   }
 
+  /**
+   * Retrieves a list of shield information barrier segment objects for the specified Information
+   * Barrier ID.
+   *
+   * @param queryParams Query parameters of getShieldInformationBarrierSegments method
+   * @param headers Headers of getShieldInformationBarrierSegments method
+   */
   public ShieldInformationBarrierSegments getShieldInformationBarrierSegments(
       GetShieldInformationBarrierSegmentsQueryParams queryParams,
       GetShieldInformationBarrierSegmentsHeaders headers) {
@@ -176,12 +243,23 @@ public class ShieldInformationBarrierSegmentsManager {
     return JsonManager.deserialize(response.getData(), ShieldInformationBarrierSegments.class);
   }
 
+  /**
+   * Creates a shield information barrier segment.
+   *
+   * @param requestBody Request body of createShieldInformationBarrierSegment method
+   */
   public ShieldInformationBarrierSegment createShieldInformationBarrierSegment(
       CreateShieldInformationBarrierSegmentRequestBody requestBody) {
     return createShieldInformationBarrierSegment(
         requestBody, new CreateShieldInformationBarrierSegmentHeaders());
   }
 
+  /**
+   * Creates a shield information barrier segment.
+   *
+   * @param requestBody Request body of createShieldInformationBarrierSegment method
+   * @param headers Headers of createShieldInformationBarrierSegment method
+   */
   public ShieldInformationBarrierSegment createShieldInformationBarrierSegment(
       CreateShieldInformationBarrierSegmentRequestBody requestBody,
       CreateShieldInformationBarrierSegmentHeaders headers) {

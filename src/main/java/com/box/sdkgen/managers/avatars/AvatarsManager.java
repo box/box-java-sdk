@@ -32,10 +32,21 @@ public class AvatarsManager {
     this.networkSession = builder.networkSession;
   }
 
+  /**
+   * Retrieves an image of a the user's avatar.
+   *
+   * @param userId The ID of the user. Example: "12345"
+   */
   public InputStream getUserAvatar(String userId) {
     return getUserAvatar(userId, new GetUserAvatarHeaders());
   }
 
+  /**
+   * Retrieves an image of a the user's avatar.
+   *
+   * @param userId The ID of the user. Example: "12345"
+   * @param headers Headers of getUserAvatar method
+   */
   public InputStream getUserAvatar(String userId, GetUserAvatarHeaders headers) {
     Map<String, String> headersMap = prepareParams(mergeMaps(mapOf(), headers.getExtraHeaders()));
     FetchResponse response =
@@ -58,10 +69,23 @@ public class AvatarsManager {
     return response.getContent();
   }
 
+  /**
+   * Adds or updates a user avatar.
+   *
+   * @param userId The ID of the user. Example: "12345"
+   * @param requestBody Request body of createUserAvatar method
+   */
   public UserAvatar createUserAvatar(String userId, CreateUserAvatarRequestBody requestBody) {
     return createUserAvatar(userId, requestBody, new CreateUserAvatarHeaders());
   }
 
+  /**
+   * Adds or updates a user avatar.
+   *
+   * @param userId The ID of the user. Example: "12345"
+   * @param requestBody Request body of createUserAvatar method
+   * @param headers Headers of createUserAvatar method
+   */
   public UserAvatar createUserAvatar(
       String userId, CreateUserAvatarRequestBody requestBody, CreateUserAvatarHeaders headers) {
     Map<String, String> headersMap = prepareParams(mergeMaps(mapOf(), headers.getExtraHeaders()));
@@ -93,10 +117,21 @@ public class AvatarsManager {
     return JsonManager.deserialize(response.getData(), UserAvatar.class);
   }
 
+  /**
+   * Removes an existing user avatar. You cannot reverse this operation.
+   *
+   * @param userId The ID of the user. Example: "12345"
+   */
   public void deleteUserAvatar(String userId) {
     deleteUserAvatar(userId, new DeleteUserAvatarHeaders());
   }
 
+  /**
+   * Removes an existing user avatar. You cannot reverse this operation.
+   *
+   * @param userId The ID of the user. Example: "12345"
+   * @param headers Headers of deleteUserAvatar method
+   */
   public void deleteUserAvatar(String userId, DeleteUserAvatarHeaders headers) {
     Map<String, String> headersMap = prepareParams(mergeMaps(mapOf(), headers.getExtraHeaders()));
     FetchResponse response =

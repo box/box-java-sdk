@@ -11,6 +11,7 @@ import java.util.Objects;
 @JsonFilter("nullablePropertyFilter")
 public class CreateLegalHoldPolicyAssignmentRequestBodyAssignToField extends SerializableObject {
 
+  /** The type of item to assign the policy to. */
   @JsonDeserialize(
       using =
           CreateLegalHoldPolicyAssignmentRequestBodyAssignToTypeField
@@ -21,6 +22,7 @@ public class CreateLegalHoldPolicyAssignmentRequestBodyAssignToField extends Ser
               .CreateLegalHoldPolicyAssignmentRequestBodyAssignToTypeFieldSerializer.class)
   protected final EnumWrapper<CreateLegalHoldPolicyAssignmentRequestBodyAssignToTypeField> type;
 
+  /** The ID of item to assign the policy to. */
   protected final String id;
 
   public CreateLegalHoldPolicyAssignmentRequestBodyAssignToField(

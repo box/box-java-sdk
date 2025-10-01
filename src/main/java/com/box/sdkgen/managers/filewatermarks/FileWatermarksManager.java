@@ -29,10 +29,27 @@ public class FileWatermarksManager {
     this.networkSession = builder.networkSession;
   }
 
+  /**
+   * Retrieve the watermark for a file.
+   *
+   * @param fileId The unique identifier that represents a file.
+   *     <p>The ID for any file can be determined by visiting a file in the web application and
+   *     copying the ID from the URL. For example, for the URL `https://*.app.box.com/files/123` the
+   *     `file_id` is `123`. Example: "12345"
+   */
   public Watermark getFileWatermark(String fileId) {
     return getFileWatermark(fileId, new GetFileWatermarkHeaders());
   }
 
+  /**
+   * Retrieve the watermark for a file.
+   *
+   * @param fileId The unique identifier that represents a file.
+   *     <p>The ID for any file can be determined by visiting a file in the web application and
+   *     copying the ID from the URL. For example, for the URL `https://*.app.box.com/files/123` the
+   *     `file_id` is `123`. Example: "12345"
+   * @param headers Headers of getFileWatermark method
+   */
   public Watermark getFileWatermark(String fileId, GetFileWatermarkHeaders headers) {
     Map<String, String> headersMap = prepareParams(mergeMaps(mapOf(), headers.getExtraHeaders()));
     FetchResponse response =
@@ -55,10 +72,29 @@ public class FileWatermarksManager {
     return JsonManager.deserialize(response.getData(), Watermark.class);
   }
 
+  /**
+   * Applies or update a watermark on a file.
+   *
+   * @param fileId The unique identifier that represents a file.
+   *     <p>The ID for any file can be determined by visiting a file in the web application and
+   *     copying the ID from the URL. For example, for the URL `https://*.app.box.com/files/123` the
+   *     `file_id` is `123`. Example: "12345"
+   * @param requestBody Request body of updateFileWatermark method
+   */
   public Watermark updateFileWatermark(String fileId, UpdateFileWatermarkRequestBody requestBody) {
     return updateFileWatermark(fileId, requestBody, new UpdateFileWatermarkHeaders());
   }
 
+  /**
+   * Applies or update a watermark on a file.
+   *
+   * @param fileId The unique identifier that represents a file.
+   *     <p>The ID for any file can be determined by visiting a file in the web application and
+   *     copying the ID from the URL. For example, for the URL `https://*.app.box.com/files/123` the
+   *     `file_id` is `123`. Example: "12345"
+   * @param requestBody Request body of updateFileWatermark method
+   * @param headers Headers of updateFileWatermark method
+   */
   public Watermark updateFileWatermark(
       String fileId,
       UpdateFileWatermarkRequestBody requestBody,
@@ -86,10 +122,27 @@ public class FileWatermarksManager {
     return JsonManager.deserialize(response.getData(), Watermark.class);
   }
 
+  /**
+   * Removes the watermark from a file.
+   *
+   * @param fileId The unique identifier that represents a file.
+   *     <p>The ID for any file can be determined by visiting a file in the web application and
+   *     copying the ID from the URL. For example, for the URL `https://*.app.box.com/files/123` the
+   *     `file_id` is `123`. Example: "12345"
+   */
   public void deleteFileWatermark(String fileId) {
     deleteFileWatermark(fileId, new DeleteFileWatermarkHeaders());
   }
 
+  /**
+   * Removes the watermark from a file.
+   *
+   * @param fileId The unique identifier that represents a file.
+   *     <p>The ID for any file can be determined by visiting a file in the web application and
+   *     copying the ID from the URL. For example, for the URL `https://*.app.box.com/files/123` the
+   *     `file_id` is `123`. Example: "12345"
+   * @param headers Headers of deleteFileWatermark method
+   */
   public void deleteFileWatermark(String fileId, DeleteFileWatermarkHeaders headers) {
     Map<String, String> headersMap = prepareParams(mergeMaps(mapOf(), headers.getExtraHeaders()));
     FetchResponse response =

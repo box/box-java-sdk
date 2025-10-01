@@ -33,10 +33,16 @@ public class ShieldListsManager {
     this.networkSession = builder.networkSession;
   }
 
+  /** Retrieves all shield lists in the enterprise. */
   public ShieldListsV2025R0 getShieldListsV2025R0() {
     return getShieldListsV2025R0(new GetShieldListsV2025R0Headers());
   }
 
+  /**
+   * Retrieves all shield lists in the enterprise.
+   *
+   * @param headers Headers of getShieldListsV2025R0 method
+   */
   public ShieldListsV2025R0 getShieldListsV2025R0(GetShieldListsV2025R0Headers headers) {
     Map<String, String> headersMap =
         prepareParams(
@@ -61,10 +67,21 @@ public class ShieldListsManager {
     return JsonManager.deserialize(response.getData(), ShieldListsV2025R0.class);
   }
 
+  /**
+   * Creates a shield list.
+   *
+   * @param requestBody Request body of createShieldListV2025R0 method
+   */
   public ShieldListV2025R0 createShieldListV2025R0(ShieldListsCreateV2025R0 requestBody) {
     return createShieldListV2025R0(requestBody, new CreateShieldListV2025R0Headers());
   }
 
+  /**
+   * Creates a shield list.
+   *
+   * @param requestBody Request body of createShieldListV2025R0 method
+   * @param headers Headers of createShieldListV2025R0 method
+   */
   public ShieldListV2025R0 createShieldListV2025R0(
       ShieldListsCreateV2025R0 requestBody, CreateShieldListV2025R0Headers headers) {
     Map<String, String> headersMap =
@@ -92,10 +109,25 @@ public class ShieldListsManager {
     return JsonManager.deserialize(response.getData(), ShieldListV2025R0.class);
   }
 
+  /**
+   * Retrieves a single shield list by its ID.
+   *
+   * @param shieldListId The unique identifier that represents a shield list. The ID for any Shield
+   *     List can be determined by the response from the endpoint fetching all shield lists for the
+   *     enterprise. Example: "90fb0e17-c332-40ed-b4f9-fa8908fbbb24 "
+   */
   public ShieldListV2025R0 getShieldListByIdV2025R0(String shieldListId) {
     return getShieldListByIdV2025R0(shieldListId, new GetShieldListByIdV2025R0Headers());
   }
 
+  /**
+   * Retrieves a single shield list by its ID.
+   *
+   * @param shieldListId The unique identifier that represents a shield list. The ID for any Shield
+   *     List can be determined by the response from the endpoint fetching all shield lists for the
+   *     enterprise. Example: "90fb0e17-c332-40ed-b4f9-fa8908fbbb24 "
+   * @param headers Headers of getShieldListByIdV2025R0 method
+   */
   public ShieldListV2025R0 getShieldListByIdV2025R0(
       String shieldListId, GetShieldListByIdV2025R0Headers headers) {
     Map<String, String> headersMap =
@@ -122,10 +154,25 @@ public class ShieldListsManager {
     return JsonManager.deserialize(response.getData(), ShieldListV2025R0.class);
   }
 
+  /**
+   * Delete a single shield list by its ID.
+   *
+   * @param shieldListId The unique identifier that represents a shield list. The ID for any Shield
+   *     List can be determined by the response from the endpoint fetching all shield lists for the
+   *     enterprise. Example: "90fb0e17-c332-40ed-b4f9-fa8908fbbb24 "
+   */
   public void deleteShieldListByIdV2025R0(String shieldListId) {
     deleteShieldListByIdV2025R0(shieldListId, new DeleteShieldListByIdV2025R0Headers());
   }
 
+  /**
+   * Delete a single shield list by its ID.
+   *
+   * @param shieldListId The unique identifier that represents a shield list. The ID for any Shield
+   *     List can be determined by the response from the endpoint fetching all shield lists for the
+   *     enterprise. Example: "90fb0e17-c332-40ed-b4f9-fa8908fbbb24 "
+   * @param headers Headers of deleteShieldListByIdV2025R0 method
+   */
   public void deleteShieldListByIdV2025R0(
       String shieldListId, DeleteShieldListByIdV2025R0Headers headers) {
     Map<String, String> headersMap =
@@ -151,12 +198,29 @@ public class ShieldListsManager {
                     .build());
   }
 
+  /**
+   * Updates a shield list.
+   *
+   * @param shieldListId The unique identifier that represents a shield list. The ID for any Shield
+   *     List can be determined by the response from the endpoint fetching all shield lists for the
+   *     enterprise. Example: "90fb0e17-c332-40ed-b4f9-fa8908fbbb24 "
+   * @param requestBody Request body of updateShieldListByIdV2025R0 method
+   */
   public ShieldListV2025R0 updateShieldListByIdV2025R0(
       String shieldListId, ShieldListsUpdateV2025R0 requestBody) {
     return updateShieldListByIdV2025R0(
         shieldListId, requestBody, new UpdateShieldListByIdV2025R0Headers());
   }
 
+  /**
+   * Updates a shield list.
+   *
+   * @param shieldListId The unique identifier that represents a shield list. The ID for any Shield
+   *     List can be determined by the response from the endpoint fetching all shield lists for the
+   *     enterprise. Example: "90fb0e17-c332-40ed-b4f9-fa8908fbbb24 "
+   * @param requestBody Request body of updateShieldListByIdV2025R0 method
+   * @param headers Headers of updateShieldListByIdV2025R0 method
+   */
   public ShieldListV2025R0 updateShieldListByIdV2025R0(
       String shieldListId,
       ShieldListsUpdateV2025R0 requestBody,

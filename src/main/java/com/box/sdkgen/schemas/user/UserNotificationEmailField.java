@@ -9,8 +9,10 @@ import java.util.Objects;
 @JsonFilter("nullablePropertyFilter")
 public class UserNotificationEmailField extends SerializableObject {
 
+  /** The email address to send the notifications to. */
   protected String email;
 
+  /** Specifies if this email address has been confirmed. */
   @JsonProperty("is_confirmed")
   protected Boolean isConfirmed;
 

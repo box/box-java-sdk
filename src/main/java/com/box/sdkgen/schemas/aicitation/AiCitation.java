@@ -8,17 +8,22 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import java.util.Objects;
 
+/** The citation of the LLM's answer reference. */
 @JsonFilter("nullablePropertyFilter")
 public class AiCitation extends SerializableObject {
 
+  /** The specific content from where the answer was referenced. */
   protected String content;
 
+  /** The id of the item. */
   protected String id;
 
+  /** The type of the item. */
   @JsonDeserialize(using = AiCitationTypeField.AiCitationTypeFieldDeserializer.class)
   @JsonSerialize(using = AiCitationTypeField.AiCitationTypeFieldSerializer.class)
   protected EnumWrapper<AiCitationTypeField> type;
 
+  /** The name of the item. */
   protected String name;
 
   public AiCitation() {

@@ -6,8 +6,14 @@ import java.util.Map;
 
 public class FindAppItemForSharedLinkHeaders {
 
+  /**
+   * A header containing the shared link and optional password for the shared link.
+   *
+   * <p>The format for this header is `shared_link=[link]&amp;shared_link_password=[password]`.
+   */
   public final String boxapi;
 
+  /** Extra headers that will be included in the HTTP request. */
   public Map<String, String> extraHeaders;
 
   public FindAppItemForSharedLinkHeaders(String boxapi) {

@@ -4,18 +4,30 @@ import com.box.sdkgen.serialization.json.EnumWrapper;
 
 public class GetSlackIntegrationMappingQueryParams {
 
+  /**
+   * Defines the position marker at which to begin returning results. This is used when paginating
+   * using marker-based pagination.
+   *
+   * <p>This requires `usemarker` to be set to `true`.
+   */
   public String marker;
 
+  /** The maximum number of items to return per page. */
   public Long limit;
 
+  /** Mapped item type, for which the mapping should be returned. */
   public EnumWrapper<GetSlackIntegrationMappingQueryParamsPartnerItemTypeField> partnerItemType;
 
+  /** ID of the mapped item, for which the mapping should be returned. */
   public String partnerItemId;
 
+  /** Box item ID, for which the mappings should be returned. */
   public String boxItemId;
 
+  /** Box item type, for which the mappings should be returned. */
   public EnumWrapper<GetSlackIntegrationMappingQueryParamsBoxItemTypeField> boxItemType;
 
+  /** Whether the mapping has been manually created. */
   public Boolean isManuallyCreated;
 
   public GetSlackIntegrationMappingQueryParams() {}

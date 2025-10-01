@@ -10,12 +10,21 @@ import java.util.Objects;
 public class UpdateSharedLinkOnWebLinkRequestBodySharedLinkPermissionsField
     extends SerializableObject {
 
+  /**
+   * If the shared link allows for downloading of files. This can only be set when `access` is set
+   * to `open` or `company`.
+   */
   @JsonProperty("can_download")
   protected Boolean canDownload;
 
+  /**
+   * If the shared link allows for previewing of files. This value is always `true`. For shared
+   * links on folders this also applies to any items in the folder.
+   */
   @JsonProperty("can_preview")
   protected Boolean canPreview;
 
+  /** This value can only be `true` is `type` is `file`. */
   @JsonProperty("can_edit")
   protected Boolean canEdit;
 

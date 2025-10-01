@@ -11,16 +11,44 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import java.time.OffsetDateTime;
 import java.util.Objects;
 
+/**
+ * Groups contain a set of users, and can be used in place of users in some operations, such as
+ * collaborations.
+ */
 @JsonFilter("nullablePropertyFilter")
 public class GroupFull extends Group {
 
+  /**
+   * Keeps track of which external source this group is coming from (e.g. "Active Directory",
+   * "Google Groups", "Facebook Groups"). Setting this will also prevent Box users from editing the
+   * group name and its members directly via the Box web application. This is desirable for one-way
+   * syncing of groups.
+   */
   protected String provenance;
 
+  /**
+   * An arbitrary identifier that can be used by external group sync tools to link this Box Group to
+   * an external group. Example values of this field could be an Active Directory Object ID or a
+   * Google Group ID. We recommend you use of this field in order to avoid issues when group names
+   * are updated in either Box or external systems.
+   */
   @JsonProperty("external_sync_identifier")
   protected String externalSyncIdentifier;
 
+  /** Human readable description of the group. */
   protected String description;
 
+  /**
+   * Specifies who can invite the group to collaborate on items.
+   *
+   * <p>When set to `admins_only` the enterprise admin, co-admins, and the group's admin can invite
+   * the group.
+   *
+   * <p>When set to `admins_and_members` all the admins listed above and group members can invite
+   * the group.
+   *
+   * <p>When set to `all_managed_users` all managed users in the enterprise can invite the group.
+   */
   @JsonDeserialize(
       using = GroupFullInvitabilityLevelField.GroupFullInvitabilityLevelFieldDeserializer.class)
   @JsonSerialize(
@@ -28,6 +56,13 @@ public class GroupFull extends Group {
   @JsonProperty("invitability_level")
   protected EnumWrapper<GroupFullInvitabilityLevelField> invitabilityLevel;
 
+  /**
+   * Specifies who can view the members of the group (Get Memberships for Group).
+   *
+   * <p>* `admins_only` - the enterprise admin, co-admins, group's group admin. *
+   * `admins_and_members` - all admins and group members. * `all_managed_users` - all managed users
+   * in the enterprise.
+   */
   @JsonDeserialize(
       using =
           GroupFullMemberViewabilityLevelField.GroupFullMemberViewabilityLevelFieldDeserializer

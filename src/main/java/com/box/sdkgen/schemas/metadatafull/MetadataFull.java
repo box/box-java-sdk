@@ -8,18 +8,29 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.Map;
 import java.util.Objects;
 
+/** An instance of a metadata template, which has been applied to a file or folder. */
 @JsonFilter("nullablePropertyFilter")
 public class MetadataFull extends Metadata {
 
+  /** Whether the user can edit this metadata instance. */
   @JsonProperty("$canEdit")
   protected Boolean canEdit;
 
+  /** A UUID to identify the metadata instance. */
   @JsonProperty("$id")
   protected String id;
 
+  /**
+   * A unique identifier for the "type" of this instance. This is an internal system property and
+   * should not be used by a client application.
+   */
   @JsonProperty("$type")
   protected String type;
 
+  /**
+   * The last-known version of the template of the object. This is an internal system property and
+   * should not be used by a client application.
+   */
   @JsonProperty("$typeVersion")
   protected Long typeVersion;
 

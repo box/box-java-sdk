@@ -8,8 +8,10 @@ import java.util.Objects;
 @JsonFilter("nullablePropertyFilter")
 public class TemplateSignerInputCoordinatesField extends SerializableObject {
 
+  /** Relative x coordinate to the page the input is on, ranging from 0 to 1. */
   protected Double x;
 
+  /** Relative y coordinate to the page the input is on, ranging from 0 to 1. */
   protected Double y;
 
   public TemplateSignerInputCoordinatesField() {

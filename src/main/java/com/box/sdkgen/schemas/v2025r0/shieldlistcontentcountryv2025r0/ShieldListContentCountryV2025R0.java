@@ -10,9 +10,11 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import java.util.List;
 import java.util.Objects;
 
+/** Representation of content of a Shield List that contains countries data. */
 @JsonFilter("nullablePropertyFilter")
 public class ShieldListContentCountryV2025R0 extends SerializableObject {
 
+  /** The type of content in the shield list. */
   @JsonDeserialize(
       using =
           ShieldListContentCountryV2025R0TypeField
@@ -23,6 +25,7 @@ public class ShieldListContentCountryV2025R0 extends SerializableObject {
               .ShieldListContentCountryV2025R0TypeFieldSerializer.class)
   protected EnumWrapper<ShieldListContentCountryV2025R0TypeField> type;
 
+  /** List of country codes values. */
   @JsonProperty("country_codes")
   protected final List<String> countryCodes;
 

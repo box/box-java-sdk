@@ -12,6 +12,7 @@ import java.util.Objects;
 @JsonFilter("nullablePropertyFilter")
 public class TimelineSkillCardInvocationField extends SerializableObject {
 
+  /** The value will always be `skill_invocation`. */
   @JsonDeserialize(
       using =
           TimelineSkillCardInvocationTypeField.TimelineSkillCardInvocationTypeFieldDeserializer
@@ -21,6 +22,11 @@ public class TimelineSkillCardInvocationField extends SerializableObject {
           TimelineSkillCardInvocationTypeField.TimelineSkillCardInvocationTypeFieldSerializer.class)
   protected EnumWrapper<TimelineSkillCardInvocationTypeField> type;
 
+  /**
+   * A custom identifier that represent the instance of the service that applied this metadata. For
+   * example, if your `image-recognition-service` runs on multiple nodes, this field can be used to
+   * identify the ID of the node that was used to apply the metadata.
+   */
   protected final String id;
 
   public TimelineSkillCardInvocationField(@JsonProperty("id") String id) {

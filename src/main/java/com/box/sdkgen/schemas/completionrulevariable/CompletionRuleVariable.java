@@ -9,15 +9,20 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import java.util.Objects;
 
+/**
+ * A completion rule object. Determines if an action should be completed by all or any assignees.
+ */
 @JsonFilter("nullablePropertyFilter")
 public class CompletionRuleVariable extends SerializableObject {
 
+  /** Completion Rule object type. */
   @JsonDeserialize(
       using = CompletionRuleVariableTypeField.CompletionRuleVariableTypeFieldDeserializer.class)
   @JsonSerialize(
       using = CompletionRuleVariableTypeField.CompletionRuleVariableTypeFieldSerializer.class)
   protected EnumWrapper<CompletionRuleVariableTypeField> type;
 
+  /** Variable type for the Completion Rule object. */
   @JsonDeserialize(
       using =
           CompletionRuleVariableVariableTypeField
@@ -29,6 +34,7 @@ public class CompletionRuleVariable extends SerializableObject {
   @JsonProperty("variable_type")
   protected EnumWrapper<CompletionRuleVariableVariableTypeField> variableType;
 
+  /** Variable values for a completion rule. */
   @JsonDeserialize(
       using =
           CompletionRuleVariableVariableValueField

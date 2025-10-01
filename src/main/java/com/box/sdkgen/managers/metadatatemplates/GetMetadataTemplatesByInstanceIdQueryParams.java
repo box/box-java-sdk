@@ -2,10 +2,18 @@ package com.box.sdkgen.managers.metadatatemplates;
 
 public class GetMetadataTemplatesByInstanceIdQueryParams {
 
+  /** The ID of an instance of the metadata template to find. */
   public final String metadataInstanceId;
 
+  /**
+   * Defines the position marker at which to begin returning results. This is used when paginating
+   * using marker-based pagination.
+   *
+   * <p>This requires `usemarker` to be set to `true`.
+   */
   public String marker;
 
+  /** The maximum number of items to return per page. */
   public Long limit;
 
   public GetMetadataTemplatesByInstanceIdQueryParams(String metadataInstanceId) {

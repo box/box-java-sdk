@@ -13,6 +13,7 @@ import java.util.Objects;
 @JsonFilter("nullablePropertyFilter")
 public class TrashFilePathCollectionEntriesField extends SerializableObject {
 
+  /** The value will always be `folder`. */
   @JsonDeserialize(
       using =
           TrashFilePathCollectionEntriesTypeField
@@ -23,14 +24,18 @@ public class TrashFilePathCollectionEntriesField extends SerializableObject {
               .class)
   protected EnumWrapper<TrashFilePathCollectionEntriesTypeField> type;
 
+  /** The unique identifier that represent a folder. */
   protected String id;
 
+  /** This field is null for the Trash folder. */
   @JsonProperty("sequence_id")
   @Nullable
   protected String sequenceId;
 
+  /** This field is null for the Trash folder. */
   @Nullable protected String etag;
 
+  /** The name of the Trash folder. */
   protected String name;
 
   public TrashFilePathCollectionEntriesField() {

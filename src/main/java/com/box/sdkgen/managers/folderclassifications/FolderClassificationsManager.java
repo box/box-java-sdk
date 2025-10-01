@@ -30,10 +30,35 @@ public class FolderClassificationsManager {
     this.networkSession = builder.networkSession;
   }
 
+  /**
+   * Retrieves the classification metadata instance that has been applied to a folder.
+   *
+   * <p>This API can also be called by including the enterprise ID in the URL explicitly, for
+   * example `/folders/:id/enterprise_12345/securityClassification-6VMVochwUWo`.
+   *
+   * @param folderId The unique identifier that represent a folder.
+   *     <p>The ID for any folder can be determined by visiting this folder in the web application
+   *     and copying the ID from the URL. For example, for the URL
+   *     `https://*.app.box.com/folder/123` the `folder_id` is `123`.
+   *     <p>The root folder of a Box account is always represented by the ID `0`. Example: "12345"
+   */
   public Classification getClassificationOnFolder(String folderId) {
     return getClassificationOnFolder(folderId, new GetClassificationOnFolderHeaders());
   }
 
+  /**
+   * Retrieves the classification metadata instance that has been applied to a folder.
+   *
+   * <p>This API can also be called by including the enterprise ID in the URL explicitly, for
+   * example `/folders/:id/enterprise_12345/securityClassification-6VMVochwUWo`.
+   *
+   * @param folderId The unique identifier that represent a folder.
+   *     <p>The ID for any folder can be determined by visiting this folder in the web application
+   *     and copying the ID from the URL. For example, for the URL
+   *     `https://*.app.box.com/folder/123` the `folder_id` is `123`.
+   *     <p>The root folder of a Box account is always represented by the ID `0`. Example: "12345"
+   * @param headers Headers of getClassificationOnFolder method
+   */
   public Classification getClassificationOnFolder(
       String folderId, GetClassificationOnFolderHeaders headers) {
     Map<String, String> headersMap = prepareParams(mergeMaps(mapOf(), headers.getExtraHeaders()));
@@ -57,6 +82,18 @@ public class FolderClassificationsManager {
     return JsonManager.deserialize(response.getData(), Classification.class);
   }
 
+  /**
+   * Adds a classification to a folder by specifying the label of the classification to add.
+   *
+   * <p>This API can also be called by including the enterprise ID in the URL explicitly, for
+   * example `/folders/:id/enterprise_12345/securityClassification-6VMVochwUWo`.
+   *
+   * @param folderId The unique identifier that represent a folder.
+   *     <p>The ID for any folder can be determined by visiting this folder in the web application
+   *     and copying the ID from the URL. For example, for the URL
+   *     `https://*.app.box.com/folder/123` the `folder_id` is `123`.
+   *     <p>The root folder of a Box account is always represented by the ID `0`. Example: "12345"
+   */
   public Classification addClassificationToFolder(String folderId) {
     return addClassificationToFolder(
         folderId,
@@ -64,16 +101,56 @@ public class FolderClassificationsManager {
         new AddClassificationToFolderHeaders());
   }
 
+  /**
+   * Adds a classification to a folder by specifying the label of the classification to add.
+   *
+   * <p>This API can also be called by including the enterprise ID in the URL explicitly, for
+   * example `/folders/:id/enterprise_12345/securityClassification-6VMVochwUWo`.
+   *
+   * @param folderId The unique identifier that represent a folder.
+   *     <p>The ID for any folder can be determined by visiting this folder in the web application
+   *     and copying the ID from the URL. For example, for the URL
+   *     `https://*.app.box.com/folder/123` the `folder_id` is `123`.
+   *     <p>The root folder of a Box account is always represented by the ID `0`. Example: "12345"
+   * @param requestBody Request body of addClassificationToFolder method
+   */
   public Classification addClassificationToFolder(
       String folderId, AddClassificationToFolderRequestBody requestBody) {
     return addClassificationToFolder(folderId, requestBody, new AddClassificationToFolderHeaders());
   }
 
+  /**
+   * Adds a classification to a folder by specifying the label of the classification to add.
+   *
+   * <p>This API can also be called by including the enterprise ID in the URL explicitly, for
+   * example `/folders/:id/enterprise_12345/securityClassification-6VMVochwUWo`.
+   *
+   * @param folderId The unique identifier that represent a folder.
+   *     <p>The ID for any folder can be determined by visiting this folder in the web application
+   *     and copying the ID from the URL. For example, for the URL
+   *     `https://*.app.box.com/folder/123` the `folder_id` is `123`.
+   *     <p>The root folder of a Box account is always represented by the ID `0`. Example: "12345"
+   * @param headers Headers of addClassificationToFolder method
+   */
   public Classification addClassificationToFolder(
       String folderId, AddClassificationToFolderHeaders headers) {
     return addClassificationToFolder(folderId, new AddClassificationToFolderRequestBody(), headers);
   }
 
+  /**
+   * Adds a classification to a folder by specifying the label of the classification to add.
+   *
+   * <p>This API can also be called by including the enterprise ID in the URL explicitly, for
+   * example `/folders/:id/enterprise_12345/securityClassification-6VMVochwUWo`.
+   *
+   * @param folderId The unique identifier that represent a folder.
+   *     <p>The ID for any folder can be determined by visiting this folder in the web application
+   *     and copying the ID from the URL. For example, for the URL
+   *     `https://*.app.box.com/folder/123` the `folder_id` is `123`.
+   *     <p>The root folder of a Box account is always represented by the ID `0`. Example: "12345"
+   * @param requestBody Request body of addClassificationToFolder method
+   * @param headers Headers of addClassificationToFolder method
+   */
   public Classification addClassificationToFolder(
       String folderId,
       AddClassificationToFolderRequestBody requestBody,
@@ -101,12 +178,41 @@ public class FolderClassificationsManager {
     return JsonManager.deserialize(response.getData(), Classification.class);
   }
 
+  /**
+   * Updates a classification on a folder.
+   *
+   * <p>The classification can only be updated if a classification has already been applied to the
+   * folder before. When editing classifications, only values are defined for the enterprise will be
+   * accepted.
+   *
+   * @param folderId The unique identifier that represent a folder.
+   *     <p>The ID for any folder can be determined by visiting this folder in the web application
+   *     and copying the ID from the URL. For example, for the URL
+   *     `https://*.app.box.com/folder/123` the `folder_id` is `123`.
+   *     <p>The root folder of a Box account is always represented by the ID `0`. Example: "12345"
+   * @param requestBody Request body of updateClassificationOnFolder method
+   */
   public Classification updateClassificationOnFolder(
       String folderId, List<UpdateClassificationOnFolderRequestBody> requestBody) {
     return updateClassificationOnFolder(
         folderId, requestBody, new UpdateClassificationOnFolderHeaders());
   }
 
+  /**
+   * Updates a classification on a folder.
+   *
+   * <p>The classification can only be updated if a classification has already been applied to the
+   * folder before. When editing classifications, only values are defined for the enterprise will be
+   * accepted.
+   *
+   * @param folderId The unique identifier that represent a folder.
+   *     <p>The ID for any folder can be determined by visiting this folder in the web application
+   *     and copying the ID from the URL. For example, for the URL
+   *     `https://*.app.box.com/folder/123` the `folder_id` is `123`.
+   *     <p>The root folder of a Box account is always represented by the ID `0`. Example: "12345"
+   * @param requestBody Request body of updateClassificationOnFolder method
+   * @param headers Headers of updateClassificationOnFolder method
+   */
   public Classification updateClassificationOnFolder(
       String folderId,
       List<UpdateClassificationOnFolderRequestBody> requestBody,
@@ -134,10 +240,35 @@ public class FolderClassificationsManager {
     return JsonManager.deserialize(response.getData(), Classification.class);
   }
 
+  /**
+   * Removes any classifications from a folder.
+   *
+   * <p>This API can also be called by including the enterprise ID in the URL explicitly, for
+   * example `/folders/:id/enterprise_12345/securityClassification-6VMVochwUWo`.
+   *
+   * @param folderId The unique identifier that represent a folder.
+   *     <p>The ID for any folder can be determined by visiting this folder in the web application
+   *     and copying the ID from the URL. For example, for the URL
+   *     `https://*.app.box.com/folder/123` the `folder_id` is `123`.
+   *     <p>The root folder of a Box account is always represented by the ID `0`. Example: "12345"
+   */
   public void deleteClassificationFromFolder(String folderId) {
     deleteClassificationFromFolder(folderId, new DeleteClassificationFromFolderHeaders());
   }
 
+  /**
+   * Removes any classifications from a folder.
+   *
+   * <p>This API can also be called by including the enterprise ID in the URL explicitly, for
+   * example `/folders/:id/enterprise_12345/securityClassification-6VMVochwUWo`.
+   *
+   * @param folderId The unique identifier that represent a folder.
+   *     <p>The ID for any folder can be determined by visiting this folder in the web application
+   *     and copying the ID from the URL. For example, for the URL
+   *     `https://*.app.box.com/folder/123` the `folder_id` is `123`.
+   *     <p>The root folder of a Box account is always represented by the ID `0`. Example: "12345"
+   * @param headers Headers of deleteClassificationFromFolder method
+   */
   public void deleteClassificationFromFolder(
       String folderId, DeleteClassificationFromFolderHeaders headers) {
     Map<String, String> headersMap = prepareParams(mergeMaps(mapOf(), headers.getExtraHeaders()));

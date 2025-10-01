@@ -32,12 +32,23 @@ public class ShieldInformationBarrierReportsManager {
     this.networkSession = builder.networkSession;
   }
 
+  /**
+   * Lists shield information barrier reports.
+   *
+   * @param queryParams Query parameters of getShieldInformationBarrierReports method
+   */
   public ShieldInformationBarrierReports getShieldInformationBarrierReports(
       GetShieldInformationBarrierReportsQueryParams queryParams) {
     return getShieldInformationBarrierReports(
         queryParams, new GetShieldInformationBarrierReportsHeaders());
   }
 
+  /**
+   * Lists shield information barrier reports.
+   *
+   * @param queryParams Query parameters of getShieldInformationBarrierReports method
+   * @param headers Headers of getShieldInformationBarrierReports method
+   */
   public ShieldInformationBarrierReports getShieldInformationBarrierReports(
       GetShieldInformationBarrierReportsQueryParams queryParams,
       GetShieldInformationBarrierReportsHeaders headers) {
@@ -69,12 +80,23 @@ public class ShieldInformationBarrierReportsManager {
     return JsonManager.deserialize(response.getData(), ShieldInformationBarrierReports.class);
   }
 
+  /**
+   * Creates a shield information barrier report for a given barrier.
+   *
+   * @param requestBody Request body of createShieldInformationBarrierReport method
+   */
   public ShieldInformationBarrierReport createShieldInformationBarrierReport(
       ShieldInformationBarrierReference requestBody) {
     return createShieldInformationBarrierReport(
         requestBody, new CreateShieldInformationBarrierReportHeaders());
   }
 
+  /**
+   * Creates a shield information barrier report for a given barrier.
+   *
+   * @param requestBody Request body of createShieldInformationBarrierReport method
+   * @param headers Headers of createShieldInformationBarrierReport method
+   */
   public ShieldInformationBarrierReport createShieldInformationBarrierReport(
       ShieldInformationBarrierReference requestBody,
       CreateShieldInformationBarrierReportHeaders headers) {
@@ -99,12 +121,25 @@ public class ShieldInformationBarrierReportsManager {
     return JsonManager.deserialize(response.getData(), ShieldInformationBarrierReport.class);
   }
 
+  /**
+   * Retrieves a shield information barrier report by its ID.
+   *
+   * @param shieldInformationBarrierReportId The ID of the shield information barrier Report.
+   *     Example: "3423"
+   */
   public ShieldInformationBarrierReport getShieldInformationBarrierReportById(
       String shieldInformationBarrierReportId) {
     return getShieldInformationBarrierReportById(
         shieldInformationBarrierReportId, new GetShieldInformationBarrierReportByIdHeaders());
   }
 
+  /**
+   * Retrieves a shield information barrier report by its ID.
+   *
+   * @param shieldInformationBarrierReportId The ID of the shield information barrier Report.
+   *     Example: "3423"
+   * @param headers Headers of getShieldInformationBarrierReportById method
+   */
   public ShieldInformationBarrierReport getShieldInformationBarrierReportById(
       String shieldInformationBarrierReportId,
       GetShieldInformationBarrierReportByIdHeaders headers) {

@@ -8,8 +8,10 @@ import java.util.Objects;
 @JsonFilter("nullablePropertyFilter")
 public class StartWorkflowRequestBodyFlowField extends SerializableObject {
 
+  /** The type of the flow object. */
   protected String type;
 
+  /** The id of the flow. */
   protected String id;
 
   public StartWorkflowRequestBodyFlowField() {

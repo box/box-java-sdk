@@ -8,9 +8,11 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import java.util.Objects;
 
+/** A base representation of a segment restriction object for the shield information barrier. */
 @JsonFilter("nullablePropertyFilter")
 public class ShieldInformationBarrierSegmentRestrictionBase extends SerializableObject {
 
+  /** Shield information barrier segment restriction. */
   @JsonDeserialize(
       using =
           ShieldInformationBarrierSegmentRestrictionBaseTypeField
@@ -21,6 +23,7 @@ public class ShieldInformationBarrierSegmentRestrictionBase extends Serializable
               .ShieldInformationBarrierSegmentRestrictionBaseTypeFieldSerializer.class)
   protected EnumWrapper<ShieldInformationBarrierSegmentRestrictionBaseTypeField> type;
 
+  /** The unique identifier for the shield information barrier segment restriction. */
   protected String id;
 
   public ShieldInformationBarrierSegmentRestrictionBase() {

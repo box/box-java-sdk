@@ -8,6 +8,7 @@ import java.util.Objects;
 @JsonFilter("nullablePropertyFilter")
 public class UpdateUserByIdRequestBodyNotificationEmailField extends SerializableObject {
 
+  /** The email address to send the notifications to. */
   protected String email;
 
   public UpdateUserByIdRequestBodyNotificationEmailField() {

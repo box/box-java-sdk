@@ -6,18 +6,33 @@ import com.fasterxml.jackson.annotation.JsonFilter;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.Objects;
 
+/** A real-time server that can be used for long polling user events. */
 @JsonFilter("nullablePropertyFilter")
 public class RealtimeServer extends SerializableObject {
 
+  /** The value will always be `realtime_server`. */
   protected String type;
 
+  /** The URL for the server. */
   protected String url;
 
+  /** The time in minutes for which this server is available. */
   protected String ttl;
 
+  /**
+   * The maximum number of retries this server will allow before a new long poll should be started
+   * by getting a [new list of server](#options-events).
+   */
   @JsonProperty("max_retries")
   protected String maxRetries;
 
+  /**
+   * The maximum number of seconds without a response after which you should retry the long poll
+   * connection.
+   *
+   * <p>This helps to overcome network issues where the long poll looks to be working but no
+   * packages are coming through.
+   */
   @JsonProperty("retry_timeout")
   protected Long retryTimeout;
 

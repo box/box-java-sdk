@@ -9,11 +9,14 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import java.util.Objects;
 
+/** A mini representation of a user, used when nested within another resource. */
 @JsonFilter("nullablePropertyFilter")
 public class UserBase extends SerializableObject {
 
+  /** The unique identifier for this user. */
   protected final String id;
 
+  /** The value will always be `user`. */
   @JsonDeserialize(using = UserBaseTypeField.UserBaseTypeFieldDeserializer.class)
   @JsonSerialize(using = UserBaseTypeField.UserBaseTypeFieldSerializer.class)
   protected EnumWrapper<UserBaseTypeField> type;

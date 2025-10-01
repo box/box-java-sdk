@@ -8,9 +8,11 @@ import java.util.Objects;
 @JsonFilter("nullablePropertyFilter")
 public class CreateStoragePolicyAssignmentRequestBody extends SerializableObject {
 
+  /** The storage policy to assign to the user or enterprise. */
   @JsonProperty("storage_policy")
   protected final CreateStoragePolicyAssignmentRequestBodyStoragePolicyField storagePolicy;
 
+  /** The user or enterprise to assign the storage policy to. */
   @JsonProperty("assigned_to")
   protected final CreateStoragePolicyAssignmentRequestBodyAssignedToField assignedTo;
 

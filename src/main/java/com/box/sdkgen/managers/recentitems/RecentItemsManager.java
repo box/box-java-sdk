@@ -30,18 +30,41 @@ public class RecentItemsManager {
     this.networkSession = builder.networkSession;
   }
 
+  /**
+   * Returns information about the recent items accessed by a user, either in the last 90 days or up
+   * to the last 1000 items accessed.
+   */
   public RecentItems getRecentItems() {
     return getRecentItems(new GetRecentItemsQueryParams(), new GetRecentItemsHeaders());
   }
 
+  /**
+   * Returns information about the recent items accessed by a user, either in the last 90 days or up
+   * to the last 1000 items accessed.
+   *
+   * @param queryParams Query parameters of getRecentItems method
+   */
   public RecentItems getRecentItems(GetRecentItemsQueryParams queryParams) {
     return getRecentItems(queryParams, new GetRecentItemsHeaders());
   }
 
+  /**
+   * Returns information about the recent items accessed by a user, either in the last 90 days or up
+   * to the last 1000 items accessed.
+   *
+   * @param headers Headers of getRecentItems method
+   */
   public RecentItems getRecentItems(GetRecentItemsHeaders headers) {
     return getRecentItems(new GetRecentItemsQueryParams(), headers);
   }
 
+  /**
+   * Returns information about the recent items accessed by a user, either in the last 90 days or up
+   * to the last 1000 items accessed.
+   *
+   * @param queryParams Query parameters of getRecentItems method
+   * @param headers Headers of getRecentItems method
+   */
   public RecentItems getRecentItems(
       GetRecentItemsQueryParams queryParams, GetRecentItemsHeaders headers) {
     Map<String, String> queryParamsMap =

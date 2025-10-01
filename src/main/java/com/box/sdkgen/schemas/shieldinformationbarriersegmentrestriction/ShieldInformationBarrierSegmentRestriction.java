@@ -15,6 +15,7 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import java.time.OffsetDateTime;
 import java.util.Objects;
 
+/** A standard representation of a segment restriction of a shield information barrier object. */
 @JsonFilter("nullablePropertyFilter")
 public class ShieldInformationBarrierSegmentRestriction
     extends ShieldInformationBarrierSegmentRestrictionMini {
@@ -22,6 +23,10 @@ public class ShieldInformationBarrierSegmentRestriction
   @JsonProperty("shield_information_barrier")
   protected ShieldInformationBarrierBase shieldInformationBarrier;
 
+  /**
+   * ISO date time string when this shield information barrier Segment Restriction object was
+   * created.
+   */
   @JsonProperty("created_at")
   @JsonSerialize(using = DateTimeUtils.DateTimeSerializer.class)
   @JsonDeserialize(using = DateTimeUtils.DateTimeDeserializer.class)
@@ -30,6 +35,7 @@ public class ShieldInformationBarrierSegmentRestriction
   @JsonProperty("created_by")
   protected UserBase createdBy;
 
+  /** ISO date time string when this shield information barrier segment Restriction was updated. */
   @JsonProperty("updated_at")
   @JsonSerialize(using = DateTimeUtils.DateTimeSerializer.class)
   @JsonDeserialize(using = DateTimeUtils.DateTimeDeserializer.class)

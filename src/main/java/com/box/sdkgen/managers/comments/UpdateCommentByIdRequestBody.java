@@ -8,6 +8,7 @@ import java.util.Objects;
 @JsonFilter("nullablePropertyFilter")
 public class UpdateCommentByIdRequestBody extends SerializableObject {
 
+  /** The text of the comment to update. */
   protected String message;
 
   public UpdateCommentByIdRequestBody() {

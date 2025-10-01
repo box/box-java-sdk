@@ -12,17 +12,21 @@ import java.util.Objects;
 @JsonFilter("nullablePropertyFilter")
 public class ZipDownloadNameConflictsField extends SerializableObject {
 
+  /** The identifier of the item. */
   protected String id;
 
+  /** The type of this item. */
   @JsonDeserialize(
       using = ZipDownloadNameConflictsTypeField.ZipDownloadNameConflictsTypeFieldDeserializer.class)
   @JsonSerialize(
       using = ZipDownloadNameConflictsTypeField.ZipDownloadNameConflictsTypeFieldSerializer.class)
   protected EnumWrapper<ZipDownloadNameConflictsTypeField> type;
 
+  /** Box Developer Documentation. */
   @JsonProperty("original_name")
   protected String originalName;
 
+  /** The new name of this item as it will appear in the downloaded `zip` archive. */
   @JsonProperty("download_name")
   protected String downloadName;
 

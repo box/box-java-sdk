@@ -13,11 +13,14 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import java.time.OffsetDateTime;
 import java.util.Objects;
 
+/** Membership is used to signify that a user is part of a group. */
 @JsonFilter("nullablePropertyFilter")
 public class GroupMembership extends SerializableObject {
 
+  /** The unique identifier for this group membership. */
   protected String id;
 
+  /** The value will always be `group_membership`. */
   @JsonDeserialize(using = GroupMembershipTypeField.GroupMembershipTypeFieldDeserializer.class)
   @JsonSerialize(using = GroupMembershipTypeField.GroupMembershipTypeFieldSerializer.class)
   protected EnumWrapper<GroupMembershipTypeField> type;
@@ -26,15 +29,18 @@ public class GroupMembership extends SerializableObject {
 
   protected GroupMini group;
 
+  /** The role of the user in the group. */
   @JsonDeserialize(using = GroupMembershipRoleField.GroupMembershipRoleFieldDeserializer.class)
   @JsonSerialize(using = GroupMembershipRoleField.GroupMembershipRoleFieldSerializer.class)
   protected EnumWrapper<GroupMembershipRoleField> role;
 
+  /** The time this membership was created. */
   @JsonProperty("created_at")
   @JsonSerialize(using = DateTimeUtils.DateTimeSerializer.class)
   @JsonDeserialize(using = DateTimeUtils.DateTimeDeserializer.class)
   protected OffsetDateTime createdAt;
 
+  /** The time this membership was last modified. */
   @JsonProperty("modified_at")
   @JsonSerialize(using = DateTimeUtils.DateTimeSerializer.class)
   @JsonDeserialize(using = DateTimeUtils.DateTimeDeserializer.class)

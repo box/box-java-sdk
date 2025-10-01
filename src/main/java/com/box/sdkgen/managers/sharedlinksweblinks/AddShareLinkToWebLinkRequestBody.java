@@ -9,6 +9,11 @@ import java.util.Objects;
 @JsonFilter("nullablePropertyFilter")
 public class AddShareLinkToWebLinkRequestBody extends SerializableObject {
 
+  /**
+   * The settings for the shared link to create on the web link.
+   *
+   * <p>Use an empty object (`{}`) to use the default settings for shared links.
+   */
   @JsonProperty("shared_link")
   protected AddShareLinkToWebLinkRequestBodySharedLinkField sharedLink;
 

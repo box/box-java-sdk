@@ -13,6 +13,7 @@ import java.util.Objects;
 public class UpdateStoragePolicyAssignmentByIdRequestBodyStoragePolicyField
     extends SerializableObject {
 
+  /** The type to assign. */
   @JsonDeserialize(
       using =
           UpdateStoragePolicyAssignmentByIdRequestBodyStoragePolicyTypeField
@@ -23,6 +24,7 @@ public class UpdateStoragePolicyAssignmentByIdRequestBodyStoragePolicyField
               .UpdateStoragePolicyAssignmentByIdRequestBodyStoragePolicyTypeFieldSerializer.class)
   protected EnumWrapper<UpdateStoragePolicyAssignmentByIdRequestBodyStoragePolicyTypeField> type;
 
+  /** The ID of the storage policy to assign. */
   protected final String id;
 
   public UpdateStoragePolicyAssignmentByIdRequestBodyStoragePolicyField(

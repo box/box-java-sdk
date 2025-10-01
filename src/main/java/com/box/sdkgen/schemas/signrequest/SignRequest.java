@@ -17,24 +17,38 @@ import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.Objects;
 
+/** A Box Sign request object. */
 @JsonFilter("nullablePropertyFilter")
 public class SignRequest extends SignRequestBase {
 
+  /** The value will always be `sign-request`. */
   @JsonDeserialize(using = SignRequestTypeField.SignRequestTypeFieldDeserializer.class)
   @JsonSerialize(using = SignRequestTypeField.SignRequestTypeFieldSerializer.class)
   protected EnumWrapper<SignRequestTypeField> type;
 
+  /**
+   * List of files to create a signing document from. This is currently limited to ten files. Only
+   * the ID and type fields are required for each file.
+   */
   @JsonProperty("source_files")
   protected List<FileBase> sourceFiles;
 
+  /** Array of signers for the signature request. */
   protected List<SignRequestSigner> signers;
 
+  /** Force a specific color for the signature (blue, black, or red). */
   @JsonProperty("signature_color")
   @Nullable
   protected String signatureColor;
 
+  /** Box Sign request ID. */
   protected String id;
 
+  /**
+   * This URL is returned if `is_document_preparation_needed` is set to `true` in the request. The
+   * parameter is used to prepare the signature request using the UI. The signature request is not
+   * sent until the preparation phase is complete.
+   */
   @JsonProperty("prepare_url")
   @Nullable
   protected String prepareUrl;
@@ -42,13 +56,23 @@ public class SignRequest extends SignRequestBase {
   @JsonProperty("signing_log")
   protected FileMini signingLog;
 
+  /** Describes the status of the signature request. */
   @JsonDeserialize(using = SignRequestStatusField.SignRequestStatusFieldDeserializer.class)
   @JsonSerialize(using = SignRequestStatusField.SignRequestStatusFieldSerializer.class)
   protected EnumWrapper<SignRequestStatusField> status;
 
+  /**
+   * List of files that will be signed, which are copies of the original source files. A new version
+   * of these files are created as signers sign and can be downloaded at any point in the signing
+   * process.
+   */
   @JsonProperty("sign_files")
   protected SignRequestSignFilesField signFiles;
 
+  /**
+   * Uses `days_valid` to calculate the date and time, in GMT, the sign request will expire if
+   * unsigned.
+   */
   @JsonProperty("auto_expire_at")
   @JsonSerialize(using = DateTimeUtils.DateTimeSerializer.class)
   @JsonDeserialize(using = DateTimeUtils.DateTimeDeserializer.class)
@@ -58,14 +82,20 @@ public class SignRequest extends SignRequestBase {
   @JsonProperty("parent_folder")
   protected FolderMini parentFolder;
 
+  /**
+   * The collaborator level of the user to the sign request. Values can include "owner", "editor",
+   * and "viewer".
+   */
   @JsonProperty("collaborator_level")
   @Nullable
   protected String collaboratorLevel;
 
+  /** The email address of the sender of the sign request. */
   @JsonProperty("sender_email")
   @Nullable
   protected String senderEmail;
 
+  /** The user ID of the sender of the sign request. */
   @JsonProperty("sender_id")
   @Nullable
   protected Long senderId;

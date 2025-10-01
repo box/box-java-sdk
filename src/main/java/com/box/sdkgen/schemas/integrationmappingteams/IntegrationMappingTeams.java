@@ -13,9 +13,14 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import java.time.OffsetDateTime;
 import java.util.Objects;
 
+/** A Microsoft Teams specific representation of an integration mapping object. */
 @JsonFilter("nullablePropertyFilter")
 public class IntegrationMappingTeams extends IntegrationMappingBase {
 
+  /**
+   * Identifies the Box partner app, with which the mapping is associated. Supports Slack and Teams.
+   * (part of the composite key together with `id`).
+   */
   @JsonDeserialize(
       using =
           IntegrationMappingTeamsIntegrationTypeField
@@ -27,20 +32,27 @@ public class IntegrationMappingTeams extends IntegrationMappingBase {
   @JsonProperty("integration_type")
   protected EnumWrapper<IntegrationMappingTeamsIntegrationTypeField> integrationType;
 
+  /**
+   * Identifies whether the mapping has been manually set by the team owner from UI for channels (as
+   * opposed to being automatically created).
+   */
   @JsonProperty("is_overridden_by_manual_mapping")
   protected Boolean isOverriddenByManualMapping;
 
+  /** Mapped item object for Teams. */
   @JsonProperty("partner_item")
   protected final IntegrationMappingPartnerItemTeams partnerItem;
 
   @JsonProperty("box_item")
   protected final FolderReference boxItem;
 
+  /** When the integration mapping object was created. */
   @JsonProperty("created_at")
   @JsonSerialize(using = DateTimeUtils.DateTimeSerializer.class)
   @JsonDeserialize(using = DateTimeUtils.DateTimeDeserializer.class)
   protected OffsetDateTime createdAt;
 
+  /** When the integration mapping object was last modified. */
   @JsonProperty("modified_at")
   @JsonSerialize(using = DateTimeUtils.DateTimeSerializer.class)
   @JsonDeserialize(using = DateTimeUtils.DateTimeDeserializer.class)

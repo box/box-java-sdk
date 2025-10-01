@@ -8,12 +8,15 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.List;
 import java.util.Objects;
 
+/** A list of task assignments. */
 @JsonFilter("nullablePropertyFilter")
 public class TaskAssignments extends SerializableObject {
 
+  /** The total number of items in this collection. */
   @JsonProperty("total_count")
   protected Long totalCount;
 
+  /** A list of task assignments. */
   protected List<TaskAssignment> entries;
 
   public TaskAssignments() {

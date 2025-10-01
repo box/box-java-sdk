@@ -12,6 +12,7 @@ import java.util.Objects;
 @JsonFilter("nullablePropertyFilter")
 public class UpdateClassificationOnFolderRequestBody extends SerializableObject {
 
+  /** The value will always be `replace`. */
   @JsonDeserialize(
       using =
           UpdateClassificationOnFolderRequestBodyOpField
@@ -22,6 +23,7 @@ public class UpdateClassificationOnFolderRequestBody extends SerializableObject 
               .UpdateClassificationOnFolderRequestBodyOpFieldSerializer.class)
   protected EnumWrapper<UpdateClassificationOnFolderRequestBodyOpField> op;
 
+  /** Defines classifications available in the enterprise. */
   @JsonDeserialize(
       using =
           UpdateClassificationOnFolderRequestBodyPathField
@@ -32,6 +34,14 @@ public class UpdateClassificationOnFolderRequestBody extends SerializableObject 
               .UpdateClassificationOnFolderRequestBodyPathFieldSerializer.class)
   protected EnumWrapper<UpdateClassificationOnFolderRequestBodyPathField> path;
 
+  /**
+   * The name of the classification to apply to this folder.
+   *
+   * <p>To list the available classifications in an enterprise, use the classification API to
+   * retrieve the [classification
+   * template](e://get_metadata_templates_enterprise_securityClassification-6VMVochwUWo_schema)
+   * which lists all available classification keys.
+   */
   protected final String value;
 
   public UpdateClassificationOnFolderRequestBody(@JsonProperty("value") String value) {

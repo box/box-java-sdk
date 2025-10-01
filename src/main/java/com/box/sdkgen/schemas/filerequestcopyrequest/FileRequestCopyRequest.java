@@ -8,9 +8,11 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import java.time.OffsetDateTime;
 import java.util.Objects;
 
+/** The request body to copy a file request. */
 @JsonFilter("nullablePropertyFilter")
 public class FileRequestCopyRequest extends FileRequestUpdateRequest {
 
+  /** The folder to associate the new file request to. */
   protected final FileRequestCopyRequestFolderField folder;
 
   public FileRequestCopyRequest(@JsonProperty("folder") FileRequestCopyRequestFolderField folder) {

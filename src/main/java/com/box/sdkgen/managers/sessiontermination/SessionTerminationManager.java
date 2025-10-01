@@ -28,11 +28,24 @@ public class SessionTerminationManager {
     this.networkSession = builder.networkSession;
   }
 
+  /**
+   * Validates the roles and permissions of the user, and creates asynchronous jobs to terminate the
+   * user's sessions. Returns the status for the POST request.
+   *
+   * @param requestBody Request body of terminateUsersSessions method
+   */
   public SessionTerminationMessage terminateUsersSessions(
       TerminateUsersSessionsRequestBody requestBody) {
     return terminateUsersSessions(requestBody, new TerminateUsersSessionsHeaders());
   }
 
+  /**
+   * Validates the roles and permissions of the user, and creates asynchronous jobs to terminate the
+   * user's sessions. Returns the status for the POST request.
+   *
+   * @param requestBody Request body of terminateUsersSessions method
+   * @param headers Headers of terminateUsersSessions method
+   */
   public SessionTerminationMessage terminateUsersSessions(
       TerminateUsersSessionsRequestBody requestBody, TerminateUsersSessionsHeaders headers) {
     Map<String, String> headersMap = prepareParams(mergeMaps(mapOf(), headers.getExtraHeaders()));
@@ -56,11 +69,24 @@ public class SessionTerminationManager {
     return JsonManager.deserialize(response.getData(), SessionTerminationMessage.class);
   }
 
+  /**
+   * Validates the roles and permissions of the group, and creates asynchronous jobs to terminate
+   * the group's sessions. Returns the status for the POST request.
+   *
+   * @param requestBody Request body of terminateGroupsSessions method
+   */
   public SessionTerminationMessage terminateGroupsSessions(
       TerminateGroupsSessionsRequestBody requestBody) {
     return terminateGroupsSessions(requestBody, new TerminateGroupsSessionsHeaders());
   }
 
+  /**
+   * Validates the roles and permissions of the group, and creates asynchronous jobs to terminate
+   * the group's sessions. Returns the status for the POST request.
+   *
+   * @param requestBody Request body of terminateGroupsSessions method
+   * @param headers Headers of terminateGroupsSessions method
+   */
   public SessionTerminationMessage terminateGroupsSessions(
       TerminateGroupsSessionsRequestBody requestBody, TerminateGroupsSessionsHeaders headers) {
     Map<String, String> headersMap = prepareParams(mergeMaps(mapOf(), headers.getExtraHeaders()));

@@ -9,15 +9,22 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import java.util.Objects;
 
+/**
+ * An app item represents an content object owned by an application. It can group files and folders
+ * together from different paths. That set can be shared via a collaboration.
+ */
 @JsonFilter("nullablePropertyFilter")
 public class AppItem extends SerializableObject {
 
+  /** The unique identifier for this app item. */
   protected final String id;
 
+  /** The value will always be `app_item`. */
   @JsonDeserialize(using = AppItemTypeField.AppItemTypeFieldDeserializer.class)
   @JsonSerialize(using = AppItemTypeField.AppItemTypeFieldSerializer.class)
   protected EnumWrapper<AppItemTypeField> type;
 
+  /** The type of the app that owns this app item. */
   @JsonProperty("application_type")
   protected final String applicationType;
 

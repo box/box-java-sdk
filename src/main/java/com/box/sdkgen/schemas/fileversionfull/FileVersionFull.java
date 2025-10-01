@@ -9,9 +9,14 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import java.time.OffsetDateTime;
 import java.util.Objects;
 
+/**
+ * A full representation of a file version, as can be returned from any file version API endpoints
+ * by default.
+ */
 @JsonFilter("nullablePropertyFilter")
 public class FileVersionFull extends FileVersion {
 
+  /** The version number of this file version. */
   @JsonProperty("version_number")
   protected String versionNumber;
 

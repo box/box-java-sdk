@@ -12,9 +12,11 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import java.util.Objects;
 
+/** The AI agent to be used for metadata extraction. */
 @JsonFilter("nullablePropertyFilter")
 public class AiStudioAgentExtractResponse extends SerializableObject {
 
+  /** The type of AI agent to be used for metadata extraction. */
   @JsonDeserialize(
       using =
           AiStudioAgentExtractResponseTypeField.AiStudioAgentExtractResponseTypeFieldDeserializer
@@ -25,11 +27,14 @@ public class AiStudioAgentExtractResponse extends SerializableObject {
               .class)
   protected EnumWrapper<AiStudioAgentExtractResponseTypeField> type;
 
+  /** The state of the AI Agent capability. Possible values are: `enabled` and `disabled`. */
   @JsonProperty("access_state")
   protected final String accessState;
 
+  /** The description of the AI agent. */
   protected final String description;
 
+  /** Custom instructions for the AI agent. */
   @JsonProperty("custom_instructions")
   @Nullable
   protected String customInstructions;

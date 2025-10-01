@@ -8,12 +8,15 @@ import java.util.Objects;
 @JsonFilter("nullablePropertyFilter")
 public class CreateFileUploadSessionRequestBody extends SerializableObject {
 
+  /** The ID of the folder to upload the new file to. */
   @JsonProperty("folder_id")
   protected final String folderId;
 
+  /** The total number of bytes of the file to be uploaded. */
   @JsonProperty("file_size")
   protected final long fileSize;
 
+  /** The name of new file. */
   @JsonProperty("file_name")
   protected final String fileName;
 

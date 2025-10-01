@@ -9,8 +9,18 @@ import java.util.Objects;
 @JsonFilter("nullablePropertyFilter")
 public class CopyFolderRequestBody extends SerializableObject {
 
+  /**
+   * An optional new name for the copied folder.
+   *
+   * <p>There are some restrictions to the file name. Names containing non-printable ASCII
+   * characters, forward and backward slashes (`/`, `\`), as well as names with trailing spaces are
+   * prohibited.
+   *
+   * <p>Additionally, the names `.` and `..` are not allowed either.
+   */
   protected String name;
 
+  /** The destination folder to copy the folder to. */
   protected final CopyFolderRequestBodyParentField parent;
 
   public CopyFolderRequestBody(@JsonProperty("parent") CopyFolderRequestBodyParentField parent) {

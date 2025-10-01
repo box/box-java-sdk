@@ -9,6 +9,7 @@ import com.box.sdkgen.schemas.aillmendpointparamsopenai.AiLlmEndpointParamsOpenA
 import com.fasterxml.jackson.annotation.JsonFilter;
 import java.util.Objects;
 
+/** AI agent processor used to to handle longer text. */
 @JsonFilter("nullablePropertyFilter")
 public class AiAgentLongTextTool extends AiAgentBasicTextTool {
 

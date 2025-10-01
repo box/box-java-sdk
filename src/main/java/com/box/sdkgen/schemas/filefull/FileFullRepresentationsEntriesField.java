@@ -8,14 +8,19 @@ import java.util.Objects;
 @JsonFilter("nullablePropertyFilter")
 public class FileFullRepresentationsEntriesField extends SerializableObject {
 
+  /** An object containing the URL that can be used to actually fetch the representation. */
   protected FileFullRepresentationsEntriesContentField content;
 
+  /** An object containing the URL that can be used to fetch more info on this representation. */
   protected FileFullRepresentationsEntriesInfoField info;
 
+  /** An object containing the size and type of this presentation. */
   protected FileFullRepresentationsEntriesPropertiesField properties;
 
+  /** Indicates the file type of the returned representation. */
   protected String representation;
 
+  /** An object containing the status of this representation. */
   protected FileFullRepresentationsEntriesStatusField status;
 
   public FileFullRepresentationsEntriesField() {

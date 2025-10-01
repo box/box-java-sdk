@@ -8,6 +8,7 @@ import java.util.Objects;
 @JsonFilter("nullablePropertyFilter")
 public class CreateInviteRequestBodyActionableByField extends SerializableObject {
 
+  /** The login of the invited user. */
   protected String login;
 
   public CreateInviteRequestBodyActionableByField() {

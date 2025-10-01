@@ -11,6 +11,11 @@ import java.util.Objects;
 @JsonFilter("nullablePropertyFilter")
 public class UpdateFileWatermarkRequestBodyWatermarkField extends SerializableObject {
 
+  /**
+   * The type of watermark to apply.
+   *
+   * <p>Currently only supports one option.
+   */
   @JsonDeserialize(
       using =
           UpdateFileWatermarkRequestBodyWatermarkImprintField

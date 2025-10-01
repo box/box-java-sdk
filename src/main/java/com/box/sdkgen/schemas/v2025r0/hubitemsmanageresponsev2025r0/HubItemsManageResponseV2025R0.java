@@ -7,9 +7,11 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.List;
 import java.util.Objects;
 
+/** Response schema for the status of Box Hub items management operations. */
 @JsonFilter("nullablePropertyFilter")
 public class HubItemsManageResponseV2025R0 extends SerializableObject {
 
+  /** List of operations performed on Box Hub items. */
   protected final List<HubItemOperationResultV2025R0> operations;
 
   public HubItemsManageResponseV2025R0(

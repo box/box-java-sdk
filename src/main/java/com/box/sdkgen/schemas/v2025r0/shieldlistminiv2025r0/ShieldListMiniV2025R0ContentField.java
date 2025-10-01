@@ -8,6 +8,7 @@ import java.util.Objects;
 @JsonFilter("nullablePropertyFilter")
 public class ShieldListMiniV2025R0ContentField extends SerializableObject {
 
+  /** The type of content in the shield list. */
   protected String type;
 
   public ShieldListMiniV2025R0ContentField() {

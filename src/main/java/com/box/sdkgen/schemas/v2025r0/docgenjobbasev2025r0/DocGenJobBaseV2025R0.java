@@ -9,11 +9,14 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import java.util.Objects;
 
+/** The basic representation of a Box Doc Gen job. */
 @JsonFilter("nullablePropertyFilter")
 public class DocGenJobBaseV2025R0 extends SerializableObject {
 
+  /** The unique identifier that represent a Box Doc Gen job. */
   protected final String id;
 
+  /** The value will always be `docgen_job`. */
   @JsonDeserialize(
       using = DocGenJobBaseV2025R0TypeField.DocGenJobBaseV2025R0TypeFieldDeserializer.class)
   @JsonSerialize(

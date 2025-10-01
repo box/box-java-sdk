@@ -12,12 +12,20 @@ import java.util.Objects;
 @JsonFilter("nullablePropertyFilter")
 public class StatusSkillCardStatusField extends SerializableObject {
 
+  /**
+   * A code for the status of this Skill invocation. By default each of these will have their own
+   * accompanied messages. These can be adjusted by setting the `message` value on this object.
+   */
   @JsonDeserialize(
       using = StatusSkillCardStatusCodeField.StatusSkillCardStatusCodeFieldDeserializer.class)
   @JsonSerialize(
       using = StatusSkillCardStatusCodeField.StatusSkillCardStatusCodeFieldSerializer.class)
   protected final EnumWrapper<StatusSkillCardStatusCodeField> code;
 
+  /**
+   * A custom message that can be provided with this status. This will be shown in the web app to
+   * the end user.
+   */
   protected String message;
 
   public StatusSkillCardStatusField(StatusSkillCardStatusCodeField code) {

@@ -14,43 +14,58 @@ import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.Objects;
 
+/** Standard representation of an AI Agent instance. */
 @JsonFilter("nullablePropertyFilter")
 public class AiSingleAgentResponse extends SerializableObject {
 
+  /** The unique identifier of the AI Agent. */
   protected final String id;
 
+  /** The type of agent used to handle queries. */
   @JsonDeserialize(
       using = AiSingleAgentResponseTypeField.AiSingleAgentResponseTypeFieldDeserializer.class)
   @JsonSerialize(
       using = AiSingleAgentResponseTypeField.AiSingleAgentResponseTypeFieldSerializer.class)
   protected EnumWrapper<AiSingleAgentResponseTypeField> type;
 
+  /** The provider of the AI Agent. */
   protected final String origin;
 
+  /** The name of the AI Agent. */
   protected final String name;
 
+  /**
+   * The state of the AI Agent. Possible values are: `enabled`, `disabled`, and
+   * `enabled_for_selected_users`.
+   */
   @JsonProperty("access_state")
   protected final String accessState;
 
+  /** The user who created this agent. */
   @JsonProperty("created_by")
   protected UserBase createdBy;
 
+  /** The ISO date-time formatted timestamp of when this AI agent was created. */
   @JsonProperty("created_at")
   @JsonSerialize(using = DateTimeUtils.DateTimeSerializer.class)
   @JsonDeserialize(using = DateTimeUtils.DateTimeDeserializer.class)
   protected OffsetDateTime createdAt;
 
+  /** The user who most recently modified this agent. */
   @JsonProperty("modified_by")
   protected UserBase modifiedBy;
 
+  /** The ISO date-time formatted timestamp of when this AI agent was recently modified. */
   @JsonProperty("modified_at")
   @JsonSerialize(using = DateTimeUtils.DateTimeSerializer.class)
   @JsonDeserialize(using = DateTimeUtils.DateTimeDeserializer.class)
   protected OffsetDateTime modifiedAt;
 
+  /** The icon reference of the AI Agent. */
   @JsonProperty("icon_reference")
   protected String iconReference;
 
+  /** List of allowed users or groups. */
   @JsonProperty("allowed_entities")
   protected List<AiAgentAllowedEntity> allowedEntities;
 

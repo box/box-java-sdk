@@ -9,15 +9,28 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import java.util.Objects;
 
+/** A mini representation of a retention policy, used when nested within another resource. */
 @JsonFilter("nullablePropertyFilter")
 public class RetentionPolicyMini extends RetentionPolicyBase {
 
+  /** The name given to the retention policy. */
   @JsonProperty("policy_name")
   protected String policyName;
 
+  /**
+   * The length of the retention policy. This value specifies the duration in days that the
+   * retention policy will be active for after being assigned to content. If the policy has a
+   * `policy_type` of `indefinite`, the `retention_length` will also be `indefinite`.
+   */
   @JsonProperty("retention_length")
   protected String retentionLength;
 
+  /**
+   * The disposition action of the retention policy. This action can be `permanently_delete`, which
+   * will cause the content retained by the policy to be permanently deleted, or `remove_retention`,
+   * which will lift the retention policy from the content, allowing it to be deleted by users, once
+   * the retention policy has expired.
+   */
   @JsonDeserialize(
       using =
           RetentionPolicyMiniDispositionActionField

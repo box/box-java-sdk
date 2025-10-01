@@ -13,11 +13,14 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import java.time.OffsetDateTime;
 import java.util.Objects;
 
+/** A shield information barrier segment object. */
 @JsonFilter("nullablePropertyFilter")
 public class ShieldInformationBarrierSegment extends SerializableObject {
 
+  /** The unique identifier for the shield information barrier segment. */
   protected String id;
 
+  /** The type of the shield information barrier segment. */
   @JsonDeserialize(
       using =
           ShieldInformationBarrierSegmentTypeField
@@ -31,10 +34,13 @@ public class ShieldInformationBarrierSegment extends SerializableObject {
   @JsonProperty("shield_information_barrier")
   protected ShieldInformationBarrierBase shieldInformationBarrier;
 
+  /** Name of the shield information barrier segment. */
   protected String name;
 
+  /** Description of the shield information barrier segment. */
   protected String description;
 
+  /** ISO date time string when this shield information barrier object was created. */
   @JsonProperty("created_at")
   @JsonSerialize(using = DateTimeUtils.DateTimeSerializer.class)
   @JsonDeserialize(using = DateTimeUtils.DateTimeDeserializer.class)
@@ -43,6 +49,7 @@ public class ShieldInformationBarrierSegment extends SerializableObject {
   @JsonProperty("created_by")
   protected UserBase createdBy;
 
+  /** ISO date time string when this shield information barrier segment was updated. */
   @JsonProperty("updated_at")
   @JsonSerialize(using = DateTimeUtils.DateTimeSerializer.class)
   @JsonDeserialize(using = DateTimeUtils.DateTimeDeserializer.class)

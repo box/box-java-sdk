@@ -6,11 +6,14 @@ import com.fasterxml.jackson.annotation.JsonFilter;
 import java.util.List;
 import java.util.Objects;
 
+/** The information on the models and processors used in the request. */
 @JsonFilter("nullablePropertyFilter")
 public class AiAgentInfo extends SerializableObject {
 
+  /** The models used for the request. */
   protected List<AiAgentInfoModelsField> models;
 
+  /** The processor used for the request. */
   protected String processor;
 
   public AiAgentInfo() {

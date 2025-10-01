@@ -9,9 +9,11 @@ import com.fasterxml.jackson.annotation.JsonFilter;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.Objects;
 
+/** An instance of an outcome. */
 @JsonFilter("nullablePropertyFilter")
 public class Outcome extends SerializableObject {
 
+  /** ID of a specific outcome. */
   protected final String id;
 
   protected CollaboratorVariable collaborators;

@@ -14,11 +14,23 @@ import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.Objects;
 
+/**
+ * A retention policy blocks permanent deletion of content for a specified amount of time. Admins
+ * can create retention policies and then later assign them to specific folders, metadata templates,
+ * or their entire enterprise. To use this feature, you must have the manage retention policies
+ * scope enabled for your API key via your application management console.
+ */
 @JsonFilter("nullablePropertyFilter")
 public class RetentionPolicy extends RetentionPolicyMini {
 
+  /** The additional text description of the retention policy. */
   protected String description;
 
+  /**
+   * The type of the retention policy. A retention policy type can either be `finite`, where a
+   * specific amount of time to retain the content is known upfront, or `indefinite`, where the
+   * amount of time to retain the content is still unknown.
+   */
   @JsonDeserialize(
       using = RetentionPolicyPolicyTypeField.RetentionPolicyPolicyTypeFieldDeserializer.class)
   @JsonSerialize(
@@ -26,6 +38,18 @@ public class RetentionPolicy extends RetentionPolicyMini {
   @JsonProperty("policy_type")
   protected EnumWrapper<RetentionPolicyPolicyTypeField> policyType;
 
+  /**
+   * Specifies the retention type:
+   *
+   * <p>* `modifiable`: You can modify the retention policy. For example, you can add or remove
+   * folders, shorten or lengthen the policy duration, or delete the assignment. Use this type if
+   * your retention policy is not related to any regulatory purposes.
+   *
+   * <p>* `non-modifiable`: You can modify the retention policy only in a limited way: add a folder,
+   * lengthen the duration, retire the policy, change the disposition action or notification
+   * settings. You cannot perform other actions, such as deleting the assignment or shortening the
+   * policy duration. Use this type to ensure compliance with regulatory retention policies.
+   */
   @JsonDeserialize(
       using = RetentionPolicyRetentionTypeField.RetentionPolicyRetentionTypeFieldDeserializer.class)
   @JsonSerialize(
@@ -33,6 +57,11 @@ public class RetentionPolicy extends RetentionPolicyMini {
   @JsonProperty("retention_type")
   protected EnumWrapper<RetentionPolicyRetentionTypeField> retentionType;
 
+  /**
+   * The status of the retention policy. The status of a policy will be `active`, unless explicitly
+   * retired by an administrator, in which case the status will be `retired`. Once a policy has been
+   * retired, it cannot become active again.
+   */
   @JsonDeserialize(using = RetentionPolicyStatusField.RetentionPolicyStatusFieldDeserializer.class)
   @JsonSerialize(using = RetentionPolicyStatusField.RetentionPolicyStatusFieldSerializer.class)
   protected EnumWrapper<RetentionPolicyStatusField> status;
@@ -40,25 +69,37 @@ public class RetentionPolicy extends RetentionPolicyMini {
   @JsonProperty("created_by")
   protected UserMini createdBy;
 
+  /** When the retention policy object was created. */
   @JsonProperty("created_at")
   @JsonSerialize(using = DateTimeUtils.DateTimeSerializer.class)
   @JsonDeserialize(using = DateTimeUtils.DateTimeDeserializer.class)
   protected OffsetDateTime createdAt;
 
+  /** When the retention policy object was last modified. */
   @JsonProperty("modified_at")
   @JsonSerialize(using = DateTimeUtils.DateTimeSerializer.class)
   @JsonDeserialize(using = DateTimeUtils.DateTimeDeserializer.class)
   protected OffsetDateTime modifiedAt;
 
+  /**
+   * Determines if the owner of items under the policy can extend the retention when the original
+   * retention duration is about to end.
+   */
   @JsonProperty("can_owner_extend_retention")
   protected Boolean canOwnerExtendRetention;
 
+  /**
+   * Determines if owners and co-owners of items under the policy are notified when the retention
+   * duration is about to end.
+   */
   @JsonProperty("are_owners_notified")
   protected Boolean areOwnersNotified;
 
+  /** A list of users notified when the retention policy duration is about to end. */
   @JsonProperty("custom_notification_recipients")
   protected List<UserMini> customNotificationRecipients;
 
+  /** Counts the retention policy assignments for each item type. */
   @JsonProperty("assignment_counts")
   protected RetentionPolicyAssignmentCountsField assignmentCounts;
 

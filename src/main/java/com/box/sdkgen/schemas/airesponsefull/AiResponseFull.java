@@ -9,9 +9,11 @@ import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.Objects;
 
+/** AI ask response. */
 @JsonFilter("nullablePropertyFilter")
 public class AiResponseFull extends AiResponse {
 
+  /** The citations of the LLM's answer reference. */
   protected List<AiCitation> citations;
 
   public AiResponseFull(

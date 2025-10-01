@@ -11,6 +11,13 @@ import java.util.Objects;
 @JsonFilter("nullablePropertyFilter")
 public class ApplyMetadataCascadePolicyRequestBody extends SerializableObject {
 
+  /**
+   * Describes the desired behavior when dealing with the conflict where a metadata template already
+   * has an instance applied to a child.
+   *
+   * <p>* `none` will preserve the existing value on the file * `overwrite` will force-apply the
+   * templates values over any existing values.
+   */
   @JsonDeserialize(
       using =
           ApplyMetadataCascadePolicyRequestBodyConflictResolutionField

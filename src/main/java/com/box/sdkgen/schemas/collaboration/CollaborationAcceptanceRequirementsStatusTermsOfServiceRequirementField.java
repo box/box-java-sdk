@@ -12,6 +12,10 @@ import java.util.Objects;
 public class CollaborationAcceptanceRequirementsStatusTermsOfServiceRequirementField
     extends SerializableObject {
 
+  /**
+   * Whether or not the terms of service have been accepted. The field is `null` when there is no
+   * terms of service required.
+   */
   @JsonProperty("is_accepted")
   @Nullable
   protected Boolean isAccepted;

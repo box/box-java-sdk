@@ -2,8 +2,10 @@ package com.box.sdkgen.managers.users;
 
 public class DeleteUserByIdQueryParams {
 
+  /** Whether the user will receive email notification of the deletion. */
   public Boolean notify;
 
+  /** Whether the user should be deleted even if this user still own files. */
   public Boolean force;
 
   public DeleteUserByIdQueryParams() {}

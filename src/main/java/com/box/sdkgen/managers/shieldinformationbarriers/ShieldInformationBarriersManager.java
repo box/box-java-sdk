@@ -31,12 +31,23 @@ public class ShieldInformationBarriersManager {
     this.networkSession = builder.networkSession;
   }
 
+  /**
+   * Get shield information barrier based on provided ID.
+   *
+   * @param shieldInformationBarrierId The ID of the shield information barrier. Example: "1910967"
+   */
   public ShieldInformationBarrier getShieldInformationBarrierById(
       String shieldInformationBarrierId) {
     return getShieldInformationBarrierById(
         shieldInformationBarrierId, new GetShieldInformationBarrierByIdHeaders());
   }
 
+  /**
+   * Get shield information barrier based on provided ID.
+   *
+   * @param shieldInformationBarrierId The ID of the shield information barrier. Example: "1910967"
+   * @param headers Headers of getShieldInformationBarrierById method
+   */
   public ShieldInformationBarrier getShieldInformationBarrierById(
       String shieldInformationBarrierId, GetShieldInformationBarrierByIdHeaders headers) {
     Map<String, String> headersMap = prepareParams(mergeMaps(mapOf(), headers.getExtraHeaders()));
@@ -59,12 +70,23 @@ public class ShieldInformationBarriersManager {
     return JsonManager.deserialize(response.getData(), ShieldInformationBarrier.class);
   }
 
+  /**
+   * Change status of shield information barrier with the specified ID.
+   *
+   * @param requestBody Request body of updateShieldInformationBarrierStatus method
+   */
   public ShieldInformationBarrier updateShieldInformationBarrierStatus(
       UpdateShieldInformationBarrierStatusRequestBody requestBody) {
     return updateShieldInformationBarrierStatus(
         requestBody, new UpdateShieldInformationBarrierStatusHeaders());
   }
 
+  /**
+   * Change status of shield information barrier with the specified ID.
+   *
+   * @param requestBody Request body of updateShieldInformationBarrierStatus method
+   * @param headers Headers of updateShieldInformationBarrierStatus method
+   */
   public ShieldInformationBarrier updateShieldInformationBarrierStatus(
       UpdateShieldInformationBarrierStatusRequestBody requestBody,
       UpdateShieldInformationBarrierStatusHeaders headers) {
@@ -89,21 +111,38 @@ public class ShieldInformationBarriersManager {
     return JsonManager.deserialize(response.getData(), ShieldInformationBarrier.class);
   }
 
+  /** Retrieves a list of shield information barrier objects for the enterprise of JWT. */
   public ShieldInformationBarriers getShieldInformationBarriers() {
     return getShieldInformationBarriers(
         new GetShieldInformationBarriersQueryParams(), new GetShieldInformationBarriersHeaders());
   }
 
+  /**
+   * Retrieves a list of shield information barrier objects for the enterprise of JWT.
+   *
+   * @param queryParams Query parameters of getShieldInformationBarriers method
+   */
   public ShieldInformationBarriers getShieldInformationBarriers(
       GetShieldInformationBarriersQueryParams queryParams) {
     return getShieldInformationBarriers(queryParams, new GetShieldInformationBarriersHeaders());
   }
 
+  /**
+   * Retrieves a list of shield information barrier objects for the enterprise of JWT.
+   *
+   * @param headers Headers of getShieldInformationBarriers method
+   */
   public ShieldInformationBarriers getShieldInformationBarriers(
       GetShieldInformationBarriersHeaders headers) {
     return getShieldInformationBarriers(new GetShieldInformationBarriersQueryParams(), headers);
   }
 
+  /**
+   * Retrieves a list of shield information barrier objects for the enterprise of JWT.
+   *
+   * @param queryParams Query parameters of getShieldInformationBarriers method
+   * @param headers Headers of getShieldInformationBarriers method
+   */
   public ShieldInformationBarriers getShieldInformationBarriers(
       GetShieldInformationBarriersQueryParams queryParams,
       GetShieldInformationBarriersHeaders headers) {
@@ -132,11 +171,24 @@ public class ShieldInformationBarriersManager {
     return JsonManager.deserialize(response.getData(), ShieldInformationBarriers.class);
   }
 
+  /**
+   * Creates a shield information barrier to separate individuals/groups within the same firm and
+   * prevents confidential information passing between them.
+   *
+   * @param requestBody Request body of createShieldInformationBarrier method
+   */
   public ShieldInformationBarrier createShieldInformationBarrier(
       CreateShieldInformationBarrierRequestBody requestBody) {
     return createShieldInformationBarrier(requestBody, new CreateShieldInformationBarrierHeaders());
   }
 
+  /**
+   * Creates a shield information barrier to separate individuals/groups within the same firm and
+   * prevents confidential information passing between them.
+   *
+   * @param requestBody Request body of createShieldInformationBarrier method
+   * @param headers Headers of createShieldInformationBarrier method
+   */
   public ShieldInformationBarrier createShieldInformationBarrier(
       CreateShieldInformationBarrierRequestBody requestBody,
       CreateShieldInformationBarrierHeaders headers) {

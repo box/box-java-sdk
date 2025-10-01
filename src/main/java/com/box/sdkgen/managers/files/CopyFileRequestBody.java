@@ -9,10 +9,19 @@ import java.util.Objects;
 @JsonFilter("nullablePropertyFilter")
 public class CopyFileRequestBody extends SerializableObject {
 
+  /**
+   * An optional new name for the copied file.
+   *
+   * <p>There are some restrictions to the file name. Names containing non-printable ASCII
+   * characters, forward and backward slashes (`/`, `\`), and protected names like `.` and `..` are
+   * automatically sanitized by removing the non-allowed characters.
+   */
   protected String name;
 
+  /** An optional ID of the specific file version to copy. */
   protected String version;
 
+  /** The destination folder to copy the file to. */
   protected final CopyFileRequestBodyParentField parent;
 
   public CopyFileRequestBody(@JsonProperty("parent") CopyFileRequestBodyParentField parent) {

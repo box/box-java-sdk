@@ -12,8 +12,15 @@ import java.util.Objects;
 @JsonFilter("nullablePropertyFilter")
 public class UpdateTaskAssignmentByIdRequestBody extends SerializableObject {
 
+  /** An optional message by the assignee that can be added to the task. */
   protected String message;
 
+  /**
+   * The state of the task assigned to the user.
+   *
+   * <p>* For a task with an `action` value of `complete` this can be `incomplete` or `completed`. *
+   * For a task with an `action` of `review` this can be `incomplete`, `approved`, or `rejected`.
+   */
   @JsonDeserialize(
       using =
           UpdateTaskAssignmentByIdRequestBodyResolutionStateField

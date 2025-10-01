@@ -11,6 +11,7 @@ import java.util.Objects;
 @JsonFilter("nullablePropertyFilter")
 public class StartWorkflowRequestBodyFilesField extends SerializableObject {
 
+  /** The type of the file object. */
   @JsonDeserialize(
       using =
           StartWorkflowRequestBodyFilesTypeField.StartWorkflowRequestBodyFilesTypeFieldDeserializer
@@ -21,6 +22,7 @@ public class StartWorkflowRequestBodyFilesField extends SerializableObject {
               .class)
   protected EnumWrapper<StartWorkflowRequestBodyFilesTypeField> type;
 
+  /** The id of the file. */
   protected String id;
 
   public StartWorkflowRequestBodyFilesField() {

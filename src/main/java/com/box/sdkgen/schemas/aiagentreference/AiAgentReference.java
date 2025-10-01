@@ -8,13 +8,20 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import java.util.Objects;
 
+/** The AI agent used to handle queries. */
 @JsonFilter("nullablePropertyFilter")
 public class AiAgentReference extends SerializableObject {
 
+  /** The type of AI agent used to handle queries. */
   @JsonDeserialize(using = AiAgentReferenceTypeField.AiAgentReferenceTypeFieldDeserializer.class)
   @JsonSerialize(using = AiAgentReferenceTypeField.AiAgentReferenceTypeFieldSerializer.class)
   protected EnumWrapper<AiAgentReferenceTypeField> type;
 
+  /**
+   * The ID of an Agent. This can be a numeric ID for custom agents (for example, `14031`) or a
+   * unique identifier for pre-built agents (for example, `enhanced_extract_agent` for the [Enhanced
+   * Extract Agent](g://box-ai/ai-tutorials/extract-metadata-structured/#enhanced-extract-agent)).
+   */
   protected String id;
 
   public AiAgentReference() {

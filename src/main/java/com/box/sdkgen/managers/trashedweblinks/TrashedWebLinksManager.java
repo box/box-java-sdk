@@ -31,6 +31,14 @@ public class TrashedWebLinksManager {
     this.networkSession = builder.networkSession;
   }
 
+  /**
+   * Restores a web link that has been moved to the trash.
+   *
+   * <p>An optional new parent ID can be provided to restore the web link to in case the original
+   * folder has been deleted.
+   *
+   * @param webLinkId The ID of the web link. Example: "12345"
+   */
   public TrashWebLinkRestored restoreWeblinkFromTrash(String webLinkId) {
     return restoreWeblinkFromTrash(
         webLinkId,
@@ -39,6 +47,15 @@ public class TrashedWebLinksManager {
         new RestoreWeblinkFromTrashHeaders());
   }
 
+  /**
+   * Restores a web link that has been moved to the trash.
+   *
+   * <p>An optional new parent ID can be provided to restore the web link to in case the original
+   * folder has been deleted.
+   *
+   * @param webLinkId The ID of the web link. Example: "12345"
+   * @param requestBody Request body of restoreWeblinkFromTrash method
+   */
   public TrashWebLinkRestored restoreWeblinkFromTrash(
       String webLinkId, RestoreWeblinkFromTrashRequestBody requestBody) {
     return restoreWeblinkFromTrash(
@@ -48,6 +65,15 @@ public class TrashedWebLinksManager {
         new RestoreWeblinkFromTrashHeaders());
   }
 
+  /**
+   * Restores a web link that has been moved to the trash.
+   *
+   * <p>An optional new parent ID can be provided to restore the web link to in case the original
+   * folder has been deleted.
+   *
+   * @param webLinkId The ID of the web link. Example: "12345"
+   * @param queryParams Query parameters of restoreWeblinkFromTrash method
+   */
   public TrashWebLinkRestored restoreWeblinkFromTrash(
       String webLinkId, RestoreWeblinkFromTrashQueryParams queryParams) {
     return restoreWeblinkFromTrash(
@@ -57,6 +83,16 @@ public class TrashedWebLinksManager {
         new RestoreWeblinkFromTrashHeaders());
   }
 
+  /**
+   * Restores a web link that has been moved to the trash.
+   *
+   * <p>An optional new parent ID can be provided to restore the web link to in case the original
+   * folder has been deleted.
+   *
+   * @param webLinkId The ID of the web link. Example: "12345"
+   * @param requestBody Request body of restoreWeblinkFromTrash method
+   * @param queryParams Query parameters of restoreWeblinkFromTrash method
+   */
   public TrashWebLinkRestored restoreWeblinkFromTrash(
       String webLinkId,
       RestoreWeblinkFromTrashRequestBody requestBody,
@@ -65,6 +101,15 @@ public class TrashedWebLinksManager {
         webLinkId, requestBody, queryParams, new RestoreWeblinkFromTrashHeaders());
   }
 
+  /**
+   * Restores a web link that has been moved to the trash.
+   *
+   * <p>An optional new parent ID can be provided to restore the web link to in case the original
+   * folder has been deleted.
+   *
+   * @param webLinkId The ID of the web link. Example: "12345"
+   * @param headers Headers of restoreWeblinkFromTrash method
+   */
   public TrashWebLinkRestored restoreWeblinkFromTrash(
       String webLinkId, RestoreWeblinkFromTrashHeaders headers) {
     return restoreWeblinkFromTrash(
@@ -74,6 +119,16 @@ public class TrashedWebLinksManager {
         headers);
   }
 
+  /**
+   * Restores a web link that has been moved to the trash.
+   *
+   * <p>An optional new parent ID can be provided to restore the web link to in case the original
+   * folder has been deleted.
+   *
+   * @param webLinkId The ID of the web link. Example: "12345"
+   * @param requestBody Request body of restoreWeblinkFromTrash method
+   * @param headers Headers of restoreWeblinkFromTrash method
+   */
   public TrashWebLinkRestored restoreWeblinkFromTrash(
       String webLinkId,
       RestoreWeblinkFromTrashRequestBody requestBody,
@@ -82,6 +137,16 @@ public class TrashedWebLinksManager {
         webLinkId, requestBody, new RestoreWeblinkFromTrashQueryParams(), headers);
   }
 
+  /**
+   * Restores a web link that has been moved to the trash.
+   *
+   * <p>An optional new parent ID can be provided to restore the web link to in case the original
+   * folder has been deleted.
+   *
+   * @param webLinkId The ID of the web link. Example: "12345"
+   * @param queryParams Query parameters of restoreWeblinkFromTrash method
+   * @param headers Headers of restoreWeblinkFromTrash method
+   */
   public TrashWebLinkRestored restoreWeblinkFromTrash(
       String webLinkId,
       RestoreWeblinkFromTrashQueryParams queryParams,
@@ -90,6 +155,17 @@ public class TrashedWebLinksManager {
         webLinkId, new RestoreWeblinkFromTrashRequestBody(), queryParams, headers);
   }
 
+  /**
+   * Restores a web link that has been moved to the trash.
+   *
+   * <p>An optional new parent ID can be provided to restore the web link to in case the original
+   * folder has been deleted.
+   *
+   * @param webLinkId The ID of the web link. Example: "12345"
+   * @param requestBody Request body of restoreWeblinkFromTrash method
+   * @param queryParams Query parameters of restoreWeblinkFromTrash method
+   * @param headers Headers of restoreWeblinkFromTrash method
+   */
   public TrashWebLinkRestored restoreWeblinkFromTrash(
       String webLinkId,
       RestoreWeblinkFromTrashRequestBody requestBody,
@@ -120,21 +196,45 @@ public class TrashedWebLinksManager {
     return JsonManager.deserialize(response.getData(), TrashWebLinkRestored.class);
   }
 
+  /**
+   * Retrieves a web link that has been moved to the trash.
+   *
+   * @param webLinkId The ID of the web link. Example: "12345"
+   */
   public TrashWebLink getTrashedWebLinkById(String webLinkId) {
     return getTrashedWebLinkById(
         webLinkId, new GetTrashedWebLinkByIdQueryParams(), new GetTrashedWebLinkByIdHeaders());
   }
 
+  /**
+   * Retrieves a web link that has been moved to the trash.
+   *
+   * @param webLinkId The ID of the web link. Example: "12345"
+   * @param queryParams Query parameters of getTrashedWebLinkById method
+   */
   public TrashWebLink getTrashedWebLinkById(
       String webLinkId, GetTrashedWebLinkByIdQueryParams queryParams) {
     return getTrashedWebLinkById(webLinkId, queryParams, new GetTrashedWebLinkByIdHeaders());
   }
 
+  /**
+   * Retrieves a web link that has been moved to the trash.
+   *
+   * @param webLinkId The ID of the web link. Example: "12345"
+   * @param headers Headers of getTrashedWebLinkById method
+   */
   public TrashWebLink getTrashedWebLinkById(
       String webLinkId, GetTrashedWebLinkByIdHeaders headers) {
     return getTrashedWebLinkById(webLinkId, new GetTrashedWebLinkByIdQueryParams(), headers);
   }
 
+  /**
+   * Retrieves a web link that has been moved to the trash.
+   *
+   * @param webLinkId The ID of the web link. Example: "12345"
+   * @param queryParams Query parameters of getTrashedWebLinkById method
+   * @param headers Headers of getTrashedWebLinkById method
+   */
   public TrashWebLink getTrashedWebLinkById(
       String webLinkId,
       GetTrashedWebLinkByIdQueryParams queryParams,
@@ -163,10 +263,21 @@ public class TrashedWebLinksManager {
     return JsonManager.deserialize(response.getData(), TrashWebLink.class);
   }
 
+  /**
+   * Permanently deletes a web link that is in the trash. This action cannot be undone.
+   *
+   * @param webLinkId The ID of the web link. Example: "12345"
+   */
   public void deleteTrashedWebLinkById(String webLinkId) {
     deleteTrashedWebLinkById(webLinkId, new DeleteTrashedWebLinkByIdHeaders());
   }
 
+  /**
+   * Permanently deletes a web link that is in the trash. This action cannot be undone.
+   *
+   * @param webLinkId The ID of the web link. Example: "12345"
+   * @param headers Headers of deleteTrashedWebLinkById method
+   */
   public void deleteTrashedWebLinkById(String webLinkId, DeleteTrashedWebLinkByIdHeaders headers) {
     Map<String, String> headersMap = prepareParams(mergeMaps(mapOf(), headers.getExtraHeaders()));
     FetchResponse response =

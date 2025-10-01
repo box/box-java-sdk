@@ -10,13 +10,29 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import java.util.Objects;
 
+/**
+ * The bare basic representation of a file, the minimal amount of fields returned when using the
+ * `fields` query parameter.
+ */
 @JsonFilter("nullablePropertyFilter")
 public class FileBase extends SerializableObject {
 
+  /**
+   * The unique identifier that represent a file.
+   *
+   * <p>The ID for any file can be determined by visiting a file in the web application and copying
+   * the ID from the URL. For example, for the URL `https://*.app.box.com/files/123` the `file_id`
+   * is `123`.
+   */
   protected final String id;
 
+  /**
+   * The HTTP `etag` of this file. This can be used within some API endpoints in the `If-Match` and
+   * `If-None-Match` headers to only perform changes on the file if (no) changes have happened.
+   */
   @Nullable protected String etag;
 
+  /** The value will always be `file`. */
   @JsonDeserialize(using = FileBaseTypeField.FileBaseTypeFieldDeserializer.class)
   @JsonSerialize(using = FileBaseTypeField.FileBaseTypeFieldSerializer.class)
   protected EnumWrapper<FileBaseTypeField> type;

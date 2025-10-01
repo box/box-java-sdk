@@ -12,19 +12,23 @@ import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.Objects;
 
+/** A Box Skill metadata card that adds a transcript to a file. */
 @JsonFilter("nullablePropertyFilter")
 public class TranscriptSkillCard extends SerializableObject {
 
+  /** The optional date and time this card was created at. */
   @JsonProperty("created_at")
   @JsonSerialize(using = DateTimeUtils.DateTimeSerializer.class)
   @JsonDeserialize(using = DateTimeUtils.DateTimeDeserializer.class)
   protected OffsetDateTime createdAt;
 
+  /** The value will always be `skill_card`. */
   @JsonDeserialize(
       using = TranscriptSkillCardTypeField.TranscriptSkillCardTypeFieldDeserializer.class)
   @JsonSerialize(using = TranscriptSkillCardTypeField.TranscriptSkillCardTypeFieldSerializer.class)
   protected EnumWrapper<TranscriptSkillCardTypeField> type;
 
+  /** The value will always be `transcript`. */
   @JsonDeserialize(
       using =
           TranscriptSkillCardSkillCardTypeField.TranscriptSkillCardSkillCardTypeFieldDeserializer
@@ -36,15 +40,28 @@ public class TranscriptSkillCard extends SerializableObject {
   @JsonProperty("skill_card_type")
   protected EnumWrapper<TranscriptSkillCardSkillCardTypeField> skillCardType;
 
+  /** The title of the card. */
   @JsonProperty("skill_card_title")
   protected TranscriptSkillCardSkillCardTitleField skillCardTitle;
 
+  /** The service that applied this metadata. */
   protected final TranscriptSkillCardSkillField skill;
 
+  /**
+   * The invocation of this service, used to track which instance of a service applied the metadata.
+   */
   protected final TranscriptSkillCardInvocationField invocation;
 
+  /**
+   * An optional total duration in seconds.
+   *
+   * <p>Used with a `skill_card_type` of `transcript` or `timeline`.
+   */
   protected Long duration;
 
+  /**
+   * An list of entries for the card. This represents the individual entries of the transcription.
+   */
   protected final List<TranscriptSkillCardEntriesField> entries;
 
   public TranscriptSkillCard(

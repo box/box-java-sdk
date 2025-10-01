@@ -9,18 +9,22 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import java.util.List;
 import java.util.Objects;
 
+/** A Box Doc Gen template tag object. */
 @JsonFilter("nullablePropertyFilter")
 public class DocGenTagV2025R0 extends SerializableObject {
 
+  /** The content of the tag. */
   @JsonProperty("tag_content")
   protected final String tagContent;
 
+  /** Type of the tag. */
   @JsonDeserialize(
       using = DocGenTagV2025R0TagTypeField.DocGenTagV2025R0TagTypeFieldDeserializer.class)
   @JsonSerialize(using = DocGenTagV2025R0TagTypeField.DocGenTagV2025R0TagTypeFieldSerializer.class)
   @JsonProperty("tag_type")
   protected final EnumWrapper<DocGenTagV2025R0TagTypeField> tagType;
 
+  /** List of the paths. */
   @JsonProperty("json_paths")
   protected final List<String> jsonPaths;
 

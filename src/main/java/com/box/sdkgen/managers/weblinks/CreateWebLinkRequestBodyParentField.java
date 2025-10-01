@@ -8,6 +8,7 @@ import java.util.Objects;
 @JsonFilter("nullablePropertyFilter")
 public class CreateWebLinkRequestBodyParentField extends SerializableObject {
 
+  /** The ID of parent folder. */
   protected final String id;
 
   public CreateWebLinkRequestBodyParentField(@JsonProperty("id") String id) {

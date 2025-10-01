@@ -9,17 +9,21 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import java.util.Objects;
 
+/** A mini representation of a Shield List. */
 @JsonFilter("nullablePropertyFilter")
 public class ShieldListMiniV2025R0 extends SerializableObject {
 
+  /** Unique global identifier for this list. */
   protected final String id;
 
+  /** The type of object. */
   @JsonDeserialize(
       using = ShieldListMiniV2025R0TypeField.ShieldListMiniV2025R0TypeFieldDeserializer.class)
   @JsonSerialize(
       using = ShieldListMiniV2025R0TypeField.ShieldListMiniV2025R0TypeFieldSerializer.class)
   protected EnumWrapper<ShieldListMiniV2025R0TypeField> type;
 
+  /** Name of Shield List. */
   protected final String name;
 
   protected final ShieldListMiniV2025R0ContentField content;

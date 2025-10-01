@@ -5,20 +5,68 @@ import java.util.List;
 
 public class GetUsersQueryParams {
 
+  /**
+   * Limits the results to only users who's `name` or `login` start with the search term.
+   *
+   * <p>For externally managed users, the search term needs to completely match the in order to find
+   * the user, and it will only return one user at a time.
+   */
   public String filterTerm;
 
+  /**
+   * Limits the results to the kind of user specified.
+   *
+   * <p>* `all` returns every kind of user for whom the `login` or `name` partially matches the
+   * `filter_term`. It will only return an external user if the login matches the `filter_term`
+   * completely, and in that case it will only return that user. * `managed` returns all managed and
+   * app users for whom the `login` or `name` partially matches the `filter_term`. * `external`
+   * returns all external users for whom the `login` matches the `filter_term` exactly.
+   */
   public EnumWrapper<GetUsersQueryParamsUserTypeField> userType;
 
+  /**
+   * Limits the results to app users with the given `external_app_user_id` value.
+   *
+   * <p>When creating an app user, an `external_app_user_id` value can be set. This value can then
+   * be used in this endpoint to find any users that match that `external_app_user_id` value.
+   */
   public String externalAppUserId;
 
+  /**
+   * A comma-separated list of attributes to include in the response. This can be used to request
+   * fields that are not normally returned in a standard response.
+   *
+   * <p>Be aware that specifying this parameter will have the effect that none of the standard
+   * fields are returned in the response unless explicitly specified, instead only fields for the
+   * mini representation are returned, additional to the fields requested.
+   */
   public List<String> fields;
 
+  /**
+   * The offset of the item at which to begin the response.
+   *
+   * <p>Queries with offset parameter value exceeding 10000 will be rejected with a 400 response.
+   */
   public Long offset;
 
+  /** The maximum number of items to return per page. */
   public Long limit;
 
+  /**
+   * Specifies whether to use marker-based pagination instead of offset-based pagination. Only one
+   * pagination method can be used at a time.
+   *
+   * <p>By setting this value to true, the API will return a `marker` field that can be passed as a
+   * parameter to this endpoint to get the next page of the response.
+   */
   public Boolean usemarker;
 
+  /**
+   * Defines the position marker at which to begin returning results. This is used when paginating
+   * using marker-based pagination.
+   *
+   * <p>This requires `usemarker` to be set to `true`.
+   */
   public String marker;
 
   public GetUsersQueryParams() {}
