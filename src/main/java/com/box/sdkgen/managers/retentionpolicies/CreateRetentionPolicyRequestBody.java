@@ -14,11 +14,18 @@ import java.util.Objects;
 @JsonFilter("nullablePropertyFilter")
 public class CreateRetentionPolicyRequestBody extends SerializableObject {
 
+  /** The name for the retention policy. */
   @JsonProperty("policy_name")
   protected final String policyName;
 
+  /** The additional text description of the retention policy. */
   protected String description;
 
+  /**
+   * The type of the retention policy. A retention policy type can either be `finite`, where a
+   * specific amount of time to retain the content is known upfront, or `indefinite`, where the
+   * amount of time to retain the content is still unknown.
+   */
   @JsonDeserialize(
       using =
           CreateRetentionPolicyRequestBodyPolicyTypeField
@@ -30,6 +37,11 @@ public class CreateRetentionPolicyRequestBody extends SerializableObject {
   @JsonProperty("policy_type")
   protected final EnumWrapper<CreateRetentionPolicyRequestBodyPolicyTypeField> policyType;
 
+  /**
+   * The disposition action of the retention policy. `permanently_delete` deletes the content
+   * retained by the policy permanently. `remove_retention` lifts retention policy from the content,
+   * allowing it to be deleted by users once the retention policy has expired.
+   */
   @JsonDeserialize(
       using =
           CreateRetentionPolicyRequestBodyDispositionActionField
@@ -42,9 +54,26 @@ public class CreateRetentionPolicyRequestBody extends SerializableObject {
   protected final EnumWrapper<CreateRetentionPolicyRequestBodyDispositionActionField>
       dispositionAction;
 
+  /**
+   * The length of the retention policy. This value specifies the duration in days that the
+   * retention policy will be active for after being assigned to content. If the policy has a
+   * `policy_type` of `indefinite`, the `retention_length` will also be `indefinite`.
+   */
   @JsonProperty("retention_length")
   protected String retentionLength;
 
+  /**
+   * Specifies the retention type:
+   *
+   * <p>* `modifiable`: You can modify the retention policy. For example, you can add or remove
+   * folders, shorten or lengthen the policy duration, or delete the assignment. Use this type if
+   * your retention policy is not related to any regulatory purposes.
+   *
+   * <p>* `non_modifiable`: You can modify the retention policy only in a limited way: add a folder,
+   * lengthen the duration, retire the policy, change the disposition action or notification
+   * settings. You cannot perform other actions, such as deleting the assignment or shortening the
+   * policy duration. Use this type to ensure compliance with regulatory retention policies.
+   */
   @JsonDeserialize(
       using =
           CreateRetentionPolicyRequestBodyRetentionTypeField
@@ -56,12 +85,15 @@ public class CreateRetentionPolicyRequestBody extends SerializableObject {
   @JsonProperty("retention_type")
   protected EnumWrapper<CreateRetentionPolicyRequestBodyRetentionTypeField> retentionType;
 
+  /** Whether the owner of a file will be allowed to extend the retention. */
   @JsonProperty("can_owner_extend_retention")
   protected Boolean canOwnerExtendRetention;
 
+  /** Whether owner and co-owners of a file are notified when the policy nears expiration. */
   @JsonProperty("are_owners_notified")
   protected Boolean areOwnersNotified;
 
+  /** A list of users notified when the retention policy duration is about to end. */
   @JsonProperty("custom_notification_recipients")
   protected List<UserMini> customNotificationRecipients;
 

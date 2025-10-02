@@ -32,18 +32,45 @@ public class CollectionsManager {
     this.networkSession = builder.networkSession;
   }
 
+  /**
+   * Retrieves all collections for a given user.
+   *
+   * <p>Currently, only the `favorites` collection is supported.
+   */
   public Collections getCollections() {
     return getCollections(new GetCollectionsQueryParams(), new GetCollectionsHeaders());
   }
 
+  /**
+   * Retrieves all collections for a given user.
+   *
+   * <p>Currently, only the `favorites` collection is supported.
+   *
+   * @param queryParams Query parameters of getCollections method
+   */
   public Collections getCollections(GetCollectionsQueryParams queryParams) {
     return getCollections(queryParams, new GetCollectionsHeaders());
   }
 
+  /**
+   * Retrieves all collections for a given user.
+   *
+   * <p>Currently, only the `favorites` collection is supported.
+   *
+   * @param headers Headers of getCollections method
+   */
   public Collections getCollections(GetCollectionsHeaders headers) {
     return getCollections(new GetCollectionsQueryParams(), headers);
   }
 
+  /**
+   * Retrieves all collections for a given user.
+   *
+   * <p>Currently, only the `favorites` collection is supported.
+   *
+   * @param queryParams Query parameters of getCollections method
+   * @param headers Headers of getCollections method
+   */
   public Collections getCollections(
       GetCollectionsQueryParams queryParams, GetCollectionsHeaders headers) {
     Map<String, String> queryParamsMap =
@@ -70,21 +97,45 @@ public class CollectionsManager {
     return JsonManager.deserialize(response.getData(), Collections.class);
   }
 
+  /**
+   * Retrieves the files and/or folders contained within this collection.
+   *
+   * @param collectionId The ID of the collection. Example: "926489"
+   */
   public ItemsOffsetPaginated getCollectionItems(String collectionId) {
     return getCollectionItems(
         collectionId, new GetCollectionItemsQueryParams(), new GetCollectionItemsHeaders());
   }
 
+  /**
+   * Retrieves the files and/or folders contained within this collection.
+   *
+   * @param collectionId The ID of the collection. Example: "926489"
+   * @param queryParams Query parameters of getCollectionItems method
+   */
   public ItemsOffsetPaginated getCollectionItems(
       String collectionId, GetCollectionItemsQueryParams queryParams) {
     return getCollectionItems(collectionId, queryParams, new GetCollectionItemsHeaders());
   }
 
+  /**
+   * Retrieves the files and/or folders contained within this collection.
+   *
+   * @param collectionId The ID of the collection. Example: "926489"
+   * @param headers Headers of getCollectionItems method
+   */
   public ItemsOffsetPaginated getCollectionItems(
       String collectionId, GetCollectionItemsHeaders headers) {
     return getCollectionItems(collectionId, new GetCollectionItemsQueryParams(), headers);
   }
 
+  /**
+   * Retrieves the files and/or folders contained within this collection.
+   *
+   * @param collectionId The ID of the collection. Example: "926489"
+   * @param queryParams Query parameters of getCollectionItems method
+   * @param headers Headers of getCollectionItems method
+   */
   public ItemsOffsetPaginated getCollectionItems(
       String collectionId,
       GetCollectionItemsQueryParams queryParams,
@@ -117,10 +168,21 @@ public class CollectionsManager {
     return JsonManager.deserialize(response.getData(), ItemsOffsetPaginated.class);
   }
 
+  /**
+   * Retrieves a collection by its ID.
+   *
+   * @param collectionId The ID of the collection. Example: "926489"
+   */
   public Collection getCollectionById(String collectionId) {
     return getCollectionById(collectionId, new GetCollectionByIdHeaders());
   }
 
+  /**
+   * Retrieves a collection by its ID.
+   *
+   * @param collectionId The ID of the collection. Example: "926489"
+   * @param headers Headers of getCollectionById method
+   */
   public Collection getCollectionById(String collectionId, GetCollectionByIdHeaders headers) {
     Map<String, String> headersMap = prepareParams(mergeMaps(mapOf(), headers.getExtraHeaders()));
     FetchResponse response =

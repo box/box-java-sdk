@@ -14,6 +14,7 @@ import java.util.Objects;
 public class CreateShieldInformationBarrierSegmentRestrictionRequestBody
     extends SerializableObject {
 
+  /** The type of the shield barrier segment restriction for this member. */
   @JsonDeserialize(
       using =
           CreateShieldInformationBarrierSegmentRestrictionRequestBodyTypeField
@@ -28,11 +29,13 @@ public class CreateShieldInformationBarrierSegmentRestrictionRequestBody
   @JsonProperty("shield_information_barrier")
   protected ShieldInformationBarrierBase shieldInformationBarrier;
 
+  /** The `type` and `id` of the requested shield information barrier segment. */
   @JsonProperty("shield_information_barrier_segment")
   protected final
   CreateShieldInformationBarrierSegmentRestrictionRequestBodyShieldInformationBarrierSegmentField
       shieldInformationBarrierSegment;
 
+  /** The `type` and `id` of the restricted shield information barrier segment. */
   @JsonProperty("restricted_segment")
   protected final CreateShieldInformationBarrierSegmentRestrictionRequestBodyRestrictedSegmentField
       restrictedSegment;

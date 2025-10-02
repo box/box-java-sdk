@@ -9,10 +9,13 @@ import java.util.Objects;
 @JsonFilter("nullablePropertyFilter")
 public class AiAgentInfoModelsField extends SerializableObject {
 
+  /** The name of the model used for the request. */
   protected String name;
 
+  /** The provider that owns the model used for the request. */
   protected String provider;
 
+  /** The supported purpose utilized by the model used for the request. */
   @JsonProperty("supported_purpose")
   protected String supportedPurpose;
 

@@ -7,9 +7,16 @@ import com.fasterxml.jackson.annotation.JsonFilter;
 import java.util.List;
 import java.util.Objects;
 
+/**
+ * Box Relay Workflows are objects that represent a named collection of flows.
+ *
+ * <p>Your application must be authorized to use the `Manage Box Relay` application scope within the
+ * developer console in order to use this resource.
+ */
 @JsonFilter("nullablePropertyFilter")
 public class Workflow extends WorkflowMini {
 
+  /** A list of flows assigned to a workflow. */
   protected List<WorkflowFlowsField> flows;
 
   public Workflow() {

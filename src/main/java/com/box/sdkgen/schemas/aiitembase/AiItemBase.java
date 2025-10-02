@@ -9,15 +9,19 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import java.util.Objects;
 
+/** The item to be processed by the LLM. */
 @JsonFilter("nullablePropertyFilter")
 public class AiItemBase extends SerializableObject {
 
+  /** The ID of the file. */
   protected final String id;
 
+  /** The type of the item. Currently the value can be `file` only. */
   @JsonDeserialize(using = AiItemBaseTypeField.AiItemBaseTypeFieldDeserializer.class)
   @JsonSerialize(using = AiItemBaseTypeField.AiItemBaseTypeFieldSerializer.class)
   protected EnumWrapper<AiItemBaseTypeField> type;
 
+  /** The content of the item, often the text representation. */
   protected String content;
 
   public AiItemBase(@JsonProperty("id") String id) {

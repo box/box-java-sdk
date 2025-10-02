@@ -9,15 +9,18 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import java.util.Objects;
 
+/** User reference. */
 @JsonFilter("nullablePropertyFilter")
 public class UserReferenceV2025R0 extends SerializableObject {
 
+  /** The value is always `user`. */
   @JsonDeserialize(
       using = UserReferenceV2025R0TypeField.UserReferenceV2025R0TypeFieldDeserializer.class)
   @JsonSerialize(
       using = UserReferenceV2025R0TypeField.UserReferenceV2025R0TypeFieldSerializer.class)
   protected EnumWrapper<UserReferenceV2025R0TypeField> type;
 
+  /** The unique identifier for the user. */
   protected final String id;
 
   public UserReferenceV2025R0(@JsonProperty("id") String id) {

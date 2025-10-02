@@ -4,16 +4,22 @@ import com.fasterxml.jackson.databind.JsonNode;
 import java.io.InputStream;
 import java.util.Map;
 
+/** Response of the fetch call */
 public class FetchResponse {
 
+  /** URL of the response */
   public String url;
 
+  /** HTTP status code of the response */
   public final int status;
 
+  /** Response body of the response */
   public JsonNode data;
 
+  /** Streamed content of the response */
   public InputStream content;
 
+  /** HTTP headers of the response */
   public final Map<String, String> headers;
 
   public FetchResponse(int status, Map<String, String> headers) {

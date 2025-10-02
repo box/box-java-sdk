@@ -13,18 +13,23 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import java.time.OffsetDateTime;
 import java.util.Objects;
 
+/** A standard representation of a file version. */
 @JsonFilter("nullablePropertyFilter")
 public class FileVersion extends FileVersionMini {
 
+  /** The name of the file version. */
   protected String name;
 
+  /** Size of the file version in bytes. */
   protected Long size;
 
+  /** When the file version object was created. */
   @JsonProperty("created_at")
   @JsonSerialize(using = DateTimeUtils.DateTimeSerializer.class)
   @JsonDeserialize(using = DateTimeUtils.DateTimeDeserializer.class)
   protected OffsetDateTime createdAt;
 
+  /** When the file version object was last updated. */
   @JsonProperty("modified_at")
   @JsonSerialize(using = DateTimeUtils.DateTimeSerializer.class)
   @JsonDeserialize(using = DateTimeUtils.DateTimeDeserializer.class)
@@ -33,6 +38,7 @@ public class FileVersion extends FileVersionMini {
   @JsonProperty("modified_by")
   protected UserMini modifiedBy;
 
+  /** When the file version object was trashed. */
   @JsonProperty("trashed_at")
   @JsonSerialize(using = DateTimeUtils.DateTimeSerializer.class)
   @JsonDeserialize(using = DateTimeUtils.DateTimeDeserializer.class)
@@ -42,6 +48,7 @@ public class FileVersion extends FileVersionMini {
   @JsonProperty("trashed_by")
   protected UserMini trashedBy;
 
+  /** When the file version was restored from the trash. */
   @JsonProperty("restored_at")
   @JsonSerialize(using = DateTimeUtils.DateTimeSerializer.class)
   @JsonDeserialize(using = DateTimeUtils.DateTimeDeserializer.class)
@@ -51,6 +58,7 @@ public class FileVersion extends FileVersionMini {
   @JsonProperty("restored_by")
   protected UserMini restoredBy;
 
+  /** When the file version object will be permanently deleted. */
   @JsonProperty("purged_at")
   @JsonSerialize(using = DateTimeUtils.DateTimeSerializer.class)
   @JsonDeserialize(using = DateTimeUtils.DateTimeDeserializer.class)

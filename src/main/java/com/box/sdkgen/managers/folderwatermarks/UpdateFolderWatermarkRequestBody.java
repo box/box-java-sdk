@@ -8,6 +8,7 @@ import java.util.Objects;
 @JsonFilter("nullablePropertyFilter")
 public class UpdateFolderWatermarkRequestBody extends SerializableObject {
 
+  /** The watermark to imprint on the folder. */
   protected final UpdateFolderWatermarkRequestBodyWatermarkField watermark;
 
   public UpdateFolderWatermarkRequestBody(

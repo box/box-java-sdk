@@ -13,8 +13,10 @@ public class CreateShieldInformationBarrierSegmentRequestBody extends Serializab
   @JsonProperty("shield_information_barrier")
   protected final ShieldInformationBarrierBase shieldInformationBarrier;
 
+  /** Name of the shield information barrier segment. */
   protected final String name;
 
+  /** Description of the shield information barrier segment. */
   protected String description;
 
   public CreateShieldInformationBarrierSegmentRequestBody(

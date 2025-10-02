@@ -12,32 +12,74 @@ import java.util.Objects;
 @JsonFilter("nullablePropertyFilter")
 public class UpdateRetentionPolicyByIdRequestBody extends SerializableObject {
 
+  /** The name for the retention policy. */
   @JsonProperty("policy_name")
   @Nullable
   protected String policyName;
 
+  /** The additional text description of the retention policy. */
   @Nullable protected String description;
 
+  /**
+   * The disposition action of the retention policy. This action can be `permanently_delete`, which
+   * will cause the content retained by the policy to be permanently deleted, or `remove_retention`,
+   * which will lift the retention policy from the content, allowing it to be deleted by users, once
+   * the retention policy has expired. You can use `null` if you don't want to change
+   * `disposition_action`.
+   */
   @JsonProperty("disposition_action")
   protected String dispositionAction;
 
+  /**
+   * Specifies the retention type:
+   *
+   * <p>* `modifiable`: You can modify the retention policy. For example, you can add or remove
+   * folders, shorten or lengthen the policy duration, or delete the assignment. Use this type if
+   * your retention policy is not related to any regulatory purposes. * `non-modifiable`: You can
+   * modify the retention policy only in a limited way: add a folder, lengthen the duration, retire
+   * the policy, change the disposition action or notification settings. You cannot perform other
+   * actions, such as deleting the assignment or shortening the policy duration. Use this type to
+   * ensure compliance with regulatory retention policies.
+   *
+   * <p>When updating a retention policy, you can use `non-modifiable` type only. You can convert a
+   * `modifiable` policy to `non-modifiable`, but not the other way around.
+   */
   @JsonProperty("retention_type")
   @Nullable
   protected String retentionType;
 
+  /**
+   * The length of the retention policy. This value specifies the duration in days that the
+   * retention policy will be active for after being assigned to content. If the policy has a
+   * `policy_type` of `indefinite`, the `retention_length` will also be `indefinite`.
+   */
   @JsonProperty("retention_length")
   protected String retentionLength;
 
+  /**
+   * Used to retire a retention policy.
+   *
+   * <p>If not retiring a policy, do not include this parameter or set it to `null`.
+   */
   @Nullable protected String status;
 
+  /**
+   * Determines if the owner of items under the policy can extend the retention when the original
+   * retention duration is about to end.
+   */
   @JsonProperty("can_owner_extend_retention")
   @Nullable
   protected Boolean canOwnerExtendRetention;
 
+  /**
+   * Determines if owners and co-owners of items under the policy are notified when the retention
+   * duration is about to end.
+   */
   @JsonProperty("are_owners_notified")
   @Nullable
   protected Boolean areOwnersNotified;
 
+  /** A list of users notified when the retention duration is about to end. */
   @JsonProperty("custom_notification_recipients")
   @Nullable
   protected List<UserBase> customNotificationRecipients;

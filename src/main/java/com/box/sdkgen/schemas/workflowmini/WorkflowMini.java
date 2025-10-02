@@ -9,19 +9,30 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import java.util.Objects;
 
+/**
+ * Box Relay Workflows are objects that represent a named collection of flows.
+ *
+ * <p>You application must be authorized to use the `Manage Box Relay` application scope within the
+ * developer console in order to use this resource.
+ */
 @JsonFilter("nullablePropertyFilter")
 public class WorkflowMini extends SerializableObject {
 
+  /** The unique identifier for the workflow. */
   protected String id;
 
+  /** The value will always be `workflow`. */
   @JsonDeserialize(using = WorkflowMiniTypeField.WorkflowMiniTypeFieldDeserializer.class)
   @JsonSerialize(using = WorkflowMiniTypeField.WorkflowMiniTypeFieldSerializer.class)
   protected EnumWrapper<WorkflowMiniTypeField> type;
 
+  /** The name of the workflow. */
   protected String name;
 
+  /** The description for a workflow. */
   protected String description;
 
+  /** Specifies if this workflow is enabled. */
   @JsonProperty("is_enabled")
   protected Boolean isEnabled;
 

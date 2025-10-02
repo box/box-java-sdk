@@ -7,14 +7,23 @@ import com.fasterxml.jackson.annotation.JsonFilter;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.Objects;
 
+/**
+ * Web links are objects that point to URLs. These objects are also known as bookmarks within the
+ * Box web application.
+ *
+ * <p>Web link objects are treated similarly to file objects, they will also support most actions
+ * that apply to regular files.
+ */
 @JsonFilter("nullablePropertyFilter")
 public class WebLinkMini extends WebLinkBase {
 
+  /** The URL this web link points to. */
   protected String url;
 
   @JsonProperty("sequence_id")
   protected String sequenceId;
 
+  /** The name of the web link. */
   protected String name;
 
   public WebLinkMini(@JsonProperty("id") String id) {

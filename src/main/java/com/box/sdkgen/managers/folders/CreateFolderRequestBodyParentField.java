@@ -8,6 +8,7 @@ import java.util.Objects;
 @JsonFilter("nullablePropertyFilter")
 public class CreateFolderRequestBodyParentField extends SerializableObject {
 
+  /** The ID of parent folder. */
   protected final String id;
 
   public CreateFolderRequestBodyParentField(@JsonProperty("id") String id) {

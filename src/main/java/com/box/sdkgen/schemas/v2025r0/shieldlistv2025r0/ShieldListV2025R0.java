@@ -17,24 +17,31 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import java.time.OffsetDateTime;
 import java.util.Objects;
 
+/** A standard representation of a Shield List. */
 @JsonFilter("nullablePropertyFilter")
 public class ShieldListV2025R0 extends SerializableObject {
 
+  /** Unique identifier for the shield list. */
   protected final String id;
 
+  /** Type of the object. */
   protected final String type;
 
+  /** Name of the shield list. */
   protected final String name;
 
   protected final EnterpriseReferenceV2025R0 enterprise;
 
+  /** Description of Shield List. */
   protected String description;
 
+  /** ISO date time string when this shield list object was created. */
   @JsonProperty("created_at")
   @JsonSerialize(using = DateTimeUtils.DateTimeSerializer.class)
   @JsonDeserialize(using = DateTimeUtils.DateTimeDeserializer.class)
   protected final OffsetDateTime createdAt;
 
+  /** ISO date time string when this shield list object was updated. */
   @JsonProperty("updated_at")
   @JsonSerialize(using = DateTimeUtils.DateTimeSerializer.class)
   @JsonDeserialize(using = DateTimeUtils.DateTimeDeserializer.class)

@@ -8,6 +8,7 @@ import java.util.Objects;
 @JsonFilter("nullablePropertyFilter")
 public class UpdateClassificationRequestBodyDataStaticConfigField extends SerializableObject {
 
+  /** Additional details for the classification. */
   protected UpdateClassificationRequestBodyDataStaticConfigClassificationField classification;
 
   public UpdateClassificationRequestBodyDataStaticConfigField() {

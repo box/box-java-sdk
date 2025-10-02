@@ -6,6 +6,7 @@ import com.box.sdkgen.schemas.v2025r0.filereferencev2025r0.FileReferenceV2025R0;
 import com.fasterxml.jackson.annotation.JsonFilter;
 import java.util.Objects;
 
+/** A base representation of a Box Doc Gen template, used when nested within another resource. */
 @JsonFilter("nullablePropertyFilter")
 public class DocGenTemplateBaseV2025R0 extends SerializableObject {
 

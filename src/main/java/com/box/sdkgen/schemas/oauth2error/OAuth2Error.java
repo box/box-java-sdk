@@ -6,11 +6,14 @@ import com.fasterxml.jackson.annotation.JsonFilter;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.Objects;
 
+/** An OAuth 2.0 error. */
 @JsonFilter("nullablePropertyFilter")
 public class OAuth2Error extends SerializableObject {
 
+  /** The type of the error returned. */
   protected String error;
 
+  /** The type of the error returned. */
   @JsonProperty("error_description")
   protected String errorDescription;
 

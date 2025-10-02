@@ -9,6 +9,7 @@ import com.fasterxml.jackson.annotation.JsonFilter;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.Objects;
 
+/** A request to create a Slack Integration Mapping object. */
 @JsonFilter("nullablePropertyFilter")
 public class IntegrationMappingSlackCreateRequest extends SerializableObject {
 

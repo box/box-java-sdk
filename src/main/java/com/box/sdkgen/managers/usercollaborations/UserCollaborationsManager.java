@@ -30,21 +30,45 @@ public class UserCollaborationsManager {
     this.networkSession = builder.networkSession;
   }
 
+  /**
+   * Retrieves a single collaboration.
+   *
+   * @param collaborationId The ID of the collaboration. Example: "1234"
+   */
   public Collaboration getCollaborationById(String collaborationId) {
     return getCollaborationById(
         collaborationId, new GetCollaborationByIdQueryParams(), new GetCollaborationByIdHeaders());
   }
 
+  /**
+   * Retrieves a single collaboration.
+   *
+   * @param collaborationId The ID of the collaboration. Example: "1234"
+   * @param queryParams Query parameters of getCollaborationById method
+   */
   public Collaboration getCollaborationById(
       String collaborationId, GetCollaborationByIdQueryParams queryParams) {
     return getCollaborationById(collaborationId, queryParams, new GetCollaborationByIdHeaders());
   }
 
+  /**
+   * Retrieves a single collaboration.
+   *
+   * @param collaborationId The ID of the collaboration. Example: "1234"
+   * @param headers Headers of getCollaborationById method
+   */
   public Collaboration getCollaborationById(
       String collaborationId, GetCollaborationByIdHeaders headers) {
     return getCollaborationById(collaborationId, new GetCollaborationByIdQueryParams(), headers);
   }
 
+  /**
+   * Retrieves a single collaboration.
+   *
+   * @param collaborationId The ID of the collaboration. Example: "1234"
+   * @param queryParams Query parameters of getCollaborationById method
+   * @param headers Headers of getCollaborationById method
+   */
   public Collaboration getCollaborationById(
       String collaborationId,
       GetCollaborationByIdQueryParams queryParams,
@@ -72,12 +96,27 @@ public class UserCollaborationsManager {
     return JsonManager.deserialize(response.getData(), Collaboration.class);
   }
 
+  /**
+   * Updates a collaboration. Can be used to change the owner of an item, or to accept collaboration
+   * invites.
+   *
+   * @param collaborationId The ID of the collaboration. Example: "1234"
+   * @param requestBody Request body of updateCollaborationById method
+   */
   public Collaboration updateCollaborationById(
       String collaborationId, UpdateCollaborationByIdRequestBody requestBody) {
     return updateCollaborationById(
         collaborationId, requestBody, new UpdateCollaborationByIdHeaders());
   }
 
+  /**
+   * Updates a collaboration. Can be used to change the owner of an item, or to accept collaboration
+   * invites.
+   *
+   * @param collaborationId The ID of the collaboration. Example: "1234"
+   * @param requestBody Request body of updateCollaborationById method
+   * @param headers Headers of updateCollaborationById method
+   */
   public Collaboration updateCollaborationById(
       String collaborationId,
       UpdateCollaborationByIdRequestBody requestBody,
@@ -107,10 +146,21 @@ public class UserCollaborationsManager {
     return JsonManager.deserialize(response.getData(), Collaboration.class);
   }
 
+  /**
+   * Deletes a single collaboration.
+   *
+   * @param collaborationId The ID of the collaboration. Example: "1234"
+   */
   public void deleteCollaborationById(String collaborationId) {
     deleteCollaborationById(collaborationId, new DeleteCollaborationByIdHeaders());
   }
 
+  /**
+   * Deletes a single collaboration.
+   *
+   * @param collaborationId The ID of the collaboration. Example: "1234"
+   * @param headers Headers of deleteCollaborationById method
+   */
   public void deleteCollaborationById(
       String collaborationId, DeleteCollaborationByIdHeaders headers) {
     Map<String, String> headersMap = prepareParams(mergeMaps(mapOf(), headers.getExtraHeaders()));
@@ -132,21 +182,81 @@ public class UserCollaborationsManager {
                     .build());
   }
 
+  /**
+   * Adds a collaboration for a single user or a single group to a file or folder.
+   *
+   * <p>Collaborations can be created using email address, user IDs, or a group IDs.
+   *
+   * <p>If a collaboration is being created with a group, access to this endpoint is dependent on
+   * the group's ability to be invited.
+   *
+   * <p>If collaboration is in `pending` status, the following fields are redacted: - `login` and
+   * `name` are hidden if a collaboration was created using `user_id`, - `name` is hidden if a
+   * collaboration was created using `login`.
+   *
+   * @param requestBody Request body of createCollaboration method
+   */
   public Collaboration createCollaboration(CreateCollaborationRequestBody requestBody) {
     return createCollaboration(
         requestBody, new CreateCollaborationQueryParams(), new CreateCollaborationHeaders());
   }
 
+  /**
+   * Adds a collaboration for a single user or a single group to a file or folder.
+   *
+   * <p>Collaborations can be created using email address, user IDs, or a group IDs.
+   *
+   * <p>If a collaboration is being created with a group, access to this endpoint is dependent on
+   * the group's ability to be invited.
+   *
+   * <p>If collaboration is in `pending` status, the following fields are redacted: - `login` and
+   * `name` are hidden if a collaboration was created using `user_id`, - `name` is hidden if a
+   * collaboration was created using `login`.
+   *
+   * @param requestBody Request body of createCollaboration method
+   * @param queryParams Query parameters of createCollaboration method
+   */
   public Collaboration createCollaboration(
       CreateCollaborationRequestBody requestBody, CreateCollaborationQueryParams queryParams) {
     return createCollaboration(requestBody, queryParams, new CreateCollaborationHeaders());
   }
 
+  /**
+   * Adds a collaboration for a single user or a single group to a file or folder.
+   *
+   * <p>Collaborations can be created using email address, user IDs, or a group IDs.
+   *
+   * <p>If a collaboration is being created with a group, access to this endpoint is dependent on
+   * the group's ability to be invited.
+   *
+   * <p>If collaboration is in `pending` status, the following fields are redacted: - `login` and
+   * `name` are hidden if a collaboration was created using `user_id`, - `name` is hidden if a
+   * collaboration was created using `login`.
+   *
+   * @param requestBody Request body of createCollaboration method
+   * @param headers Headers of createCollaboration method
+   */
   public Collaboration createCollaboration(
       CreateCollaborationRequestBody requestBody, CreateCollaborationHeaders headers) {
     return createCollaboration(requestBody, new CreateCollaborationQueryParams(), headers);
   }
 
+  /**
+   * Adds a collaboration for a single user or a single group to a file or folder.
+   *
+   * <p>Collaborations can be created using email address, user IDs, or a group IDs.
+   *
+   * <p>If a collaboration is being created with a group, access to this endpoint is dependent on
+   * the group's ability to be invited.
+   *
+   * <p>If collaboration is in `pending` status, the following fields are redacted: - `login` and
+   * `name` are hidden if a collaboration was created using `user_id`, - `name` is hidden if a
+   * collaboration was created using `login`.
+   *
+   * @param requestBody Request body of createCollaboration method
+   * @param queryParams Query parameters of createCollaboration method
+   * @param headers Headers of createCollaboration method
+   */
   public Collaboration createCollaboration(
       CreateCollaborationRequestBody requestBody,
       CreateCollaborationQueryParams queryParams,

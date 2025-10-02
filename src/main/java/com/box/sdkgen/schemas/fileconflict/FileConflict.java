@@ -8,6 +8,7 @@ import com.fasterxml.jackson.annotation.JsonFilter;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.Objects;
 
+/** A representation of a file that is used to show. */
 @JsonFilter("nullablePropertyFilter")
 public class FileConflict extends FileMini {
 

@@ -19,21 +19,26 @@ import java.time.OffsetDateTime;
 import java.util.Map;
 import java.util.Objects;
 
+/** The description of an event that happened within Box. */
 @JsonFilter("nullablePropertyFilter")
 public class Event extends SerializableObject {
 
+  /** The value will always be `event`. */
   protected String type;
 
+  /** When the event object was created. */
   @JsonProperty("created_at")
   @JsonSerialize(using = DateTimeUtils.DateTimeSerializer.class)
   @JsonDeserialize(using = DateTimeUtils.DateTimeDeserializer.class)
   protected OffsetDateTime createdAt;
 
+  /** When the event object was recorded in database. */
   @JsonProperty("recorded_at")
   @JsonSerialize(using = DateTimeUtils.DateTimeSerializer.class)
   @JsonDeserialize(using = DateTimeUtils.DateTimeDeserializer.class)
   protected OffsetDateTime recordedAt;
 
+  /** The ID of the event object. You can use this to detect duplicate events. */
   @JsonProperty("event_id")
   protected String eventId;
 
@@ -45,11 +50,21 @@ public class Event extends SerializableObject {
   @JsonProperty("event_type")
   protected EnumWrapper<EventEventTypeField> eventType;
 
+  /**
+   * The session of the user that performed the action. Not all events will populate this attribute.
+   */
   @JsonProperty("session_id")
   protected String sessionId;
 
   protected EventSourceResource source;
 
+  /**
+   * This object provides additional information about the event if available.
+   *
+   * <p>This can include how a user performed an event as well as additional information to
+   * correlate an event to external KeySafe logs. Not all events have an `additional_details`
+   * object. This object is only available in the Enterprise Events.
+   */
   @JsonProperty("additional_details")
   protected EventAdditionalDetailsField additionalDetails;
 

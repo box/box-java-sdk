@@ -8,8 +8,10 @@ import java.util.Objects;
 @JsonFilter("nullablePropertyFilter")
 public class CreateTaskAssignmentRequestBody extends SerializableObject {
 
+  /** The task to assign to a user. */
   protected final CreateTaskAssignmentRequestBodyTaskField task;
 
+  /** The user to assign the task to. */
   @JsonProperty("assign_to")
   protected final CreateTaskAssignmentRequestBodyAssignToField assignTo;
 

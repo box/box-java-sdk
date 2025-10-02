@@ -31,6 +31,17 @@ public class TrashedFilesManager {
     this.networkSession = builder.networkSession;
   }
 
+  /**
+   * Restores a file that has been moved to the trash.
+   *
+   * <p>An optional new parent ID can be provided to restore the file to in case the original folder
+   * has been deleted.
+   *
+   * @param fileId The unique identifier that represents a file.
+   *     <p>The ID for any file can be determined by visiting a file in the web application and
+   *     copying the ID from the URL. For example, for the URL `https://*.app.box.com/files/123` the
+   *     `file_id` is `123`. Example: "12345"
+   */
   public TrashFileRestored restoreFileFromTrash(String fileId) {
     return restoreFileFromTrash(
         fileId,
@@ -39,6 +50,18 @@ public class TrashedFilesManager {
         new RestoreFileFromTrashHeaders());
   }
 
+  /**
+   * Restores a file that has been moved to the trash.
+   *
+   * <p>An optional new parent ID can be provided to restore the file to in case the original folder
+   * has been deleted.
+   *
+   * @param fileId The unique identifier that represents a file.
+   *     <p>The ID for any file can be determined by visiting a file in the web application and
+   *     copying the ID from the URL. For example, for the URL `https://*.app.box.com/files/123` the
+   *     `file_id` is `123`. Example: "12345"
+   * @param requestBody Request body of restoreFileFromTrash method
+   */
   public TrashFileRestored restoreFileFromTrash(
       String fileId, RestoreFileFromTrashRequestBody requestBody) {
     return restoreFileFromTrash(
@@ -48,6 +71,18 @@ public class TrashedFilesManager {
         new RestoreFileFromTrashHeaders());
   }
 
+  /**
+   * Restores a file that has been moved to the trash.
+   *
+   * <p>An optional new parent ID can be provided to restore the file to in case the original folder
+   * has been deleted.
+   *
+   * @param fileId The unique identifier that represents a file.
+   *     <p>The ID for any file can be determined by visiting a file in the web application and
+   *     copying the ID from the URL. For example, for the URL `https://*.app.box.com/files/123` the
+   *     `file_id` is `123`. Example: "12345"
+   * @param queryParams Query parameters of restoreFileFromTrash method
+   */
   public TrashFileRestored restoreFileFromTrash(
       String fileId, RestoreFileFromTrashQueryParams queryParams) {
     return restoreFileFromTrash(
@@ -57,6 +92,19 @@ public class TrashedFilesManager {
         new RestoreFileFromTrashHeaders());
   }
 
+  /**
+   * Restores a file that has been moved to the trash.
+   *
+   * <p>An optional new parent ID can be provided to restore the file to in case the original folder
+   * has been deleted.
+   *
+   * @param fileId The unique identifier that represents a file.
+   *     <p>The ID for any file can be determined by visiting a file in the web application and
+   *     copying the ID from the URL. For example, for the URL `https://*.app.box.com/files/123` the
+   *     `file_id` is `123`. Example: "12345"
+   * @param requestBody Request body of restoreFileFromTrash method
+   * @param queryParams Query parameters of restoreFileFromTrash method
+   */
   public TrashFileRestored restoreFileFromTrash(
       String fileId,
       RestoreFileFromTrashRequestBody requestBody,
@@ -65,6 +113,18 @@ public class TrashedFilesManager {
         fileId, requestBody, queryParams, new RestoreFileFromTrashHeaders());
   }
 
+  /**
+   * Restores a file that has been moved to the trash.
+   *
+   * <p>An optional new parent ID can be provided to restore the file to in case the original folder
+   * has been deleted.
+   *
+   * @param fileId The unique identifier that represents a file.
+   *     <p>The ID for any file can be determined by visiting a file in the web application and
+   *     copying the ID from the URL. For example, for the URL `https://*.app.box.com/files/123` the
+   *     `file_id` is `123`. Example: "12345"
+   * @param headers Headers of restoreFileFromTrash method
+   */
   public TrashFileRestored restoreFileFromTrash(
       String fileId, RestoreFileFromTrashHeaders headers) {
     return restoreFileFromTrash(
@@ -74,6 +134,19 @@ public class TrashedFilesManager {
         headers);
   }
 
+  /**
+   * Restores a file that has been moved to the trash.
+   *
+   * <p>An optional new parent ID can be provided to restore the file to in case the original folder
+   * has been deleted.
+   *
+   * @param fileId The unique identifier that represents a file.
+   *     <p>The ID for any file can be determined by visiting a file in the web application and
+   *     copying the ID from the URL. For example, for the URL `https://*.app.box.com/files/123` the
+   *     `file_id` is `123`. Example: "12345"
+   * @param requestBody Request body of restoreFileFromTrash method
+   * @param headers Headers of restoreFileFromTrash method
+   */
   public TrashFileRestored restoreFileFromTrash(
       String fileId,
       RestoreFileFromTrashRequestBody requestBody,
@@ -82,6 +155,19 @@ public class TrashedFilesManager {
         fileId, requestBody, new RestoreFileFromTrashQueryParams(), headers);
   }
 
+  /**
+   * Restores a file that has been moved to the trash.
+   *
+   * <p>An optional new parent ID can be provided to restore the file to in case the original folder
+   * has been deleted.
+   *
+   * @param fileId The unique identifier that represents a file.
+   *     <p>The ID for any file can be determined by visiting a file in the web application and
+   *     copying the ID from the URL. For example, for the URL `https://*.app.box.com/files/123` the
+   *     `file_id` is `123`. Example: "12345"
+   * @param queryParams Query parameters of restoreFileFromTrash method
+   * @param headers Headers of restoreFileFromTrash method
+   */
   public TrashFileRestored restoreFileFromTrash(
       String fileId,
       RestoreFileFromTrashQueryParams queryParams,
@@ -90,6 +176,20 @@ public class TrashedFilesManager {
         fileId, new RestoreFileFromTrashRequestBody(), queryParams, headers);
   }
 
+  /**
+   * Restores a file that has been moved to the trash.
+   *
+   * <p>An optional new parent ID can be provided to restore the file to in case the original folder
+   * has been deleted.
+   *
+   * @param fileId The unique identifier that represents a file.
+   *     <p>The ID for any file can be determined by visiting a file in the web application and
+   *     copying the ID from the URL. For example, for the URL `https://*.app.box.com/files/123` the
+   *     `file_id` is `123`. Example: "12345"
+   * @param requestBody Request body of restoreFileFromTrash method
+   * @param queryParams Query parameters of restoreFileFromTrash method
+   * @param headers Headers of restoreFileFromTrash method
+   */
   public TrashFileRestored restoreFileFromTrash(
       String fileId,
       RestoreFileFromTrashRequestBody requestBody,
@@ -120,19 +220,83 @@ public class TrashedFilesManager {
     return JsonManager.deserialize(response.getData(), TrashFileRestored.class);
   }
 
+  /**
+   * Retrieves a file that has been moved to the trash.
+   *
+   * <p>Please note that only if the file itself has been moved to the trash can it be retrieved
+   * with this API call. If instead one of its parent folders was moved to the trash, only that
+   * folder can be inspected using the [`GET /folders/:id/trash`](e://get_folders_id_trash) API.
+   *
+   * <p>To list all items that have been moved to the trash, please use the [`GET
+   * /folders/trash/items`](e://get-folders-trash-items/) API.
+   *
+   * @param fileId The unique identifier that represents a file.
+   *     <p>The ID for any file can be determined by visiting a file in the web application and
+   *     copying the ID from the URL. For example, for the URL `https://*.app.box.com/files/123` the
+   *     `file_id` is `123`. Example: "12345"
+   */
   public TrashFile getTrashedFileById(String fileId) {
     return getTrashedFileById(
         fileId, new GetTrashedFileByIdQueryParams(), new GetTrashedFileByIdHeaders());
   }
 
+  /**
+   * Retrieves a file that has been moved to the trash.
+   *
+   * <p>Please note that only if the file itself has been moved to the trash can it be retrieved
+   * with this API call. If instead one of its parent folders was moved to the trash, only that
+   * folder can be inspected using the [`GET /folders/:id/trash`](e://get_folders_id_trash) API.
+   *
+   * <p>To list all items that have been moved to the trash, please use the [`GET
+   * /folders/trash/items`](e://get-folders-trash-items/) API.
+   *
+   * @param fileId The unique identifier that represents a file.
+   *     <p>The ID for any file can be determined by visiting a file in the web application and
+   *     copying the ID from the URL. For example, for the URL `https://*.app.box.com/files/123` the
+   *     `file_id` is `123`. Example: "12345"
+   * @param queryParams Query parameters of getTrashedFileById method
+   */
   public TrashFile getTrashedFileById(String fileId, GetTrashedFileByIdQueryParams queryParams) {
     return getTrashedFileById(fileId, queryParams, new GetTrashedFileByIdHeaders());
   }
 
+  /**
+   * Retrieves a file that has been moved to the trash.
+   *
+   * <p>Please note that only if the file itself has been moved to the trash can it be retrieved
+   * with this API call. If instead one of its parent folders was moved to the trash, only that
+   * folder can be inspected using the [`GET /folders/:id/trash`](e://get_folders_id_trash) API.
+   *
+   * <p>To list all items that have been moved to the trash, please use the [`GET
+   * /folders/trash/items`](e://get-folders-trash-items/) API.
+   *
+   * @param fileId The unique identifier that represents a file.
+   *     <p>The ID for any file can be determined by visiting a file in the web application and
+   *     copying the ID from the URL. For example, for the URL `https://*.app.box.com/files/123` the
+   *     `file_id` is `123`. Example: "12345"
+   * @param headers Headers of getTrashedFileById method
+   */
   public TrashFile getTrashedFileById(String fileId, GetTrashedFileByIdHeaders headers) {
     return getTrashedFileById(fileId, new GetTrashedFileByIdQueryParams(), headers);
   }
 
+  /**
+   * Retrieves a file that has been moved to the trash.
+   *
+   * <p>Please note that only if the file itself has been moved to the trash can it be retrieved
+   * with this API call. If instead one of its parent folders was moved to the trash, only that
+   * folder can be inspected using the [`GET /folders/:id/trash`](e://get_folders_id_trash) API.
+   *
+   * <p>To list all items that have been moved to the trash, please use the [`GET
+   * /folders/trash/items`](e://get-folders-trash-items/) API.
+   *
+   * @param fileId The unique identifier that represents a file.
+   *     <p>The ID for any file can be determined by visiting a file in the web application and
+   *     copying the ID from the URL. For example, for the URL `https://*.app.box.com/files/123` the
+   *     `file_id` is `123`. Example: "12345"
+   * @param queryParams Query parameters of getTrashedFileById method
+   * @param headers Headers of getTrashedFileById method
+   */
   public TrashFile getTrashedFileById(
       String fileId, GetTrashedFileByIdQueryParams queryParams, GetTrashedFileByIdHeaders headers) {
     Map<String, String> queryParamsMap =
@@ -159,10 +323,27 @@ public class TrashedFilesManager {
     return JsonManager.deserialize(response.getData(), TrashFile.class);
   }
 
+  /**
+   * Permanently deletes a file that is in the trash. This action cannot be undone.
+   *
+   * @param fileId The unique identifier that represents a file.
+   *     <p>The ID for any file can be determined by visiting a file in the web application and
+   *     copying the ID from the URL. For example, for the URL `https://*.app.box.com/files/123` the
+   *     `file_id` is `123`. Example: "12345"
+   */
   public void deleteTrashedFileById(String fileId) {
     deleteTrashedFileById(fileId, new DeleteTrashedFileByIdHeaders());
   }
 
+  /**
+   * Permanently deletes a file that is in the trash. This action cannot be undone.
+   *
+   * @param fileId The unique identifier that represents a file.
+   *     <p>The ID for any file can be determined by visiting a file in the web application and
+   *     copying the ID from the URL. For example, for the URL `https://*.app.box.com/files/123` the
+   *     `file_id` is `123`. Example: "12345"
+   * @param headers Headers of deleteTrashedFileById method
+   */
   public void deleteTrashedFileById(String fileId, DeleteTrashedFileByIdHeaders headers) {
     Map<String, String> headersMap = prepareParams(mergeMaps(mapOf(), headers.getExtraHeaders()));
     FetchResponse response =

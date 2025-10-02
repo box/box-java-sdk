@@ -9,11 +9,14 @@ import java.util.Objects;
 @JsonFilter("nullablePropertyFilter")
 public class UpdateLegalHoldPolicyByIdRequestBody extends SerializableObject {
 
+  /** The name of the policy. */
   @JsonProperty("policy_name")
   protected String policyName;
 
+  /** A description for the policy. */
   protected String description;
 
+  /** Notes around why the policy was released. */
   @JsonProperty("release_notes")
   protected String releaseNotes;
 

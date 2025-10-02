@@ -9,19 +9,34 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import java.util.Objects;
 
+/**
+ * A collection of items, including files and folders.
+ *
+ * <p>Currently, the only collection available is the `favorites` collection.
+ *
+ * <p>The contents of a collection can be explored in a similar way to which the contents of a
+ * folder is explored.
+ */
 @JsonFilter("nullablePropertyFilter")
 public class Collection extends SerializableObject {
 
+  /** The unique identifier for this collection. */
   protected String id;
 
+  /** The value will always be `collection`. */
   @JsonDeserialize(using = CollectionTypeField.CollectionTypeFieldDeserializer.class)
   @JsonSerialize(using = CollectionTypeField.CollectionTypeFieldSerializer.class)
   protected EnumWrapper<CollectionTypeField> type;
 
+  /** The name of the collection. */
   @JsonDeserialize(using = CollectionNameField.CollectionNameFieldDeserializer.class)
   @JsonSerialize(using = CollectionNameField.CollectionNameFieldSerializer.class)
   protected EnumWrapper<CollectionNameField> name;
 
+  /**
+   * The type of the collection. This is used to determine the proper visual treatment for
+   * collections.
+   */
   @JsonDeserialize(
       using = CollectionCollectionTypeField.CollectionCollectionTypeFieldDeserializer.class)
   @JsonSerialize(

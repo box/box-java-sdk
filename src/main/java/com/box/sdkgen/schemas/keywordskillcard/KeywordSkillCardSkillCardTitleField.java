@@ -9,8 +9,10 @@ import java.util.Objects;
 @JsonFilter("nullablePropertyFilter")
 public class KeywordSkillCardSkillCardTitleField extends SerializableObject {
 
+  /** An optional identifier for the title. */
   protected String code;
 
+  /** The actual title to show in the UI. */
   protected final String message;
 
   public KeywordSkillCardSkillCardTitleField(@JsonProperty("message") String message) {

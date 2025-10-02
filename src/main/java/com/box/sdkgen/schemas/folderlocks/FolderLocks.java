@@ -9,13 +9,20 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.List;
 import java.util.Objects;
 
+/** A list of folder locks. */
 @JsonFilter("nullablePropertyFilter")
 public class FolderLocks extends SerializableObject {
 
+  /** A list of folder locks. */
   protected List<FolderLock> entries;
 
+  /**
+   * The limit that was used for these entries. This will be the same as the `limit` query parameter
+   * unless that value exceeded the maximum value allowed. The maximum value varies by API.
+   */
   protected String limit;
 
+  /** The marker for the start of the next page of results. */
   @JsonProperty("next_marker")
   @Nullable
   protected String nextMarker;

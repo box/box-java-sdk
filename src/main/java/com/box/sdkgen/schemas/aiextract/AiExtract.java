@@ -11,11 +11,17 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.List;
 import java.util.Objects;
 
+/** AI metadata freeform extraction request object. */
 @JsonFilter("nullablePropertyFilter")
 public class AiExtract extends SerializableObject {
 
+  /**
+   * The prompt provided to a Large Language Model (LLM) in the request. The prompt can be up to
+   * 10000 characters long and it can be an XML or a JSON schema.
+   */
   protected final String prompt;
 
+  /** The items that LLM will process. Currently, you can use files only. */
   protected final List<AiItemBase> items;
 
   @JsonProperty("ai_agent")

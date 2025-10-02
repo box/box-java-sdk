@@ -7,9 +7,11 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.List;
 import java.util.Objects;
 
+/** Multi-status response containing the result for each external user deletion request. */
 @JsonFilter("nullablePropertyFilter")
 public class ExternalUsersSubmitDeleteJobResponseV2025R0 extends SerializableObject {
 
+  /** Array of results of each external user deletion request. */
   protected final List<ExternalUserDeletionResultV2025R0> entries;
 
   public ExternalUsersSubmitDeleteJobResponseV2025R0(

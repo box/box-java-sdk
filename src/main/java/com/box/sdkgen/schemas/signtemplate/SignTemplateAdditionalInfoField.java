@@ -23,11 +23,13 @@ import java.util.Objects;
 @JsonFilter("nullablePropertyFilter")
 public class SignTemplateAdditionalInfoField extends SerializableObject {
 
+  /** Non editable fields. */
   @JsonDeserialize(using = NonEditableDeserializer.class)
   @JsonSerialize(using = NonEditableSerializer.class)
   @JsonProperty("non_editable")
   protected List<EnumWrapper<SignTemplateAdditionalInfoNonEditableField>> nonEditable;
 
+  /** Required fields. */
   protected SignTemplateAdditionalInfoRequiredField required;
 
   public SignTemplateAdditionalInfoField() {

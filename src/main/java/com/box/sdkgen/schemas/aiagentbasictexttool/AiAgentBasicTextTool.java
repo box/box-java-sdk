@@ -10,12 +10,19 @@ import com.fasterxml.jackson.annotation.JsonFilter;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.Objects;
 
+/** AI agent processor used to handle basic text. */
 @JsonFilter("nullablePropertyFilter")
 public class AiAgentBasicTextTool extends AiAgentBasicTextToolBase {
 
+  /** System messages try to help the LLM "understand" its role and what it is supposed to do. */
   @JsonProperty("system_message")
   protected String systemMessage;
 
+  /**
+   * The prompt template contains contextual information of the request and the user prompt. When
+   * passing `prompt_template` parameters, you **must include** inputs for `{user_question}` and
+   * `{content}`. `{current_date}` is optional, depending on the use.
+   */
   @JsonProperty("prompt_template")
   protected String promptTemplate;
 

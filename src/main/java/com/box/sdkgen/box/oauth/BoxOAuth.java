@@ -21,8 +21,13 @@ import java.util.Map;
 
 public class BoxOAuth implements Authentication {
 
+  /** Configuration object of OAuth. */
   public final OAuthConfig config;
 
+  /**
+   * An object responsible for storing token. If no custom implementation provided, the token will
+   * be stored in memory.
+   */
   public final TokenStorage tokenStorage;
 
   public BoxOAuth(OAuthConfig config) {
@@ -30,10 +35,16 @@ public class BoxOAuth implements Authentication {
     this.tokenStorage = this.config.getTokenStorage();
   }
 
+  /** Get the authorization URL for the app user. */
   public String getAuthorizeUrl() {
     return getAuthorizeUrl(new GetAuthorizeUrlOptions());
   }
 
+  /**
+   * Get the authorization URL for the app user.
+   *
+   * @param options The options parameter
+   */
   public String getAuthorizeUrl(GetAuthorizeUrlOptions options) {
     Map<String, String> paramsMap =
         prepareParams(
@@ -55,10 +66,21 @@ public class BoxOAuth implements Authentication {
         sdToUrlParams(JsonManager.serialize(paramsMap)));
   }
 
+  /**
+   * Acquires token info using an authorization code.
+   *
+   * @param authorizationCode The authorization code to use to get tokens.
+   */
   public AccessToken getTokensAuthorizationCodeGrant(String authorizationCode) {
     return getTokensAuthorizationCodeGrant(authorizationCode, null);
   }
 
+  /**
+   * Acquires token info using an authorization code.
+   *
+   * @param authorizationCode The authorization code to use to get tokens.
+   * @param networkSession An object to keep network session state
+   */
   public AccessToken getTokensAuthorizationCodeGrant(
       String authorizationCode, NetworkSession networkSession) {
     AuthorizationManager authManager =
@@ -76,10 +98,20 @@ public class BoxOAuth implements Authentication {
     return token;
   }
 
+  /**
+   * Get the current access token. If the current access token is expired or not found, this method
+   * will attempt to refresh the token.
+   */
   public AccessToken retrieveToken() {
     return retrieveToken(null);
   }
 
+  /**
+   * Get the current access token. If the current access token is expired or not found, this method
+   * will attempt to refresh the token.
+   *
+   * @param networkSession An object to keep network session state
+   */
   @Override
   public AccessToken retrieveToken(NetworkSession networkSession) {
     AccessToken token = this.tokenStorage.get();
@@ -90,10 +122,16 @@ public class BoxOAuth implements Authentication {
     return token;
   }
 
+  /** Get a new access token for the platform app user. */
   public AccessToken refreshToken() {
     return refreshToken(null);
   }
 
+  /**
+   * Get a new access token for the platform app user.
+   *
+   * @param networkSession An object to keep network session state
+   */
   @Override
   public AccessToken refreshToken(NetworkSession networkSession) {
     AccessToken oldToken = this.tokenStorage.get();
@@ -123,10 +161,20 @@ public class BoxOAuth implements Authentication {
     return String.join("", "Bearer ", token.getAccessToken());
   }
 
+  /**
+   * Revoke an active Access Token, effectively logging a user out that has been previously
+   * authenticated.
+   */
   public void revokeToken() {
     revokeToken(null);
   }
 
+  /**
+   * Revoke an active Access Token, effectively logging a user out that has been previously
+   * authenticated.
+   *
+   * @param networkSession An object to keep network session state
+   */
   @Override
   public void revokeToken(NetworkSession networkSession) {
     AccessToken token = this.tokenStorage.get();
@@ -145,6 +193,18 @@ public class BoxOAuth implements Authentication {
             .build());
   }
 
+  /**
+   * Downscope access token to the provided scopes. Returning a new access token with the provided
+   * scopes, with the original access token unchanged.
+   *
+   * @param scopes The scope(s) to apply to the resulting token.
+   * @param resource The file or folder to get a downscoped token for. If None and shared_link None,
+   *     the resulting token will not be scoped down to just a single item. The resource should be a
+   *     full URL to an item, e.g. https://api.box.com/2.0/files/123456.
+   * @param sharedLink The shared link to get a downscoped token for. If None and item None, the
+   *     resulting token will not be scoped down to just a single item.
+   * @param networkSession An object to keep network session state
+   */
   @Override
   public AccessToken downscopeToken(
       List<String> scopes, String resource, String sharedLink, NetworkSession networkSession) {

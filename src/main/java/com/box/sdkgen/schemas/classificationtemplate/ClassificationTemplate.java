@@ -10,19 +10,27 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import java.util.List;
 import java.util.Objects;
 
+/** A metadata template that holds the security classifications defined by an enterprise. */
 @JsonFilter("nullablePropertyFilter")
 public class ClassificationTemplate extends SerializableObject {
 
+  /** The ID of the classification template. */
   protected final String id;
 
+  /** The value will always be `metadata_template`. */
   @JsonDeserialize(
       using = ClassificationTemplateTypeField.ClassificationTemplateTypeFieldDeserializer.class)
   @JsonSerialize(
       using = ClassificationTemplateTypeField.ClassificationTemplateTypeFieldSerializer.class)
   protected EnumWrapper<ClassificationTemplateTypeField> type;
 
+  /**
+   * The scope of the classification template. This is in the format `enterprise_{id}` where the
+   * `id` is the enterprise ID.
+   */
   protected final String scope;
 
+  /** The value will always be `securityClassification-6VMVochwUWo`. */
   @JsonDeserialize(
       using =
           ClassificationTemplateTemplateKeyField.ClassificationTemplateTemplateKeyFieldDeserializer
@@ -33,6 +41,7 @@ public class ClassificationTemplate extends SerializableObject {
               .class)
   protected EnumWrapper<ClassificationTemplateTemplateKeyField> templateKey;
 
+  /** The name of this template as shown in web and mobile interfaces. */
   @JsonDeserialize(
       using =
           ClassificationTemplateDisplayNameField.ClassificationTemplateDisplayNameFieldDeserializer
@@ -43,10 +52,17 @@ public class ClassificationTemplate extends SerializableObject {
               .class)
   protected EnumWrapper<ClassificationTemplateDisplayNameField> displayName;
 
+  /** Determines if the template is always available in web and mobile interfaces. */
   protected Boolean hidden;
 
+  /** Determines if classifications are copied along when the file or folder is copied. */
   protected Boolean copyInstanceOnItemCopy;
 
+  /**
+   * A list of fields for this classification template. This includes only one field, the
+   * `Box__Security__Classification__Key`, which defines the different classifications available in
+   * this enterprise.
+   */
   protected final List<ClassificationTemplateFieldsField> fields;
 
   public ClassificationTemplate(

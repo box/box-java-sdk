@@ -9,19 +9,27 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.List;
 import java.util.Objects;
 
+/** List of Box Doc Gen templates. */
 @JsonFilter("nullablePropertyFilter")
 public class DocGenTemplatesV2025R0 extends SerializableObject {
 
+  /**
+   * The limit that was used for these entries. This will be the same as the `limit` query parameter
+   * unless that value exceeded the maximum value allowed. The maximum value varies by API.
+   */
   protected Long limit;
 
+  /** The marker for the start of the next page of results. */
   @JsonProperty("next_marker")
   @Nullable
   protected String nextMarker;
 
+  /** The marker for the start of the previous page of results. */
   @JsonProperty("prev_marker")
   @Nullable
   protected String prevMarker;
 
+  /** A list of templates. */
   protected List<DocGenTemplateV2025R0> entries;
 
   public DocGenTemplatesV2025R0() {

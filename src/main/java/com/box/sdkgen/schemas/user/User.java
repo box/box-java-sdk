@@ -12,46 +12,67 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import java.time.OffsetDateTime;
 import java.util.Objects;
 
+/** A standard representation of a user, as returned from any user API endpoints by default. */
 @JsonFilter("nullablePropertyFilter")
 public class User extends UserMini {
 
+  /** When the user object was created. */
   @JsonProperty("created_at")
   @JsonSerialize(using = DateTimeUtils.DateTimeSerializer.class)
   @JsonDeserialize(using = DateTimeUtils.DateTimeDeserializer.class)
   protected OffsetDateTime createdAt;
 
+  /** When the user object was last modified. */
   @JsonProperty("modified_at")
   @JsonSerialize(using = DateTimeUtils.DateTimeSerializer.class)
   @JsonDeserialize(using = DateTimeUtils.DateTimeDeserializer.class)
   protected OffsetDateTime modifiedAt;
 
+  /**
+   * The language of the user, formatted in modified version of the [ISO
+   * 639-1](/guides/api-calls/language-codes) format.
+   */
   protected String language;
 
+  /** The user's timezone. */
   protected String timezone;
 
+  /** The user’s total available space amount in bytes. */
   @JsonProperty("space_amount")
   protected Long spaceAmount;
 
+  /** The amount of space in use by the user. */
   @JsonProperty("space_used")
   protected Long spaceUsed;
 
+  /** The maximum individual file size in bytes the user can have. */
   @JsonProperty("max_upload_size")
   protected Long maxUploadSize;
 
+  /** The user's account status. */
   @JsonDeserialize(using = UserStatusField.UserStatusFieldDeserializer.class)
   @JsonSerialize(using = UserStatusField.UserStatusFieldSerializer.class)
   protected EnumWrapper<UserStatusField> status;
 
+  /** The user’s job title. */
   @JsonProperty("job_title")
   protected String jobTitle;
 
+  /** The user’s phone number. */
   protected String phone;
 
+  /** The user’s address. */
   protected String address;
 
+  /** URL of the user’s avatar image. */
   @JsonProperty("avatar_url")
   protected String avatarUrl;
 
+  /**
+   * An alternate notification email address to which email notifications are sent. When it's
+   * confirmed, this will be the email address to which notifications are sent instead of to the
+   * primary email address.
+   */
   @JsonProperty("notification_email")
   @Nullable
   protected UserNotificationEmailField notificationEmail;

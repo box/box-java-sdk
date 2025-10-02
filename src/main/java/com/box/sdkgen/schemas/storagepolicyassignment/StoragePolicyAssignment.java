@@ -10,11 +10,14 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import java.util.Objects;
 
+/** The assignment of a storage policy to a user or enterprise. */
 @JsonFilter("nullablePropertyFilter")
 public class StoragePolicyAssignment extends SerializableObject {
 
+  /** The unique identifier for a storage policy assignment. */
   protected final String id;
 
+  /** The value will always be `storage_policy_assignment`. */
   @JsonDeserialize(
       using = StoragePolicyAssignmentTypeField.StoragePolicyAssignmentTypeFieldDeserializer.class)
   @JsonSerialize(

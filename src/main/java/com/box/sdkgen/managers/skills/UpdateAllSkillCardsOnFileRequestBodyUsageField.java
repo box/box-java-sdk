@@ -8,8 +8,10 @@ import java.util.Objects;
 @JsonFilter("nullablePropertyFilter")
 public class UpdateAllSkillCardsOnFileRequestBodyUsageField extends SerializableObject {
 
+  /** The value will always be `file`. */
   protected String unit;
 
+  /** Number of resources affected. */
   protected Double value;
 
   public UpdateAllSkillCardsOnFileRequestBodyUsageField() {

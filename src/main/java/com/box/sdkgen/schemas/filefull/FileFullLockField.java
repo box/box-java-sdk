@@ -16,8 +16,10 @@ import java.util.Objects;
 @JsonFilter("nullablePropertyFilter")
 public class FileFullLockField extends SerializableObject {
 
+  /** The unique identifier for this lock. */
   protected String id;
 
+  /** The value will always be `lock`. */
   @JsonDeserialize(using = FileFullLockTypeField.FileFullLockTypeFieldDeserializer.class)
   @JsonSerialize(using = FileFullLockTypeField.FileFullLockTypeFieldSerializer.class)
   protected EnumWrapper<FileFullLockTypeField> type;
@@ -25,19 +27,27 @@ public class FileFullLockField extends SerializableObject {
   @JsonProperty("created_by")
   protected UserMini createdBy;
 
+  /** The time this lock was created at. */
   @JsonProperty("created_at")
   @JsonSerialize(using = DateTimeUtils.DateTimeSerializer.class)
   @JsonDeserialize(using = DateTimeUtils.DateTimeDeserializer.class)
   protected OffsetDateTime createdAt;
 
+  /** The time this lock is to expire at, which might be in the past. */
   @JsonProperty("expired_at")
   @JsonSerialize(using = DateTimeUtils.DateTimeSerializer.class)
   @JsonDeserialize(using = DateTimeUtils.DateTimeDeserializer.class)
   protected OffsetDateTime expiredAt;
 
+  /** Whether or not the file can be downloaded while locked. */
   @JsonProperty("is_download_prevented")
   protected Boolean isDownloadPrevented;
 
+  /**
+   * If the lock is managed by an application rather than a user, this field identifies the type of
+   * the application that holds the lock. This is an open enum and may be extended with additional
+   * values in the future.
+   */
   @JsonDeserialize(using = FileFullLockAppTypeField.FileFullLockAppTypeFieldDeserializer.class)
   @JsonSerialize(using = FileFullLockAppTypeField.FileFullLockAppTypeFieldSerializer.class)
   @JsonProperty("app_type")

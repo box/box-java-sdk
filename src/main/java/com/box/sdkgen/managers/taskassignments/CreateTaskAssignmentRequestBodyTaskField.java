@@ -12,8 +12,10 @@ import java.util.Objects;
 @JsonFilter("nullablePropertyFilter")
 public class CreateTaskAssignmentRequestBodyTaskField extends SerializableObject {
 
+  /** The ID of the task. */
   protected final String id;
 
+  /** The type of the item to assign. */
   @JsonDeserialize(
       using =
           CreateTaskAssignmentRequestBodyTaskTypeField

@@ -4,12 +4,27 @@ import java.util.List;
 
 public class GetGroupsQueryParams {
 
+  /** Limits the results to only groups whose `name` starts with the search term. */
   public String filterTerm;
 
+  /**
+   * A comma-separated list of attributes to include in the response. This can be used to request
+   * fields that are not normally returned in a standard response.
+   *
+   * <p>Be aware that specifying this parameter will have the effect that none of the standard
+   * fields are returned in the response unless explicitly specified, instead only fields for the
+   * mini representation are returned, additional to the fields requested.
+   */
   public List<String> fields;
 
+  /** The maximum number of items to return per page. */
   public Long limit;
 
+  /**
+   * The offset of the item at which to begin the response.
+   *
+   * <p>Queries with offset parameter value exceeding 10000 will be rejected with a 400 response.
+   */
   public Long offset;
 
   public GetGroupsQueryParams() {}

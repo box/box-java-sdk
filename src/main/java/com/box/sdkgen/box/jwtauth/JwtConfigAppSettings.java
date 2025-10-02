@@ -8,11 +8,14 @@ import java.util.Objects;
 @JsonFilter("nullablePropertyFilter")
 public class JwtConfigAppSettings extends SerializableObject {
 
+  /** App client ID */
   @JsonProperty("clientID")
   protected final String clientId;
 
+  /** App client secret */
   protected final String clientSecret;
 
+  /** App auth settings */
   protected final JwtConfigAppSettingsAppAuth appAuth;
 
   public JwtConfigAppSettings(

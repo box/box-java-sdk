@@ -10,11 +10,14 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import java.util.Objects;
 
+/** Device pins allow enterprises to control what devices can use native Box applications. */
 @JsonFilter("nullablePropertyFilter")
 public class DevicePinner extends SerializableObject {
 
+  /** The unique identifier for this device pin. */
   protected String id;
 
+  /** The value will always be `device_pinner`. */
   @JsonDeserialize(using = DevicePinnerTypeField.DevicePinnerTypeFieldDeserializer.class)
   @JsonSerialize(using = DevicePinnerTypeField.DevicePinnerTypeFieldSerializer.class)
   protected EnumWrapper<DevicePinnerTypeField> type;
@@ -22,6 +25,7 @@ public class DevicePinner extends SerializableObject {
   @JsonProperty("owned_by")
   protected UserMini ownedBy;
 
+  /** The type of device being pinned. */
   @JsonProperty("product_name")
   protected String productName;
 

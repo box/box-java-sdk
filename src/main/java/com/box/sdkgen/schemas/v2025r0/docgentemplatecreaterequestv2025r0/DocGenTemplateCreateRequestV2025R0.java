@@ -6,6 +6,7 @@ import com.fasterxml.jackson.annotation.JsonFilter;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.Objects;
 
+/** The schema for marking document as Box Doc Gen template. */
 @JsonFilter("nullablePropertyFilter")
 public class DocGenTemplateCreateRequestV2025R0 extends SerializableObject {
 

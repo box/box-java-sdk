@@ -9,6 +9,7 @@ import java.util.Objects;
 @JsonFilter("nullablePropertyFilter")
 public class FileFullWatermarkInfoField extends SerializableObject {
 
+  /** Specifies if this item has a watermark applied. */
   @JsonProperty("is_watermarked")
   protected Boolean isWatermarked;
 

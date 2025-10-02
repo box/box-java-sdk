@@ -25,12 +25,22 @@ import java.util.Map;
 
 public class BoxJWTAuth implements Authentication {
 
+  /** An object containing all JWT configuration to use for authentication */
   public final JWTConfig config;
 
+  /**
+   * An object responsible for storing token. If no custom implementation provided, the token will
+   * be stored in memory.
+   */
   public final TokenStorage tokenStorage;
 
+  /**
+   * The ID of the user or enterprise to authenticate as. If not provided, defaults to the
+   * enterprise ID if set, otherwise defaults to the user ID.
+   */
   public String subjectId;
 
+  /** The type of the subject ID provided. Must be either 'user' or 'enterprise'. */
   public String subjectType;
 
   public BoxJWTAuth(JWTConfig config) {
@@ -43,10 +53,16 @@ public class BoxJWTAuth implements Authentication {
     this.subjectType = (!(this.config.getEnterpriseId() == null) ? "enterprise" : "user");
   }
 
+  /** Get new access token using JWT auth. */
   public AccessToken refreshToken() {
     return refreshToken(null);
   }
 
+  /**
+   * Get new access token using JWT auth.
+   *
+   * @param networkSession An object to keep network session state
+   */
   @Override
   public AccessToken refreshToken(NetworkSession networkSession) {
     if (isBrowser()) {
@@ -83,10 +99,20 @@ public class BoxJWTAuth implements Authentication {
     return token;
   }
 
+  /**
+   * Get the current access token. If the current access token is expired or not found, this method
+   * will attempt to refresh the token.
+   */
   public AccessToken retrieveToken() {
     return retrieveToken(null);
   }
 
+  /**
+   * Get the current access token. If the current access token is expired or not found, this method
+   * will attempt to refresh the token.
+   *
+   * @param networkSession An object to keep network session state
+   */
   @Override
   public AccessToken retrieveToken(NetworkSession networkSession) {
     AccessToken oldToken = this.tokenStorage.get();
@@ -107,10 +133,30 @@ public class BoxJWTAuth implements Authentication {
     return String.join("", "Bearer ", token.getAccessToken());
   }
 
+  /**
+   * Create a new BoxJWTAuth instance that uses the provided user ID as the subject of the JWT
+   * assertion. May be one of this application's created App User. Depending on the configured User
+   * Access Level, may also be any other App User or Managed User in the enterprise.
+   * &lt;https://developer.box.com/en/guides/applications/&gt;
+   * &lt;https://developer.box.com/en/guides/authentication/select/&gt;
+   *
+   * @param userId The id of the user to authenticate
+   */
   public BoxJWTAuth withUserSubject(String userId) {
     return withUserSubject(userId, new InMemoryTokenStorage());
   }
 
+  /**
+   * Create a new BoxJWTAuth instance that uses the provided user ID as the subject of the JWT
+   * assertion. May be one of this application's created App User. Depending on the configured User
+   * Access Level, may also be any other App User or Managed User in the enterprise.
+   * &lt;https://developer.box.com/en/guides/applications/&gt;
+   * &lt;https://developer.box.com/en/guides/authentication/select/&gt;
+   *
+   * @param userId The id of the user to authenticate
+   * @param tokenStorage Object responsible for storing token in newly created BoxJWTAuth. If no
+   *     custom implementation provided, the token will be stored in memory.
+   */
   public BoxJWTAuth withUserSubject(String userId, TokenStorage tokenStorage) {
     JWTConfig newConfig =
         new JWTConfig.Builder(
@@ -127,10 +173,24 @@ public class BoxJWTAuth implements Authentication {
     return newAuth;
   }
 
+  /**
+   * Create a new BoxJWTAuth instance that uses the provided enterprise ID as the subject of the JWT
+   * assertion.
+   *
+   * @param enterpriseId The id of the enterprise to authenticate
+   */
   public BoxJWTAuth withEnterpriseSubject(String enterpriseId) {
     return withEnterpriseSubject(enterpriseId, new InMemoryTokenStorage());
   }
 
+  /**
+   * Create a new BoxJWTAuth instance that uses the provided enterprise ID as the subject of the JWT
+   * assertion.
+   *
+   * @param enterpriseId The id of the enterprise to authenticate
+   * @param tokenStorage Object responsible for storing token in newly created BoxJWTAuth. If no
+   *     custom implementation provided, the token will be stored in memory.
+   */
   public BoxJWTAuth withEnterpriseSubject(String enterpriseId, TokenStorage tokenStorage) {
     JWTConfig newConfig =
         new JWTConfig.Builder(
@@ -147,6 +207,18 @@ public class BoxJWTAuth implements Authentication {
     return newAuth;
   }
 
+  /**
+   * Downscope access token to the provided scopes. Returning a new access token with the provided
+   * scopes, with the original access token unchanged.
+   *
+   * @param scopes The scope(s) to apply to the resulting token.
+   * @param resource The file or folder to get a downscoped token for. If None and shared_link None,
+   *     the resulting token will not be scoped down to just a single item. The resource should be a
+   *     full URL to an item, e.g. https://api.box.com/2.0/files/123456.
+   * @param sharedLink The shared link to get a downscoped token for. If None and item None, the
+   *     resulting token will not be scoped down to just a single item.
+   * @param networkSession An object to keep network session state
+   */
   @Override
   public AccessToken downscopeToken(
       List<String> scopes, String resource, String sharedLink, NetworkSession networkSession) {
@@ -174,10 +246,16 @@ public class BoxJWTAuth implements Authentication {
     return downscopedToken;
   }
 
+  /** Revoke the current access token and remove it from token storage. */
   public void revokeToken() {
     revokeToken(null);
   }
 
+  /**
+   * Revoke the current access token and remove it from token storage.
+   *
+   * @param networkSession An object to keep network session state
+   */
   @Override
   public void revokeToken(NetworkSession networkSession) {
     AccessToken oldToken = this.tokenStorage.get();

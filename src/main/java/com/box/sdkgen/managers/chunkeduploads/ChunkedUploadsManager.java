@@ -50,10 +50,21 @@ public class ChunkedUploadsManager {
     this.networkSession = builder.networkSession;
   }
 
+  /**
+   * Creates an upload session for a new file.
+   *
+   * @param requestBody Request body of createFileUploadSession method
+   */
   public UploadSession createFileUploadSession(CreateFileUploadSessionRequestBody requestBody) {
     return createFileUploadSession(requestBody, new CreateFileUploadSessionHeaders());
   }
 
+  /**
+   * Creates an upload session for a new file.
+   *
+   * @param requestBody Request body of createFileUploadSession method
+   * @param headers Headers of createFileUploadSession method
+   */
   public UploadSession createFileUploadSession(
       CreateFileUploadSessionRequestBody requestBody, CreateFileUploadSessionHeaders headers) {
     Map<String, String> headersMap = prepareParams(mergeMaps(mapOf(), headers.getExtraHeaders()));
@@ -77,12 +88,31 @@ public class ChunkedUploadsManager {
     return JsonManager.deserialize(response.getData(), UploadSession.class);
   }
 
+  /**
+   * Creates an upload session for an existing file.
+   *
+   * @param fileId The unique identifier that represents a file.
+   *     <p>The ID for any file can be determined by visiting a file in the web application and
+   *     copying the ID from the URL. For example, for the URL `https://*.app.box.com/files/123` the
+   *     `file_id` is `123`. Example: "12345"
+   * @param requestBody Request body of createFileUploadSessionForExistingFile method
+   */
   public UploadSession createFileUploadSessionForExistingFile(
       String fileId, CreateFileUploadSessionForExistingFileRequestBody requestBody) {
     return createFileUploadSessionForExistingFile(
         fileId, requestBody, new CreateFileUploadSessionForExistingFileHeaders());
   }
 
+  /**
+   * Creates an upload session for an existing file.
+   *
+   * @param fileId The unique identifier that represents a file.
+   *     <p>The ID for any file can be determined by visiting a file in the web application and
+   *     copying the ID from the URL. For example, for the URL `https://*.app.box.com/files/123` the
+   *     `file_id` is `123`. Example: "12345"
+   * @param requestBody Request body of createFileUploadSessionForExistingFile method
+   * @param headers Headers of createFileUploadSessionForExistingFile method
+   */
   public UploadSession createFileUploadSessionForExistingFile(
       String fileId,
       CreateFileUploadSessionForExistingFileRequestBody requestBody,
@@ -110,10 +140,33 @@ public class ChunkedUploadsManager {
     return JsonManager.deserialize(response.getData(), UploadSession.class);
   }
 
+  /**
+   * Using this method with urls provided in response when creating a new upload session is
+   * preferred to use over GetFileUploadSessionById method. This allows to always upload your
+   * content to the closest Box data center and can significantly improve upload speed. Return
+   * information about an upload session.
+   *
+   * <p>The actual endpoint URL is returned by the [`Create upload
+   * session`](e://post-files-upload-sessions) endpoint.
+   *
+   * @param url URL of getFileUploadSessionById method
+   */
   public UploadSession getFileUploadSessionByUrl(String url) {
     return getFileUploadSessionByUrl(url, new GetFileUploadSessionByUrlHeaders());
   }
 
+  /**
+   * Using this method with urls provided in response when creating a new upload session is
+   * preferred to use over GetFileUploadSessionById method. This allows to always upload your
+   * content to the closest Box data center and can significantly improve upload speed. Return
+   * information about an upload session.
+   *
+   * <p>The actual endpoint URL is returned by the [`Create upload
+   * session`](e://post-files-upload-sessions) endpoint.
+   *
+   * @param url URL of getFileUploadSessionById method
+   * @param headers Headers of getFileUploadSessionById method
+   */
   public UploadSession getFileUploadSessionByUrl(
       String url, GetFileUploadSessionByUrlHeaders headers) {
     Map<String, String> headersMap = prepareParams(mergeMaps(mapOf(), headers.getExtraHeaders()));
@@ -130,10 +183,27 @@ public class ChunkedUploadsManager {
     return JsonManager.deserialize(response.getData(), UploadSession.class);
   }
 
+  /**
+   * Return information about an upload session.
+   *
+   * <p>The actual endpoint URL is returned by the [`Create upload
+   * session`](e://post-files-upload-sessions) endpoint.
+   *
+   * @param uploadSessionId The ID of the upload session. Example: "D5E3F7A"
+   */
   public UploadSession getFileUploadSessionById(String uploadSessionId) {
     return getFileUploadSessionById(uploadSessionId, new GetFileUploadSessionByIdHeaders());
   }
 
+  /**
+   * Return information about an upload session.
+   *
+   * <p>The actual endpoint URL is returned by the [`Create upload
+   * session`](e://post-files-upload-sessions) endpoint.
+   *
+   * @param uploadSessionId The ID of the upload session. Example: "D5E3F7A"
+   * @param headers Headers of getFileUploadSessionById method
+   */
   public UploadSession getFileUploadSessionById(
       String uploadSessionId, GetFileUploadSessionByIdHeaders headers) {
     Map<String, String> headersMap = prepareParams(mergeMaps(mapOf(), headers.getExtraHeaders()));
@@ -156,6 +226,20 @@ public class ChunkedUploadsManager {
     return JsonManager.deserialize(response.getData(), UploadSession.class);
   }
 
+  /**
+   * Using this method with urls provided in response when creating a new upload session is
+   * preferred to use over UploadFilePart method. This allows to always upload your content to the
+   * closest Box data center and can significantly improve upload speed. Uploads a chunk of a file
+   * for an upload session.
+   *
+   * <p>The actual endpoint URL is returned by the [`Create upload
+   * session`](e://post-files-upload-sessions) and [`Get upload
+   * session`](e://get-files-upload-sessions-id) endpoints.
+   *
+   * @param url URL of uploadFilePart method
+   * @param requestBody Request body of uploadFilePart method
+   * @param headers Headers of uploadFilePart method
+   */
   public UploadedPart uploadFilePartByUrl(
       String url, InputStream requestBody, UploadFilePartByUrlHeaders headers) {
     Map<String, String> headersMap =
@@ -180,6 +264,17 @@ public class ChunkedUploadsManager {
     return JsonManager.deserialize(response.getData(), UploadedPart.class);
   }
 
+  /**
+   * Uploads a chunk of a file for an upload session.
+   *
+   * <p>The actual endpoint URL is returned by the [`Create upload
+   * session`](e://post-files-upload-sessions) and [`Get upload
+   * session`](e://get-files-upload-sessions-id) endpoints.
+   *
+   * @param uploadSessionId The ID of the upload session. Example: "D5E3F7A"
+   * @param requestBody Request body of uploadFilePart method
+   * @param headers Headers of uploadFilePart method
+   */
   public UploadedPart uploadFilePart(
       String uploadSessionId, InputStream requestBody, UploadFilePartHeaders headers) {
     Map<String, String> headersMap =
@@ -210,10 +305,39 @@ public class ChunkedUploadsManager {
     return JsonManager.deserialize(response.getData(), UploadedPart.class);
   }
 
+  /**
+   * Using this method with urls provided in response when creating a new upload session is
+   * preferred to use over DeleteFileUploadSessionById method. This allows to always upload your
+   * content to the closest Box data center and can significantly improve upload speed. Abort an
+   * upload session and discard all data uploaded.
+   *
+   * <p>This cannot be reversed.
+   *
+   * <p>The actual endpoint URL is returned by the [`Create upload
+   * session`](e://post-files-upload-sessions) and [`Get upload
+   * session`](e://get-files-upload-sessions-id) endpoints.
+   *
+   * @param url URL of deleteFileUploadSessionById method
+   */
   public void deleteFileUploadSessionByUrl(String url) {
     deleteFileUploadSessionByUrl(url, new DeleteFileUploadSessionByUrlHeaders());
   }
 
+  /**
+   * Using this method with urls provided in response when creating a new upload session is
+   * preferred to use over DeleteFileUploadSessionById method. This allows to always upload your
+   * content to the closest Box data center and can significantly improve upload speed. Abort an
+   * upload session and discard all data uploaded.
+   *
+   * <p>This cannot be reversed.
+   *
+   * <p>The actual endpoint URL is returned by the [`Create upload
+   * session`](e://post-files-upload-sessions) and [`Get upload
+   * session`](e://get-files-upload-sessions-id) endpoints.
+   *
+   * @param url URL of deleteFileUploadSessionById method
+   * @param headers Headers of deleteFileUploadSessionById method
+   */
   public void deleteFileUploadSessionByUrl(
       String url, DeleteFileUploadSessionByUrlHeaders headers) {
     Map<String, String> headersMap = prepareParams(mergeMaps(mapOf(), headers.getExtraHeaders()));
@@ -229,10 +353,33 @@ public class ChunkedUploadsManager {
                     .build());
   }
 
+  /**
+   * Abort an upload session and discard all data uploaded.
+   *
+   * <p>This cannot be reversed.
+   *
+   * <p>The actual endpoint URL is returned by the [`Create upload
+   * session`](e://post-files-upload-sessions) and [`Get upload
+   * session`](e://get-files-upload-sessions-id) endpoints.
+   *
+   * @param uploadSessionId The ID of the upload session. Example: "D5E3F7A"
+   */
   public void deleteFileUploadSessionById(String uploadSessionId) {
     deleteFileUploadSessionById(uploadSessionId, new DeleteFileUploadSessionByIdHeaders());
   }
 
+  /**
+   * Abort an upload session and discard all data uploaded.
+   *
+   * <p>This cannot be reversed.
+   *
+   * <p>The actual endpoint URL is returned by the [`Create upload
+   * session`](e://post-files-upload-sessions) and [`Get upload
+   * session`](e://get-files-upload-sessions-id) endpoints.
+   *
+   * @param uploadSessionId The ID of the upload session. Example: "D5E3F7A"
+   * @param headers Headers of deleteFileUploadSessionById method
+   */
   public void deleteFileUploadSessionById(
       String uploadSessionId, DeleteFileUploadSessionByIdHeaders headers) {
     Map<String, String> headersMap = prepareParams(mergeMaps(mapOf(), headers.getExtraHeaders()));
@@ -254,6 +401,18 @@ public class ChunkedUploadsManager {
                     .build());
   }
 
+  /**
+   * Using this method with urls provided in response when creating a new upload session is
+   * preferred to use over GetFileUploadSessionParts method. This allows to always upload your
+   * content to the closest Box data center and can significantly improve upload speed. Return a
+   * list of the chunks uploaded to the upload session so far.
+   *
+   * <p>The actual endpoint URL is returned by the [`Create upload
+   * session`](e://post-files-upload-sessions) and [`Get upload
+   * session`](e://get-files-upload-sessions-id) endpoints.
+   *
+   * @param url URL of getFileUploadSessionParts method
+   */
   public UploadParts getFileUploadSessionPartsByUrl(String url) {
     return getFileUploadSessionPartsByUrl(
         url,
@@ -261,18 +420,58 @@ public class ChunkedUploadsManager {
         new GetFileUploadSessionPartsByUrlHeaders());
   }
 
+  /**
+   * Using this method with urls provided in response when creating a new upload session is
+   * preferred to use over GetFileUploadSessionParts method. This allows to always upload your
+   * content to the closest Box data center and can significantly improve upload speed. Return a
+   * list of the chunks uploaded to the upload session so far.
+   *
+   * <p>The actual endpoint URL is returned by the [`Create upload
+   * session`](e://post-files-upload-sessions) and [`Get upload
+   * session`](e://get-files-upload-sessions-id) endpoints.
+   *
+   * @param url URL of getFileUploadSessionParts method
+   * @param queryParams Query parameters of getFileUploadSessionParts method
+   */
   public UploadParts getFileUploadSessionPartsByUrl(
       String url, GetFileUploadSessionPartsByUrlQueryParams queryParams) {
     return getFileUploadSessionPartsByUrl(
         url, queryParams, new GetFileUploadSessionPartsByUrlHeaders());
   }
 
+  /**
+   * Using this method with urls provided in response when creating a new upload session is
+   * preferred to use over GetFileUploadSessionParts method. This allows to always upload your
+   * content to the closest Box data center and can significantly improve upload speed. Return a
+   * list of the chunks uploaded to the upload session so far.
+   *
+   * <p>The actual endpoint URL is returned by the [`Create upload
+   * session`](e://post-files-upload-sessions) and [`Get upload
+   * session`](e://get-files-upload-sessions-id) endpoints.
+   *
+   * @param url URL of getFileUploadSessionParts method
+   * @param headers Headers of getFileUploadSessionParts method
+   */
   public UploadParts getFileUploadSessionPartsByUrl(
       String url, GetFileUploadSessionPartsByUrlHeaders headers) {
     return getFileUploadSessionPartsByUrl(
         url, new GetFileUploadSessionPartsByUrlQueryParams(), headers);
   }
 
+  /**
+   * Using this method with urls provided in response when creating a new upload session is
+   * preferred to use over GetFileUploadSessionParts method. This allows to always upload your
+   * content to the closest Box data center and can significantly improve upload speed. Return a
+   * list of the chunks uploaded to the upload session so far.
+   *
+   * <p>The actual endpoint URL is returned by the [`Create upload
+   * session`](e://post-files-upload-sessions) and [`Get upload
+   * session`](e://get-files-upload-sessions-id) endpoints.
+   *
+   * @param url URL of getFileUploadSessionParts method
+   * @param queryParams Query parameters of getFileUploadSessionParts method
+   * @param headers Headers of getFileUploadSessionParts method
+   */
   public UploadParts getFileUploadSessionPartsByUrl(
       String url,
       GetFileUploadSessionPartsByUrlQueryParams queryParams,
@@ -297,6 +496,15 @@ public class ChunkedUploadsManager {
     return JsonManager.deserialize(response.getData(), UploadParts.class);
   }
 
+  /**
+   * Return a list of the chunks uploaded to the upload session so far.
+   *
+   * <p>The actual endpoint URL is returned by the [`Create upload
+   * session`](e://post-files-upload-sessions) and [`Get upload
+   * session`](e://get-files-upload-sessions-id) endpoints.
+   *
+   * @param uploadSessionId The ID of the upload session. Example: "D5E3F7A"
+   */
   public UploadParts getFileUploadSessionParts(String uploadSessionId) {
     return getFileUploadSessionParts(
         uploadSessionId,
@@ -304,18 +512,49 @@ public class ChunkedUploadsManager {
         new GetFileUploadSessionPartsHeaders());
   }
 
+  /**
+   * Return a list of the chunks uploaded to the upload session so far.
+   *
+   * <p>The actual endpoint URL is returned by the [`Create upload
+   * session`](e://post-files-upload-sessions) and [`Get upload
+   * session`](e://get-files-upload-sessions-id) endpoints.
+   *
+   * @param uploadSessionId The ID of the upload session. Example: "D5E3F7A"
+   * @param queryParams Query parameters of getFileUploadSessionParts method
+   */
   public UploadParts getFileUploadSessionParts(
       String uploadSessionId, GetFileUploadSessionPartsQueryParams queryParams) {
     return getFileUploadSessionParts(
         uploadSessionId, queryParams, new GetFileUploadSessionPartsHeaders());
   }
 
+  /**
+   * Return a list of the chunks uploaded to the upload session so far.
+   *
+   * <p>The actual endpoint URL is returned by the [`Create upload
+   * session`](e://post-files-upload-sessions) and [`Get upload
+   * session`](e://get-files-upload-sessions-id) endpoints.
+   *
+   * @param uploadSessionId The ID of the upload session. Example: "D5E3F7A"
+   * @param headers Headers of getFileUploadSessionParts method
+   */
   public UploadParts getFileUploadSessionParts(
       String uploadSessionId, GetFileUploadSessionPartsHeaders headers) {
     return getFileUploadSessionParts(
         uploadSessionId, new GetFileUploadSessionPartsQueryParams(), headers);
   }
 
+  /**
+   * Return a list of the chunks uploaded to the upload session so far.
+   *
+   * <p>The actual endpoint URL is returned by the [`Create upload
+   * session`](e://post-files-upload-sessions) and [`Get upload
+   * session`](e://get-files-upload-sessions-id) endpoints.
+   *
+   * @param uploadSessionId The ID of the upload session. Example: "D5E3F7A"
+   * @param queryParams Query parameters of getFileUploadSessionParts method
+   * @param headers Headers of getFileUploadSessionParts method
+   */
   public UploadParts getFileUploadSessionParts(
       String uploadSessionId,
       GetFileUploadSessionPartsQueryParams queryParams,
@@ -347,6 +586,20 @@ public class ChunkedUploadsManager {
     return JsonManager.deserialize(response.getData(), UploadParts.class);
   }
 
+  /**
+   * Using this method with urls provided in response when creating a new upload session is
+   * preferred to use over CreateFileUploadSessionCommit method. This allows to always upload your
+   * content to the closest Box data center and can significantly improve upload speed. Close an
+   * upload session and create a file from the uploaded chunks.
+   *
+   * <p>The actual endpoint URL is returned by the [`Create upload
+   * session`](e://post-files-upload-sessions) and [`Get upload
+   * session`](e://get-files-upload-sessions-id) endpoints.
+   *
+   * @param url URL of createFileUploadSessionCommit method
+   * @param requestBody Request body of createFileUploadSessionCommit method
+   * @param headers Headers of createFileUploadSessionCommit method
+   */
   public Files createFileUploadSessionCommitByUrl(
       String url,
       CreateFileUploadSessionCommitByUrlRequestBody requestBody,
@@ -377,6 +630,17 @@ public class ChunkedUploadsManager {
     return JsonManager.deserialize(response.getData(), Files.class);
   }
 
+  /**
+   * Close an upload session and create a file from the uploaded chunks.
+   *
+   * <p>The actual endpoint URL is returned by the [`Create upload
+   * session`](e://post-files-upload-sessions) and [`Get upload
+   * session`](e://get-files-upload-sessions-id) endpoints.
+   *
+   * @param uploadSessionId The ID of the upload session. Example: "D5E3F7A"
+   * @param requestBody Request body of createFileUploadSessionCommit method
+   * @param headers Headers of createFileUploadSessionCommit method
+   */
   public Files createFileUploadSessionCommit(
       String uploadSessionId,
       CreateFileUploadSessionCommitRequestBody requestBody,
@@ -453,6 +717,15 @@ public class ChunkedUploadsManager {
         acc.getFileHash());
   }
 
+  /**
+   * Starts the process of chunk uploading a big file. Should return a File object representing
+   * uploaded file.
+   *
+   * @param file The stream of the file to upload.
+   * @param fileName The name of the file, which will be used for storage in Box.
+   * @param fileSize The total size of the file for the chunked upload in bytes.
+   * @param parentFolderId The ID of the folder where the file should be uploaded.
+   */
   public FileFull uploadBigFile(
       InputStream file, String fileName, long fileSize, String parentFolderId) {
     UploadSession uploadSession =

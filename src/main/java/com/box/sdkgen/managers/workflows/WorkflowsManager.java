@@ -30,10 +30,29 @@ public class WorkflowsManager {
     this.networkSession = builder.networkSession;
   }
 
+  /**
+   * Returns list of workflows that act on a given `folder ID`, and have a flow with a trigger type
+   * of `WORKFLOW_MANUAL_START`.
+   *
+   * <p>You application must be authorized to use the `Manage Box Relay` application scope within
+   * the developer console in to use this endpoint.
+   *
+   * @param queryParams Query parameters of getWorkflows method
+   */
   public Workflows getWorkflows(GetWorkflowsQueryParams queryParams) {
     return getWorkflows(queryParams, new GetWorkflowsHeaders());
   }
 
+  /**
+   * Returns list of workflows that act on a given `folder ID`, and have a flow with a trigger type
+   * of `WORKFLOW_MANUAL_START`.
+   *
+   * <p>You application must be authorized to use the `Manage Box Relay` application scope within
+   * the developer console in to use this endpoint.
+   *
+   * @param queryParams Query parameters of getWorkflows method
+   * @param headers Headers of getWorkflows method
+   */
   public Workflows getWorkflows(GetWorkflowsQueryParams queryParams, GetWorkflowsHeaders headers) {
     Map<String, String> queryParamsMap =
         prepareParams(
@@ -60,10 +79,29 @@ public class WorkflowsManager {
     return JsonManager.deserialize(response.getData(), Workflows.class);
   }
 
+  /**
+   * Initiates a flow with a trigger type of `WORKFLOW_MANUAL_START`.
+   *
+   * <p>You application must be authorized to use the `Manage Box Relay` application scope within
+   * the developer console.
+   *
+   * @param workflowId The ID of the workflow. Example: "12345"
+   * @param requestBody Request body of startWorkflow method
+   */
   public void startWorkflow(String workflowId, StartWorkflowRequestBody requestBody) {
     startWorkflow(workflowId, requestBody, new StartWorkflowHeaders());
   }
 
+  /**
+   * Initiates a flow with a trigger type of `WORKFLOW_MANUAL_START`.
+   *
+   * <p>You application must be authorized to use the `Manage Box Relay` application scope within
+   * the developer console.
+   *
+   * @param workflowId The ID of the workflow. Example: "12345"
+   * @param requestBody Request body of startWorkflow method
+   * @param headers Headers of startWorkflow method
+   */
   public void startWorkflow(
       String workflowId, StartWorkflowRequestBody requestBody, StartWorkflowHeaders headers) {
     Map<String, String> headersMap = prepareParams(mergeMaps(mapOf(), headers.getExtraHeaders()));

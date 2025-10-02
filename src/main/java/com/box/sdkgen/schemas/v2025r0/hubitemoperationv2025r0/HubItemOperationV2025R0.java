@@ -12,9 +12,11 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import java.util.Objects;
 
+/** An operation to perform on a Box Hub item. */
 @JsonFilter("nullablePropertyFilter")
 public class HubItemOperationV2025R0 extends SerializableObject {
 
+  /** The action to perform on a Box Hub item. */
   @JsonDeserialize(
       using =
           HubItemOperationV2025R0ActionField.HubItemOperationV2025R0ActionFieldDeserializer.class)

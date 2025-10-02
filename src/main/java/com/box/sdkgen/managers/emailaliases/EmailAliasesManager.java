@@ -30,10 +30,23 @@ public class EmailAliasesManager {
     this.networkSession = builder.networkSession;
   }
 
+  /**
+   * Retrieves all email aliases for a user. The collection does not include the primary login for
+   * the user.
+   *
+   * @param userId The ID of the user. Example: "12345"
+   */
   public EmailAliases getUserEmailAliases(String userId) {
     return getUserEmailAliases(userId, new GetUserEmailAliasesHeaders());
   }
 
+  /**
+   * Retrieves all email aliases for a user. The collection does not include the primary login for
+   * the user.
+   *
+   * @param userId The ID of the user. Example: "12345"
+   * @param headers Headers of getUserEmailAliases method
+   */
   public EmailAliases getUserEmailAliases(String userId, GetUserEmailAliasesHeaders headers) {
     Map<String, String> headersMap = prepareParams(mergeMaps(mapOf(), headers.getExtraHeaders()));
     FetchResponse response =
@@ -56,11 +69,24 @@ public class EmailAliasesManager {
     return JsonManager.deserialize(response.getData(), EmailAliases.class);
   }
 
+  /**
+   * Adds a new email alias to a user account..
+   *
+   * @param userId The ID of the user. Example: "12345"
+   * @param requestBody Request body of createUserEmailAlias method
+   */
   public EmailAlias createUserEmailAlias(
       String userId, CreateUserEmailAliasRequestBody requestBody) {
     return createUserEmailAlias(userId, requestBody, new CreateUserEmailAliasHeaders());
   }
 
+  /**
+   * Adds a new email alias to a user account..
+   *
+   * @param userId The ID of the user. Example: "12345"
+   * @param requestBody Request body of createUserEmailAlias method
+   * @param headers Headers of createUserEmailAlias method
+   */
   public EmailAlias createUserEmailAlias(
       String userId,
       CreateUserEmailAliasRequestBody requestBody,
@@ -88,10 +114,23 @@ public class EmailAliasesManager {
     return JsonManager.deserialize(response.getData(), EmailAlias.class);
   }
 
+  /**
+   * Removes an email alias from a user.
+   *
+   * @param userId The ID of the user. Example: "12345"
+   * @param emailAliasId The ID of the email alias. Example: "23432"
+   */
   public void deleteUserEmailAliasById(String userId, String emailAliasId) {
     deleteUserEmailAliasById(userId, emailAliasId, new DeleteUserEmailAliasByIdHeaders());
   }
 
+  /**
+   * Removes an email alias from a user.
+   *
+   * @param userId The ID of the user. Example: "12345"
+   * @param emailAliasId The ID of the email alias. Example: "23432"
+   * @param headers Headers of deleteUserEmailAliasById method
+   */
   public void deleteUserEmailAliasById(
       String userId, String emailAliasId, DeleteUserEmailAliasByIdHeaders headers) {
     Map<String, String> headersMap = prepareParams(mergeMaps(mapOf(), headers.getExtraHeaders()));

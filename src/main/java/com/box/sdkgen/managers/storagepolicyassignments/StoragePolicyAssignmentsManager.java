@@ -31,11 +31,22 @@ public class StoragePolicyAssignmentsManager {
     this.networkSession = builder.networkSession;
   }
 
+  /**
+   * Fetches all the storage policy assignment for an enterprise or user.
+   *
+   * @param queryParams Query parameters of getStoragePolicyAssignments method
+   */
   public StoragePolicyAssignments getStoragePolicyAssignments(
       GetStoragePolicyAssignmentsQueryParams queryParams) {
     return getStoragePolicyAssignments(queryParams, new GetStoragePolicyAssignmentsHeaders());
   }
 
+  /**
+   * Fetches all the storage policy assignment for an enterprise or user.
+   *
+   * @param queryParams Query parameters of getStoragePolicyAssignments method
+   * @param headers Headers of getStoragePolicyAssignments method
+   */
   public StoragePolicyAssignments getStoragePolicyAssignments(
       GetStoragePolicyAssignmentsQueryParams queryParams,
       GetStoragePolicyAssignmentsHeaders headers) {
@@ -65,11 +76,22 @@ public class StoragePolicyAssignmentsManager {
     return JsonManager.deserialize(response.getData(), StoragePolicyAssignments.class);
   }
 
+  /**
+   * Creates a storage policy assignment for an enterprise or user.
+   *
+   * @param requestBody Request body of createStoragePolicyAssignment method
+   */
   public StoragePolicyAssignment createStoragePolicyAssignment(
       CreateStoragePolicyAssignmentRequestBody requestBody) {
     return createStoragePolicyAssignment(requestBody, new CreateStoragePolicyAssignmentHeaders());
   }
 
+  /**
+   * Creates a storage policy assignment for an enterprise or user.
+   *
+   * @param requestBody Request body of createStoragePolicyAssignment method
+   * @param headers Headers of createStoragePolicyAssignment method
+   */
   public StoragePolicyAssignment createStoragePolicyAssignment(
       CreateStoragePolicyAssignmentRequestBody requestBody,
       CreateStoragePolicyAssignmentHeaders headers) {
@@ -94,11 +116,22 @@ public class StoragePolicyAssignmentsManager {
     return JsonManager.deserialize(response.getData(), StoragePolicyAssignment.class);
   }
 
+  /**
+   * Fetches a specific storage policy assignment.
+   *
+   * @param storagePolicyAssignmentId The ID of the storage policy assignment. Example: "932483"
+   */
   public StoragePolicyAssignment getStoragePolicyAssignmentById(String storagePolicyAssignmentId) {
     return getStoragePolicyAssignmentById(
         storagePolicyAssignmentId, new GetStoragePolicyAssignmentByIdHeaders());
   }
 
+  /**
+   * Fetches a specific storage policy assignment.
+   *
+   * @param storagePolicyAssignmentId The ID of the storage policy assignment. Example: "932483"
+   * @param headers Headers of getStoragePolicyAssignmentById method
+   */
   public StoragePolicyAssignment getStoragePolicyAssignmentById(
       String storagePolicyAssignmentId, GetStoragePolicyAssignmentByIdHeaders headers) {
     Map<String, String> headersMap = prepareParams(mergeMaps(mapOf(), headers.getExtraHeaders()));
@@ -121,12 +154,25 @@ public class StoragePolicyAssignmentsManager {
     return JsonManager.deserialize(response.getData(), StoragePolicyAssignment.class);
   }
 
+  /**
+   * Updates a specific storage policy assignment.
+   *
+   * @param storagePolicyAssignmentId The ID of the storage policy assignment. Example: "932483"
+   * @param requestBody Request body of updateStoragePolicyAssignmentById method
+   */
   public StoragePolicyAssignment updateStoragePolicyAssignmentById(
       String storagePolicyAssignmentId, UpdateStoragePolicyAssignmentByIdRequestBody requestBody) {
     return updateStoragePolicyAssignmentById(
         storagePolicyAssignmentId, requestBody, new UpdateStoragePolicyAssignmentByIdHeaders());
   }
 
+  /**
+   * Updates a specific storage policy assignment.
+   *
+   * @param storagePolicyAssignmentId The ID of the storage policy assignment. Example: "932483"
+   * @param requestBody Request body of updateStoragePolicyAssignmentById method
+   * @param headers Headers of updateStoragePolicyAssignmentById method
+   */
   public StoragePolicyAssignment updateStoragePolicyAssignmentById(
       String storagePolicyAssignmentId,
       UpdateStoragePolicyAssignmentByIdRequestBody requestBody,
@@ -153,11 +199,34 @@ public class StoragePolicyAssignmentsManager {
     return JsonManager.deserialize(response.getData(), StoragePolicyAssignment.class);
   }
 
+  /**
+   * Delete a storage policy assignment.
+   *
+   * <p>Deleting a storage policy assignment on a user will have the user inherit the enterprise's
+   * default storage policy.
+   *
+   * <p>There is a rate limit for calling this endpoint of only twice per user in a 24 hour time
+   * frame.
+   *
+   * @param storagePolicyAssignmentId The ID of the storage policy assignment. Example: "932483"
+   */
   public void deleteStoragePolicyAssignmentById(String storagePolicyAssignmentId) {
     deleteStoragePolicyAssignmentById(
         storagePolicyAssignmentId, new DeleteStoragePolicyAssignmentByIdHeaders());
   }
 
+  /**
+   * Delete a storage policy assignment.
+   *
+   * <p>Deleting a storage policy assignment on a user will have the user inherit the enterprise's
+   * default storage policy.
+   *
+   * <p>There is a rate limit for calling this endpoint of only twice per user in a 24 hour time
+   * frame.
+   *
+   * @param storagePolicyAssignmentId The ID of the storage policy assignment. Example: "932483"
+   * @param headers Headers of deleteStoragePolicyAssignmentById method
+   */
   public void deleteStoragePolicyAssignmentById(
       String storagePolicyAssignmentId, DeleteStoragePolicyAssignmentByIdHeaders headers) {
     Map<String, String> headersMap = prepareParams(mergeMaps(mapOf(), headers.getExtraHeaders()));

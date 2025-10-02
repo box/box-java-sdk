@@ -11,6 +11,7 @@ import java.util.Objects;
 @JsonFilter("nullablePropertyFilter")
 public class CreateCollaborationRequestBodyItemField extends SerializableObject {
 
+  /** The type of the item that this collaboration will be granted access to. */
   @JsonDeserialize(
       using =
           CreateCollaborationRequestBodyItemTypeField
@@ -21,6 +22,7 @@ public class CreateCollaborationRequestBodyItemField extends SerializableObject 
               .CreateCollaborationRequestBodyItemTypeFieldSerializer.class)
   protected EnumWrapper<CreateCollaborationRequestBodyItemTypeField> type;
 
+  /** The ID of the item that will be granted access to. */
   protected String id;
 
   public CreateCollaborationRequestBodyItemField() {

@@ -9,17 +9,22 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import java.util.Objects;
 
+/** An email alias for a user. */
 @JsonFilter("nullablePropertyFilter")
 public class EmailAlias extends SerializableObject {
 
+  /** The unique identifier for this object. */
   protected String id;
 
+  /** The value will always be `email_alias`. */
   @JsonDeserialize(using = EmailAliasTypeField.EmailAliasTypeFieldDeserializer.class)
   @JsonSerialize(using = EmailAliasTypeField.EmailAliasTypeFieldSerializer.class)
   protected EnumWrapper<EmailAliasTypeField> type;
 
+  /** The email address. */
   protected String email;
 
+  /** Whether the email address has been confirmed. */
   @JsonProperty("is_confirmed")
   protected Boolean isConfirmed;
 

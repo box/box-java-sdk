@@ -12,39 +12,72 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import java.util.List;
 import java.util.Objects;
 
+/** The schema for a Signer for Templates. */
 @JsonFilter("nullablePropertyFilter")
 public class TemplateSigner extends SerializableObject {
 
   protected List<TemplateSignerInput> inputs;
 
+  /** Email address of the signer. */
   @Nullable protected String email;
 
+  /**
+   * Defines the role of the signer in the signature request. A role of `signer` needs to sign the
+   * document, a role `approver` approves the document and a `final_copy_reader` role only receives
+   * the final signed document and signing log.
+   */
   @JsonDeserialize(using = TemplateSignerRoleField.TemplateSignerRoleFieldDeserializer.class)
   @JsonSerialize(using = TemplateSignerRoleField.TemplateSignerRoleFieldSerializer.class)
   protected EnumWrapper<TemplateSignerRoleField> role;
 
+  /**
+   * Used in combination with an embed URL for a sender. After the sender signs, they will be
+   * redirected to the next `in_person` signer.
+   */
   @JsonProperty("is_in_person")
   protected Boolean isInPerson;
 
+  /** Order of the signer. */
   protected Long order;
 
+  /**
+   * If provided, this value points signers that are assigned the same inputs and belongs to same
+   * signer group. A signer group is not a Box Group. It is an entity that belongs to the template
+   * itself and can only be used within Box Sign requests created from it.
+   */
   @JsonProperty("signer_group_id")
   @Nullable
   protected String signerGroupId;
 
+  /**
+   * A placeholder label for the signer set by the template creator to differentiate between
+   * signers.
+   */
   @Nullable protected String label;
 
+  /** An identifier for the signer. This can be used to identify a signer within the template. */
   @JsonProperty("public_id")
   protected String publicId;
 
+  /**
+   * If true for signers with a defined email, the password provided when the template was created
+   * is used by default. If true for signers without a specified / defined email, the creator needs
+   * to provide a password when using the template.
+   */
   @JsonProperty("is_password_required")
   @Nullable
   protected Boolean isPasswordRequired;
 
+  /**
+   * If true for signers with a defined email, the phone number provided when the template was
+   * created is used by default. If true for signers without a specified / defined email, the
+   * template creator needs to provide a phone number when creating a request.
+   */
   @JsonProperty("is_phone_number_required")
   @Nullable
   protected Boolean isPhoneNumberRequired;
 
+  /** If true, the signer is required to login to access the document. */
   @JsonProperty("login_required")
   @Nullable
   protected Boolean loginRequired;

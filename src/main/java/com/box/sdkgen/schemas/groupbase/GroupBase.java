@@ -9,11 +9,14 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import java.util.Objects;
 
+/** A base representation of a group. */
 @JsonFilter("nullablePropertyFilter")
 public class GroupBase extends SerializableObject {
 
+  /** The unique identifier for this object. */
   protected final String id;
 
+  /** The value will always be `group`. */
   @JsonDeserialize(using = GroupBaseTypeField.GroupBaseTypeFieldDeserializer.class)
   @JsonSerialize(using = GroupBaseTypeField.GroupBaseTypeFieldSerializer.class)
   protected EnumWrapper<GroupBaseTypeField> type;

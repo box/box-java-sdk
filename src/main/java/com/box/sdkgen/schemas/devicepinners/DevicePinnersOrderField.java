@@ -11,10 +11,12 @@ import java.util.Objects;
 @JsonFilter("nullablePropertyFilter")
 public class DevicePinnersOrderField extends SerializableObject {
 
+  /** The field that is ordered by. */
   @JsonDeserialize(using = DevicePinnersOrderByField.DevicePinnersOrderByFieldDeserializer.class)
   @JsonSerialize(using = DevicePinnersOrderByField.DevicePinnersOrderByFieldSerializer.class)
   protected EnumWrapper<DevicePinnersOrderByField> by;
 
+  /** The direction to order by, either ascending or descending. */
   @JsonDeserialize(
       using = DevicePinnersOrderDirectionField.DevicePinnersOrderDirectionFieldDeserializer.class)
   @JsonSerialize(

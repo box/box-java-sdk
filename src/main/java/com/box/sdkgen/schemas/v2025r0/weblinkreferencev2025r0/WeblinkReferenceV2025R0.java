@@ -9,15 +9,18 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import java.util.Objects;
 
+/** Web link reference. */
 @JsonFilter("nullablePropertyFilter")
 public class WeblinkReferenceV2025R0 extends SerializableObject {
 
+  /** The value will always be `weblink`. */
   @JsonDeserialize(
       using = WeblinkReferenceV2025R0TypeField.WeblinkReferenceV2025R0TypeFieldDeserializer.class)
   @JsonSerialize(
       using = WeblinkReferenceV2025R0TypeField.WeblinkReferenceV2025R0TypeFieldSerializer.class)
   protected EnumWrapper<WeblinkReferenceV2025R0TypeField> type;
 
+  /** ID of the web link. */
   protected final String id;
 
   public WeblinkReferenceV2025R0(@JsonProperty("id") String id) {

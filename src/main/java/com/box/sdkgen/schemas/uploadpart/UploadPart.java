@@ -4,9 +4,11 @@ import com.box.sdkgen.schemas.uploadpartmini.UploadPartMini;
 import com.fasterxml.jackson.annotation.JsonFilter;
 import java.util.Objects;
 
+/** The representation of an upload session chunk. */
 @JsonFilter("nullablePropertyFilter")
 public class UploadPart extends UploadPartMini {
 
+  /** The SHA1 hash of the chunk. */
   protected String sha1;
 
   public UploadPart() {

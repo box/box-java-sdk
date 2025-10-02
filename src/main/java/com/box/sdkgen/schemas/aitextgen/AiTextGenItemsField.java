@@ -12,12 +12,15 @@ import java.util.Objects;
 @JsonFilter("nullablePropertyFilter")
 public class AiTextGenItemsField extends SerializableObject {
 
+  /** The ID of the item. */
   protected final String id;
 
+  /** The type of the item. */
   @JsonDeserialize(using = AiTextGenItemsTypeField.AiTextGenItemsTypeFieldDeserializer.class)
   @JsonSerialize(using = AiTextGenItemsTypeField.AiTextGenItemsTypeFieldSerializer.class)
   protected EnumWrapper<AiTextGenItemsTypeField> type;
 
+  /** The content to use as context for generating new text or editing existing text. */
   protected String content;
 
   public AiTextGenItemsField(@JsonProperty("id") String id) {

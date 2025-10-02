@@ -9,8 +9,10 @@ import java.util.Objects;
 @JsonFilter("nullablePropertyFilter")
 public class AiAgentLongTextToolEmbeddingsStrategyField extends SerializableObject {
 
+  /** The strategy used for the AI agent for calculating embeddings. */
   protected String id;
 
+  /** The number of tokens per chunk. */
   @JsonProperty("num_tokens_per_chunk")
   protected Long numTokensPerChunk;
 

@@ -7,11 +7,17 @@ import com.fasterxml.jackson.annotation.JsonFilter;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.Objects;
 
+/**
+ * A user representation for integration mappings API purposes. Fields name and login are not
+ * required.
+ */
 @JsonFilter("nullablePropertyFilter")
 public class UserIntegrationMappings extends UserBase {
 
+  /** The display name of this user. */
   protected String name;
 
+  /** The primary email address of this user. */
   protected String login;
 
   public UserIntegrationMappings(@JsonProperty("id") String id) {

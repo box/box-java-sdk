@@ -14,6 +14,7 @@ import java.util.Objects;
 @JsonFilter("nullablePropertyFilter")
 public class UpdateGroupMembershipByIdRequestBody extends SerializableObject {
 
+  /** The role of the user in the group. */
   @JsonDeserialize(
       using =
           UpdateGroupMembershipByIdRequestBodyRoleField
@@ -24,6 +25,16 @@ public class UpdateGroupMembershipByIdRequestBody extends SerializableObject {
               .UpdateGroupMembershipByIdRequestBodyRoleFieldSerializer.class)
   protected EnumWrapper<UpdateGroupMembershipByIdRequestBodyRoleField> role;
 
+  /**
+   * Custom configuration for the permissions an admin if a group will receive. This option has no
+   * effect on members with a role of `member`.
+   *
+   * <p>Setting these permissions overwrites the default access levels of an admin.
+   *
+   * <p>Specifying a value of `null` for this object will disable all configurable permissions.
+   * Specifying permissions will set them accordingly, omitted permissions will be enabled by
+   * default.
+   */
   @JsonProperty("configurable_permissions")
   @Nullable
   protected Map<String, Boolean> configurablePermissions;

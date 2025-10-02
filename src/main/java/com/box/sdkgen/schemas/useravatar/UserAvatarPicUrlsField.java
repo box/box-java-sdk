@@ -8,10 +8,13 @@ import java.util.Objects;
 @JsonFilter("nullablePropertyFilter")
 public class UserAvatarPicUrlsField extends SerializableObject {
 
+  /** The location of a small-sized avatar. */
   protected String small;
 
+  /** The location of a large-sized avatar. */
   protected String large;
 
+  /** The location of the avatar preview. */
   protected String preview;
 
   public UserAvatarPicUrlsField() {

@@ -12,6 +12,7 @@ import java.util.Objects;
 @JsonFilter("nullablePropertyFilter")
 public class DocGenBatchCreateRequestV2025R0DestinationFolderField extends SerializableObject {
 
+  /** The value will always be `folder`. */
   @JsonDeserialize(
       using =
           DocGenBatchCreateRequestV2025R0DestinationFolderTypeField
@@ -22,6 +23,7 @@ public class DocGenBatchCreateRequestV2025R0DestinationFolderField extends Seria
               .DocGenBatchCreateRequestV2025R0DestinationFolderTypeFieldSerializer.class)
   protected EnumWrapper<DocGenBatchCreateRequestV2025R0DestinationFolderTypeField> type;
 
+  /** ID of the folder. */
   protected final String id;
 
   public DocGenBatchCreateRequestV2025R0DestinationFolderField(@JsonProperty("id") String id) {

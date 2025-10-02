@@ -14,18 +14,26 @@ import java.util.Objects;
 @JsonFilter("nullablePropertyFilter")
 public class StartWorkflowRequestBody extends SerializableObject {
 
+  /** The type of the parameters object. */
   @JsonDeserialize(
       using = StartWorkflowRequestBodyTypeField.StartWorkflowRequestBodyTypeFieldDeserializer.class)
   @JsonSerialize(
       using = StartWorkflowRequestBodyTypeField.StartWorkflowRequestBodyTypeFieldSerializer.class)
   protected EnumWrapper<StartWorkflowRequestBodyTypeField> type;
 
+  /** The flow that will be triggered. */
   protected final StartWorkflowRequestBodyFlowField flow;
 
+  /**
+   * The array of files for which the workflow should start. All files must be in the workflow's
+   * configured folder.
+   */
   protected final List<StartWorkflowRequestBodyFilesField> files;
 
+  /** The folder object for which the workflow is configured. */
   protected final StartWorkflowRequestBodyFolderField folder;
 
+  /** A configurable outcome the workflow should complete. */
   protected List<Outcome> outcomes;
 
   public StartWorkflowRequestBody(

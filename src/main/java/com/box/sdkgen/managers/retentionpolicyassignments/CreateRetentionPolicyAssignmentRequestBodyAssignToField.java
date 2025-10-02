@@ -13,6 +13,7 @@ import java.util.Objects;
 @JsonFilter("nullablePropertyFilter")
 public class CreateRetentionPolicyAssignmentRequestBodyAssignToField extends SerializableObject {
 
+  /** The type of item to assign the policy to. */
   @JsonDeserialize(
       using =
           CreateRetentionPolicyAssignmentRequestBodyAssignToTypeField
@@ -23,6 +24,10 @@ public class CreateRetentionPolicyAssignmentRequestBodyAssignToField extends Ser
               .CreateRetentionPolicyAssignmentRequestBodyAssignToTypeFieldSerializer.class)
   protected final EnumWrapper<CreateRetentionPolicyAssignmentRequestBodyAssignToTypeField> type;
 
+  /**
+   * The ID of item to assign the policy to. Set to `null` or omit when `type` is set to
+   * `enterprise`.
+   */
   @Nullable protected String id;
 
   public CreateRetentionPolicyAssignmentRequestBodyAssignToField(

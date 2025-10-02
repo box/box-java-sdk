@@ -11,8 +11,10 @@ import java.util.Objects;
 @JsonFilter("nullablePropertyFilter")
 public class CreateCollaborationWhitelistEntryRequestBody extends SerializableObject {
 
+  /** The domain to add to the list of allowed domains. */
   protected final String domain;
 
+  /** The direction in which to allow collaborations. */
   @JsonDeserialize(
       using =
           CreateCollaborationWhitelistEntryRequestBodyDirectionField

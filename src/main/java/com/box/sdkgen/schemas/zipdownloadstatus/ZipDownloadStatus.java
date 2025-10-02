@@ -9,21 +9,35 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import java.util.Objects;
 
+/** The status of a `zip` archive being downloaded. */
 @JsonFilter("nullablePropertyFilter")
 public class ZipDownloadStatus extends SerializableObject {
 
+  /** The total number of files in the archive. */
   @JsonProperty("total_file_count")
   protected Long totalFileCount;
 
+  /** The number of files that have already been downloaded. */
   @JsonProperty("downloaded_file_count")
   protected Long downloadedFileCount;
 
+  /**
+   * The number of files that have been skipped as they could not be downloaded. In many cases this
+   * is due to permission issues that have surfaced between the creation of the request for the
+   * archive and the archive being downloaded.
+   */
   @JsonProperty("skipped_file_count")
   protected Long skippedFileCount;
 
+  /**
+   * The number of folders that have been skipped as they could not be downloaded. In many cases
+   * this is due to permission issues that have surfaced between the creation of the request for the
+   * archive and the archive being downloaded.
+   */
   @JsonProperty("skipped_folder_count")
   protected Long skippedFolderCount;
 
+  /** The state of the archive being downloaded. */
   @JsonDeserialize(
       using = ZipDownloadStatusStateField.ZipDownloadStatusStateFieldDeserializer.class)
   @JsonSerialize(using = ZipDownloadStatusStateField.ZipDownloadStatusStateFieldSerializer.class)

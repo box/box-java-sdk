@@ -8,6 +8,7 @@ import java.util.Objects;
 @JsonFilter("nullablePropertyFilter")
 public class UpdateFileWatermarkRequestBody extends SerializableObject {
 
+  /** The watermark to imprint on the file. */
   protected final UpdateFileWatermarkRequestBodyWatermarkField watermark;
 
   public UpdateFileWatermarkRequestBody(

@@ -6,8 +6,15 @@ import java.util.Map;
 
 public class DeleteFileVersionByIdHeaders {
 
+  /**
+   * Ensures this item hasn't recently changed before making changes.
+   *
+   * <p>Pass in the item's last observed `etag` value into this header and the endpoint will fail
+   * with a `412 Precondition Failed` if it has changed since.
+   */
   public String ifMatch;
 
+  /** Extra headers that will be included in the HTTP request. */
   public Map<String, String> extraHeaders;
 
   public DeleteFileVersionByIdHeaders() {

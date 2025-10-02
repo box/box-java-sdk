@@ -28,6 +28,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
+/**
+ * A full representation of a folder, as can be returned from any folder API endpoints by default.
+ */
 @JsonFilter("nullablePropertyFilter")
 public class FolderFull extends Folder {
 
@@ -36,6 +39,7 @@ public class FolderFull extends Folder {
   @JsonProperty("sync_state")
   protected EnumWrapper<FolderFullSyncStateField> syncState;
 
+  /** Specifies if this folder has any other collaborators. */
   @JsonProperty("has_collaborations")
   protected Boolean hasCollaborations;
 
@@ -46,6 +50,7 @@ public class FolderFull extends Folder {
   @JsonProperty("can_non_owners_invite")
   protected Boolean canNonOwnersInvite;
 
+  /** Specifies if this folder is owned by a user outside of the authenticated enterprise. */
   @JsonProperty("is_externally_owned")
   protected Boolean isExternallyOwned;
 
@@ -54,12 +59,19 @@ public class FolderFull extends Folder {
   @JsonProperty("is_collaboration_restricted_to_enterprise")
   protected Boolean isCollaborationRestrictedToEnterprise;
 
+  /**
+   * A list of access levels that are available for this folder.
+   *
+   * <p>For some folders, like the root folder, this will always be an empty list as sharing is not
+   * allowed at that level.
+   */
   @JsonDeserialize(using = AllowedSharedLinkAccessLevelsDeserializer.class)
   @JsonSerialize(using = AllowedSharedLinkAccessLevelsSerializer.class)
   @JsonProperty("allowed_shared_link_access_levels")
   protected List<EnumWrapper<FolderFullAllowedSharedLinkAccessLevelsField>>
       allowedSharedLinkAccessLevels;
 
+  /** A list of the types of roles that user can be invited at when sharing this folder. */
   @JsonDeserialize(using = AllowedInviteeRolesDeserializer.class)
   @JsonSerialize(using = AllowedInviteeRolesSerializer.class)
   @JsonProperty("allowed_invitee_roles")
@@ -68,14 +80,29 @@ public class FolderFull extends Folder {
   @JsonProperty("watermark_info")
   protected FolderFullWatermarkInfoField watermarkInfo;
 
+  /**
+   * Specifies if the folder can be accessed with the direct shared link or a shared link to a
+   * parent folder.
+   */
   @JsonProperty("is_accessible_via_shared_link")
   protected Boolean isAccessibleViaSharedLink;
 
+  /**
+   * Specifies if collaborators who are not owners of this folder are restricted from viewing other
+   * collaborations on this folder.
+   *
+   * <p>It also restricts non-owners from inviting new collaborators.
+   */
   @JsonProperty("can_non_owners_view_collaborators")
   protected Boolean canNonOwnersViewCollaborators;
 
   protected FolderFullClassificationField classification;
 
+  /**
+   * This field will return true if the folder or any ancestor of the folder is associated with at
+   * least one app item. Note that this will return true even if the context user does not have
+   * access to the app item(s) associated with the folder.
+   */
   @JsonProperty("is_associated_with_app_item")
   protected Boolean isAssociatedWithAppItem;
 

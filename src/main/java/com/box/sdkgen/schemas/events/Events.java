@@ -8,15 +8,19 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.List;
 import java.util.Objects;
 
+/** A list of event objects. */
 @JsonFilter("nullablePropertyFilter")
 public class Events extends SerializableObject {
 
+  /** The number of events returned in this response. */
   @JsonProperty("chunk_size")
   protected Long chunkSize;
 
+  /** The stream position of the start of the next page (chunk) of events. */
   @JsonProperty("next_stream_position")
   protected EventsNextStreamPositionField nextStreamPosition;
 
+  /** A list of events. */
   protected List<Event> entries;
 
   public Events() {

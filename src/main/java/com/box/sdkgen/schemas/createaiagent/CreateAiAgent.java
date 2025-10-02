@@ -14,21 +14,35 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import java.util.List;
 import java.util.Objects;
 
+/** The schema for AI agent create request. */
 @JsonFilter("nullablePropertyFilter")
 public class CreateAiAgent extends SerializableObject {
 
+  /** The type of agent used to handle queries. */
   @JsonDeserialize(using = CreateAiAgentTypeField.CreateAiAgentTypeFieldDeserializer.class)
   @JsonSerialize(using = CreateAiAgentTypeField.CreateAiAgentTypeFieldSerializer.class)
   protected EnumWrapper<CreateAiAgentTypeField> type;
 
+  /** The name of the AI Agent. */
   protected final String name;
 
+  /**
+   * The state of the AI Agent. Possible values are: `enabled`, `disabled`, and
+   * `enabled_for_selected_users`.
+   */
   @JsonProperty("access_state")
   protected final String accessState;
 
+  /**
+   * The icon reference of the AI Agent. It should have format of the URL
+   * `https://cdn01.boxcdn.net/app-assets/aistudio/avatars/&lt;file_name&gt;` where possible values
+   * of `file_name` are:
+   * `logo_boxAi.png`,`logo_stamp.png`,`logo_legal.png`,`logo_finance.png`,`logo_config.png`,`logo_handshake.png`,`logo_analytics.png`,`logo_classification.png`.
+   */
   @JsonProperty("icon_reference")
   protected String iconReference;
 
+  /** List of allowed users or groups. */
   @JsonProperty("allowed_entities")
   protected List<AiAgentAllowedEntity> allowedEntities;
 

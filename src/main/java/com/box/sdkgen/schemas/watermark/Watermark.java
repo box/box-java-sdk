@@ -5,6 +5,10 @@ import com.box.sdkgen.internal.SerializableObject;
 import com.fasterxml.jackson.annotation.JsonFilter;
 import java.util.Objects;
 
+/**
+ * A watermark is a semi-transparent overlay on an embedded file preview that displays a viewer's
+ * email address or user ID and the time of access over a file's content.
+ */
 @JsonFilter("nullablePropertyFilter")
 public class Watermark extends SerializableObject {
 

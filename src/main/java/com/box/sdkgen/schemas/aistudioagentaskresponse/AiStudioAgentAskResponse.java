@@ -14,24 +14,33 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import java.util.List;
 import java.util.Objects;
 
+/** The AI agent to be used to ask questions. */
 @JsonFilter("nullablePropertyFilter")
 public class AiStudioAgentAskResponse extends SerializableObject {
 
+  /** The type of AI agent used to ask questions. */
   @JsonDeserialize(
       using = AiStudioAgentAskResponseTypeField.AiStudioAgentAskResponseTypeFieldDeserializer.class)
   @JsonSerialize(
       using = AiStudioAgentAskResponseTypeField.AiStudioAgentAskResponseTypeFieldSerializer.class)
   protected EnumWrapper<AiStudioAgentAskResponseTypeField> type;
 
+  /** The state of the AI Agent capability. Possible values are: `enabled` and `disabled`. */
   @JsonProperty("access_state")
   protected final String accessState;
 
+  /** The description of the AI agent. */
   protected final String description;
 
+  /** Custom instructions for the AI agent. */
   @JsonProperty("custom_instructions")
   @Nullable
   protected String customInstructions;
 
+  /**
+   * Suggested questions for the AI agent. If null, suggested question will be generated. If empty,
+   * no suggested questions will be displayed.
+   */
   @JsonProperty("suggested_questions")
   protected List<String> suggestedQuestions;
 

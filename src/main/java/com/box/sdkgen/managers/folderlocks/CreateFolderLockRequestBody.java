@@ -9,9 +9,14 @@ import java.util.Objects;
 @JsonFilter("nullablePropertyFilter")
 public class CreateFolderLockRequestBody extends SerializableObject {
 
+  /**
+   * The operations to lock for the folder. If `locked_operations` is included in the request, both
+   * `move` and `delete` must also be included and both set to `true`.
+   */
   @JsonProperty("locked_operations")
   protected CreateFolderLockRequestBodyLockedOperationsField lockedOperations;
 
+  /** The folder to apply the lock to. */
   protected final CreateFolderLockRequestBodyFolderField folder;
 
   public CreateFolderLockRequestBody(

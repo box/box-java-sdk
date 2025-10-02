@@ -14,11 +14,14 @@ import java.util.Objects;
 @JsonFilter("nullablePropertyFilter")
 public class CreateCollaborationRequestBody extends SerializableObject {
 
+  /** The item to attach the comment to. */
   protected final CreateCollaborationRequestBodyItemField item;
 
+  /** The user or group to give access to the item. */
   @JsonProperty("accessible_by")
   protected final CreateCollaborationRequestBodyAccessibleByField accessibleBy;
 
+  /** The level of access granted. */
   @JsonDeserialize(
       using =
           CreateCollaborationRequestBodyRoleField
@@ -29,12 +32,39 @@ public class CreateCollaborationRequestBody extends SerializableObject {
               .class)
   protected final EnumWrapper<CreateCollaborationRequestBodyRoleField> role;
 
+  /**
+   * If set to `true`, collaborators have access to shared items, but such items won't be visible in
+   * the All Files list. Additionally, collaborators won't see the path to the root folder for the
+   * shared item.
+   */
   @JsonProperty("is_access_only")
   protected Boolean isAccessOnly;
 
+  /**
+   * Determines if the invited users can see the entire parent path to the associated folder. The
+   * user will not gain privileges in any parent folder and therefore can not see content the user
+   * is not collaborated on.
+   *
+   * <p>Be aware that this meaningfully increases the time required to load the invitee's **All
+   * Files** page. We recommend you limit the number of collaborations with `can_view_path` enabled
+   * to 1,000 per user.
+   *
+   * <p>Only owner or co-owners can invite collaborators with a `can_view_path` of `true`.
+   *
+   * <p>`can_view_path` can only be used for folder collaborations.
+   */
   @JsonProperty("can_view_path")
   protected Boolean canViewPath;
 
+  /**
+   * Set the expiration date for the collaboration. At this date, the collaboration will be
+   * automatically removed from the item.
+   *
+   * <p>This feature will only work if the **Automatically remove invited collaborators: Allow
+   * folder owners to extend the expiry date** setting has been enabled in the **Enterprise
+   * Settings** of the **Admin Console**. When the setting is not enabled, collaborations can not
+   * have an expiry date and a value for this field will be result in an error.
+   */
   @JsonProperty("expires_at")
   @JsonSerialize(using = DateTimeUtils.DateTimeSerializer.class)
   @JsonDeserialize(using = DateTimeUtils.DateTimeDeserializer.class)

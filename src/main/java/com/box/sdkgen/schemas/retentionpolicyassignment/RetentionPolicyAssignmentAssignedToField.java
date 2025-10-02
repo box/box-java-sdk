@@ -12,8 +12,13 @@ import java.util.Objects;
 @JsonFilter("nullablePropertyFilter")
 public class RetentionPolicyAssignmentAssignedToField extends SerializableObject {
 
+  /**
+   * The ID of the folder, enterprise, or metadata template the policy is assigned to. Set to null
+   * or omit when type is set to enterprise.
+   */
   @Nullable protected String id;
 
+  /** The type of resource the policy is assigned to. */
   @JsonDeserialize(
       using =
           RetentionPolicyAssignmentAssignedToTypeField

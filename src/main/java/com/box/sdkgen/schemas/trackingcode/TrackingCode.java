@@ -8,15 +8,23 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import java.util.Objects;
 
+/**
+ * Tracking codes allow an admin to generate reports from the admin console and assign an attribute
+ * to a specific group of users. This setting must be enabled for an enterprise before it can be
+ * used.
+ */
 @JsonFilter("nullablePropertyFilter")
 public class TrackingCode extends SerializableObject {
 
+  /** The value will always be `tracking_code`. */
   @JsonDeserialize(using = TrackingCodeTypeField.TrackingCodeTypeFieldDeserializer.class)
   @JsonSerialize(using = TrackingCodeTypeField.TrackingCodeTypeFieldSerializer.class)
   protected EnumWrapper<TrackingCodeTypeField> type;
 
+  /** The name of the tracking code, which must be preconfigured in the Admin Console. */
   protected String name;
 
+  /** The value of the tracking code. */
   protected String value;
 
   public TrackingCode() {

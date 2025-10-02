@@ -11,21 +11,29 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import java.time.OffsetDateTime;
 import java.util.Objects;
 
+/**
+ * Prefill tags are used to prefill placeholders with signer input data. Only one value field can be
+ * included.
+ */
 @JsonFilter("nullablePropertyFilter")
 public class SignRequestPrefillTag extends SerializableObject {
 
+  /** This references the ID of a specific tag contained in a file of the signature request. */
   @JsonProperty("document_tag_id")
   @Nullable
   protected String documentTagId;
 
+  /** Text prefill value. */
   @JsonProperty("text_value")
   @Nullable
   protected String textValue;
 
+  /** Checkbox prefill value. */
   @JsonProperty("checkbox_value")
   @Nullable
   protected Boolean checkboxValue;
 
+  /** Date prefill value. */
   @JsonProperty("date_value")
   @JsonSerialize(using = DateUtils.DateSerializer.class)
   @JsonDeserialize(using = DateUtils.DateDeserializer.class)

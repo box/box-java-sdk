@@ -9,14 +9,18 @@ import java.util.Objects;
 @JsonFilter("nullablePropertyFilter")
 public class UpdateWebLinkByIdRequestBody extends SerializableObject {
 
+  /** The new URL that the web link links to. Must start with `"http://"` or `"https://"`. */
   protected String url;
 
   protected UpdateWebLinkByIdRequestBodyParentField parent;
 
+  /** A new name for the web link. Defaults to the URL if not set. */
   protected String name;
 
+  /** A new description of the web link. */
   protected String description;
 
+  /** The settings for the shared link to update. */
   @JsonProperty("shared_link")
   protected UpdateWebLinkByIdRequestBodySharedLinkField sharedLink;
 

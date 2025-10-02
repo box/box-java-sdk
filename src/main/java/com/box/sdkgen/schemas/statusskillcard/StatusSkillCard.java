@@ -11,18 +11,22 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import java.time.OffsetDateTime;
 import java.util.Objects;
 
+/** A Box Skill metadata card that puts a status message in the metadata sidebar. */
 @JsonFilter("nullablePropertyFilter")
 public class StatusSkillCard extends SerializableObject {
 
+  /** The optional date and time this card was created at. */
   @JsonProperty("created_at")
   @JsonSerialize(using = DateTimeUtils.DateTimeSerializer.class)
   @JsonDeserialize(using = DateTimeUtils.DateTimeDeserializer.class)
   protected OffsetDateTime createdAt;
 
+  /** The value will always be `skill_card`. */
   @JsonDeserialize(using = StatusSkillCardTypeField.StatusSkillCardTypeFieldDeserializer.class)
   @JsonSerialize(using = StatusSkillCardTypeField.StatusSkillCardTypeFieldSerializer.class)
   protected EnumWrapper<StatusSkillCardTypeField> type;
 
+  /** The value will always be `status`. */
   @JsonDeserialize(
       using = StatusSkillCardSkillCardTypeField.StatusSkillCardSkillCardTypeFieldDeserializer.class)
   @JsonSerialize(
@@ -30,13 +34,22 @@ public class StatusSkillCard extends SerializableObject {
   @JsonProperty("skill_card_type")
   protected EnumWrapper<StatusSkillCardSkillCardTypeField> skillCardType;
 
+  /** The title of the card. */
   @JsonProperty("skill_card_title")
   protected StatusSkillCardSkillCardTitleField skillCardTitle;
 
+  /**
+   * Sets the status of the skill. This can be used to show a message to the user while the Skill is
+   * processing the data, or if it was not able to process the file.
+   */
   protected final StatusSkillCardStatusField status;
 
+  /** The service that applied this metadata. */
   protected final StatusSkillCardSkillField skill;
 
+  /**
+   * The invocation of this service, used to track which instance of a service applied the metadata.
+   */
   protected final StatusSkillCardInvocationField invocation;
 
   public StatusSkillCard(

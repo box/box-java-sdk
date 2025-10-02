@@ -6,14 +6,21 @@ import com.fasterxml.jackson.annotation.JsonFilter;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.Objects;
 
+/** Result of a single external user deletion request. */
 @JsonFilter("nullablePropertyFilter")
 public class ExternalUserDeletionResultV2025R0 extends SerializableObject {
 
+  /** The ID of the external user. */
   @JsonProperty("user_id")
   protected final String userId;
 
+  /** HTTP status code for a specific user's deletion request. */
   protected final long status;
 
+  /**
+   * Deletion request status details. This property is only present when the deletion request is not
+   * successful.
+   */
   protected String detail;
 
   public ExternalUserDeletionResultV2025R0(

@@ -10,9 +10,11 @@ import com.fasterxml.jackson.annotation.JsonFilter;
 import java.util.List;
 import java.util.Objects;
 
+/** The AI agent tool used to handle spreadsheets and tabular data. */
 @JsonFilter("nullablePropertyFilter")
 public class AiStudioAgentSpreadsheetToolResponse extends AiStudioAgentSpreadsheetTool {
 
+  /** Warnings concerning tool. */
   protected List<String> warnings;
 
   public AiStudioAgentSpreadsheetToolResponse() {

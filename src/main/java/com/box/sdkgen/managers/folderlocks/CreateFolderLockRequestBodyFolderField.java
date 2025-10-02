@@ -8,8 +8,10 @@ import java.util.Objects;
 @JsonFilter("nullablePropertyFilter")
 public class CreateFolderLockRequestBodyFolderField extends SerializableObject {
 
+  /** The content type the lock is being applied to. Only `folder` is supported. */
   protected final String type;
 
+  /** The ID of the folder. */
   protected final String id;
 
   public CreateFolderLockRequestBodyFolderField(

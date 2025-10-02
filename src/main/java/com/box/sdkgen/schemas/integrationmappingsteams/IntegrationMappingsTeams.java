@@ -7,9 +7,11 @@ import com.fasterxml.jackson.annotation.JsonFilter;
 import java.util.List;
 import java.util.Objects;
 
+/** A list of integration mapping objects. */
 @JsonFilter("nullablePropertyFilter")
 public class IntegrationMappingsTeams extends SerializableObject {
 
+  /** A list of integration mappings. */
   protected List<IntegrationMappingTeams> entries;
 
   public IntegrationMappingsTeams() {

@@ -10,13 +10,17 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import java.time.OffsetDateTime;
 import java.util.Objects;
 
+/** A context object that can hold prior prompts and answers. */
 @JsonFilter("nullablePropertyFilter")
 public class AiDialogueHistory extends SerializableObject {
 
+  /** The prompt previously provided by the client and answered by the LLM. */
   protected String prompt;
 
+  /** The answer previously provided by the LLM. */
   protected String answer;
 
+  /** The ISO date formatted timestamp of when the previous answer to the prompt was created. */
   @JsonProperty("created_at")
   @JsonSerialize(using = DateTimeUtils.DateTimeSerializer.class)
   @JsonDeserialize(using = DateTimeUtils.DateTimeDeserializer.class)

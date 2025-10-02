@@ -12,6 +12,7 @@ import java.util.Objects;
 @JsonFilter("nullablePropertyFilter")
 public class CreateStoragePolicyAssignmentRequestBodyStoragePolicyField extends SerializableObject {
 
+  /** The type to assign. */
   @JsonDeserialize(
       using =
           CreateStoragePolicyAssignmentRequestBodyStoragePolicyTypeField
@@ -22,6 +23,7 @@ public class CreateStoragePolicyAssignmentRequestBodyStoragePolicyField extends 
               .CreateStoragePolicyAssignmentRequestBodyStoragePolicyTypeFieldSerializer.class)
   protected EnumWrapper<CreateStoragePolicyAssignmentRequestBodyStoragePolicyTypeField> type;
 
+  /** The ID of the storage policy to assign. */
   protected final String id;
 
   public CreateStoragePolicyAssignmentRequestBodyStoragePolicyField(@JsonProperty("id") String id) {

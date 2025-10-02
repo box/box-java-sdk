@@ -11,27 +11,36 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import java.time.OffsetDateTime;
 import java.util.Objects;
 
+/** The root-level record that is supposed to represent a single Terms of Service. */
 @JsonFilter("nullablePropertyFilter")
 public class TermsOfService extends TermsOfServiceBase {
 
+  /** Whether these terms are enabled or not. */
   @JsonDeserialize(using = TermsOfServiceStatusField.TermsOfServiceStatusFieldDeserializer.class)
   @JsonSerialize(using = TermsOfServiceStatusField.TermsOfServiceStatusFieldSerializer.class)
   protected EnumWrapper<TermsOfServiceStatusField> status;
 
   protected TermsOfServiceEnterpriseField enterprise;
 
+  /** Whether to apply these terms to managed users or external users. */
   @JsonDeserialize(using = TermsOfServiceTosTypeField.TermsOfServiceTosTypeFieldDeserializer.class)
   @JsonSerialize(using = TermsOfServiceTosTypeField.TermsOfServiceTosTypeFieldSerializer.class)
   @JsonProperty("tos_type")
   protected EnumWrapper<TermsOfServiceTosTypeField> tosType;
 
+  /**
+   * The text for your terms and conditions. This text could be empty if the `status` is set to
+   * `disabled`.
+   */
   protected String text;
 
+  /** When the legal item was created. */
   @JsonProperty("created_at")
   @JsonSerialize(using = DateTimeUtils.DateTimeSerializer.class)
   @JsonDeserialize(using = DateTimeUtils.DateTimeDeserializer.class)
   protected OffsetDateTime createdAt;
 
+  /** When the legal item was modified. */
   @JsonProperty("modified_at")
   @JsonSerialize(using = DateTimeUtils.DateTimeSerializer.class)
   @JsonDeserialize(using = DateTimeUtils.DateTimeDeserializer.class)

@@ -13,6 +13,7 @@ import java.util.Objects;
 @JsonFilter("nullablePropertyFilter")
 public class CreateClassificationTemplateRequestBodyFieldsField extends SerializableObject {
 
+  /** The type of the field that is always enum. */
   @JsonDeserialize(
       using =
           CreateClassificationTemplateRequestBodyFieldsTypeField
@@ -23,6 +24,7 @@ public class CreateClassificationTemplateRequestBodyFieldsField extends Serializ
               .CreateClassificationTemplateRequestBodyFieldsTypeFieldSerializer.class)
   protected EnumWrapper<CreateClassificationTemplateRequestBodyFieldsTypeField> type;
 
+  /** Defines classifications available in the enterprise. */
   @JsonDeserialize(
       using =
           CreateClassificationTemplateRequestBodyFieldsKeyField
@@ -33,6 +35,7 @@ public class CreateClassificationTemplateRequestBodyFieldsField extends Serializ
               .CreateClassificationTemplateRequestBodyFieldsKeyFieldSerializer.class)
   protected EnumWrapper<CreateClassificationTemplateRequestBodyFieldsKeyField> key;
 
+  /** A display name for the classification. */
   @JsonDeserialize(
       using =
           CreateClassificationTemplateRequestBodyFieldsDisplayNameField
@@ -43,8 +46,10 @@ public class CreateClassificationTemplateRequestBodyFieldsField extends Serializ
               .CreateClassificationTemplateRequestBodyFieldsDisplayNameFieldSerializer.class)
   protected EnumWrapper<CreateClassificationTemplateRequestBodyFieldsDisplayNameField> displayName;
 
+  /** Determines if the classification template is hidden or available on web and mobile devices. */
   protected Boolean hidden;
 
+  /** The actual list of classifications that are present on this template. */
   protected final List<CreateClassificationTemplateRequestBodyFieldsOptionsField> options;
 
   public CreateClassificationTemplateRequestBodyFieldsField(

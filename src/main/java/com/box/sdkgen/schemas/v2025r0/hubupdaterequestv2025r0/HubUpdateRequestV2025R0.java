@@ -6,22 +6,29 @@ import com.fasterxml.jackson.annotation.JsonFilter;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.Objects;
 
+/** Request schema for updating an existing Box Hub. */
 @JsonFilter("nullablePropertyFilter")
 public class HubUpdateRequestV2025R0 extends SerializableObject {
 
+  /** Title of the Box Hub. It cannot be empty and should be less than 50 characters. */
   protected String title;
 
+  /** Description of the Box Hub. */
   protected String description;
 
+  /** Indicates if AI features are enabled for the Box Hub. */
   @JsonProperty("is_ai_enabled")
   protected Boolean isAiEnabled;
 
+  /** Indicates if collaboration is restricted to the enterprise. */
   @JsonProperty("is_collaboration_restricted_to_enterprise")
   protected Boolean isCollaborationRestrictedToEnterprise;
 
+  /** Indicates if non-owners can invite others to the Box Hub. */
   @JsonProperty("can_non_owners_invite")
   protected Boolean canNonOwnersInvite;
 
+  /** Indicates if a shared link can be created for the Box Hub. */
   @JsonProperty("can_shared_link_be_created")
   protected Boolean canSharedLinkBeCreated;
 

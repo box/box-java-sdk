@@ -11,11 +11,17 @@ import com.fasterxml.jackson.annotation.JsonFilter;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.Objects;
 
+/** The AI agent tool used to handle spreadsheets and tabular data. */
 @JsonFilter("nullablePropertyFilter")
 public class AiAgentSpreadsheetTool extends SerializableObject {
 
+  /**
+   * The model used for the AI agent for spreadsheets. For specific model values, see the [available
+   * models list](g://box-ai/supported-models).
+   */
   protected String model;
 
+  /** The number of tokens for completion. */
   @JsonProperty("num_tokens_for_completion")
   protected Long numTokensForCompletion;
 

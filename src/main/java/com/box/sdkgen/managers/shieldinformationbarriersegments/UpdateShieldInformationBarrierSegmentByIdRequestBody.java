@@ -9,8 +9,10 @@ import java.util.Objects;
 @JsonFilter("nullablePropertyFilter")
 public class UpdateShieldInformationBarrierSegmentByIdRequestBody extends SerializableObject {
 
+  /** The updated name for the shield information barrier segment. */
   protected String name;
 
+  /** The updated description for the shield information barrier segment. */
   @Nullable protected String description;
 
   public UpdateShieldInformationBarrierSegmentByIdRequestBody() {

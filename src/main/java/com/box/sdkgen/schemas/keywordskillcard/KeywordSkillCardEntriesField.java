@@ -8,6 +8,7 @@ import java.util.Objects;
 @JsonFilter("nullablePropertyFilter")
 public class KeywordSkillCardEntriesField extends SerializableObject {
 
+  /** The text of the keyword. */
   protected String text;
 
   public KeywordSkillCardEntriesField() {

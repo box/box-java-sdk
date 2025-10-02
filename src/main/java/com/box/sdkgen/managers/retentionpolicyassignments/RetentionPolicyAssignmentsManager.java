@@ -32,6 +32,12 @@ public class RetentionPolicyAssignmentsManager {
     this.networkSession = builder.networkSession;
   }
 
+  /**
+   * Returns a list of all retention policy assignments associated with a specified retention
+   * policy.
+   *
+   * @param retentionPolicyId The ID of the retention policy. Example: "982312"
+   */
   public RetentionPolicyAssignments getRetentionPolicyAssignments(String retentionPolicyId) {
     return getRetentionPolicyAssignments(
         retentionPolicyId,
@@ -39,18 +45,40 @@ public class RetentionPolicyAssignmentsManager {
         new GetRetentionPolicyAssignmentsHeaders());
   }
 
+  /**
+   * Returns a list of all retention policy assignments associated with a specified retention
+   * policy.
+   *
+   * @param retentionPolicyId The ID of the retention policy. Example: "982312"
+   * @param queryParams Query parameters of getRetentionPolicyAssignments method
+   */
   public RetentionPolicyAssignments getRetentionPolicyAssignments(
       String retentionPolicyId, GetRetentionPolicyAssignmentsQueryParams queryParams) {
     return getRetentionPolicyAssignments(
         retentionPolicyId, queryParams, new GetRetentionPolicyAssignmentsHeaders());
   }
 
+  /**
+   * Returns a list of all retention policy assignments associated with a specified retention
+   * policy.
+   *
+   * @param retentionPolicyId The ID of the retention policy. Example: "982312"
+   * @param headers Headers of getRetentionPolicyAssignments method
+   */
   public RetentionPolicyAssignments getRetentionPolicyAssignments(
       String retentionPolicyId, GetRetentionPolicyAssignmentsHeaders headers) {
     return getRetentionPolicyAssignments(
         retentionPolicyId, new GetRetentionPolicyAssignmentsQueryParams(), headers);
   }
 
+  /**
+   * Returns a list of all retention policy assignments associated with a specified retention
+   * policy.
+   *
+   * @param retentionPolicyId The ID of the retention policy. Example: "982312"
+   * @param queryParams Query parameters of getRetentionPolicyAssignments method
+   * @param headers Headers of getRetentionPolicyAssignments method
+   */
   public RetentionPolicyAssignments getRetentionPolicyAssignments(
       String retentionPolicyId,
       GetRetentionPolicyAssignmentsQueryParams queryParams,
@@ -84,12 +112,23 @@ public class RetentionPolicyAssignmentsManager {
     return JsonManager.deserialize(response.getData(), RetentionPolicyAssignments.class);
   }
 
+  /**
+   * Assigns a retention policy to an item.
+   *
+   * @param requestBody Request body of createRetentionPolicyAssignment method
+   */
   public RetentionPolicyAssignment createRetentionPolicyAssignment(
       CreateRetentionPolicyAssignmentRequestBody requestBody) {
     return createRetentionPolicyAssignment(
         requestBody, new CreateRetentionPolicyAssignmentHeaders());
   }
 
+  /**
+   * Assigns a retention policy to an item.
+   *
+   * @param requestBody Request body of createRetentionPolicyAssignment method
+   * @param headers Headers of createRetentionPolicyAssignment method
+   */
   public RetentionPolicyAssignment createRetentionPolicyAssignment(
       CreateRetentionPolicyAssignmentRequestBody requestBody,
       CreateRetentionPolicyAssignmentHeaders headers) {
@@ -114,6 +153,12 @@ public class RetentionPolicyAssignmentsManager {
     return JsonManager.deserialize(response.getData(), RetentionPolicyAssignment.class);
   }
 
+  /**
+   * Retrieves a retention policy assignment.
+   *
+   * @param retentionPolicyAssignmentId The ID of the retention policy assignment. Example:
+   *     "1233123"
+   */
   public RetentionPolicyAssignment getRetentionPolicyAssignmentById(
       String retentionPolicyAssignmentId) {
     return getRetentionPolicyAssignmentById(
@@ -122,18 +167,40 @@ public class RetentionPolicyAssignmentsManager {
         new GetRetentionPolicyAssignmentByIdHeaders());
   }
 
+  /**
+   * Retrieves a retention policy assignment.
+   *
+   * @param retentionPolicyAssignmentId The ID of the retention policy assignment. Example:
+   *     "1233123"
+   * @param queryParams Query parameters of getRetentionPolicyAssignmentById method
+   */
   public RetentionPolicyAssignment getRetentionPolicyAssignmentById(
       String retentionPolicyAssignmentId, GetRetentionPolicyAssignmentByIdQueryParams queryParams) {
     return getRetentionPolicyAssignmentById(
         retentionPolicyAssignmentId, queryParams, new GetRetentionPolicyAssignmentByIdHeaders());
   }
 
+  /**
+   * Retrieves a retention policy assignment.
+   *
+   * @param retentionPolicyAssignmentId The ID of the retention policy assignment. Example:
+   *     "1233123"
+   * @param headers Headers of getRetentionPolicyAssignmentById method
+   */
   public RetentionPolicyAssignment getRetentionPolicyAssignmentById(
       String retentionPolicyAssignmentId, GetRetentionPolicyAssignmentByIdHeaders headers) {
     return getRetentionPolicyAssignmentById(
         retentionPolicyAssignmentId, new GetRetentionPolicyAssignmentByIdQueryParams(), headers);
   }
 
+  /**
+   * Retrieves a retention policy assignment.
+   *
+   * @param retentionPolicyAssignmentId The ID of the retention policy assignment. Example:
+   *     "1233123"
+   * @param queryParams Query parameters of getRetentionPolicyAssignmentById method
+   * @param headers Headers of getRetentionPolicyAssignmentById method
+   */
   public RetentionPolicyAssignment getRetentionPolicyAssignmentById(
       String retentionPolicyAssignmentId,
       GetRetentionPolicyAssignmentByIdQueryParams queryParams,
@@ -161,11 +228,24 @@ public class RetentionPolicyAssignmentsManager {
     return JsonManager.deserialize(response.getData(), RetentionPolicyAssignment.class);
   }
 
+  /**
+   * Removes a retention policy assignment applied to content.
+   *
+   * @param retentionPolicyAssignmentId The ID of the retention policy assignment. Example:
+   *     "1233123"
+   */
   public void deleteRetentionPolicyAssignmentById(String retentionPolicyAssignmentId) {
     deleteRetentionPolicyAssignmentById(
         retentionPolicyAssignmentId, new DeleteRetentionPolicyAssignmentByIdHeaders());
   }
 
+  /**
+   * Removes a retention policy assignment applied to content.
+   *
+   * @param retentionPolicyAssignmentId The ID of the retention policy assignment. Example:
+   *     "1233123"
+   * @param headers Headers of deleteRetentionPolicyAssignmentById method
+   */
   public void deleteRetentionPolicyAssignmentById(
       String retentionPolicyAssignmentId, DeleteRetentionPolicyAssignmentByIdHeaders headers) {
     Map<String, String> headersMap = prepareParams(mergeMaps(mapOf(), headers.getExtraHeaders()));
@@ -187,6 +267,12 @@ public class RetentionPolicyAssignmentsManager {
                     .build());
   }
 
+  /**
+   * Returns a list of files under retention for a retention policy assignment.
+   *
+   * @param retentionPolicyAssignmentId The ID of the retention policy assignment. Example:
+   *     "1233123"
+   */
   public FilesUnderRetention getFilesUnderRetentionPolicyAssignment(
       String retentionPolicyAssignmentId) {
     return getFilesUnderRetentionPolicyAssignment(
@@ -195,6 +281,13 @@ public class RetentionPolicyAssignmentsManager {
         new GetFilesUnderRetentionPolicyAssignmentHeaders());
   }
 
+  /**
+   * Returns a list of files under retention for a retention policy assignment.
+   *
+   * @param retentionPolicyAssignmentId The ID of the retention policy assignment. Example:
+   *     "1233123"
+   * @param queryParams Query parameters of getFilesUnderRetentionPolicyAssignment method
+   */
   public FilesUnderRetention getFilesUnderRetentionPolicyAssignment(
       String retentionPolicyAssignmentId,
       GetFilesUnderRetentionPolicyAssignmentQueryParams queryParams) {
@@ -204,6 +297,13 @@ public class RetentionPolicyAssignmentsManager {
         new GetFilesUnderRetentionPolicyAssignmentHeaders());
   }
 
+  /**
+   * Returns a list of files under retention for a retention policy assignment.
+   *
+   * @param retentionPolicyAssignmentId The ID of the retention policy assignment. Example:
+   *     "1233123"
+   * @param headers Headers of getFilesUnderRetentionPolicyAssignment method
+   */
   public FilesUnderRetention getFilesUnderRetentionPolicyAssignment(
       String retentionPolicyAssignmentId, GetFilesUnderRetentionPolicyAssignmentHeaders headers) {
     return getFilesUnderRetentionPolicyAssignment(
@@ -212,6 +312,14 @@ public class RetentionPolicyAssignmentsManager {
         headers);
   }
 
+  /**
+   * Returns a list of files under retention for a retention policy assignment.
+   *
+   * @param retentionPolicyAssignmentId The ID of the retention policy assignment. Example:
+   *     "1233123"
+   * @param queryParams Query parameters of getFilesUnderRetentionPolicyAssignment method
+   * @param headers Headers of getFilesUnderRetentionPolicyAssignment method
+   */
   public FilesUnderRetention getFilesUnderRetentionPolicyAssignment(
       String retentionPolicyAssignmentId,
       GetFilesUnderRetentionPolicyAssignmentQueryParams queryParams,

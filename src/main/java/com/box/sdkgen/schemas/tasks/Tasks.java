@@ -8,12 +8,18 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.List;
 import java.util.Objects;
 
+/** A list of tasks. */
 @JsonFilter("nullablePropertyFilter")
 public class Tasks extends SerializableObject {
 
+  /**
+   * One greater than the offset of the last entry in the entire collection. The total number of
+   * entries in the collection may be less than `total_count`.
+   */
   @JsonProperty("total_count")
   protected Long totalCount;
 
+  /** A list of tasks. */
   protected List<Task> entries;
 
   public Tasks() {

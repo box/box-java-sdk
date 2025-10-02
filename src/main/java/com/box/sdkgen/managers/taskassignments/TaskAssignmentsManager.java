@@ -30,10 +30,21 @@ public class TaskAssignmentsManager {
     this.networkSession = builder.networkSession;
   }
 
+  /**
+   * Lists all of the assignments for a given task.
+   *
+   * @param taskId The ID of the task. Example: "12345"
+   */
   public TaskAssignments getTaskAssignments(String taskId) {
     return getTaskAssignments(taskId, new GetTaskAssignmentsHeaders());
   }
 
+  /**
+   * Lists all of the assignments for a given task.
+   *
+   * @param taskId The ID of the task. Example: "12345"
+   * @param headers Headers of getTaskAssignments method
+   */
   public TaskAssignments getTaskAssignments(String taskId, GetTaskAssignmentsHeaders headers) {
     Map<String, String> headersMap = prepareParams(mergeMaps(mapOf(), headers.getExtraHeaders()));
     FetchResponse response =
@@ -56,10 +67,25 @@ public class TaskAssignmentsManager {
     return JsonManager.deserialize(response.getData(), TaskAssignments.class);
   }
 
+  /**
+   * Assigns a task to a user.
+   *
+   * <p>A task can be assigned to more than one user by creating multiple assignments.
+   *
+   * @param requestBody Request body of createTaskAssignment method
+   */
   public TaskAssignment createTaskAssignment(CreateTaskAssignmentRequestBody requestBody) {
     return createTaskAssignment(requestBody, new CreateTaskAssignmentHeaders());
   }
 
+  /**
+   * Assigns a task to a user.
+   *
+   * <p>A task can be assigned to more than one user by creating multiple assignments.
+   *
+   * @param requestBody Request body of createTaskAssignment method
+   * @param headers Headers of createTaskAssignment method
+   */
   public TaskAssignment createTaskAssignment(
       CreateTaskAssignmentRequestBody requestBody, CreateTaskAssignmentHeaders headers) {
     Map<String, String> headersMap = prepareParams(mergeMaps(mapOf(), headers.getExtraHeaders()));
@@ -83,10 +109,21 @@ public class TaskAssignmentsManager {
     return JsonManager.deserialize(response.getData(), TaskAssignment.class);
   }
 
+  /**
+   * Retrieves information about a task assignment.
+   *
+   * @param taskAssignmentId The ID of the task assignment. Example: "12345"
+   */
   public TaskAssignment getTaskAssignmentById(String taskAssignmentId) {
     return getTaskAssignmentById(taskAssignmentId, new GetTaskAssignmentByIdHeaders());
   }
 
+  /**
+   * Retrieves information about a task assignment.
+   *
+   * @param taskAssignmentId The ID of the task assignment. Example: "12345"
+   * @param headers Headers of getTaskAssignmentById method
+   */
   public TaskAssignment getTaskAssignmentById(
       String taskAssignmentId, GetTaskAssignmentByIdHeaders headers) {
     Map<String, String> headersMap = prepareParams(mergeMaps(mapOf(), headers.getExtraHeaders()));
@@ -109,6 +146,12 @@ public class TaskAssignmentsManager {
     return JsonManager.deserialize(response.getData(), TaskAssignment.class);
   }
 
+  /**
+   * Updates a task assignment. This endpoint can be used to update the state of a task assigned to
+   * a user.
+   *
+   * @param taskAssignmentId The ID of the task assignment. Example: "12345"
+   */
   public TaskAssignment updateTaskAssignmentById(String taskAssignmentId) {
     return updateTaskAssignmentById(
         taskAssignmentId,
@@ -116,18 +159,40 @@ public class TaskAssignmentsManager {
         new UpdateTaskAssignmentByIdHeaders());
   }
 
+  /**
+   * Updates a task assignment. This endpoint can be used to update the state of a task assigned to
+   * a user.
+   *
+   * @param taskAssignmentId The ID of the task assignment. Example: "12345"
+   * @param requestBody Request body of updateTaskAssignmentById method
+   */
   public TaskAssignment updateTaskAssignmentById(
       String taskAssignmentId, UpdateTaskAssignmentByIdRequestBody requestBody) {
     return updateTaskAssignmentById(
         taskAssignmentId, requestBody, new UpdateTaskAssignmentByIdHeaders());
   }
 
+  /**
+   * Updates a task assignment. This endpoint can be used to update the state of a task assigned to
+   * a user.
+   *
+   * @param taskAssignmentId The ID of the task assignment. Example: "12345"
+   * @param headers Headers of updateTaskAssignmentById method
+   */
   public TaskAssignment updateTaskAssignmentById(
       String taskAssignmentId, UpdateTaskAssignmentByIdHeaders headers) {
     return updateTaskAssignmentById(
         taskAssignmentId, new UpdateTaskAssignmentByIdRequestBody(), headers);
   }
 
+  /**
+   * Updates a task assignment. This endpoint can be used to update the state of a task assigned to
+   * a user.
+   *
+   * @param taskAssignmentId The ID of the task assignment. Example: "12345"
+   * @param requestBody Request body of updateTaskAssignmentById method
+   * @param headers Headers of updateTaskAssignmentById method
+   */
   public TaskAssignment updateTaskAssignmentById(
       String taskAssignmentId,
       UpdateTaskAssignmentByIdRequestBody requestBody,
@@ -154,10 +219,21 @@ public class TaskAssignmentsManager {
     return JsonManager.deserialize(response.getData(), TaskAssignment.class);
   }
 
+  /**
+   * Deletes a specific task assignment.
+   *
+   * @param taskAssignmentId The ID of the task assignment. Example: "12345"
+   */
   public void deleteTaskAssignmentById(String taskAssignmentId) {
     deleteTaskAssignmentById(taskAssignmentId, new DeleteTaskAssignmentByIdHeaders());
   }
 
+  /**
+   * Deletes a specific task assignment.
+   *
+   * @param taskAssignmentId The ID of the task assignment. Example: "12345"
+   * @param headers Headers of deleteTaskAssignmentById method
+   */
   public void deleteTaskAssignmentById(
       String taskAssignmentId, DeleteTaskAssignmentByIdHeaders headers) {
     Map<String, String> headersMap = prepareParams(mergeMaps(mapOf(), headers.getExtraHeaders()));

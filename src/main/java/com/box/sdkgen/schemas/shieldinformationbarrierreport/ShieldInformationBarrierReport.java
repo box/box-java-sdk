@@ -14,12 +14,14 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import java.time.OffsetDateTime;
 import java.util.Objects;
 
+/** A standard representation of a shield information barrier report object. */
 @JsonFilter("nullablePropertyFilter")
 public class ShieldInformationBarrierReport extends ShieldInformationBarrierReportBase {
 
   @JsonProperty("shield_information_barrier")
   protected ShieldInformationBarrierReference shieldInformationBarrier;
 
+  /** Status of the shield information report. */
   @JsonDeserialize(
       using =
           ShieldInformationBarrierReportStatusField
@@ -32,6 +34,7 @@ public class ShieldInformationBarrierReport extends ShieldInformationBarrierRepo
 
   protected ShieldInformationBarrierReportDetails details;
 
+  /** ISO date time string when this shield information barrier report object was created. */
   @JsonProperty("created_at")
   @JsonSerialize(using = DateTimeUtils.DateTimeSerializer.class)
   @JsonDeserialize(using = DateTimeUtils.DateTimeDeserializer.class)
@@ -40,6 +43,7 @@ public class ShieldInformationBarrierReport extends ShieldInformationBarrierRepo
   @JsonProperty("created_by")
   protected UserBase createdBy;
 
+  /** ISO date time string when this shield information barrier report was updated. */
   @JsonProperty("updated_at")
   @JsonSerialize(using = DateTimeUtils.DateTimeSerializer.class)
   @JsonDeserialize(using = DateTimeUtils.DateTimeDeserializer.class)

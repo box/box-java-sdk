@@ -9,6 +9,10 @@ import java.util.Objects;
 @JsonFilter("nullablePropertyFilter")
 public class UpdateFileByIdRequestBodySharedLinkPermissionsField extends SerializableObject {
 
+  /**
+   * If the shared link allows for downloading of files. This can only be set when `access` is set
+   * to `open` or `company`.
+   */
   @JsonProperty("can_download")
   protected Boolean canDownload;
 

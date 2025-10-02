@@ -32,10 +32,21 @@ public class HubItemsManager {
     this.networkSession = builder.networkSession;
   }
 
+  /**
+   * Retrieves all items associated with a Box Hub.
+   *
+   * @param queryParams Query parameters of getHubItemsV2025R0 method
+   */
   public HubItemsV2025R0 getHubItemsV2025R0(GetHubItemsV2025R0QueryParams queryParams) {
     return getHubItemsV2025R0(queryParams, new GetHubItemsV2025R0Headers());
   }
 
+  /**
+   * Retrieves all items associated with a Box Hub.
+   *
+   * @param queryParams Query parameters of getHubItemsV2025R0 method
+   * @param headers Headers of getHubItemsV2025R0 method
+   */
   public HubItemsV2025R0 getHubItemsV2025R0(
       GetHubItemsV2025R0QueryParams queryParams, GetHubItemsV2025R0Headers headers) {
     Map<String, String> queryParamsMap =
@@ -66,11 +77,30 @@ public class HubItemsManager {
     return JsonManager.deserialize(response.getData(), HubItemsV2025R0.class);
   }
 
+  /**
+   * Adds and/or removes Box Hub items from a Box Hub.
+   *
+   * @param hubId The unique identifier that represent a hub.
+   *     <p>The ID for any hub can be determined by visiting this hub in the web application and
+   *     copying the ID from the URL. For example, for the URL `https://*.app.box.com/hubs/123` the
+   *     `hub_id` is `123`. Example: "12345"
+   * @param requestBody Request body of manageHubItemsV2025R0 method
+   */
   public HubItemsManageResponseV2025R0 manageHubItemsV2025R0(
       String hubId, HubItemsManageRequestV2025R0 requestBody) {
     return manageHubItemsV2025R0(hubId, requestBody, new ManageHubItemsV2025R0Headers());
   }
 
+  /**
+   * Adds and/or removes Box Hub items from a Box Hub.
+   *
+   * @param hubId The unique identifier that represent a hub.
+   *     <p>The ID for any hub can be determined by visiting this hub in the web application and
+   *     copying the ID from the URL. For example, for the URL `https://*.app.box.com/hubs/123` the
+   *     `hub_id` is `123`. Example: "12345"
+   * @param requestBody Request body of manageHubItemsV2025R0 method
+   * @param headers Headers of manageHubItemsV2025R0 method
+   */
   public HubItemsManageResponseV2025R0 manageHubItemsV2025R0(
       String hubId,
       HubItemsManageRequestV2025R0 requestBody,

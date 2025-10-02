@@ -8,6 +8,7 @@ import java.util.Objects;
 @JsonFilter("nullablePropertyFilter")
 public class RestoreWeblinkFromTrashRequestBody extends SerializableObject {
 
+  /** An optional new name for the web link. */
   protected String name;
 
   protected RestoreWeblinkFromTrashRequestBodyParentField parent;

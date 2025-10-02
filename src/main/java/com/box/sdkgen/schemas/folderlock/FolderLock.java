@@ -12,26 +12,38 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import java.time.OffsetDateTime;
 import java.util.Objects;
 
+/**
+ * Folder locks define access restrictions placed by folder owners to prevent specific folders from
+ * being moved or deleted.
+ */
 @JsonFilter("nullablePropertyFilter")
 public class FolderLock extends SerializableObject {
 
   protected FolderMini folder;
 
+  /** The unique identifier for this folder lock. */
   protected String id;
 
+  /** The object type, always `folder_lock`. */
   protected String type;
 
   @JsonProperty("created_by")
   protected UserBase createdBy;
 
+  /** When the folder lock object was created. */
   @JsonProperty("created_at")
   @JsonSerialize(using = DateTimeUtils.DateTimeSerializer.class)
   @JsonDeserialize(using = DateTimeUtils.DateTimeDeserializer.class)
   protected OffsetDateTime createdAt;
 
+  /**
+   * The operations that have been locked. Currently the `move` and `delete` operations cannot be
+   * locked separately, and both need to be set to `true`.
+   */
   @JsonProperty("locked_operations")
   protected FolderLockLockedOperationsField lockedOperations;
 
+  /** The lock type, always `freeze`. */
   @JsonProperty("lock_type")
   protected String lockType;
 

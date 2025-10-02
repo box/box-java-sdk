@@ -16,6 +16,7 @@ import java.util.Objects;
 @JsonFilter("nullablePropertyFilter")
 public class UpdateBoxSkillCardsOnFileRequestBody extends SerializableObject {
 
+  /** The value will always be `replace`. */
   @JsonDeserialize(
       using =
           UpdateBoxSkillCardsOnFileRequestBodyOpField
@@ -26,6 +27,10 @@ public class UpdateBoxSkillCardsOnFileRequestBody extends SerializableObject {
               .UpdateBoxSkillCardsOnFileRequestBodyOpFieldSerializer.class)
   protected EnumWrapper<UpdateBoxSkillCardsOnFileRequestBodyOpField> op;
 
+  /**
+   * The JSON Path that represents the card to replace. In most cases this will be in the format
+   * `/cards/{index}` where `index` is the zero-indexed position of the card in the list of cards.
+   */
   protected String path;
 
   protected SkillCard value;

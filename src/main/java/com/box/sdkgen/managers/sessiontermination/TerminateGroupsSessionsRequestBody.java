@@ -9,6 +9,7 @@ import java.util.Objects;
 @JsonFilter("nullablePropertyFilter")
 public class TerminateGroupsSessionsRequestBody extends SerializableObject {
 
+  /** A list of group IDs. */
   @JsonProperty("group_ids")
   protected final List<String> groupIds;
 

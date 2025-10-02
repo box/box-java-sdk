@@ -12,6 +12,7 @@ import java.util.Objects;
 @JsonFilter("nullablePropertyFilter")
 public class UpdateAllSkillCardsOnFileRequestBody extends SerializableObject {
 
+  /** Defines the status of this invocation. Set this to `success` when setting Skill cards. */
   @JsonDeserialize(
       using =
           UpdateAllSkillCardsOnFileRequestBodyStatusField
@@ -22,13 +23,25 @@ public class UpdateAllSkillCardsOnFileRequestBody extends SerializableObject {
               .UpdateAllSkillCardsOnFileRequestBodyStatusFieldSerializer.class)
   protected final EnumWrapper<UpdateAllSkillCardsOnFileRequestBodyStatusField> status;
 
+  /**
+   * The metadata to set for this skill. This is a list of Box Skills cards. These cards will
+   * overwrite any existing Box skill cards on the file.
+   */
   protected final UpdateAllSkillCardsOnFileRequestBodyMetadataField metadata;
 
+  /** The file to assign the cards to. */
   protected final UpdateAllSkillCardsOnFileRequestBodyFileField file;
 
+  /** The optional file version to assign the cards to. */
   @JsonProperty("file_version")
   protected UpdateAllSkillCardsOnFileRequestBodyFileVersionField fileVersion;
 
+  /**
+   * A descriptor that defines what items are affected by this call.
+   *
+   * <p>Set this to the default values when setting a card to a `success` state, and leave it out in
+   * most other situations.
+   */
   protected UpdateAllSkillCardsOnFileRequestBodyUsageField usage;
 
   public UpdateAllSkillCardsOnFileRequestBody(

@@ -12,6 +12,7 @@ import java.util.Objects;
 @JsonFilter("nullablePropertyFilter")
 public class CollaboratorVariableVariableValueField extends SerializableObject {
 
+  /** The object type. */
   @JsonDeserialize(
       using =
           CollaboratorVariableVariableValueTypeField
@@ -22,6 +23,7 @@ public class CollaboratorVariableVariableValueField extends SerializableObject {
               .CollaboratorVariableVariableValueTypeFieldSerializer.class)
   protected EnumWrapper<CollaboratorVariableVariableValueTypeField> type;
 
+  /** User's ID. */
   protected final String id;
 
   public CollaboratorVariableVariableValueField(@JsonProperty("id") String id) {

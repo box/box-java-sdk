@@ -8,8 +8,10 @@ import java.util.Objects;
 @JsonFilter("nullablePropertyFilter")
 public class PreflightFileUploadCheckRequestBody extends SerializableObject {
 
+  /** The name for the file. */
   protected String name;
 
+  /** The size of the file in bytes. */
   protected Integer size;
 
   protected PreflightFileUploadCheckRequestBodyParentField parent;

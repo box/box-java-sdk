@@ -10,17 +10,30 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import java.util.Objects;
 
+/** AI LLM endpoint params AWS object. */
 @JsonFilter("nullablePropertyFilter")
 public class AiLlmEndpointParamsAws extends SerializableObject {
 
+  /** The type of the AI LLM endpoint params object for AWS. This parameter is **required**. */
   @JsonDeserialize(
       using = AiLlmEndpointParamsAwsTypeField.AiLlmEndpointParamsAwsTypeFieldDeserializer.class)
   @JsonSerialize(
       using = AiLlmEndpointParamsAwsTypeField.AiLlmEndpointParamsAwsTypeFieldSerializer.class)
   protected EnumWrapper<AiLlmEndpointParamsAwsTypeField> type;
 
+  /**
+   * What sampling temperature to use, between 0 and 1. Higher values like 0.8 will make the output
+   * more random, while lower values like 0.2 will make it more focused and deterministic. We
+   * generally recommend altering this or `top_p` but not both.
+   */
   @Nullable protected Double temperature;
 
+  /**
+   * An alternative to sampling with temperature, called nucleus sampling, where the model considers
+   * the results of the tokens with `top_p` probability mass. So 0.1 means only the tokens
+   * comprising the top 10% probability mass are considered. We generally recommend altering this or
+   * temperature but not both.
+   */
   @JsonProperty("top_p")
   @Nullable
   protected Double topP;

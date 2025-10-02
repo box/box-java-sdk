@@ -9,9 +9,11 @@ import java.util.Objects;
 @JsonFilter("nullablePropertyFilter")
 public class TrashFolderPathCollectionField extends SerializableObject {
 
+  /** The number of folders in this list. */
   @JsonProperty("total_count")
   protected final long totalCount;
 
+  /** Array of folders for this item's path collection. */
   protected final List<TrashFolderPathCollectionEntriesField> entries;
 
   public TrashFolderPathCollectionField(

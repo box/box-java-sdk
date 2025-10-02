@@ -13,6 +13,10 @@ import java.util.Objects;
 @JsonFilter("nullablePropertyFilter")
 public class UpdateFileMetadataByIdRequestBody extends SerializableObject {
 
+  /**
+   * The type of change to perform on the template. Some of these are hazardous as they will change
+   * existing templates.
+   */
   @JsonDeserialize(
       using =
           UpdateFileMetadataByIdRequestBodyOpField
@@ -23,10 +27,22 @@ public class UpdateFileMetadataByIdRequestBody extends SerializableObject {
               .UpdateFileMetadataByIdRequestBodyOpFieldSerializer.class)
   protected EnumWrapper<UpdateFileMetadataByIdRequestBodyOpField> op;
 
+  /**
+   * The location in the metadata JSON object to apply the changes to, in the format of a
+   * [JSON-Pointer](https://tools.ietf.org/html/rfc6901).
+   *
+   * <p>The path must always be prefixed with a `/` to represent the root of the template. The
+   * characters `~` and `/` are reserved characters and must be escaped in the key.
+   */
   protected String path;
 
   protected MetadataInstanceValue value;
 
+  /**
+   * The location in the metadata JSON object to move or copy a value from. Required for `move` or
+   * `copy` operations and must be in the format of a
+   * [JSON-Pointer](https://tools.ietf.org/html/rfc6901).
+   */
   protected String from;
 
   public UpdateFileMetadataByIdRequestBody() {

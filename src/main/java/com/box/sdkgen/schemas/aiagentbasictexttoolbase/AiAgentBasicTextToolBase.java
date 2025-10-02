@@ -11,11 +11,17 @@ import com.fasterxml.jackson.annotation.JsonFilter;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.Objects;
 
+/** AI agent processor used to handle basic text. */
 @JsonFilter("nullablePropertyFilter")
 public class AiAgentBasicTextToolBase extends SerializableObject {
 
+  /**
+   * The model used for the AI agent for basic text. For specific model values, see the [available
+   * models list](g://box-ai/supported-models).
+   */
   protected String model;
 
+  /** The number of tokens for completion. */
   @JsonProperty("num_tokens_for_completion")
   protected Long numTokensForCompletion;
 

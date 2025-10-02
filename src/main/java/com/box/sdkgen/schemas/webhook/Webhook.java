@@ -24,19 +24,23 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
+/** Represents a configured webhook. */
 @JsonFilter("nullablePropertyFilter")
 public class Webhook extends WebhookMini {
 
   @JsonProperty("created_by")
   protected UserMini createdBy;
 
+  /** A timestamp identifying the time that the webhook was created. */
   @JsonProperty("created_at")
   @JsonSerialize(using = DateTimeUtils.DateTimeSerializer.class)
   @JsonDeserialize(using = DateTimeUtils.DateTimeDeserializer.class)
   protected OffsetDateTime createdAt;
 
+  /** The URL that is notified by this webhook. */
   protected String address;
 
+  /** An array of event names that this webhook is to be triggered for. */
   @JsonDeserialize(using = TriggersDeserializer.class)
   @JsonSerialize(using = TriggersSerializer.class)
   protected List<EnumWrapper<WebhookTriggersField>> triggers;

@@ -22,6 +22,7 @@ import java.util.Objects;
 @JsonFilter("nullablePropertyFilter")
 public class SignTemplateAdditionalInfoRequiredField extends SerializableObject {
 
+  /** Required signer fields. */
   @JsonDeserialize(using = SignersDeserializer.class)
   @JsonSerialize(using = SignersSerializer.class)
   protected List<List<EnumWrapper<SignTemplateAdditionalInfoRequiredSignersField>>> signers;

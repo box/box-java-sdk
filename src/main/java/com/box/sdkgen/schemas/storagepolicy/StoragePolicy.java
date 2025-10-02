@@ -7,9 +7,11 @@ import com.fasterxml.jackson.annotation.JsonFilter;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.Objects;
 
+/** The Storage Policy object describes the storage zone. */
 @JsonFilter("nullablePropertyFilter")
 public class StoragePolicy extends StoragePolicyMini {
 
+  /** A descriptive name of the region. */
   protected String name;
 
   public StoragePolicy(@JsonProperty("id") String id) {

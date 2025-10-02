@@ -11,14 +11,17 @@ import java.util.Objects;
 @JsonFilter("nullablePropertyFilter")
 public class TermsOfServiceEnterpriseField extends SerializableObject {
 
+  /** The unique identifier for this enterprise. */
   protected String id;
 
+  /** The value will always be `enterprise`. */
   @JsonDeserialize(
       using = TermsOfServiceEnterpriseTypeField.TermsOfServiceEnterpriseTypeFieldDeserializer.class)
   @JsonSerialize(
       using = TermsOfServiceEnterpriseTypeField.TermsOfServiceEnterpriseTypeFieldSerializer.class)
   protected EnumWrapper<TermsOfServiceEnterpriseTypeField> type;
 
+  /** The name of the enterprise. */
   protected String name;
 
   public TermsOfServiceEnterpriseField() {

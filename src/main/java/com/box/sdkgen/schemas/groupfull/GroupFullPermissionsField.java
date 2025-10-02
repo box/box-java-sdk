@@ -9,6 +9,7 @@ import java.util.Objects;
 @JsonFilter("nullablePropertyFilter")
 public class GroupFullPermissionsField extends SerializableObject {
 
+  /** Specifies if the user can invite the group to collaborate on any items. */
   @JsonProperty("can_invite_as_collaborator")
   protected Boolean canInviteAsCollaborator;
 

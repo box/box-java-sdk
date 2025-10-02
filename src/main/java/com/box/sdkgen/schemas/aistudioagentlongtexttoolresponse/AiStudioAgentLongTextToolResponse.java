@@ -11,9 +11,11 @@ import com.fasterxml.jackson.annotation.JsonFilter;
 import java.util.List;
 import java.util.Objects;
 
+/** AI agent processor used to to handle longer text. */
 @JsonFilter("nullablePropertyFilter")
 public class AiStudioAgentLongTextToolResponse extends AiStudioAgentLongTextTool {
 
+  /** Warnings concerning tool. */
   protected List<String> warnings;
 
   public AiStudioAgentLongTextToolResponse() {

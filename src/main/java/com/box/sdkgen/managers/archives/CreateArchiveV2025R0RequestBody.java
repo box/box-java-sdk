@@ -8,6 +8,7 @@ import java.util.Objects;
 @JsonFilter("nullablePropertyFilter")
 public class CreateArchiveV2025R0RequestBody extends SerializableObject {
 
+  /** The name of the archive. */
   protected final String name;
 
   public CreateArchiveV2025R0RequestBody(@JsonProperty("name") String name) {

@@ -9,12 +9,16 @@ import java.util.Objects;
 @JsonFilter("nullablePropertyFilter")
 public class CreateWebLinkRequestBody extends SerializableObject {
 
+  /** The URL that this web link links to. Must start with `"http://"` or `"https://"`. */
   protected final String url;
 
+  /** The parent folder to create the web link within. */
   protected final CreateWebLinkRequestBodyParentField parent;
 
+  /** Name of the web link. Defaults to the URL if not set. */
   protected String name;
 
+  /** Description of the web link. */
   protected String description;
 
   public CreateWebLinkRequestBody(

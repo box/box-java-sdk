@@ -12,9 +12,11 @@ import java.util.Objects;
 @JsonFilter("nullablePropertyFilter")
 public class AiExtractStructuredMetadataTemplateField extends SerializableObject {
 
+  /** The name of the metadata template. */
   @JsonProperty("template_key")
   protected String templateKey;
 
+  /** Value is always `metadata_template`. */
   @JsonDeserialize(
       using =
           AiExtractStructuredMetadataTemplateTypeField
@@ -25,6 +27,12 @@ public class AiExtractStructuredMetadataTemplateField extends SerializableObject
               .AiExtractStructuredMetadataTemplateTypeFieldSerializer.class)
   protected EnumWrapper<AiExtractStructuredMetadataTemplateTypeField> type;
 
+  /**
+   * The scope of the metadata template that can either be global or enterprise. * The **global**
+   * scope is used for templates that are available to any Box enterprise. * The **enterprise**
+   * scope represents templates created within a specific enterprise, containing the ID of that
+   * enterprise.
+   */
   protected String scope;
 
   public AiExtractStructuredMetadataTemplateField() {

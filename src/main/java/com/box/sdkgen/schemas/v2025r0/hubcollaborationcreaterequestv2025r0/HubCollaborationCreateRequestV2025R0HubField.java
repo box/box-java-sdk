@@ -12,6 +12,7 @@ import java.util.Objects;
 @JsonFilter("nullablePropertyFilter")
 public class HubCollaborationCreateRequestV2025R0HubField extends SerializableObject {
 
+  /** The value will always be `hubs`. */
   @JsonDeserialize(
       using =
           HubCollaborationCreateRequestV2025R0HubTypeField
@@ -22,6 +23,7 @@ public class HubCollaborationCreateRequestV2025R0HubField extends SerializableOb
               .HubCollaborationCreateRequestV2025R0HubTypeFieldSerializer.class)
   protected EnumWrapper<HubCollaborationCreateRequestV2025R0HubTypeField> type;
 
+  /** ID of the object. */
   protected final String id;
 
   public HubCollaborationCreateRequestV2025R0HubField(@JsonProperty("id") String id) {

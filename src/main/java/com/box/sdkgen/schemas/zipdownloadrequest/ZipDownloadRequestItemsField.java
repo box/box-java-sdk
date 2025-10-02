@@ -11,12 +11,17 @@ import java.util.Objects;
 @JsonFilter("nullablePropertyFilter")
 public class ZipDownloadRequestItemsField extends SerializableObject {
 
+  /** The type of the item to add to the archive. */
   @JsonDeserialize(
       using = ZipDownloadRequestItemsTypeField.ZipDownloadRequestItemsTypeFieldDeserializer.class)
   @JsonSerialize(
       using = ZipDownloadRequestItemsTypeField.ZipDownloadRequestItemsTypeFieldSerializer.class)
   protected final EnumWrapper<ZipDownloadRequestItemsTypeField> type;
 
+  /**
+   * The identifier of the item to add to the archive. When this item is a folder then this can not
+   * be the root folder with ID `0`.
+   */
   protected final String id;
 
   public ZipDownloadRequestItemsField(ZipDownloadRequestItemsTypeField type, String id) {

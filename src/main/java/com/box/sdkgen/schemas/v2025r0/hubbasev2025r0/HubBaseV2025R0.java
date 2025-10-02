@@ -9,11 +9,20 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import java.util.Objects;
 
+/** The bare basic representation of a Box Hub. */
 @JsonFilter("nullablePropertyFilter")
 public class HubBaseV2025R0 extends SerializableObject {
 
+  /**
+   * The unique identifier that represent a Box Hub.
+   *
+   * <p>The ID for any Box Hub can be determined by visiting a Box Hub in the web application and
+   * copying the ID from the URL. For example, for the URL `https://*.app.box.com/hubs/123` the
+   * `hub_id` is `123`.
+   */
   protected final String id;
 
+  /** The value will always be `hubs`. */
   @JsonDeserialize(using = HubBaseV2025R0TypeField.HubBaseV2025R0TypeFieldDeserializer.class)
   @JsonSerialize(using = HubBaseV2025R0TypeField.HubBaseV2025R0TypeFieldSerializer.class)
   protected EnumWrapper<HubBaseV2025R0TypeField> type;

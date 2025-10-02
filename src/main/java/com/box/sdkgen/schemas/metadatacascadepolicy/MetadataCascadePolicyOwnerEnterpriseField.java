@@ -11,6 +11,7 @@ import java.util.Objects;
 @JsonFilter("nullablePropertyFilter")
 public class MetadataCascadePolicyOwnerEnterpriseField extends SerializableObject {
 
+  /** The value will always be `enterprise`. */
   @JsonDeserialize(
       using =
           MetadataCascadePolicyOwnerEnterpriseTypeField
@@ -21,6 +22,7 @@ public class MetadataCascadePolicyOwnerEnterpriseField extends SerializableObjec
               .MetadataCascadePolicyOwnerEnterpriseTypeFieldSerializer.class)
   protected EnumWrapper<MetadataCascadePolicyOwnerEnterpriseTypeField> type;
 
+  /** The ID of the enterprise that owns the policy. */
   protected String id;
 
   public MetadataCascadePolicyOwnerEnterpriseField() {

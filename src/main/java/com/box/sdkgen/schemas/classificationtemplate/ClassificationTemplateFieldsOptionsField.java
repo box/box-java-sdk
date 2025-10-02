@@ -9,10 +9,13 @@ import java.util.Objects;
 @JsonFilter("nullablePropertyFilter")
 public class ClassificationTemplateFieldsOptionsField extends SerializableObject {
 
+  /** The unique ID of this classification. */
   protected final String id;
 
+  /** The display name and key for this classification. */
   protected final String key;
 
+  /** Additional information about the classification. */
   protected ClassificationTemplateFieldsOptionsStaticConfigField staticConfig;
 
   public ClassificationTemplateFieldsOptionsField(

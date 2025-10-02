@@ -13,8 +13,10 @@ public
 class CreateShieldInformationBarrierSegmentRestrictionRequestBodyShieldInformationBarrierSegmentField
     extends SerializableObject {
 
+  /** The ID reference of the requesting shield information barrier segment. */
   protected String id;
 
+  /** The type of the shield barrier segment for this member. */
   @JsonDeserialize(
       using =
           CreateShieldInformationBarrierSegmentRestrictionRequestBodyShieldInformationBarrierSegmentTypeField
