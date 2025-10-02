@@ -11,9 +11,17 @@ import java.util.Objects;
 public class CollaborationAcceptanceRequirementsStatusStrongPasswordRequirementField
     extends SerializableObject {
 
+  /**
+   * Whether or not the enterprise that owns the content requires a strong password to collaborate
+   * on the content, or enforces an exposed password detection for the external collaborators.
+   */
   @JsonProperty("enterprise_has_strong_password_required_for_external_users")
   protected Boolean enterpriseHasStrongPasswordRequiredForExternalUsers;
 
+  /**
+   * Whether or not the user has a strong and not exposed password set for their account. The field
+   * is `null` when a strong password is not required.
+   */
   @JsonProperty("user_has_strong_password")
   @Nullable
   protected Boolean userHasStrongPassword;

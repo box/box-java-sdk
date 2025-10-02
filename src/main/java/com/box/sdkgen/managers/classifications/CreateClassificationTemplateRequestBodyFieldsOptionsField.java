@@ -9,8 +9,10 @@ import java.util.Objects;
 @JsonFilter("nullablePropertyFilter")
 public class CreateClassificationTemplateRequestBodyFieldsOptionsField extends SerializableObject {
 
+  /** The display name and key this classification. This will be show in the Box UI. */
   protected final String key;
 
+  /** Additional information about the classification. */
   protected CreateClassificationTemplateRequestBodyFieldsOptionsStaticConfigField staticConfig;
 
   public CreateClassificationTemplateRequestBodyFieldsOptionsField(

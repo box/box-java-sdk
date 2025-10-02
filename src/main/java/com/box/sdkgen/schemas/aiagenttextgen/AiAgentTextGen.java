@@ -10,9 +10,11 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import java.util.Objects;
 
+/** The AI agent used for generating text. */
 @JsonFilter("nullablePropertyFilter")
 public class AiAgentTextGen extends SerializableObject {
 
+  /** The type of AI agent used for generating text. */
   @JsonDeserialize(using = AiAgentTextGenTypeField.AiAgentTextGenTypeFieldDeserializer.class)
   @JsonSerialize(using = AiAgentTextGenTypeField.AiAgentTextGenTypeFieldSerializer.class)
   protected EnumWrapper<AiAgentTextGenTypeField> type;

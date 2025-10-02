@@ -31,10 +31,25 @@ public class FolderLocksManager {
     this.networkSession = builder.networkSession;
   }
 
+  /**
+   * Retrieves folder lock details for a given folder.
+   *
+   * <p>You must be authenticated as the owner or co-owner of the folder to use this endpoint.
+   *
+   * @param queryParams Query parameters of getFolderLocks method
+   */
   public FolderLocks getFolderLocks(GetFolderLocksQueryParams queryParams) {
     return getFolderLocks(queryParams, new GetFolderLocksHeaders());
   }
 
+  /**
+   * Retrieves folder lock details for a given folder.
+   *
+   * <p>You must be authenticated as the owner or co-owner of the folder to use this endpoint.
+   *
+   * @param queryParams Query parameters of getFolderLocks method
+   * @param headers Headers of getFolderLocks method
+   */
   public FolderLocks getFolderLocks(
       GetFolderLocksQueryParams queryParams, GetFolderLocksHeaders headers) {
     Map<String, String> queryParamsMap =
@@ -59,10 +74,25 @@ public class FolderLocksManager {
     return JsonManager.deserialize(response.getData(), FolderLocks.class);
   }
 
+  /**
+   * Creates a folder lock on a folder, preventing it from being moved and/or deleted.
+   *
+   * <p>You must be authenticated as the owner or co-owner of the folder to use this endpoint.
+   *
+   * @param requestBody Request body of createFolderLock method
+   */
   public FolderLock createFolderLock(CreateFolderLockRequestBody requestBody) {
     return createFolderLock(requestBody, new CreateFolderLockHeaders());
   }
 
+  /**
+   * Creates a folder lock on a folder, preventing it from being moved and/or deleted.
+   *
+   * <p>You must be authenticated as the owner or co-owner of the folder to use this endpoint.
+   *
+   * @param requestBody Request body of createFolderLock method
+   * @param headers Headers of createFolderLock method
+   */
   public FolderLock createFolderLock(
       CreateFolderLockRequestBody requestBody, CreateFolderLockHeaders headers) {
     Map<String, String> headersMap = prepareParams(mergeMaps(mapOf(), headers.getExtraHeaders()));
@@ -86,10 +116,25 @@ public class FolderLocksManager {
     return JsonManager.deserialize(response.getData(), FolderLock.class);
   }
 
+  /**
+   * Deletes a folder lock on a given folder.
+   *
+   * <p>You must be authenticated as the owner or co-owner of the folder to use this endpoint.
+   *
+   * @param folderLockId The ID of the folder lock. Example: "12345"
+   */
   public void deleteFolderLockById(String folderLockId) {
     deleteFolderLockById(folderLockId, new DeleteFolderLockByIdHeaders());
   }
 
+  /**
+   * Deletes a folder lock on a given folder.
+   *
+   * <p>You must be authenticated as the owner or co-owner of the folder to use this endpoint.
+   *
+   * @param folderLockId The ID of the folder lock. Example: "12345"
+   * @param headers Headers of deleteFolderLockById method
+   */
   public void deleteFolderLockById(String folderLockId, DeleteFolderLockByIdHeaders headers) {
     Map<String, String> headersMap = prepareParams(mergeMaps(mapOf(), headers.getExtraHeaders()));
     FetchResponse response =

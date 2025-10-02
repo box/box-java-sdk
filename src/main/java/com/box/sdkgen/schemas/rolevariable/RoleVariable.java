@@ -9,13 +9,16 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import java.util.Objects;
 
+/** Determines if the workflow outcome affects a specific collaborator role. */
 @JsonFilter("nullablePropertyFilter")
 public class RoleVariable extends SerializableObject {
 
+  /** Role object type. */
   @JsonDeserialize(using = RoleVariableTypeField.RoleVariableTypeFieldDeserializer.class)
   @JsonSerialize(using = RoleVariableTypeField.RoleVariableTypeFieldSerializer.class)
   protected EnumWrapper<RoleVariableTypeField> type;
 
+  /** The variable type used by the object. */
   @JsonDeserialize(
       using = RoleVariableVariableTypeField.RoleVariableVariableTypeFieldDeserializer.class)
   @JsonSerialize(

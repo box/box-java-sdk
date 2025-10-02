@@ -8,15 +8,19 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import java.util.Objects;
 
+/** A Box Hub Item is a Box Item that is referenced in a Box Hub. */
 @JsonFilter("nullablePropertyFilter")
 public class HubItemV2025R0 extends SerializableObject {
 
+  /** The unique identifier for this item. */
   protected final String id;
 
+  /** The type of the item. */
   @JsonDeserialize(using = HubItemV2025R0TypeField.HubItemV2025R0TypeFieldDeserializer.class)
   @JsonSerialize(using = HubItemV2025R0TypeField.HubItemV2025R0TypeFieldSerializer.class)
   protected final EnumWrapper<HubItemV2025R0TypeField> type;
 
+  /** The name of the item. */
   protected final String name;
 
   public HubItemV2025R0(String id, HubItemV2025R0TypeField type, String name) {

@@ -13,6 +13,11 @@ public class SignRequestSignFilesField extends SerializableObject {
 
   protected List<FileMini> files;
 
+  /**
+   * Indicates whether the `sign_files` documents are processing and the PDFs may be out of date. A
+   * change to any document requires processing on all `sign_files`. We recommended waiting until
+   * processing is finished (and this value is true) before downloading the PDFs.
+   */
   @JsonProperty("is_ready_for_download")
   protected Boolean isReadyForDownload;
 

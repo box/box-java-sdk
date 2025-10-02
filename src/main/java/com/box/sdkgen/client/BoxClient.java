@@ -930,6 +930,11 @@ public class BoxClient {
             .build();
   }
 
+  /**
+   * Make a custom http request using the client authentication and network session.
+   *
+   * @param fetchOptions Options to be passed to the fetch call
+   */
   public FetchResponse makeRequest(FetchOptions fetchOptions) {
     Authentication auth = (fetchOptions.getAuth() == null ? this.auth : fetchOptions.getAuth());
     NetworkSession networkSession =
@@ -952,6 +957,13 @@ public class BoxClient {
     return networkSession.getNetworkClient().fetch(enrichedFetchOptions);
   }
 
+  /**
+   * Create a new client to impersonate user with the provided ID. All calls made with the new
+   * client will be made in context of the impersonated user, leaving the original client
+   * unmodified.
+   *
+   * @param userId ID of an user to impersonate
+   */
   public BoxClient withAsUserHeader(String userId) {
     return new BoxClient.Builder(this.auth)
         .networkSession(
@@ -959,6 +971,10 @@ public class BoxClient {
         .build();
   }
 
+  /**
+   * Create a new client with suppressed notifications. Calls made with the new client will not
+   * trigger email or webhook notifications
+   */
   public BoxClient withSuppressedNotifications() {
     return new BoxClient.Builder(this.auth)
         .networkSession(
@@ -966,28 +982,49 @@ public class BoxClient {
         .build();
   }
 
+  /** Create a new client with a custom set of headers that will be included in every API call */
   public BoxClient withExtraHeaders() {
     return withExtraHeaders(mapOf());
   }
 
+  /**
+   * Create a new client with a custom set of headers that will be included in every API call
+   *
+   * @param extraHeaders Custom set of headers that will be included in every API call
+   */
   public BoxClient withExtraHeaders(Map<String, String> extraHeaders) {
     return new BoxClient.Builder(this.auth)
         .networkSession(this.networkSession.withAdditionalHeaders(extraHeaders))
         .build();
   }
 
+  /**
+   * Create a new client with a custom set of base urls that will be used for every API call
+   *
+   * @param baseUrls Custom set of base urls that will be used for every API call
+   */
   public BoxClient withCustomBaseUrls(BaseUrls baseUrls) {
     return new BoxClient.Builder(this.auth)
         .networkSession(this.networkSession.withCustomBaseUrls(baseUrls))
         .build();
   }
 
+  /**
+   * Create a new client with a custom proxy that will be used for every API call
+   *
+   * @param config The config parameter
+   */
   public BoxClient withProxy(ProxyConfig config) {
     return new BoxClient.Builder(this.auth)
         .networkSession(this.networkSession.withProxy(config))
         .build();
   }
 
+  /**
+   * Create a new client with a custom set of interceptors that will be used for every API call
+   *
+   * @param interceptors Custom set of interceptors that will be used for every API call
+   */
   public BoxClient withInterceptors(List<Interceptor> interceptors) {
     return new BoxClient.Builder(this.auth)
         .networkSession(this.networkSession.withInterceptors(interceptors))

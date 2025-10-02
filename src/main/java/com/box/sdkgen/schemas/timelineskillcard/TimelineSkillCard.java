@@ -12,18 +12,22 @@ import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.Objects;
 
+/** A Box Skill metadata card that places a list of images on a timeline. */
 @JsonFilter("nullablePropertyFilter")
 public class TimelineSkillCard extends SerializableObject {
 
+  /** The optional date and time this card was created at. */
   @JsonProperty("created_at")
   @JsonSerialize(using = DateTimeUtils.DateTimeSerializer.class)
   @JsonDeserialize(using = DateTimeUtils.DateTimeDeserializer.class)
   protected OffsetDateTime createdAt;
 
+  /** The value will always be `skill_card`. */
   @JsonDeserialize(using = TimelineSkillCardTypeField.TimelineSkillCardTypeFieldDeserializer.class)
   @JsonSerialize(using = TimelineSkillCardTypeField.TimelineSkillCardTypeFieldSerializer.class)
   protected EnumWrapper<TimelineSkillCardTypeField> type;
 
+  /** The value will always be `timeline`. */
   @JsonDeserialize(
       using =
           TimelineSkillCardSkillCardTypeField.TimelineSkillCardSkillCardTypeFieldDeserializer.class)
@@ -33,15 +37,22 @@ public class TimelineSkillCard extends SerializableObject {
   @JsonProperty("skill_card_type")
   protected EnumWrapper<TimelineSkillCardSkillCardTypeField> skillCardType;
 
+  /** The title of the card. */
   @JsonProperty("skill_card_title")
   protected TimelineSkillCardSkillCardTitleField skillCardTitle;
 
+  /** The service that applied this metadata. */
   protected final TimelineSkillCardSkillField skill;
 
+  /**
+   * The invocation of this service, used to track which instance of a service applied the metadata.
+   */
   protected final TimelineSkillCardInvocationField invocation;
 
+  /** An total duration in seconds of the timeline. */
   protected Long duration;
 
+  /** A list of entries on the timeline. */
   protected final List<TimelineSkillCardEntriesField> entries;
 
   public TimelineSkillCard(

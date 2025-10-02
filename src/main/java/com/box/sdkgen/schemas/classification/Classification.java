@@ -9,33 +9,64 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import java.util.Objects;
 
+/**
+ * An instance of the classification metadata template, containing the classification applied to the
+ * file or folder.
+ *
+ * <p>To get more details about the classification applied to an item, request the classification
+ * metadata template.
+ */
 @JsonFilter("nullablePropertyFilter")
 public class Classification extends SerializableObject {
 
+  /** The name of the classification applied to the item. */
   @JsonProperty("Box__Security__Classification__Key")
   protected String boxSecurityClassificationKey;
 
+  /**
+   * The identifier of the item that this metadata instance has been attached to. This combines the
+   * `type` and the `id` of the parent in the form `{type}_{id}`.
+   */
   @JsonProperty("$parent")
   protected String parent;
 
+  /** The value will always be `securityClassification-6VMVochwUWo`. */
   @JsonDeserialize(
       using = ClassificationTemplateField.ClassificationTemplateFieldDeserializer.class)
   @JsonSerialize(using = ClassificationTemplateField.ClassificationTemplateFieldSerializer.class)
   @JsonProperty("$template")
   protected EnumWrapper<ClassificationTemplateField> template;
 
+  /**
+   * The scope of the enterprise that this classification has been applied for.
+   *
+   * <p>This will be in the format `enterprise_{enterprise_id}`.
+   */
   @JsonProperty("$scope")
   protected String scope;
 
+  /**
+   * The version of the metadata instance. This version starts at 0 and increases every time a
+   * classification is updated.
+   */
   @JsonProperty("$version")
   protected Long version;
 
+  /**
+   * The unique ID of this classification instance. This will be include the name of the
+   * classification template and a unique ID.
+   */
   @JsonProperty("$type")
   protected String type;
 
+  /**
+   * The version of the metadata template. This version starts at 0 and increases every time the
+   * template is updated. This is mostly for internal use.
+   */
   @JsonProperty("$typeVersion")
   protected Double typeVersion;
 
+  /** Whether an end user can change the classification. */
   @JsonProperty("$canEdit")
   protected Boolean canEdit;
 

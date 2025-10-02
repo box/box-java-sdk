@@ -9,6 +9,14 @@ import java.util.Objects;
 @JsonFilter("nullablePropertyFilter")
 public class AddClassificationToFolderRequestBody extends SerializableObject {
 
+  /**
+   * The name of the classification to apply to this folder.
+   *
+   * <p>To list the available classifications in an enterprise, use the classification API to
+   * retrieve the [classification
+   * template](e://get_metadata_templates_enterprise_securityClassification-6VMVochwUWo_schema)
+   * which lists all available classification keys.
+   */
   @JsonProperty("Box__Security__Classification__Key")
   protected String boxSecurityClassificationKey;
 

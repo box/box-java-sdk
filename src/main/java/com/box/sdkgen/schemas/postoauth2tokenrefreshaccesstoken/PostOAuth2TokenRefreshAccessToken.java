@@ -9,9 +9,14 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import java.util.Objects;
 
+/**
+ * A request to refresh an Access Token. Use this API to refresh an expired Access Token using a
+ * valid Refresh Token.
+ */
 @JsonFilter("nullablePropertyFilter")
 public class PostOAuth2TokenRefreshAccessToken extends SerializableObject {
 
+  /** The type of request being made, in this case a refresh request. */
   @JsonDeserialize(
       using =
           PostOAuth2TokenRefreshAccessTokenGrantTypeField
@@ -23,12 +28,15 @@ public class PostOAuth2TokenRefreshAccessToken extends SerializableObject {
   @JsonProperty("grant_type")
   protected EnumWrapper<PostOAuth2TokenRefreshAccessTokenGrantTypeField> grantType;
 
+  /** The client ID of the application requesting to refresh the token. */
   @JsonProperty("client_id")
   protected final String clientId;
 
+  /** The client secret of the application requesting to refresh the token. */
   @JsonProperty("client_secret")
   protected final String clientSecret;
 
+  /** The refresh token to refresh. */
   @JsonProperty("refresh_token")
   protected final String refreshToken;
 

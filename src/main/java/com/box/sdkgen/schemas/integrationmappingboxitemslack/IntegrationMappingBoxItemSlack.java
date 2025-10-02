@@ -9,9 +9,11 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import java.util.Objects;
 
+/** The schema for an integration mapping Box item object for type Slack. */
 @JsonFilter("nullablePropertyFilter")
 public class IntegrationMappingBoxItemSlack extends SerializableObject {
 
+  /** Type of the mapped item referenced in `id`. */
   @JsonDeserialize(
       using =
           IntegrationMappingBoxItemSlackTypeField
@@ -22,6 +24,7 @@ public class IntegrationMappingBoxItemSlack extends SerializableObject {
               .class)
   protected EnumWrapper<IntegrationMappingBoxItemSlackTypeField> type;
 
+  /** ID of the mapped item (of type referenced in `type`). */
   protected final String id;
 
   public IntegrationMappingBoxItemSlack(@JsonProperty("id") String id) {

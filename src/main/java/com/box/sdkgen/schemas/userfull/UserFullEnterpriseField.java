@@ -11,13 +11,16 @@ import java.util.Objects;
 @JsonFilter("nullablePropertyFilter")
 public class UserFullEnterpriseField extends SerializableObject {
 
+  /** The unique identifier for this enterprise. */
   protected String id;
 
+  /** The value will always be `enterprise`. */
   @JsonDeserialize(
       using = UserFullEnterpriseTypeField.UserFullEnterpriseTypeFieldDeserializer.class)
   @JsonSerialize(using = UserFullEnterpriseTypeField.UserFullEnterpriseTypeFieldSerializer.class)
   protected EnumWrapper<UserFullEnterpriseTypeField> type;
 
+  /** The name of the enterprise. */
   protected String name;
 
   public UserFullEnterpriseField() {

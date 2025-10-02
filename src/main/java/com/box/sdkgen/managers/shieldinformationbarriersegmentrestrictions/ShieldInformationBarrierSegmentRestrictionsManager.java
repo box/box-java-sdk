@@ -31,6 +31,12 @@ public class ShieldInformationBarrierSegmentRestrictionsManager {
     this.networkSession = builder.networkSession;
   }
 
+  /**
+   * Retrieves a shield information barrier segment restriction based on provided ID.
+   *
+   * @param shieldInformationBarrierSegmentRestrictionId The ID of the shield information barrier
+   *     segment Restriction. Example: "4563"
+   */
   public ShieldInformationBarrierSegmentRestriction
       getShieldInformationBarrierSegmentRestrictionById(
           String shieldInformationBarrierSegmentRestrictionId) {
@@ -39,6 +45,13 @@ public class ShieldInformationBarrierSegmentRestrictionsManager {
         new GetShieldInformationBarrierSegmentRestrictionByIdHeaders());
   }
 
+  /**
+   * Retrieves a shield information barrier segment restriction based on provided ID.
+   *
+   * @param shieldInformationBarrierSegmentRestrictionId The ID of the shield information barrier
+   *     segment Restriction. Example: "4563"
+   * @param headers Headers of getShieldInformationBarrierSegmentRestrictionById method
+   */
   public ShieldInformationBarrierSegmentRestriction
       getShieldInformationBarrierSegmentRestrictionById(
           String shieldInformationBarrierSegmentRestrictionId,
@@ -64,6 +77,12 @@ public class ShieldInformationBarrierSegmentRestrictionsManager {
         response.getData(), ShieldInformationBarrierSegmentRestriction.class);
   }
 
+  /**
+   * Delete shield information barrier segment restriction based on provided ID.
+   *
+   * @param shieldInformationBarrierSegmentRestrictionId The ID of the shield information barrier
+   *     segment Restriction. Example: "4563"
+   */
   public void deleteShieldInformationBarrierSegmentRestrictionById(
       String shieldInformationBarrierSegmentRestrictionId) {
     deleteShieldInformationBarrierSegmentRestrictionById(
@@ -71,6 +90,13 @@ public class ShieldInformationBarrierSegmentRestrictionsManager {
         new DeleteShieldInformationBarrierSegmentRestrictionByIdHeaders());
   }
 
+  /**
+   * Delete shield information barrier segment restriction based on provided ID.
+   *
+   * @param shieldInformationBarrierSegmentRestrictionId The ID of the shield information barrier
+   *     segment Restriction. Example: "4563"
+   * @param headers Headers of deleteShieldInformationBarrierSegmentRestrictionById method
+   */
   public void deleteShieldInformationBarrierSegmentRestrictionById(
       String shieldInformationBarrierSegmentRestrictionId,
       DeleteShieldInformationBarrierSegmentRestrictionByIdHeaders headers) {
@@ -93,12 +119,23 @@ public class ShieldInformationBarrierSegmentRestrictionsManager {
                     .build());
   }
 
+  /**
+   * Lists shield information barrier segment restrictions based on provided segment ID.
+   *
+   * @param queryParams Query parameters of getShieldInformationBarrierSegmentRestrictions method
+   */
   public ShieldInformationBarrierSegmentRestrictions getShieldInformationBarrierSegmentRestrictions(
       GetShieldInformationBarrierSegmentRestrictionsQueryParams queryParams) {
     return getShieldInformationBarrierSegmentRestrictions(
         queryParams, new GetShieldInformationBarrierSegmentRestrictionsHeaders());
   }
 
+  /**
+   * Lists shield information barrier segment restrictions based on provided segment ID.
+   *
+   * @param queryParams Query parameters of getShieldInformationBarrierSegmentRestrictions method
+   * @param headers Headers of getShieldInformationBarrierSegmentRestrictions method
+   */
   public ShieldInformationBarrierSegmentRestrictions getShieldInformationBarrierSegmentRestrictions(
       GetShieldInformationBarrierSegmentRestrictionsQueryParams queryParams,
       GetShieldInformationBarrierSegmentRestrictionsHeaders headers) {
@@ -131,6 +168,11 @@ public class ShieldInformationBarrierSegmentRestrictionsManager {
         response.getData(), ShieldInformationBarrierSegmentRestrictions.class);
   }
 
+  /**
+   * Creates a shield information barrier segment restriction object.
+   *
+   * @param requestBody Request body of createShieldInformationBarrierSegmentRestriction method
+   */
   public ShieldInformationBarrierSegmentRestriction
       createShieldInformationBarrierSegmentRestriction(
           CreateShieldInformationBarrierSegmentRestrictionRequestBody requestBody) {
@@ -138,6 +180,12 @@ public class ShieldInformationBarrierSegmentRestrictionsManager {
         requestBody, new CreateShieldInformationBarrierSegmentRestrictionHeaders());
   }
 
+  /**
+   * Creates a shield information barrier segment restriction object.
+   *
+   * @param requestBody Request body of createShieldInformationBarrierSegmentRestriction method
+   * @param headers Headers of createShieldInformationBarrierSegmentRestriction method
+   */
   public ShieldInformationBarrierSegmentRestriction
       createShieldInformationBarrierSegmentRestriction(
           CreateShieldInformationBarrierSegmentRestrictionRequestBody requestBody,

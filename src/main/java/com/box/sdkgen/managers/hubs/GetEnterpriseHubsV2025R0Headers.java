@@ -8,8 +8,10 @@ import java.util.Map;
 
 public class GetEnterpriseHubsV2025R0Headers {
 
+  /** Version header. */
   public EnumWrapper<BoxVersionHeaderV2025R0> boxVersion;
 
+  /** Extra headers that will be included in the HTTP request. */
   public Map<String, String> extraHeaders;
 
   public GetEnterpriseHubsV2025R0Headers() {

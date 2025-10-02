@@ -12,18 +12,28 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import java.time.OffsetDateTime;
 import java.util.Objects;
 
+/**
+ * A standard representation of a Box Hub, as returned from any Box Hubs API endpoints by default.
+ */
 @JsonFilter("nullablePropertyFilter")
 public class HubV2025R0 extends HubBaseV2025R0 {
 
+  /** The title given to the Box Hub. */
   protected String title;
 
+  /** The description of the Box Hub. First 200 characters are returned. */
   protected String description;
 
+  /**
+   * The date and time when the folder was created. This value may be `null` for some folders such
+   * as the root folder or the trash folder.
+   */
   @JsonProperty("created_at")
   @JsonSerialize(using = DateTimeUtils.DateTimeSerializer.class)
   @JsonDeserialize(using = DateTimeUtils.DateTimeDeserializer.class)
   protected OffsetDateTime createdAt;
 
+  /** The date and time when the Box Hub was last updated. */
   @JsonProperty("updated_at")
   @JsonSerialize(using = DateTimeUtils.DateTimeSerializer.class)
   @JsonDeserialize(using = DateTimeUtils.DateTimeDeserializer.class)
@@ -35,18 +45,23 @@ public class HubV2025R0 extends HubBaseV2025R0 {
   @JsonProperty("updated_by")
   protected UserMiniV2025R0 updatedBy;
 
+  /** The number of views for the Box Hub. */
   @JsonProperty("view_count")
   protected Integer viewCount;
 
+  /** Indicates if AI features are enabled for the Box Hub. */
   @JsonProperty("is_ai_enabled")
   protected Boolean isAiEnabled;
 
+  /** Indicates if collaboration is restricted to the enterprise. */
   @JsonProperty("is_collaboration_restricted_to_enterprise")
   protected Boolean isCollaborationRestrictedToEnterprise;
 
+  /** Indicates if non-owners can invite others to the Box Hub. */
   @JsonProperty("can_non_owners_invite")
   protected Boolean canNonOwnersInvite;
 
+  /** Indicates if a shared link can be created for the Box Hub. */
   @JsonProperty("can_shared_link_be_created")
   protected Boolean canSharedLinkBeCreated;
 

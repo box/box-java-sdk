@@ -10,6 +10,7 @@ import java.util.Objects;
 @JsonFilter("nullablePropertyFilter")
 public class RemoveSharedLinkFromWebLinkRequestBody extends SerializableObject {
 
+  /** By setting this value to `null`, the shared link is removed from the web link. */
   @JsonProperty("shared_link")
   @Nullable
   protected RemoveSharedLinkFromWebLinkRequestBodySharedLinkField sharedLink;

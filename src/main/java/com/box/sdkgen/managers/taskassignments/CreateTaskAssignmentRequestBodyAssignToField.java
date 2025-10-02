@@ -8,8 +8,17 @@ import java.util.Objects;
 @JsonFilter("nullablePropertyFilter")
 public class CreateTaskAssignmentRequestBodyAssignToField extends SerializableObject {
 
+  /**
+   * The ID of the user to assign to the task.
+   *
+   * <p>To specify a user by their email address use the `login` parameter.
+   */
   protected String id;
 
+  /**
+   * The email address of the user to assign to the task. To specify a user by their user ID please
+   * use the `id` parameter.
+   */
   protected String login;
 
   public CreateTaskAssignmentRequestBodyAssignToField() {

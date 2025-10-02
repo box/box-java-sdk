@@ -4,6 +4,7 @@ import java.util.List;
 
 public class GetAiAgentByIdQueryParams {
 
+  /** The fields to return in the response. */
   public List<String> fields;
 
   public GetAiAgentByIdQueryParams() {}

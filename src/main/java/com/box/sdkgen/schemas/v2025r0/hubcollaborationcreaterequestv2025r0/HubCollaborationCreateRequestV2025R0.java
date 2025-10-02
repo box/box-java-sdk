@@ -5,14 +5,21 @@ import com.fasterxml.jackson.annotation.JsonFilter;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.Objects;
 
+/** Request body for creating a new Box Hub collaboration. */
 @JsonFilter("nullablePropertyFilter")
 public class HubCollaborationCreateRequestV2025R0 extends SerializableObject {
 
+  /** Box Hubs reference. */
   protected final HubCollaborationCreateRequestV2025R0HubField hub;
 
+  /** The user or group who gets access to the item. */
   @JsonProperty("accessible_by")
   protected final HubCollaborationCreateRequestV2025R0AccessibleByField accessibleBy;
 
+  /**
+   * The level of access granted to a Box Hub. Possible values are `editor`, `viewer`, and
+   * `co-owner`.
+   */
   protected final String role;
 
   public HubCollaborationCreateRequestV2025R0(

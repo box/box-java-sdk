@@ -2,6 +2,9 @@ package com.box.sdkgen.managers.folders;
 
 public class DeleteFolderByIdQueryParams {
 
+  /**
+   * Delete a folder that is not empty by recursively deleting the folder and all of its content.
+   */
   public Boolean recursive;
 
   public DeleteFolderByIdQueryParams() {}

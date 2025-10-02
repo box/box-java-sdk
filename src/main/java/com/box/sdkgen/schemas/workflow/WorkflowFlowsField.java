@@ -16,8 +16,10 @@ import java.util.Objects;
 @JsonFilter("nullablePropertyFilter")
 public class WorkflowFlowsField extends SerializableObject {
 
+  /** The identifier of the flow. */
   protected String id;
 
+  /** The flow's resource type. */
   @JsonDeserialize(using = WorkflowFlowsTypeField.WorkflowFlowsTypeFieldDeserializer.class)
   @JsonSerialize(using = WorkflowFlowsTypeField.WorkflowFlowsTypeFieldSerializer.class)
   protected EnumWrapper<WorkflowFlowsTypeField> type;
@@ -26,6 +28,7 @@ public class WorkflowFlowsField extends SerializableObject {
 
   protected List<WorkflowFlowsOutcomesField> outcomes;
 
+  /** When this flow was created. */
   @JsonProperty("created_at")
   @JsonSerialize(using = DateTimeUtils.DateTimeSerializer.class)
   @JsonDeserialize(using = DateTimeUtils.DateTimeDeserializer.class)

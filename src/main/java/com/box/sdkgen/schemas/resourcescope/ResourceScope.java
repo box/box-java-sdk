@@ -11,9 +11,14 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import java.util.Objects;
 
+/**
+ * A relation between a resource (file or folder) and the scopes for which the resource can be
+ * accessed.
+ */
 @JsonFilter("nullablePropertyFilter")
 public class ResourceScope extends SerializableObject {
 
+  /** The scopes for the resource access. */
   @JsonDeserialize(using = ResourceScopeScopeField.ResourceScopeScopeFieldDeserializer.class)
   @JsonSerialize(using = ResourceScopeScopeField.ResourceScopeScopeFieldSerializer.class)
   protected EnumWrapper<ResourceScopeScopeField> scope;

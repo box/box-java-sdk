@@ -8,8 +8,10 @@ import java.util.Objects;
 @JsonFilter("nullablePropertyFilter")
 public class UpdateFolderByIdRequestBodyCollectionsField extends SerializableObject {
 
+  /** The unique identifier for this object. */
   protected String id;
 
+  /** The type for this object. */
   protected String type;
 
   public UpdateFolderByIdRequestBodyCollectionsField() {

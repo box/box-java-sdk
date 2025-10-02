@@ -11,6 +11,7 @@ import java.util.Objects;
 @JsonFilter("nullablePropertyFilter")
 public class UpdateAllSkillCardsOnFileRequestBodyFileField extends SerializableObject {
 
+  /** The value will always be `file`. */
   @JsonDeserialize(
       using =
           UpdateAllSkillCardsOnFileRequestBodyFileTypeField
@@ -21,6 +22,7 @@ public class UpdateAllSkillCardsOnFileRequestBodyFileField extends SerializableO
               .UpdateAllSkillCardsOnFileRequestBodyFileTypeFieldSerializer.class)
   protected EnumWrapper<UpdateAllSkillCardsOnFileRequestBodyFileTypeField> type;
 
+  /** The ID of the file. */
   protected String id;
 
   public UpdateAllSkillCardsOnFileRequestBodyFileField() {

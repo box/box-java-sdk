@@ -6,12 +6,15 @@ import com.fasterxml.jackson.annotation.JsonFilter;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.Objects;
 
+/** The details for the upload session for the file. */
 @JsonFilter("nullablePropertyFilter")
 public class UploadUrl extends SerializableObject {
 
+  /** A URL for an upload session that can be used to upload the file. */
   @JsonProperty("upload_url")
   protected String uploadUrl;
 
+  /** An optional access token to use to upload the file. */
   @JsonProperty("upload_token")
   protected String uploadToken;
 

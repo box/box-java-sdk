@@ -9,13 +9,25 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import java.time.OffsetDateTime;
 import java.util.Objects;
 
+/**
+ * Specifies which `date` field on the template to filter the search results by, specifying a range
+ * of dates that can match.
+ */
 @JsonFilter("nullablePropertyFilter")
 public class MetadataFieldFilterDateRange extends SerializableObject {
 
+  /**
+   * Specifies the (inclusive) upper bound for the metadata field value. The value of a field must
+   * be lower than (`lt`) or equal to this value for the search query to match this template.
+   */
   @JsonSerialize(using = DateTimeUtils.DateTimeSerializer.class)
   @JsonDeserialize(using = DateTimeUtils.DateTimeDeserializer.class)
   protected OffsetDateTime lt;
 
+  /**
+   * Specifies the (inclusive) lower bound for the metadata field value. The value of a field must
+   * be greater than (`gt`) or equal to this value for the search query to match this template.
+   */
   @JsonSerialize(using = DateTimeUtils.DateTimeSerializer.class)
   @JsonDeserialize(using = DateTimeUtils.DateTimeDeserializer.class)
   protected OffsetDateTime gt;

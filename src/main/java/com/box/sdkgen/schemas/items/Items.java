@@ -9,26 +9,54 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.List;
 import java.util.Objects;
 
+/** A list of files, folders, and web links in their mini representation. */
 @JsonFilter("nullablePropertyFilter")
 public class Items extends SerializableObject {
 
+  /**
+   * The limit that was used for these entries. This will be the same as the `limit` query parameter
+   * unless that value exceeded the maximum value allowed. The maximum value varies by API.
+   */
   protected Long limit;
 
+  /** The marker for the start of the next page of results. */
   @JsonProperty("next_marker")
   @Nullable
   protected String nextMarker;
 
+  /** The marker for the start of the previous page of results. */
   @JsonProperty("prev_marker")
   @Nullable
   protected String prevMarker;
 
+  /**
+   * One greater than the offset of the last entry in the entire collection. The total number of
+   * entries in the collection may be less than `total_count`.
+   *
+   * <p>This field is only returned for calls that use offset-based pagination. For marker-based
+   * paginated APIs, this field will be omitted.
+   */
   @JsonProperty("total_count")
   protected Long totalCount;
 
+  /**
+   * The 0-based offset of the first entry in this set. This will be the same as the `offset` query
+   * parameter.
+   *
+   * <p>This field is only returned for calls that use offset-based pagination. For marker-based
+   * paginated APIs, this field will be omitted.
+   */
   protected Long offset;
 
+  /**
+   * The order by which items are returned.
+   *
+   * <p>This field is only returned for calls that use offset-based pagination. For marker-based
+   * paginated APIs, this field will be omitted.
+   */
   protected List<ItemsOrderField> order;
 
+  /** The items in this collection. */
   protected List<Item> entries;
 
   public Items() {

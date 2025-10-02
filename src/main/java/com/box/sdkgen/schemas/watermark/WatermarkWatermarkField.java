@@ -13,11 +13,13 @@ import java.util.Objects;
 @JsonFilter("nullablePropertyFilter")
 public class WatermarkWatermarkField extends SerializableObject {
 
+  /** When this watermark was created. */
   @JsonProperty("created_at")
   @JsonSerialize(using = DateTimeUtils.DateTimeSerializer.class)
   @JsonDeserialize(using = DateTimeUtils.DateTimeDeserializer.class)
   protected OffsetDateTime createdAt;
 
+  /** When this task was modified. */
   @JsonProperty("modified_at")
   @JsonSerialize(using = DateTimeUtils.DateTimeSerializer.class)
   @JsonDeserialize(using = DateTimeUtils.DateTimeDeserializer.class)

@@ -12,15 +12,19 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import java.time.OffsetDateTime;
 import java.util.Objects;
 
+/** An invite for a user to an enterprise. */
 @JsonFilter("nullablePropertyFilter")
 public class Invite extends SerializableObject {
 
+  /** The unique identifier for this invite. */
   protected final String id;
 
+  /** The value will always be `invite`. */
   @JsonDeserialize(using = InviteTypeField.InviteTypeFieldDeserializer.class)
   @JsonSerialize(using = InviteTypeField.InviteTypeFieldSerializer.class)
   protected EnumWrapper<InviteTypeField> type;
 
+  /** A representation of a Box enterprise. */
   @JsonProperty("invited_to")
   protected InviteInvitedToField invitedTo;
 
@@ -30,13 +34,16 @@ public class Invite extends SerializableObject {
   @JsonProperty("invited_by")
   protected UserMini invitedBy;
 
+  /** The status of the invite. */
   protected String status;
 
+  /** When the invite was created. */
   @JsonProperty("created_at")
   @JsonSerialize(using = DateTimeUtils.DateTimeSerializer.class)
   @JsonDeserialize(using = DateTimeUtils.DateTimeDeserializer.class)
   protected OffsetDateTime createdAt;
 
+  /** When the invite was modified. */
   @JsonProperty("modified_at")
   @JsonSerialize(using = DateTimeUtils.DateTimeSerializer.class)
   @JsonDeserialize(using = DateTimeUtils.DateTimeDeserializer.class)

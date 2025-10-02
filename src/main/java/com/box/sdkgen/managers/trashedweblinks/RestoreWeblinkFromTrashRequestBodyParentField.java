@@ -8,6 +8,7 @@ import java.util.Objects;
 @JsonFilter("nullablePropertyFilter")
 public class RestoreWeblinkFromTrashRequestBodyParentField extends SerializableObject {
 
+  /** The ID of parent item. */
   protected String id;
 
   public RestoreWeblinkFromTrashRequestBodyParentField() {

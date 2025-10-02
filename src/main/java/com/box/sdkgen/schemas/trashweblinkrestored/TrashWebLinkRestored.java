@@ -14,47 +14,58 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import java.time.OffsetDateTime;
 import java.util.Objects;
 
+/** Represents a web link restored from the trash. */
 @JsonFilter("nullablePropertyFilter")
 public class TrashWebLinkRestored extends SerializableObject {
 
+  /** The value will always be `web_link`. */
   @JsonDeserialize(
       using = TrashWebLinkRestoredTypeField.TrashWebLinkRestoredTypeFieldDeserializer.class)
   @JsonSerialize(
       using = TrashWebLinkRestoredTypeField.TrashWebLinkRestoredTypeFieldSerializer.class)
   protected EnumWrapper<TrashWebLinkRestoredTypeField> type;
 
+  /** The unique identifier for this web link. */
   protected String id;
 
   @JsonProperty("sequence_id")
   protected final String sequenceId;
 
+  /** The entity tag of this web link. Used with `If-Match` headers. */
   protected String etag;
 
+  /** The name of the web link. */
   protected String name;
 
+  /** The URL this web link points to. */
   protected String url;
 
   protected FolderMini parent;
 
+  /** The description accompanying the web link. This is visible within the Box web application. */
   protected String description;
 
   @JsonProperty("path_collection")
   protected final TrashWebLinkRestoredPathCollectionField pathCollection;
 
+  /** When this file was created on Box’s servers. */
   @JsonProperty("created_at")
   @JsonSerialize(using = DateTimeUtils.DateTimeSerializer.class)
   @JsonDeserialize(using = DateTimeUtils.DateTimeDeserializer.class)
   protected OffsetDateTime createdAt;
 
+  /** When this file was last updated on the Box servers. */
   @JsonProperty("modified_at")
   @JsonSerialize(using = DateTimeUtils.DateTimeSerializer.class)
   @JsonDeserialize(using = DateTimeUtils.DateTimeDeserializer.class)
   protected OffsetDateTime modifiedAt;
 
+  /** The time at which this bookmark was put in the trash - becomes `null` after restore. */
   @JsonProperty("trashed_at")
   @Nullable
   protected String trashedAt;
 
+  /** The time at which this bookmark will be permanently deleted - becomes `null` after restore. */
   @JsonProperty("purged_at")
   @Nullable
   protected String purgedAt;
@@ -68,10 +79,18 @@ public class TrashWebLinkRestored extends SerializableObject {
   @JsonProperty("owned_by")
   protected UserMini ownedBy;
 
+  /**
+   * The shared link for this bookmark. This will be `null` if a bookmark had been trashed, even
+   * though the original shared link does become active again.
+   */
   @JsonProperty("shared_link")
   @Nullable
   protected String sharedLink;
 
+  /**
+   * Whether this item is deleted or not. Values include `active`, `trashed` if the file has been
+   * moved to the trash, and `deleted` if the file has been permanently deleted.
+   */
   @JsonDeserialize(
       using =
           TrashWebLinkRestoredItemStatusField.TrashWebLinkRestoredItemStatusFieldDeserializer.class)

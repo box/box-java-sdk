@@ -6,6 +6,7 @@ import java.util.Map;
 
 public class GetCollaborationByIdHeaders {
 
+  /** Extra headers that will be included in the HTTP request. */
   public Map<String, String> extraHeaders;
 
   public GetCollaborationByIdHeaders() {

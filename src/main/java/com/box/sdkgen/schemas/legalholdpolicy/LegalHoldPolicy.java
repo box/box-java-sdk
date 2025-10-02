@@ -12,49 +12,75 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import java.time.OffsetDateTime;
 import java.util.Objects;
 
+/**
+ * Legal Hold Policy information describes the basic characteristics of the Policy, such as name,
+ * description, and filter dates.
+ */
 @JsonFilter("nullablePropertyFilter")
 public class LegalHoldPolicy extends LegalHoldPolicyMini {
 
+  /** Name of the legal hold policy. */
   @JsonProperty("policy_name")
   protected String policyName;
 
+  /** Description of the legal hold policy. Optional property with a 500 character limit. */
   protected String description;
 
+  /**
+   * Possible values: * 'active' - the policy is not in a transition state. * 'applying' - that the
+   * policy is in the process of being applied. * 'releasing' - that the process is in the process
+   * of being released. * 'released' - the policy is no longer active.
+   */
   @JsonDeserialize(using = LegalHoldPolicyStatusField.LegalHoldPolicyStatusFieldDeserializer.class)
   @JsonSerialize(using = LegalHoldPolicyStatusField.LegalHoldPolicyStatusFieldSerializer.class)
   protected EnumWrapper<LegalHoldPolicyStatusField> status;
 
+  /** Counts of assignments within this a legal hold policy by item type. */
   @JsonProperty("assignment_counts")
   protected LegalHoldPolicyAssignmentCountsField assignmentCounts;
 
   @JsonProperty("created_by")
   protected UserMini createdBy;
 
+  /** When the legal hold policy object was created. */
   @JsonProperty("created_at")
   @JsonSerialize(using = DateTimeUtils.DateTimeSerializer.class)
   @JsonDeserialize(using = DateTimeUtils.DateTimeDeserializer.class)
   protected OffsetDateTime createdAt;
 
+  /**
+   * When the legal hold policy object was modified. Does not update when assignments are added or
+   * removed.
+   */
   @JsonProperty("modified_at")
   @JsonSerialize(using = DateTimeUtils.DateTimeSerializer.class)
   @JsonDeserialize(using = DateTimeUtils.DateTimeDeserializer.class)
   protected OffsetDateTime modifiedAt;
 
+  /**
+   * When the policy release request was sent. (Because it can take time for a policy to fully
+   * delete, this isn't quite the same time that the policy is fully deleted).
+   *
+   * <p>If `null`, the policy was not deleted.
+   */
   @JsonProperty("deleted_at")
   @JsonSerialize(using = DateTimeUtils.DateTimeSerializer.class)
   @JsonDeserialize(using = DateTimeUtils.DateTimeDeserializer.class)
   protected OffsetDateTime deletedAt;
 
+  /** User-specified, optional date filter applies to Custodian assignments only. */
   @JsonProperty("filter_started_at")
   @JsonSerialize(using = DateTimeUtils.DateTimeSerializer.class)
   @JsonDeserialize(using = DateTimeUtils.DateTimeDeserializer.class)
   protected OffsetDateTime filterStartedAt;
 
+  /** User-specified, optional date filter applies to Custodian assignments only. */
   @JsonProperty("filter_ended_at")
   @JsonSerialize(using = DateTimeUtils.DateTimeSerializer.class)
   @JsonDeserialize(using = DateTimeUtils.DateTimeDeserializer.class)
   protected OffsetDateTime filterEndedAt;
 
+  /** Optional notes about why the policy was created. */
   @JsonProperty("release_notes")
   protected String releaseNotes;
 

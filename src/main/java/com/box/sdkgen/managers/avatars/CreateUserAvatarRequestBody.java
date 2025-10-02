@@ -4,6 +4,10 @@ import java.io.InputStream;
 
 public class CreateUserAvatarRequestBody {
 
+  /**
+   * The image file to be uploaded to Box. Accepted file extensions are `.jpg` or `.png`. The
+   * maximum file size is 1MB.
+   */
   public final InputStream pic;
 
   public String picFileName;

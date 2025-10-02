@@ -8,12 +8,15 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.List;
 import java.util.Objects;
 
+/** A list of email aliases. */
 @JsonFilter("nullablePropertyFilter")
 public class EmailAliases extends SerializableObject {
 
+  /** The number of email aliases. */
   @JsonProperty("total_count")
   protected Long totalCount;
 
+  /** A list of email aliases. */
   protected List<EmailAlias> entries;
 
   public EmailAliases() {

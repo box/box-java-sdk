@@ -2,12 +2,31 @@ package com.box.sdkgen.managers.metadatacascadepolicies;
 
 public class GetMetadataCascadePoliciesQueryParams {
 
+  /**
+   * Specifies which folder to return policies for. This can not be used on the root folder with ID
+   * `0`.
+   */
   public final String folderId;
 
+  /**
+   * The ID of the enterprise ID for which to find metadata cascade policies. If not specified, it
+   * defaults to the current enterprise.
+   */
   public String ownerEnterpriseId;
 
+  /**
+   * Defines the position marker at which to begin returning results. This is used when paginating
+   * using marker-based pagination.
+   *
+   * <p>This requires `usemarker` to be set to `true`.
+   */
   public String marker;
 
+  /**
+   * The offset of the item at which to begin the response.
+   *
+   * <p>Queries with offset parameter value exceeding 10000 will be rejected with a 400 response.
+   */
   public Long offset;
 
   public GetMetadataCascadePoliciesQueryParams(String folderId) {

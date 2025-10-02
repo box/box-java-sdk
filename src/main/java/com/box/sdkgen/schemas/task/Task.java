@@ -14,42 +14,60 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import java.time.OffsetDateTime;
 import java.util.Objects;
 
+/**
+ * A task allows for file-centric workflows within Box. Users can create tasks on files and assign
+ * them to other users for them to complete the tasks.
+ */
 @JsonFilter("nullablePropertyFilter")
 public class Task extends SerializableObject {
 
+  /** The unique identifier for this task. */
   protected String id;
 
+  /** The value will always be `task`. */
   @JsonDeserialize(using = TaskTypeField.TaskTypeFieldDeserializer.class)
   @JsonSerialize(using = TaskTypeField.TaskTypeFieldSerializer.class)
   protected EnumWrapper<TaskTypeField> type;
 
   protected FileMini item;
 
+  /** When the task is due. */
   @JsonProperty("due_at")
   @JsonSerialize(using = DateTimeUtils.DateTimeSerializer.class)
   @JsonDeserialize(using = DateTimeUtils.DateTimeDeserializer.class)
   protected OffsetDateTime dueAt;
 
+  /** The type of task the task assignee will be prompted to perform. */
   @JsonDeserialize(using = TaskActionField.TaskActionFieldDeserializer.class)
   @JsonSerialize(using = TaskActionField.TaskActionFieldSerializer.class)
   protected EnumWrapper<TaskActionField> action;
 
+  /** A message that will be included with the task. */
   protected String message;
 
   @JsonProperty("task_assignment_collection")
   protected TaskAssignments taskAssignmentCollection;
 
+  /** Whether the task has been completed. */
   @JsonProperty("is_completed")
   protected Boolean isCompleted;
 
   @JsonProperty("created_by")
   protected UserMini createdBy;
 
+  /** When the task object was created. */
   @JsonProperty("created_at")
   @JsonSerialize(using = DateTimeUtils.DateTimeSerializer.class)
   @JsonDeserialize(using = DateTimeUtils.DateTimeDeserializer.class)
   protected OffsetDateTime createdAt;
 
+  /**
+   * Defines which assignees need to complete this task before the task is considered completed.
+   *
+   * <p>* `all_assignees` requires all assignees to review or approve the task in order for it to be
+   * considered completed. * `any_assignee` accepts any one assignee to review or approve the task
+   * in order for it to be considered completed.
+   */
   @JsonDeserialize(using = TaskCompletionRuleField.TaskCompletionRuleFieldDeserializer.class)
   @JsonSerialize(using = TaskCompletionRuleField.TaskCompletionRuleFieldSerializer.class)
   @JsonProperty("completion_rule")

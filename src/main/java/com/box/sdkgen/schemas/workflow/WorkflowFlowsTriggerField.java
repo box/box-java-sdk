@@ -13,12 +13,14 @@ import java.util.Objects;
 @JsonFilter("nullablePropertyFilter")
 public class WorkflowFlowsTriggerField extends SerializableObject {
 
+  /** The trigger's resource type. */
   @JsonDeserialize(
       using = WorkflowFlowsTriggerTypeField.WorkflowFlowsTriggerTypeFieldDeserializer.class)
   @JsonSerialize(
       using = WorkflowFlowsTriggerTypeField.WorkflowFlowsTriggerTypeFieldSerializer.class)
   protected EnumWrapper<WorkflowFlowsTriggerTypeField> type;
 
+  /** The type of trigger selected for this flow. */
   @JsonDeserialize(
       using =
           WorkflowFlowsTriggerTriggerTypeField.WorkflowFlowsTriggerTriggerTypeFieldDeserializer
@@ -29,6 +31,7 @@ public class WorkflowFlowsTriggerField extends SerializableObject {
   @JsonProperty("trigger_type")
   protected EnumWrapper<WorkflowFlowsTriggerTriggerTypeField> triggerType;
 
+  /** List of trigger scopes. */
   protected List<WorkflowFlowsTriggerScopeField> scope;
 
   public WorkflowFlowsTriggerField() {

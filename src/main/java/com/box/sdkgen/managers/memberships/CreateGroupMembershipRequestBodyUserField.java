@@ -8,6 +8,7 @@ import java.util.Objects;
 @JsonFilter("nullablePropertyFilter")
 public class CreateGroupMembershipRequestBodyUserField extends SerializableObject {
 
+  /** The ID of the user to add to the group. */
   protected final String id;
 
   public CreateGroupMembershipRequestBodyUserField(@JsonProperty("id") String id) {

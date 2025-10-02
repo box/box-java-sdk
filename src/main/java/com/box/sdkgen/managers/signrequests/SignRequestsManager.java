@@ -32,10 +32,21 @@ public class SignRequestsManager {
     this.networkSession = builder.networkSession;
   }
 
+  /**
+   * Cancels a sign request.
+   *
+   * @param signRequestId The ID of the signature request. Example: "33243242"
+   */
   public SignRequest cancelSignRequest(String signRequestId) {
     return cancelSignRequest(signRequestId, new CancelSignRequestHeaders());
   }
 
+  /**
+   * Cancels a sign request.
+   *
+   * @param signRequestId The ID of the signature request. Example: "33243242"
+   * @param headers Headers of cancelSignRequest method
+   */
   public SignRequest cancelSignRequest(String signRequestId, CancelSignRequestHeaders headers) {
     Map<String, String> headersMap = prepareParams(mergeMaps(mapOf(), headers.getExtraHeaders()));
     FetchResponse response =
@@ -58,10 +69,21 @@ public class SignRequestsManager {
     return JsonManager.deserialize(response.getData(), SignRequest.class);
   }
 
+  /**
+   * Resends a signature request email to all outstanding signers.
+   *
+   * @param signRequestId The ID of the signature request. Example: "33243242"
+   */
   public void resendSignRequest(String signRequestId) {
     resendSignRequest(signRequestId, new ResendSignRequestHeaders());
   }
 
+  /**
+   * Resends a signature request email to all outstanding signers.
+   *
+   * @param signRequestId The ID of the signature request. Example: "33243242"
+   * @param headers Headers of resendSignRequest method
+   */
   public void resendSignRequest(String signRequestId, ResendSignRequestHeaders headers) {
     Map<String, String> headersMap = prepareParams(mergeMaps(mapOf(), headers.getExtraHeaders()));
     FetchResponse response =
@@ -83,10 +105,21 @@ public class SignRequestsManager {
                     .build());
   }
 
+  /**
+   * Gets a sign request by ID.
+   *
+   * @param signRequestId The ID of the signature request. Example: "33243242"
+   */
   public SignRequest getSignRequestById(String signRequestId) {
     return getSignRequestById(signRequestId, new GetSignRequestByIdHeaders());
   }
 
+  /**
+   * Gets a sign request by ID.
+   *
+   * @param signRequestId The ID of the signature request. Example: "33243242"
+   * @param headers Headers of getSignRequestById method
+   */
   public SignRequest getSignRequestById(String signRequestId, GetSignRequestByIdHeaders headers) {
     Map<String, String> headersMap = prepareParams(mergeMaps(mapOf(), headers.getExtraHeaders()));
     FetchResponse response =
@@ -108,18 +141,41 @@ public class SignRequestsManager {
     return JsonManager.deserialize(response.getData(), SignRequest.class);
   }
 
+  /**
+   * Gets signature requests created by a user. If the `sign_files` and/or `parent_folder` are
+   * deleted, the signature request will not return in the list.
+   */
   public SignRequests getSignRequests() {
     return getSignRequests(new GetSignRequestsQueryParams(), new GetSignRequestsHeaders());
   }
 
+  /**
+   * Gets signature requests created by a user. If the `sign_files` and/or `parent_folder` are
+   * deleted, the signature request will not return in the list.
+   *
+   * @param queryParams Query parameters of getSignRequests method
+   */
   public SignRequests getSignRequests(GetSignRequestsQueryParams queryParams) {
     return getSignRequests(queryParams, new GetSignRequestsHeaders());
   }
 
+  /**
+   * Gets signature requests created by a user. If the `sign_files` and/or `parent_folder` are
+   * deleted, the signature request will not return in the list.
+   *
+   * @param headers Headers of getSignRequests method
+   */
   public SignRequests getSignRequests(GetSignRequestsHeaders headers) {
     return getSignRequests(new GetSignRequestsQueryParams(), headers);
   }
 
+  /**
+   * Gets signature requests created by a user. If the `sign_files` and/or `parent_folder` are
+   * deleted, the signature request will not return in the list.
+   *
+   * @param queryParams Query parameters of getSignRequests method
+   * @param headers Headers of getSignRequests method
+   */
   public SignRequests getSignRequests(
       GetSignRequestsQueryParams queryParams, GetSignRequestsHeaders headers) {
     Map<String, String> queryParamsMap =
@@ -149,10 +205,23 @@ public class SignRequestsManager {
     return JsonManager.deserialize(response.getData(), SignRequests.class);
   }
 
+  /**
+   * Creates a signature request. This involves preparing a document for signing and sending the
+   * signature request to signers.
+   *
+   * @param requestBody Request body of createSignRequest method
+   */
   public SignRequest createSignRequest(SignRequestCreateRequest requestBody) {
     return createSignRequest(requestBody, new CreateSignRequestHeaders());
   }
 
+  /**
+   * Creates a signature request. This involves preparing a document for signing and sending the
+   * signature request to signers.
+   *
+   * @param requestBody Request body of createSignRequest method
+   * @param headers Headers of createSignRequest method
+   */
   public SignRequest createSignRequest(
       SignRequestCreateRequest requestBody, CreateSignRequestHeaders headers) {
     Map<String, String> headersMap = prepareParams(mergeMaps(mapOf(), headers.getExtraHeaders()));

@@ -31,18 +31,35 @@ public class SignTemplatesManager {
     this.networkSession = builder.networkSession;
   }
 
+  /** Gets Box Sign templates created by a user. */
   public SignTemplates getSignTemplates() {
     return getSignTemplates(new GetSignTemplatesQueryParams(), new GetSignTemplatesHeaders());
   }
 
+  /**
+   * Gets Box Sign templates created by a user.
+   *
+   * @param queryParams Query parameters of getSignTemplates method
+   */
   public SignTemplates getSignTemplates(GetSignTemplatesQueryParams queryParams) {
     return getSignTemplates(queryParams, new GetSignTemplatesHeaders());
   }
 
+  /**
+   * Gets Box Sign templates created by a user.
+   *
+   * @param headers Headers of getSignTemplates method
+   */
   public SignTemplates getSignTemplates(GetSignTemplatesHeaders headers) {
     return getSignTemplates(new GetSignTemplatesQueryParams(), headers);
   }
 
+  /**
+   * Gets Box Sign templates created by a user.
+   *
+   * @param queryParams Query parameters of getSignTemplates method
+   * @param headers Headers of getSignTemplates method
+   */
   public SignTemplates getSignTemplates(
       GetSignTemplatesQueryParams queryParams, GetSignTemplatesHeaders headers) {
     Map<String, String> queryParamsMap =
@@ -70,10 +87,23 @@ public class SignTemplatesManager {
     return JsonManager.deserialize(response.getData(), SignTemplates.class);
   }
 
+  /**
+   * Fetches details of a specific Box Sign template.
+   *
+   * @param templateId The ID of a Box Sign template. Example:
+   *     "123075213-7d117509-8f05-42e4-a5ef-5190a319d41d"
+   */
   public SignTemplate getSignTemplateById(String templateId) {
     return getSignTemplateById(templateId, new GetSignTemplateByIdHeaders());
   }
 
+  /**
+   * Fetches details of a specific Box Sign template.
+   *
+   * @param templateId The ID of a Box Sign template. Example:
+   *     "123075213-7d117509-8f05-42e4-a5ef-5190a319d41d"
+   * @param headers Headers of getSignTemplateById method
+   */
   public SignTemplate getSignTemplateById(String templateId, GetSignTemplateByIdHeaders headers) {
     Map<String, String> headersMap = prepareParams(mergeMaps(mapOf(), headers.getExtraHeaders()));
     FetchResponse response =

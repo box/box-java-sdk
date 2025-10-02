@@ -9,17 +9,32 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import java.util.Objects;
 
+/**
+ * An archive is a folder dedicated to storing content that is redundant, outdated, or trivial.
+ * Content in an archive is not accessible to its owner and collaborators. To use this feature, you
+ * must request GCM scope for your Box application.
+ */
 @JsonFilter("nullablePropertyFilter")
 public class ArchiveV2025R0 extends SerializableObject {
 
+  /** The unique identifier that represents an archive. */
   protected final String id;
 
+  /** The value will always be `archive`. */
   @JsonDeserialize(using = ArchiveV2025R0TypeField.ArchiveV2025R0TypeFieldDeserializer.class)
   @JsonSerialize(using = ArchiveV2025R0TypeField.ArchiveV2025R0TypeFieldSerializer.class)
   protected EnumWrapper<ArchiveV2025R0TypeField> type;
 
+  /**
+   * The name of the archive.
+   *
+   * <p>The following restrictions to the archive name apply: names containing non-printable ASCII
+   * characters, forward and backward slashes (`/`, `\`), names with trailing spaces, and names `.`
+   * and `..` are not allowed.
+   */
   protected final String name;
 
+  /** The size of the archive in bytes. */
   protected final long size;
 
   public ArchiveV2025R0(

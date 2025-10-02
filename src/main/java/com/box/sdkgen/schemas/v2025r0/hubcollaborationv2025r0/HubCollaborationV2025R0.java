@@ -13,11 +13,17 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import java.util.Objects;
 
+/**
+ * A Box Hub collaboration object grants a user or group access to a Box Hub with permissions
+ * defined by a specific role.
+ */
 @JsonFilter("nullablePropertyFilter")
 public class HubCollaborationV2025R0 extends SerializableObject {
 
+  /** The unique identifier for this collaboration. */
   protected final String id;
 
+  /** The value will always be `hub_collaboration`. */
   @JsonDeserialize(
       using = HubCollaborationV2025R0TypeField.HubCollaborationV2025R0TypeFieldDeserializer.class)
   @JsonSerialize(
@@ -29,8 +35,16 @@ public class HubCollaborationV2025R0 extends SerializableObject {
   @JsonProperty("accessible_by")
   protected HubAccessGranteeV2025R0 accessibleBy;
 
+  /**
+   * The level of access granted to a Box Hub. Possible values are `editor`, `viewer`, and
+   * `co-owner`.
+   */
   protected String role;
 
+  /**
+   * The status of the collaboration invitation. If the status is `pending`, `login` and `name`
+   * return an empty string.
+   */
   @JsonDeserialize(
       using =
           HubCollaborationV2025R0StatusField.HubCollaborationV2025R0StatusFieldDeserializer.class)

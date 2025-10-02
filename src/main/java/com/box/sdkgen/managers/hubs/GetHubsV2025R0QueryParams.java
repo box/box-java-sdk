@@ -4,16 +4,34 @@ import com.box.sdkgen.serialization.json.EnumWrapper;
 
 public class GetHubsV2025R0QueryParams {
 
+  /** The query string to search for Box Hubs. */
   public String query;
 
+  /**
+   * The scope of the Box Hubs to retrieve. Possible values include `editable`, `view_only`, and
+   * `all`. Default is `all`.
+   */
   public String scope;
 
+  /**
+   * The field to sort results by. Possible values include `name`, `updated_at`, `last_accessed_at`,
+   * `view_count`, and `relevance`. Default is `relevance`.
+   */
   public String sort;
 
+  /**
+   * The direction to sort results in. This can be either in alphabetical ascending (`ASC`) or
+   * descending (`DESC`) order.
+   */
   public EnumWrapper<GetHubsV2025R0QueryParamsDirectionField> direction;
 
+  /**
+   * Defines the position marker at which to begin returning results. This is used when paginating
+   * using marker-based pagination.
+   */
   public String marker;
 
+  /** The maximum number of items to return per page. */
   public Long limit;
 
   public GetHubsV2025R0QueryParams() {}

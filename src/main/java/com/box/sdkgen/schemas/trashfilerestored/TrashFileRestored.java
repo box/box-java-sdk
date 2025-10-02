@@ -15,13 +15,26 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import java.time.OffsetDateTime;
 import java.util.Objects;
 
+/** Represents a file restored from the trash. */
 @JsonFilter("nullablePropertyFilter")
 public class TrashFileRestored extends SerializableObject {
 
+  /**
+   * The unique identifier that represent a file.
+   *
+   * <p>The ID for any file can be determined by visiting a file in the web application and copying
+   * the ID from the URL. For example, for the URL `https://*.app.box.com/files/123` the `file_id`
+   * is `123`.
+   */
   protected final String id;
 
+  /**
+   * The HTTP `etag` of this file. This can be used within some API endpoints in the `If-Match` and
+   * `If-None-Match` headers to only perform changes on the file if (no) changes have happened.
+   */
   @Nullable protected String etag;
 
+  /** The value will always be `file`. */
   @JsonDeserialize(using = TrashFileRestoredTypeField.TrashFileRestoredTypeFieldDeserializer.class)
   @JsonSerialize(using = TrashFileRestoredTypeField.TrashFileRestoredTypeFieldSerializer.class)
   protected EnumWrapper<TrashFileRestoredTypeField> type;
@@ -29,44 +42,69 @@ public class TrashFileRestored extends SerializableObject {
   @JsonProperty("sequence_id")
   protected final String sequenceId;
 
+  /** The name of the file. */
   protected String name;
 
+  /**
+   * The SHA1 hash of the file. This can be used to compare the contents of a file on Box with a
+   * local file.
+   */
   protected final String sha1;
 
   @JsonProperty("file_version")
   protected FileVersionMini fileVersion;
 
+  /** The optional description of this file. */
   protected final String description;
 
+  /**
+   * The file size in bytes. Be careful parsing this integer as it can get very large and cause an
+   * integer overflow.
+   */
   protected final long size;
 
   @JsonProperty("path_collection")
   protected final TrashFileRestoredPathCollectionField pathCollection;
 
+  /** The date and time when the file was created on Box. */
   @JsonProperty("created_at")
   @JsonSerialize(using = DateTimeUtils.DateTimeSerializer.class)
   @JsonDeserialize(using = DateTimeUtils.DateTimeDeserializer.class)
   protected final OffsetDateTime createdAt;
 
+  /** The date and time when the file was last updated on Box. */
   @JsonProperty("modified_at")
   @JsonSerialize(using = DateTimeUtils.DateTimeSerializer.class)
   @JsonDeserialize(using = DateTimeUtils.DateTimeDeserializer.class)
   protected final OffsetDateTime modifiedAt;
 
+  /** The time at which this file was put in the trash - becomes `null` after restore. */
   @JsonProperty("trashed_at")
   @Nullable
   protected String trashedAt;
 
+  /**
+   * The time at which this file is expected to be purged from the trash - becomes `null` after
+   * restore.
+   */
   @JsonProperty("purged_at")
   @Nullable
   protected String purgedAt;
 
+  /**
+   * The date and time at which this file was originally created, which might be before it was
+   * uploaded to Box.
+   */
   @JsonProperty("content_created_at")
   @JsonSerialize(using = DateTimeUtils.DateTimeSerializer.class)
   @JsonDeserialize(using = DateTimeUtils.DateTimeDeserializer.class)
   @Nullable
   protected OffsetDateTime contentCreatedAt;
 
+  /**
+   * The date and time at which this file was last updated, which might be before it was uploaded to
+   * Box.
+   */
   @JsonProperty("content_modified_at")
   @JsonSerialize(using = DateTimeUtils.DateTimeSerializer.class)
   @JsonDeserialize(using = DateTimeUtils.DateTimeDeserializer.class)
@@ -82,12 +120,22 @@ public class TrashFileRestored extends SerializableObject {
   @JsonProperty("owned_by")
   protected final UserMini ownedBy;
 
+  /**
+   * The shared link for this file. This will be `null` if a file had been trashed, even though the
+   * original shared link does become active again.
+   */
   @JsonProperty("shared_link")
   @Nullable
   protected String sharedLink;
 
   protected FolderMini parent;
 
+  /**
+   * Defines if this item has been deleted or not.
+   *
+   * <p>* `active` when the item has is not in the trash * `trashed` when the item has been moved to
+   * the trash but not deleted * `deleted` when the item has been permanently deleted.
+   */
   @JsonDeserialize(
       using = TrashFileRestoredItemStatusField.TrashFileRestoredItemStatusFieldDeserializer.class)
   @JsonSerialize(

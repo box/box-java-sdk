@@ -10,9 +10,11 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import java.util.List;
 import java.util.Objects;
 
+/** Representation of content of a Shield List that contains ip addresses data. */
 @JsonFilter("nullablePropertyFilter")
 public class ShieldListContentIpV2025R0 extends SerializableObject {
 
+  /** The type of content in the shield list. */
   @JsonDeserialize(
       using =
           ShieldListContentIpV2025R0TypeField.ShieldListContentIpV2025R0TypeFieldDeserializer.class)
@@ -21,6 +23,7 @@ public class ShieldListContentIpV2025R0 extends SerializableObject {
           ShieldListContentIpV2025R0TypeField.ShieldListContentIpV2025R0TypeFieldSerializer.class)
   protected EnumWrapper<ShieldListContentIpV2025R0TypeField> type;
 
+  /** List of ip addresses and CIDRs. */
   @JsonProperty("ip_addresses")
   protected final List<String> ipAddresses;
 

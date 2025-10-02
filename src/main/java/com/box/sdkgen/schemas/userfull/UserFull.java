@@ -14,41 +14,63 @@ import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.Objects;
 
+/** A full representation of a user, as can be returned from any user API endpoint. */
 @JsonFilter("nullablePropertyFilter")
 public class UserFull extends User {
 
+  /** The user’s enterprise role. */
   @JsonDeserialize(using = UserFullRoleField.UserFullRoleFieldDeserializer.class)
   @JsonSerialize(using = UserFullRoleField.UserFullRoleFieldSerializer.class)
   protected EnumWrapper<UserFullRoleField> role;
 
+  /**
+   * Tracking codes allow an admin to generate reports from the admin console and assign an
+   * attribute to a specific group of users. This setting must be enabled for an enterprise before
+   * it can be used.
+   */
   @JsonProperty("tracking_codes")
   protected List<TrackingCode> trackingCodes;
 
+  /** Whether the user can see other enterprise users in their contact list. */
   @JsonProperty("can_see_managed_users")
   protected Boolean canSeeManagedUsers;
 
+  /** Whether the user can use Box Sync. */
   @JsonProperty("is_sync_enabled")
   protected Boolean isSyncEnabled;
 
+  /** Whether the user is allowed to collaborate with users outside their enterprise. */
   @JsonProperty("is_external_collab_restricted")
   protected Boolean isExternalCollabRestricted;
 
+  /** Whether to exempt the user from Enterprise device limits. */
   @JsonProperty("is_exempt_from_device_limits")
   protected Boolean isExemptFromDeviceLimits;
 
+  /** Whether the user must use two-factor authentication. */
   @JsonProperty("is_exempt_from_login_verification")
   protected Boolean isExemptFromLoginVerification;
 
   protected UserFullEnterpriseField enterprise;
 
+  /**
+   * Tags for all files and folders owned by the user. Values returned will only contain tags that
+   * were set by the requester.
+   */
   @JsonProperty("my_tags")
   protected List<String> myTags;
 
+  /** The root (protocol, subdomain, domain) of any links that need to be generated for the user. */
   protected String hostname;
 
+  /** Whether the user is an App User. */
   @JsonProperty("is_platform_access_only")
   protected Boolean isPlatformAccessOnly;
 
+  /**
+   * An external identifier for an app user, which can be used to look up the user. This can be used
+   * to tie user IDs from external identity providers to Box users.
+   */
   @JsonProperty("external_app_user_id")
   protected String externalAppUserId;
 

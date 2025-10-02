@@ -5,16 +5,34 @@ import java.util.List;
 
 public class GetLegalHoldPolicyAssignmentsQueryParams {
 
+  /** The ID of the legal hold policy. */
   public final String policyId;
 
+  /** Filters the results by the type of item the policy was applied to. */
   public EnumWrapper<GetLegalHoldPolicyAssignmentsQueryParamsAssignToTypeField> assignToType;
 
+  /** Filters the results by the ID of item the policy was applied to. */
   public String assignToId;
 
+  /**
+   * Defines the position marker at which to begin returning results. This is used when paginating
+   * using marker-based pagination.
+   *
+   * <p>This requires `usemarker` to be set to `true`.
+   */
   public String marker;
 
+  /** The maximum number of items to return per page. */
   public Long limit;
 
+  /**
+   * A comma-separated list of attributes to include in the response. This can be used to request
+   * fields that are not normally returned in a standard response.
+   *
+   * <p>Be aware that specifying this parameter will have the effect that none of the standard
+   * fields are returned in the response unless explicitly specified, instead only fields for the
+   * mini representation are returned, additional to the fields requested.
+   */
   public List<String> fields;
 
   public GetLegalHoldPolicyAssignmentsQueryParams(String policyId) {

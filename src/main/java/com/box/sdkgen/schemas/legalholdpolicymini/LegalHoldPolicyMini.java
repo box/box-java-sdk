@@ -9,11 +9,14 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import java.util.Objects;
 
+/** A mini legal hold policy. */
 @JsonFilter("nullablePropertyFilter")
 public class LegalHoldPolicyMini extends SerializableObject {
 
+  /** The unique identifier for this legal hold policy. */
   protected final String id;
 
+  /** The value will always be `legal_hold_policy`. */
   @JsonDeserialize(
       using = LegalHoldPolicyMiniTypeField.LegalHoldPolicyMiniTypeFieldDeserializer.class)
   @JsonSerialize(using = LegalHoldPolicyMiniTypeField.LegalHoldPolicyMiniTypeFieldSerializer.class)

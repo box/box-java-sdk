@@ -9,15 +9,18 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import java.time.OffsetDateTime;
 import java.util.Objects;
 
+/** Input created by a Signer on a Sign Request. */
 @JsonFilter("nullablePropertyFilter")
 public class SignRequestSignerInput extends SignRequestPrefillTag {
 
+  /** Type of input. */
   @JsonDeserialize(
       using = SignRequestSignerInputTypeField.SignRequestSignerInputTypeFieldDeserializer.class)
   @JsonSerialize(
       using = SignRequestSignerInputTypeField.SignRequestSignerInputTypeFieldSerializer.class)
   protected EnumWrapper<SignRequestSignerInputTypeField> type;
 
+  /** Content type of input. */
   @JsonDeserialize(
       using =
           SignRequestSignerInputContentTypeField.SignRequestSignerInputContentTypeFieldDeserializer
@@ -29,9 +32,11 @@ public class SignRequestSignerInput extends SignRequestPrefillTag {
   @JsonProperty("content_type")
   protected EnumWrapper<SignRequestSignerInputContentTypeField> contentType;
 
+  /** Index of page that the input is on. */
   @JsonProperty("page_index")
   protected final long pageIndex;
 
+  /** Whether this input was defined as read-only(immutable by signers) or not. */
   @JsonProperty("read_only")
   protected Boolean readOnly;
 

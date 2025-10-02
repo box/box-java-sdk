@@ -31,20 +31,48 @@ public class MembershipsManager {
     this.networkSession = builder.networkSession;
   }
 
+  /**
+   * Retrieves all the groups for a user. Only members of this group or users with admin-level
+   * permissions will be able to use this API.
+   *
+   * @param userId The ID of the user. Example: "12345"
+   */
   public GroupMemberships getUserMemberships(String userId) {
     return getUserMemberships(
         userId, new GetUserMembershipsQueryParams(), new GetUserMembershipsHeaders());
   }
 
+  /**
+   * Retrieves all the groups for a user. Only members of this group or users with admin-level
+   * permissions will be able to use this API.
+   *
+   * @param userId The ID of the user. Example: "12345"
+   * @param queryParams Query parameters of getUserMemberships method
+   */
   public GroupMemberships getUserMemberships(
       String userId, GetUserMembershipsQueryParams queryParams) {
     return getUserMemberships(userId, queryParams, new GetUserMembershipsHeaders());
   }
 
+  /**
+   * Retrieves all the groups for a user. Only members of this group or users with admin-level
+   * permissions will be able to use this API.
+   *
+   * @param userId The ID of the user. Example: "12345"
+   * @param headers Headers of getUserMemberships method
+   */
   public GroupMemberships getUserMemberships(String userId, GetUserMembershipsHeaders headers) {
     return getUserMemberships(userId, new GetUserMembershipsQueryParams(), headers);
   }
 
+  /**
+   * Retrieves all the groups for a user. Only members of this group or users with admin-level
+   * permissions will be able to use this API.
+   *
+   * @param userId The ID of the user. Example: "12345"
+   * @param queryParams Query parameters of getUserMemberships method
+   * @param headers Headers of getUserMemberships method
+   */
   public GroupMemberships getUserMemberships(
       String userId, GetUserMembershipsQueryParams queryParams, GetUserMembershipsHeaders headers) {
     Map<String, String> queryParamsMap =
@@ -74,20 +102,48 @@ public class MembershipsManager {
     return JsonManager.deserialize(response.getData(), GroupMemberships.class);
   }
 
+  /**
+   * Retrieves all the members for a group. Only members of this group or users with admin-level
+   * permissions will be able to use this API.
+   *
+   * @param groupId The ID of the group. Example: "57645"
+   */
   public GroupMemberships getGroupMemberships(String groupId) {
     return getGroupMemberships(
         groupId, new GetGroupMembershipsQueryParams(), new GetGroupMembershipsHeaders());
   }
 
+  /**
+   * Retrieves all the members for a group. Only members of this group or users with admin-level
+   * permissions will be able to use this API.
+   *
+   * @param groupId The ID of the group. Example: "57645"
+   * @param queryParams Query parameters of getGroupMemberships method
+   */
   public GroupMemberships getGroupMemberships(
       String groupId, GetGroupMembershipsQueryParams queryParams) {
     return getGroupMemberships(groupId, queryParams, new GetGroupMembershipsHeaders());
   }
 
+  /**
+   * Retrieves all the members for a group. Only members of this group or users with admin-level
+   * permissions will be able to use this API.
+   *
+   * @param groupId The ID of the group. Example: "57645"
+   * @param headers Headers of getGroupMemberships method
+   */
   public GroupMemberships getGroupMemberships(String groupId, GetGroupMembershipsHeaders headers) {
     return getGroupMemberships(groupId, new GetGroupMembershipsQueryParams(), headers);
   }
 
+  /**
+   * Retrieves all the members for a group. Only members of this group or users with admin-level
+   * permissions will be able to use this API.
+   *
+   * @param groupId The ID of the group. Example: "57645"
+   * @param queryParams Query parameters of getGroupMemberships method
+   * @param headers Headers of getGroupMemberships method
+   */
   public GroupMemberships getGroupMemberships(
       String groupId,
       GetGroupMembershipsQueryParams queryParams,
@@ -119,21 +175,49 @@ public class MembershipsManager {
     return JsonManager.deserialize(response.getData(), GroupMemberships.class);
   }
 
+  /**
+   * Creates a group membership. Only users with admin-level permissions will be able to use this
+   * API.
+   *
+   * @param requestBody Request body of createGroupMembership method
+   */
   public GroupMembership createGroupMembership(CreateGroupMembershipRequestBody requestBody) {
     return createGroupMembership(
         requestBody, new CreateGroupMembershipQueryParams(), new CreateGroupMembershipHeaders());
   }
 
+  /**
+   * Creates a group membership. Only users with admin-level permissions will be able to use this
+   * API.
+   *
+   * @param requestBody Request body of createGroupMembership method
+   * @param queryParams Query parameters of createGroupMembership method
+   */
   public GroupMembership createGroupMembership(
       CreateGroupMembershipRequestBody requestBody, CreateGroupMembershipQueryParams queryParams) {
     return createGroupMembership(requestBody, queryParams, new CreateGroupMembershipHeaders());
   }
 
+  /**
+   * Creates a group membership. Only users with admin-level permissions will be able to use this
+   * API.
+   *
+   * @param requestBody Request body of createGroupMembership method
+   * @param headers Headers of createGroupMembership method
+   */
   public GroupMembership createGroupMembership(
       CreateGroupMembershipRequestBody requestBody, CreateGroupMembershipHeaders headers) {
     return createGroupMembership(requestBody, new CreateGroupMembershipQueryParams(), headers);
   }
 
+  /**
+   * Creates a group membership. Only users with admin-level permissions will be able to use this
+   * API.
+   *
+   * @param requestBody Request body of createGroupMembership method
+   * @param queryParams Query parameters of createGroupMembership method
+   * @param headers Headers of createGroupMembership method
+   */
   public GroupMembership createGroupMembership(
       CreateGroupMembershipRequestBody requestBody,
       CreateGroupMembershipQueryParams queryParams,
@@ -162,6 +246,12 @@ public class MembershipsManager {
     return JsonManager.deserialize(response.getData(), GroupMembership.class);
   }
 
+  /**
+   * Retrieves a specific group membership. Only admins of this group or users with admin-level
+   * permissions will be able to use this API.
+   *
+   * @param groupMembershipId The ID of the group membership. Example: "434534"
+   */
   public GroupMembership getGroupMembershipById(String groupMembershipId) {
     return getGroupMembershipById(
         groupMembershipId,
@@ -169,18 +259,40 @@ public class MembershipsManager {
         new GetGroupMembershipByIdHeaders());
   }
 
+  /**
+   * Retrieves a specific group membership. Only admins of this group or users with admin-level
+   * permissions will be able to use this API.
+   *
+   * @param groupMembershipId The ID of the group membership. Example: "434534"
+   * @param queryParams Query parameters of getGroupMembershipById method
+   */
   public GroupMembership getGroupMembershipById(
       String groupMembershipId, GetGroupMembershipByIdQueryParams queryParams) {
     return getGroupMembershipById(
         groupMembershipId, queryParams, new GetGroupMembershipByIdHeaders());
   }
 
+  /**
+   * Retrieves a specific group membership. Only admins of this group or users with admin-level
+   * permissions will be able to use this API.
+   *
+   * @param groupMembershipId The ID of the group membership. Example: "434534"
+   * @param headers Headers of getGroupMembershipById method
+   */
   public GroupMembership getGroupMembershipById(
       String groupMembershipId, GetGroupMembershipByIdHeaders headers) {
     return getGroupMembershipById(
         groupMembershipId, new GetGroupMembershipByIdQueryParams(), headers);
   }
 
+  /**
+   * Retrieves a specific group membership. Only admins of this group or users with admin-level
+   * permissions will be able to use this API.
+   *
+   * @param groupMembershipId The ID of the group membership. Example: "434534"
+   * @param queryParams Query parameters of getGroupMembershipById method
+   * @param headers Headers of getGroupMembershipById method
+   */
   public GroupMembership getGroupMembershipById(
       String groupMembershipId,
       GetGroupMembershipByIdQueryParams queryParams,
@@ -208,6 +320,12 @@ public class MembershipsManager {
     return JsonManager.deserialize(response.getData(), GroupMembership.class);
   }
 
+  /**
+   * Updates a user's group membership. Only admins of this group or users with admin-level
+   * permissions will be able to use this API.
+   *
+   * @param groupMembershipId The ID of the group membership. Example: "434534"
+   */
   public GroupMembership updateGroupMembershipById(String groupMembershipId) {
     return updateGroupMembershipById(
         groupMembershipId,
@@ -216,6 +334,13 @@ public class MembershipsManager {
         new UpdateGroupMembershipByIdHeaders());
   }
 
+  /**
+   * Updates a user's group membership. Only admins of this group or users with admin-level
+   * permissions will be able to use this API.
+   *
+   * @param groupMembershipId The ID of the group membership. Example: "434534"
+   * @param requestBody Request body of updateGroupMembershipById method
+   */
   public GroupMembership updateGroupMembershipById(
       String groupMembershipId, UpdateGroupMembershipByIdRequestBody requestBody) {
     return updateGroupMembershipById(
@@ -225,6 +350,13 @@ public class MembershipsManager {
         new UpdateGroupMembershipByIdHeaders());
   }
 
+  /**
+   * Updates a user's group membership. Only admins of this group or users with admin-level
+   * permissions will be able to use this API.
+   *
+   * @param groupMembershipId The ID of the group membership. Example: "434534"
+   * @param queryParams Query parameters of updateGroupMembershipById method
+   */
   public GroupMembership updateGroupMembershipById(
       String groupMembershipId, UpdateGroupMembershipByIdQueryParams queryParams) {
     return updateGroupMembershipById(
@@ -234,6 +366,14 @@ public class MembershipsManager {
         new UpdateGroupMembershipByIdHeaders());
   }
 
+  /**
+   * Updates a user's group membership. Only admins of this group or users with admin-level
+   * permissions will be able to use this API.
+   *
+   * @param groupMembershipId The ID of the group membership. Example: "434534"
+   * @param requestBody Request body of updateGroupMembershipById method
+   * @param queryParams Query parameters of updateGroupMembershipById method
+   */
   public GroupMembership updateGroupMembershipById(
       String groupMembershipId,
       UpdateGroupMembershipByIdRequestBody requestBody,
@@ -242,6 +382,13 @@ public class MembershipsManager {
         groupMembershipId, requestBody, queryParams, new UpdateGroupMembershipByIdHeaders());
   }
 
+  /**
+   * Updates a user's group membership. Only admins of this group or users with admin-level
+   * permissions will be able to use this API.
+   *
+   * @param groupMembershipId The ID of the group membership. Example: "434534"
+   * @param headers Headers of updateGroupMembershipById method
+   */
   public GroupMembership updateGroupMembershipById(
       String groupMembershipId, UpdateGroupMembershipByIdHeaders headers) {
     return updateGroupMembershipById(
@@ -251,6 +398,14 @@ public class MembershipsManager {
         headers);
   }
 
+  /**
+   * Updates a user's group membership. Only admins of this group or users with admin-level
+   * permissions will be able to use this API.
+   *
+   * @param groupMembershipId The ID of the group membership. Example: "434534"
+   * @param requestBody Request body of updateGroupMembershipById method
+   * @param headers Headers of updateGroupMembershipById method
+   */
   public GroupMembership updateGroupMembershipById(
       String groupMembershipId,
       UpdateGroupMembershipByIdRequestBody requestBody,
@@ -259,6 +414,14 @@ public class MembershipsManager {
         groupMembershipId, requestBody, new UpdateGroupMembershipByIdQueryParams(), headers);
   }
 
+  /**
+   * Updates a user's group membership. Only admins of this group or users with admin-level
+   * permissions will be able to use this API.
+   *
+   * @param groupMembershipId The ID of the group membership. Example: "434534"
+   * @param queryParams Query parameters of updateGroupMembershipById method
+   * @param headers Headers of updateGroupMembershipById method
+   */
   public GroupMembership updateGroupMembershipById(
       String groupMembershipId,
       UpdateGroupMembershipByIdQueryParams queryParams,
@@ -267,6 +430,15 @@ public class MembershipsManager {
         groupMembershipId, new UpdateGroupMembershipByIdRequestBody(), queryParams, headers);
   }
 
+  /**
+   * Updates a user's group membership. Only admins of this group or users with admin-level
+   * permissions will be able to use this API.
+   *
+   * @param groupMembershipId The ID of the group membership. Example: "434534"
+   * @param requestBody Request body of updateGroupMembershipById method
+   * @param queryParams Query parameters of updateGroupMembershipById method
+   * @param headers Headers of updateGroupMembershipById method
+   */
   public GroupMembership updateGroupMembershipById(
       String groupMembershipId,
       UpdateGroupMembershipByIdRequestBody requestBody,
@@ -297,10 +469,23 @@ public class MembershipsManager {
     return JsonManager.deserialize(response.getData(), GroupMembership.class);
   }
 
+  /**
+   * Deletes a specific group membership. Only admins of this group or users with admin-level
+   * permissions will be able to use this API.
+   *
+   * @param groupMembershipId The ID of the group membership. Example: "434534"
+   */
   public void deleteGroupMembershipById(String groupMembershipId) {
     deleteGroupMembershipById(groupMembershipId, new DeleteGroupMembershipByIdHeaders());
   }
 
+  /**
+   * Deletes a specific group membership. Only admins of this group or users with admin-level
+   * permissions will be able to use this API.
+   *
+   * @param groupMembershipId The ID of the group membership. Example: "434534"
+   * @param headers Headers of deleteGroupMembershipById method
+   */
   public void deleteGroupMembershipById(
       String groupMembershipId, DeleteGroupMembershipByIdHeaders headers) {
     Map<String, String> headersMap = prepareParams(mergeMaps(mapOf(), headers.getExtraHeaders()));

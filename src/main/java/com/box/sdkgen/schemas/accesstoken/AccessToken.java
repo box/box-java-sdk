@@ -11,26 +11,42 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import java.util.List;
 import java.util.Objects;
 
+/** A token that can be used to make authenticated API calls. */
 @JsonFilter("nullablePropertyFilter")
 public class AccessToken extends SerializableObject {
 
+  /** The requested access token. */
   @JsonProperty("access_token")
   protected String accessToken;
 
+  /** The time in seconds by which this token will expire. */
   @JsonProperty("expires_in")
   protected Long expiresIn;
 
+  /** The type of access token returned. */
   @JsonDeserialize(using = AccessTokenTokenTypeField.AccessTokenTokenTypeFieldDeserializer.class)
   @JsonSerialize(using = AccessTokenTokenTypeField.AccessTokenTokenTypeFieldSerializer.class)
   @JsonProperty("token_type")
   protected EnumWrapper<AccessTokenTokenTypeField> tokenType;
 
+  /**
+   * The permissions that this access token permits, providing a list of resources (files, folders,
+   * etc) and the scopes permitted for each of those resources.
+   */
   @JsonProperty("restricted_to")
   protected List<ResourceScope> restrictedTo;
 
+  /**
+   * The refresh token for this access token, which can be used to request a new access token when
+   * the current one expires.
+   */
   @JsonProperty("refresh_token")
   protected String refreshToken;
 
+  /**
+   * The type of downscoped access token returned. This is only returned if an access token has been
+   * downscoped.
+   */
   @JsonDeserialize(
       using = AccessTokenIssuedTokenTypeField.AccessTokenIssuedTokenTypeFieldDeserializer.class)
   @JsonSerialize(

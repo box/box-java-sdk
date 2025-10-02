@@ -11,12 +11,15 @@ import java.util.Objects;
 @JsonFilter("nullablePropertyFilter")
 public class InviteInvitedToField extends SerializableObject {
 
+  /** The unique identifier for this enterprise. */
   protected String id;
 
+  /** The value will always be `enterprise`. */
   @JsonDeserialize(using = InviteInvitedToTypeField.InviteInvitedToTypeFieldDeserializer.class)
   @JsonSerialize(using = InviteInvitedToTypeField.InviteInvitedToTypeFieldSerializer.class)
   protected EnumWrapper<InviteInvitedToTypeField> type;
 
+  /** The name of the enterprise. */
   protected String name;
 
   public InviteInvitedToField() {

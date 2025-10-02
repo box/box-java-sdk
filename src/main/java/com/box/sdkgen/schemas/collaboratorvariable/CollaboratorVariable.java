@@ -10,15 +10,21 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import java.util.List;
 import java.util.Objects;
 
+/**
+ * A collaborator object. Allows to specify a list of user ID's that are affected by the workflow
+ * result.
+ */
 @JsonFilter("nullablePropertyFilter")
 public class CollaboratorVariable extends SerializableObject {
 
+  /** Collaborator object type. */
   @JsonDeserialize(
       using = CollaboratorVariableTypeField.CollaboratorVariableTypeFieldDeserializer.class)
   @JsonSerialize(
       using = CollaboratorVariableTypeField.CollaboratorVariableTypeFieldSerializer.class)
   protected EnumWrapper<CollaboratorVariableTypeField> type;
 
+  /** Variable type for the Collaborator object. */
   @JsonDeserialize(
       using =
           CollaboratorVariableVariableTypeField.CollaboratorVariableVariableTypeFieldDeserializer
@@ -30,6 +36,7 @@ public class CollaboratorVariable extends SerializableObject {
   @JsonProperty("variable_type")
   protected EnumWrapper<CollaboratorVariableVariableTypeField> variableType;
 
+  /** A list of user IDs. */
   @JsonProperty("variable_value")
   protected final List<CollaboratorVariableVariableValueField> variableValue;
 

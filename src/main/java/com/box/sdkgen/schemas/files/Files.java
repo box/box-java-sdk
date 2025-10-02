@@ -8,12 +8,15 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.List;
 import java.util.Objects;
 
+/** A list of files. */
 @JsonFilter("nullablePropertyFilter")
 public class Files extends SerializableObject {
 
+  /** The number of files. */
   @JsonProperty("total_count")
   protected Long totalCount;
 
+  /** A list of files. */
   protected List<FileFull> entries;
 
   public Files() {

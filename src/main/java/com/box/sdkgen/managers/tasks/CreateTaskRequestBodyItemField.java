@@ -11,8 +11,10 @@ import java.util.Objects;
 @JsonFilter("nullablePropertyFilter")
 public class CreateTaskRequestBodyItemField extends SerializableObject {
 
+  /** The ID of the file. */
   protected String id;
 
+  /** The value will always be `file`. */
   @JsonDeserialize(
       using =
           CreateTaskRequestBodyItemTypeField.CreateTaskRequestBodyItemTypeFieldDeserializer.class)

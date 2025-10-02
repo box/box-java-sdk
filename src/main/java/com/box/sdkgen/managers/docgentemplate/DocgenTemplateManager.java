@@ -35,11 +35,22 @@ public class DocgenTemplateManager {
     this.networkSession = builder.networkSession;
   }
 
+  /**
+   * Marks a file as a Box Doc Gen template.
+   *
+   * @param requestBody Request body of createDocgenTemplateV2025R0 method
+   */
   public DocGenTemplateBaseV2025R0 createDocgenTemplateV2025R0(
       DocGenTemplateCreateRequestV2025R0 requestBody) {
     return createDocgenTemplateV2025R0(requestBody, new CreateDocgenTemplateV2025R0Headers());
   }
 
+  /**
+   * Marks a file as a Box Doc Gen template.
+   *
+   * @param requestBody Request body of createDocgenTemplateV2025R0 method
+   * @param headers Headers of createDocgenTemplateV2025R0 method
+   */
   public DocGenTemplateBaseV2025R0 createDocgenTemplateV2025R0(
       DocGenTemplateCreateRequestV2025R0 requestBody, CreateDocgenTemplateV2025R0Headers headers) {
     Map<String, String> headersMap =
@@ -67,21 +78,38 @@ public class DocgenTemplateManager {
     return JsonManager.deserialize(response.getData(), DocGenTemplateBaseV2025R0.class);
   }
 
+  /** Lists Box Doc Gen templates on which the user is a collaborator. */
   public DocGenTemplatesV2025R0 getDocgenTemplatesV2025R0() {
     return getDocgenTemplatesV2025R0(
         new GetDocgenTemplatesV2025R0QueryParams(), new GetDocgenTemplatesV2025R0Headers());
   }
 
+  /**
+   * Lists Box Doc Gen templates on which the user is a collaborator.
+   *
+   * @param queryParams Query parameters of getDocgenTemplatesV2025R0 method
+   */
   public DocGenTemplatesV2025R0 getDocgenTemplatesV2025R0(
       GetDocgenTemplatesV2025R0QueryParams queryParams) {
     return getDocgenTemplatesV2025R0(queryParams, new GetDocgenTemplatesV2025R0Headers());
   }
 
+  /**
+   * Lists Box Doc Gen templates on which the user is a collaborator.
+   *
+   * @param headers Headers of getDocgenTemplatesV2025R0 method
+   */
   public DocGenTemplatesV2025R0 getDocgenTemplatesV2025R0(
       GetDocgenTemplatesV2025R0Headers headers) {
     return getDocgenTemplatesV2025R0(new GetDocgenTemplatesV2025R0QueryParams(), headers);
   }
 
+  /**
+   * Lists Box Doc Gen templates on which the user is a collaborator.
+   *
+   * @param queryParams Query parameters of getDocgenTemplatesV2025R0 method
+   * @param headers Headers of getDocgenTemplatesV2025R0 method
+   */
   public DocGenTemplatesV2025R0 getDocgenTemplatesV2025R0(
       GetDocgenTemplatesV2025R0QueryParams queryParams, GetDocgenTemplatesV2025R0Headers headers) {
     Map<String, String> queryParamsMap =
@@ -113,10 +141,23 @@ public class DocgenTemplateManager {
     return JsonManager.deserialize(response.getData(), DocGenTemplatesV2025R0.class);
   }
 
+  /**
+   * Unmarks file as Box Doc Gen template.
+   *
+   * @param templateId ID of the file which will no longer be marked as a Box Doc Gen template.
+   *     Example: "123"
+   */
   public void deleteDocgenTemplateByIdV2025R0(String templateId) {
     deleteDocgenTemplateByIdV2025R0(templateId, new DeleteDocgenTemplateByIdV2025R0Headers());
   }
 
+  /**
+   * Unmarks file as Box Doc Gen template.
+   *
+   * @param templateId ID of the file which will no longer be marked as a Box Doc Gen template.
+   *     Example: "123"
+   * @param headers Headers of deleteDocgenTemplateByIdV2025R0 method
+   */
   public void deleteDocgenTemplateByIdV2025R0(
       String templateId, DeleteDocgenTemplateByIdV2025R0Headers headers) {
     Map<String, String> headersMap =
@@ -142,10 +183,21 @@ public class DocgenTemplateManager {
                     .build());
   }
 
+  /**
+   * Lists details of a specific Box Doc Gen template.
+   *
+   * @param templateId The ID of a Box Doc Gen template. Example: 123
+   */
   public DocGenTemplateV2025R0 getDocgenTemplateByIdV2025R0(String templateId) {
     return getDocgenTemplateByIdV2025R0(templateId, new GetDocgenTemplateByIdV2025R0Headers());
   }
 
+  /**
+   * Lists details of a specific Box Doc Gen template.
+   *
+   * @param templateId The ID of a Box Doc Gen template. Example: 123
+   * @param headers Headers of getDocgenTemplateByIdV2025R0 method
+   */
   public DocGenTemplateV2025R0 getDocgenTemplateByIdV2025R0(
       String templateId, GetDocgenTemplateByIdV2025R0Headers headers) {
     Map<String, String> headersMap =
@@ -172,6 +224,11 @@ public class DocgenTemplateManager {
     return JsonManager.deserialize(response.getData(), DocGenTemplateV2025R0.class);
   }
 
+  /**
+   * Lists all tags in a Box Doc Gen template.
+   *
+   * @param templateId ID of template. Example: 123
+   */
   public DocGenTagsV2025R0 getDocgenTemplateTagsV2025R0(String templateId) {
     return getDocgenTemplateTagsV2025R0(
         templateId,
@@ -179,18 +236,37 @@ public class DocgenTemplateManager {
         new GetDocgenTemplateTagsV2025R0Headers());
   }
 
+  /**
+   * Lists all tags in a Box Doc Gen template.
+   *
+   * @param templateId ID of template. Example: 123
+   * @param queryParams Query parameters of getDocgenTemplateTagsV2025R0 method
+   */
   public DocGenTagsV2025R0 getDocgenTemplateTagsV2025R0(
       String templateId, GetDocgenTemplateTagsV2025R0QueryParams queryParams) {
     return getDocgenTemplateTagsV2025R0(
         templateId, queryParams, new GetDocgenTemplateTagsV2025R0Headers());
   }
 
+  /**
+   * Lists all tags in a Box Doc Gen template.
+   *
+   * @param templateId ID of template. Example: 123
+   * @param headers Headers of getDocgenTemplateTagsV2025R0 method
+   */
   public DocGenTagsV2025R0 getDocgenTemplateTagsV2025R0(
       String templateId, GetDocgenTemplateTagsV2025R0Headers headers) {
     return getDocgenTemplateTagsV2025R0(
         templateId, new GetDocgenTemplateTagsV2025R0QueryParams(), headers);
   }
 
+  /**
+   * Lists all tags in a Box Doc Gen template.
+   *
+   * @param templateId ID of template. Example: 123
+   * @param queryParams Query parameters of getDocgenTemplateTagsV2025R0 method
+   * @param headers Headers of getDocgenTemplateTagsV2025R0 method
+   */
   public DocGenTagsV2025R0 getDocgenTemplateTagsV2025R0(
       String templateId,
       GetDocgenTemplateTagsV2025R0QueryParams queryParams,
@@ -227,6 +303,11 @@ public class DocgenTemplateManager {
     return JsonManager.deserialize(response.getData(), DocGenTagsV2025R0.class);
   }
 
+  /**
+   * Lists the users jobs which use this template.
+   *
+   * @param templateId Id of template to fetch jobs for. Example: 123
+   */
   public DocGenJobsV2025R0 getDocgenTemplateJobByIdV2025R0(String templateId) {
     return getDocgenTemplateJobByIdV2025R0(
         templateId,
@@ -234,18 +315,37 @@ public class DocgenTemplateManager {
         new GetDocgenTemplateJobByIdV2025R0Headers());
   }
 
+  /**
+   * Lists the users jobs which use this template.
+   *
+   * @param templateId Id of template to fetch jobs for. Example: 123
+   * @param queryParams Query parameters of getDocgenTemplateJobByIdV2025R0 method
+   */
   public DocGenJobsV2025R0 getDocgenTemplateJobByIdV2025R0(
       String templateId, GetDocgenTemplateJobByIdV2025R0QueryParams queryParams) {
     return getDocgenTemplateJobByIdV2025R0(
         templateId, queryParams, new GetDocgenTemplateJobByIdV2025R0Headers());
   }
 
+  /**
+   * Lists the users jobs which use this template.
+   *
+   * @param templateId Id of template to fetch jobs for. Example: 123
+   * @param headers Headers of getDocgenTemplateJobByIdV2025R0 method
+   */
   public DocGenJobsV2025R0 getDocgenTemplateJobByIdV2025R0(
       String templateId, GetDocgenTemplateJobByIdV2025R0Headers headers) {
     return getDocgenTemplateJobByIdV2025R0(
         templateId, new GetDocgenTemplateJobByIdV2025R0QueryParams(), headers);
   }
 
+  /**
+   * Lists the users jobs which use this template.
+   *
+   * @param templateId Id of template to fetch jobs for. Example: 123
+   * @param queryParams Query parameters of getDocgenTemplateJobByIdV2025R0 method
+   * @param headers Headers of getDocgenTemplateJobByIdV2025R0 method
+   */
   public DocGenJobsV2025R0 getDocgenTemplateJobByIdV2025R0(
       String templateId,
       GetDocgenTemplateJobByIdV2025R0QueryParams queryParams,

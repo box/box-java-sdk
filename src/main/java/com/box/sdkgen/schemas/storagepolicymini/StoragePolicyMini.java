@@ -9,11 +9,14 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import java.util.Objects;
 
+/** A mini description of a Storage Policy object. */
 @JsonFilter("nullablePropertyFilter")
 public class StoragePolicyMini extends SerializableObject {
 
+  /** The unique identifier for this storage policy. */
   protected final String id;
 
+  /** The value will always be `storage_policy`. */
   @JsonDeserialize(using = StoragePolicyMiniTypeField.StoragePolicyMiniTypeFieldDeserializer.class)
   @JsonSerialize(using = StoragePolicyMiniTypeField.StoragePolicyMiniTypeFieldSerializer.class)
   protected EnumWrapper<StoragePolicyMiniTypeField> type;

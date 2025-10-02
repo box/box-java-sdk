@@ -4,12 +4,16 @@ import com.box.sdkgen.serialization.json.EnumWrapper;
 
 public class GetTeamsIntegrationMappingQueryParams {
 
+  /** Mapped item type, for which the mapping should be returned. */
   public EnumWrapper<GetTeamsIntegrationMappingQueryParamsPartnerItemTypeField> partnerItemType;
 
+  /** ID of the mapped item, for which the mapping should be returned. */
   public String partnerItemId;
 
+  /** Box item ID, for which the mappings should be returned. */
   public String boxItemId;
 
+  /** Box item type, for which the mappings should be returned. */
   public EnumWrapper<GetTeamsIntegrationMappingQueryParamsBoxItemTypeField> boxItemType;
 
   public GetTeamsIntegrationMappingQueryParams() {}

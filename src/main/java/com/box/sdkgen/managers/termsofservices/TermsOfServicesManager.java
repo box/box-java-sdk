@@ -31,18 +31,35 @@ public class TermsOfServicesManager {
     this.networkSession = builder.networkSession;
   }
 
+  /** Returns the current terms of service text and settings for the enterprise. */
   public TermsOfServices getTermsOfService() {
     return getTermsOfService(new GetTermsOfServiceQueryParams(), new GetTermsOfServiceHeaders());
   }
 
+  /**
+   * Returns the current terms of service text and settings for the enterprise.
+   *
+   * @param queryParams Query parameters of getTermsOfService method
+   */
   public TermsOfServices getTermsOfService(GetTermsOfServiceQueryParams queryParams) {
     return getTermsOfService(queryParams, new GetTermsOfServiceHeaders());
   }
 
+  /**
+   * Returns the current terms of service text and settings for the enterprise.
+   *
+   * @param headers Headers of getTermsOfService method
+   */
   public TermsOfServices getTermsOfService(GetTermsOfServiceHeaders headers) {
     return getTermsOfService(new GetTermsOfServiceQueryParams(), headers);
   }
 
+  /**
+   * Returns the current terms of service text and settings for the enterprise.
+   *
+   * @param queryParams Query parameters of getTermsOfService method
+   * @param headers Headers of getTermsOfService method
+   */
   public TermsOfServices getTermsOfService(
       GetTermsOfServiceQueryParams queryParams, GetTermsOfServiceHeaders headers) {
     Map<String, String> queryParamsMap =
@@ -67,10 +84,21 @@ public class TermsOfServicesManager {
     return JsonManager.deserialize(response.getData(), TermsOfServices.class);
   }
 
+  /**
+   * Creates a terms of service for a given enterprise and type of user.
+   *
+   * @param requestBody Request body of createTermsOfService method
+   */
   public TermsOfService createTermsOfService(CreateTermsOfServiceRequestBody requestBody) {
     return createTermsOfService(requestBody, new CreateTermsOfServiceHeaders());
   }
 
+  /**
+   * Creates a terms of service for a given enterprise and type of user.
+   *
+   * @param requestBody Request body of createTermsOfService method
+   * @param headers Headers of createTermsOfService method
+   */
   public TermsOfService createTermsOfService(
       CreateTermsOfServiceRequestBody requestBody, CreateTermsOfServiceHeaders headers) {
     Map<String, String> headersMap = prepareParams(mergeMaps(mapOf(), headers.getExtraHeaders()));
@@ -94,10 +122,21 @@ public class TermsOfServicesManager {
     return JsonManager.deserialize(response.getData(), TermsOfService.class);
   }
 
+  /**
+   * Fetches a specific terms of service.
+   *
+   * @param termsOfServiceId The ID of the terms of service. Example: "324234"
+   */
   public TermsOfService getTermsOfServiceById(String termsOfServiceId) {
     return getTermsOfServiceById(termsOfServiceId, new GetTermsOfServiceByIdHeaders());
   }
 
+  /**
+   * Fetches a specific terms of service.
+   *
+   * @param termsOfServiceId The ID of the terms of service. Example: "324234"
+   * @param headers Headers of getTermsOfServiceById method
+   */
   public TermsOfService getTermsOfServiceById(
       String termsOfServiceId, GetTermsOfServiceByIdHeaders headers) {
     Map<String, String> headersMap = prepareParams(mergeMaps(mapOf(), headers.getExtraHeaders()));
@@ -120,12 +159,25 @@ public class TermsOfServicesManager {
     return JsonManager.deserialize(response.getData(), TermsOfService.class);
   }
 
+  /**
+   * Updates a specific terms of service.
+   *
+   * @param termsOfServiceId The ID of the terms of service. Example: "324234"
+   * @param requestBody Request body of updateTermsOfServiceById method
+   */
   public TermsOfService updateTermsOfServiceById(
       String termsOfServiceId, UpdateTermsOfServiceByIdRequestBody requestBody) {
     return updateTermsOfServiceById(
         termsOfServiceId, requestBody, new UpdateTermsOfServiceByIdHeaders());
   }
 
+  /**
+   * Updates a specific terms of service.
+   *
+   * @param termsOfServiceId The ID of the terms of service. Example: "324234"
+   * @param requestBody Request body of updateTermsOfServiceById method
+   * @param headers Headers of updateTermsOfServiceById method
+   */
   public TermsOfService updateTermsOfServiceById(
       String termsOfServiceId,
       UpdateTermsOfServiceByIdRequestBody requestBody,

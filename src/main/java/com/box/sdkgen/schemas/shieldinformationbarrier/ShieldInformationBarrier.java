@@ -13,19 +13,24 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import java.time.OffsetDateTime;
 import java.util.Objects;
 
+/** A standard representation of a shield information barrier object. */
 @JsonFilter("nullablePropertyFilter")
 public class ShieldInformationBarrier extends SerializableObject {
 
+  /** The unique identifier for the shield information barrier. */
   protected String id;
 
+  /** The type of the shield information barrier. */
   @JsonDeserialize(
       using = ShieldInformationBarrierTypeField.ShieldInformationBarrierTypeFieldDeserializer.class)
   @JsonSerialize(
       using = ShieldInformationBarrierTypeField.ShieldInformationBarrierTypeFieldSerializer.class)
   protected EnumWrapper<ShieldInformationBarrierTypeField> type;
 
+  /** The `type` and `id` of enterprise this barrier is under. */
   protected EnterpriseBase enterprise;
 
+  /** Status of the shield information barrier. */
   @JsonDeserialize(
       using =
           ShieldInformationBarrierStatusField.ShieldInformationBarrierStatusFieldDeserializer.class)
@@ -34,22 +39,27 @@ public class ShieldInformationBarrier extends SerializableObject {
           ShieldInformationBarrierStatusField.ShieldInformationBarrierStatusFieldSerializer.class)
   protected EnumWrapper<ShieldInformationBarrierStatusField> status;
 
+  /** ISO date time string when this shield information barrier object was created. */
   @JsonProperty("created_at")
   @JsonSerialize(using = DateTimeUtils.DateTimeSerializer.class)
   @JsonDeserialize(using = DateTimeUtils.DateTimeDeserializer.class)
   protected OffsetDateTime createdAt;
 
+  /** The user who created this shield information barrier. */
   @JsonProperty("created_by")
   protected UserBase createdBy;
 
+  /** ISO date time string when this shield information barrier was updated. */
   @JsonProperty("updated_at")
   @JsonSerialize(using = DateTimeUtils.DateTimeSerializer.class)
   @JsonDeserialize(using = DateTimeUtils.DateTimeDeserializer.class)
   protected OffsetDateTime updatedAt;
 
+  /** The user that updated this shield information barrier. */
   @JsonProperty("updated_by")
   protected UserBase updatedBy;
 
+  /** ISO date time string when this shield information barrier was enabled. */
   @JsonProperty("enabled_at")
   @JsonSerialize(using = DateTimeUtils.DateTimeSerializer.class)
   @JsonDeserialize(using = DateTimeUtils.DateTimeDeserializer.class)

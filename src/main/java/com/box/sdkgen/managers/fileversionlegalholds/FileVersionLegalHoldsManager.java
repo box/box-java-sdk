@@ -31,11 +31,22 @@ public class FileVersionLegalHoldsManager {
     this.networkSession = builder.networkSession;
   }
 
+  /**
+   * Retrieves information about the legal hold policies assigned to a file version.
+   *
+   * @param fileVersionLegalHoldId The ID of the file version legal hold. Example: "2348213"
+   */
   public FileVersionLegalHold getFileVersionLegalHoldById(String fileVersionLegalHoldId) {
     return getFileVersionLegalHoldById(
         fileVersionLegalHoldId, new GetFileVersionLegalHoldByIdHeaders());
   }
 
+  /**
+   * Retrieves information about the legal hold policies assigned to a file version.
+   *
+   * @param fileVersionLegalHoldId The ID of the file version legal hold. Example: "2348213"
+   * @param headers Headers of getFileVersionLegalHoldById method
+   */
   public FileVersionLegalHold getFileVersionLegalHoldById(
       String fileVersionLegalHoldId, GetFileVersionLegalHoldByIdHeaders headers) {
     Map<String, String> headersMap = prepareParams(mergeMaps(mapOf(), headers.getExtraHeaders()));
@@ -58,11 +69,56 @@ public class FileVersionLegalHoldsManager {
     return JsonManager.deserialize(response.getData(), FileVersionLegalHold.class);
   }
 
+  /**
+   * Get a list of file versions on legal hold for a legal hold assignment.
+   *
+   * <p>Due to ongoing re-architecture efforts this API might not return all file versions for this
+   * policy ID.
+   *
+   * <p>Instead, this API will only return file versions held in the legacy architecture. Two new
+   * endpoints will available to request any file versions held in the new architecture.
+   *
+   * <p>For file versions held in the new architecture, the `GET
+   * /legal_hold_policy_assignments/:id/file_versions_on_hold` API can be used to return all past
+   * file versions available for this policy assignment, and the `GET
+   * /legal_hold_policy_assignments/:id/files_on_hold` API can be used to return any current
+   * (latest) versions of a file under legal hold.
+   *
+   * <p>The `GET /legal_hold_policy_assignments?policy_id={id}` API can be used to find a list of
+   * policy assignments for a given policy ID.
+   *
+   * <p>Once the re-architecture is completed this API will be deprecated.
+   *
+   * @param queryParams Query parameters of getFileVersionLegalHolds method
+   */
   public FileVersionLegalHolds getFileVersionLegalHolds(
       GetFileVersionLegalHoldsQueryParams queryParams) {
     return getFileVersionLegalHolds(queryParams, new GetFileVersionLegalHoldsHeaders());
   }
 
+  /**
+   * Get a list of file versions on legal hold for a legal hold assignment.
+   *
+   * <p>Due to ongoing re-architecture efforts this API might not return all file versions for this
+   * policy ID.
+   *
+   * <p>Instead, this API will only return file versions held in the legacy architecture. Two new
+   * endpoints will available to request any file versions held in the new architecture.
+   *
+   * <p>For file versions held in the new architecture, the `GET
+   * /legal_hold_policy_assignments/:id/file_versions_on_hold` API can be used to return all past
+   * file versions available for this policy assignment, and the `GET
+   * /legal_hold_policy_assignments/:id/files_on_hold` API can be used to return any current
+   * (latest) versions of a file under legal hold.
+   *
+   * <p>The `GET /legal_hold_policy_assignments?policy_id={id}` API can be used to find a list of
+   * policy assignments for a given policy ID.
+   *
+   * <p>Once the re-architecture is completed this API will be deprecated.
+   *
+   * @param queryParams Query parameters of getFileVersionLegalHolds method
+   * @param headers Headers of getFileVersionLegalHolds method
+   */
   public FileVersionLegalHolds getFileVersionLegalHolds(
       GetFileVersionLegalHoldsQueryParams queryParams, GetFileVersionLegalHoldsHeaders headers) {
     Map<String, String> queryParamsMap =

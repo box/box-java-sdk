@@ -11,8 +11,10 @@ import java.util.Objects;
 @JsonFilter("nullablePropertyFilter")
 public class PromoteFileVersionRequestBody extends SerializableObject {
 
+  /** The file version ID. */
   protected String id;
 
+  /** The type to promote. */
   @JsonDeserialize(
       using =
           PromoteFileVersionRequestBodyTypeField.PromoteFileVersionRequestBodyTypeFieldDeserializer

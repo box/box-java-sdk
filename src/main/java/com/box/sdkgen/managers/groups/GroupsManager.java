@@ -31,18 +31,41 @@ public class GroupsManager {
     this.networkSession = builder.networkSession;
   }
 
+  /**
+   * Retrieves all of the groups for a given enterprise. The user must have admin permissions to
+   * inspect enterprise's groups.
+   */
   public Groups getGroups() {
     return getGroups(new GetGroupsQueryParams(), new GetGroupsHeaders());
   }
 
+  /**
+   * Retrieves all of the groups for a given enterprise. The user must have admin permissions to
+   * inspect enterprise's groups.
+   *
+   * @param queryParams Query parameters of getGroups method
+   */
   public Groups getGroups(GetGroupsQueryParams queryParams) {
     return getGroups(queryParams, new GetGroupsHeaders());
   }
 
+  /**
+   * Retrieves all of the groups for a given enterprise. The user must have admin permissions to
+   * inspect enterprise's groups.
+   *
+   * @param headers Headers of getGroups method
+   */
   public Groups getGroups(GetGroupsHeaders headers) {
     return getGroups(new GetGroupsQueryParams(), headers);
   }
 
+  /**
+   * Retrieves all of the groups for a given enterprise. The user must have admin permissions to
+   * inspect enterprise's groups.
+   *
+   * @param queryParams Query parameters of getGroups method
+   * @param headers Headers of getGroups method
+   */
   public Groups getGroups(GetGroupsQueryParams queryParams, GetGroupsHeaders headers) {
     Map<String, String> queryParamsMap =
         prepareParams(
@@ -69,19 +92,47 @@ public class GroupsManager {
     return JsonManager.deserialize(response.getData(), Groups.class);
   }
 
+  /**
+   * Creates a new group of users in an enterprise. Only users with admin permissions can create new
+   * groups.
+   *
+   * @param requestBody Request body of createGroup method
+   */
   public GroupFull createGroup(CreateGroupRequestBody requestBody) {
     return createGroup(requestBody, new CreateGroupQueryParams(), new CreateGroupHeaders());
   }
 
+  /**
+   * Creates a new group of users in an enterprise. Only users with admin permissions can create new
+   * groups.
+   *
+   * @param requestBody Request body of createGroup method
+   * @param queryParams Query parameters of createGroup method
+   */
   public GroupFull createGroup(
       CreateGroupRequestBody requestBody, CreateGroupQueryParams queryParams) {
     return createGroup(requestBody, queryParams, new CreateGroupHeaders());
   }
 
+  /**
+   * Creates a new group of users in an enterprise. Only users with admin permissions can create new
+   * groups.
+   *
+   * @param requestBody Request body of createGroup method
+   * @param headers Headers of createGroup method
+   */
   public GroupFull createGroup(CreateGroupRequestBody requestBody, CreateGroupHeaders headers) {
     return createGroup(requestBody, new CreateGroupQueryParams(), headers);
   }
 
+  /**
+   * Creates a new group of users in an enterprise. Only users with admin permissions can create new
+   * groups.
+   *
+   * @param requestBody Request body of createGroup method
+   * @param queryParams Query parameters of createGroup method
+   * @param headers Headers of createGroup method
+   */
   public GroupFull createGroup(
       CreateGroupRequestBody requestBody,
       CreateGroupQueryParams queryParams,
@@ -108,18 +159,46 @@ public class GroupsManager {
     return JsonManager.deserialize(response.getData(), GroupFull.class);
   }
 
+  /**
+   * Retrieves information about a group. Only members of this group or users with admin-level
+   * permissions will be able to use this API.
+   *
+   * @param groupId The ID of the group. Example: "57645"
+   */
   public GroupFull getGroupById(String groupId) {
     return getGroupById(groupId, new GetGroupByIdQueryParams(), new GetGroupByIdHeaders());
   }
 
+  /**
+   * Retrieves information about a group. Only members of this group or users with admin-level
+   * permissions will be able to use this API.
+   *
+   * @param groupId The ID of the group. Example: "57645"
+   * @param queryParams Query parameters of getGroupById method
+   */
   public GroupFull getGroupById(String groupId, GetGroupByIdQueryParams queryParams) {
     return getGroupById(groupId, queryParams, new GetGroupByIdHeaders());
   }
 
+  /**
+   * Retrieves information about a group. Only members of this group or users with admin-level
+   * permissions will be able to use this API.
+   *
+   * @param groupId The ID of the group. Example: "57645"
+   * @param headers Headers of getGroupById method
+   */
   public GroupFull getGroupById(String groupId, GetGroupByIdHeaders headers) {
     return getGroupById(groupId, new GetGroupByIdQueryParams(), headers);
   }
 
+  /**
+   * Retrieves information about a group. Only members of this group or users with admin-level
+   * permissions will be able to use this API.
+   *
+   * @param groupId The ID of the group. Example: "57645"
+   * @param queryParams Query parameters of getGroupById method
+   * @param headers Headers of getGroupById method
+   */
   public GroupFull getGroupById(
       String groupId, GetGroupByIdQueryParams queryParams, GetGroupByIdHeaders headers) {
     Map<String, String> queryParamsMap =
@@ -145,6 +224,12 @@ public class GroupsManager {
     return JsonManager.deserialize(response.getData(), GroupFull.class);
   }
 
+  /**
+   * Updates a specific group. Only admins of this group or users with admin-level permissions will
+   * be able to use this API.
+   *
+   * @param groupId The ID of the group. Example: "57645"
+   */
   public GroupFull updateGroupById(String groupId) {
     return updateGroupById(
         groupId,
@@ -153,16 +238,38 @@ public class GroupsManager {
         new UpdateGroupByIdHeaders());
   }
 
+  /**
+   * Updates a specific group. Only admins of this group or users with admin-level permissions will
+   * be able to use this API.
+   *
+   * @param groupId The ID of the group. Example: "57645"
+   * @param requestBody Request body of updateGroupById method
+   */
   public GroupFull updateGroupById(String groupId, UpdateGroupByIdRequestBody requestBody) {
     return updateGroupById(
         groupId, requestBody, new UpdateGroupByIdQueryParams(), new UpdateGroupByIdHeaders());
   }
 
+  /**
+   * Updates a specific group. Only admins of this group or users with admin-level permissions will
+   * be able to use this API.
+   *
+   * @param groupId The ID of the group. Example: "57645"
+   * @param queryParams Query parameters of updateGroupById method
+   */
   public GroupFull updateGroupById(String groupId, UpdateGroupByIdQueryParams queryParams) {
     return updateGroupById(
         groupId, new UpdateGroupByIdRequestBody(), queryParams, new UpdateGroupByIdHeaders());
   }
 
+  /**
+   * Updates a specific group. Only admins of this group or users with admin-level permissions will
+   * be able to use this API.
+   *
+   * @param groupId The ID of the group. Example: "57645"
+   * @param requestBody Request body of updateGroupById method
+   * @param queryParams Query parameters of updateGroupById method
+   */
   public GroupFull updateGroupById(
       String groupId,
       UpdateGroupByIdRequestBody requestBody,
@@ -170,21 +277,53 @@ public class GroupsManager {
     return updateGroupById(groupId, requestBody, queryParams, new UpdateGroupByIdHeaders());
   }
 
+  /**
+   * Updates a specific group. Only admins of this group or users with admin-level permissions will
+   * be able to use this API.
+   *
+   * @param groupId The ID of the group. Example: "57645"
+   * @param headers Headers of updateGroupById method
+   */
   public GroupFull updateGroupById(String groupId, UpdateGroupByIdHeaders headers) {
     return updateGroupById(
         groupId, new UpdateGroupByIdRequestBody(), new UpdateGroupByIdQueryParams(), headers);
   }
 
+  /**
+   * Updates a specific group. Only admins of this group or users with admin-level permissions will
+   * be able to use this API.
+   *
+   * @param groupId The ID of the group. Example: "57645"
+   * @param requestBody Request body of updateGroupById method
+   * @param headers Headers of updateGroupById method
+   */
   public GroupFull updateGroupById(
       String groupId, UpdateGroupByIdRequestBody requestBody, UpdateGroupByIdHeaders headers) {
     return updateGroupById(groupId, requestBody, new UpdateGroupByIdQueryParams(), headers);
   }
 
+  /**
+   * Updates a specific group. Only admins of this group or users with admin-level permissions will
+   * be able to use this API.
+   *
+   * @param groupId The ID of the group. Example: "57645"
+   * @param queryParams Query parameters of updateGroupById method
+   * @param headers Headers of updateGroupById method
+   */
   public GroupFull updateGroupById(
       String groupId, UpdateGroupByIdQueryParams queryParams, UpdateGroupByIdHeaders headers) {
     return updateGroupById(groupId, new UpdateGroupByIdRequestBody(), queryParams, headers);
   }
 
+  /**
+   * Updates a specific group. Only admins of this group or users with admin-level permissions will
+   * be able to use this API.
+   *
+   * @param groupId The ID of the group. Example: "57645"
+   * @param requestBody Request body of updateGroupById method
+   * @param queryParams Query parameters of updateGroupById method
+   * @param headers Headers of updateGroupById method
+   */
   public GroupFull updateGroupById(
       String groupId,
       UpdateGroupByIdRequestBody requestBody,
@@ -215,10 +354,23 @@ public class GroupsManager {
     return JsonManager.deserialize(response.getData(), GroupFull.class);
   }
 
+  /**
+   * Permanently deletes a group. Only users with admin-level permissions will be able to use this
+   * API.
+   *
+   * @param groupId The ID of the group. Example: "57645"
+   */
   public void deleteGroupById(String groupId) {
     deleteGroupById(groupId, new DeleteGroupByIdHeaders());
   }
 
+  /**
+   * Permanently deletes a group. Only users with admin-level permissions will be able to use this
+   * API.
+   *
+   * @param groupId The ID of the group. Example: "57645"
+   * @param headers Headers of deleteGroupById method
+   */
   public void deleteGroupById(String groupId, DeleteGroupByIdHeaders headers) {
     Map<String, String> headersMap = prepareParams(mergeMaps(mapOf(), headers.getExtraHeaders()));
     FetchResponse response =

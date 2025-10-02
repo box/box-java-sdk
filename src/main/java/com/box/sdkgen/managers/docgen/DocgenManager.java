@@ -34,10 +34,21 @@ public class DocgenManager {
     this.networkSession = builder.networkSession;
   }
 
+  /**
+   * Get details of the Box Doc Gen job.
+   *
+   * @param jobId Box Doc Gen job ID. Example: 123
+   */
   public DocGenJobV2025R0 getDocgenJobByIdV2025R0(String jobId) {
     return getDocgenJobByIdV2025R0(jobId, new GetDocgenJobByIdV2025R0Headers());
   }
 
+  /**
+   * Get details of the Box Doc Gen job.
+   *
+   * @param jobId Box Doc Gen job ID. Example: 123
+   * @param headers Headers of getDocgenJobByIdV2025R0 method
+   */
   public DocGenJobV2025R0 getDocgenJobByIdV2025R0(
       String jobId, GetDocgenJobByIdV2025R0Headers headers) {
     Map<String, String> headersMap =
@@ -64,19 +75,36 @@ public class DocgenManager {
     return JsonManager.deserialize(response.getData(), DocGenJobV2025R0.class);
   }
 
+  /** Lists all Box Doc Gen jobs for a user. */
   public DocGenJobsFullV2025R0 getDocgenJobsV2025R0() {
     return getDocgenJobsV2025R0(
         new GetDocgenJobsV2025R0QueryParams(), new GetDocgenJobsV2025R0Headers());
   }
 
+  /**
+   * Lists all Box Doc Gen jobs for a user.
+   *
+   * @param queryParams Query parameters of getDocgenJobsV2025R0 method
+   */
   public DocGenJobsFullV2025R0 getDocgenJobsV2025R0(GetDocgenJobsV2025R0QueryParams queryParams) {
     return getDocgenJobsV2025R0(queryParams, new GetDocgenJobsV2025R0Headers());
   }
 
+  /**
+   * Lists all Box Doc Gen jobs for a user.
+   *
+   * @param headers Headers of getDocgenJobsV2025R0 method
+   */
   public DocGenJobsFullV2025R0 getDocgenJobsV2025R0(GetDocgenJobsV2025R0Headers headers) {
     return getDocgenJobsV2025R0(new GetDocgenJobsV2025R0QueryParams(), headers);
   }
 
+  /**
+   * Lists all Box Doc Gen jobs for a user.
+   *
+   * @param queryParams Query parameters of getDocgenJobsV2025R0 method
+   * @param headers Headers of getDocgenJobsV2025R0 method
+   */
   public DocGenJobsFullV2025R0 getDocgenJobsV2025R0(
       GetDocgenJobsV2025R0QueryParams queryParams, GetDocgenJobsV2025R0Headers headers) {
     Map<String, String> queryParamsMap =
@@ -106,6 +134,11 @@ public class DocgenManager {
     return JsonManager.deserialize(response.getData(), DocGenJobsFullV2025R0.class);
   }
 
+  /**
+   * Lists Box Doc Gen jobs in a batch.
+   *
+   * @param batchId Box Doc Gen batch ID. Example: 123
+   */
   public DocGenJobsV2025R0 getDocgenBatchJobByIdV2025R0(String batchId) {
     return getDocgenBatchJobByIdV2025R0(
         batchId,
@@ -113,18 +146,37 @@ public class DocgenManager {
         new GetDocgenBatchJobByIdV2025R0Headers());
   }
 
+  /**
+   * Lists Box Doc Gen jobs in a batch.
+   *
+   * @param batchId Box Doc Gen batch ID. Example: 123
+   * @param queryParams Query parameters of getDocgenBatchJobByIdV2025R0 method
+   */
   public DocGenJobsV2025R0 getDocgenBatchJobByIdV2025R0(
       String batchId, GetDocgenBatchJobByIdV2025R0QueryParams queryParams) {
     return getDocgenBatchJobByIdV2025R0(
         batchId, queryParams, new GetDocgenBatchJobByIdV2025R0Headers());
   }
 
+  /**
+   * Lists Box Doc Gen jobs in a batch.
+   *
+   * @param batchId Box Doc Gen batch ID. Example: 123
+   * @param headers Headers of getDocgenBatchJobByIdV2025R0 method
+   */
   public DocGenJobsV2025R0 getDocgenBatchJobByIdV2025R0(
       String batchId, GetDocgenBatchJobByIdV2025R0Headers headers) {
     return getDocgenBatchJobByIdV2025R0(
         batchId, new GetDocgenBatchJobByIdV2025R0QueryParams(), headers);
   }
 
+  /**
+   * Lists Box Doc Gen jobs in a batch.
+   *
+   * @param batchId Box Doc Gen batch ID. Example: 123
+   * @param queryParams Query parameters of getDocgenBatchJobByIdV2025R0 method
+   * @param headers Headers of getDocgenBatchJobByIdV2025R0 method
+   */
   public DocGenJobsV2025R0 getDocgenBatchJobByIdV2025R0(
       String batchId,
       GetDocgenBatchJobByIdV2025R0QueryParams queryParams,
@@ -159,11 +211,22 @@ public class DocgenManager {
     return JsonManager.deserialize(response.getData(), DocGenJobsV2025R0.class);
   }
 
+  /**
+   * Generates a document using a Box Doc Gen template.
+   *
+   * @param requestBody Request body of createDocgenBatchV2025R0 method
+   */
   public DocGenBatchBaseV2025R0 createDocgenBatchV2025R0(
       DocGenBatchCreateRequestV2025R0 requestBody) {
     return createDocgenBatchV2025R0(requestBody, new CreateDocgenBatchV2025R0Headers());
   }
 
+  /**
+   * Generates a document using a Box Doc Gen template.
+   *
+   * @param requestBody Request body of createDocgenBatchV2025R0 method
+   * @param headers Headers of createDocgenBatchV2025R0 method
+   */
   public DocGenBatchBaseV2025R0 createDocgenBatchV2025R0(
       DocGenBatchCreateRequestV2025R0 requestBody, CreateDocgenBatchV2025R0Headers headers) {
     Map<String, String> headersMap =

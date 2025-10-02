@@ -12,20 +12,28 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import java.util.Objects;
 
+/** The source file or folder that triggered an event in the event stream. */
 @JsonFilter("nullablePropertyFilter")
 public class EventSource extends SerializableObject {
 
+  /** The type of the item that the event represents. Can be `file` or `folder`. */
   @JsonDeserialize(using = EventSourceItemTypeField.EventSourceItemTypeFieldDeserializer.class)
   @JsonSerialize(using = EventSourceItemTypeField.EventSourceItemTypeFieldSerializer.class)
   @JsonProperty("item_type")
   protected final EnumWrapper<EventSourceItemTypeField> itemType;
 
+  /** The unique identifier that represents the item. */
   @JsonProperty("item_id")
   protected final String itemId;
 
+  /** The name of the item. */
   @JsonProperty("item_name")
   protected final String itemName;
 
+  /**
+   * The object containing classification information for the item that triggered the event. This
+   * field will not appear if the item does not have a classification set.
+   */
   protected EventSourceClassificationField classification;
 
   @Nullable protected FolderMini parent;

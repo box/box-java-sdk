@@ -10,6 +10,7 @@ import java.util.Objects;
 @JsonFilter("nullablePropertyFilter")
 public class UpdateAllSkillCardsOnFileRequestBodyMetadataField extends SerializableObject {
 
+  /** A list of Box Skill cards to apply to this file. */
   protected List<SkillCard> cards;
 
   public UpdateAllSkillCardsOnFileRequestBodyMetadataField() {

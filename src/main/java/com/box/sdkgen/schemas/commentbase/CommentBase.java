@@ -8,11 +8,14 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import java.util.Objects;
 
+/** Base representation of a comment. */
 @JsonFilter("nullablePropertyFilter")
 public class CommentBase extends SerializableObject {
 
+  /** The unique identifier for this comment. */
   protected String id;
 
+  /** The value will always be `comment`. */
   @JsonDeserialize(using = CommentBaseTypeField.CommentBaseTypeFieldDeserializer.class)
   @JsonSerialize(using = CommentBaseTypeField.CommentBaseTypeFieldSerializer.class)
   protected EnumWrapper<CommentBaseTypeField> type;

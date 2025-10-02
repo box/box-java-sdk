@@ -35,20 +35,55 @@ public class IntegrationMappingsManager {
     this.networkSession = builder.networkSession;
   }
 
+  /**
+   * Lists [Slack integration
+   * mappings](https://support.box.com/hc/en-us/articles/4415585987859-Box-as-the-Content-Layer-for-Slack)
+   * in a users' enterprise.
+   *
+   * <p>You need Admin or Co-Admin role to use this endpoint.
+   */
   public IntegrationMappings getSlackIntegrationMapping() {
     return getSlackIntegrationMapping(
         new GetSlackIntegrationMappingQueryParams(), new GetSlackIntegrationMappingHeaders());
   }
 
+  /**
+   * Lists [Slack integration
+   * mappings](https://support.box.com/hc/en-us/articles/4415585987859-Box-as-the-Content-Layer-for-Slack)
+   * in a users' enterprise.
+   *
+   * <p>You need Admin or Co-Admin role to use this endpoint.
+   *
+   * @param queryParams Query parameters of getSlackIntegrationMapping method
+   */
   public IntegrationMappings getSlackIntegrationMapping(
       GetSlackIntegrationMappingQueryParams queryParams) {
     return getSlackIntegrationMapping(queryParams, new GetSlackIntegrationMappingHeaders());
   }
 
+  /**
+   * Lists [Slack integration
+   * mappings](https://support.box.com/hc/en-us/articles/4415585987859-Box-as-the-Content-Layer-for-Slack)
+   * in a users' enterprise.
+   *
+   * <p>You need Admin or Co-Admin role to use this endpoint.
+   *
+   * @param headers Headers of getSlackIntegrationMapping method
+   */
   public IntegrationMappings getSlackIntegrationMapping(GetSlackIntegrationMappingHeaders headers) {
     return getSlackIntegrationMapping(new GetSlackIntegrationMappingQueryParams(), headers);
   }
 
+  /**
+   * Lists [Slack integration
+   * mappings](https://support.box.com/hc/en-us/articles/4415585987859-Box-as-the-Content-Layer-for-Slack)
+   * in a users' enterprise.
+   *
+   * <p>You need Admin or Co-Admin role to use this endpoint.
+   *
+   * @param queryParams Query parameters of getSlackIntegrationMapping method
+   * @param headers Headers of getSlackIntegrationMapping method
+   */
   public IntegrationMappings getSlackIntegrationMapping(
       GetSlackIntegrationMappingQueryParams queryParams,
       GetSlackIntegrationMappingHeaders headers) {
@@ -83,11 +118,30 @@ public class IntegrationMappingsManager {
     return JsonManager.deserialize(response.getData(), IntegrationMappings.class);
   }
 
+  /**
+   * Creates a [Slack integration
+   * mapping](https://support.box.com/hc/en-us/articles/4415585987859-Box-as-the-Content-Layer-for-Slack)
+   * by mapping a Slack channel to a Box item.
+   *
+   * <p>You need Admin or Co-Admin role to use this endpoint.
+   *
+   * @param requestBody Request body of createSlackIntegrationMapping method
+   */
   public IntegrationMapping createSlackIntegrationMapping(
       IntegrationMappingSlackCreateRequest requestBody) {
     return createSlackIntegrationMapping(requestBody, new CreateSlackIntegrationMappingHeaders());
   }
 
+  /**
+   * Creates a [Slack integration
+   * mapping](https://support.box.com/hc/en-us/articles/4415585987859-Box-as-the-Content-Layer-for-Slack)
+   * by mapping a Slack channel to a Box item.
+   *
+   * <p>You need Admin or Co-Admin role to use this endpoint.
+   *
+   * @param requestBody Request body of createSlackIntegrationMapping method
+   * @param headers Headers of createSlackIntegrationMapping method
+   */
   public IntegrationMapping createSlackIntegrationMapping(
       IntegrationMappingSlackCreateRequest requestBody,
       CreateSlackIntegrationMappingHeaders headers) {
@@ -112,6 +166,15 @@ public class IntegrationMappingsManager {
     return JsonManager.deserialize(response.getData(), IntegrationMapping.class);
   }
 
+  /**
+   * Updates a [Slack integration
+   * mapping](https://support.box.com/hc/en-us/articles/4415585987859-Box-as-the-Content-Layer-for-Slack).
+   * Supports updating the Box folder ID and options.
+   *
+   * <p>You need Admin or Co-Admin role to use this endpoint.
+   *
+   * @param integrationMappingId An ID of an integration mapping. Example: "11235432"
+   */
   public IntegrationMapping updateSlackIntegrationMappingById(String integrationMappingId) {
     return updateSlackIntegrationMappingById(
         integrationMappingId,
@@ -119,18 +182,49 @@ public class IntegrationMappingsManager {
         new UpdateSlackIntegrationMappingByIdHeaders());
   }
 
+  /**
+   * Updates a [Slack integration
+   * mapping](https://support.box.com/hc/en-us/articles/4415585987859-Box-as-the-Content-Layer-for-Slack).
+   * Supports updating the Box folder ID and options.
+   *
+   * <p>You need Admin or Co-Admin role to use this endpoint.
+   *
+   * @param integrationMappingId An ID of an integration mapping. Example: "11235432"
+   * @param requestBody Request body of updateSlackIntegrationMappingById method
+   */
   public IntegrationMapping updateSlackIntegrationMappingById(
       String integrationMappingId, UpdateSlackIntegrationMappingByIdRequestBody requestBody) {
     return updateSlackIntegrationMappingById(
         integrationMappingId, requestBody, new UpdateSlackIntegrationMappingByIdHeaders());
   }
 
+  /**
+   * Updates a [Slack integration
+   * mapping](https://support.box.com/hc/en-us/articles/4415585987859-Box-as-the-Content-Layer-for-Slack).
+   * Supports updating the Box folder ID and options.
+   *
+   * <p>You need Admin or Co-Admin role to use this endpoint.
+   *
+   * @param integrationMappingId An ID of an integration mapping. Example: "11235432"
+   * @param headers Headers of updateSlackIntegrationMappingById method
+   */
   public IntegrationMapping updateSlackIntegrationMappingById(
       String integrationMappingId, UpdateSlackIntegrationMappingByIdHeaders headers) {
     return updateSlackIntegrationMappingById(
         integrationMappingId, new UpdateSlackIntegrationMappingByIdRequestBody(), headers);
   }
 
+  /**
+   * Updates a [Slack integration
+   * mapping](https://support.box.com/hc/en-us/articles/4415585987859-Box-as-the-Content-Layer-for-Slack).
+   * Supports updating the Box folder ID and options.
+   *
+   * <p>You need Admin or Co-Admin role to use this endpoint.
+   *
+   * @param integrationMappingId An ID of an integration mapping. Example: "11235432"
+   * @param requestBody Request body of updateSlackIntegrationMappingById method
+   * @param headers Headers of updateSlackIntegrationMappingById method
+   */
   public IntegrationMapping updateSlackIntegrationMappingById(
       String integrationMappingId,
       UpdateSlackIntegrationMappingByIdRequestBody requestBody,
@@ -157,11 +251,28 @@ public class IntegrationMappingsManager {
     return JsonManager.deserialize(response.getData(), IntegrationMapping.class);
   }
 
+  /**
+   * Deletes a [Slack integration
+   * mapping](https://support.box.com/hc/en-us/articles/4415585987859-Box-as-the-Content-Layer-for-Slack).
+   *
+   * <p>You need Admin or Co-Admin role to use this endpoint.
+   *
+   * @param integrationMappingId An ID of an integration mapping. Example: "11235432"
+   */
   public void deleteSlackIntegrationMappingById(String integrationMappingId) {
     deleteSlackIntegrationMappingById(
         integrationMappingId, new DeleteSlackIntegrationMappingByIdHeaders());
   }
 
+  /**
+   * Deletes a [Slack integration
+   * mapping](https://support.box.com/hc/en-us/articles/4415585987859-Box-as-the-Content-Layer-for-Slack).
+   *
+   * <p>You need Admin or Co-Admin role to use this endpoint.
+   *
+   * @param integrationMappingId An ID of an integration mapping. Example: "11235432"
+   * @param headers Headers of deleteSlackIntegrationMappingById method
+   */
   public void deleteSlackIntegrationMappingById(
       String integrationMappingId, DeleteSlackIntegrationMappingByIdHeaders headers) {
     Map<String, String> headersMap = prepareParams(mergeMaps(mapOf(), headers.getExtraHeaders()));
@@ -183,21 +294,48 @@ public class IntegrationMappingsManager {
                     .build());
   }
 
+  /**
+   * Lists [Teams integration
+   * mappings](https://support.box.com/hc/en-us/articles/360044681474-Using-Box-for-Teams) in a
+   * users' enterprise. You need Admin or Co-Admin role to use this endpoint.
+   */
   public IntegrationMappingsTeams getTeamsIntegrationMapping() {
     return getTeamsIntegrationMapping(
         new GetTeamsIntegrationMappingQueryParams(), new GetTeamsIntegrationMappingHeaders());
   }
 
+  /**
+   * Lists [Teams integration
+   * mappings](https://support.box.com/hc/en-us/articles/360044681474-Using-Box-for-Teams) in a
+   * users' enterprise. You need Admin or Co-Admin role to use this endpoint.
+   *
+   * @param queryParams Query parameters of getTeamsIntegrationMapping method
+   */
   public IntegrationMappingsTeams getTeamsIntegrationMapping(
       GetTeamsIntegrationMappingQueryParams queryParams) {
     return getTeamsIntegrationMapping(queryParams, new GetTeamsIntegrationMappingHeaders());
   }
 
+  /**
+   * Lists [Teams integration
+   * mappings](https://support.box.com/hc/en-us/articles/360044681474-Using-Box-for-Teams) in a
+   * users' enterprise. You need Admin or Co-Admin role to use this endpoint.
+   *
+   * @param headers Headers of getTeamsIntegrationMapping method
+   */
   public IntegrationMappingsTeams getTeamsIntegrationMapping(
       GetTeamsIntegrationMappingHeaders headers) {
     return getTeamsIntegrationMapping(new GetTeamsIntegrationMappingQueryParams(), headers);
   }
 
+  /**
+   * Lists [Teams integration
+   * mappings](https://support.box.com/hc/en-us/articles/360044681474-Using-Box-for-Teams) in a
+   * users' enterprise. You need Admin or Co-Admin role to use this endpoint.
+   *
+   * @param queryParams Query parameters of getTeamsIntegrationMapping method
+   * @param headers Headers of getTeamsIntegrationMapping method
+   */
   public IntegrationMappingsTeams getTeamsIntegrationMapping(
       GetTeamsIntegrationMappingQueryParams queryParams,
       GetTeamsIntegrationMappingHeaders headers) {
@@ -228,11 +366,26 @@ public class IntegrationMappingsManager {
     return JsonManager.deserialize(response.getData(), IntegrationMappingsTeams.class);
   }
 
+  /**
+   * Creates a [Teams integration
+   * mapping](https://support.box.com/hc/en-us/articles/360044681474-Using-Box-for-Teams) by mapping
+   * a Teams channel to a Box item. You need Admin or Co-Admin role to use this endpoint.
+   *
+   * @param requestBody Request body of createTeamsIntegrationMapping method
+   */
   public IntegrationMappingTeams createTeamsIntegrationMapping(
       IntegrationMappingTeamsCreateRequest requestBody) {
     return createTeamsIntegrationMapping(requestBody, new CreateTeamsIntegrationMappingHeaders());
   }
 
+  /**
+   * Creates a [Teams integration
+   * mapping](https://support.box.com/hc/en-us/articles/360044681474-Using-Box-for-Teams) by mapping
+   * a Teams channel to a Box item. You need Admin or Co-Admin role to use this endpoint.
+   *
+   * @param requestBody Request body of createTeamsIntegrationMapping method
+   * @param headers Headers of createTeamsIntegrationMapping method
+   */
   public IntegrationMappingTeams createTeamsIntegrationMapping(
       IntegrationMappingTeamsCreateRequest requestBody,
       CreateTeamsIntegrationMappingHeaders headers) {
@@ -257,6 +410,13 @@ public class IntegrationMappingsManager {
     return JsonManager.deserialize(response.getData(), IntegrationMappingTeams.class);
   }
 
+  /**
+   * Updates a [Teams integration
+   * mapping](https://support.box.com/hc/en-us/articles/360044681474-Using-Box-for-Teams). Supports
+   * updating the Box folder ID and options. You need Admin or Co-Admin role to use this endpoint.
+   *
+   * @param integrationMappingId An ID of an integration mapping. Example: "11235432"
+   */
   public IntegrationMappingTeams updateTeamsIntegrationMappingById(String integrationMappingId) {
     return updateTeamsIntegrationMappingById(
         integrationMappingId,
@@ -264,18 +424,43 @@ public class IntegrationMappingsManager {
         new UpdateTeamsIntegrationMappingByIdHeaders());
   }
 
+  /**
+   * Updates a [Teams integration
+   * mapping](https://support.box.com/hc/en-us/articles/360044681474-Using-Box-for-Teams). Supports
+   * updating the Box folder ID and options. You need Admin or Co-Admin role to use this endpoint.
+   *
+   * @param integrationMappingId An ID of an integration mapping. Example: "11235432"
+   * @param requestBody Request body of updateTeamsIntegrationMappingById method
+   */
   public IntegrationMappingTeams updateTeamsIntegrationMappingById(
       String integrationMappingId, UpdateTeamsIntegrationMappingByIdRequestBody requestBody) {
     return updateTeamsIntegrationMappingById(
         integrationMappingId, requestBody, new UpdateTeamsIntegrationMappingByIdHeaders());
   }
 
+  /**
+   * Updates a [Teams integration
+   * mapping](https://support.box.com/hc/en-us/articles/360044681474-Using-Box-for-Teams). Supports
+   * updating the Box folder ID and options. You need Admin or Co-Admin role to use this endpoint.
+   *
+   * @param integrationMappingId An ID of an integration mapping. Example: "11235432"
+   * @param headers Headers of updateTeamsIntegrationMappingById method
+   */
   public IntegrationMappingTeams updateTeamsIntegrationMappingById(
       String integrationMappingId, UpdateTeamsIntegrationMappingByIdHeaders headers) {
     return updateTeamsIntegrationMappingById(
         integrationMappingId, new UpdateTeamsIntegrationMappingByIdRequestBody(), headers);
   }
 
+  /**
+   * Updates a [Teams integration
+   * mapping](https://support.box.com/hc/en-us/articles/360044681474-Using-Box-for-Teams). Supports
+   * updating the Box folder ID and options. You need Admin or Co-Admin role to use this endpoint.
+   *
+   * @param integrationMappingId An ID of an integration mapping. Example: "11235432"
+   * @param requestBody Request body of updateTeamsIntegrationMappingById method
+   * @param headers Headers of updateTeamsIntegrationMappingById method
+   */
   public IntegrationMappingTeams updateTeamsIntegrationMappingById(
       String integrationMappingId,
       UpdateTeamsIntegrationMappingByIdRequestBody requestBody,
@@ -302,11 +487,26 @@ public class IntegrationMappingsManager {
     return JsonManager.deserialize(response.getData(), IntegrationMappingTeams.class);
   }
 
+  /**
+   * Deletes a [Teams integration
+   * mapping](https://support.box.com/hc/en-us/articles/360044681474-Using-Box-for-Teams). You need
+   * Admin or Co-Admin role to use this endpoint.
+   *
+   * @param integrationMappingId An ID of an integration mapping. Example: "11235432"
+   */
   public void deleteTeamsIntegrationMappingById(String integrationMappingId) {
     deleteTeamsIntegrationMappingById(
         integrationMappingId, new DeleteTeamsIntegrationMappingByIdHeaders());
   }
 
+  /**
+   * Deletes a [Teams integration
+   * mapping](https://support.box.com/hc/en-us/articles/360044681474-Using-Box-for-Teams). You need
+   * Admin or Co-Admin role to use this endpoint.
+   *
+   * @param integrationMappingId An ID of an integration mapping. Example: "11235432"
+   * @param headers Headers of deleteTeamsIntegrationMappingById method
+   */
   public void deleteTeamsIntegrationMappingById(
       String integrationMappingId, DeleteTeamsIntegrationMappingByIdHeaders headers) {
     Map<String, String> headersMap = prepareParams(mergeMaps(mapOf(), headers.getExtraHeaders()));

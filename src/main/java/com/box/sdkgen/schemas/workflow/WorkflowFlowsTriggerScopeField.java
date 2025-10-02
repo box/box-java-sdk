@@ -11,6 +11,7 @@ import java.util.Objects;
 @JsonFilter("nullablePropertyFilter")
 public class WorkflowFlowsTriggerScopeField extends SerializableObject {
 
+  /** The trigger scope's resource type. */
   @JsonDeserialize(
       using =
           WorkflowFlowsTriggerScopeTypeField.WorkflowFlowsTriggerScopeTypeFieldDeserializer.class)
@@ -18,8 +19,10 @@ public class WorkflowFlowsTriggerScopeField extends SerializableObject {
       using = WorkflowFlowsTriggerScopeTypeField.WorkflowFlowsTriggerScopeTypeFieldSerializer.class)
   protected EnumWrapper<WorkflowFlowsTriggerScopeTypeField> type;
 
+  /** Indicates the path of the condition value to check. */
   protected String ref;
 
+  /** The object the `ref` points to. */
   protected WorkflowFlowsTriggerScopeObjectField object;
 
   public WorkflowFlowsTriggerScopeField() {

@@ -8,9 +8,11 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import java.util.Objects;
 
+/** The schema for an integration mapping mapped item object for type Teams. */
 @JsonFilter("nullablePropertyFilter")
 public class IntegrationMappingPartnerItemTeamsCreateRequest extends SerializableObject {
 
+  /** Type of the mapped item referenced in `id`. */
   @JsonDeserialize(
       using =
           IntegrationMappingPartnerItemTeamsCreateRequestTypeField
@@ -21,11 +23,14 @@ public class IntegrationMappingPartnerItemTeamsCreateRequest extends Serializabl
               .IntegrationMappingPartnerItemTeamsCreateRequestTypeFieldSerializer.class)
   protected final EnumWrapper<IntegrationMappingPartnerItemTeamsCreateRequestTypeField> type;
 
+  /** ID of the mapped item (of type referenced in `type`). */
   protected final String id;
 
+  /** ID of the tenant that is registered with Microsoft Teams. */
   @JsonProperty("tenant_id")
   protected final String tenantId;
 
+  /** ID of the team that is registered with Microsoft Teams. */
   @JsonProperty("team_id")
   protected final String teamId;
 

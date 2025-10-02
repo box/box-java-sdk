@@ -11,11 +11,14 @@ import com.fasterxml.jackson.annotation.JsonFilter;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.Objects;
 
+/** The schema for Shield List update request. */
 @JsonFilter("nullablePropertyFilter")
 public class ShieldListsUpdateV2025R0 extends SerializableObject {
 
+  /** The name of the shield list. */
   protected final String name;
 
+  /** Optional description of Shield List. */
   protected String description;
 
   protected final ShieldListContentRequestV2025R0 content;

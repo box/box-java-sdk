@@ -15,25 +15,61 @@ import java.util.Objects;
 @JsonFilter("nullablePropertyFilter")
 public class WebLinkSharedLinkField extends SerializableObject {
 
+  /**
+   * The URL that can be used to access the item on Box.
+   *
+   * <p>This URL will display the item in Box's preview UI where the file can be downloaded if
+   * allowed.
+   *
+   * <p>This URL will continue to work even when a custom `vanity_url` has been set for this shared
+   * link.
+   */
   protected final String url;
 
+  /**
+   * A URL that can be used to download the file. This URL can be used in a browser to download the
+   * file. This URL includes the file extension so that the file will be saved with the right file
+   * type.
+   *
+   * <p>This property will be `null` for folders.
+   */
   @JsonProperty("download_url")
   @Nullable
   protected String downloadUrl;
 
+  /**
+   * The "Custom URL" that can also be used to preview the item on Box. Custom URLs can only be
+   * created or modified in the Box Web application.
+   */
   @JsonProperty("vanity_url")
   @Nullable
   protected String vanityUrl;
 
+  /** The custom name of a shared link, as used in the `vanity_url` field. */
   @JsonProperty("vanity_name")
   @Nullable
   protected String vanityName;
 
+  /**
+   * The access level for this shared link.
+   *
+   * <p>* `open` - provides access to this item to anyone with this link * `company` - only provides
+   * access to this item to people the same company * `collaborators` - only provides access to this
+   * item to people who are collaborators on this item
+   *
+   * <p>If this field is omitted when creating the shared link, the access level will be set to the
+   * default access level specified by the enterprise admin.
+   */
   @JsonDeserialize(
       using = WebLinkSharedLinkAccessField.WebLinkSharedLinkAccessFieldDeserializer.class)
   @JsonSerialize(using = WebLinkSharedLinkAccessField.WebLinkSharedLinkAccessFieldSerializer.class)
   protected EnumWrapper<WebLinkSharedLinkAccessField> access;
 
+  /**
+   * The effective access level for the shared link. This can be a more restrictive access level
+   * than the value in the `access` field when the enterprise settings restrict the allowed access
+   * levels.
+   */
   @JsonDeserialize(
       using =
           WebLinkSharedLinkEffectiveAccessField.WebLinkSharedLinkEffectiveAccessFieldDeserializer
@@ -45,6 +81,11 @@ public class WebLinkSharedLinkField extends SerializableObject {
   @JsonProperty("effective_access")
   protected final EnumWrapper<WebLinkSharedLinkEffectiveAccessField> effectiveAccess;
 
+  /**
+   * The effective permissions for this shared link. These result in the more restrictive
+   * combination of the share link permissions and the item permissions set by the administrator,
+   * the owner, and any ancestor item such as a folder.
+   */
   @JsonDeserialize(
       using =
           WebLinkSharedLinkEffectivePermissionField
@@ -56,20 +97,31 @@ public class WebLinkSharedLinkField extends SerializableObject {
   @JsonProperty("effective_permission")
   protected final EnumWrapper<WebLinkSharedLinkEffectivePermissionField> effectivePermission;
 
+  /**
+   * The date and time when this link will be unshared. This field can only be set by users with
+   * paid accounts.
+   */
   @JsonProperty("unshared_at")
   @JsonSerialize(using = DateTimeUtils.DateTimeSerializer.class)
   @JsonDeserialize(using = DateTimeUtils.DateTimeDeserializer.class)
   @Nullable
   protected OffsetDateTime unsharedAt;
 
+  /** Defines if the shared link requires a password to access the item. */
   @JsonProperty("is_password_enabled")
   protected final boolean isPasswordEnabled;
 
+  /**
+   * Defines if this link allows a user to preview, edit, and download an item. These permissions
+   * refer to the shared link only and do not supersede permissions applied to the item itself.
+   */
   protected WebLinkSharedLinkPermissionsField permissions;
 
+  /** The number of times this item has been downloaded. */
   @JsonProperty("download_count")
   protected final long downloadCount;
 
+  /** The number of times this item has been previewed. */
   @JsonProperty("preview_count")
   protected final long previewCount;
 

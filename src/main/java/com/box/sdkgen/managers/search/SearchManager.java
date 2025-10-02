@@ -32,10 +32,29 @@ public class SearchManager {
     this.networkSession = builder.networkSession;
   }
 
+  /**
+   * Create a search using SQL-like syntax to return items that match specific metadata.
+   *
+   * <p>By default, this endpoint returns only the most basic info about the items for which the
+   * query matches. To get additional fields for each item, including any of the metadata, use the
+   * `fields` attribute in the query.
+   *
+   * @param requestBody Request body of searchByMetadataQuery method
+   */
   public MetadataQueryResults searchByMetadataQuery(MetadataQuery requestBody) {
     return searchByMetadataQuery(requestBody, new SearchByMetadataQueryHeaders());
   }
 
+  /**
+   * Create a search using SQL-like syntax to return items that match specific metadata.
+   *
+   * <p>By default, this endpoint returns only the most basic info about the items for which the
+   * query matches. To get additional fields for each item, including any of the metadata, use the
+   * `fields` attribute in the query.
+   *
+   * @param requestBody Request body of searchByMetadataQuery method
+   * @param headers Headers of searchByMetadataQuery method
+   */
   public MetadataQueryResults searchByMetadataQuery(
       MetadataQuery requestBody, SearchByMetadataQueryHeaders headers) {
     Map<String, String> headersMap = prepareParams(mergeMaps(mapOf(), headers.getExtraHeaders()));
@@ -59,18 +78,41 @@ public class SearchManager {
     return JsonManager.deserialize(response.getData(), MetadataQueryResults.class);
   }
 
+  /**
+   * Searches for files, folders, web links, and shared files across the users content or across the
+   * entire enterprise.
+   */
   public SearchResultsResponse searchForContent() {
     return searchForContent(new SearchForContentQueryParams(), new SearchForContentHeaders());
   }
 
+  /**
+   * Searches for files, folders, web links, and shared files across the users content or across the
+   * entire enterprise.
+   *
+   * @param queryParams Query parameters of searchForContent method
+   */
   public SearchResultsResponse searchForContent(SearchForContentQueryParams queryParams) {
     return searchForContent(queryParams, new SearchForContentHeaders());
   }
 
+  /**
+   * Searches for files, folders, web links, and shared files across the users content or across the
+   * entire enterprise.
+   *
+   * @param headers Headers of searchForContent method
+   */
   public SearchResultsResponse searchForContent(SearchForContentHeaders headers) {
     return searchForContent(new SearchForContentQueryParams(), headers);
   }
 
+  /**
+   * Searches for files, folders, web links, and shared files across the users content or across the
+   * entire enterprise.
+   *
+   * @param queryParams Query parameters of searchForContent method
+   * @param headers Headers of searchForContent method
+   */
   public SearchResultsResponse searchForContent(
       SearchForContentQueryParams queryParams, SearchForContentHeaders headers) {
     Map<String, String> queryParamsMap =

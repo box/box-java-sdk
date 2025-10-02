@@ -9,9 +9,11 @@ import java.util.Objects;
 @JsonFilter("nullablePropertyFilter")
 public class TerminateUsersSessionsRequestBody extends SerializableObject {
 
+  /** A list of user IDs. */
   @JsonProperty("user_ids")
   protected final List<String> userIds;
 
+  /** A list of user logins. */
   @JsonProperty("user_logins")
   protected final List<String> userLogins;
 

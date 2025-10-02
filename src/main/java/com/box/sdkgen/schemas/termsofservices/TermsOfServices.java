@@ -8,12 +8,15 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.List;
 import java.util.Objects;
 
+/** A list of terms of services. */
 @JsonFilter("nullablePropertyFilter")
 public class TermsOfServices extends SerializableObject {
 
+  /** The total number of objects. */
   @JsonProperty("total_count")
   protected Long totalCount;
 
+  /** A list of terms of service objects. */
   protected List<TermsOfService> entries;
 
   public TermsOfServices() {

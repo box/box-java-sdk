@@ -8,6 +8,7 @@ import java.util.Objects;
 @JsonFilter("nullablePropertyFilter")
 public class ShieldListContentIntegrationV2025R0IntegrationsField extends SerializableObject {
 
+  /** The ID of the integration. */
   protected String id;
 
   public ShieldListContentIntegrationV2025R0IntegrationsField() {

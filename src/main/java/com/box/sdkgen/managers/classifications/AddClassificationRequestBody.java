@@ -12,6 +12,7 @@ import java.util.Objects;
 @JsonFilter("nullablePropertyFilter")
 public class AddClassificationRequestBody extends SerializableObject {
 
+  /** The type of change to perform on the classification object. */
   @JsonDeserialize(
       using =
           AddClassificationRequestBodyOpField.AddClassificationRequestBodyOpFieldDeserializer.class)
@@ -20,6 +21,7 @@ public class AddClassificationRequestBody extends SerializableObject {
           AddClassificationRequestBodyOpField.AddClassificationRequestBodyOpFieldSerializer.class)
   protected EnumWrapper<AddClassificationRequestBodyOpField> op;
 
+  /** Defines classifications available in the enterprise. */
   @JsonDeserialize(
       using =
           AddClassificationRequestBodyFieldKeyField
@@ -30,6 +32,7 @@ public class AddClassificationRequestBody extends SerializableObject {
               .AddClassificationRequestBodyFieldKeyFieldSerializer.class)
   protected EnumWrapper<AddClassificationRequestBodyFieldKeyField> fieldKey;
 
+  /** The details of the classification to add. */
   protected final AddClassificationRequestBodyDataField data;
 
   public AddClassificationRequestBody(

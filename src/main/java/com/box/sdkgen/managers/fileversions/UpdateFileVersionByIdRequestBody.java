@@ -10,6 +10,7 @@ import java.util.Objects;
 @JsonFilter("nullablePropertyFilter")
 public class UpdateFileVersionByIdRequestBody extends SerializableObject {
 
+  /** Set this to `null` to clear the date and restore the file. */
   @JsonProperty("trashed_at")
   @Nullable
   protected String trashedAt;

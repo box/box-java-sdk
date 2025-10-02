@@ -30,10 +30,33 @@ public class SharedLinksFoldersManager {
     this.networkSession = builder.networkSession;
   }
 
+  /**
+   * Return the folder represented by a shared link.
+   *
+   * <p>A shared folder can be represented by a shared link, which can originate within the current
+   * enterprise or within another.
+   *
+   * <p>This endpoint allows an application to retrieve information about a shared folder when only
+   * given a shared link.
+   *
+   * @param headers Headers of findFolderForSharedLink method
+   */
   public FolderFull findFolderForSharedLink(FindFolderForSharedLinkHeaders headers) {
     return findFolderForSharedLink(new FindFolderForSharedLinkQueryParams(), headers);
   }
 
+  /**
+   * Return the folder represented by a shared link.
+   *
+   * <p>A shared folder can be represented by a shared link, which can originate within the current
+   * enterprise or within another.
+   *
+   * <p>This endpoint allows an application to retrieve information about a shared folder when only
+   * given a shared link.
+   *
+   * @param queryParams Query parameters of findFolderForSharedLink method
+   * @param headers Headers of findFolderForSharedLink method
+   */
   public FolderFull findFolderForSharedLink(
       FindFolderForSharedLinkQueryParams queryParams, FindFolderForSharedLinkHeaders headers) {
     Map<String, String> queryParamsMap =
@@ -64,11 +87,32 @@ public class SharedLinksFoldersManager {
     return JsonManager.deserialize(response.getData(), FolderFull.class);
   }
 
+  /**
+   * Gets the information for a shared link on a folder.
+   *
+   * @param folderId The unique identifier that represent a folder.
+   *     <p>The ID for any folder can be determined by visiting this folder in the web application
+   *     and copying the ID from the URL. For example, for the URL
+   *     `https://*.app.box.com/folder/123` the `folder_id` is `123`.
+   *     <p>The root folder of a Box account is always represented by the ID `0`. Example: "12345"
+   * @param queryParams Query parameters of getSharedLinkForFolder method
+   */
   public FolderFull getSharedLinkForFolder(
       String folderId, GetSharedLinkForFolderQueryParams queryParams) {
     return getSharedLinkForFolder(folderId, queryParams, new GetSharedLinkForFolderHeaders());
   }
 
+  /**
+   * Gets the information for a shared link on a folder.
+   *
+   * @param folderId The unique identifier that represent a folder.
+   *     <p>The ID for any folder can be determined by visiting this folder in the web application
+   *     and copying the ID from the URL. For example, for the URL
+   *     `https://*.app.box.com/folder/123` the `folder_id` is `123`.
+   *     <p>The root folder of a Box account is always represented by the ID `0`. Example: "12345"
+   * @param queryParams Query parameters of getSharedLinkForFolder method
+   * @param headers Headers of getSharedLinkForFolder method
+   */
   public FolderFull getSharedLinkForFolder(
       String folderId,
       GetSharedLinkForFolderQueryParams queryParams,
@@ -97,6 +141,16 @@ public class SharedLinksFoldersManager {
     return JsonManager.deserialize(response.getData(), FolderFull.class);
   }
 
+  /**
+   * Adds a shared link to a folder.
+   *
+   * @param folderId The unique identifier that represent a folder.
+   *     <p>The ID for any folder can be determined by visiting this folder in the web application
+   *     and copying the ID from the URL. For example, for the URL
+   *     `https://*.app.box.com/folder/123` the `folder_id` is `123`.
+   *     <p>The root folder of a Box account is always represented by the ID `0`. Example: "12345"
+   * @param queryParams Query parameters of addShareLinkToFolder method
+   */
   public FolderFull addShareLinkToFolder(
       String folderId, AddShareLinkToFolderQueryParams queryParams) {
     return addShareLinkToFolder(
@@ -106,6 +160,17 @@ public class SharedLinksFoldersManager {
         new AddShareLinkToFolderHeaders());
   }
 
+  /**
+   * Adds a shared link to a folder.
+   *
+   * @param folderId The unique identifier that represent a folder.
+   *     <p>The ID for any folder can be determined by visiting this folder in the web application
+   *     and copying the ID from the URL. For example, for the URL
+   *     `https://*.app.box.com/folder/123` the `folder_id` is `123`.
+   *     <p>The root folder of a Box account is always represented by the ID `0`. Example: "12345"
+   * @param requestBody Request body of addShareLinkToFolder method
+   * @param queryParams Query parameters of addShareLinkToFolder method
+   */
   public FolderFull addShareLinkToFolder(
       String folderId,
       AddShareLinkToFolderRequestBody requestBody,
@@ -114,6 +179,17 @@ public class SharedLinksFoldersManager {
         folderId, requestBody, queryParams, new AddShareLinkToFolderHeaders());
   }
 
+  /**
+   * Adds a shared link to a folder.
+   *
+   * @param folderId The unique identifier that represent a folder.
+   *     <p>The ID for any folder can be determined by visiting this folder in the web application
+   *     and copying the ID from the URL. For example, for the URL
+   *     `https://*.app.box.com/folder/123` the `folder_id` is `123`.
+   *     <p>The root folder of a Box account is always represented by the ID `0`. Example: "12345"
+   * @param queryParams Query parameters of addShareLinkToFolder method
+   * @param headers Headers of addShareLinkToFolder method
+   */
   public FolderFull addShareLinkToFolder(
       String folderId,
       AddShareLinkToFolderQueryParams queryParams,
@@ -122,6 +198,18 @@ public class SharedLinksFoldersManager {
         folderId, new AddShareLinkToFolderRequestBody(), queryParams, headers);
   }
 
+  /**
+   * Adds a shared link to a folder.
+   *
+   * @param folderId The unique identifier that represent a folder.
+   *     <p>The ID for any folder can be determined by visiting this folder in the web application
+   *     and copying the ID from the URL. For example, for the URL
+   *     `https://*.app.box.com/folder/123` the `folder_id` is `123`.
+   *     <p>The root folder of a Box account is always represented by the ID `0`. Example: "12345"
+   * @param requestBody Request body of addShareLinkToFolder method
+   * @param queryParams Query parameters of addShareLinkToFolder method
+   * @param headers Headers of addShareLinkToFolder method
+   */
   public FolderFull addShareLinkToFolder(
       String folderId,
       AddShareLinkToFolderRequestBody requestBody,
@@ -153,6 +241,16 @@ public class SharedLinksFoldersManager {
     return JsonManager.deserialize(response.getData(), FolderFull.class);
   }
 
+  /**
+   * Updates a shared link on a folder.
+   *
+   * @param folderId The unique identifier that represent a folder.
+   *     <p>The ID for any folder can be determined by visiting this folder in the web application
+   *     and copying the ID from the URL. For example, for the URL
+   *     `https://*.app.box.com/folder/123` the `folder_id` is `123`.
+   *     <p>The root folder of a Box account is always represented by the ID `0`. Example: "12345"
+   * @param queryParams Query parameters of updateSharedLinkOnFolder method
+   */
   public FolderFull updateSharedLinkOnFolder(
       String folderId, UpdateSharedLinkOnFolderQueryParams queryParams) {
     return updateSharedLinkOnFolder(
@@ -162,6 +260,17 @@ public class SharedLinksFoldersManager {
         new UpdateSharedLinkOnFolderHeaders());
   }
 
+  /**
+   * Updates a shared link on a folder.
+   *
+   * @param folderId The unique identifier that represent a folder.
+   *     <p>The ID for any folder can be determined by visiting this folder in the web application
+   *     and copying the ID from the URL. For example, for the URL
+   *     `https://*.app.box.com/folder/123` the `folder_id` is `123`.
+   *     <p>The root folder of a Box account is always represented by the ID `0`. Example: "12345"
+   * @param requestBody Request body of updateSharedLinkOnFolder method
+   * @param queryParams Query parameters of updateSharedLinkOnFolder method
+   */
   public FolderFull updateSharedLinkOnFolder(
       String folderId,
       UpdateSharedLinkOnFolderRequestBody requestBody,
@@ -170,6 +279,17 @@ public class SharedLinksFoldersManager {
         folderId, requestBody, queryParams, new UpdateSharedLinkOnFolderHeaders());
   }
 
+  /**
+   * Updates a shared link on a folder.
+   *
+   * @param folderId The unique identifier that represent a folder.
+   *     <p>The ID for any folder can be determined by visiting this folder in the web application
+   *     and copying the ID from the URL. For example, for the URL
+   *     `https://*.app.box.com/folder/123` the `folder_id` is `123`.
+   *     <p>The root folder of a Box account is always represented by the ID `0`. Example: "12345"
+   * @param queryParams Query parameters of updateSharedLinkOnFolder method
+   * @param headers Headers of updateSharedLinkOnFolder method
+   */
   public FolderFull updateSharedLinkOnFolder(
       String folderId,
       UpdateSharedLinkOnFolderQueryParams queryParams,
@@ -178,6 +298,18 @@ public class SharedLinksFoldersManager {
         folderId, new UpdateSharedLinkOnFolderRequestBody(), queryParams, headers);
   }
 
+  /**
+   * Updates a shared link on a folder.
+   *
+   * @param folderId The unique identifier that represent a folder.
+   *     <p>The ID for any folder can be determined by visiting this folder in the web application
+   *     and copying the ID from the URL. For example, for the URL
+   *     `https://*.app.box.com/folder/123` the `folder_id` is `123`.
+   *     <p>The root folder of a Box account is always represented by the ID `0`. Example: "12345"
+   * @param requestBody Request body of updateSharedLinkOnFolder method
+   * @param queryParams Query parameters of updateSharedLinkOnFolder method
+   * @param headers Headers of updateSharedLinkOnFolder method
+   */
   public FolderFull updateSharedLinkOnFolder(
       String folderId,
       UpdateSharedLinkOnFolderRequestBody requestBody,
@@ -209,6 +341,16 @@ public class SharedLinksFoldersManager {
     return JsonManager.deserialize(response.getData(), FolderFull.class);
   }
 
+  /**
+   * Removes a shared link from a folder.
+   *
+   * @param folderId The unique identifier that represent a folder.
+   *     <p>The ID for any folder can be determined by visiting this folder in the web application
+   *     and copying the ID from the URL. For example, for the URL
+   *     `https://*.app.box.com/folder/123` the `folder_id` is `123`.
+   *     <p>The root folder of a Box account is always represented by the ID `0`. Example: "12345"
+   * @param queryParams Query parameters of removeSharedLinkFromFolder method
+   */
   public FolderFull removeSharedLinkFromFolder(
       String folderId, RemoveSharedLinkFromFolderQueryParams queryParams) {
     return removeSharedLinkFromFolder(
@@ -218,6 +360,17 @@ public class SharedLinksFoldersManager {
         new RemoveSharedLinkFromFolderHeaders());
   }
 
+  /**
+   * Removes a shared link from a folder.
+   *
+   * @param folderId The unique identifier that represent a folder.
+   *     <p>The ID for any folder can be determined by visiting this folder in the web application
+   *     and copying the ID from the URL. For example, for the URL
+   *     `https://*.app.box.com/folder/123` the `folder_id` is `123`.
+   *     <p>The root folder of a Box account is always represented by the ID `0`. Example: "12345"
+   * @param requestBody Request body of removeSharedLinkFromFolder method
+   * @param queryParams Query parameters of removeSharedLinkFromFolder method
+   */
   public FolderFull removeSharedLinkFromFolder(
       String folderId,
       RemoveSharedLinkFromFolderRequestBody requestBody,
@@ -226,6 +379,17 @@ public class SharedLinksFoldersManager {
         folderId, requestBody, queryParams, new RemoveSharedLinkFromFolderHeaders());
   }
 
+  /**
+   * Removes a shared link from a folder.
+   *
+   * @param folderId The unique identifier that represent a folder.
+   *     <p>The ID for any folder can be determined by visiting this folder in the web application
+   *     and copying the ID from the URL. For example, for the URL
+   *     `https://*.app.box.com/folder/123` the `folder_id` is `123`.
+   *     <p>The root folder of a Box account is always represented by the ID `0`. Example: "12345"
+   * @param queryParams Query parameters of removeSharedLinkFromFolder method
+   * @param headers Headers of removeSharedLinkFromFolder method
+   */
   public FolderFull removeSharedLinkFromFolder(
       String folderId,
       RemoveSharedLinkFromFolderQueryParams queryParams,
@@ -234,6 +398,18 @@ public class SharedLinksFoldersManager {
         folderId, new RemoveSharedLinkFromFolderRequestBody(), queryParams, headers);
   }
 
+  /**
+   * Removes a shared link from a folder.
+   *
+   * @param folderId The unique identifier that represent a folder.
+   *     <p>The ID for any folder can be determined by visiting this folder in the web application
+   *     and copying the ID from the URL. For example, for the URL
+   *     `https://*.app.box.com/folder/123` the `folder_id` is `123`.
+   *     <p>The root folder of a Box account is always represented by the ID `0`. Example: "12345"
+   * @param requestBody Request body of removeSharedLinkFromFolder method
+   * @param queryParams Query parameters of removeSharedLinkFromFolder method
+   * @param headers Headers of removeSharedLinkFromFolder method
+   */
   public FolderFull removeSharedLinkFromFolder(
       String folderId,
       RemoveSharedLinkFromFolderRequestBody requestBody,

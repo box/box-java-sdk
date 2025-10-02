@@ -8,8 +8,10 @@ import java.util.Objects;
 @JsonFilter("nullablePropertyFilter")
 public class CreateInviteRequestBody extends SerializableObject {
 
+  /** The enterprise to invite the user to. */
   protected final CreateInviteRequestBodyEnterpriseField enterprise;
 
+  /** The user to invite. */
   @JsonProperty("actionable_by")
   protected final CreateInviteRequestBodyActionableByField actionableBy;
 

@@ -8,6 +8,7 @@ import com.fasterxml.jackson.annotation.JsonFilter;
 import java.util.Map;
 import java.util.Objects;
 
+/** The error that occurs when a file can not be created due to a conflict. */
 @JsonFilter("nullablePropertyFilter")
 public class ConflictError extends ClientError {
 

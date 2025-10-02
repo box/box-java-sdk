@@ -31,18 +31,45 @@ public class ArchivesManager {
     this.networkSession = builder.networkSession;
   }
 
+  /**
+   * Retrieves archives for an enterprise.
+   *
+   * <p>To learn more about the archive APIs, see the [Archive API Guide](g://archives).
+   */
   public ArchivesV2025R0 getArchivesV2025R0() {
     return getArchivesV2025R0(new GetArchivesV2025R0QueryParams(), new GetArchivesV2025R0Headers());
   }
 
+  /**
+   * Retrieves archives for an enterprise.
+   *
+   * <p>To learn more about the archive APIs, see the [Archive API Guide](g://archives).
+   *
+   * @param queryParams Query parameters of getArchivesV2025R0 method
+   */
   public ArchivesV2025R0 getArchivesV2025R0(GetArchivesV2025R0QueryParams queryParams) {
     return getArchivesV2025R0(queryParams, new GetArchivesV2025R0Headers());
   }
 
+  /**
+   * Retrieves archives for an enterprise.
+   *
+   * <p>To learn more about the archive APIs, see the [Archive API Guide](g://archives).
+   *
+   * @param headers Headers of getArchivesV2025R0 method
+   */
   public ArchivesV2025R0 getArchivesV2025R0(GetArchivesV2025R0Headers headers) {
     return getArchivesV2025R0(new GetArchivesV2025R0QueryParams(), headers);
   }
 
+  /**
+   * Retrieves archives for an enterprise.
+   *
+   * <p>To learn more about the archive APIs, see the [Archive API Guide](g://archives).
+   *
+   * @param queryParams Query parameters of getArchivesV2025R0 method
+   * @param headers Headers of getArchivesV2025R0 method
+   */
   public ArchivesV2025R0 getArchivesV2025R0(
       GetArchivesV2025R0QueryParams queryParams, GetArchivesV2025R0Headers headers) {
     Map<String, String> queryParamsMap =
@@ -72,10 +99,25 @@ public class ArchivesManager {
     return JsonManager.deserialize(response.getData(), ArchivesV2025R0.class);
   }
 
+  /**
+   * Creates an archive.
+   *
+   * <p>To learn more about the archive APIs, see the [Archive API Guide](g://archives).
+   *
+   * @param requestBody Request body of createArchiveV2025R0 method
+   */
   public ArchiveV2025R0 createArchiveV2025R0(CreateArchiveV2025R0RequestBody requestBody) {
     return createArchiveV2025R0(requestBody, new CreateArchiveV2025R0Headers());
   }
 
+  /**
+   * Creates an archive.
+   *
+   * <p>To learn more about the archive APIs, see the [Archive API Guide](g://archives).
+   *
+   * @param requestBody Request body of createArchiveV2025R0 method
+   * @param headers Headers of createArchiveV2025R0 method
+   */
   public ArchiveV2025R0 createArchiveV2025R0(
       CreateArchiveV2025R0RequestBody requestBody, CreateArchiveV2025R0Headers headers) {
     Map<String, String> headersMap =
@@ -101,10 +143,25 @@ public class ArchivesManager {
     return JsonManager.deserialize(response.getData(), ArchiveV2025R0.class);
   }
 
+  /**
+   * Permanently deletes an archive.
+   *
+   * <p>To learn more about the archive APIs, see the [Archive API Guide](g://archives).
+   *
+   * @param archiveId The ID of the archive. Example: "982312"
+   */
   public void deleteArchiveByIdV2025R0(String archiveId) {
     deleteArchiveByIdV2025R0(archiveId, new DeleteArchiveByIdV2025R0Headers());
   }
 
+  /**
+   * Permanently deletes an archive.
+   *
+   * <p>To learn more about the archive APIs, see the [Archive API Guide](g://archives).
+   *
+   * @param archiveId The ID of the archive. Example: "982312"
+   * @param headers Headers of deleteArchiveByIdV2025R0 method
+   */
   public void deleteArchiveByIdV2025R0(String archiveId, DeleteArchiveByIdV2025R0Headers headers) {
     Map<String, String> headersMap =
         prepareParams(

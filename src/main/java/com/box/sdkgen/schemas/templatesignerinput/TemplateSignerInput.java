@@ -11,14 +11,17 @@ import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.Objects;
 
+/** Input created by a Signer on a Template. */
 @JsonFilter("nullablePropertyFilter")
 public class TemplateSignerInput extends SignRequestPrefillTag {
 
+  /** Type of input. */
   @JsonDeserialize(
       using = TemplateSignerInputTypeField.TemplateSignerInputTypeFieldDeserializer.class)
   @JsonSerialize(using = TemplateSignerInputTypeField.TemplateSignerInputTypeFieldSerializer.class)
   protected EnumWrapper<TemplateSignerInputTypeField> type;
 
+  /** Content type of input. */
   @JsonDeserialize(
       using =
           TemplateSignerInputContentTypeField.TemplateSignerInputContentTypeFieldDeserializer.class)
@@ -28,30 +31,42 @@ public class TemplateSignerInput extends SignRequestPrefillTag {
   @JsonProperty("content_type")
   protected EnumWrapper<TemplateSignerInputContentTypeField> contentType;
 
+  /** Whether or not the input is required. */
   @JsonProperty("is_required")
   protected Boolean isRequired;
 
+  /** Index of page that the input is on. */
   @JsonProperty("page_index")
   protected final long pageIndex;
 
+  /** Document identifier. */
   @JsonProperty("document_id")
   @Nullable
   protected String documentId;
 
+  /**
+   * When the input is of the type `dropdown` this values will be filled with all the dropdown
+   * options.
+   */
   @JsonProperty("dropdown_choices")
   @Nullable
   protected List<String> dropdownChoices;
 
+  /** When the input is of type `radio` they can be grouped to gather with this identifier. */
   @JsonProperty("group_id")
   @Nullable
   protected String groupId;
 
+  /** Where the input is located on a page. */
   protected TemplateSignerInputCoordinatesField coordinates;
 
+  /** The size of the input. */
   protected TemplateSignerInputDimensionsField dimensions;
 
+  /** The label field is used especially for text, attachment, radio, and checkbox type inputs. */
   @Nullable protected String label;
 
+  /** Whether this input was defined as read-only(immutable by signers) or not. */
   @JsonProperty("read_only")
   protected Boolean readOnly;
 

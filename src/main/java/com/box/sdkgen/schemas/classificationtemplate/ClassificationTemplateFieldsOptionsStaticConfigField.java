@@ -8,6 +8,13 @@ import java.util.Objects;
 @JsonFilter("nullablePropertyFilter")
 public class ClassificationTemplateFieldsOptionsStaticConfigField extends SerializableObject {
 
+  /**
+   * Additional information about the classification.
+   *
+   * <p>This is not an exclusive list of properties, and more object fields might be returned. These
+   * fields are used for internal Box Shield and Box Governance purposes and no additional value
+   * must be derived from these fields.
+   */
   protected ClassificationTemplateFieldsOptionsStaticConfigClassificationField classification;
 
   public ClassificationTemplateFieldsOptionsStaticConfigField() {

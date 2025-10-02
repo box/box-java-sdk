@@ -7,11 +7,14 @@ import com.fasterxml.jackson.annotation.JsonFilter;
 import java.util.List;
 import java.util.Objects;
 
+/** A list of metadata instances that have been applied to a file or folder. */
 @JsonFilter("nullablePropertyFilter")
 public class Metadatas extends SerializableObject {
 
+  /** A list of metadata instances, as applied to this file or folder. */
   protected List<Metadata> entries;
 
+  /** The limit that was used for this page of results. */
   protected Long limit;
 
   public Metadatas() {

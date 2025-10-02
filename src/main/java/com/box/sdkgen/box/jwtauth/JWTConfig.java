@@ -13,18 +13,25 @@ import com.box.sdkgen.serialization.json.JsonManager;
 
 public class JWTConfig {
 
+  /** App client ID */
   public final String clientId;
 
+  /** App client secret */
   public final String clientSecret;
 
+  /** Public key ID */
   public final String jwtKeyId;
 
+  /** Private key */
   public final String privateKey;
 
+  /** Passphrase */
   public final String privateKeyPassphrase;
 
+  /** Enterprise ID */
   public String enterpriseId;
 
+  /** User ID */
   public String userId;
 
   public EnumWrapper<JwtAlgorithm> algorithm;
@@ -62,19 +69,55 @@ public class JWTConfig {
     this.privateKeyDecryptor = builder.privateKeyDecryptor;
   }
 
+  /**
+   * Create an auth instance as defined by a string content of JSON file downloaded from the Box
+   * Developer Console. See https://developer.box.com/en/guides/authentication/jwt/ for more
+   * information.
+   *
+   * @param configJsonString String content of JSON file containing the configuration.
+   */
   public static JWTConfig fromConfigJsonString(String configJsonString) {
     return fromConfigJsonString(configJsonString, null, null);
   }
 
+  /**
+   * Create an auth instance as defined by a string content of JSON file downloaded from the Box
+   * Developer Console. See https://developer.box.com/en/guides/authentication/jwt/ for more
+   * information.
+   *
+   * @param configJsonString String content of JSON file containing the configuration.
+   * @param tokenStorage Object responsible for storing token. If no custom implementation provided,
+   *     the token will be stored in memory
+   */
   public static JWTConfig fromConfigJsonString(String configJsonString, TokenStorage tokenStorage) {
     return fromConfigJsonString(configJsonString, tokenStorage, null);
   }
 
+  /**
+   * Create an auth instance as defined by a string content of JSON file downloaded from the Box
+   * Developer Console. See https://developer.box.com/en/guides/authentication/jwt/ for more
+   * information.
+   *
+   * @param configJsonString String content of JSON file containing the configuration.
+   * @param privateKeyDecryptor Object responsible for decrypting private key for jwt auth. If no
+   *     custom implementation provided, the DefaultPrivateKeyDecryptor will be used.
+   */
   public static JWTConfig fromConfigJsonString(
       String configJsonString, PrivateKeyDecryptor privateKeyDecryptor) {
     return fromConfigJsonString(configJsonString, null, privateKeyDecryptor);
   }
 
+  /**
+   * Create an auth instance as defined by a string content of JSON file downloaded from the Box
+   * Developer Console. See https://developer.box.com/en/guides/authentication/jwt/ for more
+   * information.
+   *
+   * @param configJsonString String content of JSON file containing the configuration.
+   * @param tokenStorage Object responsible for storing token. If no custom implementation provided,
+   *     the token will be stored in memory
+   * @param privateKeyDecryptor Object responsible for decrypting private key for jwt auth. If no
+   *     custom implementation provided, the DefaultPrivateKeyDecryptor will be used.
+   */
   public static JWTConfig fromConfigJsonString(
       String configJsonString, TokenStorage tokenStorage, PrivateKeyDecryptor privateKeyDecryptor) {
     JwtConfigFile configJson =
@@ -98,19 +141,51 @@ public class JWTConfig {
     return newConfig;
   }
 
+  /**
+   * Create an auth instance as defined by a JSON file downloaded from the Box Developer Console.
+   * See https://developer.box.com/en/guides/authentication/jwt/ for more information.
+   *
+   * @param configFilePath Path to the JSON file containing the configuration.
+   */
   public static JWTConfig fromConfigFile(String configFilePath) {
     return fromConfigFile(configFilePath, null, null);
   }
 
+  /**
+   * Create an auth instance as defined by a JSON file downloaded from the Box Developer Console.
+   * See https://developer.box.com/en/guides/authentication/jwt/ for more information.
+   *
+   * @param configFilePath Path to the JSON file containing the configuration.
+   * @param tokenStorage Object responsible for storing token. If no custom implementation provided,
+   *     the token will be stored in memory.
+   */
   public static JWTConfig fromConfigFile(String configFilePath, TokenStorage tokenStorage) {
     return fromConfigFile(configFilePath, tokenStorage, null);
   }
 
+  /**
+   * Create an auth instance as defined by a JSON file downloaded from the Box Developer Console.
+   * See https://developer.box.com/en/guides/authentication/jwt/ for more information.
+   *
+   * @param configFilePath Path to the JSON file containing the configuration.
+   * @param privateKeyDecryptor Object responsible for decrypting private key for jwt auth. If no
+   *     custom implementation provided, the DefaultPrivateKeyDecryptor will be used.
+   */
   public static JWTConfig fromConfigFile(
       String configFilePath, PrivateKeyDecryptor privateKeyDecryptor) {
     return fromConfigFile(configFilePath, null, privateKeyDecryptor);
   }
 
+  /**
+   * Create an auth instance as defined by a JSON file downloaded from the Box Developer Console.
+   * See https://developer.box.com/en/guides/authentication/jwt/ for more information.
+   *
+   * @param configFilePath Path to the JSON file containing the configuration.
+   * @param tokenStorage Object responsible for storing token. If no custom implementation provided,
+   *     the token will be stored in memory.
+   * @param privateKeyDecryptor Object responsible for decrypting private key for jwt auth. If no
+   *     custom implementation provided, the DefaultPrivateKeyDecryptor will be used.
+   */
   public static JWTConfig fromConfigFile(
       String configFilePath, TokenStorage tokenStorage, PrivateKeyDecryptor privateKeyDecryptor) {
     String configJsonString = readTextFromFile(configFilePath);

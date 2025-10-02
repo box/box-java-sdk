@@ -11,6 +11,7 @@ import java.util.Objects;
 @JsonFilter("nullablePropertyFilter")
 public class StartWorkflowRequestBodyFolderField extends SerializableObject {
 
+  /** The type of the folder object. */
   @JsonDeserialize(
       using =
           StartWorkflowRequestBodyFolderTypeField
@@ -21,6 +22,7 @@ public class StartWorkflowRequestBodyFolderField extends SerializableObject {
               .class)
   protected EnumWrapper<StartWorkflowRequestBodyFolderTypeField> type;
 
+  /** The id of the folder. */
   protected String id;
 
   public StartWorkflowRequestBodyFolderField() {

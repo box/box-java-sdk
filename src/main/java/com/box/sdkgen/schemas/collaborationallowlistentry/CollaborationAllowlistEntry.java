@@ -11,11 +11,17 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import java.time.OffsetDateTime;
 import java.util.Objects;
 
+/**
+ * An entry that describes an approved domain for which users can collaborate with files and folders
+ * in your enterprise or vice versa.
+ */
 @JsonFilter("nullablePropertyFilter")
 public class CollaborationAllowlistEntry extends SerializableObject {
 
+  /** The unique identifier for this entry. */
   protected String id;
 
+  /** The value will always be `collaboration_whitelist_entry`. */
   @JsonDeserialize(
       using =
           CollaborationAllowlistEntryTypeField.CollaborationAllowlistEntryTypeFieldDeserializer
@@ -25,8 +31,10 @@ public class CollaborationAllowlistEntry extends SerializableObject {
           CollaborationAllowlistEntryTypeField.CollaborationAllowlistEntryTypeFieldSerializer.class)
   protected EnumWrapper<CollaborationAllowlistEntryTypeField> type;
 
+  /** The whitelisted domain. */
   protected String domain;
 
+  /** The direction of the collaborations to allow. */
   @JsonDeserialize(
       using =
           CollaborationAllowlistEntryDirectionField
@@ -39,6 +47,7 @@ public class CollaborationAllowlistEntry extends SerializableObject {
 
   protected CollaborationAllowlistEntryEnterpriseField enterprise;
 
+  /** The time the entry was created at. */
   @JsonProperty("created_at")
   @JsonSerialize(using = DateTimeUtils.DateTimeSerializer.class)
   @JsonDeserialize(using = DateTimeUtils.DateTimeDeserializer.class)

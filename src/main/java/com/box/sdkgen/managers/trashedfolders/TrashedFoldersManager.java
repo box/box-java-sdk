@@ -31,6 +31,24 @@ public class TrashedFoldersManager {
     this.networkSession = builder.networkSession;
   }
 
+  /**
+   * Restores a folder that has been moved to the trash.
+   *
+   * <p>An optional new parent ID can be provided to restore the folder to in case the original
+   * folder has been deleted.
+   *
+   * <p>During this operation, part of the file tree will be locked, mainly the source folder and
+   * all of its descendants, as well as the destination folder.
+   *
+   * <p>For the duration of the operation, no other move, copy, delete, or restore operation can
+   * performed on any of the locked folders.
+   *
+   * @param folderId The unique identifier that represent a folder.
+   *     <p>The ID for any folder can be determined by visiting this folder in the web application
+   *     and copying the ID from the URL. For example, for the URL
+   *     `https://*.app.box.com/folder/123` the `folder_id` is `123`.
+   *     <p>The root folder of a Box account is always represented by the ID `0`. Example: "12345"
+   */
   public TrashFolderRestored restoreFolderFromTrash(String folderId) {
     return restoreFolderFromTrash(
         folderId,
@@ -39,6 +57,25 @@ public class TrashedFoldersManager {
         new RestoreFolderFromTrashHeaders());
   }
 
+  /**
+   * Restores a folder that has been moved to the trash.
+   *
+   * <p>An optional new parent ID can be provided to restore the folder to in case the original
+   * folder has been deleted.
+   *
+   * <p>During this operation, part of the file tree will be locked, mainly the source folder and
+   * all of its descendants, as well as the destination folder.
+   *
+   * <p>For the duration of the operation, no other move, copy, delete, or restore operation can
+   * performed on any of the locked folders.
+   *
+   * @param folderId The unique identifier that represent a folder.
+   *     <p>The ID for any folder can be determined by visiting this folder in the web application
+   *     and copying the ID from the URL. For example, for the URL
+   *     `https://*.app.box.com/folder/123` the `folder_id` is `123`.
+   *     <p>The root folder of a Box account is always represented by the ID `0`. Example: "12345"
+   * @param requestBody Request body of restoreFolderFromTrash method
+   */
   public TrashFolderRestored restoreFolderFromTrash(
       String folderId, RestoreFolderFromTrashRequestBody requestBody) {
     return restoreFolderFromTrash(
@@ -48,6 +85,25 @@ public class TrashedFoldersManager {
         new RestoreFolderFromTrashHeaders());
   }
 
+  /**
+   * Restores a folder that has been moved to the trash.
+   *
+   * <p>An optional new parent ID can be provided to restore the folder to in case the original
+   * folder has been deleted.
+   *
+   * <p>During this operation, part of the file tree will be locked, mainly the source folder and
+   * all of its descendants, as well as the destination folder.
+   *
+   * <p>For the duration of the operation, no other move, copy, delete, or restore operation can
+   * performed on any of the locked folders.
+   *
+   * @param folderId The unique identifier that represent a folder.
+   *     <p>The ID for any folder can be determined by visiting this folder in the web application
+   *     and copying the ID from the URL. For example, for the URL
+   *     `https://*.app.box.com/folder/123` the `folder_id` is `123`.
+   *     <p>The root folder of a Box account is always represented by the ID `0`. Example: "12345"
+   * @param queryParams Query parameters of restoreFolderFromTrash method
+   */
   public TrashFolderRestored restoreFolderFromTrash(
       String folderId, RestoreFolderFromTrashQueryParams queryParams) {
     return restoreFolderFromTrash(
@@ -57,6 +113,26 @@ public class TrashedFoldersManager {
         new RestoreFolderFromTrashHeaders());
   }
 
+  /**
+   * Restores a folder that has been moved to the trash.
+   *
+   * <p>An optional new parent ID can be provided to restore the folder to in case the original
+   * folder has been deleted.
+   *
+   * <p>During this operation, part of the file tree will be locked, mainly the source folder and
+   * all of its descendants, as well as the destination folder.
+   *
+   * <p>For the duration of the operation, no other move, copy, delete, or restore operation can
+   * performed on any of the locked folders.
+   *
+   * @param folderId The unique identifier that represent a folder.
+   *     <p>The ID for any folder can be determined by visiting this folder in the web application
+   *     and copying the ID from the URL. For example, for the URL
+   *     `https://*.app.box.com/folder/123` the `folder_id` is `123`.
+   *     <p>The root folder of a Box account is always represented by the ID `0`. Example: "12345"
+   * @param requestBody Request body of restoreFolderFromTrash method
+   * @param queryParams Query parameters of restoreFolderFromTrash method
+   */
   public TrashFolderRestored restoreFolderFromTrash(
       String folderId,
       RestoreFolderFromTrashRequestBody requestBody,
@@ -65,6 +141,25 @@ public class TrashedFoldersManager {
         folderId, requestBody, queryParams, new RestoreFolderFromTrashHeaders());
   }
 
+  /**
+   * Restores a folder that has been moved to the trash.
+   *
+   * <p>An optional new parent ID can be provided to restore the folder to in case the original
+   * folder has been deleted.
+   *
+   * <p>During this operation, part of the file tree will be locked, mainly the source folder and
+   * all of its descendants, as well as the destination folder.
+   *
+   * <p>For the duration of the operation, no other move, copy, delete, or restore operation can
+   * performed on any of the locked folders.
+   *
+   * @param folderId The unique identifier that represent a folder.
+   *     <p>The ID for any folder can be determined by visiting this folder in the web application
+   *     and copying the ID from the URL. For example, for the URL
+   *     `https://*.app.box.com/folder/123` the `folder_id` is `123`.
+   *     <p>The root folder of a Box account is always represented by the ID `0`. Example: "12345"
+   * @param headers Headers of restoreFolderFromTrash method
+   */
   public TrashFolderRestored restoreFolderFromTrash(
       String folderId, RestoreFolderFromTrashHeaders headers) {
     return restoreFolderFromTrash(
@@ -74,6 +169,26 @@ public class TrashedFoldersManager {
         headers);
   }
 
+  /**
+   * Restores a folder that has been moved to the trash.
+   *
+   * <p>An optional new parent ID can be provided to restore the folder to in case the original
+   * folder has been deleted.
+   *
+   * <p>During this operation, part of the file tree will be locked, mainly the source folder and
+   * all of its descendants, as well as the destination folder.
+   *
+   * <p>For the duration of the operation, no other move, copy, delete, or restore operation can
+   * performed on any of the locked folders.
+   *
+   * @param folderId The unique identifier that represent a folder.
+   *     <p>The ID for any folder can be determined by visiting this folder in the web application
+   *     and copying the ID from the URL. For example, for the URL
+   *     `https://*.app.box.com/folder/123` the `folder_id` is `123`.
+   *     <p>The root folder of a Box account is always represented by the ID `0`. Example: "12345"
+   * @param requestBody Request body of restoreFolderFromTrash method
+   * @param headers Headers of restoreFolderFromTrash method
+   */
   public TrashFolderRestored restoreFolderFromTrash(
       String folderId,
       RestoreFolderFromTrashRequestBody requestBody,
@@ -82,6 +197,26 @@ public class TrashedFoldersManager {
         folderId, requestBody, new RestoreFolderFromTrashQueryParams(), headers);
   }
 
+  /**
+   * Restores a folder that has been moved to the trash.
+   *
+   * <p>An optional new parent ID can be provided to restore the folder to in case the original
+   * folder has been deleted.
+   *
+   * <p>During this operation, part of the file tree will be locked, mainly the source folder and
+   * all of its descendants, as well as the destination folder.
+   *
+   * <p>For the duration of the operation, no other move, copy, delete, or restore operation can
+   * performed on any of the locked folders.
+   *
+   * @param folderId The unique identifier that represent a folder.
+   *     <p>The ID for any folder can be determined by visiting this folder in the web application
+   *     and copying the ID from the URL. For example, for the URL
+   *     `https://*.app.box.com/folder/123` the `folder_id` is `123`.
+   *     <p>The root folder of a Box account is always represented by the ID `0`. Example: "12345"
+   * @param queryParams Query parameters of restoreFolderFromTrash method
+   * @param headers Headers of restoreFolderFromTrash method
+   */
   public TrashFolderRestored restoreFolderFromTrash(
       String folderId,
       RestoreFolderFromTrashQueryParams queryParams,
@@ -90,6 +225,27 @@ public class TrashedFoldersManager {
         folderId, new RestoreFolderFromTrashRequestBody(), queryParams, headers);
   }
 
+  /**
+   * Restores a folder that has been moved to the trash.
+   *
+   * <p>An optional new parent ID can be provided to restore the folder to in case the original
+   * folder has been deleted.
+   *
+   * <p>During this operation, part of the file tree will be locked, mainly the source folder and
+   * all of its descendants, as well as the destination folder.
+   *
+   * <p>For the duration of the operation, no other move, copy, delete, or restore operation can
+   * performed on any of the locked folders.
+   *
+   * @param folderId The unique identifier that represent a folder.
+   *     <p>The ID for any folder can be determined by visiting this folder in the web application
+   *     and copying the ID from the URL. For example, for the URL
+   *     `https://*.app.box.com/folder/123` the `folder_id` is `123`.
+   *     <p>The root folder of a Box account is always represented by the ID `0`. Example: "12345"
+   * @param requestBody Request body of restoreFolderFromTrash method
+   * @param queryParams Query parameters of restoreFolderFromTrash method
+   * @param headers Headers of restoreFolderFromTrash method
+   */
   public TrashFolderRestored restoreFolderFromTrash(
       String folderId,
       RestoreFolderFromTrashRequestBody requestBody,
@@ -120,20 +276,88 @@ public class TrashedFoldersManager {
     return JsonManager.deserialize(response.getData(), TrashFolderRestored.class);
   }
 
+  /**
+   * Retrieves a folder that has been moved to the trash.
+   *
+   * <p>Please note that only if the folder itself has been moved to the trash can it be retrieved
+   * with this API call. If instead one of its parent folders was moved to the trash, only that
+   * folder can be inspected using the [`GET /folders/:id/trash`](e://get_folders_id_trash) API.
+   *
+   * <p>To list all items that have been moved to the trash, please use the [`GET
+   * /folders/trash/items`](e://get-folders-trash-items/) API.
+   *
+   * @param folderId The unique identifier that represent a folder.
+   *     <p>The ID for any folder can be determined by visiting this folder in the web application
+   *     and copying the ID from the URL. For example, for the URL
+   *     `https://*.app.box.com/folder/123` the `folder_id` is `123`.
+   *     <p>The root folder of a Box account is always represented by the ID `0`. Example: "12345"
+   */
   public TrashFolder getTrashedFolderById(String folderId) {
     return getTrashedFolderById(
         folderId, new GetTrashedFolderByIdQueryParams(), new GetTrashedFolderByIdHeaders());
   }
 
+  /**
+   * Retrieves a folder that has been moved to the trash.
+   *
+   * <p>Please note that only if the folder itself has been moved to the trash can it be retrieved
+   * with this API call. If instead one of its parent folders was moved to the trash, only that
+   * folder can be inspected using the [`GET /folders/:id/trash`](e://get_folders_id_trash) API.
+   *
+   * <p>To list all items that have been moved to the trash, please use the [`GET
+   * /folders/trash/items`](e://get-folders-trash-items/) API.
+   *
+   * @param folderId The unique identifier that represent a folder.
+   *     <p>The ID for any folder can be determined by visiting this folder in the web application
+   *     and copying the ID from the URL. For example, for the URL
+   *     `https://*.app.box.com/folder/123` the `folder_id` is `123`.
+   *     <p>The root folder of a Box account is always represented by the ID `0`. Example: "12345"
+   * @param queryParams Query parameters of getTrashedFolderById method
+   */
   public TrashFolder getTrashedFolderById(
       String folderId, GetTrashedFolderByIdQueryParams queryParams) {
     return getTrashedFolderById(folderId, queryParams, new GetTrashedFolderByIdHeaders());
   }
 
+  /**
+   * Retrieves a folder that has been moved to the trash.
+   *
+   * <p>Please note that only if the folder itself has been moved to the trash can it be retrieved
+   * with this API call. If instead one of its parent folders was moved to the trash, only that
+   * folder can be inspected using the [`GET /folders/:id/trash`](e://get_folders_id_trash) API.
+   *
+   * <p>To list all items that have been moved to the trash, please use the [`GET
+   * /folders/trash/items`](e://get-folders-trash-items/) API.
+   *
+   * @param folderId The unique identifier that represent a folder.
+   *     <p>The ID for any folder can be determined by visiting this folder in the web application
+   *     and copying the ID from the URL. For example, for the URL
+   *     `https://*.app.box.com/folder/123` the `folder_id` is `123`.
+   *     <p>The root folder of a Box account is always represented by the ID `0`. Example: "12345"
+   * @param headers Headers of getTrashedFolderById method
+   */
   public TrashFolder getTrashedFolderById(String folderId, GetTrashedFolderByIdHeaders headers) {
     return getTrashedFolderById(folderId, new GetTrashedFolderByIdQueryParams(), headers);
   }
 
+  /**
+   * Retrieves a folder that has been moved to the trash.
+   *
+   * <p>Please note that only if the folder itself has been moved to the trash can it be retrieved
+   * with this API call. If instead one of its parent folders was moved to the trash, only that
+   * folder can be inspected using the [`GET /folders/:id/trash`](e://get_folders_id_trash) API.
+   *
+   * <p>To list all items that have been moved to the trash, please use the [`GET
+   * /folders/trash/items`](e://get-folders-trash-items/) API.
+   *
+   * @param folderId The unique identifier that represent a folder.
+   *     <p>The ID for any folder can be determined by visiting this folder in the web application
+   *     and copying the ID from the URL. For example, for the URL
+   *     `https://*.app.box.com/folder/123` the `folder_id` is `123`.
+   *     <p>The root folder of a Box account is always represented by the ID `0`. Example: "12345"
+   * @param queryParams Query parameters of getTrashedFolderById method
+   * @param headers Headers of getTrashedFolderById method
+   */
   public TrashFolder getTrashedFolderById(
       String folderId,
       GetTrashedFolderByIdQueryParams queryParams,
@@ -162,10 +386,29 @@ public class TrashedFoldersManager {
     return JsonManager.deserialize(response.getData(), TrashFolder.class);
   }
 
+  /**
+   * Permanently deletes a folder that is in the trash. This action cannot be undone.
+   *
+   * @param folderId The unique identifier that represent a folder.
+   *     <p>The ID for any folder can be determined by visiting this folder in the web application
+   *     and copying the ID from the URL. For example, for the URL
+   *     `https://*.app.box.com/folder/123` the `folder_id` is `123`.
+   *     <p>The root folder of a Box account is always represented by the ID `0`. Example: "12345"
+   */
   public void deleteTrashedFolderById(String folderId) {
     deleteTrashedFolderById(folderId, new DeleteTrashedFolderByIdHeaders());
   }
 
+  /**
+   * Permanently deletes a folder that is in the trash. This action cannot be undone.
+   *
+   * @param folderId The unique identifier that represent a folder.
+   *     <p>The ID for any folder can be determined by visiting this folder in the web application
+   *     and copying the ID from the URL. For example, for the URL
+   *     `https://*.app.box.com/folder/123` the `folder_id` is `123`.
+   *     <p>The root folder of a Box account is always represented by the ID `0`. Example: "12345"
+   * @param headers Headers of deleteTrashedFolderById method
+   */
   public void deleteTrashedFolderById(String folderId, DeleteTrashedFolderByIdHeaders headers) {
     Map<String, String> headersMap = prepareParams(mergeMaps(mapOf(), headers.getExtraHeaders()));
     FetchResponse response =

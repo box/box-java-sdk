@@ -9,6 +9,7 @@ import com.box.sdkgen.schemas.aillmendpointparamsopenai.AiLlmEndpointParamsOpenA
 import com.fasterxml.jackson.annotation.JsonFilter;
 import java.util.Objects;
 
+/** The AI agent tool used to handle spreadsheets and tabular data. */
 @JsonFilter("nullablePropertyFilter")
 public class AiStudioAgentSpreadsheetTool extends AiAgentSpreadsheetTool {
 

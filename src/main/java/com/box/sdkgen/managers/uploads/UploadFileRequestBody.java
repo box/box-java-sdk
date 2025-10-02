@@ -4,8 +4,31 @@ import java.io.InputStream;
 
 public class UploadFileRequestBody {
 
+  /**
+   * The additional attributes of the file being uploaded. Mainly the name and the parent folder.
+   * These attributes are part of the multi part request body and are in JSON format.
+   *
+   * <p>&lt;Message warning&gt;
+   *
+   * <p>The `attributes` part of the body must come **before** the `file` part. Requests that do not
+   * follow this format when uploading the file will receive a HTTP `400` error with a
+   * `metadata_after_file_contents` error code.
+   *
+   * <p>&lt;/Message&gt;
+   */
   public final UploadFileRequestBodyAttributesField attributes;
 
+  /**
+   * The content of the file to upload to Box.
+   *
+   * <p>&lt;Message warning&gt;
+   *
+   * <p>The `attributes` part of the body must come **before** the `file` part. Requests that do not
+   * follow this format when uploading the file will receive a HTTP `400` error with a
+   * `metadata_after_file_contents` error code.
+   *
+   * <p>&lt;/Message&gt;
+   */
   public final InputStream file;
 
   public String fileFileName;

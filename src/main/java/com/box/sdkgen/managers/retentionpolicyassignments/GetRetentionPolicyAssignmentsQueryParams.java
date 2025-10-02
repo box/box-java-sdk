@@ -5,12 +5,26 @@ import java.util.List;
 
 public class GetRetentionPolicyAssignmentsQueryParams {
 
+  /** The type of the retention policy assignment to retrieve. */
   public EnumWrapper<GetRetentionPolicyAssignmentsQueryParamsTypeField> type;
 
+  /**
+   * A comma-separated list of attributes to include in the response. This can be used to request
+   * fields that are not normally returned in a standard response.
+   *
+   * <p>Be aware that specifying this parameter will have the effect that none of the standard
+   * fields are returned in the response unless explicitly specified, instead only fields for the
+   * mini representation are returned, additional to the fields requested.
+   */
   public List<String> fields;
 
+  /**
+   * Defines the position marker at which to begin returning results. This is used when paginating
+   * using marker-based pagination.
+   */
   public String marker;
 
+  /** The maximum number of items to return per page. */
   public Long limit;
 
   public GetRetentionPolicyAssignmentsQueryParams() {}

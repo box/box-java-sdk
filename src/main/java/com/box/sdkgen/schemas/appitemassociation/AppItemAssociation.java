@@ -14,11 +14,17 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import java.util.Objects;
 
+/**
+ * An app item association represents an association between a file or folder and an app item.
+ * Associations between a folder and an app item cascade down to all descendants of the folder.
+ */
 @JsonFilter("nullablePropertyFilter")
 public class AppItemAssociation extends SerializableObject {
 
+  /** The unique identifier for this app item association. */
   protected final String id;
 
+  /** The value will always be `app_item_association`. */
   @JsonDeserialize(
       using = AppItemAssociationTypeField.AppItemAssociationTypeFieldDeserializer.class)
   @JsonSerialize(using = AppItemAssociationTypeField.AppItemAssociationTypeFieldSerializer.class)

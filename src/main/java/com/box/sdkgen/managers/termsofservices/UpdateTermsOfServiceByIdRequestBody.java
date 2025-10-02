@@ -11,6 +11,7 @@ import java.util.Objects;
 @JsonFilter("nullablePropertyFilter")
 public class UpdateTermsOfServiceByIdRequestBody extends SerializableObject {
 
+  /** Whether this terms of service is active. */
   @JsonDeserialize(
       using =
           UpdateTermsOfServiceByIdRequestBodyStatusField
@@ -21,6 +22,11 @@ public class UpdateTermsOfServiceByIdRequestBody extends SerializableObject {
               .UpdateTermsOfServiceByIdRequestBodyStatusFieldSerializer.class)
   protected final EnumWrapper<UpdateTermsOfServiceByIdRequestBodyStatusField> status;
 
+  /**
+   * The terms of service text to display to users.
+   *
+   * <p>The text can be set to empty if the `status` is set to `disabled`.
+   */
   protected final String text;
 
   public UpdateTermsOfServiceByIdRequestBody(

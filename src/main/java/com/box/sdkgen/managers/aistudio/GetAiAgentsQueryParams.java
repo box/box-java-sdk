@@ -4,16 +4,28 @@ import java.util.List;
 
 public class GetAiAgentsQueryParams {
 
+  /**
+   * The mode to filter the agent config to return. Possible values are: `ask`, `text_gen`, and
+   * `extract`.
+   */
   public List<String> mode;
 
+  /** The fields to return in the response. */
   public List<String> fields;
 
+  /**
+   * The state of the agents to return. Possible values are: `enabled`, `disabled` and
+   * `enabled_for_selected_users`.
+   */
   public List<String> agentState;
 
+  /** Whether to include the Box default agents in the response. */
   public Boolean includeBoxDefault;
 
+  /** Defines the position marker at which to begin returning results. */
   public String marker;
 
+  /** The maximum number of items to return per page. */
   public Long limit;
 
   public GetAiAgentsQueryParams() {}

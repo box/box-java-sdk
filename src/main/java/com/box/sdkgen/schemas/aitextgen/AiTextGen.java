@@ -11,13 +11,29 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.List;
 import java.util.Objects;
 
+/** AI text gen request object. */
 @JsonFilter("nullablePropertyFilter")
 public class AiTextGen extends SerializableObject {
 
+  /**
+   * The prompt provided by the client to be answered by the LLM. The prompt's length is limited to
+   * 10000 characters.
+   */
   protected final String prompt;
 
+  /**
+   * The items to be processed by the LLM, often files. The array can include **exactly one**
+   * element.
+   *
+   * <p>**Note**: Box AI handles documents with text representations up to 1MB in size. If the file
+   * size exceeds 1MB, the first 1MB of text representation will be processed.
+   */
   protected final List<AiTextGenItemsField> items;
 
+  /**
+   * The history of prompts and answers previously passed to the LLM. This parameter provides the
+   * additional context to the LLM when generating the response.
+   */
   @JsonProperty("dialogue_history")
   protected List<AiDialogueHistory> dialogueHistory;
 

@@ -2,8 +2,16 @@ package com.box.sdkgen.managers.downloads;
 
 public class DownloadFileQueryParams {
 
+  /** The file version to download. */
   public String version;
 
+  /**
+   * An optional access token that can be used to pre-authenticate this request, which means that a
+   * download link can be shared with a browser or a third party service without them needing to
+   * know how to handle the authentication. When using this parameter, please make sure that the
+   * access token is sufficiently scoped down to only allow read access to that file and no other
+   * files or folders.
+   */
   public String accessToken;
 
   public DownloadFileQueryParams() {}

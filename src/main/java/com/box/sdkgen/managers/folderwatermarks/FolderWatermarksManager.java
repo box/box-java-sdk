@@ -29,10 +29,29 @@ public class FolderWatermarksManager {
     this.networkSession = builder.networkSession;
   }
 
+  /**
+   * Retrieve the watermark for a folder.
+   *
+   * @param folderId The unique identifier that represent a folder.
+   *     <p>The ID for any folder can be determined by visiting this folder in the web application
+   *     and copying the ID from the URL. For example, for the URL
+   *     `https://*.app.box.com/folder/123` the `folder_id` is `123`.
+   *     <p>The root folder of a Box account is always represented by the ID `0`. Example: "12345"
+   */
   public Watermark getFolderWatermark(String folderId) {
     return getFolderWatermark(folderId, new GetFolderWatermarkHeaders());
   }
 
+  /**
+   * Retrieve the watermark for a folder.
+   *
+   * @param folderId The unique identifier that represent a folder.
+   *     <p>The ID for any folder can be determined by visiting this folder in the web application
+   *     and copying the ID from the URL. For example, for the URL
+   *     `https://*.app.box.com/folder/123` the `folder_id` is `123`.
+   *     <p>The root folder of a Box account is always represented by the ID `0`. Example: "12345"
+   * @param headers Headers of getFolderWatermark method
+   */
   public Watermark getFolderWatermark(String folderId, GetFolderWatermarkHeaders headers) {
     Map<String, String> headersMap = prepareParams(mergeMaps(mapOf(), headers.getExtraHeaders()));
     FetchResponse response =
@@ -55,11 +74,32 @@ public class FolderWatermarksManager {
     return JsonManager.deserialize(response.getData(), Watermark.class);
   }
 
+  /**
+   * Applies or update a watermark on a folder.
+   *
+   * @param folderId The unique identifier that represent a folder.
+   *     <p>The ID for any folder can be determined by visiting this folder in the web application
+   *     and copying the ID from the URL. For example, for the URL
+   *     `https://*.app.box.com/folder/123` the `folder_id` is `123`.
+   *     <p>The root folder of a Box account is always represented by the ID `0`. Example: "12345"
+   * @param requestBody Request body of updateFolderWatermark method
+   */
   public Watermark updateFolderWatermark(
       String folderId, UpdateFolderWatermarkRequestBody requestBody) {
     return updateFolderWatermark(folderId, requestBody, new UpdateFolderWatermarkHeaders());
   }
 
+  /**
+   * Applies or update a watermark on a folder.
+   *
+   * @param folderId The unique identifier that represent a folder.
+   *     <p>The ID for any folder can be determined by visiting this folder in the web application
+   *     and copying the ID from the URL. For example, for the URL
+   *     `https://*.app.box.com/folder/123` the `folder_id` is `123`.
+   *     <p>The root folder of a Box account is always represented by the ID `0`. Example: "12345"
+   * @param requestBody Request body of updateFolderWatermark method
+   * @param headers Headers of updateFolderWatermark method
+   */
   public Watermark updateFolderWatermark(
       String folderId,
       UpdateFolderWatermarkRequestBody requestBody,
@@ -87,10 +127,29 @@ public class FolderWatermarksManager {
     return JsonManager.deserialize(response.getData(), Watermark.class);
   }
 
+  /**
+   * Removes the watermark from a folder.
+   *
+   * @param folderId The unique identifier that represent a folder.
+   *     <p>The ID for any folder can be determined by visiting this folder in the web application
+   *     and copying the ID from the URL. For example, for the URL
+   *     `https://*.app.box.com/folder/123` the `folder_id` is `123`.
+   *     <p>The root folder of a Box account is always represented by the ID `0`. Example: "12345"
+   */
   public void deleteFolderWatermark(String folderId) {
     deleteFolderWatermark(folderId, new DeleteFolderWatermarkHeaders());
   }
 
+  /**
+   * Removes the watermark from a folder.
+   *
+   * @param folderId The unique identifier that represent a folder.
+   *     <p>The ID for any folder can be determined by visiting this folder in the web application
+   *     and copying the ID from the URL. For example, for the URL
+   *     `https://*.app.box.com/folder/123` the `folder_id` is `123`.
+   *     <p>The root folder of a Box account is always represented by the ID `0`. Example: "12345"
+   * @param headers Headers of deleteFolderWatermark method
+   */
   public void deleteFolderWatermark(String folderId, DeleteFolderWatermarkHeaders headers) {
     Map<String, String> headersMap = prepareParams(mergeMaps(mapOf(), headers.getExtraHeaders()));
     FetchResponse response =

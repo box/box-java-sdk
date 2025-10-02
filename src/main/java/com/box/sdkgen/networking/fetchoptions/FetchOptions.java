@@ -10,28 +10,43 @@ import java.util.Map;
 
 public class FetchOptions {
 
+  /** URL of the request */
   public final String url;
 
+  /** HTTP verb of the request */
   public final String method;
 
+  /** HTTP query parameters */
   public Map<String, String> params;
 
+  /** HTTP headers */
   public Map<String, String> headers;
 
+  /** Request body of the request */
   public JsonNode data;
 
+  /** Stream data of the request */
   public InputStream fileStream;
 
+  /** Multipart data of the request */
   public List<MultipartItem> multipartData;
 
+  /** Content type of the request body */
   public String contentType;
 
+  /** Expected response format */
   public EnumWrapper<ResponseFormat> responseFormat;
 
+  /** Authentication object */
   public Authentication auth;
 
+  /** Network session object */
   public NetworkSession networkSession;
 
+  /**
+   * A boolean value indicate if the request should follow redirects. Defaults to True. Not
+   * supported in Browser environment.
+   */
   public Boolean followRedirects;
 
   public FetchOptions(String url, String method) {

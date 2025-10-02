@@ -9,6 +9,7 @@ import java.util.Objects;
 @JsonFilter("nullablePropertyFilter")
 public class ShieldInformationBarrierReportDetailsDetailsField extends SerializableObject {
 
+  /** Folder ID for locating this report. */
   @JsonProperty("folder_id")
   protected String folderId;
 

@@ -12,13 +12,29 @@ import java.util.Objects;
 @JsonFilter("nullablePropertyFilter")
 public class CreateFolderRequestBody extends SerializableObject {
 
+  /**
+   * The name for the new folder.
+   *
+   * <p>The following restrictions to folder names apply: names containing non-printable ASCII
+   * characters, forward and backward slashes (`/`, `\`), names with trailing spaces, and names `.`
+   * and `..` are not allowed.
+   *
+   * <p>Folder names must be unique within their parent folder. The name check is case-insensitive,
+   * so a folder named `New Folder` cannot be created in a parent folder that already contains a
+   * folder named `new folder`.
+   */
   protected final String name;
 
+  /** The parent folder to create the new folder within. */
   protected final CreateFolderRequestBodyParentField parent;
 
   @JsonProperty("folder_upload_email")
   protected CreateFolderRequestBodyFolderUploadEmailField folderUploadEmail;
 
+  /**
+   * Specifies whether a folder should be synced to a user's device or not. This is used by Box Sync
+   * (discontinued) and is not used by Box Drive.
+   */
   @JsonDeserialize(
       using =
           CreateFolderRequestBodySyncStateField.CreateFolderRequestBodySyncStateFieldDeserializer

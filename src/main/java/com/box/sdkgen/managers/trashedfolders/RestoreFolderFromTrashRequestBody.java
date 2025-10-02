@@ -8,6 +8,7 @@ import java.util.Objects;
 @JsonFilter("nullablePropertyFilter")
 public class RestoreFolderFromTrashRequestBody extends SerializableObject {
 
+  /** An optional new name for the folder. */
   protected String name;
 
   protected RestoreFolderFromTrashRequestBodyParentField parent;

@@ -15,9 +15,14 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import java.time.OffsetDateTime;
 import java.util.Objects;
 
+/** A Slack specific representation of an integration mapping object. */
 @JsonFilter("nullablePropertyFilter")
 public class IntegrationMapping extends IntegrationMappingBase {
 
+  /**
+   * Identifies the Box partner app, with which the mapping is associated. Currently only supports
+   * Slack. (part of the composite key together with `id`).
+   */
   @JsonDeserialize(
       using =
           IntegrationMappingIntegrationTypeField.IntegrationMappingIntegrationTypeFieldDeserializer
@@ -29,28 +34,41 @@ public class IntegrationMapping extends IntegrationMappingBase {
   @JsonProperty("integration_type")
   protected EnumWrapper<IntegrationMappingIntegrationTypeField> integrationType;
 
+  /**
+   * Identifies whether the mapping has been manually set (as opposed to being automatically
+   * created).
+   */
   @JsonProperty("is_manually_created")
   protected Boolean isManuallyCreated;
 
   protected IntegrationMappingSlackOptions options;
 
+  /** An object representing the user who created the integration mapping. */
   @JsonProperty("created_by")
   protected UserIntegrationMappings createdBy;
 
+  /** The user who last modified the integration mapping. */
   @JsonProperty("modified_by")
   protected UserIntegrationMappings modifiedBy;
 
+  /** Mapped item object for Slack. */
   @JsonProperty("partner_item")
   protected final IntegrationMappingPartnerItemSlack partnerItem;
 
+  /**
+   * The Box folder, to which the object from the partner app domain (referenced in
+   * `partner_item_id`) is mapped.
+   */
   @JsonProperty("box_item")
   protected final FolderMini boxItem;
 
+  /** When the integration mapping object was created. */
   @JsonProperty("created_at")
   @JsonSerialize(using = DateTimeUtils.DateTimeSerializer.class)
   @JsonDeserialize(using = DateTimeUtils.DateTimeDeserializer.class)
   protected OffsetDateTime createdAt;
 
+  /** When the integration mapping object was last modified. */
   @JsonProperty("modified_at")
   @JsonSerialize(using = DateTimeUtils.DateTimeSerializer.class)
   @JsonDeserialize(using = DateTimeUtils.DateTimeDeserializer.class)

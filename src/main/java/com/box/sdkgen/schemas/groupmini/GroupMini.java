@@ -9,11 +9,14 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import java.util.Objects;
 
+/** Mini representation of a group, including id and name of group. */
 @JsonFilter("nullablePropertyFilter")
 public class GroupMini extends GroupBase {
 
+  /** The name of the group. */
   protected String name;
 
+  /** The type of the group. */
   @JsonDeserialize(using = GroupMiniGroupTypeField.GroupMiniGroupTypeFieldDeserializer.class)
   @JsonSerialize(using = GroupMiniGroupTypeField.GroupMiniGroupTypeFieldSerializer.class)
   @JsonProperty("group_type")

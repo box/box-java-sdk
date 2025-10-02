@@ -7,11 +7,14 @@ import com.fasterxml.jackson.annotation.JsonFilter;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.Objects;
 
+/** A mini representation of a user, as can be returned when nested within other resources. */
 @JsonFilter("nullablePropertyFilter")
 public class UserMiniV2025R0 extends UserBaseV2025R0 {
 
+  /** The display name of this user. */
   protected String name;
 
+  /** The primary email address of this user. */
   protected String login;
 
   public UserMiniV2025R0(@JsonProperty("id") String id) {

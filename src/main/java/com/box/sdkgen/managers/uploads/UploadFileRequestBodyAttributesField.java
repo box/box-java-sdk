@@ -13,15 +13,33 @@ import java.util.Objects;
 @JsonFilter("nullablePropertyFilter")
 public class UploadFileRequestBodyAttributesField extends SerializableObject {
 
+  /**
+   * The name of the file.
+   *
+   * <p>File names must be unique within their parent folder. The name check is case-insensitive, so
+   * a file named `New File` cannot be created in a parent folder that already contains a folder
+   * named `new file`.
+   */
   protected final String name;
 
+  /** The parent folder to upload the file to. */
   protected final UploadFileRequestBodyAttributesParentField parent;
 
+  /**
+   * Defines the time the file was originally created at.
+   *
+   * <p>If not set, the upload time will be used.
+   */
   @JsonProperty("content_created_at")
   @JsonSerialize(using = DateTimeUtils.DateTimeSerializer.class)
   @JsonDeserialize(using = DateTimeUtils.DateTimeDeserializer.class)
   protected OffsetDateTime contentCreatedAt;
 
+  /**
+   * Defines the time the file was last modified at.
+   *
+   * <p>If not set, the upload time will be used.
+   */
   @JsonProperty("content_modified_at")
   @JsonSerialize(using = DateTimeUtils.DateTimeSerializer.class)
   @JsonDeserialize(using = DateTimeUtils.DateTimeDeserializer.class)

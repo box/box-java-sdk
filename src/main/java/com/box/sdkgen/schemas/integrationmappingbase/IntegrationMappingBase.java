@@ -9,11 +9,17 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import java.util.Objects;
 
+/** A base representation of an integration mapping object. */
 @JsonFilter("nullablePropertyFilter")
 public class IntegrationMappingBase extends SerializableObject {
 
+  /**
+   * A unique identifier of a folder mapping (part of a composite key together with
+   * `integration_type`).
+   */
   protected final String id;
 
+  /** Mapping type. */
   @JsonDeserialize(
       using = IntegrationMappingBaseTypeField.IntegrationMappingBaseTypeFieldDeserializer.class)
   @JsonSerialize(

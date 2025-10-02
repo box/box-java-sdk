@@ -10,9 +10,17 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import java.time.OffsetDateTime;
 import java.util.Objects;
 
+/**
+ * Comments are messages created on files. Comments can be made independently or created as
+ * responses to other comments.
+ */
 @JsonFilter("nullablePropertyFilter")
 public class CommentFull extends Comment {
 
+  /**
+   * The string representing the comment text with &#64;mentions included. &#64;mention format is
+   * &#64;[id:username] where `id` is user's Box ID and `username` is their display name.
+   */
   @JsonProperty("tagged_message")
   protected String taggedMessage;
 

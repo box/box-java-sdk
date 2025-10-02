@@ -8,15 +8,19 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import java.util.Objects;
 
+/** Represents a configured webhook. */
 @JsonFilter("nullablePropertyFilter")
 public class WebhookMini extends SerializableObject {
 
+  /** The unique identifier for this webhook. */
   protected String id;
 
+  /** The value will always be `webhook`. */
   @JsonDeserialize(using = WebhookMiniTypeField.WebhookMiniTypeFieldDeserializer.class)
   @JsonSerialize(using = WebhookMiniTypeField.WebhookMiniTypeFieldSerializer.class)
   protected EnumWrapper<WebhookMiniTypeField> type;
 
+  /** The item that will trigger the webhook. */
   protected WebhookMiniTargetField target;
 
   public WebhookMini() {

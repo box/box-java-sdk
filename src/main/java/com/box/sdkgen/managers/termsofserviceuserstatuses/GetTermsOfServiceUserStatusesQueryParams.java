@@ -2,8 +2,10 @@ package com.box.sdkgen.managers.termsofserviceuserstatuses;
 
 public class GetTermsOfServiceUserStatusesQueryParams {
 
+  /** The ID of the terms of service. */
   public final String tosId;
 
+  /** Limits results to the given user ID. */
   public String userId;
 
   public GetTermsOfServiceUserStatusesQueryParams(String tosId) {

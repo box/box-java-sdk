@@ -8,6 +8,10 @@ import java.util.Objects;
 @JsonFilter("nullablePropertyFilter")
 public class CreateMetadataTemplateRequestBodyFieldsOptionsField extends SerializableObject {
 
+  /**
+   * The text value of the option. This represents both the display name of the option and the
+   * internal key used when updating templates.
+   */
   protected final String key;
 
   public CreateMetadataTemplateRequestBodyFieldsOptionsField(@JsonProperty("key") String key) {

@@ -4,10 +4,21 @@ import com.box.sdkgen.serialization.json.EnumWrapper;
 
 public class GetEnterpriseDevicePinnersQueryParams {
 
+  /**
+   * Defines the position marker at which to begin returning results. This is used when paginating
+   * using marker-based pagination.
+   *
+   * <p>This requires `usemarker` to be set to `true`.
+   */
   public String marker;
 
+  /** The maximum number of items to return per page. */
   public Long limit;
 
+  /**
+   * The direction to sort results in. This can be either in alphabetical ascending (`ASC`) or
+   * descending (`DESC`) order.
+   */
   public EnumWrapper<GetEnterpriseDevicePinnersQueryParamsDirectionField> direction;
 
   public GetEnterpriseDevicePinnersQueryParams() {}

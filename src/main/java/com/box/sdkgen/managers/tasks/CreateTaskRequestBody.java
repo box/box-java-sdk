@@ -14,21 +14,37 @@ import java.util.Objects;
 @JsonFilter("nullablePropertyFilter")
 public class CreateTaskRequestBody extends SerializableObject {
 
+  /** The file to attach the task to. */
   protected final CreateTaskRequestBodyItemField item;
 
+  /**
+   * The action the task assignee will be prompted to do. Must be
+   *
+   * <p>* `review` defines an approval task that can be approved or, rejected * `complete` defines a
+   * general task which can be completed.
+   */
   @JsonDeserialize(
       using = CreateTaskRequestBodyActionField.CreateTaskRequestBodyActionFieldDeserializer.class)
   @JsonSerialize(
       using = CreateTaskRequestBodyActionField.CreateTaskRequestBodyActionFieldSerializer.class)
   protected EnumWrapper<CreateTaskRequestBodyActionField> action;
 
+  /** An optional message to include with the task. */
   protected String message;
 
+  /** Defines when the task is due. Defaults to `null` if not provided. */
   @JsonProperty("due_at")
   @JsonSerialize(using = DateTimeUtils.DateTimeSerializer.class)
   @JsonDeserialize(using = DateTimeUtils.DateTimeDeserializer.class)
   protected OffsetDateTime dueAt;
 
+  /**
+   * Defines which assignees need to complete this task before the task is considered completed.
+   *
+   * <p>* `all_assignees` (default) requires all assignees to review or approve the task in order
+   * for it to be considered completed. * `any_assignee` accepts any one assignee to review or
+   * approve the task in order for it to be considered completed.
+   */
   @JsonDeserialize(
       using =
           CreateTaskRequestBodyCompletionRuleField

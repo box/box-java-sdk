@@ -31,10 +31,21 @@ public class DevicePinnersManager {
     this.networkSession = builder.networkSession;
   }
 
+  /**
+   * Retrieves information about an individual device pin.
+   *
+   * @param devicePinnerId The ID of the device pin. Example: "2324234"
+   */
   public DevicePinner getDevicePinnerById(String devicePinnerId) {
     return getDevicePinnerById(devicePinnerId, new GetDevicePinnerByIdHeaders());
   }
 
+  /**
+   * Retrieves information about an individual device pin.
+   *
+   * @param devicePinnerId The ID of the device pin. Example: "2324234"
+   * @param headers Headers of getDevicePinnerById method
+   */
   public DevicePinner getDevicePinnerById(
       String devicePinnerId, GetDevicePinnerByIdHeaders headers) {
     Map<String, String> headersMap = prepareParams(mergeMaps(mapOf(), headers.getExtraHeaders()));
@@ -57,10 +68,21 @@ public class DevicePinnersManager {
     return JsonManager.deserialize(response.getData(), DevicePinner.class);
   }
 
+  /**
+   * Deletes an individual device pin.
+   *
+   * @param devicePinnerId The ID of the device pin. Example: "2324234"
+   */
   public void deleteDevicePinnerById(String devicePinnerId) {
     deleteDevicePinnerById(devicePinnerId, new DeleteDevicePinnerByIdHeaders());
   }
 
+  /**
+   * Deletes an individual device pin.
+   *
+   * @param devicePinnerId The ID of the device pin. Example: "2324234"
+   * @param headers Headers of deleteDevicePinnerById method
+   */
   public void deleteDevicePinnerById(String devicePinnerId, DeleteDevicePinnerByIdHeaders headers) {
     Map<String, String> headersMap = prepareParams(mergeMaps(mapOf(), headers.getExtraHeaders()));
     FetchResponse response =
@@ -81,6 +103,14 @@ public class DevicePinnersManager {
                     .build());
   }
 
+  /**
+   * Retrieves all the device pins within an enterprise.
+   *
+   * <p>The user must have admin privileges, and the application needs the "manage enterprise" scope
+   * to make this call.
+   *
+   * @param enterpriseId The ID of the enterprise. Example: "3442311"
+   */
   public DevicePinners getEnterpriseDevicePinners(String enterpriseId) {
     return getEnterpriseDevicePinners(
         enterpriseId,
@@ -88,18 +118,46 @@ public class DevicePinnersManager {
         new GetEnterpriseDevicePinnersHeaders());
   }
 
+  /**
+   * Retrieves all the device pins within an enterprise.
+   *
+   * <p>The user must have admin privileges, and the application needs the "manage enterprise" scope
+   * to make this call.
+   *
+   * @param enterpriseId The ID of the enterprise. Example: "3442311"
+   * @param queryParams Query parameters of getEnterpriseDevicePinners method
+   */
   public DevicePinners getEnterpriseDevicePinners(
       String enterpriseId, GetEnterpriseDevicePinnersQueryParams queryParams) {
     return getEnterpriseDevicePinners(
         enterpriseId, queryParams, new GetEnterpriseDevicePinnersHeaders());
   }
 
+  /**
+   * Retrieves all the device pins within an enterprise.
+   *
+   * <p>The user must have admin privileges, and the application needs the "manage enterprise" scope
+   * to make this call.
+   *
+   * @param enterpriseId The ID of the enterprise. Example: "3442311"
+   * @param headers Headers of getEnterpriseDevicePinners method
+   */
   public DevicePinners getEnterpriseDevicePinners(
       String enterpriseId, GetEnterpriseDevicePinnersHeaders headers) {
     return getEnterpriseDevicePinners(
         enterpriseId, new GetEnterpriseDevicePinnersQueryParams(), headers);
   }
 
+  /**
+   * Retrieves all the device pins within an enterprise.
+   *
+   * <p>The user must have admin privileges, and the application needs the "manage enterprise" scope
+   * to make this call.
+   *
+   * @param enterpriseId The ID of the enterprise. Example: "3442311"
+   * @param queryParams Query parameters of getEnterpriseDevicePinners method
+   * @param headers Headers of getEnterpriseDevicePinners method
+   */
   public DevicePinners getEnterpriseDevicePinners(
       String enterpriseId,
       GetEnterpriseDevicePinnersQueryParams queryParams,

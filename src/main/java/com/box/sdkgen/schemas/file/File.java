@@ -15,44 +15,65 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import java.time.OffsetDateTime;
 import java.util.Objects;
 
+/** A standard representation of a file, as returned from any file API endpoints by default. */
 @JsonFilter("nullablePropertyFilter")
 public class File extends FileMini {
 
+  /**
+   * The optional description of this file. If the description exceeds 255 characters, the first 255
+   * characters are set as a file description and the rest of it is ignored.
+   */
   protected String description;
 
+  /**
+   * The file size in bytes. Be careful parsing this integer as it can get very large and cause an
+   * integer overflow.
+   */
   protected Long size;
 
   @JsonProperty("path_collection")
   protected FilePathCollectionField pathCollection;
 
+  /** The date and time when the file was created on Box. */
   @JsonProperty("created_at")
   @JsonSerialize(using = DateTimeUtils.DateTimeSerializer.class)
   @JsonDeserialize(using = DateTimeUtils.DateTimeDeserializer.class)
   protected OffsetDateTime createdAt;
 
+  /** The date and time when the file was last updated on Box. */
   @JsonProperty("modified_at")
   @JsonSerialize(using = DateTimeUtils.DateTimeSerializer.class)
   @JsonDeserialize(using = DateTimeUtils.DateTimeDeserializer.class)
   protected OffsetDateTime modifiedAt;
 
+  /** The time at which this file was put in the trash. */
   @JsonProperty("trashed_at")
   @JsonSerialize(using = DateTimeUtils.DateTimeSerializer.class)
   @JsonDeserialize(using = DateTimeUtils.DateTimeDeserializer.class)
   @Nullable
   protected OffsetDateTime trashedAt;
 
+  /** The time at which this file is expected to be purged from the trash. */
   @JsonProperty("purged_at")
   @JsonSerialize(using = DateTimeUtils.DateTimeSerializer.class)
   @JsonDeserialize(using = DateTimeUtils.DateTimeDeserializer.class)
   @Nullable
   protected OffsetDateTime purgedAt;
 
+  /**
+   * The date and time at which this file was originally created, which might be before it was
+   * uploaded to Box.
+   */
   @JsonProperty("content_created_at")
   @JsonSerialize(using = DateTimeUtils.DateTimeSerializer.class)
   @JsonDeserialize(using = DateTimeUtils.DateTimeDeserializer.class)
   @Nullable
   protected OffsetDateTime contentCreatedAt;
 
+  /**
+   * The date and time at which this file was last updated, which might be before it was uploaded to
+   * Box.
+   */
   @JsonProperty("content_modified_at")
   @JsonSerialize(using = DateTimeUtils.DateTimeSerializer.class)
   @JsonDeserialize(using = DateTimeUtils.DateTimeDeserializer.class)
@@ -73,6 +94,12 @@ public class File extends FileMini {
 
   @Nullable protected FolderMini parent;
 
+  /**
+   * Defines if this item has been deleted or not.
+   *
+   * <p>* `active` when the item has is not in the trash * `trashed` when the item has been moved to
+   * the trash but not deleted * `deleted` when the item has been permanently deleted.
+   */
   @JsonDeserialize(using = FileItemStatusField.FileItemStatusFieldDeserializer.class)
   @JsonSerialize(using = FileItemStatusField.FileItemStatusFieldSerializer.class)
   @JsonProperty("item_status")

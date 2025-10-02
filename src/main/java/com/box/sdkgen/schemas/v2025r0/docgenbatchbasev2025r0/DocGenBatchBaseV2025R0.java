@@ -9,11 +9,17 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import java.util.Objects;
 
+/**
+ * The basic representation of a Box Doc Gen batch object. A Box Doc Gen batch contains one or more
+ * Box Doc Gen jobs.
+ */
 @JsonFilter("nullablePropertyFilter")
 public class DocGenBatchBaseV2025R0 extends SerializableObject {
 
+  /** The unique identifier that represents a Box Doc Gen batch. */
   protected final String id;
 
+  /** The value will always be `docgen_batch`. */
   @JsonDeserialize(
       using = DocGenBatchBaseV2025R0TypeField.DocGenBatchBaseV2025R0TypeFieldDeserializer.class)
   @JsonSerialize(

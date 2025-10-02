@@ -9,18 +9,24 @@ import java.util.Objects;
 @JsonFilter("nullablePropertyFilter")
 public class UploadSessionSessionEndpointsField extends SerializableObject {
 
+  /** The URL to upload parts to. */
   @JsonProperty("upload_part")
   protected String uploadPart;
 
+  /** The URL used to commit the file. */
   protected String commit;
 
+  /** The URL for used to abort the session. */
   protected String abort;
 
+  /** The URL users to list all parts. */
   @JsonProperty("list_parts")
   protected String listParts;
 
+  /** The URL used to get the status of the upload. */
   protected String status;
 
+  /** The URL used to get the upload log from. */
   @JsonProperty("log_event")
   protected String logEvent;
 

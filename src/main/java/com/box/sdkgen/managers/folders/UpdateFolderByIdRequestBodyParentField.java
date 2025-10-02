@@ -9,8 +9,13 @@ import java.util.Objects;
 @JsonFilter("nullablePropertyFilter")
 public class UpdateFolderByIdRequestBodyParentField extends SerializableObject {
 
+  /** The ID of parent item. */
   protected String id;
 
+  /**
+   * The input for `user_id` is optional. Moving to non-root folder is not allowed when `user_id` is
+   * present. Parent folder id should be zero when `user_id` is provided.
+   */
   @JsonProperty("user_id")
   protected String userId;
 

@@ -14,6 +14,7 @@ import java.util.Objects;
 @JsonFilter("nullablePropertyFilter")
 public class UpdateFileByIdRequestBodyLockField extends SerializableObject {
 
+  /** The type of this object. */
   @JsonDeserialize(
       using =
           UpdateFileByIdRequestBodyLockAccessField
@@ -24,11 +25,13 @@ public class UpdateFileByIdRequestBodyLockField extends SerializableObject {
               .UpdateFileByIdRequestBodyLockAccessFieldSerializer.class)
   protected EnumWrapper<UpdateFileByIdRequestBodyLockAccessField> access;
 
+  /** Defines the time at which the lock expires. */
   @JsonProperty("expires_at")
   @JsonSerialize(using = DateTimeUtils.DateTimeSerializer.class)
   @JsonDeserialize(using = DateTimeUtils.DateTimeDeserializer.class)
   protected OffsetDateTime expiresAt;
 
+  /** Defines if the file can be downloaded while it is locked. */
   @JsonProperty("is_download_prevented")
   protected Boolean isDownloadPrevented;
 

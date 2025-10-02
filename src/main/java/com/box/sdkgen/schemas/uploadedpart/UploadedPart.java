@@ -6,6 +6,7 @@ import com.box.sdkgen.schemas.uploadpart.UploadPart;
 import com.fasterxml.jackson.annotation.JsonFilter;
 import java.util.Objects;
 
+/** A chunk of a file uploaded as part of an upload session, as returned by some endpoints. */
 @JsonFilter("nullablePropertyFilter")
 public class UploadedPart extends SerializableObject {
 
