@@ -66,7 +66,7 @@ public class Event extends SerializableObject {
    * object. This object is only available in the Enterprise Events.
    */
   @JsonProperty("additional_details")
-  protected EventAdditionalDetailsField additionalDetails;
+  protected Map<String, Object> additionalDetails;
 
   public Event() {
     super();
@@ -118,7 +118,7 @@ public class Event extends SerializableObject {
     return source;
   }
 
-  public EventAdditionalDetailsField getAdditionalDetails() {
+  public Map<String, Object> getAdditionalDetails() {
     return additionalDetails;
   }
 
@@ -215,7 +215,7 @@ public class Event extends SerializableObject {
 
     protected EventSourceResource source;
 
-    protected EventAdditionalDetailsField additionalDetails;
+    protected Map<String, Object> additionalDetails;
 
     public Builder type(String type) {
       this.type = type;
@@ -292,7 +292,7 @@ public class Event extends SerializableObject {
       return this;
     }
 
-    public Builder additionalDetails(EventAdditionalDetailsField additionalDetails) {
+    public Builder additionalDetails(Map<String, Object> additionalDetails) {
       this.additionalDetails = additionalDetails;
       return this;
     }
