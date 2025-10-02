@@ -4,19 +4,19 @@ import com.box.sdkgen.internal.NullableFieldTracker;
 import com.box.sdkgen.internal.SerializableObject;
 import com.box.sdkgen.internal.utils.DateTimeUtils;
 import com.box.sdkgen.schemas.aiagentinfo.AiAgentInfo;
-import com.box.sdkgen.schemas.aiextractresponse.AiExtractResponse;
 import com.fasterxml.jackson.annotation.JsonFilter;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import java.time.OffsetDateTime;
+import java.util.Map;
 import java.util.Objects;
 
 /** AI extract structured response. */
 @JsonFilter("nullablePropertyFilter")
 public class AiExtractStructuredResponse extends SerializableObject {
 
-  protected final AiExtractResponse answer;
+  protected final Map<String, Object> answer;
 
   /** The ISO date formatted timestamp of when the answer to the prompt was created. */
   @JsonProperty("created_at")
@@ -32,7 +32,7 @@ public class AiExtractStructuredResponse extends SerializableObject {
   protected AiAgentInfo aiAgentInfo;
 
   public AiExtractStructuredResponse(
-      @JsonProperty("answer") AiExtractResponse answer,
+      @JsonProperty("answer") Map<String, Object> answer,
       @JsonProperty("created_at") OffsetDateTime createdAt) {
     super();
     this.answer = answer;
@@ -48,7 +48,7 @@ public class AiExtractStructuredResponse extends SerializableObject {
     markNullableFieldsAsSet(builder.getExplicitlySetNullableFields());
   }
 
-  public AiExtractResponse getAnswer() {
+  public Map<String, Object> getAnswer() {
     return answer;
   }
 
@@ -107,7 +107,7 @@ public class AiExtractStructuredResponse extends SerializableObject {
 
   public static class Builder extends NullableFieldTracker {
 
-    protected final AiExtractResponse answer;
+    protected final Map<String, Object> answer;
 
     protected final OffsetDateTime createdAt;
 
@@ -115,7 +115,7 @@ public class AiExtractStructuredResponse extends SerializableObject {
 
     protected AiAgentInfo aiAgentInfo;
 
-    public Builder(AiExtractResponse answer, OffsetDateTime createdAt) {
+    public Builder(Map<String, Object> answer, OffsetDateTime createdAt) {
       super();
       this.answer = answer;
       this.createdAt = createdAt;
