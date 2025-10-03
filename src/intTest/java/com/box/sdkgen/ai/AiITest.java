@@ -6,7 +6,6 @@ import static com.box.sdkgen.internal.utils.UtilsManager.convertToString;
 import static com.box.sdkgen.internal.utils.UtilsManager.dateTimeFromString;
 import static com.box.sdkgen.internal.utils.UtilsManager.delayInSeconds;
 import static com.box.sdkgen.internal.utils.UtilsManager.getUuid;
-import static com.box.sdkgen.internal.utils.UtilsManager.getValueFromObjectRawData;
 import static com.box.sdkgen.internal.utils.UtilsManager.stringToByteStream;
 
 import com.box.sdkgen.client.BoxClient;
@@ -338,13 +337,12 @@ public class AiITest {
                                 .build()))
                     .aiAgent(agentIgnoringOverridingEmbeddingsModel)
                     .build());
-    assert convertToString(getValueFromObjectRawData(response, "answer.hobby"))
+    assert convertToString(response.getAnswer().get("hobby"))
         .equals(convertToString(Arrays.asList("guitar")));
-    assert convertToString(getValueFromObjectRawData(response, "answer.firstName")).equals("John");
-    assert convertToString(getValueFromObjectRawData(response, "answer.lastName")).equals("Doe");
-    assert convertToString(getValueFromObjectRawData(response, "answer.dateOfBirth"))
-        .equals("1990-07-04");
-    assert convertToString(getValueFromObjectRawData(response, "answer.age")).equals("34");
+    assert convertToString(response.getAnswer().get("firstName")).equals("John");
+    assert convertToString(response.getAnswer().get("lastName")).equals("Doe");
+    assert convertToString(response.getAnswer().get("dateOfBirth")).equals("1990-07-04");
+    assert convertToString(response.getAnswer().get("age")).equals("34");
     assert response.getCompletionReason().equals("done");
     client.getFiles().deleteFileById(file.getId());
   }
@@ -420,12 +418,11 @@ public class AiITest {
                             .scope("enterprise")
                             .build())
                     .build());
-    assert convertToString(getValueFromObjectRawData(response, "answer.firstName")).equals("John");
-    assert convertToString(getValueFromObjectRawData(response, "answer.lastName")).equals("Doe");
-    assert convertToString(getValueFromObjectRawData(response, "answer.dateOfBirth"))
-        .equals("1990-07-04T00:00:00Z");
-    assert convertToString(getValueFromObjectRawData(response, "answer.age")).equals("34");
-    assert convertToString(getValueFromObjectRawData(response, "answer.hobby"))
+    assert convertToString(response.getAnswer().get("firstName")).equals("John");
+    assert convertToString(response.getAnswer().get("lastName")).equals("Doe");
+    assert convertToString(response.getAnswer().get("dateOfBirth")).equals("1990-07-04T00:00:00Z");
+    assert convertToString(response.getAnswer().get("age")).equals("34");
+    assert convertToString(response.getAnswer().get("hobby"))
         .equals(convertToString(Arrays.asList("guitar")));
     assert response.getCompletionReason().equals("done");
     client

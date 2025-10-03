@@ -46,6 +46,7 @@ public class EventsITest {
     assert events.getEntries().size() > 0;
     Event firstEvent = events.getEntries().get(0);
     assert convertToString(firstEvent.getEventType()).equals("UPLOAD");
+    assert convertToString(firstEvent.getAdditionalDetails().get("hash_type")).equals("sha1");
     EventSource source = firstEvent.getSource().getEventSource();
     assert convertToString(source.getItemType()).equals("file")
         || convertToString(source.getItemType()).equals("folder");
