@@ -23,7 +23,7 @@ public class UpdateCollaborationByIdRequestBody extends SerializableObject {
       using =
           UpdateCollaborationByIdRequestBodyRoleField
               .UpdateCollaborationByIdRequestBodyRoleFieldSerializer.class)
-  protected final EnumWrapper<UpdateCollaborationByIdRequestBodyRoleField> role;
+  protected EnumWrapper<UpdateCollaborationByIdRequestBodyRoleField> role;
 
   /**
    * Set the status of a `pending` collaboration invitation, effectively accepting, or rejecting the
@@ -72,15 +72,8 @@ public class UpdateCollaborationByIdRequestBody extends SerializableObject {
   @JsonProperty("can_view_path")
   protected Boolean canViewPath;
 
-  public UpdateCollaborationByIdRequestBody(UpdateCollaborationByIdRequestBodyRoleField role) {
+  public UpdateCollaborationByIdRequestBody() {
     super();
-    this.role = new EnumWrapper<UpdateCollaborationByIdRequestBodyRoleField>(role);
-  }
-
-  public UpdateCollaborationByIdRequestBody(
-      @JsonProperty("role") EnumWrapper<UpdateCollaborationByIdRequestBodyRoleField> role) {
-    super();
-    this.role = role;
   }
 
   protected UpdateCollaborationByIdRequestBody(Builder builder) {
@@ -151,7 +144,7 @@ public class UpdateCollaborationByIdRequestBody extends SerializableObject {
 
   public static class Builder extends NullableFieldTracker {
 
-    protected final EnumWrapper<UpdateCollaborationByIdRequestBodyRoleField> role;
+    protected EnumWrapper<UpdateCollaborationByIdRequestBodyRoleField> role;
 
     protected EnumWrapper<UpdateCollaborationByIdRequestBodyStatusField> status;
 
@@ -159,14 +152,14 @@ public class UpdateCollaborationByIdRequestBody extends SerializableObject {
 
     protected Boolean canViewPath;
 
-    public Builder(UpdateCollaborationByIdRequestBodyRoleField role) {
-      super();
+    public Builder role(UpdateCollaborationByIdRequestBodyRoleField role) {
       this.role = new EnumWrapper<UpdateCollaborationByIdRequestBodyRoleField>(role);
+      return this;
     }
 
-    public Builder(EnumWrapper<UpdateCollaborationByIdRequestBodyRoleField> role) {
-      super();
+    public Builder role(EnumWrapper<UpdateCollaborationByIdRequestBodyRoleField> role) {
       this.role = role;
+      return this;
     }
 
     public Builder status(UpdateCollaborationByIdRequestBodyStatusField status) {

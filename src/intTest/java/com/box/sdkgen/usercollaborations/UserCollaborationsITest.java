@@ -66,8 +66,9 @@ public class UserCollaborationsITest {
             .getUserCollaborations()
             .updateCollaborationById(
                 collaborationId,
-                new UpdateCollaborationByIdRequestBody(
-                    UpdateCollaborationByIdRequestBodyRoleField.VIEWER));
+                new UpdateCollaborationByIdRequestBody.Builder()
+                    .role(UpdateCollaborationByIdRequestBodyRoleField.VIEWER)
+                    .build());
     assert convertToString(updatedCollaboration.getRole()).equals("viewer");
     client.getUserCollaborations().deleteCollaborationById(collaborationId);
     assertThrows(
@@ -110,8 +111,9 @@ public class UserCollaborationsITest {
             .getUserCollaborations()
             .updateCollaborationById(
                 collaboration.getId(),
-                new UpdateCollaborationByIdRequestBody(
-                    UpdateCollaborationByIdRequestBodyRoleField.OWNER));
+                new UpdateCollaborationByIdRequestBody.Builder()
+                    .role(UpdateCollaborationByIdRequestBodyRoleField.OWNER)
+                    .build());
     assert ownerCollaboration == null;
     Collaborations folderCollaborations =
         client.getListCollaborations().getFolderCollaborations(folder.getId());
@@ -155,8 +157,9 @@ public class UserCollaborationsITest {
             .getUserCollaborations()
             .updateCollaborationById(
                 collaborationId,
-                new UpdateCollaborationByIdRequestBody(
-                    UpdateCollaborationByIdRequestBodyRoleField.VIEWER));
+                new UpdateCollaborationByIdRequestBody.Builder()
+                    .role(UpdateCollaborationByIdRequestBodyRoleField.VIEWER)
+                    .build());
     assert convertToString(updatedCollaboration.getRole()).equals("viewer");
     client.getUserCollaborations().deleteCollaborationById(collaborationId);
     assertThrows(
