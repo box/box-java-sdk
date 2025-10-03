@@ -66,10 +66,10 @@ If you are developing application for Android visit our [Android guide](doc/andr
    Maven: `com.eclipsesource.minimal-json:minimal-json:0.9.5`
 2. [jose4j v0.9.4](https://bitbucket.org/b_c/jose4j/wiki/Home)
    Maven: `org.bitbucket.b_c:jose4j:0.9.4`
-3. [bouncycastle bcprov-jdk18on v1.78.1](https://mvnrepository.com/artifact/org.bouncycastle/bcprov-jdk18on/1.78.1)
-   Maven: `org.bouncycastle:bcprov-jdk18on:1.78.1`
-4. [bouncycastle bcpkix-jdk18on v1.78.1](https://mvnrepository.com/artifact/org.bouncycastle/bcpkix-jdk18on/1.78.1)
-   Maven: `org.bouncycastle:bcpkix-jdk18on:1.78.1`
+3. [bouncycastle bcprov-jdk18on v1.82](https://mvnrepository.com/artifact/org.bouncycastle/bcprov-jdk18on/1.82)
+   Maven: `org.bouncycastle:bcprov-jdk18on:1.82`
+4. [bouncycastle bcpkix-jdk18on v1.82](https://mvnrepository.com/artifact/org.bouncycastle/bcpkix-jdk18on/1.82)
+   Maven: `org.bouncycastle:bcpkix-jdk18on:1.82`
 5. [Java Cryptography Extension (JCE) Unlimited Strength Jurisdiction Policy Files 7](http://www.oracle.com/technetwork/java/javase/downloads/jce-7-download-432124.html)
    If you don't install this, you'll get an exception about key length or exception about parsing PKCS private key for Box Developer Edition. This is not a Box thing, this is a U.S. Government requirement concerning strong encryption.
    The listed jar is for Oracle JRE. There might be other similar JARs for different JRE versions like the one below for IBM JDK
@@ -278,7 +278,7 @@ Javadocs are generated when `gradle javadoc` is run and can be found in
 ## FIPS 140-2 Compliance
 
 To generate a Json Web Signature used for retrieving tokens in the JWT authentication method, the Box Java SDK decrypts an encrypted private key.
-For this purpose, Box Java SDK uses libraries (`org.bouncycastle:bcpkix-jdk18on:1.77` and `org.bouncycastle:bcprov-jdk18on:1.77`)
+For this purpose, Box Java SDK uses libraries (`org.bouncycastle:bcpkix-jdk18on:1.82` and `org.bouncycastle:bcprov-jdk18on:1.82`)
 that are NOT compatible with FIPS 140-2 validated cryptographic library (`org.bouncycastle:bc-fips`).
 
 There are two ways of ensuring that decryption operation is FIPS-compiant.
