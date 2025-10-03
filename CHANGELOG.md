@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [4.16.4](https://github.com/box/box-java-sdk/compare/v4.16.3...v4.16.4) (2025-10-03)
+
+
+### Bug Fixes:
+
+* Bump Bouncy Castle to fix `CVE-2025-8916` ([#1454](https://github.com/box/box-java-sdk/issues/1454)) ([a3605f4](https://github.com/box/box-java-sdk/commit/a3605f47b4c5ee6b053f0940f9a06cba0a5c2584))
+
 ### [4.16.3](https://github.com/box/box-java-sdk/compare/v4.16.2...v4.16.3) (2025-07-23)
 
 
