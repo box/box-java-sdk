@@ -21,7 +21,7 @@ The Box Java SDK for interacting with the
 [Box Content API](https://developers.box.com/docs/).
 
 ## Latest Release
-Latest release can be found [here](https://github.com/box/box-java-sdk/tree/v4.16.3).
+Latest release can be found [here](https://github.com/box/box-java-sdk/tree/v4.16.4).
 
 ## Upgrades
 You can read about how to migrate to the 4 version [here](doc/upgrades/3.x.x%20to%204.x.x.md).
@@ -66,10 +66,10 @@ If you are developing application for Android visit our [Android guide](doc/andr
    Maven: `com.eclipsesource.minimal-json:minimal-json:0.9.5`
 2. [jose4j v0.9.4](https://bitbucket.org/b_c/jose4j/wiki/Home)
    Maven: `org.bitbucket.b_c:jose4j:0.9.4`
-3. [bouncycastle bcprov-jdk18on v1.78.1](https://mvnrepository.com/artifact/org.bouncycastle/bcprov-jdk18on/1.78.1)
-   Maven: `org.bouncycastle:bcprov-jdk18on:1.78.1`
-4. [bouncycastle bcpkix-jdk18on v1.78.1](https://mvnrepository.com/artifact/org.bouncycastle/bcpkix-jdk18on/1.78.1)
-   Maven: `org.bouncycastle:bcpkix-jdk18on:1.78.1`
+3. [bouncycastle bcprov-jdk18on v1.82](https://mvnrepository.com/artifact/org.bouncycastle/bcprov-jdk18on/1.82)
+   Maven: `org.bouncycastle:bcprov-jdk18on:1.82`
+4. [bouncycastle bcpkix-jdk18on v1.82](https://mvnrepository.com/artifact/org.bouncycastle/bcpkix-jdk18on/1.82)
+   Maven: `org.bouncycastle:bcpkix-jdk18on:1.82`
 5. [Java Cryptography Extension (JCE) Unlimited Strength Jurisdiction Policy Files 7](http://www.oracle.com/technetwork/java/javase/downloads/jce-7-download-432124.html)
    If you don't install this, you'll get an exception about key length or exception about parsing PKCS private key for Box Developer Edition. This is not a Box thing, this is a U.S. Government requirement concerning strong encryption.
    The listed jar is for Oracle JRE. There might be other similar JARs for different JRE versions like the one below for IBM JDK
@@ -245,31 +245,31 @@ You can find guides and tutorials in the `doc` directory.
 
 * [BUILD ON BOX PLATFORM](https://developer.box.com/guides/getting-started/)
 * [Javadocs](http://box.github.io/box-java-sdk/javadoc/com/box/sdk/package-summary.html)
-* [Overview](https://github.com/box/box-java-sdk/blob/v4.16.3/doc/overview.md)
-* [Configuration](https://github.com/box/box-java-sdk/blob/v4.16.3/doc/configuration.md)
-* [Logging](https://github.com/box/box-java-sdk/blob/v4.16.3/doc/logging.md)
-* [Authentication](https://github.com/box/box-java-sdk/blob/v4.16.3/doc/authentication.md)
-* [Files](https://github.com/box/box-java-sdk/blob/v4.16.3/doc/files.md)
-* [Folders](https://github.com/box/box-java-sdk/blob/v4.16.3/doc/folders.md)
-* [Comments](https://github.com/box/box-java-sdk/blob/v4.16.3/doc/comments.md)
-* [Collaborations](https://github.com/box/box-java-sdk/blob/v4.16.3/doc/collaborations.md)
-* [Collaboration Allowlists](https://github.com/box/box-java-sdk/blob/v4.16.3/doc/collaboration_allowlists.md)
-* [Events](https://github.com/box/box-java-sdk/blob/v4.16.3/doc/events.md)
-* [Search](https://github.com/box/box-java-sdk/blob/v4.16.3/doc/search.md)
-* [Users](https://github.com/box/box-java-sdk/blob/v4.16.3/doc/users.md)
-* [Groups](https://github.com/box/box-java-sdk/blob/v4.16.3/doc/groups.md)
-* [Tasks](https://github.com/box/box-java-sdk/blob/v4.16.3/doc/tasks.md)
-* [Trash](https://github.com/box/box-java-sdk/blob/v4.16.3/doc/trash.md)
-* [Collections](https://github.com/box/box-java-sdk/blob/v4.16.3/doc/collections.md)
-* [Devices](https://github.com/box/box-java-sdk/blob/v4.16.3/doc/devices.md)
-* [Retention Policies](https://github.com/box/box-java-sdk/blob/v4.16.3/doc/retention_policies.md)
-* [Legal Holds Policy](https://github.com/box/box-java-sdk/blob/v4.16.3/doc/legal_holds.md)
-* [Watermarking](https://github.com/box/box-java-sdk/blob/v4.16.3/doc/watermarking.md)
-* [Webhooks](https://github.com/box/box-java-sdk/blob/v4.16.3/doc/webhooks.md)
-* [Web Links](https://github.com/box/box-java-sdk/blob/v4.16.3/doc/weblinks.md)
-* [Metadata Templates](https://github.com/box/box-java-sdk/blob/v4.16.3/doc/metadata_template.md)
-* [Classifications](https://github.com/box/box-java-sdk/blob/v4.16.3/doc/classifications.md)
-* [Recent Items](https://github.com/box/box-java-sdk/blob/v4.16.3/doc/recent_items.md)
+* [Overview](https://github.com/box/box-java-sdk/blob/v4.16.4/doc/overview.md)
+* [Configuration](https://github.com/box/box-java-sdk/blob/v4.16.4/doc/configuration.md)
+* [Logging](https://github.com/box/box-java-sdk/blob/v4.16.4/doc/logging.md)
+* [Authentication](https://github.com/box/box-java-sdk/blob/v4.16.4/doc/authentication.md)
+* [Files](https://github.com/box/box-java-sdk/blob/v4.16.4/doc/files.md)
+* [Folders](https://github.com/box/box-java-sdk/blob/v4.16.4/doc/folders.md)
+* [Comments](https://github.com/box/box-java-sdk/blob/v4.16.4/doc/comments.md)
+* [Collaborations](https://github.com/box/box-java-sdk/blob/v4.16.4/doc/collaborations.md)
+* [Collaboration Allowlists](https://github.com/box/box-java-sdk/blob/v4.16.4/doc/collaboration_allowlists.md)
+* [Events](https://github.com/box/box-java-sdk/blob/v4.16.4/doc/events.md)
+* [Search](https://github.com/box/box-java-sdk/blob/v4.16.4/doc/search.md)
+* [Users](https://github.com/box/box-java-sdk/blob/v4.16.4/doc/users.md)
+* [Groups](https://github.com/box/box-java-sdk/blob/v4.16.4/doc/groups.md)
+* [Tasks](https://github.com/box/box-java-sdk/blob/v4.16.4/doc/tasks.md)
+* [Trash](https://github.com/box/box-java-sdk/blob/v4.16.4/doc/trash.md)
+* [Collections](https://github.com/box/box-java-sdk/blob/v4.16.4/doc/collections.md)
+* [Devices](https://github.com/box/box-java-sdk/blob/v4.16.4/doc/devices.md)
+* [Retention Policies](https://github.com/box/box-java-sdk/blob/v4.16.4/doc/retention_policies.md)
+* [Legal Holds Policy](https://github.com/box/box-java-sdk/blob/v4.16.4/doc/legal_holds.md)
+* [Watermarking](https://github.com/box/box-java-sdk/blob/v4.16.4/doc/watermarking.md)
+* [Webhooks](https://github.com/box/box-java-sdk/blob/v4.16.4/doc/webhooks.md)
+* [Web Links](https://github.com/box/box-java-sdk/blob/v4.16.4/doc/weblinks.md)
+* [Metadata Templates](https://github.com/box/box-java-sdk/blob/v4.16.4/doc/metadata_template.md)
+* [Classifications](https://github.com/box/box-java-sdk/blob/v4.16.4/doc/classifications.md)
+* [Recent Items](https://github.com/box/box-java-sdk/blob/v4.16.4/doc/recent_items.md)
 
 
 Javadocs are generated when `gradle javadoc` is run and can be found in
@@ -278,7 +278,7 @@ Javadocs are generated when `gradle javadoc` is run and can be found in
 ## FIPS 140-2 Compliance
 
 To generate a Json Web Signature used for retrieving tokens in the JWT authentication method, the Box Java SDK decrypts an encrypted private key.
-For this purpose, Box Java SDK uses libraries (`org.bouncycastle:bcpkix-jdk18on:1.77` and `org.bouncycastle:bcprov-jdk18on:1.77`)
+For this purpose, Box Java SDK uses libraries (`org.bouncycastle:bcpkix-jdk18on:1.82` and `org.bouncycastle:bcprov-jdk18on:1.82`)
 that are NOT compatible with FIPS 140-2 validated cryptographic library (`org.bouncycastle:bc-fips`).
 
 There are two ways of ensuring that decryption operation is FIPS-compiant.

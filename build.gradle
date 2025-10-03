@@ -14,7 +14,7 @@ sourceCompatibility = 1.8
 
 group = "com.box"
 archivesBaseName = "box-java-sdk"
-version = "4.16.3"
+version = "4.16.4"
 
 java {
     withJavadocJar()
