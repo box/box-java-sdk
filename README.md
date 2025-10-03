@@ -2,6 +2,28 @@
   <img src="https://github.com/box/sdks/blob/master/images/box-dev-logo.png" alt= “box-dev-logo” width="30%" height="50%">
 </p>
 
+# Versioning Strategy
+
+Starting with v10 of the SDK, we’ve introduced a new generated codebase designed to enhance your experience with the Box API.  
+It is currently available on the [sdk-gen](https://github.com/box/box-java-sdk/tree/sdk-gen) branch and uses the new `com.box.sdkgen` package instead of the old `com.box.sdk`.
+
+v10 is targeted at new users of Box Java SDK and users already working with the generated Box Java SDK previously available under the [Box Java SDK Gen repository](https://github.com/box/box-java-sdk-gen).
+
+For users of v4 of the Box Java SDK, no action is required at this time — we’ll be providing an upcoming v5 release that will include both `com.box.sdk` and `com.box.sdkgen` packages for a smooth migration path. To avoid unintentional upgrades, pin your version to `com.box:box-java-sdk:4.16.4`.
+
+For full guidance on SDK versioning, see the [Box SDK Versioning Guide](https://developer.box.com/guides/tooling/sdks/sdk-versioning/).
+
+---
+
+## Which Version Should I Use?
+
+| Scenario                                                                                                                    | Recommended Version                                                | Example Dependency            |
+| --------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------ | ----------------------------- |
+| Creating a new application                                                                                                  | Use [v10](https://github.com/box/box-java-sdk/tree/sdk-gen)        | `com.box:box-sdkgen:10.0.0`   |
+| Existing app using [box-java-sdk-gen](https://mvnrepository.com/artifact/com.box/box-java-sdk-gen) artifact                 | Upgrade to [v10](https://github.com/box/box-java-sdk/tree/sdk-gen) | `com.box:box-sdkgen:10.0.0`   |
+| Existing app using [box-java-sdk](https://mvnrepository.com/artifact/com.box/box-java-sdk) and planning to use new features | Wait for v5 to start migration process                             | TBD                           |
+| Existing app using [box-java-sdk](https://mvnrepository.com/artifact/com.box/box-java-sdk) and not planning changes         | Stay on your current version                                       | `com.box:box-java-sdk:4.16.4` |
+
 # Box Java SDK
 
 [![Project Status](http://opensource.box.com/badges/active.svg)](http://opensource.box.com/badges)
@@ -149,11 +171,11 @@ The Java SDK uses third-party libraries that are required for usage. Their licen
 6. [jose4j v0.9.6](https://mvnrepository.com/artifact/org.bitbucket.b_c/jose4j/0.9.6)
    Maven: `org.bitbucket.b_c:jose4j:0.9.6`
    Licence: [Apache 2.0](https://www.apache.org/licenses/LICENSE-2.0)
-7. [bcprov-jdk18on v1.78.1](https://mvnrepository.com/artifact/org.bouncycastle/bcprov-jdk18on/1.78.1)
-   Maven: `org.bouncycastle:bcprov-jdk18on:1.78.1`
+7. [bcprov-jdk18on v1.82](https://mvnrepository.com/artifact/org.bouncycastle/bcprov-jdk18on/1.82)
+   Maven: `org.bouncycastle:bcprov-jdk18on:1.82`
    Licence: [MIT](https://opensource.org/licenses/MIT)
-8. [bcpkix-jdk18on v1.78.1](https://mvnrepository.com/artifact/org.bouncycastle/bcpkix-jdk18on/1.78.1)
-   Maven: `org.bouncycastle:bcpkix-jdk18on:1.78.1`
+8. [bcpkix-jdk18on v1.82](https://mvnrepository.com/artifact/org.bouncycastle/bcpkix-jdk18on/1.82)
+   Maven: `org.bouncycastle:bcpkix-jdk18on:1.82`
    Licence: [MIT](https://opensource.org/licenses/MIT)
 
 The following libraries are required for running tests:
