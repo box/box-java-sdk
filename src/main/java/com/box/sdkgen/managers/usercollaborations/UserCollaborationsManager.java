@@ -98,7 +98,20 @@ public class UserCollaborationsManager {
 
   /**
    * Updates a collaboration. Can be used to change the owner of an item, or to accept collaboration
-   * invites.
+   * invites. In case of accepting collaboration invite, role is not required.
+   *
+   * @param collaborationId The ID of the collaboration. Example: "1234"
+   */
+  public Collaboration updateCollaborationById(String collaborationId) {
+    return updateCollaborationById(
+        collaborationId,
+        new UpdateCollaborationByIdRequestBody(),
+        new UpdateCollaborationByIdHeaders());
+  }
+
+  /**
+   * Updates a collaboration. Can be used to change the owner of an item, or to accept collaboration
+   * invites. In case of accepting collaboration invite, role is not required.
    *
    * @param collaborationId The ID of the collaboration. Example: "1234"
    * @param requestBody Request body of updateCollaborationById method
@@ -111,7 +124,20 @@ public class UserCollaborationsManager {
 
   /**
    * Updates a collaboration. Can be used to change the owner of an item, or to accept collaboration
-   * invites.
+   * invites. In case of accepting collaboration invite, role is not required.
+   *
+   * @param collaborationId The ID of the collaboration. Example: "1234"
+   * @param headers Headers of updateCollaborationById method
+   */
+  public Collaboration updateCollaborationById(
+      String collaborationId, UpdateCollaborationByIdHeaders headers) {
+    return updateCollaborationById(
+        collaborationId, new UpdateCollaborationByIdRequestBody(), headers);
+  }
+
+  /**
+   * Updates a collaboration. Can be used to change the owner of an item, or to accept collaboration
+   * invites. In case of accepting collaboration invite, role is not required.
    *
    * @param collaborationId The ID of the collaboration. Example: "1234"
    * @param requestBody Request body of updateCollaborationById method

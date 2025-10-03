@@ -41,7 +41,7 @@ Returns a collaboration object.
 
 Updates a collaboration.
 Can be used to change the owner of an item, or to
-accept collaboration invites.
+accept collaboration invites. In case of accepting collaboration invite, role is not required.
 
 This operation is performed by calling function `updateCollaborationById`.
 
@@ -50,7 +50,7 @@ See the endpoint docs at
 
 <!-- sample put_collaborations_id -->
 ```
-client.getUserCollaborations().updateCollaborationById(collaborationId, new UpdateCollaborationByIdRequestBody(UpdateCollaborationByIdRequestBodyRoleField.VIEWER))
+client.getUserCollaborations().updateCollaborationById(collaborationId, new UpdateCollaborationByIdRequestBody.Builder().role(UpdateCollaborationByIdRequestBodyRoleField.VIEWER).build())
 ```
 
 ### Arguments
