@@ -2,6 +2,19 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [10.1.0](https://github.com/box/box-java-sdk/compare/v10.0.0...v10.1.0) (2025-10-06)
+
+
+### Bug Fixes
+
+* Allow flexible key-value data in `AiExtractResponse.answer` and `Event.additionalDetails` (box/box-openapi[#556](https://github.com/box/box-java-sdk/issues/556)) ([#1470](https://github.com/box/box-java-sdk/issues/1470)) ([e215a5f](https://github.com/box/box-java-sdk/commit/e215a5f2502e694421a05d8da550d2b305c09460))
+* Make `role` parameter of update collaboration optional (box/box-openapi[#557](https://github.com/box/box-java-sdk/issues/557)) ([#1479](https://github.com/box/box-java-sdk/issues/1479)) ([6896386](https://github.com/box/box-java-sdk/commit/6896386c6086996399066b09b5afc998a5a95ca4))
+
+
+### New Features and Enhancements
+
+* Add `Javadoc` comments (box/box-codegen[#839](https://github.com/box/box-java-sdk/issues/839)) ([#1465](https://github.com/box/box-java-sdk/issues/1465)) ([c72407d](https://github.com/box/box-java-sdk/commit/c72407dc77cc67f3a178d607a2b1bd4e90e832a8))
+
 ## [10.0.0](https://github.com/box/box-java-sdk/compare/v4.16.3...v10.0.0) (2025-09-17)
 
 Introducing **`Box SDK v10`**, a major release designed to elevate your developer experience and streamline integration with Box Content Cloud. Currently available as a separate [`sdk-gen`](https://github.com/box/box-java-sdk/tree/sdk-gen) branch, `v10` will ultimately become the main branch.
