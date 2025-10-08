@@ -21,7 +21,7 @@ The Box Java SDK for interacting with the
 [Box Content API](https://developers.box.com/docs/).
 
 ## Latest Release
-Latest release can be found [here](https://github.com/box/box-java-sdk/tree/v4.16.3).
+Latest release can be found [here](https://github.com/box/box-java-sdk/tree/vnull).
 
 ## Upgrades
 You can read about how to migrate to the 4 version [here](doc/upgrades/3.x.x%20to%204.x.x.md).
