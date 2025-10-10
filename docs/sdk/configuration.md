@@ -327,3 +327,30 @@ public class BoxAPIConnectionWithTelemetry extends BoxAPIConnection {
 
 Please note that you should not modify either `httpClient` or `request` parameters in the createNewCall method.
 Altering these parameters can discard the BoxAPIConnection configuration and lead to unexpected behavior.
+
+# OkHttp Default Retry Behavior
+
+When using the Box Java SDK, HTTP requests are made through an underlying OkHttp client. By default, OkHttp enables automatic retries for certain types of connection failures (e.g. network errors) via the `retryOnConnectionFailure(true)` setting. While this can improve reliability for transient issues, this can cause issues during file uploads with `BoxFolder.uploadFile(InputStream, String)`, particularly when the provided `InputStream` is consumed during a failed request and reused in a retry, potentially resulting in a 0-byte file being uploaded.
+
+To leverage the Box SDK’s retry strategy and avoid issues with OkHttp’s default retries, you can disable OkHttp’s automatic retries by customizing the BoxAPIConnection.
+To disable OkHttp’s automatic retries, create a custom BoxAPIConnection subclass and override the `modifyHttpClientBuilder` method to set `retryOnConnectionFailure(false)`. This allows the Box SDK to handle retries instead of OkHttp.
+Here's an example implementation:
+```java
+import com.box.sdk.BoxAPIConnection;
+import com.box.sdk.BoxConfig;
+import okhttp3.OkHttpClient;
+
+public class CustomBoxAPIConnection extends BoxAPIConnection {
+
+    public CustomBoxAPIConnection(BoxConfig boxConfig) {
+        super(boxConfig);
+    }
+
+    @Override
+    protected OkHttpClient.Builder modifyHttpClientBuilder(OkHttpClient.Builder httpClientBuilder) {
+        httpClientBuilder.retryOnConnectionFailure(false); // Disable OkHttp retries
+        return httpClientBuilder;
+    }
+}
+
+```
