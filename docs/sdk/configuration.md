@@ -15,6 +15,7 @@
     - [Revoke URL](#revoke-url-deprecated)
 - [SSL configuration](#ssl-configuration)
 - [Instrumenation of OpenTelemetry](#instrumenation-of-opentelemetry)
+- [OkHttp Default Retry Behavior](#okhttp-default-retry-behavior)
 
 # Proxy configuration
 
