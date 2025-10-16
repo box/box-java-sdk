@@ -37,13 +37,16 @@ import okhttp3.Request;
 import okhttp3.Response;
 
 /**
- * Represents an authenticated connection to the Box API.
- *
- * <p>This class handles storing authentication information, automatic token refresh, and
- * rate-limiting. It can also be used to configure the Box API endpoint URL in order to hit a
- * different version of the API. Multiple instances of BoxAPIConnection may be created to support
- * multi-user login.
+ * @deprecated {@link BoxAPIConnection} class, and the entire the com.box.sdk package is deprecated,
+ *     it is recommended to use {@link com.box.sdkgen} package. Instead of this class use {@link
+ *     com.box.sdkgen.client.BoxClient}
+ *     <p>Represents an authenticated connection to the Box API.
+ *     <p>This class handles storing authentication information, automatic token refresh, and
+ *     rate-limiting. It can also be used to configure the Box API endpoint URL in order to hit a
+ *     different version of the API. Multiple instances of BoxAPIConnection may be created to
+ *     support multi-user login.
  */
+@Deprecated
 public class BoxAPIConnection {
 
   /**
@@ -136,22 +139,28 @@ public class BoxAPIConnection {
   private Authenticator authenticator;
 
   /**
-   * Constructs a new BoxAPIConnection that authenticates with a developer or access token.
-   *
+   * @deprecated {@link BoxAPIConnection} class, and the entire com.box.sdk package is deprecated,
+   *     it is recommended to use {@link com.box.sdkgen} package. Instead of this class use {@link
+   *     com.box.sdkgen.client.BoxClient}
+   *     <p>Constructs a new BoxAPIConnection that authenticates with a developer or access token.
    * @param accessToken a developer or access token to use for authenticating with the API.
    */
+  @Deprecated
   public BoxAPIConnection(String accessToken) {
     this(null, null, accessToken, null);
   }
 
   /**
-   * Constructs a new BoxAPIConnection with an access token that can be refreshed.
-   *
+   * @deprecated {@link BoxAPIConnection} class, and the entire com.box.sdk package is deprecated,
+   *     it is recommended to use {@link com.box.sdkgen} package. Instead of this class use {@link
+   *     com.box.sdkgen.client.BoxClient}
+   *     <p>Constructs a new BoxAPIConnection with an access token that can be refreshed.
    * @param clientID the client ID to use when refreshing the access token.
    * @param clientSecret the client secret to use when refreshing the access token.
    * @param accessToken an initial access token to use for authenticating with the API.
    * @param refreshToken an initial refresh token to use when refreshing the access token.
    */
+  @Deprecated
   public BoxAPIConnection(
       String clientID, String clientSecret, String accessToken, String refreshToken) {
     this.clientID = clientID;
@@ -171,38 +180,46 @@ public class BoxAPIConnection {
     this.userAgent = "Box Java SDK v" + SDK_VERSION + " (Java " + JAVA_VERSION + ")";
     this.listeners = new ArrayList<>();
     this.customHeaders = new HashMap<>();
-
     buildHttpClients();
   }
 
   /**
-   * Constructs a new BoxAPIConnection with an auth code that was obtained from the first half of
-   * OAuth.
-   *
+   * @deprecated {@link BoxAPIConnection} class, and the entire com.box.sdk package is deprecated,
+   *     it is recommended to use {@link com.box.sdkgen} package. Instead of this class use {@link
+   *     com.box.sdkgen.client.BoxClient}
+   *     <p>Constructs a new BoxAPIConnection with an auth code that was obtained from the first
+   *     half of OAuth.
    * @param clientID the client ID to use when exchanging the auth code for an access token.
    * @param clientSecret the client secret to use when exchanging the auth code for an access token.
    * @param authCode an auth code obtained from the first half of the OAuth process.
    */
+  @Deprecated
   public BoxAPIConnection(String clientID, String clientSecret, String authCode) {
     this(clientID, clientSecret, null, null);
     this.authenticate(authCode);
   }
 
   /**
-   * Constructs a new BoxAPIConnection.
-   *
+   * @deprecated {@link BoxAPIConnection} class, and the entire com.box.sdk package is deprecated,
+   *     it is recommended to use {@link com.box.sdkgen} package. Instead of this class use {@link
+   *     com.box.sdkgen.client.BoxClient}
+   *     <p>Constructs a new BoxAPIConnection.
    * @param clientID the client ID to use when exchanging the auth code for an access token.
    * @param clientSecret the client secret to use when exchanging the auth code for an access token.
    */
+  @Deprecated
   public BoxAPIConnection(String clientID, String clientSecret) {
     this(clientID, clientSecret, null, null);
   }
 
   /**
-   * Constructs a new BoxAPIConnection levaraging BoxConfig.
-   *
+   * @deprecated {@link BoxAPIConnection} class, and the entire com.box.sdk package is deprecated,
+   *     it is recommended to use {@link com.box.sdkgen} package. Instead of this class use {@link
+   *     com.box.sdkgen.client.BoxClient}
+   *     <p>Constructs a new BoxAPIConnection leveraging BoxConfig.
    * @param boxConfig BoxConfig file, which should have clientId and clientSecret
    */
+  @Deprecated
   public BoxAPIConnection(BoxConfig boxConfig) {
     this(boxConfig.getClientId(), boxConfig.getClientSecret(), null, null);
   }
