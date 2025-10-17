@@ -42,7 +42,7 @@ assignees: mwwoda, mhagmajer, antusus, arjankowski, lukaszsocha2, bartlomiejlesz
 Java SDK: <!-- Replace with the version of the Java SDK you're using. -->
 Java: <!-- Replace with the version of Java your application is running on. -->
 
-[sdk-docs]: ./doc
-[api-docs]: https://developer.box.com/docs
-[dev-forums]: https://community.box.com/t5/Platform-and-Development-Forum/bd-p/DeveloperForum
+[sdk-docs]: ./docs
+[api-docs]: https://developer.box.com/guides/
+[dev-forums]: https://community.box.com/box-platform-5
 [github-repo]: https://github.com/box/box-java-sdk/search?type=Issues
