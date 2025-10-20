@@ -292,18 +292,28 @@ that are NOT compatible with FIPS 140-2 validated cryptographic library (`org.bo
 There are two ways of ensuring that decryption operation is FIPS-compiant.
 
 1. You can provide a custom implementation of the `IPrivateKeyDecryptor` interface, 
-which performs the decryption operation using FIPS-certified library of your choice. The interface requires the
-implementation of just one method:
+which performs the decryption operation using FIPS-certified library of your choice. 
+`IPrivateKeyDecryptor` interface is availiable both in `com.box.sdk` and `com.box.sdkgen` packages.
+The interface requires the implementation of just one method:
 ```java
 PrivateKey decryptPrivateKey(String encryptedPrivateKey, String passphrase);
 ```
-After implementing the custom decryptor, you need to set your custom decryptor class in the Box Config. 
-Below is an example of setting up a `BoxDeveloperEditionAPIConnection` with a config file and the custom decryptor.  
+After implementing the custom decryptor, you need to set your custom decryptor class:
+
+- For `com.box.sdk` package, you can set the custom decryptor in the `BoxConfig` object 
+before creating the `BoxDeveloperEditionAPIConnection`.
 ```java
 Reader reader = new FileReader(JWT_CONFIG_PATH);
 BoxConfig boxConfig = BoxConfig.readFrom(reader);
 boxConfig.setPrivateKeyDecryptor(customDecryptor);
 BoxDeveloperEditionAPIConnection api = BoxDeveloperEditionAPIConnection.getAppEnterpriseConnection(boxConfig);
+```
+
+- For `com.box.sdkgen` package, you can set the custom decryptor in the `JWTConfig` object
+```java
+JWTConfig newConfig = JWTConfig.fromConfigFile(JWT_CONFIG_PATH, customDecryptor);
+BoxJWTAuth auth = new BoxJWTAuth(jwtConfig);
+BoxClient client = new BoxClient(auth);
 ```
 
 2. Alternative method is to override the Bouncy Castle libraries to the v.1.57 version, 

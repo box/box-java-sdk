@@ -43,6 +43,6 @@ Java SDK: <!-- Replace with the version of the Java SDK you're using. -->
 Java: <!-- Replace with the version of Java your application is running on. -->
 
 [sdk-docs]: ./docs
-[api-docs]: https://developer.box.com/guides/
+[api-docs]: https://developer.box.com/guides
 [dev-forums]: https://community.box.com/box-platform-5
 [github-repo]: https://github.com/box/box-java-sdk/search?type=Issues
