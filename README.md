@@ -47,10 +47,6 @@ The `com.box.sdkgen` package is available in two major supported versions: v5 an
 In v5 of the Box Java SDK, we are introducing a version that consolidates both the manually written package (`com.box.sdk`)
 and the new generated package (`com.box.sdkgen`). This allows developers to use both packages simultaneously within a single project.
 
-Version v5 of the Box Java SDK will be supported until 2027. During this period,
-the `com.box.sdk` package will be marked as deprecated and will receive only bug fixes and security patches.
-All new features and support for new Box APIs will be provided exclusively in the `com.box.sdkgen` package.
-
 The codebase for v5 of the Box Java SDK is currently available on the [combined-sdk](https://github.com/box/box-java-sdk/tree/combined-sdk) branch.
 Migration guide which would help with migration from `com.box.sdk` to `com.box.sdkgen` can be found [here](./migration-guides/from-com.box.sdk-to-com.box.sdkgen.md).
 
@@ -67,6 +63,11 @@ Version v10 is intended for:
 - New users of the Box Java SDK.
 - Developers already working with the generated Box Java SDK previously available under the [Box Java SDK Gen repository](https://github.com/box/box-java-sdk-gen).
 
+## Deprecation of `com.box.sdk`
+
+The `com.box.sdk` package will be marked as deprecated, will receive only bug fixes and security patches, and reach end of support in 2027.
+All new features and support for new Box APIs will be provided exclusively in the `com.box.sdkgen` package.
+
 ## Which Version Should I Use?
 
 | Scenario                                                                                                                                                                                   | Recommended Version                                                    | Example gradle dependency     |
@@ -77,6 +78,7 @@ Version v10 is intended for:
 | App using v4 of [box-java-sdk](https://central.sonatype.com/artifact/com.box/box-java-sdk) artifact                                                                                        | Upgrade to [v5](https://github.com/box/box-java-sdk/tree/combined-sdk) | `com.box:box-java-sdk:5.0.0`  |
 
 For full guidance on SDK versioning, see the [Box SDK Versioning Guide](https://developer.box.com/guides/tooling/sdks/sdk-versioning/).
+
 
 # Installing
 
@@ -221,7 +223,7 @@ We highly recommend upgrading to the latest SDK major release at the earliest co
 | Version | Supported Environments                                  | State     | First Release | EOL/Terminated |
 |---------|---------------------------------------------------------|-----------|---------------|----------------|
 | 10      | Java 8 and up                                           | Supported | 17 Sep 2025   | TBD            |
-| 5       | Java 8 and up                                           | Supported | 23 Oct 2025   | 2027           |
+| 5       | Java 8 and up                                           | Supported | 23 Oct 2025   | 2027 or v6 is released          |
 | 4       | Java 8 and up                                           | Supported | 17 Jan 2023   | 23 Oct 2025    |
 | 3       | Java 8 and up                                           | EOL       | 17 Jan 2022   | 17 Jan 2023    |
 | 2       |                                                         | EOL       | 07 Jan 2016   | 17 Jan 2022    |
