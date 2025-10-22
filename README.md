@@ -80,7 +80,6 @@ All new features and support for new Box APIs will be provided exclusively in th
 
 For full guidance on SDK versioning, see the [Box SDK Versioning Guide](https://developer.box.com/guides/tooling/sdks/sdk-versioning/).
 
-
 # Installing
 
 The SDK is available on [Maven Central Repository](https://central.sonatype.com/artifact/com.box/box-java-sdk).
@@ -221,14 +220,14 @@ We highly recommend upgrading to the latest SDK major release at the earliest co
 
 ### Version schedule
 
-| Version | Supported Environments                                  | State     | First Release | EOL/Terminated         |
-|---------|---------------------------------------------------------|-----------|---------------|------------------------|
-| 10      | Java 8 and up                                           | Supported | 17 Sep 2025   | TBD                    |
-| 5       | Java 8 and up                                           | Supported | 23 Oct 2025   | 2027 or v6 is released |
-| 4       | Java 8 and up                                           | Supported | 17 Jan 2023   | 23 Oct 2025            |
-| 3       | Java 8 and up                                           | EOL       | 17 Jan 2022   | 17 Jan 2023            |
-| 2       |                                                         | EOL       | 07 Jan 2016   | 17 Jan 2022            |
-| 1       |                                                         | EOL       | 15 Apr 2015   | 07 Jan 2016            |
+| Version | Supported Environments | State     | First Release | EOL/Terminated         |
+|---------|------------------------|-----------|---------------|------------------------|
+| 10      | Java 8 and up          | Supported | 17 Sep 2025   | TBD                    |
+| 5       | Java 8 and up          | Supported | 23 Oct 2025   | 2027 or v6 is released |
+| 4       | Java 8 and up          | Supported | 17 Jan 2023   | 23 Oct 2025            |
+| 3       | Java 8 and up          | EOL       | 17 Jan 2022   | 17 Jan 2023            |
+| 2       |                        | EOL       | 07 Jan 2016   | 17 Jan 2022            |
+| 1       |                        | EOL       | 15 Apr 2015   | 07 Jan 2016            |
 
 # Contributing
 
