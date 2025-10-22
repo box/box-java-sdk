@@ -20,6 +20,7 @@ import com.box.sdkgen.managers.docgen.DocgenManager;
 import com.box.sdkgen.managers.docgentemplate.DocgenTemplateManager;
 import com.box.sdkgen.managers.downloads.DownloadsManager;
 import com.box.sdkgen.managers.emailaliases.EmailAliasesManager;
+import com.box.sdkgen.managers.enterpriseconfigurations.EnterpriseConfigurationsManager;
 import com.box.sdkgen.managers.events.EventsManager;
 import com.box.sdkgen.managers.externalusers.ExternalUsersManager;
 import com.box.sdkgen.managers.fileclassifications.FileClassificationsManager;
@@ -247,6 +248,8 @@ public class BoxClient {
   public final DocgenTemplateManager docgenTemplate;
 
   public final DocgenManager docgen;
+
+  public final EnterpriseConfigurationsManager enterpriseConfigurations;
 
   public final HubsManager hubs;
 
@@ -572,6 +575,11 @@ public class BoxClient {
             .build();
     this.docgen =
         new DocgenManager.Builder().auth(this.auth).networkSession(this.networkSession).build();
+    this.enterpriseConfigurations =
+        new EnterpriseConfigurationsManager.Builder()
+            .auth(this.auth)
+            .networkSession(this.networkSession)
+            .build();
     this.hubs =
         new HubsManager.Builder().auth(this.auth).networkSession(this.networkSession).build();
     this.hubCollaborations =
@@ -907,6 +915,11 @@ public class BoxClient {
             .build();
     this.docgen =
         new DocgenManager.Builder().auth(this.auth).networkSession(this.networkSession).build();
+    this.enterpriseConfigurations =
+        new EnterpriseConfigurationsManager.Builder()
+            .auth(this.auth)
+            .networkSession(this.networkSession)
+            .build();
     this.hubs =
         new HubsManager.Builder().auth(this.auth).networkSession(this.networkSession).build();
     this.hubCollaborations =
@@ -1334,6 +1347,10 @@ public class BoxClient {
 
   public DocgenManager getDocgen() {
     return docgen;
+  }
+
+  public EnterpriseConfigurationsManager getEnterpriseConfigurations() {
+    return enterpriseConfigurations;
   }
 
   public HubsManager getHubs() {
