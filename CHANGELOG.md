@@ -4,18 +4,29 @@ All notable changes to this project will be documented in this file. See [standa
 
 ## [5.0.0](https://github.com/box/box-java-sdk/compare/v4.16.3...v5.0.0) (2025-10-23)
 
+Introducing a new major version of Box Java SDK `v5` that includes two packages — the manually maintained `com.box.sdk` package and the generated `com.box.sdkgen` package. The coexisting packages provide easier access to the latest Box API features and support gradual migration to the standalone generated namespace.
 
-### New Features and Enhancements:
+There are no breaking changes between `v4` and `v5` of Box Java SDK. For more information about migrating to v5 visit [v4 to v5 migration guide](https://github.com/box/box-java-sdk/blob/combined-sdk/migration-guides/from-v4-to-v5.md)
 
-* Add `Javadoc` comments (box/box-codegen[#839](https://github.com/box/box-java-sdk/issues/839)) ([#1466](https://github.com/box/box-java-sdk/issues/1466)) ([7061aea](https://github.com/box/box-java-sdk/commit/7061aea52287e57dece172012c2c4b15bfb6e651))
-* Add generated SDK (box/box-codegen[#838](https://github.com/box/box-java-sdk/issues/838)) ([#1438](https://github.com/box/box-java-sdk/issues/1438)) ([c7d50d5](https://github.com/box/box-java-sdk/commit/c7d50d580eed1040cd34100655264ec175b5b0e3))
+### What's New in `v5`
 
+With this SDK version, alongside the existing `com.box.sdk` package, we’re introducing a new `com.box.sdkgen` package, which gives you access to:
 
-### Bug Fixes:
+- **Full API Support** — Complete coverage of the Box API ecosystem, giving you access to all the latest features and functionalities to build feature-rich applications.  
 
-* Allow flexible key-value data in `AiExtractResponse.answer` and `Event.additionalDetails` (box/box-openapi[#556](https://github.com/box/box-java-sdk/issues/556)) ([#1472](https://github.com/box/box-java-sdk/issues/1472)) ([0f0671f](https://github.com/box/box-java-sdk/commit/0f0671f260b9c21b9ae77c31eb5619156d16d79a))
-* **boxsdkgen:** Use `FolderFull` in `Item` (box/box-codegen[#860](https://github.com/box/box-java-sdk/issues/860)) ([#1501](https://github.com/box/box-java-sdk/issues/1501)) ([5175f46](https://github.com/box/box-java-sdk/commit/5175f4617d79635957c13ccfe5bdec922a46f4ae))
-* Make `role` parameter of update collaboration optional (box/box-openapi[#557](https://github.com/box/box-java-sdk/issues/557)) ([#1478](https://github.com/box/box-java-sdk/issues/1478)) ([fe16ace](https://github.com/box/box-java-sdk/commit/fe16acea0805a193a8683b5d8c6b534edf356828))
+- **Rapid API Updates** — Our new auto-generation approach enables Box API additions within days, ensuring you can leverage the most up-to-date features without delay.  
+
+- **Embedded Documentation** — All objects and parameters are documented directly in the SDK source code, keeping essential information in one place.  
+
+- **Enhanced Convenience Methods** — New methods for authentication, chunk uploads, automatic retries, retry strategy, and more.
+
+### Important Notes
+
+This version allows you to gradually migrate your codebase to the `com.box.sdkgen` package. The key differences between the packages are documented in the [package migration guide](https://github.com/box/box-java-sdk/blob/combined-sdk/migration-guides/from-com-box-sdk-to-com-box-sdkgen.md).
+
+Ultimately, we recommend to migrate to `v10` which includes only the generated `com.box.sdkgen` package. To migrate from `v5` to `v10` follow this [migration guide](https://github.com/box/box-java-sdk/blob/combined-sdk/migration-guides/from-v5-to-v10.md).
+
+For more information, see the [SDK versioning strategy document](https://developer.box.com/guides/tooling/sdks/sdk-versioning/). Follow developer changelog for future updates.
 
 ### [4.16.4](https://github.com/box/box-java-sdk/compare/v4.16.3...v4.16.4) (2025-10-03)
 
