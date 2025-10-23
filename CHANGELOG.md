@@ -2,6 +2,21 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [5.0.0](https://github.com/box/box-java-sdk/compare/v4.16.3...v5.0.0) (2025-10-23)
+
+
+### New Features and Enhancements:
+
+* Add `Javadoc` comments (box/box-codegen[#839](https://github.com/box/box-java-sdk/issues/839)) ([#1466](https://github.com/box/box-java-sdk/issues/1466)) ([7061aea](https://github.com/box/box-java-sdk/commit/7061aea52287e57dece172012c2c4b15bfb6e651))
+* Add generated SDK (box/box-codegen[#838](https://github.com/box/box-java-sdk/issues/838)) ([#1438](https://github.com/box/box-java-sdk/issues/1438)) ([c7d50d5](https://github.com/box/box-java-sdk/commit/c7d50d580eed1040cd34100655264ec175b5b0e3))
+
+
+### Bug Fixes:
+
+* Allow flexible key-value data in `AiExtractResponse.answer` and `Event.additionalDetails` (box/box-openapi[#556](https://github.com/box/box-java-sdk/issues/556)) ([#1472](https://github.com/box/box-java-sdk/issues/1472)) ([0f0671f](https://github.com/box/box-java-sdk/commit/0f0671f260b9c21b9ae77c31eb5619156d16d79a))
+* **boxsdkgen:** Use `FolderFull` in `Item` (box/box-codegen[#860](https://github.com/box/box-java-sdk/issues/860)) ([#1501](https://github.com/box/box-java-sdk/issues/1501)) ([5175f46](https://github.com/box/box-java-sdk/commit/5175f4617d79635957c13ccfe5bdec922a46f4ae))
+* Make `role` parameter of update collaboration optional (box/box-openapi[#557](https://github.com/box/box-java-sdk/issues/557)) ([#1478](https://github.com/box/box-java-sdk/issues/1478)) ([fe16ace](https://github.com/box/box-java-sdk/commit/fe16acea0805a193a8683b5d8c6b534edf356828))
+
 ### [4.16.4](https://github.com/box/box-java-sdk/compare/v4.16.3...v4.16.4) (2025-10-03)
 
 
