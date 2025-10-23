@@ -8,7 +8,7 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import java.util.Objects;
 
-/** A mini representation of a enterprise, used when nested within another resource. */
+/** A representation of a enterprise, used when nested within another resource. */
 @JsonFilter("nullablePropertyFilter")
 public class EnterpriseBase extends SerializableObject {
 
