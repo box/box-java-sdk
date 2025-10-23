@@ -2,295 +2,212 @@
   <img src="https://github.com/box/sdks/blob/master/images/box-dev-logo.png" alt= “box-dev-logo” width="30%" height="50%">
 </p>
 
-# Versioning Strategy
+# Box Java SDK v10
 
-Starting with v10 of the SDK, we’ve introduced a new generated codebase designed to enhance your experience with the Box API.  
-It is currently available on the [sdk-gen](https://github.com/box/box-java-sdk/tree/sdk-gen) branch and uses the new `com.box.sdkgen` package instead of the old `com.box.sdk`.
+[![Project Status](http://opensource.box.com/badges/active.svg)](http://opensource.box.com/badges)
+![build](https://github.com/box/box-java-sdk/actions/workflows/build.yml/badge.svg?branch=sdk-gen)
+![Maven Central Version](https://img.shields.io/maven-central/v/com.box/box-java-sdk)
+![Platform](https://img.shields.io/badge/java-%3E%3D8-blue)
+[![Coverage](https://coveralls.io/repos/github/box/box-java-sdk/badge.svg?branch=sdk-gen)](https://coveralls.io/github/box/box-java-sdk-gen?branch=sdk-gen)
 
-v10 is targeted at new users of Box Java SDK and users already working with the generated Box Java SDK previously available under the [Box Java SDK Gen repository](https://github.com/box/box-java-sdk-gen).
+<!-- START doctoc generated TOC please keep comment here to allow auto update -->
+<!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
 
-For users of v4 of the Box Java SDK, no action is required at this time — we’ll be providing an upcoming v5 release that will include both `com.box.sdk` and `com.box.sdkgen` packages for a smooth migration path. To avoid unintentional upgrades, pin your version to `com.box:box-java-sdk:4.16.4`.
+- [Introduction](#introduction)
+- [Supported versions](#supported-versions)
+    - [Version v5](#version-v5)
+    - [Version v10](#version-v10)
+    - [Which Version Should I Use?](#which-version-should-i-use)
+- [Installing](#installing)
+- [Getting Started](#getting-started)
+- [Authentication](#authentication)
+- [Documentation](#documentation)
+- [Migration guides](#migration-guides)
+- [Versioning](#versioning)
+    - [Version schedule](#version-schedule)
+- [Contributing](#contributing)
+- [3rd Party Libraries & Licenses](#3rd-party-libraries--licenses)
+- [FIPS 140-2 Compliance](#fips-140-2-compliance)
+- [Questions, Bugs, and Feature Requests?](#questions-bugs-and-feature-requests)
+- [Copyright and License](#copyright-and-license)
 
-For full guidance on SDK versioning, see the [Box SDK Versioning Guide](https://developer.box.com/guides/tooling/sdks/sdk-versioning/).
+<!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
----
+# Introduction
+
+We are excited to introduce the v10 major release of the Box Java SDK,
+designed to elevate the developer experience and streamline your integration with the Box Content Cloud.
+
+With this SDK version, we provide the `com.box.sdkgen` package, which gives you access to:
+
+1. Full API Support: The new generation of Box SDKs empowers developers with complete coverage of the Box API ecosystem. You can now access all the latest features and functionalities offered by Box, allowing you to build even more sophisticated and feature-rich applications.
+2. Rapid API Updates: Say goodbye to waiting for new Box APIs to be incorporated into the SDK. With our new auto-generation development approach, we can now add new Box APIs to the SDK at a much faster pace (in a matter of days). This means you can leverage the most up-to-date features in your applications without delay.
+3. Embedded Documentation: We understand that easy access to information is crucial for developers. With our new approach, we have included comprehensive documentation for all objects and parameters directly in the source code of the SDK. This means you no longer need to look up this information on the developer portal, saving you time and streamlining your development process.
+4. Enhanced Convenience Methods: Our commitment to enhancing your development experience continues with the introduction of convenience methods. These methods cover various aspects such as chunk uploads, classification, and much more.
+5. Seamless Start: The new SDKs integrate essential functionalities like authentication, automatic retries with exponential backoff, exception handling, request cancellation, and type checking, enabling you to focus solely on your application's business logic.
+
+Embrace the new generation of Box SDKs and unlock the full potential of the Box Content Cloud.
+
+# Supported versions
+
+To enhance developer experience, we have introduced the new generated codebase through the `com.box.sdkgen` package.
+The `com.box.sdkgen` package is available in two major supported versions: v5 and v10.
+
+## Version v5
+
+In v5 of the Box Java SDK, we are introducing a version that consolidates both the manually written package (`com.box.sdk`)
+and the new generated package (`com.box.sdkgen`). This allows developers to use both packages simultaneously within a single project.
+
+The codebase for v5 of the Box Java SDK is currently available on the [combined-sdk](https://github.com/box/box-java-sdk/tree/combined-sdk) branch.
+Migration guide which would help with migration from `com.box.sdk` to `com.box.sdkgen` can be found [here](https://github.com/box/box-java-sdk/tree/sdk-gen/migration-guides/from-com.box.sdk-to-com.box.sdkgen.md).
+
+Version v5 is intended for:
+
+- Existing developers of the Box Java SDK v4 who want to access new API features while keeping their current codebase largely unchanged.
+- Existing developers who are in the process of migrating to `com.box.sdkgen`, but do not want to move all their code to the new package immediately.
+
+## Version v10
+
+Starting with v10, the SDK is built entirely on the generated `com.box.sdkgen` package, which fully and exclusively replaces the old `com.box.sdk` package.
+The codebase for v10 of the Box Java SDK is currently available on the [sdk-gen](https://github.com/box/box-java-sdk/tree/sdk-gen) branch.
+
+Version v10 is intended for:
+
+- New users of the Box Java SDK.
+- Developers already working with the generated Box Java SDK previously available under the [Box Java SDK Gen repository](https://github.com/box/box-java-sdk-gen).
 
 ## Which Version Should I Use?
 
-| Scenario                                                                                                    | Recommended Version                                                | Example Dependency                 |
-|-------------------------------------------------------------------------------------------------------------|--------------------------------------------------------------------|-----------------------------------|
-| Creating a new application                                                                                  | Use [v10](https://github.com/box/box-java-sdk/tree/sdk-gen)        | `com.box:box-sdkgen:10.0.0`       |
-| Existing app using [box-java-sdk-gen](https://mvnrepository.com/artifact/com.box/box-java-sdk-gen) artifact | Upgrade to [v10](https://github.com/box/box-java-sdk/tree/sdk-gen) | `com.box:box-sdkgen:10.0.0`       |
-| Existing app using [box-java-sdk](https://mvnrepository.com/artifact/com.box/box-java-sdk) and planning to use new features | Wait for v5 to start migration process                             | TBD                               |
-| Existing app using [box-java-sdk](https://mvnrepository.com/artifact/com.box/box-java-sdk) and not planning changes           | Stay on your current version                                       | `com.box:box-java-sdk:4.16.4`     |
+| Scenario                                                                                                                                                                                   | Recommended Version                                                    | Example gradle dependency     |
+| ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ---------------------------------------------------------------------- | ----------------------------- |
+| Creating a new application                                                                                                                                                                 | Use [v10](https://github.com/box/box-java-sdk/tree/sdk-gen)            | `com.box:box-java-sdk:10.0.0` |
+| App using [box-java-sdk-gen](https://central.sonatype.com/artifact/com.box/box-java-sdk-gen) artifact                                                                                      | Migrate to [v10](https://github.com/box/box-java-sdk/tree/sdk-gen)     | `com.box:box-java-sdk:10.0.0` |
+| App using both [box-java-sdk-gen](https://central.sonatype.com/artifact/com.box/box-java-sdk-gen) and [box-java-sdk](https://central.sonatype.com/artifact/com.box/box-java-sdk) artifacts | Upgrade to [v5](https://github.com/box/box-java-sdk/tree/combined-sdk) | `com.box:box-java-sdk:5.0.0`  |
+| App using v4 of [box-java-sdk](https://central.sonatype.com/artifact/com.box/box-java-sdk) artifact                                                                                        | Upgrade to [v5](https://github.com/box/box-java-sdk/tree/combined-sdk) | `com.box:box-java-sdk:5.0.0`  |
 
-# Box Java SDK
+For full guidance on SDK versioning, see the [Box SDK Versioning Guide](https://developer.box.com/guides/tooling/sdks/sdk-versioning/).
 
-[![Project Status](http://opensource.box.com/badges/active.svg)](http://opensource.box.com/badges)
-![Platform](https://img.shields.io/badge/java-%3E%3D8-blue)
-[![License](https://img.shields.io/badge/license-Apache2-blue)](https://raw.githubusercontent.com/box/box-java-sdk/main/LICENSE)
-[![Build main](https://github.com/box/box-java-sdk/actions/workflows/build-main.yml/badge.svg)](https://github.com/box/box-java-sdk/actions/workflows/build-main.yml)
-[![Coverage](https://coveralls.io/repos/github/box/box-java-sdk/badge.svg?branch=main)](https://coveralls.io/github/box/box-java-sdk?branch=main)
+# Installing
 
-The Box Java SDK for interacting with the
-[Box Content API](https://developers.box.com/docs/).
+The SDK is available on [Maven Central Repository](https://mvnrepository.com/artifact/com.box/box-java-sdk). To include the SDK in your project, add the following dependency to your `pom.xml` file:
 
-## Latest Release
-Latest release can be found [here](https://github.com/box/box-java-sdk/tree/v4.16.4).
+```xml
+<dependency>
+    <groupId>com.box</groupId>
+    <artifactId>box-java-sdk</artifactId>
+    <version>VERSION</version>
+</dependency>
+```
 
-## Upgrades
-You can read about how to migrate to the 4 version [here](doc/upgrades/3.x.x%20to%204.x.x.md).
+To include the SDK in your project using Gradle, add the following dependency to your `build.gradle` file:
 
-## Versions
-We use a modified version of [Semantic Versioning](https://semver.org/) for all changes. See [version strategy](VERSIONS.md) for details which is effective from 30 July 2022.
+```gradle
+implementation 'com.box:box-java-sdk:VERSION'
+```
 
-### Supported Version
+Where `VERSION` is the version of the SDK you want to use. The next generation of the SDK starts with version `10.0.0`.
+You can find the latest version in the [Maven Central Repository](https://mvnrepository.com/artifact/com.box/box-java-sdk).
 
-Currently, we support the v10 version and v4 version of the SDK. New features, functionality, bug fixes, and security updates will only be added to these versions.
+# Getting Started
 
-A current release is on the leading edge of our SDK development, and is intended for customers who are in active development and want the latest and greatest features.  Instead of stating a release date for a new feature, we set a fixed minor or patch release cadence of maximum 2-3 months (while we may release more often). At the same time, there is no schedule for major or breaking release. Instead, we will communicate one quarter in advance the upcoming breaking change to allow customers to plan for the upgrade. We always recommend that all users run the latest available minor release for whatever major version is in use. We highly recommend upgrading to the latest SDK major release at the earliest convenient time and before the EOL date.
+To get started with the SDK, get a Developer Token from the Configuration page of your app in the [Box Developer
+Console](https://app.box.com/developers/console). You can use this token to make test calls for your own Box account.
 
-### Version schedule
+The SDK provides an `BoxDeveloperTokenAuth` class, which allows you to authenticate using your Developer Token.
+Use instance of `BoxDeveloperTokenAuth` to initialize `BoxClient` object.
+Using `BoxClient` object you can access managers, which allow you to perform some operations on your Box account.
 
-| Version | Supported Environments                                  | State     | First Release | EOL/Terminated |
-|---------|---------------------------------------------------------|-----------|---------------|----------------|
-| 10      | Java 8 and up                                           | Supported | 17 Sep 2025   | TBD            |
-| 5       | Java 8 and up                                           | Supported | Q4 2025       | TBD            |
-| 4       | Java 8 and up                                           | Supported | 17 Jan 2023   | TBD            |
-| 3       | Java 8 and up                                           | EOL       | 17 Jan 2022   | 17 Jan 2023    |
-| 2       |                                                         | EOL       | 07 Jan 2016   | 17 Jan 2022    |
-| 1       |                                                         | EOL       | 15 Apr 2015   | 07 Jan 2016    |
+The example below demonstrates how to authenticate with Developer Token and print names of all items inside a root folder.
 
+```java
+BoxDeveloperTokenAuth auth = new BoxDeveloperTokenAuth("DEVELOPER_TOKEN");
+BoxClient client = new BoxClient(auth);
+client.folders.getFolderItems("0").getEntries().forEach(item -> {
+   System.out.println(item.toString());
+});
+```
 
+# Authentication
 
-## Getting Started
-Getting Started Docs: https://developer.box.com/guides/tooling/sdks/java/
-API Reference: https://developer.box.com/reference/
+Box Java SDK v10 supports multiple authentication methods including Developer Token, OAuth 2.0,
+Client Credentials Grant, and JSON Web Token (JWT).
 
-## JVM
+You can find detailed instructions and example code for each authentication method in
+[Authentication](https://github.com/box/box-java-sdk/tree/sdk-gen/docs/Authentication.md) document.
 
-The SDK can be obtained by adding it as a [maven dependency](http://opensource.box.com/box-java-sdk/),
-cloning the source into your project, or by downloading one of the precompiled JARs from the
-[releases page on GitHub](https://github.com/box/box-java-sdk/releases).
+# Documentation
 
-If you are developing application for Android visit our [Android guide](doc/android.md)
+Browse the [docs](https://github.com/box/box-java-sdk/tree/sdk-gen/docs/README.md) or see [API Reference](https://developer.box.com/reference/) for more information.
 
-**IF YOU USE THE JAR, you'll also need to include several dependencies:**
+# Migration guides
 
-1. [minimal-json v0.9.5](https://github.com/ralfstx/minimal-json)
-   Maven: `com.eclipsesource.minimal-json:minimal-json:0.9.5`
-2. [jose4j v0.9.4](https://bitbucket.org/b_c/jose4j/wiki/Home)
-   Maven: `org.bitbucket.b_c:jose4j:0.9.4`
-3. [bouncycastle bcprov-jdk18on v1.82](https://mvnrepository.com/artifact/org.bouncycastle/bcprov-jdk18on/1.82)
-   Maven: `org.bouncycastle:bcprov-jdk18on:1.82`
-4. [bouncycastle bcpkix-jdk18on v1.82](https://mvnrepository.com/artifact/org.bouncycastle/bcpkix-jdk18on/1.82)
-   Maven: `org.bouncycastle:bcpkix-jdk18on:1.82`
-5. [Java Cryptography Extension (JCE) Unlimited Strength Jurisdiction Policy Files 7](http://www.oracle.com/technetwork/java/javase/downloads/jce-7-download-432124.html)
-   If you don't install this, you'll get an exception about key length or exception about parsing PKCS private key for Box Developer Edition. This is not a Box thing, this is a U.S. Government requirement concerning strong encryption.
-   The listed jar is for Oracle JRE. There might be other similar JARs for different JRE versions like the one below for IBM JDK
-   [Java Cryptography Extension for IBM JDK](https://www14.software.ibm.com/webapp/iwm/web/preLogin.do?source=jcesdk)
-6. [okhttp v4.12.0](https://mvnrepository.com/artifact/com.squareup.okhttp3/okhttp/4.12.0)
+Migration guides which help you to migrate to supported major SDK versions can be found [here](https://github.com/box/box-java-sdk/tree/sdk-gen/migration-guides).
+
+# Versioning
+
+We use a modified version of [Semantic Versioning](https://semver.org/) for all changes. See [version strategy](https://github.com/box/box-java-sdk/tree/sdk-gen/VERSIONS.md) for details which is effective from 30 July 2022.
+
+A current release is on the leading edge of our SDK development, and is intended for customers who are in active development and want the latest and greatest features.  
+Instead of stating a release date for a new feature, we set a fixed minor or patch release cadence of maximum 2-3 months (while we may release more often).
+At the same time, there is no schedule for major or breaking release. Instead, we will communicate one quarter in advance the upcoming breaking change to allow customers to plan for the upgrade.
+
+We always recommend that all users run the latest available minor release for whatever major version is in use.
+We highly recommend upgrading to the latest SDK major release at the earliest convenient time and before the EOL date.
+
+## Version schedule
+
+| Version | Supported Environments | State     | First Release | EOL/Terminated         |
+| ------- | ---------------------- | --------- | ------------- | ---------------------- |
+| 10      | Java 8 and up          | Supported | 17 Sep 2025   | TBD                    |
+| 5       | Java 8 and up          | Supported | 23 Oct 2025   | 2027 or v6 is released |
+| 4       | Java 8 and up          | EOL       | 17 Jan 2023   | 23 Oct 2025            |
+| 3       | Java 8 and up          | EOL       | 17 Jan 2022   | 17 Jan 2023            |
+| 2       |                        | EOL       | 07 Jan 2016   | 17 Jan 2022            |
+| 1       |                        | EOL       | 15 Apr 2015   | 07 Jan 2016            |
+
+# Contributing
+
+See [CONTRIBUTING.md](https://github.com/box/box-java-sdk/tree/sdk-gen/CONTRIBUTING.md).
+
+# 3rd Party Libraries & Licenses
+
+The Java SDK uses third-party libraries that are required for usage. Their licenses are listed below:
+
+1. [jackson-annotations v2.17.2](https://mvnrepository.com/artifact/com.fasterxml.jackson.core/jackson-annotations/2.17.2)
+   Maven: `com.fasterxml.jackson.core:jackson-annotations:2.17.2`
+   Licence: [Apache 2.0](https://www.apache.org/licenses/LICENSE-2.0)
+2. [jackson-core v2.17.2](https://mvnrepository.com/artifact/com.fasterxml.jackson.core/jackson-core/2.17.2)
+   Maven: `com.fasterxml.jackson.core:jackson-core:2.17.2`
+   Licence: [Apache 2.0](https://www.apache.org/licenses/LICENSE-2.0)
+3. [jackson-databind v2.17.2](https://mvnrepository.com/artifact/com.fasterxml.jackson.core/jackson-databind/2.17.2)
+   Maven: `com.fasterxml.jackson.core:jackson-databind:2.17.2`
+   Licence: [Apache 2.0](https://www.apache.org/licenses/LICENSE-2.0)
+4. [okhttp v4.12.0](https://mvnrepository.com/artifact/com.squareup.okhttp3/okhttp/4.12.0)
    Maven: `com.squareup.okhttp3:okhttp:4.12.0`
-7. [okio-jvm v3.2.0](https://mvnrepository.com/artifact/com.squareup.okio/okio-jvm/3.2.0)
-   Maven: `com.squareup.okio:okio-jvm:3.2.0`
-8. [kotlin-stdlib v1.6.20](https://mvnrepository.com/artifact/org.jetbrains.kotlin/kotlin-stdlib/1.6.20) 
-   Maven: `org.jetbrains.kotlin:kotlin-stdlib:1.6.20`
-9. [kotlin-stdlib-common v1.6.20](https://mvnrepository.com/artifact/org.jetbrains.kotlin/kotlin-stdlib-common/1.6.20)
-   Maven: `org.jetbrains.kotlin:kotlin-stdlib-common:1.6.20`
+   Licence: [Apache 2.0](https://www.apache.org/licenses/LICENSE-2.0)
+5. [okio v3.5.0](https://mvnrepository.com/artifact/com.squareup.okio/okio/3.5.0)
+   Maven: `com.squareup.okio:okio:3.5.0`
+   Licence: [Apache 2.0](https://www.apache.org/licenses/LICENSE-2.0)
+6. [jose4j v0.9.6](https://mvnrepository.com/artifact/org.bitbucket.b_c/jose4j/0.9.6)
+   Maven: `org.bitbucket.b_c:jose4j:0.9.6`
+   Licence: [Apache 2.0](https://www.apache.org/licenses/LICENSE-2.0)
+7. [bcprov-jdk18on v1.82](https://mvnrepository.com/artifact/org.bouncycastle/bcprov-jdk18on/1.82)
+   Maven: `org.bouncycastle:bcprov-jdk18on:1.82`
+   Licence: [MIT](https://opensource.org/licenses/MIT)
+8. [bcpkix-jdk18on v1.82](https://mvnrepository.com/artifact/org.bouncycastle/bcpkix-jdk18on/1.82)
+   Maven: `org.bouncycastle:bcpkix-jdk18on:1.82`
+   Licence: [MIT](https://opensource.org/licenses/MIT)
 
-An app has to be authorized by the admin of the enterprise before these tests. It's always good to begin with the
-[Getting Started Section](https://developer.box.com/docs/setting-up-a-jwt-app) at Box's developer website.
+The following libraries are required for running tests:
 
-## Android
-If you are developing application for Android visit our [Android guide](doc/android.md).
+1. [junit-jupiter-api v5.10.0](https://mvnrepository.com/artifact/org.junit.jupiter/junit-jupiter-api/5.10.0)
+   Maven: `org.junit.jupiter:junit-jupiter-api:5.10.0`
+   Licence: [EPL 2.0](https://www.eclipse.org/legal/epl-2.0/)
+2. [junit-jupiter-engine v5.10.0](https://mvnrepository.com/artifact/org.junit.jupiter/junit-jupiter-engine/5.10.0)
+   Maven: `org.junit.jupiter:junit-jupiter-engine:5.10.0`
+   Licence: [EPL 2.0](https://www.eclipse.org/legal/epl-2.0/)
 
-## Box Java SDK and other frameworks
-Box Java SDK utilizes the OkHttp client as its underlying component. This client is widely adopted by various 
-frameworks, which can occasionally result in issues. We recommend considering library upgrades or excluding 
-OkHttp from those frameworks or the software development kit (SDK) to determine if that resolves the problems. 
-Typically, it is advisable to search for any reports or instances where others encountered similar 
-issues when using the specific framework alongside an external OkHttp client.
-
-## Quick Test
-
-**Following things work only if the app has been configured and authorized as mentioned [here](https://developer.box.com/docs/setting-up-a-jwt-app)**
-
-Here is a simple example of how to authenticate with the API using a developer
-token and then print the ID and name of each item in your root folder.
-
-```java
-BoxAPIConnection api = new BoxAPIConnection("developer-token");
-BoxFolder rootFolder = BoxFolder.getRootFolder(api);
-for (BoxItem.Info itemInfo : rootFolder) {
-    System.out.format("[%s] %s\n", itemInfo.getID(), itemInfo.getName());
-}
-```
-
-For more details on how to get started, check out the [overview guide](doc/overview.md).
-It has a short explanation of how the SDK works and how you can get started using it.
-
-### Sample Projects
-
-Three sample projects can be found in `src/example`.
-
-#### Main
-
-This project will output your name and a list of the files and folders in your root directory.
-
-To run the project, first provide a developer token in
-`src/example/java/com/box/sdk/example/Main.java`. You can obtain a developer
-token from your application's [developer console](https://app.box.com/developers/services).
-
-```java
-public final class Main {
-    private static final String DEVELOPER_TOKEN = "<YOUR_DEVELOPER_TOKEN>";
-
-    // ...
-}
-```
-
-Then just invoke `gradle runExample` to run the Main example!
-
-### Other projects
-
-Below projects need app configurations stored in JSON format in `config.json` file at location `src/example/config/`.
-
-This configuration file can be downloaded from your application's `Configuration` tab in the
-[developer console](https://app.box.com/developers/console)
-
-#### CreateAppUser
-
-This project will output the user id of enterprise admin and will create a new App User for the enterprise.
-
-To run the project, first provide the name of the app user in `src/example/java/com/box/sdk/example/CreateAppUser.java`.
-
-```java
-public final class CreateAppUser {
-
-    private static final String APP_USER_NAME = "";
-    private static final String EXTERNAL_APP_USER_ID = "";
-
-    // ...
-}
-```
-
-Then just invoke `gradle runCreateAppUser` to run the CreateAppUser example!
-
-Note: The JCE bundled with oracle JRE supports keys upto 128 bit length only. To use larger cryptographic keys, install [JCE Unlimited Strength Jurisdiction Policy Files](http://www.oracle.com/technetwork/java/javase/downloads/jce8-download-2133166.html).
-
-#### AccessAsAppUser
-
-This project will retrieve the information of the given App User and will list the files/folders under root folder.
-
-To run the project, first provide the Id of the app user in `src/example/java/com/box/sdk/example/CreateAppUser.java`.
-
-```java
-public final class AccessAsAppUser {
-
-    private static final String USER_ID = "";
-
-    // ...
-}
-```
-
-Then just invoke `gradle runAccessAsAppUser` to run the AccessAsAppUser example!
-
-Note: The JCE bundled with oracle JRE supports keys upto 128 bit length only. To use larger cryptographic keys, install [JCE Unlimited Strength Jurisdiction Policy Files](http://www.oracle.com/technetwork/java/javase/downloads/jce8-download-2133166.html).
-
-#### BoxDeveloperEditionAPIConnectionAsEnterpriseUser
-
-This example shows how to get tokens for an enterprise user, say admin of the enterprise and do actions on behalf of admin. 
-
-To run the project, follow below steps
-
-1. Turn on `Enterprise` in `Application Access` section in Developer Console for the app 
-
-2. Turn on `Generate User Access Tokens` in `Advanced Features` section in Developer Console for the app
-
-3. Provide the Id of the admin user (or any enterprise user) in `src/example/java/com/box/sdk/example/BoxDeveloperEditionAPIConnectionAsEnterpriseUser.java`.
-
-```java 
-public final class BoxDeveloperEditionAPIConnectionAsEnterpriseUser {
-
-   private static final String USER_ID = "";
-   // ...
-   Reader reader = new FileReader("src/example/config/config.json");
-   BoxConfig boxConfig = BoxConfig.readFrom(reader);
-   IAccessTokenCache accessTokenCache = new InMemoryLRUAccessTokenCache(10);
-
-   BoxDeveloperEditionAPIConnection api = new BoxDeveloperEditionAPIConnection(
-           USER_ID,
-           DeveloperEditionEntityType.USER,
-           boxConfig,
-           accessTokenCache
-   );
-}
-```
-
-## Compatibility
-
-The Box Java SDK is compatible with Java 8 and up.
-
-## Compression Support
-The SDK supports both gzip and zstd compression for API requests. Compression is handled automatically based on server capabilities.
-
-## Building
-
-The SDK uses Gradle for its build system. SDK comes with Gradle wrapper. Running `./gradlew build` from the root
-of the repository will compile, lint, and test the SDK.
-
-```bash
-$ ./gradlew build
-```
-
-The SDK also includes integration tests which make real API calls, and therefore
-are run separately from unit tests. Integration tests should be run against a
-test account since they create and delete data. To run the integration tests,
-remove the `.template` extension from
-`src/test/config/config.properties.template` and fill in your test account's
-information. Then run:
-
-```bash
-$ ./gradlew integrationTest
-```
-
-## Documentation
-
-You can find guides and tutorials in the `doc` directory.
-
-* [BUILD ON BOX PLATFORM](https://developer.box.com/guides/getting-started/)
-* [Javadocs](http://box.github.io/box-java-sdk/javadoc/com/box/sdk/package-summary.html)
-* [Overview](https://github.com/box/box-java-sdk/blob/v4.16.4/doc/overview.md)
-* [Configuration](https://github.com/box/box-java-sdk/blob/v4.16.4/doc/configuration.md)
-* [Logging](https://github.com/box/box-java-sdk/blob/v4.16.4/doc/logging.md)
-* [Authentication](https://github.com/box/box-java-sdk/blob/v4.16.4/doc/authentication.md)
-* [Files](https://github.com/box/box-java-sdk/blob/v4.16.4/doc/files.md)
-* [Folders](https://github.com/box/box-java-sdk/blob/v4.16.4/doc/folders.md)
-* [Comments](https://github.com/box/box-java-sdk/blob/v4.16.4/doc/comments.md)
-* [Collaborations](https://github.com/box/box-java-sdk/blob/v4.16.4/doc/collaborations.md)
-* [Collaboration Allowlists](https://github.com/box/box-java-sdk/blob/v4.16.4/doc/collaboration_allowlists.md)
-* [Events](https://github.com/box/box-java-sdk/blob/v4.16.4/doc/events.md)
-* [Search](https://github.com/box/box-java-sdk/blob/v4.16.4/doc/search.md)
-* [Users](https://github.com/box/box-java-sdk/blob/v4.16.4/doc/users.md)
-* [Groups](https://github.com/box/box-java-sdk/blob/v4.16.4/doc/groups.md)
-* [Tasks](https://github.com/box/box-java-sdk/blob/v4.16.4/doc/tasks.md)
-* [Trash](https://github.com/box/box-java-sdk/blob/v4.16.4/doc/trash.md)
-* [Collections](https://github.com/box/box-java-sdk/blob/v4.16.4/doc/collections.md)
-* [Devices](https://github.com/box/box-java-sdk/blob/v4.16.4/doc/devices.md)
-* [Retention Policies](https://github.com/box/box-java-sdk/blob/v4.16.4/doc/retention_policies.md)
-* [Legal Holds Policy](https://github.com/box/box-java-sdk/blob/v4.16.4/doc/legal_holds.md)
-* [Watermarking](https://github.com/box/box-java-sdk/blob/v4.16.4/doc/watermarking.md)
-* [Webhooks](https://github.com/box/box-java-sdk/blob/v4.16.4/doc/webhooks.md)
-* [Web Links](https://github.com/box/box-java-sdk/blob/v4.16.4/doc/weblinks.md)
-* [Metadata Templates](https://github.com/box/box-java-sdk/blob/v4.16.4/doc/metadata_template.md)
-* [Classifications](https://github.com/box/box-java-sdk/blob/v4.16.4/doc/classifications.md)
-* [Recent Items](https://github.com/box/box-java-sdk/blob/v4.16.4/doc/recent_items.md)
-
-
-Javadocs are generated when `gradle javadoc` is run and can be found in
-`build/doc/javadoc`.
-
-## FIPS 140-2 Compliance
+# FIPS 140-2 Compliance
 
 To generate a Json Web Signature used for retrieving tokens in the JWT authentication method, the Box Java SDK decrypts an encrypted private key.
 For this purpose, Box Java SDK uses libraries (`org.bouncycastle:bcpkix-jdk18on:1.82` and `org.bouncycastle:bcprov-jdk18on:1.82`)
@@ -298,41 +215,45 @@ that are NOT compatible with FIPS 140-2 validated cryptographic library (`org.bo
 
 There are two ways of ensuring that decryption operation is FIPS-compiant.
 
-1. You can provide a custom implementation of the `IPrivateKeyDecryptor` interface, 
-which performs the decryption operation using FIPS-certified library of your choice. The interface requires the
-implementation of just one method:
+1. You can provide a custom implementation of the `IPrivateKeyDecryptor` interface,
+   which performs the decryption operation using FIPS-certified library of your choice.
+   The interface requires the implementation of just one method:
+
 ```java
 PrivateKey decryptPrivateKey(String encryptedPrivateKey, String passphrase);
 ```
-After implementing the custom decryptor, you need to set your custom decryptor class in the Box Config. 
-Below is an example of setting up a `BoxDeveloperEditionAPIConnection` with a config file and the custom decryptor.  
+
+After implementing the custom decryptor, you need to set your custom decryptor class:
+
 ```java
-Reader reader = new FileReader(JWT_CONFIG_PATH);
-BoxConfig boxConfig = BoxConfig.readFrom(reader);
-boxConfig.setPrivateKeyDecryptor(customDecryptor)
-BoxDeveloperEditionAPIConnection api = BoxDeveloperEditionAPIConnection.getAppEnterpriseConnection(boxConfig);
+JWTConfig newConfig = JWTConfig.fromConfigFile(JWT_CONFIG_PATH, customDecryptor);
+BoxJWTAuth auth = new BoxJWTAuth(jwtConfig);
+BoxClient client = new BoxClient(auth);
 ```
 
-2. Alternative method is to override the Bouncy Castle libraries to the v.1.57 version, 
-which are compatible with the FIPS 140-2 validated cryptographic library (`org.bouncycastle:bc-fips`).
+2. Alternative method is to override the Bouncy Castle libraries to the v.1.57 version,
+   which are compatible with the FIPS 140-2 validated cryptographic library (`org.bouncycastle:bc-fips`).
 
 NOTE: This solution is not recommended as Bouncy Castle v.1.57 has some moderate vulnerabilities reported against those versions, including:
- - [CVE-2020-26939](https://github.com/advisories/GHSA-72m5-fvvv-55m6) - Observable Differences in Behavior to Error Inputs in Bouncy Castle
- - [CVE-2020-15522](https://github.com/advisories/GHSA-6xx3-rg99-gc3p) - Timing based private key exposure in Bouncy Castle
 
-Furthermore,using Bouncy Castle v.1.57 may lead to [Bouncycastle BadPaddingException for JWT auth](#bouncycastle-badPaddingException-for-jWT-auth).
+- [CVE-2020-26939](https://github.com/advisories/GHSA-72m5-fvvv-55m6) - Observable Differences in Behavior to Error Inputs in Bouncy Castle
+- [CVE-2020-15522](https://github.com/advisories/GHSA-6xx3-rg99-gc3p) - Timing based private key exposure in Bouncy Castle
+
+Furthermore, using Bouncy Castle v.1.57 may lead to Bouncycastle BadPaddingException for JWT auth.
 
 Gradle example
+
 ```groovy
 implementation('com.box:box-java-sdk:x.y.z') {
-   exclude group: 'org.bouncycastle', module: 'bcprov-jdk15on'
-   exclude group: 'org.bouncycastle', module: 'bcpkix-jdk15on'
+   exclude group: 'org.bouncycastle', module: 'bcprov-jdk18on'
+   exclude group: 'org.bouncycastle', module: 'bcpkix-jdk18on'
 }
 runtimeOnly('org.bouncycastle:bcprov-jdk15on:1.57')
 runtimeOnly('org.bouncycastle:bcpkix-jdk15on:1.57')
 ```
 
 Maven example:
+
 ```xml
 <dependencies>
    <dependency>
@@ -343,13 +264,13 @@ Maven example:
       <exclusions>
         <exclusion>
           <groupId>org.bouncycastle</groupId>
-          <artifactId>bcprov-jdk15on</artifactId>
+          <artifactId>bcprov-jdk18on</artifactId>
         </exclusion>
          <exclusion>
             <groupId>org.bouncycastle</groupId>
-            <artifactId>bcpkix-jdk15on</artifactId>
+            <artifactId>bcpkix-jdk18on</artifactId>
          </exclusion>
-      </exclusions> 
+      </exclusions>
    </dependency>
    <dependency>
       <groupId>org.bouncycastle</groupId>
@@ -366,26 +287,21 @@ Maven example:
 </dependencies>
 ```
 
-### Bouncycastle BadPaddingException for JWT auth
+# Questions, Bugs, and Feature Requests?
 
-As of October 2023, RSA keypairs generated on the Developer Console (refer to the [Generate a keypair guide](https://developer.box.com/guides/authentication/jwt/jwt-setup/#generate-a-keypair-recommended))
-are no longer compatible with Bouncy Castle version 1.57, which was utilized in the Box Java SDK up to v4.6.1. 
-Attempting to use a JWT configuration downloaded from the Developer Console results in a
-`javax.crypto.BadPaddingException: pad block corrupted` error.
-Prossible solutions:
-1. Upgrade to the v4.7.0 of Box Java SDK, which uses newer version of the Bouncy Castle library. (recommended)
-2. Manually generate a keypair using OpenSSL version 1.0.x and add the Public Key to the Developer Console.
-   The [manually add keypair guide](https://developer.box.com/guides/authentication/jwt/jwt-setup/#manually-add-keypair) provides assistance in this process.
+Need to contact us directly? [Browse the issues tickets](https://github.com/box/box-java-sdk/issues)! Or, if that
+doesn't work, [file a new one](https://github.com/box/box-java-sdk/issues/new), and we will get
+back to you. If you have general questions about the Box API, you can post to the [Box Developer Forum](https://community.box.com/box-platform-5).
 
-## Copyright and License
+# Copyright and License
 
-Copyright 2019 Box, Inc. All rights reserved.
+Copyright 2025 Box, Inc. All rights reserved.
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
 
-   http://www.apache.org/licenses/LICENSE-2.0
+http://www.apache.org/licenses/LICENSE-2.0
 
 Unless required by applicable law or agreed to in writing, software
 distributed under the License is distributed on an "AS IS" BASIS,
