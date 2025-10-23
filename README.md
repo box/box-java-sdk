@@ -59,7 +59,7 @@ In v5 of the Box Java SDK, we are introducing a version that consolidates both t
 and the new generated package (`com.box.sdkgen`). This allows developers to use both packages simultaneously within a single project.
 
 The codebase for v5 of the Box Java SDK is currently available on the [combined-sdk](https://github.com/box/box-java-sdk/tree/combined-sdk) branch.
-Migration guide which would help with migration from `com.box.sdk` to `com.box.sdkgen` can be found [here](https://github.com/box/box-java-sdk/tree/sdk-gen/migration-guides/from-com.box.sdk-to-com.box.sdkgen.md).
+Migration guide which would help with migration from `com.box.sdk` to `com.box.sdkgen` can be found [here](https://github.com/box/box-java-sdk/tree/sdk-gen/migration-guides/from-com-box-sdk-to-com-box-sdkgen.md).
 
 Version v5 is intended for:
 
