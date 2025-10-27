@@ -2,10 +2,7 @@ package com.box.sdkgen.schemas.v2025r0.enterpriseconfigurationcontentandsharingv
 
 import com.box.sdkgen.internal.Nullable;
 import com.box.sdkgen.schemas.v2025r0.enterpriseconfigurationitemv2025r0.EnterpriseConfigurationItemV2025R0;
-import com.box.sdkgen.serialization.json.EnumWrapper;
 import com.fasterxml.jackson.annotation.JsonFilter;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import java.util.Objects;
 
 @JsonFilter("nullablePropertyFilter")
@@ -13,20 +10,7 @@ public class EnterpriseConfigurationContentAndSharingV2025R0ExternalCollaboratio
     extends EnterpriseConfigurationItemV2025R0 {
 
   /** The external collaboration status. */
-  @JsonDeserialize(
-      using =
-          EnterpriseConfigurationContentAndSharingV2025R0ExternalCollaborationStatusFieldValueField
-              .EnterpriseConfigurationContentAndSharingV2025R0ExternalCollaborationStatusFieldValueFieldDeserializer
-              .class)
-  @JsonSerialize(
-      using =
-          EnterpriseConfigurationContentAndSharingV2025R0ExternalCollaborationStatusFieldValueField
-              .EnterpriseConfigurationContentAndSharingV2025R0ExternalCollaborationStatusFieldValueFieldSerializer
-              .class)
-  @Nullable
-  protected EnumWrapper<
-          EnterpriseConfigurationContentAndSharingV2025R0ExternalCollaborationStatusFieldValueField>
-      value;
+  @Nullable protected String value;
 
   public EnterpriseConfigurationContentAndSharingV2025R0ExternalCollaborationStatusField() {
     super();
@@ -39,9 +23,7 @@ public class EnterpriseConfigurationContentAndSharingV2025R0ExternalCollaboratio
     markNullableFieldsAsSet(builder.getExplicitlySetNullableFields());
   }
 
-  public EnumWrapper<
-          EnterpriseConfigurationContentAndSharingV2025R0ExternalCollaborationStatusFieldValueField>
-      getValue() {
+  public String getValue() {
     return value;
   }
 
@@ -78,25 +60,9 @@ public class EnterpriseConfigurationContentAndSharingV2025R0ExternalCollaboratio
 
   public static class Builder extends EnterpriseConfigurationItemV2025R0.Builder {
 
-    protected EnumWrapper<
-            EnterpriseConfigurationContentAndSharingV2025R0ExternalCollaborationStatusFieldValueField>
-        value;
+    protected String value;
 
-    public Builder value(
-        EnterpriseConfigurationContentAndSharingV2025R0ExternalCollaborationStatusFieldValueField
-            value) {
-      this.value =
-          new EnumWrapper<
-              EnterpriseConfigurationContentAndSharingV2025R0ExternalCollaborationStatusFieldValueField>(
-              value);
-      this.markNullableFieldAsSet("value");
-      return this;
-    }
-
-    public Builder value(
-        EnumWrapper<
-                EnterpriseConfigurationContentAndSharingV2025R0ExternalCollaborationStatusFieldValueField>
-            value) {
+    public Builder value(String value) {
       this.value = value;
       this.markNullableFieldAsSet("value");
       return this;
