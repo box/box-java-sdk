@@ -36,7 +36,10 @@ public class BoxRetryStrategy implements RetryStrategy {
       return attemptNumber <= this.maxRetriesOnException;
     }
     boolean isSuccessful = fetchResponse.getStatus() >= 200 && fetchResponse.getStatus() < 400;
-    String retryAfterHeader = fetchResponse.getHeaders().get("Retry-After");
+    String retryAfterHeader =
+        (fetchResponse.getHeaders().containsKey("Retry-After")
+            ? fetchResponse.getHeaders().get("Retry-After")
+            : null);
     boolean isAcceptedWithRetryAfter =
         fetchResponse.getStatus() == 202 && !(retryAfterHeader == null);
     if (attemptNumber >= this.maxAttempts) {
