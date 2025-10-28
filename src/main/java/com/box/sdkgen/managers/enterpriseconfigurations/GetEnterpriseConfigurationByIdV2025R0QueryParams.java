@@ -1,18 +1,20 @@
 package com.box.sdkgen.managers.enterpriseconfigurations;
 
+import java.util.List;
+
 public class GetEnterpriseConfigurationByIdV2025R0QueryParams {
 
   /**
-   * The comma-delimited list of the enterprise configuration categories. Allowed values:
-   * `security`, `content_and_sharing`, `user_settings`, `shield`.
+   * A comma-separated list of the enterprise configuration categories. Allowed values: `security`,
+   * `content_and_sharing`, `user_settings`, `shield`.
    */
-  public final String categories;
+  public final List<String> categories;
 
-  public GetEnterpriseConfigurationByIdV2025R0QueryParams(String categories) {
+  public GetEnterpriseConfigurationByIdV2025R0QueryParams(List<String> categories) {
     this.categories = categories;
   }
 
-  public String getCategories() {
+  public List<String> getCategories() {
     return categories;
   }
 }
