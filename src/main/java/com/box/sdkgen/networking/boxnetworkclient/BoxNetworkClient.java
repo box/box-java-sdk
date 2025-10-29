@@ -60,12 +60,7 @@ public class BoxNetworkClient implements NetworkClient {
   }
 
   public BoxNetworkClient() {
-    OkHttpClient.Builder builder =
-        new OkHttpClient.Builder()
-            .followSslRedirects(true)
-            .followRedirects(false)
-            .connectionSpecs(singletonList(MODERN_TLS));
-    httpClient = builder.build();
+    httpClient = getDefaultOkHttpClientBuilder().build();
   }
 
   public OkHttpClient getHttpClient() {
@@ -389,5 +384,13 @@ public class BoxNetworkClient implements NetworkClient {
         }
       }
     };
+  }
+
+  public static OkHttpClient.Builder getDefaultOkHttpClientBuilder() {
+    return new OkHttpClient.Builder()
+        .followSslRedirects(true)
+        .followRedirects(false)
+        .connectionSpecs(singletonList(MODERN_TLS))
+        .retryOnConnectionFailure(false);
   }
 }

@@ -42,12 +42,7 @@ public class DefaultNetworkClient implements NetworkClient {
   }
 
   public DefaultNetworkClient() {
-    OkHttpClient.Builder builder =
-        new OkHttpClient.Builder()
-            .followSslRedirects(true)
-            .followRedirects(false)
-            .connectionSpecs(singletonList(MODERN_TLS));
-    httpClient = builder.build();
+    httpClient = getDefaultOkHttpClientBuilder().build();
   }
 
   public FetchResponse fetch(FetchOptions options) {
@@ -281,6 +276,14 @@ public class DefaultNetworkClient implements NetworkClient {
         }
       }
     };
+  }
+
+  public static OkHttpClient.Builder getDefaultOkHttpClientBuilder() {
+    return new OkHttpClient.Builder()
+        .followSslRedirects(true)
+        .followRedirects(false)
+        .connectionSpecs(singletonList(MODERN_TLS))
+        .retryOnConnectionFailure(false);
   }
 
   private static void throwOnUnsuccessfulResponse(
