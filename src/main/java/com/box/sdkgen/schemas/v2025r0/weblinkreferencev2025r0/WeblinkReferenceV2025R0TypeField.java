@@ -12,7 +12,7 @@ import java.io.IOException;
 import java.util.Arrays;
 
 public enum WeblinkReferenceV2025R0TypeField implements Valuable {
-  WEBLINK("weblink");
+  WEB_LINK("web_link");
 
   private final String value;
 

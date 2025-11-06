@@ -94,7 +94,7 @@ public class HubItemReferenceV2025R0
           case "folder":
             return new HubItemReferenceV2025R0(
                 JsonManager.deserialize(node, FolderReferenceV2025R0.class));
-          case "weblink":
+          case "web_link":
             return new HubItemReferenceV2025R0(
                 JsonManager.deserialize(node, WeblinkReferenceV2025R0.class));
         }

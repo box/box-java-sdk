@@ -186,6 +186,85 @@ public class ArchivesManager {
                     .build());
   }
 
+  /**
+   * Updates an archive.
+   *
+   * <p>To learn more about the archive APIs, see the [Archive API Guide](g://archives).
+   *
+   * @param archiveId The ID of the archive. Example: "982312"
+   */
+  public ArchiveV2025R0 updateArchiveByIdV2025R0(String archiveId) {
+    return updateArchiveByIdV2025R0(
+        archiveId,
+        new UpdateArchiveByIdV2025R0RequestBody(),
+        new UpdateArchiveByIdV2025R0Headers());
+  }
+
+  /**
+   * Updates an archive.
+   *
+   * <p>To learn more about the archive APIs, see the [Archive API Guide](g://archives).
+   *
+   * @param archiveId The ID of the archive. Example: "982312"
+   * @param requestBody Request body of updateArchiveByIdV2025R0 method
+   */
+  public ArchiveV2025R0 updateArchiveByIdV2025R0(
+      String archiveId, UpdateArchiveByIdV2025R0RequestBody requestBody) {
+    return updateArchiveByIdV2025R0(archiveId, requestBody, new UpdateArchiveByIdV2025R0Headers());
+  }
+
+  /**
+   * Updates an archive.
+   *
+   * <p>To learn more about the archive APIs, see the [Archive API Guide](g://archives).
+   *
+   * @param archiveId The ID of the archive. Example: "982312"
+   * @param headers Headers of updateArchiveByIdV2025R0 method
+   */
+  public ArchiveV2025R0 updateArchiveByIdV2025R0(
+      String archiveId, UpdateArchiveByIdV2025R0Headers headers) {
+    return updateArchiveByIdV2025R0(archiveId, new UpdateArchiveByIdV2025R0RequestBody(), headers);
+  }
+
+  /**
+   * Updates an archive.
+   *
+   * <p>To learn more about the archive APIs, see the [Archive API Guide](g://archives).
+   *
+   * @param archiveId The ID of the archive. Example: "982312"
+   * @param requestBody Request body of updateArchiveByIdV2025R0 method
+   * @param headers Headers of updateArchiveByIdV2025R0 method
+   */
+  public ArchiveV2025R0 updateArchiveByIdV2025R0(
+      String archiveId,
+      UpdateArchiveByIdV2025R0RequestBody requestBody,
+      UpdateArchiveByIdV2025R0Headers headers) {
+    Map<String, String> headersMap =
+        prepareParams(
+            mergeMaps(
+                mapOf(entryOf("box-version", convertToString(headers.getBoxVersion()))),
+                headers.getExtraHeaders()));
+    FetchResponse response =
+        this.networkSession
+            .getNetworkClient()
+            .fetch(
+                new FetchOptions.Builder(
+                        String.join(
+                            "",
+                            this.networkSession.getBaseUrls().getBaseUrl(),
+                            "/2.0/archives/",
+                            convertToString(archiveId)),
+                        "PUT")
+                    .headers(headersMap)
+                    .data(JsonManager.serialize(requestBody))
+                    .contentType("application/json")
+                    .responseFormat(ResponseFormat.JSON)
+                    .auth(this.auth)
+                    .networkSession(this.networkSession)
+                    .build());
+    return JsonManager.deserialize(response.getData(), ArchiveV2025R0.class);
+  }
+
   public Authentication getAuth() {
     return auth;
   }
