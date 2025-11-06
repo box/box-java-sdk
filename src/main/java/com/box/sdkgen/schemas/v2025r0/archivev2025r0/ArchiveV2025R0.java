@@ -1,5 +1,6 @@
 package com.box.sdkgen.schemas.v2025r0.archivev2025r0;
 
+import com.box.sdkgen.internal.Nullable;
 import com.box.sdkgen.internal.NullableFieldTracker;
 import com.box.sdkgen.internal.SerializableObject;
 import com.box.sdkgen.serialization.json.EnumWrapper;
@@ -20,7 +21,7 @@ public class ArchiveV2025R0 extends SerializableObject {
   /** The unique identifier that represents an archive. */
   protected final String id;
 
-  /** The value will always be `archive`. */
+  /** The value is always `archive`. */
   @JsonDeserialize(using = ArchiveV2025R0TypeField.ArchiveV2025R0TypeFieldDeserializer.class)
   @JsonSerialize(using = ArchiveV2025R0TypeField.ArchiveV2025R0TypeFieldSerializer.class)
   protected EnumWrapper<ArchiveV2025R0TypeField> type;
@@ -36,6 +37,13 @@ public class ArchiveV2025R0 extends SerializableObject {
 
   /** The size of the archive in bytes. */
   protected final long size;
+
+  /** The description of the archive. */
+  @Nullable protected String description;
+
+  /** The part of an archive API response that describes the user who owns the archive. */
+  @JsonProperty("owned_by")
+  protected ArchiveV2025R0OwnedByField ownedBy;
 
   public ArchiveV2025R0(
       @JsonProperty("id") String id,
@@ -54,6 +62,8 @@ public class ArchiveV2025R0 extends SerializableObject {
     this.type = builder.type;
     this.name = builder.name;
     this.size = builder.size;
+    this.description = builder.description;
+    this.ownedBy = builder.ownedBy;
     markNullableFieldsAsSet(builder.getExplicitlySetNullableFields());
   }
 
@@ -73,6 +83,14 @@ public class ArchiveV2025R0 extends SerializableObject {
     return size;
   }
 
+  public String getDescription() {
+    return description;
+  }
+
+  public ArchiveV2025R0OwnedByField getOwnedBy() {
+    return ownedBy;
+  }
+
   @Override
   public boolean equals(Object o) {
     if (this == o) {
@@ -85,12 +103,14 @@ public class ArchiveV2025R0 extends SerializableObject {
     return Objects.equals(id, casted.id)
         && Objects.equals(type, casted.type)
         && Objects.equals(name, casted.name)
-        && Objects.equals(size, casted.size);
+        && Objects.equals(size, casted.size)
+        && Objects.equals(description, casted.description)
+        && Objects.equals(ownedBy, casted.ownedBy);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(id, type, name, size);
+    return Objects.hash(id, type, name, size, description, ownedBy);
   }
 
   @Override
@@ -111,6 +131,14 @@ public class ArchiveV2025R0 extends SerializableObject {
         + "size='"
         + size
         + '\''
+        + ", "
+        + "description='"
+        + description
+        + '\''
+        + ", "
+        + "ownedBy='"
+        + ownedBy
+        + '\''
         + "}";
   }
 
@@ -123,6 +151,10 @@ public class ArchiveV2025R0 extends SerializableObject {
     protected final String name;
 
     protected final long size;
+
+    protected String description;
+
+    protected ArchiveV2025R0OwnedByField ownedBy;
 
     public Builder(String id, String name, long size) {
       super();
@@ -139,6 +171,17 @@ public class ArchiveV2025R0 extends SerializableObject {
 
     public Builder type(EnumWrapper<ArchiveV2025R0TypeField> type) {
       this.type = type;
+      return this;
+    }
+
+    public Builder description(String description) {
+      this.description = description;
+      this.markNullableFieldAsSet("description");
+      return this;
+    }
+
+    public Builder ownedBy(ArchiveV2025R0OwnedByField ownedBy) {
+      this.ownedBy = ownedBy;
       return this;
     }
 

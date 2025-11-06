@@ -13,7 +13,7 @@ import java.util.Objects;
 @JsonFilter("nullablePropertyFilter")
 public class WeblinkReferenceV2025R0 extends SerializableObject {
 
-  /** The value will always be `weblink`. */
+  /** The value will always be `web_link`. */
   @JsonDeserialize(
       using = WeblinkReferenceV2025R0TypeField.WeblinkReferenceV2025R0TypeFieldDeserializer.class)
   @JsonSerialize(
@@ -27,7 +27,8 @@ public class WeblinkReferenceV2025R0 extends SerializableObject {
     super();
     this.id = id;
     this.type =
-        new EnumWrapper<WeblinkReferenceV2025R0TypeField>(WeblinkReferenceV2025R0TypeField.WEBLINK);
+        new EnumWrapper<WeblinkReferenceV2025R0TypeField>(
+            WeblinkReferenceV2025R0TypeField.WEB_LINK);
   }
 
   protected WeblinkReferenceV2025R0(Builder builder) {
@@ -78,7 +79,7 @@ public class WeblinkReferenceV2025R0 extends SerializableObject {
       this.id = id;
       this.type =
           new EnumWrapper<WeblinkReferenceV2025R0TypeField>(
-              WeblinkReferenceV2025R0TypeField.WEBLINK);
+              WeblinkReferenceV2025R0TypeField.WEB_LINK);
     }
 
     public Builder type(WeblinkReferenceV2025R0TypeField type) {
