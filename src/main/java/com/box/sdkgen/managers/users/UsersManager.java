@@ -477,9 +477,8 @@ public class UsersManager {
   }
 
   /**
-   * Deletes a user. By default, this operation fails if the user still owns any content, was
-   * recently active, or recently joined the enterprise from a free account. To proceed, move their
-   * owned content first, or use the `force` parameter to delete the user and their files.
+   * Deletes a user. By default this will fail if the user still owns any content. Move their owned
+   * content first before proceeding, or use the `force` field to delete the user and their files.
    *
    * @param userId The ID of the user. Example: "12345"
    */
@@ -488,9 +487,8 @@ public class UsersManager {
   }
 
   /**
-   * Deletes a user. By default, this operation fails if the user still owns any content, was
-   * recently active, or recently joined the enterprise from a free account. To proceed, move their
-   * owned content first, or use the `force` parameter to delete the user and their files.
+   * Deletes a user. By default this will fail if the user still owns any content. Move their owned
+   * content first before proceeding, or use the `force` field to delete the user and their files.
    *
    * @param userId The ID of the user. Example: "12345"
    * @param queryParams Query parameters of deleteUserById method
@@ -500,9 +498,8 @@ public class UsersManager {
   }
 
   /**
-   * Deletes a user. By default, this operation fails if the user still owns any content, was
-   * recently active, or recently joined the enterprise from a free account. To proceed, move their
-   * owned content first, or use the `force` parameter to delete the user and their files.
+   * Deletes a user. By default this will fail if the user still owns any content. Move their owned
+   * content first before proceeding, or use the `force` field to delete the user and their files.
    *
    * @param userId The ID of the user. Example: "12345"
    * @param headers Headers of deleteUserById method
@@ -512,9 +509,8 @@ public class UsersManager {
   }
 
   /**
-   * Deletes a user. By default, this operation fails if the user still owns any content, was
-   * recently active, or recently joined the enterprise from a free account. To proceed, move their
-   * owned content first, or use the `force` parameter to delete the user and their files.
+   * Deletes a user. By default this will fail if the user still owns any content. Move their owned
+   * content first before proceeding, or use the `force` field to delete the user and their files.
    *
    * @param userId The ID of the user. Example: "12345"
    * @param queryParams Query parameters of deleteUserById method
