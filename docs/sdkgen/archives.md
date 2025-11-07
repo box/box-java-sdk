@@ -50,7 +50,7 @@ See the endpoint docs at
 
 <!-- sample post_archives_v2025.0 -->
 ```
-client.getArchives().createArchiveV2025R0(new CreateArchiveV2025R0RequestBody(archiveName))
+client.getArchives().createArchiveV2025R0(new CreateArchiveV2025R0RequestBody.Builder(archiveName).description(archiveDescription).build())
 ```
 
 ### Arguments
@@ -110,7 +110,10 @@ This operation is performed by calling function `updateArchiveByIdV2025R0`.
 See the endpoint docs at
 [API Reference](https://developer.box.com/reference/v2025.0/put-archives-id/).
 
-*Currently we don't have an example for calling `updateArchiveByIdV2025R0` in integration tests*
+<!-- sample put_archives_id_v2025.0 -->
+```
+client.getArchives().updateArchiveByIdV2025R0(archive.getId(), new UpdateArchiveByIdV2025R0RequestBody.Builder().name(newArchiveName).description(newArchiveDescription).build())
+```
 
 ### Arguments
 
