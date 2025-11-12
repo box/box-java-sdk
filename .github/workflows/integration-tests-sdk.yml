@@ -3,6 +3,10 @@ on:
   pull_request:
     branches:
       - combined-sdk
+
+permissions:
+  contents: read
+
 jobs:
   core:
     runs-on: ubuntu-latest
