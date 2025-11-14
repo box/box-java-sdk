@@ -435,7 +435,7 @@ public class BoxAPIConnection {
 
   /**
    * Gets the token URL that's used to request access tokens. The default value is
-   * "https://www.box.com/api/oauth2/token". The URL is created from {@link
+   * "https://api.box.com/oauth2/token". The URL is created from {@link
    * BoxAPIConnection#baseURL} and {@link BoxAPIConnection#TOKEN_URL_SUFFIX}.
    *
    * @return the token URL.
