@@ -82,14 +82,14 @@ public class AiStudioITest {
             .createAiAsk(
                 new AiAsk.Builder(
                         AiAskModeField.SINGLE_ITEM_QA,
-                        "which direction sun rises",
+                        "Which direction does the Sun rise?",
                         Arrays.asList(
                             new AiItemAsk.Builder(fileToAsk.getId(), AiItemAskTypeField.FILE)
-                                .content("Sun rises in the East")
+                                .content("The Sun rises in the east.")
                                 .build()))
                     .aiAgent(new AiAgentReference.Builder().id(createdAgent.getId()).build())
                     .build());
-    assert response.getAnswer().contains("East");
+    assert response.getAnswer().contains("east");
     assert response.getCompletionReason().equals("done");
     assert response.getAiAgentInfo().getModels().size() > 0;
     client.getFiles().deleteFileById(fileToAsk.getId());

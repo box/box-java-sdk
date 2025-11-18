@@ -23,7 +23,9 @@ import java.security.MessageDigest;
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeFormatterBuilder;
 import java.time.format.DateTimeParseException;
+import java.time.temporal.ChronoField;
 import java.util.Arrays;
 import java.util.Base64;
 import java.util.HashMap;
@@ -47,11 +49,15 @@ public class UtilsManager {
   private static final int BUFFER_SIZE = 8192;
 
   private static final DateTimeFormatter OFFSET_DATE_TIME_FORMAT =
-      DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ssXXX");
+      new DateTimeFormatterBuilder()
+          .appendPattern("yyyy-MM-dd'T'HH:mm:ss")
+          .optionalStart()
+          .appendFraction(ChronoField.NANO_OF_SECOND, 0, 9, true)
+          .optionalEnd()
+          .appendOffsetId()
+          .toFormatter();
   private static final DateTimeFormatter OFFSET_DATE_TIME_FORMAT_WITH_MILLIS =
       DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSXXX");
-  private static final DateTimeFormatter OFFSET_DATE_TIME_FORMAT_WITH_MICROS =
-      DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSSSSX");
   private static final DateTimeFormatter OFFSET_DATE_FORMAT =
       DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
@@ -381,20 +387,11 @@ public class UtilsManager {
   }
 
   public static OffsetDateTime dateTimeFromString(String dateString) {
-    DateTimeFormatter[] formatters = {
-      OFFSET_DATE_TIME_FORMAT,
-      OFFSET_DATE_TIME_FORMAT_WITH_MILLIS,
-      OFFSET_DATE_TIME_FORMAT_WITH_MICROS
-    };
-
-    for (DateTimeFormatter formatter : formatters) {
-      try {
-        return OffsetDateTime.parse(dateString, formatter);
-      } catch (DateTimeParseException e) {
-        // Ignore and try the next format
-      }
+    try {
+      return OffsetDateTime.parse(dateString, OFFSET_DATE_TIME_FORMAT);
+    } catch (DateTimeParseException e) {
+      return null;
     }
-    return null;
   }
 
   public static String dateTimeToString(OffsetDateTime dateTime) {
@@ -408,19 +405,7 @@ public class UtilsManager {
         return OffsetDateTime.parse(dateString + "T00:00:00Z");
       }
       // Otherwise try to parse as full OffsetDateTime
-      DateTimeFormatter[] formatters = {
-        OFFSET_DATE_TIME_FORMAT,
-        OFFSET_DATE_TIME_FORMAT_WITH_MILLIS,
-        OFFSET_DATE_TIME_FORMAT_WITH_MICROS
-      };
-      for (DateTimeFormatter formatter : formatters) {
-        try {
-          return OffsetDateTime.parse(dateString, formatter);
-        } catch (DateTimeParseException e) {
-          // Ignore and try the next format
-        }
-      }
-      return null;
+      return dateTimeFromString(dateString);
     } catch (DateTimeParseException e) {
       return null;
     }
