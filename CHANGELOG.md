@@ -2,6 +2,20 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [10.2.0](https://github.com/box/box-java-sdk/compare/v10.1.0...v10.2.0) (2025-11-19)
+
+
+### Bug Fixes
+
+* Fix parsing `OffsetDateTime` from String (box/box-codegen[#887](https://github.com/box/box-java-sdk/issues/887)) ([#1582](https://github.com/box/box-java-sdk/issues/1582)) ([d1288c4](https://github.com/box/box-java-sdk/commit/d1288c4804b032d5211d664c396e212a08a5775b))
+
+
+### New Features and Enhancements
+
+* Support GET enterprise configuration API (box/box-openapi[#559](https://github.com/box/box-java-sdk/issues/559)) ([#1519](https://github.com/box/box-java-sdk/issues/1519)) ([88dd8d2](https://github.com/box/box-java-sdk/commit/88dd8d2867d85ca8fc3b48d2aee61060ef328821))
+* Disable OkHttp auto retries on connection failure (box/box-codegen[#874](https://github.com/box/box-java-sdk/issues/874)) ([#1541](https://github.com/box/box-java-sdk/issues/1541)) ([c2bd137](https://github.com/box/box-java-sdk/commit/c2bd137e469b9e67a14a33bb073107ff5db44175))
+* Support Archive API (box/box-openapi[#563](https://github.com/box/box-java-sdk/issues/563)) ([#1553](https://github.com/box/box-java-sdk/issues/1553)) ([609e8bb](https://github.com/box/box-java-sdk/commit/609e8bb5eb7143281543dcfaada23f2649acae9d))
+
 ## [10.1.0](https://github.com/box/box-java-sdk/compare/v10.0.0...v10.1.0) (2025-10-06)
 
 
