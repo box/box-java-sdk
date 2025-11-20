@@ -5,10 +5,10 @@
 # Box Java SDK v10
 
 [![Project Status](http://opensource.box.com/badges/active.svg)](http://opensource.box.com/badges)
-![build](https://github.com/box/box-java-sdk/actions/workflows/build.yml/badge.svg?branch=sdk-gen)
+![build](https://github.com/box/box-java-sdk/actions/workflows/build.yml/badge.svg?branch=main)
 ![Maven Central Version](https://img.shields.io/maven-central/v/com.box/box-java-sdk)
 ![Platform](https://img.shields.io/badge/java-%3E%3D8-blue)
-[![Coverage](https://coveralls.io/repos/github/box/box-java-sdk/badge.svg?branch=sdk-gen)](https://coveralls.io/github/box/box-java-sdk-gen?branch=sdk-gen)
+[![Coverage](https://coveralls.io/repos/github/box/box-java-sdk/badge.svg?branch=main)](https://coveralls.io/github/box/box-java-sdk-gen?branch=main)
 
 <!-- START doctoc generated TOC please keep comment here to allow auto update -->
 <!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
@@ -69,7 +69,7 @@ Version v5 is intended for:
 ## Version v10
 
 Starting with v10, the SDK is built entirely on the generated `com.box.sdkgen` package, which fully and exclusively replaces the old `com.box.sdk` package.
-The codebase for v10 of the Box Java SDK is currently available on the [sdk-gen](https://github.com/box/box-java-sdk/tree/sdk-gen) branch.
+The codebase for v10 of the Box Java SDK is currently available on the [main](https://github.com/box/box-java-sdk/tree/main) branch.
 
 Version v10 is intended for:
 
@@ -80,8 +80,8 @@ Version v10 is intended for:
 
 | Scenario                                                                                                                                                                                   | Recommended Version                                                    | Example gradle dependency     |
 | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ---------------------------------------------------------------------- | ----------------------------- |
-| Creating a new application                                                                                                                                                                 | Use [v10](https://github.com/box/box-java-sdk/tree/sdk-gen)            | `com.box:box-java-sdk:10.0.0` |
-| App using [box-java-sdk-gen](https://central.sonatype.com/artifact/com.box/box-java-sdk-gen) artifact                                                                                      | Migrate to [v10](https://github.com/box/box-java-sdk/tree/sdk-gen)     | `com.box:box-java-sdk:10.0.0` |
+| Creating a new application                                                                                                                                                                 | Use [v10](https://github.com/box/box-java-sdk/tree/main)               | `com.box:box-java-sdk:10.0.0` |
+| App using [box-java-sdk-gen](https://central.sonatype.com/artifact/com.box/box-java-sdk-gen) artifact                                                                                      | Migrate to [v10](https://github.com/box/box-java-sdk/tree/main)        | `com.box:box-java-sdk:10.0.0` |
 | App using both [box-java-sdk-gen](https://central.sonatype.com/artifact/com.box/box-java-sdk-gen) and [box-java-sdk](https://central.sonatype.com/artifact/com.box/box-java-sdk) artifacts | Upgrade to [v5](https://github.com/box/box-java-sdk/tree/combined-sdk) | `com.box:box-java-sdk:5.0.0`  |
 | App using v4 of [box-java-sdk](https://central.sonatype.com/artifact/com.box/box-java-sdk) artifact                                                                                        | Upgrade to [v5](https://github.com/box/box-java-sdk/tree/combined-sdk) | `com.box:box-java-sdk:5.0.0`  |
 
