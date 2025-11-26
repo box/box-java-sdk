@@ -3,6 +3,7 @@ package com.box.sdkgen.schemas.signrequestsigner;
 import com.box.sdkgen.internal.Nullable;
 import com.box.sdkgen.schemas.signrequestcreatesigner.SignRequestCreateSigner;
 import com.box.sdkgen.schemas.signrequestcreatesigner.SignRequestCreateSignerRoleField;
+import com.box.sdkgen.schemas.signrequestsignerattachment.SignRequestSignerAttachment;
 import com.box.sdkgen.schemas.signrequestsignerinput.SignRequestSignerInput;
 import com.box.sdkgen.serialization.json.EnumWrapper;
 import com.fasterxml.jackson.annotation.JsonFilter;
@@ -39,6 +40,9 @@ public class SignRequestSigner extends SignRequestCreateSigner {
   @Nullable
   protected String iframeableEmbedUrl;
 
+  /** Attachments that the signer uploaded. */
+  @Nullable protected List<SignRequestSignerAttachment> attachments;
+
   public SignRequestSigner() {
     super();
   }
@@ -50,6 +54,7 @@ public class SignRequestSigner extends SignRequestCreateSigner {
     this.inputs = builder.inputs;
     this.embedUrl = builder.embedUrl;
     this.iframeableEmbedUrl = builder.iframeableEmbedUrl;
+    this.attachments = builder.attachments;
     markNullableFieldsAsSet(builder.getExplicitlySetNullableFields());
   }
 
@@ -71,6 +76,10 @@ public class SignRequestSigner extends SignRequestCreateSigner {
 
   public String getIframeableEmbedUrl() {
     return iframeableEmbedUrl;
+  }
+
+  public List<SignRequestSignerAttachment> getAttachments() {
+    return attachments;
   }
 
   @Override
@@ -98,7 +107,8 @@ public class SignRequestSigner extends SignRequestCreateSigner {
         && Objects.equals(signerDecision, casted.signerDecision)
         && Objects.equals(inputs, casted.inputs)
         && Objects.equals(embedUrl, casted.embedUrl)
-        && Objects.equals(iframeableEmbedUrl, casted.iframeableEmbedUrl);
+        && Objects.equals(iframeableEmbedUrl, casted.iframeableEmbedUrl)
+        && Objects.equals(attachments, casted.attachments);
   }
 
   @Override
@@ -120,7 +130,8 @@ public class SignRequestSigner extends SignRequestCreateSigner {
         signerDecision,
         inputs,
         embedUrl,
-        iframeableEmbedUrl);
+        iframeableEmbedUrl,
+        attachments);
   }
 
   @Override
@@ -193,6 +204,10 @@ public class SignRequestSigner extends SignRequestCreateSigner {
         + "iframeableEmbedUrl='"
         + iframeableEmbedUrl
         + '\''
+        + ", "
+        + "attachments='"
+        + attachments
+        + '\''
         + "}";
   }
 
@@ -207,6 +222,8 @@ public class SignRequestSigner extends SignRequestCreateSigner {
     protected String embedUrl;
 
     protected String iframeableEmbedUrl;
+
+    protected List<SignRequestSignerAttachment> attachments;
 
     public Builder hasViewedDocument(Boolean hasViewedDocument) {
       this.hasViewedDocument = hasViewedDocument;
@@ -233,6 +250,12 @@ public class SignRequestSigner extends SignRequestCreateSigner {
     public Builder iframeableEmbedUrl(String iframeableEmbedUrl) {
       this.iframeableEmbedUrl = iframeableEmbedUrl;
       this.markNullableFieldAsSet("iframeable_embed_url");
+      return this;
+    }
+
+    public Builder attachments(List<SignRequestSignerAttachment> attachments) {
+      this.attachments = attachments;
+      this.markNullableFieldAsSet("attachments");
       return this;
     }
 
