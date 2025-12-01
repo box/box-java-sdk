@@ -90,6 +90,23 @@ public class SignRequest extends SignRequestBase {
   @Nullable
   protected String collaboratorLevel;
 
+  /** Short identifier for the sign request. */
+  @JsonProperty("short_id")
+  protected String shortId;
+
+  /** Timestamp marking when the sign request was created. */
+  @JsonProperty("created_at")
+  @JsonSerialize(using = DateTimeUtils.DateTimeSerializer.class)
+  @JsonDeserialize(using = DateTimeUtils.DateTimeDeserializer.class)
+  protected OffsetDateTime createdAt;
+
+  /** Timestamp indicating when all signing actions completed. */
+  @JsonProperty("finished_at")
+  @JsonSerialize(using = DateTimeUtils.DateTimeSerializer.class)
+  @JsonDeserialize(using = DateTimeUtils.DateTimeDeserializer.class)
+  @Nullable
+  protected OffsetDateTime finishedAt;
+
   /** The email address of the sender of the sign request. */
   @JsonProperty("sender_email")
   @Nullable
@@ -118,6 +135,9 @@ public class SignRequest extends SignRequestBase {
     this.autoExpireAt = builder.autoExpireAt;
     this.parentFolder = builder.parentFolder;
     this.collaboratorLevel = builder.collaboratorLevel;
+    this.shortId = builder.shortId;
+    this.createdAt = builder.createdAt;
+    this.finishedAt = builder.finishedAt;
     this.senderEmail = builder.senderEmail;
     this.senderId = builder.senderId;
     markNullableFieldsAsSet(builder.getExplicitlySetNullableFields());
@@ -171,6 +191,18 @@ public class SignRequest extends SignRequestBase {
     return collaboratorLevel;
   }
 
+  public String getShortId() {
+    return shortId;
+  }
+
+  public OffsetDateTime getCreatedAt() {
+    return createdAt;
+  }
+
+  public OffsetDateTime getFinishedAt() {
+    return finishedAt;
+  }
+
   public String getSenderEmail() {
     return senderEmail;
   }
@@ -213,6 +245,9 @@ public class SignRequest extends SignRequestBase {
         && Objects.equals(autoExpireAt, casted.autoExpireAt)
         && Objects.equals(parentFolder, casted.parentFolder)
         && Objects.equals(collaboratorLevel, casted.collaboratorLevel)
+        && Objects.equals(shortId, casted.shortId)
+        && Objects.equals(createdAt, casted.createdAt)
+        && Objects.equals(finishedAt, casted.finishedAt)
         && Objects.equals(senderEmail, casted.senderEmail)
         && Objects.equals(senderId, casted.senderId);
   }
@@ -245,6 +280,9 @@ public class SignRequest extends SignRequestBase {
         autoExpireAt,
         parentFolder,
         collaboratorLevel,
+        shortId,
+        createdAt,
+        finishedAt,
         senderEmail,
         senderId);
   }
@@ -352,6 +390,18 @@ public class SignRequest extends SignRequestBase {
         + collaboratorLevel
         + '\''
         + ", "
+        + "shortId='"
+        + shortId
+        + '\''
+        + ", "
+        + "createdAt='"
+        + createdAt
+        + '\''
+        + ", "
+        + "finishedAt='"
+        + finishedAt
+        + '\''
+        + ", "
         + "senderEmail='"
         + senderEmail
         + '\''
@@ -387,6 +437,12 @@ public class SignRequest extends SignRequestBase {
     protected FolderMini parentFolder;
 
     protected String collaboratorLevel;
+
+    protected String shortId;
+
+    protected OffsetDateTime createdAt;
+
+    protected OffsetDateTime finishedAt;
 
     protected String senderEmail;
 
@@ -463,6 +519,22 @@ public class SignRequest extends SignRequestBase {
     public Builder collaboratorLevel(String collaboratorLevel) {
       this.collaboratorLevel = collaboratorLevel;
       this.markNullableFieldAsSet("collaborator_level");
+      return this;
+    }
+
+    public Builder shortId(String shortId) {
+      this.shortId = shortId;
+      return this;
+    }
+
+    public Builder createdAt(OffsetDateTime createdAt) {
+      this.createdAt = createdAt;
+      return this;
+    }
+
+    public Builder finishedAt(OffsetDateTime finishedAt) {
+      this.finishedAt = finishedAt;
+      this.markNullableFieldAsSet("finished_at");
       return this;
     }
 
