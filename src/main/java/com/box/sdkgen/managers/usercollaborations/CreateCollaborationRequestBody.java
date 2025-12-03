@@ -49,7 +49,8 @@ public class CreateCollaborationRequestBody extends SerializableObject {
    * Files** page. We recommend you limit the number of collaborations with `can_view_path` enabled
    * to 1,000 per user.
    *
-   * <p>Only owner or co-owners can invite collaborators with a `can_view_path` of `true`.
+   * <p>Only an owner or co-owners can invite collaborators with a `can_view_path` of `true`. Only
+   * an owner can update `can_view_path` on existing collaborations.
    *
    * <p>`can_view_path` can only be used for folder collaborations.
    */
