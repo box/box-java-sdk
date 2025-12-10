@@ -28,13 +28,6 @@ public class AiExtractStructuredResponse extends SerializableObject {
   @JsonProperty("completion_reason")
   protected String completionReason;
 
-  /**
-   * The confidence score numeric values for each extracted field as a JSON dictionary. This can be
-   * empty if no field could be extracted.
-   */
-  @JsonProperty("confidence_score")
-  protected Map<String, Object> confidenceScore;
-
   @JsonProperty("ai_agent_info")
   protected AiAgentInfo aiAgentInfo;
 
@@ -51,7 +44,6 @@ public class AiExtractStructuredResponse extends SerializableObject {
     this.answer = builder.answer;
     this.createdAt = builder.createdAt;
     this.completionReason = builder.completionReason;
-    this.confidenceScore = builder.confidenceScore;
     this.aiAgentInfo = builder.aiAgentInfo;
     markNullableFieldsAsSet(builder.getExplicitlySetNullableFields());
   }
@@ -66,10 +58,6 @@ public class AiExtractStructuredResponse extends SerializableObject {
 
   public String getCompletionReason() {
     return completionReason;
-  }
-
-  public Map<String, Object> getConfidenceScore() {
-    return confidenceScore;
   }
 
   public AiAgentInfo getAiAgentInfo() {
@@ -88,13 +76,12 @@ public class AiExtractStructuredResponse extends SerializableObject {
     return Objects.equals(answer, casted.answer)
         && Objects.equals(createdAt, casted.createdAt)
         && Objects.equals(completionReason, casted.completionReason)
-        && Objects.equals(confidenceScore, casted.confidenceScore)
         && Objects.equals(aiAgentInfo, casted.aiAgentInfo);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(answer, createdAt, completionReason, confidenceScore, aiAgentInfo);
+    return Objects.hash(answer, createdAt, completionReason, aiAgentInfo);
   }
 
   @Override
@@ -112,10 +99,6 @@ public class AiExtractStructuredResponse extends SerializableObject {
         + completionReason
         + '\''
         + ", "
-        + "confidenceScore='"
-        + confidenceScore
-        + '\''
-        + ", "
         + "aiAgentInfo='"
         + aiAgentInfo
         + '\''
@@ -130,8 +113,6 @@ public class AiExtractStructuredResponse extends SerializableObject {
 
     protected String completionReason;
 
-    protected Map<String, Object> confidenceScore;
-
     protected AiAgentInfo aiAgentInfo;
 
     public Builder(Map<String, Object> answer, OffsetDateTime createdAt) {
@@ -142,11 +123,6 @@ public class AiExtractStructuredResponse extends SerializableObject {
 
     public Builder completionReason(String completionReason) {
       this.completionReason = completionReason;
-      return this;
-    }
-
-    public Builder confidenceScore(Map<String, Object> confidenceScore) {
-      this.confidenceScore = confidenceScore;
       return this;
     }
 
