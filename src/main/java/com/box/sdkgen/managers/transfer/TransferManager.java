@@ -32,7 +32,7 @@ public class TransferManager {
 
   /**
    * Move all of the items (files, folders and workflows) owned by a user into another user's
-   * account
+   * account.
    *
    * <p>Only the root folder (`0`) can be transferred.
    *
@@ -75,7 +75,7 @@ public class TransferManager {
 
   /**
    * Move all of the items (files, folders and workflows) owned by a user into another user's
-   * account
+   * account.
    *
    * <p>Only the root folder (`0`) can be transferred.
    *
@@ -118,7 +118,7 @@ public class TransferManager {
 
   /**
    * Move all of the items (files, folders and workflows) owned by a user into another user's
-   * account
+   * account.
    *
    * <p>Only the root folder (`0`) can be transferred.
    *
@@ -161,7 +161,7 @@ public class TransferManager {
 
   /**
    * Move all of the items (files, folders and workflows) owned by a user into another user's
-   * account
+   * account.
    *
    * <p>Only the root folder (`0`) can be transferred.
    *
