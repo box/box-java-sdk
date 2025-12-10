@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [10.3.0](https://github.com/box/box-java-sdk/compare/v10.2.0...v10.3.0) (2025-12-10)
+
+
+### New Features and Enhancements
+
+* Remove `confidence_score` and `include_confidence_score` from AI extract (box/box-openapi[#567](https://github.com/box/box-java-sdk/issues/567)) ([#1615](https://github.com/box/box-java-sdk/issues/1615)) ([0a069cd](https://github.com/box/box-java-sdk/commit/0a069cdecc4837d8bdb6f1e91401d88c58af5a92))
+* Support new sign request metadata (box/box-openapi[#565](https://github.com/box/box-java-sdk/issues/565)) ([#1599](https://github.com/box/box-java-sdk/issues/1599)) ([b3c46bb](https://github.com/box/box-java-sdk/commit/b3c46bbf2f2f7b9b25befcd6442a4e5c9a92e790))
+
 ## [10.2.0](https://github.com/box/box-java-sdk/compare/v10.1.0...v10.2.0) (2025-11-19)
 
 
