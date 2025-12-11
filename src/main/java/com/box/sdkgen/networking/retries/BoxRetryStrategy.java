@@ -67,7 +67,10 @@ public class BoxRetryStrategy implements RetryStrategy {
   @Override
   public double retryAfter(
       FetchOptions fetchOptions, FetchResponse fetchResponse, int attemptNumber) {
-    String retryAfterHeader = fetchResponse.getHeaders().get("Retry-After");
+    String retryAfterHeader =
+        (fetchResponse.getHeaders().containsKey("Retry-After")
+            ? fetchResponse.getHeaders().get("Retry-After")
+            : null);
     if (!(retryAfterHeader == null)) {
       return Double.parseDouble(retryAfterHeader);
     }
