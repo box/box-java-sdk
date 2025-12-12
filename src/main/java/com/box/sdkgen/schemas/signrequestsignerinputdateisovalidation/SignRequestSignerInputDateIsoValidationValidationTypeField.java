@@ -1,0 +1,65 @@
+package com.box.sdkgen.schemas.signrequestsignerinputdateisovalidation;
+
+import com.box.sdkgen.serialization.json.EnumWrapper;
+import com.box.sdkgen.serialization.json.Valuable;
+import com.fasterxml.jackson.core.JsonGenerator;
+import com.fasterxml.jackson.core.JsonParser;
+import com.fasterxml.jackson.databind.DeserializationContext;
+import com.fasterxml.jackson.databind.JsonDeserializer;
+import com.fasterxml.jackson.databind.JsonSerializer;
+import com.fasterxml.jackson.databind.SerializerProvider;
+import java.io.IOException;
+import java.util.Arrays;
+
+public enum SignRequestSignerInputDateIsoValidationValidationTypeField implements Valuable {
+  DATE_ISO("date_iso");
+
+  private final String value;
+
+  SignRequestSignerInputDateIsoValidationValidationTypeField(String value) {
+    this.value = value;
+  }
+
+  public String getValue() {
+    return value;
+  }
+
+  public static class SignRequestSignerInputDateIsoValidationValidationTypeFieldDeserializer
+      extends JsonDeserializer<
+          EnumWrapper<SignRequestSignerInputDateIsoValidationValidationTypeField>> {
+
+    public SignRequestSignerInputDateIsoValidationValidationTypeFieldDeserializer() {
+      super();
+    }
+
+    @Override
+    public EnumWrapper<SignRequestSignerInputDateIsoValidationValidationTypeField> deserialize(
+        JsonParser p, DeserializationContext ctxt) throws IOException {
+      String value = p.getValueAsString();
+      return Arrays.stream(SignRequestSignerInputDateIsoValidationValidationTypeField.values())
+          .filter((v) -> v.getValue().equalsIgnoreCase(value))
+          .findFirst()
+          .map(EnumWrapper::new)
+          .orElse(
+              new EnumWrapper<SignRequestSignerInputDateIsoValidationValidationTypeField>(value));
+    }
+  }
+
+  public static class SignRequestSignerInputDateIsoValidationValidationTypeFieldSerializer
+      extends JsonSerializer<
+          EnumWrapper<SignRequestSignerInputDateIsoValidationValidationTypeField>> {
+
+    public SignRequestSignerInputDateIsoValidationValidationTypeFieldSerializer() {
+      super();
+    }
+
+    @Override
+    public void serialize(
+        EnumWrapper<SignRequestSignerInputDateIsoValidationValidationTypeField> value,
+        JsonGenerator gen,
+        SerializerProvider serializers)
+        throws IOException {
+      gen.writeString(value.getStringValue());
+    }
+  }
+}
