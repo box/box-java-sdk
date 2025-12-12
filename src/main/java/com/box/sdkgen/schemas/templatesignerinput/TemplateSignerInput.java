@@ -2,6 +2,18 @@ package com.box.sdkgen.schemas.templatesignerinput;
 
 import com.box.sdkgen.internal.Nullable;
 import com.box.sdkgen.schemas.signrequestprefilltag.SignRequestPrefillTag;
+import com.box.sdkgen.schemas.signrequestsignerinputcustomvalidation.SignRequestSignerInputCustomValidation;
+import com.box.sdkgen.schemas.signrequestsignerinputdateasiavalidation.SignRequestSignerInputDateAsiaValidation;
+import com.box.sdkgen.schemas.signrequestsignerinputdateeuvalidation.SignRequestSignerInputDateEuValidation;
+import com.box.sdkgen.schemas.signrequestsignerinputdateisovalidation.SignRequestSignerInputDateIsoValidation;
+import com.box.sdkgen.schemas.signrequestsignerinputdateusvalidation.SignRequestSignerInputDateUsValidation;
+import com.box.sdkgen.schemas.signrequestsignerinputemailvalidation.SignRequestSignerInputEmailValidation;
+import com.box.sdkgen.schemas.signrequestsignerinputnumberwithcommavalidation.SignRequestSignerInputNumberWithCommaValidation;
+import com.box.sdkgen.schemas.signrequestsignerinputnumberwithperiodvalidation.SignRequestSignerInputNumberWithPeriodValidation;
+import com.box.sdkgen.schemas.signrequestsignerinputssnvalidation.SignRequestSignerInputSsnValidation;
+import com.box.sdkgen.schemas.signrequestsignerinputvalidation.SignRequestSignerInputValidation;
+import com.box.sdkgen.schemas.signrequestsignerinputzip4validation.SignRequestSignerInputZip4Validation;
+import com.box.sdkgen.schemas.signrequestsignerinputzipvalidation.SignRequestSignerInputZipValidation;
 import com.box.sdkgen.serialization.json.EnumWrapper;
 import com.fasterxml.jackson.annotation.JsonFilter;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -66,9 +78,15 @@ public class TemplateSignerInput extends SignRequestPrefillTag {
   /** The label field is used especially for text, attachment, radio, and checkbox type inputs. */
   @Nullable protected String label;
 
-  /** Whether this input was defined as read-only(immutable by signers) or not. */
+  /** Indicates whether this input is read-only (cannot be modified by signers). */
   @JsonProperty("read_only")
   protected Boolean readOnly;
+
+  /**
+   * Specifies the formatting rules that signers must follow for text field inputs. If set, this
+   * validation is mandatory.
+   */
+  protected SignRequestSignerInputValidation validation;
 
   public TemplateSignerInput(@JsonProperty("page_index") long pageIndex) {
     super();
@@ -88,6 +106,7 @@ public class TemplateSignerInput extends SignRequestPrefillTag {
     this.dimensions = builder.dimensions;
     this.label = builder.label;
     this.readOnly = builder.readOnly;
+    this.validation = builder.validation;
     markNullableFieldsAsSet(builder.getExplicitlySetNullableFields());
   }
 
@@ -135,6 +154,10 @@ public class TemplateSignerInput extends SignRequestPrefillTag {
     return readOnly;
   }
 
+  public SignRequestSignerInputValidation getValidation() {
+    return validation;
+  }
+
   @Override
   public boolean equals(Object o) {
     if (this == o) {
@@ -158,7 +181,8 @@ public class TemplateSignerInput extends SignRequestPrefillTag {
         && Objects.equals(coordinates, casted.coordinates)
         && Objects.equals(dimensions, casted.dimensions)
         && Objects.equals(label, casted.label)
-        && Objects.equals(readOnly, casted.readOnly);
+        && Objects.equals(readOnly, casted.readOnly)
+        && Objects.equals(validation, casted.validation);
   }
 
   @Override
@@ -178,7 +202,8 @@ public class TemplateSignerInput extends SignRequestPrefillTag {
         coordinates,
         dimensions,
         label,
-        readOnly);
+        readOnly,
+        validation);
   }
 
   @Override
@@ -243,6 +268,10 @@ public class TemplateSignerInput extends SignRequestPrefillTag {
         + "readOnly='"
         + readOnly
         + '\''
+        + ", "
+        + "validation='"
+        + validation
+        + '\''
         + "}";
   }
 
@@ -269,6 +298,8 @@ public class TemplateSignerInput extends SignRequestPrefillTag {
     protected String label;
 
     protected Boolean readOnly;
+
+    protected SignRequestSignerInputValidation validation;
 
     public Builder(long pageIndex) {
       super();
@@ -336,6 +367,66 @@ public class TemplateSignerInput extends SignRequestPrefillTag {
 
     public Builder readOnly(Boolean readOnly) {
       this.readOnly = readOnly;
+      return this;
+    }
+
+    public Builder validation(SignRequestSignerInputEmailValidation validation) {
+      this.validation = new SignRequestSignerInputValidation(validation);
+      return this;
+    }
+
+    public Builder validation(SignRequestSignerInputCustomValidation validation) {
+      this.validation = new SignRequestSignerInputValidation(validation);
+      return this;
+    }
+
+    public Builder validation(SignRequestSignerInputZipValidation validation) {
+      this.validation = new SignRequestSignerInputValidation(validation);
+      return this;
+    }
+
+    public Builder validation(SignRequestSignerInputZip4Validation validation) {
+      this.validation = new SignRequestSignerInputValidation(validation);
+      return this;
+    }
+
+    public Builder validation(SignRequestSignerInputSsnValidation validation) {
+      this.validation = new SignRequestSignerInputValidation(validation);
+      return this;
+    }
+
+    public Builder validation(SignRequestSignerInputNumberWithPeriodValidation validation) {
+      this.validation = new SignRequestSignerInputValidation(validation);
+      return this;
+    }
+
+    public Builder validation(SignRequestSignerInputNumberWithCommaValidation validation) {
+      this.validation = new SignRequestSignerInputValidation(validation);
+      return this;
+    }
+
+    public Builder validation(SignRequestSignerInputDateIsoValidation validation) {
+      this.validation = new SignRequestSignerInputValidation(validation);
+      return this;
+    }
+
+    public Builder validation(SignRequestSignerInputDateUsValidation validation) {
+      this.validation = new SignRequestSignerInputValidation(validation);
+      return this;
+    }
+
+    public Builder validation(SignRequestSignerInputDateEuValidation validation) {
+      this.validation = new SignRequestSignerInputValidation(validation);
+      return this;
+    }
+
+    public Builder validation(SignRequestSignerInputDateAsiaValidation validation) {
+      this.validation = new SignRequestSignerInputValidation(validation);
+      return this;
+    }
+
+    public Builder validation(SignRequestSignerInputValidation validation) {
+      this.validation = validation;
       return this;
     }
 
