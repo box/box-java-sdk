@@ -1,6 +1,7 @@
 package com.box.sdkgen.managers.foldermetadata;
 
 import static com.box.sdkgen.internal.utils.UtilsManager.convertToString;
+import static com.box.sdkgen.internal.utils.UtilsManager.entryOf;
 import static com.box.sdkgen.internal.utils.UtilsManager.mapOf;
 import static com.box.sdkgen.internal.utils.UtilsManager.mergeMaps;
 import static com.box.sdkgen.internal.utils.UtilsManager.prepareParams;
@@ -41,7 +42,22 @@ public class FolderMetadataManager {
    *     <p>The root folder of a Box account is always represented by the ID `0`. Example: "12345"
    */
   public Metadatas getFolderMetadata(String folderId) {
-    return getFolderMetadata(folderId, new GetFolderMetadataHeaders());
+    return getFolderMetadata(
+        folderId, new GetFolderMetadataQueryParams(), new GetFolderMetadataHeaders());
+  }
+
+  /**
+   * Retrieves all metadata for a given folder. This can not be used on the root folder with ID `0`.
+   *
+   * @param folderId The unique identifier that represent a folder.
+   *     <p>The ID for any folder can be determined by visiting this folder in the web application
+   *     and copying the ID from the URL. For example, for the URL
+   *     `https://*.app.box.com/folder/123` the `folder_id` is `123`.
+   *     <p>The root folder of a Box account is always represented by the ID `0`. Example: "12345"
+   * @param queryParams Query parameters of getFolderMetadata method
+   */
+  public Metadatas getFolderMetadata(String folderId, GetFolderMetadataQueryParams queryParams) {
+    return getFolderMetadata(folderId, queryParams, new GetFolderMetadataHeaders());
   }
 
   /**
@@ -55,6 +71,24 @@ public class FolderMetadataManager {
    * @param headers Headers of getFolderMetadata method
    */
   public Metadatas getFolderMetadata(String folderId, GetFolderMetadataHeaders headers) {
+    return getFolderMetadata(folderId, new GetFolderMetadataQueryParams(), headers);
+  }
+
+  /**
+   * Retrieves all metadata for a given folder. This can not be used on the root folder with ID `0`.
+   *
+   * @param folderId The unique identifier that represent a folder.
+   *     <p>The ID for any folder can be determined by visiting this folder in the web application
+   *     and copying the ID from the URL. For example, for the URL
+   *     `https://*.app.box.com/folder/123` the `folder_id` is `123`.
+   *     <p>The root folder of a Box account is always represented by the ID `0`. Example: "12345"
+   * @param queryParams Query parameters of getFolderMetadata method
+   * @param headers Headers of getFolderMetadata method
+   */
+  public Metadatas getFolderMetadata(
+      String folderId, GetFolderMetadataQueryParams queryParams, GetFolderMetadataHeaders headers) {
+    Map<String, String> queryParamsMap =
+        prepareParams(mapOf(entryOf("view", convertToString(queryParams.getView()))));
     Map<String, String> headersMap = prepareParams(mergeMaps(mapOf(), headers.getExtraHeaders()));
     FetchResponse response =
         this.networkSession
@@ -68,6 +102,7 @@ public class FolderMetadataManager {
                             convertToString(folderId),
                             "/metadata"),
                         "GET")
+                    .params(queryParamsMap)
                     .headers(headersMap)
                     .responseFormat(ResponseFormat.JSON)
                     .auth(this.auth)
