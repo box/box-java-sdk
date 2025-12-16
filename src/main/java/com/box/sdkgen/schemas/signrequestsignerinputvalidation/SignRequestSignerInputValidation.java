@@ -1,6 +1,6 @@
 package com.box.sdkgen.schemas.signrequestsignerinputvalidation;
 
-import com.box.sdkgen.internal.OneOfundefined;
+import com.box.sdkgen.internal.OneOfEleven;
 import com.box.sdkgen.schemas.signrequestsignerinputcustomvalidation.SignRequestSignerInputCustomValidation;
 import com.box.sdkgen.schemas.signrequestsignerinputdateasiavalidation.SignRequestSignerInputDateAsiaValidation;
 import com.box.sdkgen.schemas.signrequestsignerinputdateeuvalidation.SignRequestSignerInputDateEuValidation;
@@ -25,9 +25,9 @@ import java.io.IOException;
 
 @JsonDeserialize(
     using = SignRequestSignerInputValidation.SignRequestSignerInputValidationDeserializer.class)
-@JsonSerialize(using = OneOfundefined.OneOfundefinedSerializer.class)
+@JsonSerialize(using = OneOfEleven.OneOfElevenSerializer.class)
 public class SignRequestSignerInputValidation
-    extends OneOfundefined<
+    extends OneOfEleven<
         SignRequestSignerInputEmailValidation,
         SignRequestSignerInputCustomValidation,
         SignRequestSignerInputZipValidation,
@@ -351,67 +351,67 @@ public class SignRequestSignerInputValidation
       JsonNode node = JsonManager.jsonToSerializedData(jp);
       try {
         return new SignRequestSignerInputValidation(
-            OneOfundefined.OBJECT_MAPPER.convertValue(
+            OneOfEleven.OBJECT_MAPPER.convertValue(
                 node, SignRequestSignerInputEmailValidation.class));
       } catch (Exception ignored) {
       }
       try {
         return new SignRequestSignerInputValidation(
-            OneOfundefined.OBJECT_MAPPER.convertValue(
+            OneOfEleven.OBJECT_MAPPER.convertValue(
                 node, SignRequestSignerInputCustomValidation.class));
       } catch (Exception ignored) {
       }
       try {
         return new SignRequestSignerInputValidation(
-            OneOfundefined.OBJECT_MAPPER.convertValue(
+            OneOfEleven.OBJECT_MAPPER.convertValue(
                 node, SignRequestSignerInputZipValidation.class));
       } catch (Exception ignored) {
       }
       try {
         return new SignRequestSignerInputValidation(
-            OneOfundefined.OBJECT_MAPPER.convertValue(
+            OneOfEleven.OBJECT_MAPPER.convertValue(
                 node, SignRequestSignerInputZip4Validation.class));
       } catch (Exception ignored) {
       }
       try {
         return new SignRequestSignerInputValidation(
-            OneOfundefined.OBJECT_MAPPER.convertValue(
+            OneOfEleven.OBJECT_MAPPER.convertValue(
                 node, SignRequestSignerInputSsnValidation.class));
       } catch (Exception ignored) {
       }
       try {
         return new SignRequestSignerInputValidation(
-            OneOfundefined.OBJECT_MAPPER.convertValue(
+            OneOfEleven.OBJECT_MAPPER.convertValue(
                 node, SignRequestSignerInputNumberWithPeriodValidation.class));
       } catch (Exception ignored) {
       }
       try {
         return new SignRequestSignerInputValidation(
-            OneOfundefined.OBJECT_MAPPER.convertValue(
+            OneOfEleven.OBJECT_MAPPER.convertValue(
                 node, SignRequestSignerInputNumberWithCommaValidation.class));
       } catch (Exception ignored) {
       }
       try {
         return new SignRequestSignerInputValidation(
-            OneOfundefined.OBJECT_MAPPER.convertValue(
+            OneOfEleven.OBJECT_MAPPER.convertValue(
                 node, SignRequestSignerInputDateIsoValidation.class));
       } catch (Exception ignored) {
       }
       try {
         return new SignRequestSignerInputValidation(
-            OneOfundefined.OBJECT_MAPPER.convertValue(
+            OneOfEleven.OBJECT_MAPPER.convertValue(
                 node, SignRequestSignerInputDateUsValidation.class));
       } catch (Exception ignored) {
       }
       try {
         return new SignRequestSignerInputValidation(
-            OneOfundefined.OBJECT_MAPPER.convertValue(
+            OneOfEleven.OBJECT_MAPPER.convertValue(
                 node, SignRequestSignerInputDateEuValidation.class));
       } catch (Exception ignored) {
       }
       try {
         return new SignRequestSignerInputValidation(
-            OneOfundefined.OBJECT_MAPPER.convertValue(
+            OneOfEleven.OBJECT_MAPPER.convertValue(
                 node, SignRequestSignerInputDateAsiaValidation.class));
       } catch (Exception ignored) {
       }

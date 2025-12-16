@@ -1,7 +1,5 @@
 package com.box.sdkgen.schemas.signrequestsignerinputcustomvalidation;
 
-import static com.box.sdkgen.internal.utils.UtilsManager.setOf;
-
 import com.box.sdkgen.internal.Nullable;
 import com.box.sdkgen.internal.NullableFieldTracker;
 import com.box.sdkgen.internal.SerializableObject;
@@ -37,23 +35,18 @@ public class SignRequestSignerInputCustomValidation extends SerializableObject {
   /** Regular expression used for validation. */
   @JsonProperty("custom_regex")
   @Nullable
-  protected final String customRegex;
+  protected String customRegex;
 
   /** Error message shown if input fails custom regular expression validation. */
   @JsonProperty("custom_error_message")
   @Nullable
-  protected final String customErrorMessage;
+  protected String customErrorMessage;
 
-  public SignRequestSignerInputCustomValidation(
-      @JsonProperty("custom_regex") String customRegex,
-      @JsonProperty("custom_error_message") String customErrorMessage) {
+  public SignRequestSignerInputCustomValidation() {
     super();
-    this.customRegex = customRegex;
-    this.customErrorMessage = customErrorMessage;
     this.validationType =
         new EnumWrapper<SignRequestSignerInputCustomValidationValidationTypeField>(
             SignRequestSignerInputCustomValidationValidationTypeField.CUSTOM);
-    markNullableFieldsAsSet(setOf("custom_regex", "custom_error_message"));
   }
 
   protected SignRequestSignerInputCustomValidation(Builder builder) {
@@ -117,18 +110,15 @@ public class SignRequestSignerInputCustomValidation extends SerializableObject {
 
     protected EnumWrapper<SignRequestSignerInputCustomValidationValidationTypeField> validationType;
 
-    protected final String customRegex;
+    protected String customRegex;
 
-    protected final String customErrorMessage;
+    protected String customErrorMessage;
 
-    public Builder(String customRegex, String customErrorMessage) {
+    public Builder() {
       super();
-      this.customRegex = customRegex;
-      this.customErrorMessage = customErrorMessage;
       this.validationType =
           new EnumWrapper<SignRequestSignerInputCustomValidationValidationTypeField>(
               SignRequestSignerInputCustomValidationValidationTypeField.CUSTOM);
-      markNullableFieldsAsSet(setOf("custom_regex", "custom_error_message"));
     }
 
     public Builder validationType(
@@ -142,6 +132,18 @@ public class SignRequestSignerInputCustomValidation extends SerializableObject {
     public Builder validationType(
         EnumWrapper<SignRequestSignerInputCustomValidationValidationTypeField> validationType) {
       this.validationType = validationType;
+      return this;
+    }
+
+    public Builder customRegex(String customRegex) {
+      this.customRegex = customRegex;
+      this.markNullableFieldAsSet("custom_regex");
+      return this;
+    }
+
+    public Builder customErrorMessage(String customErrorMessage) {
+      this.customErrorMessage = customErrorMessage;
+      this.markNullableFieldAsSet("custom_error_message");
       return this;
     }
 
