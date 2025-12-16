@@ -106,7 +106,7 @@ See the endpoint docs at
 
 <!-- sample post_docgen_batches_v2025.0 -->
 ```
-client.getDocgen().createDocgenBatchV2025R0(new DocGenBatchCreateRequestV2025R0(new FileReferenceV2025R0(uploadedFile.getId()), "api", new DocGenBatchCreateRequestV2025R0DestinationFolderField(folder.getId()), "pdf", Arrays.asList(new DocGenDocumentGenerationDataV2025R0("test", mapOf(entryOf("abc", "xyz"))))))
+client.getDocgen().createDocgenBatchV2025R0(new DocGenBatchCreateRequestV2025R0(new FileReferenceV2025R0(uploadedFileDocx.getId()), "api", new DocGenBatchCreateRequestV2025R0DestinationFolderField(folder.getId()), "pdf", Arrays.asList(new DocGenDocumentGenerationDataV2025R0("test", mapOf(entryOf("abc", "xyz"))))))
 ```
 
 ### Arguments
