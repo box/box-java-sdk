@@ -1,6 +1,7 @@
 package com.box.sdkgen.managers.filemetadata;
 
 import static com.box.sdkgen.internal.utils.UtilsManager.convertToString;
+import static com.box.sdkgen.internal.utils.UtilsManager.entryOf;
 import static com.box.sdkgen.internal.utils.UtilsManager.mapOf;
 import static com.box.sdkgen.internal.utils.UtilsManager.mergeMaps;
 import static com.box.sdkgen.internal.utils.UtilsManager.prepareParams;
@@ -40,7 +41,20 @@ public class FileMetadataManager {
    *     `file_id` is `123`. Example: "12345"
    */
   public Metadatas getFileMetadata(String fileId) {
-    return getFileMetadata(fileId, new GetFileMetadataHeaders());
+    return getFileMetadata(fileId, new GetFileMetadataQueryParams(), new GetFileMetadataHeaders());
+  }
+
+  /**
+   * Retrieves all metadata for a given file.
+   *
+   * @param fileId The unique identifier that represents a file.
+   *     <p>The ID for any file can be determined by visiting a file in the web application and
+   *     copying the ID from the URL. For example, for the URL `https://*.app.box.com/files/123` the
+   *     `file_id` is `123`. Example: "12345"
+   * @param queryParams Query parameters of getFileMetadata method
+   */
+  public Metadatas getFileMetadata(String fileId, GetFileMetadataQueryParams queryParams) {
+    return getFileMetadata(fileId, queryParams, new GetFileMetadataHeaders());
   }
 
   /**
@@ -53,6 +67,23 @@ public class FileMetadataManager {
    * @param headers Headers of getFileMetadata method
    */
   public Metadatas getFileMetadata(String fileId, GetFileMetadataHeaders headers) {
+    return getFileMetadata(fileId, new GetFileMetadataQueryParams(), headers);
+  }
+
+  /**
+   * Retrieves all metadata for a given file.
+   *
+   * @param fileId The unique identifier that represents a file.
+   *     <p>The ID for any file can be determined by visiting a file in the web application and
+   *     copying the ID from the URL. For example, for the URL `https://*.app.box.com/files/123` the
+   *     `file_id` is `123`. Example: "12345"
+   * @param queryParams Query parameters of getFileMetadata method
+   * @param headers Headers of getFileMetadata method
+   */
+  public Metadatas getFileMetadata(
+      String fileId, GetFileMetadataQueryParams queryParams, GetFileMetadataHeaders headers) {
+    Map<String, String> queryParamsMap =
+        prepareParams(mapOf(entryOf("view", convertToString(queryParams.getView()))));
     Map<String, String> headersMap = prepareParams(mergeMaps(mapOf(), headers.getExtraHeaders()));
     FetchResponse response =
         this.networkSession
@@ -66,6 +97,7 @@ public class FileMetadataManager {
                             convertToString(fileId),
                             "/metadata"),
                         "GET")
+                    .params(queryParamsMap)
                     .headers(headersMap)
                     .responseFormat(ResponseFormat.JSON)
                     .auth(this.auth)
@@ -86,7 +118,32 @@ public class FileMetadataManager {
    */
   public MetadataFull getFileMetadataById(
       String fileId, GetFileMetadataByIdScope scope, String templateKey) {
-    return getFileMetadataById(fileId, scope, templateKey, new GetFileMetadataByIdHeaders());
+    return getFileMetadataById(
+        fileId,
+        scope,
+        templateKey,
+        new GetFileMetadataByIdQueryParams(),
+        new GetFileMetadataByIdHeaders());
+  }
+
+  /**
+   * Retrieves the instance of a metadata template that has been applied to a file.
+   *
+   * @param fileId The unique identifier that represents a file.
+   *     <p>The ID for any file can be determined by visiting a file in the web application and
+   *     copying the ID from the URL. For example, for the URL `https://*.app.box.com/files/123` the
+   *     `file_id` is `123`. Example: "12345"
+   * @param scope The scope of the metadata template. Example: "global"
+   * @param templateKey The name of the metadata template. Example: "properties"
+   * @param queryParams Query parameters of getFileMetadataById method
+   */
+  public MetadataFull getFileMetadataById(
+      String fileId,
+      GetFileMetadataByIdScope scope,
+      String templateKey,
+      GetFileMetadataByIdQueryParams queryParams) {
+    return getFileMetadataById(
+        fileId, scope, templateKey, queryParams, new GetFileMetadataByIdHeaders());
   }
 
   /**
@@ -105,6 +162,30 @@ public class FileMetadataManager {
       GetFileMetadataByIdScope scope,
       String templateKey,
       GetFileMetadataByIdHeaders headers) {
+    return getFileMetadataById(
+        fileId, scope, templateKey, new GetFileMetadataByIdQueryParams(), headers);
+  }
+
+  /**
+   * Retrieves the instance of a metadata template that has been applied to a file.
+   *
+   * @param fileId The unique identifier that represents a file.
+   *     <p>The ID for any file can be determined by visiting a file in the web application and
+   *     copying the ID from the URL. For example, for the URL `https://*.app.box.com/files/123` the
+   *     `file_id` is `123`. Example: "12345"
+   * @param scope The scope of the metadata template. Example: "global"
+   * @param templateKey The name of the metadata template. Example: "properties"
+   * @param queryParams Query parameters of getFileMetadataById method
+   * @param headers Headers of getFileMetadataById method
+   */
+  public MetadataFull getFileMetadataById(
+      String fileId,
+      GetFileMetadataByIdScope scope,
+      String templateKey,
+      GetFileMetadataByIdQueryParams queryParams,
+      GetFileMetadataByIdHeaders headers) {
+    Map<String, String> queryParamsMap =
+        prepareParams(mapOf(entryOf("view", convertToString(queryParams.getView()))));
     Map<String, String> headersMap = prepareParams(mergeMaps(mapOf(), headers.getExtraHeaders()));
     FetchResponse response =
         this.networkSession
@@ -121,6 +202,7 @@ public class FileMetadataManager {
                             "/",
                             convertToString(templateKey)),
                         "GET")
+                    .params(queryParamsMap)
                     .headers(headersMap)
                     .responseFormat(ResponseFormat.JSON)
                     .auth(this.auth)

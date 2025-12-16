@@ -49,6 +49,7 @@ the SDK are available by topic:
 * [Listcollaborations](listcollaborations.md)
 * [Memberships](memberships.md)
 * [Metadatacascadepolicies](metadatacascadepolicies.md)
+* [Metadatataxonomies](metadatataxonomies.md)
 * [Metadatatemplates](metadatatemplates.md)
 * [Recentitems](recentitems.md)
 * [Retentionpolicies](retentionpolicies.md)
