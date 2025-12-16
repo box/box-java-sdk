@@ -16,7 +16,8 @@ public enum CreateMetadataTemplateRequestBodyFieldsTypeField implements Valuable
   FLOAT("float"),
   DATE("date"),
   ENUM("enum"),
-  MULTISELECT("multiSelect");
+  MULTISELECT("multiSelect"),
+  TAXONOMY("taxonomy");
 
   private final String value;
 

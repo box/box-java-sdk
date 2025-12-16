@@ -1,0 +1,63 @@
+package com.box.sdkgen.managers.metadatataxonomies;
+
+import com.box.sdkgen.serialization.json.EnumWrapper;
+import com.box.sdkgen.serialization.json.Valuable;
+import com.fasterxml.jackson.core.JsonGenerator;
+import com.fasterxml.jackson.core.JsonParser;
+import com.fasterxml.jackson.databind.DeserializationContext;
+import com.fasterxml.jackson.databind.JsonDeserializer;
+import com.fasterxml.jackson.databind.JsonSerializer;
+import com.fasterxml.jackson.databind.SerializerProvider;
+import java.io.IOException;
+import java.util.Arrays;
+
+public enum GetMetadataTemplateFieldOptionsScope implements Valuable {
+  GLOBAL("global"),
+  ENTERPRISE("enterprise");
+
+  private final String value;
+
+  GetMetadataTemplateFieldOptionsScope(String value) {
+    this.value = value;
+  }
+
+  public String getValue() {
+    return value;
+  }
+
+  public static class GetMetadataTemplateFieldOptionsScopeDeserializer
+      extends JsonDeserializer<EnumWrapper<GetMetadataTemplateFieldOptionsScope>> {
+
+    public GetMetadataTemplateFieldOptionsScopeDeserializer() {
+      super();
+    }
+
+    @Override
+    public EnumWrapper<GetMetadataTemplateFieldOptionsScope> deserialize(
+        JsonParser p, DeserializationContext ctxt) throws IOException {
+      String value = p.getValueAsString();
+      return Arrays.stream(GetMetadataTemplateFieldOptionsScope.values())
+          .filter((v) -> v.getValue().equalsIgnoreCase(value))
+          .findFirst()
+          .map(EnumWrapper::new)
+          .orElse(new EnumWrapper<GetMetadataTemplateFieldOptionsScope>(value));
+    }
+  }
+
+  public static class GetMetadataTemplateFieldOptionsScopeSerializer
+      extends JsonSerializer<EnumWrapper<GetMetadataTemplateFieldOptionsScope>> {
+
+    public GetMetadataTemplateFieldOptionsScopeSerializer() {
+      super();
+    }
+
+    @Override
+    public void serialize(
+        EnumWrapper<GetMetadataTemplateFieldOptionsScope> value,
+        JsonGenerator gen,
+        SerializerProvider serializers)
+        throws IOException {
+      gen.writeString(value.getStringValue());
+    }
+  }
+}

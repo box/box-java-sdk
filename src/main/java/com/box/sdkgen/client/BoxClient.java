@@ -47,6 +47,7 @@ import com.box.sdkgen.managers.legalholdpolicyassignments.LegalHoldPolicyAssignm
 import com.box.sdkgen.managers.listcollaborations.ListCollaborationsManager;
 import com.box.sdkgen.managers.memberships.MembershipsManager;
 import com.box.sdkgen.managers.metadatacascadepolicies.MetadataCascadePoliciesManager;
+import com.box.sdkgen.managers.metadatataxonomies.MetadataTaxonomiesManager;
 import com.box.sdkgen.managers.metadatatemplates.MetadataTemplatesManager;
 import com.box.sdkgen.managers.recentitems.RecentItemsManager;
 import com.box.sdkgen.managers.retentionpolicies.RetentionPoliciesManager;
@@ -244,6 +245,8 @@ public class BoxClient {
   public final AiManager ai;
 
   public final AiStudioManager aiStudio;
+
+  public final MetadataTaxonomiesManager metadataTaxonomies;
 
   public final DocgenTemplateManager docgenTemplate;
 
@@ -568,6 +571,11 @@ public class BoxClient {
     this.ai = new AiManager.Builder().auth(this.auth).networkSession(this.networkSession).build();
     this.aiStudio =
         new AiStudioManager.Builder().auth(this.auth).networkSession(this.networkSession).build();
+    this.metadataTaxonomies =
+        new MetadataTaxonomiesManager.Builder()
+            .auth(this.auth)
+            .networkSession(this.networkSession)
+            .build();
     this.docgenTemplate =
         new DocgenTemplateManager.Builder()
             .auth(this.auth)
@@ -908,6 +916,11 @@ public class BoxClient {
     this.ai = new AiManager.Builder().auth(this.auth).networkSession(this.networkSession).build();
     this.aiStudio =
         new AiStudioManager.Builder().auth(this.auth).networkSession(this.networkSession).build();
+    this.metadataTaxonomies =
+        new MetadataTaxonomiesManager.Builder()
+            .auth(this.auth)
+            .networkSession(this.networkSession)
+            .build();
     this.docgenTemplate =
         new DocgenTemplateManager.Builder()
             .auth(this.auth)
@@ -1339,6 +1352,10 @@ public class BoxClient {
 
   public AiStudioManager getAiStudio() {
     return aiStudio;
+  }
+
+  public MetadataTaxonomiesManager getMetadataTaxonomies() {
+    return metadataTaxonomies;
   }
 
   public DocgenTemplateManager getDocgenTemplate() {
