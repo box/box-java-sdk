@@ -9,6 +9,7 @@ import static com.box.sdkgen.internal.utils.UtilsManager.mapOf;
 
 import com.box.sdkgen.client.BoxClient;
 import com.box.sdkgen.managers.docgen.GetDocgenJobsV2025R0QueryParams;
+import com.box.sdkgen.managers.files.UpdateFileByIdRequestBody;
 import com.box.sdkgen.schemas.filefull.FileFull;
 import com.box.sdkgen.schemas.folderfull.FolderFull;
 import com.box.sdkgen.schemas.v2025r0.docgenbatchbasev2025r0.DocGenBatchBaseV2025R0;
@@ -31,20 +32,28 @@ public class DocgenITest {
 
   @Test
   public void testDocgenBatchAndJobs() {
-    FileFull uploadedFile = uploadNewFile();
+    FileFull uploadedFilePdf = uploadNewFile();
+    FileFull uploadedFileDocx =
+        client
+            .getFiles()
+            .updateFileById(
+                uploadedFilePdf.getId(),
+                new UpdateFileByIdRequestBody.Builder()
+                    .name(String.join("", uploadedFilePdf.getName(), ".docx"))
+                    .build());
     FolderFull folder = createNewFolder();
     DocGenTemplateBaseV2025R0 createdDocgenTemplate =
         client
             .getDocgenTemplate()
             .createDocgenTemplateV2025R0(
                 new DocGenTemplateCreateRequestV2025R0(
-                    new FileReferenceV2025R0(uploadedFile.getId())));
+                    new FileReferenceV2025R0(uploadedFileDocx.getId())));
     DocGenBatchBaseV2025R0 docgenBatch =
         client
             .getDocgen()
             .createDocgenBatchV2025R0(
                 new DocGenBatchCreateRequestV2025R0(
-                    new FileReferenceV2025R0(uploadedFile.getId()),
+                    new FileReferenceV2025R0(uploadedFileDocx.getId()),
                     "api",
                     new DocGenBatchCreateRequestV2025R0DestinationFolderField(folder.getId()),
                     "pdf",
@@ -65,7 +74,7 @@ public class DocgenITest {
         .get(0)
         .getTemplateFile()
         .getId()
-        .equals(uploadedFile.getId());
+        .equals(uploadedFileDocx.getId());
     assert docgenBatchJobs.getEntries().get(0).getBatch().getId().equals(docgenBatch.getId());
     DocGenJobsFullV2025R0 docgenJobs =
         client
@@ -101,6 +110,6 @@ public class DocgenITest {
     assert !(docgenJob.getTemplateFileVersion().getId().equals(""));
     assert convertToString(docgenJob.getType()).equals("docgen_job");
     client.getFolders().deleteFolderById(folder.getId());
-    client.getFiles().deleteFileById(uploadedFile.getId());
+    client.getFiles().deleteFileById(uploadedFileDocx.getId());
   }
 }
