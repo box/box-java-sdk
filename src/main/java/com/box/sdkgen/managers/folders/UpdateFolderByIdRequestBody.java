@@ -87,7 +87,7 @@ public class UpdateFolderByIdRequestBody extends SerializableObject {
    *
    * <p>Passing an empty array `[]` or `null` will remove the folder from all collections.
    *
-   * <p>[1]: e://get-collections
+   * <p>[1]: https://developer.box.com/reference/get-collections
    */
   @Nullable protected List<UpdateFolderByIdRequestBodyCollectionsField> collections;
 

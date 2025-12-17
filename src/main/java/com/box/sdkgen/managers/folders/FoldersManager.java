@@ -35,10 +35,11 @@ public class FoldersManager {
    * Retrieves details for a folder, including the first 100 entries in the folder.
    *
    * <p>Passing `sort`, `direction`, `offset`, and `limit` parameters in query allows you to manage
-   * the list of returned [folder items](r://folder--full#param-item-collection).
+   * the list of returned [folder
+   * items](https://developer.box.com/reference/resources/folder--full#param-item-collection).
    *
    * <p>To fetch more items within the folder, use the [Get items in a
-   * folder](e://get-folders-id-items) endpoint.
+   * folder](https://developer.box.com/reference/get-folders-id-items) endpoint.
    *
    * @param folderId The unique identifier that represent a folder.
    *     <p>The ID for any folder can be determined by visiting this folder in the web application
@@ -54,10 +55,11 @@ public class FoldersManager {
    * Retrieves details for a folder, including the first 100 entries in the folder.
    *
    * <p>Passing `sort`, `direction`, `offset`, and `limit` parameters in query allows you to manage
-   * the list of returned [folder items](r://folder--full#param-item-collection).
+   * the list of returned [folder
+   * items](https://developer.box.com/reference/resources/folder--full#param-item-collection).
    *
    * <p>To fetch more items within the folder, use the [Get items in a
-   * folder](e://get-folders-id-items) endpoint.
+   * folder](https://developer.box.com/reference/get-folders-id-items) endpoint.
    *
    * @param folderId The unique identifier that represent a folder.
    *     <p>The ID for any folder can be determined by visiting this folder in the web application
@@ -74,10 +76,11 @@ public class FoldersManager {
    * Retrieves details for a folder, including the first 100 entries in the folder.
    *
    * <p>Passing `sort`, `direction`, `offset`, and `limit` parameters in query allows you to manage
-   * the list of returned [folder items](r://folder--full#param-item-collection).
+   * the list of returned [folder
+   * items](https://developer.box.com/reference/resources/folder--full#param-item-collection).
    *
    * <p>To fetch more items within the folder, use the [Get items in a
-   * folder](e://get-folders-id-items) endpoint.
+   * folder](https://developer.box.com/reference/get-folders-id-items) endpoint.
    *
    * @param folderId The unique identifier that represent a folder.
    *     <p>The ID for any folder can be determined by visiting this folder in the web application
@@ -94,10 +97,11 @@ public class FoldersManager {
    * Retrieves details for a folder, including the first 100 entries in the folder.
    *
    * <p>Passing `sort`, `direction`, `offset`, and `limit` parameters in query allows you to manage
-   * the list of returned [folder items](r://folder--full#param-item-collection).
+   * the list of returned [folder
+   * items](https://developer.box.com/reference/resources/folder--full#param-item-collection).
    *
    * <p>To fetch more items within the folder, use the [Get items in a
-   * folder](e://get-folders-id-items) endpoint.
+   * folder](https://developer.box.com/reference/get-folders-id-items) endpoint.
    *
    * @param folderId The unique identifier that represent a folder.
    *     <p>The ID for any folder can be determined by visiting this folder in the web application

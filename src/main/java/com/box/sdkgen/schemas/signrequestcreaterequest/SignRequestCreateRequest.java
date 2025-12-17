@@ -43,10 +43,10 @@ public class SignRequestCreateRequest extends SignRequestBase {
    * Array of signers for the signature request. 35 is the max number of signers permitted.
    *
    * <p>**Note**: It may happen that some signers belong to conflicting
-   * [segments](r://shield-information-barrier-segment-member) (user groups). This means that due to
-   * the security policies, users are assigned to segments to prevent exchanges or communication
-   * that could lead to ethical conflicts. In such a case, an attempt to send the sign request will
-   * result in an error.
+   * [segments](https://developer.box.com/reference/resources/shield-information-barrier-segment-member)
+   * (user groups). This means that due to the security policies, users are assigned to segments to
+   * prevent exchanges or communication that could lead to ethical conflicts. In such a case, an
+   * attempt to send the sign request will result in an error.
    *
    * <p>Read more about [segments and ethical
    * walls](https://support.box.com/hc/en-us/articles/9920431507603-Understanding-Information-Barriers#h_01GFVJEHQA06N7XEZ4GCZ9GFAQ).

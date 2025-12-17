@@ -34,7 +34,8 @@ public class ArchivesManager {
   /**
    * Retrieves archives for an enterprise.
    *
-   * <p>To learn more about the archive APIs, see the [Archive API Guide](g://archives).
+   * <p>To learn more about the archive APIs, see the [Archive API
+   * Guide](https://developer.box.com/guides/archives).
    */
   public ArchivesV2025R0 getArchivesV2025R0() {
     return getArchivesV2025R0(new GetArchivesV2025R0QueryParams(), new GetArchivesV2025R0Headers());
@@ -43,7 +44,8 @@ public class ArchivesManager {
   /**
    * Retrieves archives for an enterprise.
    *
-   * <p>To learn more about the archive APIs, see the [Archive API Guide](g://archives).
+   * <p>To learn more about the archive APIs, see the [Archive API
+   * Guide](https://developer.box.com/guides/archives).
    *
    * @param queryParams Query parameters of getArchivesV2025R0 method
    */
@@ -54,7 +56,8 @@ public class ArchivesManager {
   /**
    * Retrieves archives for an enterprise.
    *
-   * <p>To learn more about the archive APIs, see the [Archive API Guide](g://archives).
+   * <p>To learn more about the archive APIs, see the [Archive API
+   * Guide](https://developer.box.com/guides/archives).
    *
    * @param headers Headers of getArchivesV2025R0 method
    */
@@ -65,7 +68,8 @@ public class ArchivesManager {
   /**
    * Retrieves archives for an enterprise.
    *
-   * <p>To learn more about the archive APIs, see the [Archive API Guide](g://archives).
+   * <p>To learn more about the archive APIs, see the [Archive API
+   * Guide](https://developer.box.com/guides/archives).
    *
    * @param queryParams Query parameters of getArchivesV2025R0 method
    * @param headers Headers of getArchivesV2025R0 method
@@ -102,7 +106,8 @@ public class ArchivesManager {
   /**
    * Creates an archive.
    *
-   * <p>To learn more about the archive APIs, see the [Archive API Guide](g://archives).
+   * <p>To learn more about the archive APIs, see the [Archive API
+   * Guide](https://developer.box.com/guides/archives).
    *
    * @param requestBody Request body of createArchiveV2025R0 method
    */
@@ -113,7 +118,8 @@ public class ArchivesManager {
   /**
    * Creates an archive.
    *
-   * <p>To learn more about the archive APIs, see the [Archive API Guide](g://archives).
+   * <p>To learn more about the archive APIs, see the [Archive API
+   * Guide](https://developer.box.com/guides/archives).
    *
    * @param requestBody Request body of createArchiveV2025R0 method
    * @param headers Headers of createArchiveV2025R0 method
@@ -146,7 +152,8 @@ public class ArchivesManager {
   /**
    * Permanently deletes an archive.
    *
-   * <p>To learn more about the archive APIs, see the [Archive API Guide](g://archives).
+   * <p>To learn more about the archive APIs, see the [Archive API
+   * Guide](https://developer.box.com/guides/archives).
    *
    * @param archiveId The ID of the archive. Example: "982312"
    */
@@ -157,7 +164,8 @@ public class ArchivesManager {
   /**
    * Permanently deletes an archive.
    *
-   * <p>To learn more about the archive APIs, see the [Archive API Guide](g://archives).
+   * <p>To learn more about the archive APIs, see the [Archive API
+   * Guide](https://developer.box.com/guides/archives).
    *
    * @param archiveId The ID of the archive. Example: "982312"
    * @param headers Headers of deleteArchiveByIdV2025R0 method
@@ -189,7 +197,8 @@ public class ArchivesManager {
   /**
    * Updates an archive.
    *
-   * <p>To learn more about the archive APIs, see the [Archive API Guide](g://archives).
+   * <p>To learn more about the archive APIs, see the [Archive API
+   * Guide](https://developer.box.com/guides/archives).
    *
    * @param archiveId The ID of the archive. Example: "982312"
    */
@@ -203,7 +212,8 @@ public class ArchivesManager {
   /**
    * Updates an archive.
    *
-   * <p>To learn more about the archive APIs, see the [Archive API Guide](g://archives).
+   * <p>To learn more about the archive APIs, see the [Archive API
+   * Guide](https://developer.box.com/guides/archives).
    *
    * @param archiveId The ID of the archive. Example: "982312"
    * @param requestBody Request body of updateArchiveByIdV2025R0 method
@@ -216,7 +226,8 @@ public class ArchivesManager {
   /**
    * Updates an archive.
    *
-   * <p>To learn more about the archive APIs, see the [Archive API Guide](g://archives).
+   * <p>To learn more about the archive APIs, see the [Archive API
+   * Guide](https://developer.box.com/guides/archives).
    *
    * @param archiveId The ID of the archive. Example: "982312"
    * @param headers Headers of updateArchiveByIdV2025R0 method
@@ -229,7 +240,8 @@ public class ArchivesManager {
   /**
    * Updates an archive.
    *
-   * <p>To learn more about the archive APIs, see the [Archive API Guide](g://archives).
+   * <p>To learn more about the archive APIs, see the [Archive API
+   * Guide](https://developer.box.com/guides/archives).
    *
    * @param archiveId The ID of the archive. Example: "982312"
    * @param requestBody Request body of updateArchiveByIdV2025R0 method

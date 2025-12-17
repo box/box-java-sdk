@@ -281,10 +281,11 @@ public class TrashedFoldersManager {
    *
    * <p>Please note that only if the folder itself has been moved to the trash can it be retrieved
    * with this API call. If instead one of its parent folders was moved to the trash, only that
-   * folder can be inspected using the [`GET /folders/:id/trash`](e://get_folders_id_trash) API.
+   * folder can be inspected using the [`GET
+   * /folders/:id/trash`](https://developer.box.com/reference/get-folders-id-trash) API.
    *
    * <p>To list all items that have been moved to the trash, please use the [`GET
-   * /folders/trash/items`](e://get-folders-trash-items/) API.
+   * /folders/trash/items`](https://developer.box.com/reference/get-folders-trash-items/) API.
    *
    * @param folderId The unique identifier that represent a folder.
    *     <p>The ID for any folder can be determined by visiting this folder in the web application
@@ -302,10 +303,11 @@ public class TrashedFoldersManager {
    *
    * <p>Please note that only if the folder itself has been moved to the trash can it be retrieved
    * with this API call. If instead one of its parent folders was moved to the trash, only that
-   * folder can be inspected using the [`GET /folders/:id/trash`](e://get_folders_id_trash) API.
+   * folder can be inspected using the [`GET
+   * /folders/:id/trash`](https://developer.box.com/reference/get-folders-id-trash) API.
    *
    * <p>To list all items that have been moved to the trash, please use the [`GET
-   * /folders/trash/items`](e://get-folders-trash-items/) API.
+   * /folders/trash/items`](https://developer.box.com/reference/get-folders-trash-items/) API.
    *
    * @param folderId The unique identifier that represent a folder.
    *     <p>The ID for any folder can be determined by visiting this folder in the web application
@@ -324,10 +326,11 @@ public class TrashedFoldersManager {
    *
    * <p>Please note that only if the folder itself has been moved to the trash can it be retrieved
    * with this API call. If instead one of its parent folders was moved to the trash, only that
-   * folder can be inspected using the [`GET /folders/:id/trash`](e://get_folders_id_trash) API.
+   * folder can be inspected using the [`GET
+   * /folders/:id/trash`](https://developer.box.com/reference/get-folders-id-trash) API.
    *
    * <p>To list all items that have been moved to the trash, please use the [`GET
-   * /folders/trash/items`](e://get-folders-trash-items/) API.
+   * /folders/trash/items`](https://developer.box.com/reference/get-folders-trash-items/) API.
    *
    * @param folderId The unique identifier that represent a folder.
    *     <p>The ID for any folder can be determined by visiting this folder in the web application
@@ -345,10 +348,11 @@ public class TrashedFoldersManager {
    *
    * <p>Please note that only if the folder itself has been moved to the trash can it be retrieved
    * with this API call. If instead one of its parent folders was moved to the trash, only that
-   * folder can be inspected using the [`GET /folders/:id/trash`](e://get_folders_id_trash) API.
+   * folder can be inspected using the [`GET
+   * /folders/:id/trash`](https://developer.box.com/reference/get-folders-id-trash) API.
    *
    * <p>To list all items that have been moved to the trash, please use the [`GET
-   * /folders/trash/items`](e://get-folders-trash-items/) API.
+   * /folders/trash/items`](https://developer.box.com/reference/get-folders-trash-items/) API.
    *
    * @param folderId The unique identifier that represent a folder.
    *     <p>The ID for any folder can be determined by visiting this folder in the web application
