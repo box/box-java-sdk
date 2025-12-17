@@ -203,13 +203,15 @@ public class AiManager {
    * <p>To define the extraction structure, provide either a metadata template or a list of fields.
    * To learn more about creating templates, see [Creating metadata templates in the Admin
    * Console](https://support.box.com/hc/en-us/articles/360044194033-Customizing-Metadata-Templates)
-   * or use the [metadata template API](g://metadata/templates/create).
+   * or use the [metadata template API](https://developer.box.com/guides/metadata/templates/create).
    *
    * <p>This endpoint also supports [Enhanced Extract
-   * Agent](g://box-ai/ai-tutorials/extract-metadata-structured/#enhanced-extract-agent).
+   * Agent](https://developer.box.com/guides/box-ai/ai-tutorials/extract-metadata-structured#enhanced-extract-agent).
    *
    * <p>For information about supported file formats and languages, see the [Extract metadata from
-   * file (structured)](g://box-ai/ai-tutorials/extract-metadata-structured) API guide.
+   * file
+   * (structured)](https://developer.box.com/guides/box-ai/ai-tutorials/extract-metadata-structured)
+   * API guide.
    *
    * @param requestBody Request body of createAiExtractStructured method
    */
@@ -224,13 +226,15 @@ public class AiManager {
    * <p>To define the extraction structure, provide either a metadata template or a list of fields.
    * To learn more about creating templates, see [Creating metadata templates in the Admin
    * Console](https://support.box.com/hc/en-us/articles/360044194033-Customizing-Metadata-Templates)
-   * or use the [metadata template API](g://metadata/templates/create).
+   * or use the [metadata template API](https://developer.box.com/guides/metadata/templates/create).
    *
    * <p>This endpoint also supports [Enhanced Extract
-   * Agent](g://box-ai/ai-tutorials/extract-metadata-structured/#enhanced-extract-agent).
+   * Agent](https://developer.box.com/guides/box-ai/ai-tutorials/extract-metadata-structured#enhanced-extract-agent).
    *
    * <p>For information about supported file formats and languages, see the [Extract metadata from
-   * file (structured)](g://box-ai/ai-tutorials/extract-metadata-structured) API guide.
+   * file
+   * (structured)](https://developer.box.com/guides/box-ai/ai-tutorials/extract-metadata-structured)
+   * API guide.
    *
    * @param requestBody Request body of createAiExtractStructured method
    * @param headers Headers of createAiExtractStructured method

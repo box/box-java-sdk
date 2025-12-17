@@ -36,8 +36,9 @@ public class FileVersionRetentionsManager {
    *
    * <p>**Note**: File retention API is now **deprecated**. To get information about files and file
    * versions under retention, see [files under
-   * retention](e://get-retention-policy-assignments-id-files-under-retention) or [file versions
-   * under retention](e://get-retention-policy-assignments-id-file-versions-under-retention)
+   * retention](https://developer.box.com/reference/get-retention-policy-assignments-id-files-under-retention)
+   * or [file versions under
+   * retention](https://developer.box.com/reference/get-retention-policy-assignments-id-file-versions-under-retention)
    * endpoints.
    */
   public FileVersionRetentions getFileVersionRetentions() {
@@ -50,8 +51,9 @@ public class FileVersionRetentionsManager {
    *
    * <p>**Note**: File retention API is now **deprecated**. To get information about files and file
    * versions under retention, see [files under
-   * retention](e://get-retention-policy-assignments-id-files-under-retention) or [file versions
-   * under retention](e://get-retention-policy-assignments-id-file-versions-under-retention)
+   * retention](https://developer.box.com/reference/get-retention-policy-assignments-id-files-under-retention)
+   * or [file versions under
+   * retention](https://developer.box.com/reference/get-retention-policy-assignments-id-file-versions-under-retention)
    * endpoints.
    *
    * @param queryParams Query parameters of getFileVersionRetentions method
@@ -66,8 +68,9 @@ public class FileVersionRetentionsManager {
    *
    * <p>**Note**: File retention API is now **deprecated**. To get information about files and file
    * versions under retention, see [files under
-   * retention](e://get-retention-policy-assignments-id-files-under-retention) or [file versions
-   * under retention](e://get-retention-policy-assignments-id-file-versions-under-retention)
+   * retention](https://developer.box.com/reference/get-retention-policy-assignments-id-files-under-retention)
+   * or [file versions under
+   * retention](https://developer.box.com/reference/get-retention-policy-assignments-id-file-versions-under-retention)
    * endpoints.
    *
    * @param headers Headers of getFileVersionRetentions method
@@ -81,8 +84,9 @@ public class FileVersionRetentionsManager {
    *
    * <p>**Note**: File retention API is now **deprecated**. To get information about files and file
    * versions under retention, see [files under
-   * retention](e://get-retention-policy-assignments-id-files-under-retention) or [file versions
-   * under retention](e://get-retention-policy-assignments-id-file-versions-under-retention)
+   * retention](https://developer.box.com/reference/get-retention-policy-assignments-id-files-under-retention)
+   * or [file versions under
+   * retention](https://developer.box.com/reference/get-retention-policy-assignments-id-file-versions-under-retention)
    * endpoints.
    *
    * @param queryParams Query parameters of getFileVersionRetentions method
@@ -126,8 +130,9 @@ public class FileVersionRetentionsManager {
    *
    * <p>**Note**: File retention API is now **deprecated**. To get information about files and file
    * versions under retention, see [files under
-   * retention](e://get-retention-policy-assignments-id-files-under-retention) or [file versions
-   * under retention](e://get-retention-policy-assignments-id-file-versions-under-retention)
+   * retention](https://developer.box.com/reference/get-retention-policy-assignments-id-files-under-retention)
+   * or [file versions under
+   * retention](https://developer.box.com/reference/get-retention-policy-assignments-id-file-versions-under-retention)
    * endpoints.
    *
    * @param fileVersionRetentionId The ID of the file version retention. Example: "3424234"
@@ -142,8 +147,9 @@ public class FileVersionRetentionsManager {
    *
    * <p>**Note**: File retention API is now **deprecated**. To get information about files and file
    * versions under retention, see [files under
-   * retention](e://get-retention-policy-assignments-id-files-under-retention) or [file versions
-   * under retention](e://get-retention-policy-assignments-id-file-versions-under-retention)
+   * retention](https://developer.box.com/reference/get-retention-policy-assignments-id-files-under-retention)
+   * or [file versions under
+   * retention](https://developer.box.com/reference/get-retention-policy-assignments-id-file-versions-under-retention)
    * endpoints.
    *
    * @param fileVersionRetentionId The ID of the file version retention. Example: "3424234"

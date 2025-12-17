@@ -17,7 +17,7 @@ public class AiAgentSpreadsheetTool extends SerializableObject {
 
   /**
    * The model used for the AI agent for spreadsheets. For specific model values, see the [available
-   * models list](g://box-ai/supported-models).
+   * models list](https://developer.box.com/guides/box-ai/supported-models).
    */
   protected String model;
 
