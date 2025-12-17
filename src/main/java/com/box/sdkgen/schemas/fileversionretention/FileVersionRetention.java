@@ -22,8 +22,10 @@ import java.util.Objects;
  *
  * <p>**Note**: File retention API is now **deprecated**. To get information about files and file
  * versions under retention, see [files under
- * retention](e://get-retention-policy-assignments-id-files-under-retention) or [file versions under
- * retention](e://get-retention-policy-assignments-id-file-versions-under-retention) endpoints.
+ * retention](https://developer.box.com/reference/get-retention-policy-assignments-id-files-under-retention)
+ * or [file versions under
+ * retention](https://developer.box.com/reference/get-retention-policy-assignments-id-file-versions-under-retention)
+ * endpoints.
  */
 @JsonFilter("nullablePropertyFilter")
 public class FileVersionRetention extends SerializableObject {

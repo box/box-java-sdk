@@ -210,7 +210,8 @@ public class SearchForContentQueryParams {
    * through a shared link.
    *
    * <p>When this parameter has been set to true, the format of the response of this API changes to
-   * return a list of [Search Results with Shared Links](r://search_results_with_shared_links).
+   * return a list of [Search Results with Shared
+   * Links](https://developer.box.com/reference/resources/search-results-with-shared-links).
    */
   public Boolean includeRecentSharedLinks;
 

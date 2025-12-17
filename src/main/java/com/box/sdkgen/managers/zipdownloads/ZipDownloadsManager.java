@@ -101,8 +101,8 @@ public class ZipDownloadsManager {
    * request for a zip archive would need to be created.
    *
    * <p>The URL of this endpoint should not be considered as fixed. Instead, use the [Create zip
-   * download](e://post_zip_downloads) API to request to create a `zip` archive, and then follow the
-   * `download_url` field in the response to this endpoint.
+   * download](https://developer.box.com/reference/post-zip-downloads) API to request to create a
+   * `zip` archive, and then follow the `download_url` field in the response to this endpoint.
    *
    * @param downloadUrl The URL that can be used to download created `zip` archive. Example:
    *     `https://dl.boxcloud.com/2.0/zip_downloads/29l00nfxDyHOt7RphI9zT_w==nDnZEDjY2S8iEWWCHEEiptFxwoWojjlibZjJ6geuE5xnXENDTPxzgbks_yY=/content`
@@ -121,8 +121,8 @@ public class ZipDownloadsManager {
    * request for a zip archive would need to be created.
    *
    * <p>The URL of this endpoint should not be considered as fixed. Instead, use the [Create zip
-   * download](e://post_zip_downloads) API to request to create a `zip` archive, and then follow the
-   * `download_url` field in the response to this endpoint.
+   * download](https://developer.box.com/reference/post-zip-downloads) API to request to create a
+   * `zip` archive, and then follow the `download_url` field in the response to this endpoint.
    *
    * @param downloadUrl The URL that can be used to download created `zip` archive. Example:
    *     `https://dl.boxcloud.com/2.0/zip_downloads/29l00nfxDyHOt7RphI9zT_w==nDnZEDjY2S8iEWWCHEEiptFxwoWojjlibZjJ6geuE5xnXENDTPxzgbks_yY=/content`
@@ -152,8 +152,8 @@ public class ZipDownloadsManager {
    * is valid for 12 hours from the start of the download.
    *
    * <p>The URL of this endpoint should not be considered as fixed. Instead, use the [Create zip
-   * download](e://post_zip_downloads) API to request to create a `zip` archive, and then follow the
-   * `status_url` field in the response to this endpoint.
+   * download](https://developer.box.com/reference/post-zip-downloads) API to request to create a
+   * `zip` archive, and then follow the `status_url` field in the response to this endpoint.
    *
    * @param statusUrl The URL that can be used to get the status of the `zip` archive being
    *     downloaded. Example:
@@ -171,8 +171,8 @@ public class ZipDownloadsManager {
    * is valid for 12 hours from the start of the download.
    *
    * <p>The URL of this endpoint should not be considered as fixed. Instead, use the [Create zip
-   * download](e://post_zip_downloads) API to request to create a `zip` archive, and then follow the
-   * `status_url` field in the response to this endpoint.
+   * download](https://developer.box.com/reference/post-zip-downloads) API to request to create a
+   * `zip` archive, and then follow the `status_url` field in the response to this endpoint.
    *
    * @param statusUrl The URL that can be used to get the status of the `zip` archive being
    *     downloaded. Example:

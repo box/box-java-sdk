@@ -14,7 +14,7 @@ public class AddClassificationToFolderRequestBody extends SerializableObject {
    *
    * <p>To list the available classifications in an enterprise, use the classification API to
    * retrieve the [classification
-   * template](e://get_metadata_templates_enterprise_securityClassification-6VMVochwUWo_schema)
+   * template](https://developer.box.com/reference/get-metadata-templates-enterprise-securityClassification-6VMVochwUWo-schema)
    * which lists all available classification keys.
    */
   @JsonProperty("Box__Security__Classification__Key")
