@@ -17,7 +17,8 @@ public enum MetadataTemplateFieldsTypeField implements Valuable {
   DATE("date"),
   ENUM("enum"),
   MULTISELECT("multiSelect"),
-  INTEGER("integer");
+  INTEGER("integer"),
+  TAXONOMY("taxonomy");
 
   private final String value;
 
