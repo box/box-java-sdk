@@ -331,19 +331,19 @@ public class MetadataTaxonomiesManager {
    * @param namespace The namespace of the metadata taxonomy. Example: "enterprise_123456"
    * @param taxonomyKey The key of the metadata taxonomy. Example: "geography"
    * @param levelIndex The index of the metadata taxonomy level. Example: 1
-   * @param requestBody Request body of patchMetadataTaxonomiesIdIdLevelsId method
+   * @param requestBody Request body of updateMetadataTaxonomyLevelById method
    */
-  public MetadataTaxonomyLevel patchMetadataTaxonomiesIdIdLevelsId(
+  public MetadataTaxonomyLevel updateMetadataTaxonomyLevelById(
       String namespace,
       String taxonomyKey,
       long levelIndex,
-      PatchMetadataTaxonomiesIdIdLevelsIdRequestBody requestBody) {
-    return patchMetadataTaxonomiesIdIdLevelsId(
+      UpdateMetadataTaxonomyLevelByIdRequestBody requestBody) {
+    return updateMetadataTaxonomyLevelById(
         namespace,
         taxonomyKey,
         levelIndex,
         requestBody,
-        new PatchMetadataTaxonomiesIdIdLevelsIdHeaders());
+        new UpdateMetadataTaxonomyLevelByIdHeaders());
   }
 
   /**
@@ -352,15 +352,15 @@ public class MetadataTaxonomiesManager {
    * @param namespace The namespace of the metadata taxonomy. Example: "enterprise_123456"
    * @param taxonomyKey The key of the metadata taxonomy. Example: "geography"
    * @param levelIndex The index of the metadata taxonomy level. Example: 1
-   * @param requestBody Request body of patchMetadataTaxonomiesIdIdLevelsId method
-   * @param headers Headers of patchMetadataTaxonomiesIdIdLevelsId method
+   * @param requestBody Request body of updateMetadataTaxonomyLevelById method
+   * @param headers Headers of updateMetadataTaxonomyLevelById method
    */
-  public MetadataTaxonomyLevel patchMetadataTaxonomiesIdIdLevelsId(
+  public MetadataTaxonomyLevel updateMetadataTaxonomyLevelById(
       String namespace,
       String taxonomyKey,
       long levelIndex,
-      PatchMetadataTaxonomiesIdIdLevelsIdRequestBody requestBody,
-      PatchMetadataTaxonomiesIdIdLevelsIdHeaders headers) {
+      UpdateMetadataTaxonomyLevelByIdRequestBody requestBody,
+      UpdateMetadataTaxonomyLevelByIdHeaders headers) {
     Map<String, String> headersMap = prepareParams(mergeMaps(mapOf(), headers.getExtraHeaders()));
     FetchResponse response =
         this.networkSession
@@ -837,14 +837,14 @@ public class MetadataTaxonomiesManager {
    * unless a `query` parameter is passed. With a `query` parameter specified, results are sorted in
    * order of relevance.
    *
-   * @param scope The scope of the metadata template. Example: "global"
+   * @param namespace The namespace of the metadata taxonomy. Example: "enterprise_123456"
    * @param templateKey The name of the metadata template. Example: "properties"
    * @param fieldKey The key of the metadata taxonomy field in the template. Example: "geography"
    */
   public MetadataTaxonomyNodes getMetadataTemplateFieldOptions(
-      GetMetadataTemplateFieldOptionsScope scope, String templateKey, String fieldKey) {
+      String namespace, String templateKey, String fieldKey) {
     return getMetadataTemplateFieldOptions(
-        scope,
+        namespace,
         templateKey,
         fieldKey,
         new GetMetadataTemplateFieldOptionsQueryParams(),
@@ -857,18 +857,22 @@ public class MetadataTaxonomiesManager {
    * unless a `query` parameter is passed. With a `query` parameter specified, results are sorted in
    * order of relevance.
    *
-   * @param scope The scope of the metadata template. Example: "global"
+   * @param namespace The namespace of the metadata taxonomy. Example: "enterprise_123456"
    * @param templateKey The name of the metadata template. Example: "properties"
    * @param fieldKey The key of the metadata taxonomy field in the template. Example: "geography"
    * @param queryParams Query parameters of getMetadataTemplateFieldOptions method
    */
   public MetadataTaxonomyNodes getMetadataTemplateFieldOptions(
-      GetMetadataTemplateFieldOptionsScope scope,
+      String namespace,
       String templateKey,
       String fieldKey,
       GetMetadataTemplateFieldOptionsQueryParams queryParams) {
     return getMetadataTemplateFieldOptions(
-        scope, templateKey, fieldKey, queryParams, new GetMetadataTemplateFieldOptionsHeaders());
+        namespace,
+        templateKey,
+        fieldKey,
+        queryParams,
+        new GetMetadataTemplateFieldOptionsHeaders());
   }
 
   /**
@@ -877,18 +881,22 @@ public class MetadataTaxonomiesManager {
    * unless a `query` parameter is passed. With a `query` parameter specified, results are sorted in
    * order of relevance.
    *
-   * @param scope The scope of the metadata template. Example: "global"
+   * @param namespace The namespace of the metadata taxonomy. Example: "enterprise_123456"
    * @param templateKey The name of the metadata template. Example: "properties"
    * @param fieldKey The key of the metadata taxonomy field in the template. Example: "geography"
    * @param headers Headers of getMetadataTemplateFieldOptions method
    */
   public MetadataTaxonomyNodes getMetadataTemplateFieldOptions(
-      GetMetadataTemplateFieldOptionsScope scope,
+      String namespace,
       String templateKey,
       String fieldKey,
       GetMetadataTemplateFieldOptionsHeaders headers) {
     return getMetadataTemplateFieldOptions(
-        scope, templateKey, fieldKey, new GetMetadataTemplateFieldOptionsQueryParams(), headers);
+        namespace,
+        templateKey,
+        fieldKey,
+        new GetMetadataTemplateFieldOptionsQueryParams(),
+        headers);
   }
 
   /**
@@ -897,14 +905,14 @@ public class MetadataTaxonomiesManager {
    * unless a `query` parameter is passed. With a `query` parameter specified, results are sorted in
    * order of relevance.
    *
-   * @param scope The scope of the metadata template. Example: "global"
+   * @param namespace The namespace of the metadata taxonomy. Example: "enterprise_123456"
    * @param templateKey The name of the metadata template. Example: "properties"
    * @param fieldKey The key of the metadata taxonomy field in the template. Example: "geography"
    * @param queryParams Query parameters of getMetadataTemplateFieldOptions method
    * @param headers Headers of getMetadataTemplateFieldOptions method
    */
   public MetadataTaxonomyNodes getMetadataTemplateFieldOptions(
-      GetMetadataTemplateFieldOptionsScope scope,
+      String namespace,
       String templateKey,
       String fieldKey,
       GetMetadataTemplateFieldOptionsQueryParams queryParams,
@@ -934,7 +942,7 @@ public class MetadataTaxonomiesManager {
                             "",
                             this.networkSession.getBaseUrls().getBaseUrl(),
                             "/2.0/metadata_templates/",
-                            convertToString(scope),
+                            convertToString(namespace),
                             "/",
                             convertToString(templateKey),
                             "/fields/",
