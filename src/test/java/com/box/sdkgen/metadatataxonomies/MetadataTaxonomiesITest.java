@@ -1,6 +1,7 @@
 package com.box.sdkgen.metadatataxonomies;
 
 import static com.box.sdkgen.commons.CommonsManager.getDefaultClient;
+import static com.box.sdkgen.internal.utils.UtilsManager.convertToString;
 import static com.box.sdkgen.internal.utils.UtilsManager.delayInSeconds;
 import static com.box.sdkgen.internal.utils.UtilsManager.getEnvVar;
 import static com.box.sdkgen.internal.utils.UtilsManager.getUuid;
@@ -10,14 +11,21 @@ import com.box.sdkgen.client.BoxClient;
 import com.box.sdkgen.managers.metadatataxonomies.AddMetadataTaxonomyLevelRequestBody;
 import com.box.sdkgen.managers.metadatataxonomies.CreateMetadataTaxonomyNodeRequestBody;
 import com.box.sdkgen.managers.metadatataxonomies.CreateMetadataTaxonomyRequestBody;
+import com.box.sdkgen.managers.metadatataxonomies.UpdateMetadataTaxonomyLevelByIdRequestBody;
 import com.box.sdkgen.managers.metadatataxonomies.UpdateMetadataTaxonomyNodeRequestBody;
 import com.box.sdkgen.managers.metadatataxonomies.UpdateMetadataTaxonomyRequestBody;
+import com.box.sdkgen.managers.metadatatemplates.CreateMetadataTemplateRequestBody;
+import com.box.sdkgen.managers.metadatatemplates.CreateMetadataTemplateRequestBodyFieldsField;
+import com.box.sdkgen.managers.metadatatemplates.CreateMetadataTemplateRequestBodyFieldsOptionsRulesField;
+import com.box.sdkgen.managers.metadatatemplates.CreateMetadataTemplateRequestBodyFieldsTypeField;
+import com.box.sdkgen.managers.metadatatemplates.DeleteMetadataTemplateScope;
 import com.box.sdkgen.schemas.metadatataxonomies.MetadataTaxonomies;
 import com.box.sdkgen.schemas.metadatataxonomy.MetadataTaxonomy;
 import com.box.sdkgen.schemas.metadatataxonomylevel.MetadataTaxonomyLevel;
 import com.box.sdkgen.schemas.metadatataxonomylevels.MetadataTaxonomyLevels;
 import com.box.sdkgen.schemas.metadatataxonomynode.MetadataTaxonomyNode;
 import com.box.sdkgen.schemas.metadatataxonomynodes.MetadataTaxonomyNodes;
+import com.box.sdkgen.schemas.metadatatemplate.MetadataTemplate;
 import java.util.Arrays;
 import org.junit.jupiter.api.Test;
 
@@ -96,6 +104,19 @@ public class MetadataTaxonomiesITest {
     assert taxonomyLevels.getEntries().size() == 2;
     assert taxonomyLevels.getEntries().get(0).getDisplayName().equals("Continent");
     assert taxonomyLevels.getEntries().get(1).getDisplayName().equals("Country");
+    MetadataTaxonomyLevel updatedTaxonomyLevels =
+        client
+            .getMetadataTaxonomies()
+            .updateMetadataTaxonomyLevelById(
+                namespace,
+                taxonomyKey,
+                1L,
+                new UpdateMetadataTaxonomyLevelByIdRequestBody.Builder("Continent UPDATED")
+                    .description("Continent Level UPDATED")
+                    .build());
+    assert updatedTaxonomyLevels.getDisplayName().equals("Continent UPDATED");
+    assert updatedTaxonomyLevels.getDescription().equals("Continent Level UPDATED");
+    assert updatedTaxonomyLevels.getLevel() == taxonomyLevels.getEntries().get(0).getLevel();
     MetadataTaxonomyLevels taxonomyLevelsAfterAddition =
         client
             .getMetadataTaxonomies()
@@ -110,7 +131,11 @@ public class MetadataTaxonomiesITest {
     MetadataTaxonomyLevels taxonomyLevelsAfterDeletion =
         client.getMetadataTaxonomies().deleteMetadataTaxonomyLevel(namespace, taxonomyKey);
     assert taxonomyLevelsAfterDeletion.getEntries().size() == 2;
-    assert taxonomyLevelsAfterDeletion.getEntries().get(0).getDisplayName().equals("Continent");
+    assert taxonomyLevelsAfterDeletion
+        .getEntries()
+        .get(0)
+        .getDisplayName()
+        .equals("Continent UPDATED");
     assert taxonomyLevelsAfterDeletion.getEntries().get(1).getDisplayName().equals("Country");
     MetadataTaxonomyNode continentNode =
         client
@@ -155,6 +180,41 @@ public class MetadataTaxonomiesITest {
             .getMetadataTaxonomyNodeById(namespace, taxonomyKey, countryNode.getId());
     assert getCountryNode.getDisplayName().equals("Poland UPDATED");
     assert getCountryNode.getId().equals(countryNode.getId());
+    String metadataTemplateKey = String.join("", "templateKey", getUuid());
+    MetadataTemplate metadataTemplate =
+        client
+            .getMetadataTemplates()
+            .createMetadataTemplate(
+                new CreateMetadataTemplateRequestBody.Builder("enterprise", metadataTemplateKey)
+                    .templateKey(metadataTemplateKey)
+                    .fields(
+                        Arrays.asList(
+                            new CreateMetadataTemplateRequestBodyFieldsField.Builder(
+                                    CreateMetadataTemplateRequestBodyFieldsTypeField.TAXONOMY,
+                                    "taxonomy",
+                                    "taxonomy")
+                                .taxonomyKey(taxonomyKey)
+                                .namespace(namespace)
+                                .optionsRules(
+                                    new CreateMetadataTemplateRequestBodyFieldsOptionsRulesField
+                                            .Builder()
+                                        .multiSelect(true)
+                                        .selectableLevels(Arrays.asList(1L))
+                                        .build())
+                                .build()))
+                    .build());
+    assert metadataTemplate.getTemplateKey().equals(metadataTemplateKey);
+    assert metadataTemplate.getDisplayName().equals(metadataTemplateKey);
+    assert metadataTemplate.getFields().size() == 1;
+    assert convertToString(metadataTemplate.getFields().get(0).getType()).equals("taxonomy");
+    MetadataTaxonomyNodes options =
+        client
+            .getMetadataTaxonomies()
+            .getMetadataTemplateFieldOptions(namespace, metadataTemplateKey, "taxonomy");
+    assert options.getEntries().size() == 1;
+    client
+        .getMetadataTemplates()
+        .deleteMetadataTemplate(DeleteMetadataTemplateScope.ENTERPRISE, metadataTemplateKey);
     client
         .getMetadataTaxonomies()
         .deleteMetadataTaxonomyNode(namespace, taxonomyKey, countryNode.getId());

@@ -7,7 +7,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.Objects;
 
 @JsonFilter("nullablePropertyFilter")
-public class PatchMetadataTaxonomiesIdIdLevelsIdRequestBody extends SerializableObject {
+public class UpdateMetadataTaxonomyLevelByIdRequestBody extends SerializableObject {
 
   /** The display name of the taxonomy level. */
   protected final String displayName;
@@ -15,13 +15,13 @@ public class PatchMetadataTaxonomiesIdIdLevelsIdRequestBody extends Serializable
   /** The description of the taxonomy level. */
   protected String description;
 
-  public PatchMetadataTaxonomiesIdIdLevelsIdRequestBody(
+  public UpdateMetadataTaxonomyLevelByIdRequestBody(
       @JsonProperty("displayName") String displayName) {
     super();
     this.displayName = displayName;
   }
 
-  protected PatchMetadataTaxonomiesIdIdLevelsIdRequestBody(Builder builder) {
+  protected UpdateMetadataTaxonomyLevelByIdRequestBody(Builder builder) {
     super();
     this.displayName = builder.displayName;
     this.description = builder.description;
@@ -44,8 +44,8 @@ public class PatchMetadataTaxonomiesIdIdLevelsIdRequestBody extends Serializable
     if (o == null || getClass() != o.getClass()) {
       return false;
     }
-    PatchMetadataTaxonomiesIdIdLevelsIdRequestBody casted =
-        (PatchMetadataTaxonomiesIdIdLevelsIdRequestBody) o;
+    UpdateMetadataTaxonomyLevelByIdRequestBody casted =
+        (UpdateMetadataTaxonomyLevelByIdRequestBody) o;
     return Objects.equals(displayName, casted.displayName)
         && Objects.equals(description, casted.description);
   }
@@ -57,7 +57,7 @@ public class PatchMetadataTaxonomiesIdIdLevelsIdRequestBody extends Serializable
 
   @Override
   public String toString() {
-    return "PatchMetadataTaxonomiesIdIdLevelsIdRequestBody{"
+    return "UpdateMetadataTaxonomyLevelByIdRequestBody{"
         + "displayName='"
         + displayName
         + '\''
@@ -84,8 +84,8 @@ public class PatchMetadataTaxonomiesIdIdLevelsIdRequestBody extends Serializable
       return this;
     }
 
-    public PatchMetadataTaxonomiesIdIdLevelsIdRequestBody build() {
-      return new PatchMetadataTaxonomiesIdIdLevelsIdRequestBody(this);
+    public UpdateMetadataTaxonomyLevelByIdRequestBody build() {
+      return new UpdateMetadataTaxonomyLevelByIdRequestBody(this);
     }
   }
 }

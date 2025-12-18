@@ -4,16 +4,16 @@ import static com.box.sdkgen.internal.utils.UtilsManager.mapOf;
 
 import java.util.Map;
 
-public class PatchMetadataTaxonomiesIdIdLevelsIdHeaders {
+public class UpdateMetadataTaxonomyLevelByIdHeaders {
 
   /** Extra headers that will be included in the HTTP request. */
   public Map<String, String> extraHeaders;
 
-  public PatchMetadataTaxonomiesIdIdLevelsIdHeaders() {
+  public UpdateMetadataTaxonomyLevelByIdHeaders() {
     this.extraHeaders = mapOf();
   }
 
-  protected PatchMetadataTaxonomiesIdIdLevelsIdHeaders(Builder builder) {
+  protected UpdateMetadataTaxonomyLevelByIdHeaders(Builder builder) {
     this.extraHeaders = builder.extraHeaders;
   }
 
@@ -34,8 +34,8 @@ public class PatchMetadataTaxonomiesIdIdLevelsIdHeaders {
       return this;
     }
 
-    public PatchMetadataTaxonomiesIdIdLevelsIdHeaders build() {
-      return new PatchMetadataTaxonomiesIdIdLevelsIdHeaders(this);
+    public UpdateMetadataTaxonomyLevelByIdHeaders build() {
+      return new UpdateMetadataTaxonomyLevelByIdHeaders(this);
     }
   }
 }
