@@ -331,19 +331,19 @@ public class MetadataTaxonomiesManager {
    * @param namespace The namespace of the metadata taxonomy. Example: "enterprise_123456"
    * @param taxonomyKey The key of the metadata taxonomy. Example: "geography"
    * @param levelIndex The index of the metadata taxonomy level. Example: 1
-   * @param requestBody Request body of patchMetadataTaxonomiesIdIdLevelsId method
+   * @param requestBody Request body of updateMetadataTaxonomyLevelById method
    */
-  public MetadataTaxonomyLevel patchMetadataTaxonomiesIdIdLevelsId(
+  public MetadataTaxonomyLevel updateMetadataTaxonomyLevelById(
       String namespace,
       String taxonomyKey,
       long levelIndex,
-      PatchMetadataTaxonomiesIdIdLevelsIdRequestBody requestBody) {
-    return patchMetadataTaxonomiesIdIdLevelsId(
+      UpdateMetadataTaxonomyLevelByIdRequestBody requestBody) {
+    return updateMetadataTaxonomyLevelById(
         namespace,
         taxonomyKey,
         levelIndex,
         requestBody,
-        new PatchMetadataTaxonomiesIdIdLevelsIdHeaders());
+        new UpdateMetadataTaxonomyLevelByIdHeaders());
   }
 
   /**
@@ -352,15 +352,15 @@ public class MetadataTaxonomiesManager {
    * @param namespace The namespace of the metadata taxonomy. Example: "enterprise_123456"
    * @param taxonomyKey The key of the metadata taxonomy. Example: "geography"
    * @param levelIndex The index of the metadata taxonomy level. Example: 1
-   * @param requestBody Request body of patchMetadataTaxonomiesIdIdLevelsId method
-   * @param headers Headers of patchMetadataTaxonomiesIdIdLevelsId method
+   * @param requestBody Request body of updateMetadataTaxonomyLevelById method
+   * @param headers Headers of updateMetadataTaxonomyLevelById method
    */
-  public MetadataTaxonomyLevel patchMetadataTaxonomiesIdIdLevelsId(
+  public MetadataTaxonomyLevel updateMetadataTaxonomyLevelById(
       String namespace,
       String taxonomyKey,
       long levelIndex,
-      PatchMetadataTaxonomiesIdIdLevelsIdRequestBody requestBody,
-      PatchMetadataTaxonomiesIdIdLevelsIdHeaders headers) {
+      UpdateMetadataTaxonomyLevelByIdRequestBody requestBody,
+      UpdateMetadataTaxonomyLevelByIdHeaders headers) {
     Map<String, String> headersMap = prepareParams(mergeMaps(mapOf(), headers.getExtraHeaders()));
     FetchResponse response =
         this.networkSession
