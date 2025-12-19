@@ -2,6 +2,21 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [5.3.0](https://github.com/box/box-java-sdk/compare/v5.2.0...v5.3.0) (2025-12-19)
+
+
+### New Features and Enhancements:
+
+* **boxsdkgen:** add Metadata Taxonomies api (box/box-openapi[#569](https://github.com/box/box-java-sdk/issues/569)) ([#1629](https://github.com/box/box-java-sdk/issues/1629)) ([7236f16](https://github.com/box/box-java-sdk/commit/7236f16bf39a3376eaad4ba6e143633cc5c2f4b2))
+* **boxsdkgen:** text input validation for Box Sign (box/box-openapi[#568](https://github.com/box/box-java-sdk/issues/568)) ([#1623](https://github.com/box/box-java-sdk/issues/1623)) ([a5d74ee](https://github.com/box/box-java-sdk/commit/a5d74eeb4b9b053ab00ebf33cf4f9b862ea4b586))
+* **boxsdkgen:** treat `nullable` fields as Optional (box/box-codegen[#906](https://github.com/box/box-java-sdk/issues/906)) ([#1633](https://github.com/box/box-java-sdk/issues/1633)) ([e14e97b](https://github.com/box/box-java-sdk/commit/e14e97bb7a53c967851f7b92bc43400bdfc8da8b))
+
+
+### Bug Fixes:
+
+* **boxsdkgen:** add taxonomy to Metadata Field (read) definition (box/box-openapi[#572](https://github.com/box/box-java-sdk/issues/572)) ([#1643](https://github.com/box/box-java-sdk/issues/1643)) ([492684e](https://github.com/box/box-java-sdk/commit/492684e45730b7f56bc1539c4086be45b30127ae))
+* **boxsdkgen:** fix `RetryAfter` function when there's no `Retry-After` header (box/box-codegen[#903](https://github.com/box/box-java-sdk/issues/903)) ([#1621](https://github.com/box/box-java-sdk/issues/1621)) ([af4861f](https://github.com/box/box-java-sdk/commit/af4861f832e03d68614d6bd3c9852ca48a49ae0f))
+
 ## [5.2.0](https://github.com/box/box-java-sdk/compare/v5.1.0...v5.2.0) (2025-12-10)
 
 
