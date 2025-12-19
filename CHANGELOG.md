@@ -2,6 +2,21 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [10.4.0](https://github.com/box/box-java-sdk/compare/v10.3.0...v10.4.0) (2025-12-19)
+
+
+### Bug Fixes
+
+* add taxonomy to Metadata Field (read) definition (box/box-openapi[#572](https://github.com/box/box-java-sdk/issues/572)) ([#1644](https://github.com/box/box-java-sdk/issues/1644)) ([61235da](https://github.com/box/box-java-sdk/commit/61235da7d51a64845d344a8286821e59b217a848))
+* fix `RetryAfter` function when there's no `Retry-After` header (box/box-codegen[#903](https://github.com/box/box-java-sdk/issues/903)) ([#1622](https://github.com/box/box-java-sdk/issues/1622)) ([f135e2b](https://github.com/box/box-java-sdk/commit/f135e2b62d4b2d2d266ab40b3b366c8c7968d2db))
+
+
+### New Features and Enhancements
+
+* add Metadata Taxonomies api (box/box-openapi[#569](https://github.com/box/box-java-sdk/issues/569)) ([#1630](https://github.com/box/box-java-sdk/issues/1630)) ([d1e8924](https://github.com/box/box-java-sdk/commit/d1e8924ad123e5fcbf014be50fbbf52ea45d546b))
+* text input validation for Box Sign (box/box-openapi[#568](https://github.com/box/box-java-sdk/issues/568)) ([#1624](https://github.com/box/box-java-sdk/issues/1624)) ([8c5b5c1](https://github.com/box/box-java-sdk/commit/8c5b5c17285c1c0d4a644eb8187dac92f1f96f28))
+* Treat `nullable` fields as Optional (box/box-codegen[#906](https://github.com/box/box-java-sdk/issues/906)) ([#1634](https://github.com/box/box-java-sdk/issues/1634)) ([cacc729](https://github.com/box/box-java-sdk/commit/cacc729dc246c914eb1a6d8281f4261c96711dc1))
+
 ## [10.3.0](https://github.com/box/box-java-sdk/compare/v10.2.0...v10.3.0) (2025-12-10)
 
 
