@@ -61,7 +61,7 @@ public class ShieldListsITest {
                 new ShieldListsCreateV2025R0.Builder(
                         shieldListContentEmailName,
                         new ShieldListContentEmailV2025R0.Builder(
-                                Arrays.asList("test@box.com", "test@example.com"))
+                                Arrays.asList("test@boxdemo.com", "test@example.com"))
                             .type(ShieldListContentEmailV2025R0TypeField.EMAIL)
                             .build())
                     .description("A list of things that are shielded")
