@@ -29,7 +29,7 @@ public class SignRequestsITest {
 
   @Test
   public void testCreateGetCancelAndListSignRequest() {
-    String signerEmail = String.join("", getUuid(), "@box.com");
+    String signerEmail = String.join("", getUuid(), "@boxdemo.com");
     FileFull fileToSign = uploadNewFile();
     FolderFull destinationFolder = createNewFolder();
     SignRequest createdSignRequest =
@@ -124,8 +124,8 @@ public class SignRequestsITest {
 
   @Test
   public void testCreateSignRequestWithSignerGroupId() {
-    String signer1Email = String.join("", getUuid(), "@box.com");
-    String signer2Email = String.join("", getUuid(), "@box.com");
+    String signer1Email = String.join("", getUuid(), "@boxdemo.com");
+    String signer2Email = String.join("", getUuid(), "@boxdemo.com");
     FileFull fileToSign = uploadNewFile();
     FolderFull destinationFolder = createNewFolder();
     SignRequest createdSignRequest =
