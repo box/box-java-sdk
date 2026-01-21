@@ -90,8 +90,8 @@ public class AuthorizationManager {
    *
    * <p>An Access Token is a string that enables Box to verify that a request belongs to an
    * authorized session. In the normal order of operations you will begin by requesting
-   * authentication from the [authorize](#get-authorize) endpoint and Box will send you an
-   * authorization code.
+   * authentication from the [authorize](https://developer.box.com/reference/get-authorize) endpoint
+   * and Box will send you an authorization code.
    *
    * <p>You will then send this code to this endpoint to exchange it for an Access Token. The
    * returned Access Token can then be used to to make Box API calls.
@@ -108,8 +108,8 @@ public class AuthorizationManager {
    *
    * <p>An Access Token is a string that enables Box to verify that a request belongs to an
    * authorized session. In the normal order of operations you will begin by requesting
-   * authentication from the [authorize](#get-authorize) endpoint and Box will send you an
-   * authorization code.
+   * authentication from the [authorize](https://developer.box.com/reference/get-authorize) endpoint
+   * and Box will send you an authorization code.
    *
    * <p>You will then send this code to this endpoint to exchange it for an Access Token. The
    * returned Access Token can then be used to to make Box API calls.
