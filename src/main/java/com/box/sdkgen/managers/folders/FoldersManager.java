@@ -398,7 +398,7 @@ public class FoldersManager {
    * Retrieves a page of items in a folder. These items can be files, folders, and web links.
    *
    * <p>To request more information about the folder itself, like its size, use the [Get a
-   * folder](#get-folders-id) endpoint instead.
+   * folder](https://developer.box.com/reference/get-folders-id) endpoint instead.
    *
    * @param folderId The unique identifier that represent a folder.
    *     <p>The ID for any folder can be determined by visiting this folder in the web application
@@ -414,7 +414,7 @@ public class FoldersManager {
    * Retrieves a page of items in a folder. These items can be files, folders, and web links.
    *
    * <p>To request more information about the folder itself, like its size, use the [Get a
-   * folder](#get-folders-id) endpoint instead.
+   * folder](https://developer.box.com/reference/get-folders-id) endpoint instead.
    *
    * @param folderId The unique identifier that represent a folder.
    *     <p>The ID for any folder can be determined by visiting this folder in the web application
@@ -431,7 +431,7 @@ public class FoldersManager {
    * Retrieves a page of items in a folder. These items can be files, folders, and web links.
    *
    * <p>To request more information about the folder itself, like its size, use the [Get a
-   * folder](#get-folders-id) endpoint instead.
+   * folder](https://developer.box.com/reference/get-folders-id) endpoint instead.
    *
    * @param folderId The unique identifier that represent a folder.
    *     <p>The ID for any folder can be determined by visiting this folder in the web application
@@ -448,7 +448,7 @@ public class FoldersManager {
    * Retrieves a page of items in a folder. These items can be files, folders, and web links.
    *
    * <p>To request more information about the folder itself, like its size, use the [Get a
-   * folder](#get-folders-id) endpoint instead.
+   * folder](https://developer.box.com/reference/get-folders-id) endpoint instead.
    *
    * @param folderId The unique identifier that represent a folder.
    *     <p>The ID for any folder can be determined by visiting this folder in the web application

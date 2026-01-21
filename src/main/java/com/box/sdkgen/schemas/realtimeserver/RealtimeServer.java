@@ -21,7 +21,7 @@ public class RealtimeServer extends SerializableObject {
 
   /**
    * The maximum number of retries this server will allow before a new long poll should be started
-   * by getting a [new list of server](#options-events).
+   * by getting a [new list of server](https://developer.box.com/reference/options-events).
    */
   @JsonProperty("max_retries")
   protected String maxRetries;
