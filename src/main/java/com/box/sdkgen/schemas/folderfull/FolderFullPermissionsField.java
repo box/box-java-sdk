@@ -1,5 +1,6 @@
 package com.box.sdkgen.schemas.folderfull;
 
+import com.box.sdkgen.internal.NullableFieldTracker;
 import com.box.sdkgen.internal.SerializableObject;
 import com.fasterxml.jackson.annotation.JsonFilter;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -39,6 +40,10 @@ public class FolderFullPermissionsField extends SerializableObject {
   @JsonProperty("can_upload")
   protected final boolean canUpload;
 
+  /** Specifies if the user can apply a watermark to this folder and its contents. */
+  @JsonProperty("can_apply_watermark")
+  protected Boolean canApplyWatermark;
+
   public FolderFullPermissionsField(
       @JsonProperty("can_delete") boolean canDelete,
       @JsonProperty("can_download") boolean canDownload,
@@ -55,6 +60,19 @@ public class FolderFullPermissionsField extends SerializableObject {
     this.canSetShareAccess = canSetShareAccess;
     this.canShare = canShare;
     this.canUpload = canUpload;
+  }
+
+  protected FolderFullPermissionsField(Builder builder) {
+    super();
+    this.canDelete = builder.canDelete;
+    this.canDownload = builder.canDownload;
+    this.canInviteCollaborator = builder.canInviteCollaborator;
+    this.canRename = builder.canRename;
+    this.canSetShareAccess = builder.canSetShareAccess;
+    this.canShare = builder.canShare;
+    this.canUpload = builder.canUpload;
+    this.canApplyWatermark = builder.canApplyWatermark;
+    markNullableFieldsAsSet(builder.getExplicitlySetNullableFields());
   }
 
   public boolean getCanDelete() {
@@ -85,6 +103,10 @@ public class FolderFullPermissionsField extends SerializableObject {
     return canUpload;
   }
 
+  public Boolean getCanApplyWatermark() {
+    return canApplyWatermark;
+  }
+
   @Override
   public boolean equals(Object o) {
     if (this == o) {
@@ -100,7 +122,8 @@ public class FolderFullPermissionsField extends SerializableObject {
         && Objects.equals(canRename, casted.canRename)
         && Objects.equals(canSetShareAccess, casted.canSetShareAccess)
         && Objects.equals(canShare, casted.canShare)
-        && Objects.equals(canUpload, casted.canUpload);
+        && Objects.equals(canUpload, casted.canUpload)
+        && Objects.equals(canApplyWatermark, casted.canApplyWatermark);
   }
 
   @Override
@@ -112,7 +135,8 @@ public class FolderFullPermissionsField extends SerializableObject {
         canRename,
         canSetShareAccess,
         canShare,
-        canUpload);
+        canUpload,
+        canApplyWatermark);
   }
 
   @Override
@@ -145,6 +169,56 @@ public class FolderFullPermissionsField extends SerializableObject {
         + "canUpload='"
         + canUpload
         + '\''
+        + ", "
+        + "canApplyWatermark='"
+        + canApplyWatermark
+        + '\''
         + "}";
+  }
+
+  public static class Builder extends NullableFieldTracker {
+
+    protected final boolean canDelete;
+
+    protected final boolean canDownload;
+
+    protected final boolean canInviteCollaborator;
+
+    protected final boolean canRename;
+
+    protected final boolean canSetShareAccess;
+
+    protected final boolean canShare;
+
+    protected final boolean canUpload;
+
+    protected Boolean canApplyWatermark;
+
+    public Builder(
+        boolean canDelete,
+        boolean canDownload,
+        boolean canInviteCollaborator,
+        boolean canRename,
+        boolean canSetShareAccess,
+        boolean canShare,
+        boolean canUpload) {
+      super();
+      this.canDelete = canDelete;
+      this.canDownload = canDownload;
+      this.canInviteCollaborator = canInviteCollaborator;
+      this.canRename = canRename;
+      this.canSetShareAccess = canSetShareAccess;
+      this.canShare = canShare;
+      this.canUpload = canUpload;
+    }
+
+    public Builder canApplyWatermark(Boolean canApplyWatermark) {
+      this.canApplyWatermark = canApplyWatermark;
+      return this;
+    }
+
+    public FolderFullPermissionsField build() {
+      return new FolderFullPermissionsField(this);
+    }
   }
 }
