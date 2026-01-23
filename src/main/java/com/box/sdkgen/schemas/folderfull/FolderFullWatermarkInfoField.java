@@ -13,6 +13,14 @@ public class FolderFullWatermarkInfoField extends SerializableObject {
   @JsonProperty("is_watermarked")
   protected Boolean isWatermarked;
 
+  /** Specifies if the watermark is inherited from any parent folder in the hierarchy. */
+  @JsonProperty("is_watermark_inherited")
+  protected Boolean isWatermarkInherited;
+
+  /** Specifies if the watermark is enforced by an access policy. */
+  @JsonProperty("is_watermarked_by_access_policy")
+  protected Boolean isWatermarkedByAccessPolicy;
+
   public FolderFullWatermarkInfoField() {
     super();
   }
@@ -20,11 +28,21 @@ public class FolderFullWatermarkInfoField extends SerializableObject {
   protected FolderFullWatermarkInfoField(Builder builder) {
     super();
     this.isWatermarked = builder.isWatermarked;
+    this.isWatermarkInherited = builder.isWatermarkInherited;
+    this.isWatermarkedByAccessPolicy = builder.isWatermarkedByAccessPolicy;
     markNullableFieldsAsSet(builder.getExplicitlySetNullableFields());
   }
 
   public Boolean getIsWatermarked() {
     return isWatermarked;
+  }
+
+  public Boolean getIsWatermarkInherited() {
+    return isWatermarkInherited;
+  }
+
+  public Boolean getIsWatermarkedByAccessPolicy() {
+    return isWatermarkedByAccessPolicy;
   }
 
   @Override
@@ -36,25 +54,53 @@ public class FolderFullWatermarkInfoField extends SerializableObject {
       return false;
     }
     FolderFullWatermarkInfoField casted = (FolderFullWatermarkInfoField) o;
-    return Objects.equals(isWatermarked, casted.isWatermarked);
+    return Objects.equals(isWatermarked, casted.isWatermarked)
+        && Objects.equals(isWatermarkInherited, casted.isWatermarkInherited)
+        && Objects.equals(isWatermarkedByAccessPolicy, casted.isWatermarkedByAccessPolicy);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(isWatermarked);
+    return Objects.hash(isWatermarked, isWatermarkInherited, isWatermarkedByAccessPolicy);
   }
 
   @Override
   public String toString() {
-    return "FolderFullWatermarkInfoField{" + "isWatermarked='" + isWatermarked + '\'' + "}";
+    return "FolderFullWatermarkInfoField{"
+        + "isWatermarked='"
+        + isWatermarked
+        + '\''
+        + ", "
+        + "isWatermarkInherited='"
+        + isWatermarkInherited
+        + '\''
+        + ", "
+        + "isWatermarkedByAccessPolicy='"
+        + isWatermarkedByAccessPolicy
+        + '\''
+        + "}";
   }
 
   public static class Builder extends NullableFieldTracker {
 
     protected Boolean isWatermarked;
 
+    protected Boolean isWatermarkInherited;
+
+    protected Boolean isWatermarkedByAccessPolicy;
+
     public Builder isWatermarked(Boolean isWatermarked) {
       this.isWatermarked = isWatermarked;
+      return this;
+    }
+
+    public Builder isWatermarkInherited(Boolean isWatermarkInherited) {
+      this.isWatermarkInherited = isWatermarkInherited;
+      return this;
+    }
+
+    public Builder isWatermarkedByAccessPolicy(Boolean isWatermarkedByAccessPolicy) {
+      this.isWatermarkedByAccessPolicy = isWatermarkedByAccessPolicy;
       return this;
     }
 

@@ -1,5 +1,6 @@
 package com.box.sdkgen.schemas.filefull;
 
+import com.box.sdkgen.internal.NullableFieldTracker;
 import com.box.sdkgen.internal.SerializableObject;
 import com.fasterxml.jackson.annotation.JsonFilter;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -59,6 +60,10 @@ public class FileFullPermissionsField extends SerializableObject {
   @JsonProperty("can_view_annotations_self")
   protected final boolean canViewAnnotationsSelf;
 
+  /** Specifies if the user can apply a watermark to this file. */
+  @JsonProperty("can_apply_watermark")
+  protected Boolean canApplyWatermark;
+
   public FileFullPermissionsField(
       @JsonProperty("can_delete") boolean canDelete,
       @JsonProperty("can_download") boolean canDownload,
@@ -85,6 +90,24 @@ public class FileFullPermissionsField extends SerializableObject {
     this.canUpload = canUpload;
     this.canViewAnnotationsAll = canViewAnnotationsAll;
     this.canViewAnnotationsSelf = canViewAnnotationsSelf;
+  }
+
+  protected FileFullPermissionsField(Builder builder) {
+    super();
+    this.canDelete = builder.canDelete;
+    this.canDownload = builder.canDownload;
+    this.canInviteCollaborator = builder.canInviteCollaborator;
+    this.canRename = builder.canRename;
+    this.canSetShareAccess = builder.canSetShareAccess;
+    this.canShare = builder.canShare;
+    this.canAnnotate = builder.canAnnotate;
+    this.canComment = builder.canComment;
+    this.canPreview = builder.canPreview;
+    this.canUpload = builder.canUpload;
+    this.canViewAnnotationsAll = builder.canViewAnnotationsAll;
+    this.canViewAnnotationsSelf = builder.canViewAnnotationsSelf;
+    this.canApplyWatermark = builder.canApplyWatermark;
+    markNullableFieldsAsSet(builder.getExplicitlySetNullableFields());
   }
 
   public boolean getCanDelete() {
@@ -135,6 +158,10 @@ public class FileFullPermissionsField extends SerializableObject {
     return canViewAnnotationsSelf;
   }
 
+  public Boolean getCanApplyWatermark() {
+    return canApplyWatermark;
+  }
+
   @Override
   public boolean equals(Object o) {
     if (this == o) {
@@ -155,7 +182,8 @@ public class FileFullPermissionsField extends SerializableObject {
         && Objects.equals(canPreview, casted.canPreview)
         && Objects.equals(canUpload, casted.canUpload)
         && Objects.equals(canViewAnnotationsAll, casted.canViewAnnotationsAll)
-        && Objects.equals(canViewAnnotationsSelf, casted.canViewAnnotationsSelf);
+        && Objects.equals(canViewAnnotationsSelf, casted.canViewAnnotationsSelf)
+        && Objects.equals(canApplyWatermark, casted.canApplyWatermark);
   }
 
   @Override
@@ -172,7 +200,8 @@ public class FileFullPermissionsField extends SerializableObject {
         canPreview,
         canUpload,
         canViewAnnotationsAll,
-        canViewAnnotationsSelf);
+        canViewAnnotationsSelf,
+        canApplyWatermark);
   }
 
   @Override
@@ -225,6 +254,76 @@ public class FileFullPermissionsField extends SerializableObject {
         + "canViewAnnotationsSelf='"
         + canViewAnnotationsSelf
         + '\''
+        + ", "
+        + "canApplyWatermark='"
+        + canApplyWatermark
+        + '\''
         + "}";
+  }
+
+  public static class Builder extends NullableFieldTracker {
+
+    protected final boolean canDelete;
+
+    protected final boolean canDownload;
+
+    protected final boolean canInviteCollaborator;
+
+    protected final boolean canRename;
+
+    protected final boolean canSetShareAccess;
+
+    protected final boolean canShare;
+
+    protected final boolean canAnnotate;
+
+    protected final boolean canComment;
+
+    protected final boolean canPreview;
+
+    protected final boolean canUpload;
+
+    protected final boolean canViewAnnotationsAll;
+
+    protected final boolean canViewAnnotationsSelf;
+
+    protected Boolean canApplyWatermark;
+
+    public Builder(
+        boolean canDelete,
+        boolean canDownload,
+        boolean canInviteCollaborator,
+        boolean canRename,
+        boolean canSetShareAccess,
+        boolean canShare,
+        boolean canAnnotate,
+        boolean canComment,
+        boolean canPreview,
+        boolean canUpload,
+        boolean canViewAnnotationsAll,
+        boolean canViewAnnotationsSelf) {
+      super();
+      this.canDelete = canDelete;
+      this.canDownload = canDownload;
+      this.canInviteCollaborator = canInviteCollaborator;
+      this.canRename = canRename;
+      this.canSetShareAccess = canSetShareAccess;
+      this.canShare = canShare;
+      this.canAnnotate = canAnnotate;
+      this.canComment = canComment;
+      this.canPreview = canPreview;
+      this.canUpload = canUpload;
+      this.canViewAnnotationsAll = canViewAnnotationsAll;
+      this.canViewAnnotationsSelf = canViewAnnotationsSelf;
+    }
+
+    public Builder canApplyWatermark(Boolean canApplyWatermark) {
+      this.canApplyWatermark = canApplyWatermark;
+      return this;
+    }
+
+    public FileFullPermissionsField build() {
+      return new FileFullPermissionsField(this);
+    }
   }
 }
