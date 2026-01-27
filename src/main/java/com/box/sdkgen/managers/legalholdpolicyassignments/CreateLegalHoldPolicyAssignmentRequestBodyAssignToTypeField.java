@@ -17,7 +17,7 @@ public enum CreateLegalHoldPolicyAssignmentRequestBodyAssignToTypeField implemen
   FOLDER("folder"),
   USER("user"),
   OWNERSHIP("ownership"),
-  INTERACTION("interaction");
+  INTERACTIONS("interactions");
 
   private final String value;
 

@@ -35,7 +35,7 @@ public class LegalHoldPolicy extends LegalHoldPolicyMini {
   @JsonSerialize(using = LegalHoldPolicyStatusField.LegalHoldPolicyStatusFieldSerializer.class)
   protected EnumWrapper<LegalHoldPolicyStatusField> status;
 
-  /** Counts of assignments within this a legal hold policy by item type. */
+  /** Counts of assignments within a legal hold policy by item type. */
   @JsonProperty("assignment_counts")
   protected LegalHoldPolicyAssignmentCountsField assignmentCounts;
 
