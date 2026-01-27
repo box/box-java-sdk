@@ -81,7 +81,8 @@ public class LegalHoldPolicyAssignmentsManager {
   }
 
   /**
-   * Assign a legal hold to a file, file version, folder, or user.
+   * Assign a legal hold to an item type of: file, file version, folder, user, ownership, or
+   * interactions.
    *
    * @param requestBody Request body of createLegalHoldPolicyAssignment method
    */
@@ -92,7 +93,8 @@ public class LegalHoldPolicyAssignmentsManager {
   }
 
   /**
-   * Assign a legal hold to a file, file version, folder, or user.
+   * Assign a legal hold to an item type of: file, file version, folder, user, ownership, or
+   * interactions.
    *
    * @param requestBody Request body of createLegalHoldPolicyAssignment method
    * @param headers Headers of createLegalHoldPolicyAssignment method
