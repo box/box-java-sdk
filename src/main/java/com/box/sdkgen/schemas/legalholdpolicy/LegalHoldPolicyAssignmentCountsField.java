@@ -9,7 +9,7 @@ import java.util.Objects;
 @JsonFilter("nullablePropertyFilter")
 public class LegalHoldPolicyAssignmentCountsField extends SerializableObject {
 
-  /** The number of users this policy is applied to. */
+  /** The number of users this policy is applied to with the `access` type assignment. */
   protected Long user;
 
   /** The number of folders this policy is applied to. */
@@ -22,6 +22,12 @@ public class LegalHoldPolicyAssignmentCountsField extends SerializableObject {
   @JsonProperty("file_version")
   protected Long fileVersion;
 
+  /** The number of users this policy is applied to with the `ownership` type assignment. */
+  protected Long ownership;
+
+  /** The number of users this policy is applied to with the `interactions` type assignment. */
+  protected Long interactions;
+
   public LegalHoldPolicyAssignmentCountsField() {
     super();
   }
@@ -32,6 +38,8 @@ public class LegalHoldPolicyAssignmentCountsField extends SerializableObject {
     this.folder = builder.folder;
     this.file = builder.file;
     this.fileVersion = builder.fileVersion;
+    this.ownership = builder.ownership;
+    this.interactions = builder.interactions;
     markNullableFieldsAsSet(builder.getExplicitlySetNullableFields());
   }
 
@@ -51,6 +59,14 @@ public class LegalHoldPolicyAssignmentCountsField extends SerializableObject {
     return fileVersion;
   }
 
+  public Long getOwnership() {
+    return ownership;
+  }
+
+  public Long getInteractions() {
+    return interactions;
+  }
+
   @Override
   public boolean equals(Object o) {
     if (this == o) {
@@ -63,12 +79,14 @@ public class LegalHoldPolicyAssignmentCountsField extends SerializableObject {
     return Objects.equals(user, casted.user)
         && Objects.equals(folder, casted.folder)
         && Objects.equals(file, casted.file)
-        && Objects.equals(fileVersion, casted.fileVersion);
+        && Objects.equals(fileVersion, casted.fileVersion)
+        && Objects.equals(ownership, casted.ownership)
+        && Objects.equals(interactions, casted.interactions);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(user, folder, file, fileVersion);
+    return Objects.hash(user, folder, file, fileVersion, ownership, interactions);
   }
 
   @Override
@@ -89,6 +107,14 @@ public class LegalHoldPolicyAssignmentCountsField extends SerializableObject {
         + "fileVersion='"
         + fileVersion
         + '\''
+        + ", "
+        + "ownership='"
+        + ownership
+        + '\''
+        + ", "
+        + "interactions='"
+        + interactions
+        + '\''
         + "}";
   }
 
@@ -101,6 +127,10 @@ public class LegalHoldPolicyAssignmentCountsField extends SerializableObject {
     protected Long file;
 
     protected Long fileVersion;
+
+    protected Long ownership;
+
+    protected Long interactions;
 
     public Builder user(Long user) {
       this.user = user;
@@ -119,6 +149,16 @@ public class LegalHoldPolicyAssignmentCountsField extends SerializableObject {
 
     public Builder fileVersion(Long fileVersion) {
       this.fileVersion = fileVersion;
+      return this;
+    }
+
+    public Builder ownership(Long ownership) {
+      this.ownership = ownership;
+      return this;
+    }
+
+    public Builder interactions(Long interactions) {
+      this.interactions = interactions;
       return this;
     }
 
