@@ -31,6 +31,10 @@ public class AiExtractStructured extends SerializableObject {
    */
   protected List<AiExtractStructuredFieldsField> fields;
 
+  /** A flag to indicate whether confidence scores for every extracted field should be returned. */
+  @JsonProperty("include_confidence_score")
+  protected Boolean includeConfidenceScore;
+
   @JsonProperty("ai_agent")
   protected AiExtractStructuredAgent aiAgent;
 
@@ -44,6 +48,7 @@ public class AiExtractStructured extends SerializableObject {
     this.items = builder.items;
     this.metadataTemplate = builder.metadataTemplate;
     this.fields = builder.fields;
+    this.includeConfidenceScore = builder.includeConfidenceScore;
     this.aiAgent = builder.aiAgent;
     markNullableFieldsAsSet(builder.getExplicitlySetNullableFields());
   }
@@ -58,6 +63,10 @@ public class AiExtractStructured extends SerializableObject {
 
   public List<AiExtractStructuredFieldsField> getFields() {
     return fields;
+  }
+
+  public Boolean getIncludeConfidenceScore() {
+    return includeConfidenceScore;
   }
 
   public AiExtractStructuredAgent getAiAgent() {
@@ -76,12 +85,13 @@ public class AiExtractStructured extends SerializableObject {
     return Objects.equals(items, casted.items)
         && Objects.equals(metadataTemplate, casted.metadataTemplate)
         && Objects.equals(fields, casted.fields)
+        && Objects.equals(includeConfidenceScore, casted.includeConfidenceScore)
         && Objects.equals(aiAgent, casted.aiAgent);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(items, metadataTemplate, fields, aiAgent);
+    return Objects.hash(items, metadataTemplate, fields, includeConfidenceScore, aiAgent);
   }
 
   @Override
@@ -99,6 +109,10 @@ public class AiExtractStructured extends SerializableObject {
         + fields
         + '\''
         + ", "
+        + "includeConfidenceScore='"
+        + includeConfidenceScore
+        + '\''
+        + ", "
         + "aiAgent='"
         + aiAgent
         + '\''
@@ -112,6 +126,8 @@ public class AiExtractStructured extends SerializableObject {
     protected AiExtractStructuredMetadataTemplateField metadataTemplate;
 
     protected List<AiExtractStructuredFieldsField> fields;
+
+    protected Boolean includeConfidenceScore;
 
     protected AiExtractStructuredAgent aiAgent;
 
@@ -127,6 +143,11 @@ public class AiExtractStructured extends SerializableObject {
 
     public Builder fields(List<AiExtractStructuredFieldsField> fields) {
       this.fields = fields;
+      return this;
+    }
+
+    public Builder includeConfidenceScore(Boolean includeConfidenceScore) {
+      this.includeConfidenceScore = includeConfidenceScore;
       return this;
     }
 
