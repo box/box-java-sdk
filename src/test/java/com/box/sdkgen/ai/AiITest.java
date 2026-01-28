@@ -261,7 +261,10 @@ public class AiITest {
                         String.join("", getUuid(), ".txt"),
                         new UploadFileRequestBodyAttributesParentField("0")),
                     stringToByteStream(
-                        "My name is John Doe. I was born in 4th July 1990. I am 34 years old. My hobby is guitar.")));
+                        String.join(
+                            "",
+                            "My name is John Doe. I was born in 4th July 1990. I am 34 years old. My hobby is guitar. My UUID is ",
+                            getUuid()))));
     FileFull file = uploadedFiles.getEntries().get(0);
     delayInSeconds(5);
     AiExtractStructuredResponse response =
@@ -305,8 +308,10 @@ public class AiITest {
                                         new AiExtractStructuredFieldsOptionsField("guitar"),
                                         new AiExtractStructuredFieldsOptionsField("books")))
                                 .build()))
+                    .includeConfidenceScore(true)
                     .aiAgent(aiExtractStructuredAgentBasicTextConfig)
                     .build());
+    assert !(response.getConfidenceScore() == null);
     assert convertToString(response.getAnswer().get("hobby"))
         .equals(convertToString(Arrays.asList("guitar")));
     assert convertToString(response.getAnswer().get("firstName")).equals("John");
@@ -328,7 +333,10 @@ public class AiITest {
                         String.join("", getUuid(), ".txt"),
                         new UploadFileRequestBodyAttributesParentField("0")),
                     stringToByteStream(
-                        "My name is John Doe. I was born in 4th July 1990. I am 34 years old. My hobby is guitar.")));
+                        String.join(
+                            "",
+                            "My name is John Doe. I was born in 4th July 1990. I am 34 years old. My hobby is guitar. My UUID is ",
+                            getUuid()))));
     FileFull file = uploadedFiles.getEntries().get(0);
     delayInSeconds(5);
     String templateKey = String.join("", "key", getUuid());
