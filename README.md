@@ -133,7 +133,7 @@ Box Java SDK v10 supports multiple authentication methods including Developer To
 Client Credentials Grant, and JSON Web Token (JWT).
 
 You can find detailed instructions and example code for each authentication method in
-[Authentication](./docs/Authentication.md) document.
+[Authentication](./docs/authentication.md) document.
 
 # Documentation
 
