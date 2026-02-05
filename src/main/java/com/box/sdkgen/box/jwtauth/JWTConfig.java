@@ -260,6 +260,16 @@ public class JWTConfig {
         String jwtKeyId,
         String privateKey,
         String privateKeyPassphrase) {
+      this(clientId, clientSecret, jwtKeyId, privateKey, privateKeyPassphrase, new DefaultPrivateKeyDecryptor());
+    }
+
+    public Builder(
+        String clientId,
+        String clientSecret,
+        String jwtKeyId,
+        String privateKey,
+        String privateKeyPassphrase,
+        PrivateKeyDecryptor privateKeyDecryptor) {
       this.clientId = clientId;
       this.clientSecret = clientSecret;
       this.jwtKeyId = jwtKeyId;
@@ -267,7 +277,7 @@ public class JWTConfig {
       this.privateKeyPassphrase = privateKeyPassphrase;
       this.algorithm = new EnumWrapper<JwtAlgorithm>(JwtAlgorithm.RS256);
       this.tokenStorage = new InMemoryTokenStorage();
-      this.privateKeyDecryptor = new DefaultPrivateKeyDecryptor();
+      this.privateKeyDecryptor = privateKeyDecryptor;
     }
 
     public Builder enterpriseId(String enterpriseId) {
