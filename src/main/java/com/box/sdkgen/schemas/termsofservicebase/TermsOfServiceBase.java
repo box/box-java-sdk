@@ -75,9 +75,6 @@ public class TermsOfServiceBase extends SerializableObject {
     public Builder(String id) {
       super();
       this.id = id;
-      this.type =
-          new EnumWrapper<TermsOfServiceBaseTypeField>(
-              TermsOfServiceBaseTypeField.TERMS_OF_SERVICE);
     }
 
     public Builder type(TermsOfServiceBaseTypeField type) {
@@ -91,6 +88,11 @@ public class TermsOfServiceBase extends SerializableObject {
     }
 
     public TermsOfServiceBase build() {
+      if (this.type == null) {
+        this.type =
+            new EnumWrapper<TermsOfServiceBaseTypeField>(
+                TermsOfServiceBaseTypeField.TERMS_OF_SERVICE);
+      }
       return new TermsOfServiceBase(this);
     }
   }

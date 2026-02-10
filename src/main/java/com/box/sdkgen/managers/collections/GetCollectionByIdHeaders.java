@@ -25,9 +25,7 @@ public class GetCollectionByIdHeaders {
 
     protected Map<String, String> extraHeaders;
 
-    public Builder() {
-      this.extraHeaders = mapOf();
-    }
+    public Builder() {}
 
     public Builder extraHeaders(Map<String, String> extraHeaders) {
       this.extraHeaders = extraHeaders;
@@ -35,6 +33,9 @@ public class GetCollectionByIdHeaders {
     }
 
     public GetCollectionByIdHeaders build() {
+      if (this.extraHeaders == null) {
+        this.extraHeaders = mapOf();
+      }
       return new GetCollectionByIdHeaders(this);
     }
   }

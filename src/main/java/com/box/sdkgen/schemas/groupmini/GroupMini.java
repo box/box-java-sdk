@@ -120,6 +120,9 @@ public class GroupMini extends GroupBase {
     }
 
     public GroupMini build() {
+      if (this.type == null) {
+        this.type = new EnumWrapper<GroupBaseTypeField>(GroupBaseTypeField.GROUP);
+      }
       return new GroupMini(this);
     }
   }

@@ -544,6 +544,9 @@ public class Folder extends FolderMini {
     }
 
     public Folder build() {
+      if (this.type == null) {
+        this.type = new EnumWrapper<FolderBaseTypeField>(FolderBaseTypeField.FOLDER);
+      }
       return new Folder(this);
     }
   }

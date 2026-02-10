@@ -113,6 +113,9 @@ public class UserIntegrationMappings extends UserBase {
     }
 
     public UserIntegrationMappings build() {
+      if (this.type == null) {
+        this.type = new EnumWrapper<UserBaseTypeField>(UserBaseTypeField.USER);
+      }
       return new UserIntegrationMappings(this);
     }
   }

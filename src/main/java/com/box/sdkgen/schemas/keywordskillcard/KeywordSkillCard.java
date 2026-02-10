@@ -185,10 +185,6 @@ public class KeywordSkillCard extends SerializableObject {
       this.skill = skill;
       this.invocation = invocation;
       this.entries = entries;
-      this.type = new EnumWrapper<KeywordSkillCardTypeField>(KeywordSkillCardTypeField.SKILL_CARD);
-      this.skillCardType =
-          new EnumWrapper<KeywordSkillCardSkillCardTypeField>(
-              KeywordSkillCardSkillCardTypeField.KEYWORD);
     }
 
     public Builder createdAt(OffsetDateTime createdAt) {
@@ -222,6 +218,15 @@ public class KeywordSkillCard extends SerializableObject {
     }
 
     public KeywordSkillCard build() {
+      if (this.type == null) {
+        this.type =
+            new EnumWrapper<KeywordSkillCardTypeField>(KeywordSkillCardTypeField.SKILL_CARD);
+      }
+      if (this.skillCardType == null) {
+        this.skillCardType =
+            new EnumWrapper<KeywordSkillCardSkillCardTypeField>(
+                KeywordSkillCardSkillCardTypeField.KEYWORD);
+      }
       return new KeywordSkillCard(this);
     }
   }

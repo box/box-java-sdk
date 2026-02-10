@@ -104,7 +104,6 @@ public class AppItem extends SerializableObject {
       super();
       this.id = id;
       this.applicationType = applicationType;
-      this.type = new EnumWrapper<AppItemTypeField>(AppItemTypeField.APP_ITEM);
     }
 
     public Builder type(AppItemTypeField type) {
@@ -118,6 +117,9 @@ public class AppItem extends SerializableObject {
     }
 
     public AppItem build() {
+      if (this.type == null) {
+        this.type = new EnumWrapper<AppItemTypeField>(AppItemTypeField.APP_ITEM);
+      }
       return new AppItem(this);
     }
   }

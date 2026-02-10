@@ -402,6 +402,9 @@ public class User extends UserMini {
     }
 
     public User build() {
+      if (this.type == null) {
+        this.type = new EnumWrapper<UserBaseTypeField>(UserBaseTypeField.USER);
+      }
       return new User(this);
     }
   }

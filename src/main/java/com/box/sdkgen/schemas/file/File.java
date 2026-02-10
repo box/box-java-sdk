@@ -507,6 +507,9 @@ public class File extends FileMini {
     }
 
     public File build() {
+      if (this.type == null) {
+        this.type = new EnumWrapper<FileBaseTypeField>(FileBaseTypeField.FILE);
+      }
       return new File(this);
     }
   }

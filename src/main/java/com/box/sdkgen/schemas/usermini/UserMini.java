@@ -110,6 +110,9 @@ public class UserMini extends UserBase {
     }
 
     public UserMini build() {
+      if (this.type == null) {
+        this.type = new EnumWrapper<UserBaseTypeField>(UserBaseTypeField.USER);
+      }
       return new UserMini(this);
     }
   }

@@ -381,9 +381,7 @@ public class WebhooksManager {
 
     protected NetworkSession networkSession;
 
-    public Builder() {
-      this.networkSession = new NetworkSession();
-    }
+    public Builder() {}
 
     public Builder auth(Authentication auth) {
       this.auth = auth;
@@ -396,6 +394,9 @@ public class WebhooksManager {
     }
 
     public WebhooksManager build() {
+      if (this.networkSession == null) {
+        this.networkSession = new NetworkSession();
+      }
       return new WebhooksManager(this);
     }
   }

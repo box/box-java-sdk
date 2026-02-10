@@ -159,9 +159,6 @@ public class AppItemAssociation extends SerializableObject {
       this.id = id;
       this.appItem = appItem;
       this.item = new AppItemAssociatedItem(item);
-      this.type =
-          new EnumWrapper<AppItemAssociationTypeField>(
-              AppItemAssociationTypeField.APP_ITEM_ASSOCIATION);
     }
 
     public Builder(String id, AppItem appItem, FolderBase item) {
@@ -169,9 +166,6 @@ public class AppItemAssociation extends SerializableObject {
       this.id = id;
       this.appItem = appItem;
       this.item = new AppItemAssociatedItem(item);
-      this.type =
-          new EnumWrapper<AppItemAssociationTypeField>(
-              AppItemAssociationTypeField.APP_ITEM_ASSOCIATION);
     }
 
     public Builder(String id, AppItem appItem, WebLinkBase item) {
@@ -179,9 +173,6 @@ public class AppItemAssociation extends SerializableObject {
       this.id = id;
       this.appItem = appItem;
       this.item = new AppItemAssociatedItem(item);
-      this.type =
-          new EnumWrapper<AppItemAssociationTypeField>(
-              AppItemAssociationTypeField.APP_ITEM_ASSOCIATION);
     }
 
     public Builder(String id, AppItem appItem, AppItemAssociatedItem item) {
@@ -189,9 +180,6 @@ public class AppItemAssociation extends SerializableObject {
       this.id = id;
       this.appItem = appItem;
       this.item = item;
-      this.type =
-          new EnumWrapper<AppItemAssociationTypeField>(
-              AppItemAssociationTypeField.APP_ITEM_ASSOCIATION);
     }
 
     public Builder type(AppItemAssociationTypeField type) {
@@ -205,6 +193,11 @@ public class AppItemAssociation extends SerializableObject {
     }
 
     public AppItemAssociation build() {
+      if (this.type == null) {
+        this.type =
+            new EnumWrapper<AppItemAssociationTypeField>(
+                AppItemAssociationTypeField.APP_ITEM_ASSOCIATION);
+      }
       return new AppItemAssociation(this);
     }
   }

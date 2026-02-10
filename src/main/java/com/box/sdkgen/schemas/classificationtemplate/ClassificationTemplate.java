@@ -214,15 +214,6 @@ public class ClassificationTemplate extends SerializableObject {
       this.id = id;
       this.scope = scope;
       this.fields = fields;
-      this.type =
-          new EnumWrapper<ClassificationTemplateTypeField>(
-              ClassificationTemplateTypeField.METADATA_TEMPLATE);
-      this.templateKey =
-          new EnumWrapper<ClassificationTemplateTemplateKeyField>(
-              ClassificationTemplateTemplateKeyField.SECURITYCLASSIFICATION_6VMVOCHWUWO);
-      this.displayName =
-          new EnumWrapper<ClassificationTemplateDisplayNameField>(
-              ClassificationTemplateDisplayNameField.CLASSIFICATION);
     }
 
     public Builder type(ClassificationTemplateTypeField type) {
@@ -266,6 +257,21 @@ public class ClassificationTemplate extends SerializableObject {
     }
 
     public ClassificationTemplate build() {
+      if (this.type == null) {
+        this.type =
+            new EnumWrapper<ClassificationTemplateTypeField>(
+                ClassificationTemplateTypeField.METADATA_TEMPLATE);
+      }
+      if (this.templateKey == null) {
+        this.templateKey =
+            new EnumWrapper<ClassificationTemplateTemplateKeyField>(
+                ClassificationTemplateTemplateKeyField.SECURITYCLASSIFICATION_6VMVOCHWUWO);
+      }
+      if (this.displayName == null) {
+        this.displayName =
+            new EnumWrapper<ClassificationTemplateDisplayNameField>(
+                ClassificationTemplateDisplayNameField.CLASSIFICATION);
+      }
       return new ClassificationTemplate(this);
     }
   }

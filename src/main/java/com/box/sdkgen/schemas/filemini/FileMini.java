@@ -166,6 +166,9 @@ public class FileMini extends FileBase {
     }
 
     public FileMini build() {
+      if (this.type == null) {
+        this.type = new EnumWrapper<FileBaseTypeField>(FileBaseTypeField.FILE);
+      }
       return new FileMini(this);
     }
   }

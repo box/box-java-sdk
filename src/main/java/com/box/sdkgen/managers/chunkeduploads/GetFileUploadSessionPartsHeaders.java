@@ -25,9 +25,7 @@ public class GetFileUploadSessionPartsHeaders {
 
     protected Map<String, String> extraHeaders;
 
-    public Builder() {
-      this.extraHeaders = mapOf();
-    }
+    public Builder() {}
 
     public Builder extraHeaders(Map<String, String> extraHeaders) {
       this.extraHeaders = extraHeaders;
@@ -35,6 +33,9 @@ public class GetFileUploadSessionPartsHeaders {
     }
 
     public GetFileUploadSessionPartsHeaders build() {
+      if (this.extraHeaders == null) {
+        this.extraHeaders = mapOf();
+      }
       return new GetFileUploadSessionPartsHeaders(this);
     }
   }

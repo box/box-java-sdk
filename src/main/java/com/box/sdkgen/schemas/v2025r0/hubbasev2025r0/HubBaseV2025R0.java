@@ -79,7 +79,6 @@ public class HubBaseV2025R0 extends SerializableObject {
     public Builder(String id) {
       super();
       this.id = id;
-      this.type = new EnumWrapper<HubBaseV2025R0TypeField>(HubBaseV2025R0TypeField.HUBS);
     }
 
     public Builder type(HubBaseV2025R0TypeField type) {
@@ -93,6 +92,9 @@ public class HubBaseV2025R0 extends SerializableObject {
     }
 
     public HubBaseV2025R0 build() {
+      if (this.type == null) {
+        this.type = new EnumWrapper<HubBaseV2025R0TypeField>(HubBaseV2025R0TypeField.HUBS);
+      }
       return new HubBaseV2025R0(this);
     }
   }

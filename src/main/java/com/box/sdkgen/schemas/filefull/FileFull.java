@@ -827,6 +827,9 @@ public class FileFull extends File {
     }
 
     public FileFull build() {
+      if (this.type == null) {
+        this.type = new EnumWrapper<FileBaseTypeField>(FileBaseTypeField.FILE);
+      }
       return new FileFull(this);
     }
   }

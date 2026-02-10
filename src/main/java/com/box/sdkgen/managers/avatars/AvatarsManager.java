@@ -167,9 +167,7 @@ public class AvatarsManager {
 
     protected NetworkSession networkSession;
 
-    public Builder() {
-      this.networkSession = new NetworkSession();
-    }
+    public Builder() {}
 
     public Builder auth(Authentication auth) {
       this.auth = auth;
@@ -182,6 +180,9 @@ public class AvatarsManager {
     }
 
     public AvatarsManager build() {
+      if (this.networkSession == null) {
+        this.networkSession = new NetworkSession();
+      }
       return new AvatarsManager(this);
     }
   }

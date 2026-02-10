@@ -276,9 +276,7 @@ public class AiManager {
 
     protected NetworkSession networkSession;
 
-    public Builder() {
-      this.networkSession = new NetworkSession();
-    }
+    public Builder() {}
 
     public Builder auth(Authentication auth) {
       this.auth = auth;
@@ -291,6 +289,9 @@ public class AiManager {
     }
 
     public AiManager build() {
+      if (this.networkSession == null) {
+        this.networkSession = new NetworkSession();
+      }
       return new AiManager(this);
     }
   }

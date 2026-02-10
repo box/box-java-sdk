@@ -127,6 +127,9 @@ public class FileConflict extends FileMini {
     }
 
     public FileConflict build() {
+      if (this.type == null) {
+        this.type = new EnumWrapper<FileBaseTypeField>(FileBaseTypeField.FILE);
+      }
       return new FileConflict(this);
     }
   }

@@ -76,7 +76,6 @@ public class FileVersionBase extends SerializableObject {
     public Builder(String id) {
       super();
       this.id = id;
-      this.type = new EnumWrapper<FileVersionBaseTypeField>(FileVersionBaseTypeField.FILE_VERSION);
     }
 
     public Builder type(FileVersionBaseTypeField type) {
@@ -90,6 +89,10 @@ public class FileVersionBase extends SerializableObject {
     }
 
     public FileVersionBase build() {
+      if (this.type == null) {
+        this.type =
+            new EnumWrapper<FileVersionBaseTypeField>(FileVersionBaseTypeField.FILE_VERSION);
+      }
       return new FileVersionBase(this);
     }
   }
