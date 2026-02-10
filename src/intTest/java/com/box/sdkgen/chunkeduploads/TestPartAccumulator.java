@@ -79,8 +79,6 @@ public class TestPartAccumulator {
       this.parts = parts;
       this.fileSize = fileSize;
       this.fileHash = fileHash;
-      this.uploadPartUrl = "";
-      this.uploadSessionId = "";
     }
 
     public Builder uploadPartUrl(String uploadPartUrl) {
@@ -94,6 +92,12 @@ public class TestPartAccumulator {
     }
 
     public TestPartAccumulator build() {
+      if (this.uploadPartUrl == null) {
+        this.uploadPartUrl = "";
+      }
+      if (this.uploadSessionId == null) {
+        this.uploadSessionId = "";
+      }
       return new TestPartAccumulator(this);
     }
   }

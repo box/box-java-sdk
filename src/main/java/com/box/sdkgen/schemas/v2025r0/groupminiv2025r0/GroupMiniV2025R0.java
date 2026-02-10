@@ -122,6 +122,9 @@ public class GroupMiniV2025R0 extends GroupBaseV2025R0 {
     }
 
     public GroupMiniV2025R0 build() {
+      if (this.type == null) {
+        this.type = new EnumWrapper<GroupBaseV2025R0TypeField>(GroupBaseV2025R0TypeField.GROUP);
+      }
       return new GroupMiniV2025R0(this);
     }
   }

@@ -175,15 +175,6 @@ public class ClassificationTemplateFieldsField extends SerializableObject {
       super();
       this.id = id;
       this.options = options;
-      this.type =
-          new EnumWrapper<ClassificationTemplateFieldsTypeField>(
-              ClassificationTemplateFieldsTypeField.ENUM);
-      this.key =
-          new EnumWrapper<ClassificationTemplateFieldsKeyField>(
-              ClassificationTemplateFieldsKeyField.BOX__SECURITY__CLASSIFICATION__KEY);
-      this.displayName =
-          new EnumWrapper<ClassificationTemplateFieldsDisplayNameField>(
-              ClassificationTemplateFieldsDisplayNameField.CLASSIFICATION);
     }
 
     public Builder type(ClassificationTemplateFieldsTypeField type) {
@@ -223,6 +214,21 @@ public class ClassificationTemplateFieldsField extends SerializableObject {
     }
 
     public ClassificationTemplateFieldsField build() {
+      if (this.type == null) {
+        this.type =
+            new EnumWrapper<ClassificationTemplateFieldsTypeField>(
+                ClassificationTemplateFieldsTypeField.ENUM);
+      }
+      if (this.key == null) {
+        this.key =
+            new EnumWrapper<ClassificationTemplateFieldsKeyField>(
+                ClassificationTemplateFieldsKeyField.BOX__SECURITY__CLASSIFICATION__KEY);
+      }
+      if (this.displayName == null) {
+        this.displayName =
+            new EnumWrapper<ClassificationTemplateFieldsDisplayNameField>(
+                ClassificationTemplateFieldsDisplayNameField.CLASSIFICATION);
+      }
       return new ClassificationTemplateFieldsField(this);
     }
   }

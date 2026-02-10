@@ -263,9 +263,6 @@ public class AiStudioAgentAskResponse extends SerializableObject {
       super();
       this.accessState = accessState;
       this.description = description;
-      this.type =
-          new EnumWrapper<AiStudioAgentAskResponseTypeField>(
-              AiStudioAgentAskResponseTypeField.AI_AGENT_ASK);
     }
 
     public Builder type(AiStudioAgentAskResponseTypeField type) {
@@ -325,6 +322,11 @@ public class AiStudioAgentAskResponse extends SerializableObject {
     }
 
     public AiStudioAgentAskResponse build() {
+      if (this.type == null) {
+        this.type =
+            new EnumWrapper<AiStudioAgentAskResponseTypeField>(
+                AiStudioAgentAskResponseTypeField.AI_AGENT_ASK);
+      }
       return new AiStudioAgentAskResponse(this);
     }
   }

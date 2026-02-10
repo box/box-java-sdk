@@ -168,9 +168,6 @@ public class MetadataCascadePolicy extends SerializableObject {
     public Builder(String id) {
       super();
       this.id = id;
-      this.type =
-          new EnumWrapper<MetadataCascadePolicyTypeField>(
-              MetadataCascadePolicyTypeField.METADATA_CASCADE_POLICY);
     }
 
     public Builder type(MetadataCascadePolicyTypeField type) {
@@ -204,6 +201,11 @@ public class MetadataCascadePolicy extends SerializableObject {
     }
 
     public MetadataCascadePolicy build() {
+      if (this.type == null) {
+        this.type =
+            new EnumWrapper<MetadataCascadePolicyTypeField>(
+                MetadataCascadePolicyTypeField.METADATA_CASCADE_POLICY);
+      }
       return new MetadataCascadePolicy(this);
     }
   }

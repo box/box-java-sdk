@@ -190,7 +190,6 @@ public class CreateAiAgent extends SerializableObject {
       super();
       this.name = name;
       this.accessState = accessState;
-      this.type = new EnumWrapper<CreateAiAgentTypeField>(CreateAiAgentTypeField.AI_AGENT);
     }
 
     public Builder type(CreateAiAgentTypeField type) {
@@ -229,6 +228,9 @@ public class CreateAiAgent extends SerializableObject {
     }
 
     public CreateAiAgent build() {
+      if (this.type == null) {
+        this.type = new EnumWrapper<CreateAiAgentTypeField>(CreateAiAgentTypeField.AI_AGENT);
+      }
       return new CreateAiAgent(this);
     }
   }

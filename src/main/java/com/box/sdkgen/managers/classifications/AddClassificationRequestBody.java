@@ -114,12 +114,6 @@ public class AddClassificationRequestBody extends SerializableObject {
     public Builder(AddClassificationRequestBodyDataField data) {
       super();
       this.data = data;
-      this.op =
-          new EnumWrapper<AddClassificationRequestBodyOpField>(
-              AddClassificationRequestBodyOpField.ADDENUMOPTION);
-      this.fieldKey =
-          new EnumWrapper<AddClassificationRequestBodyFieldKeyField>(
-              AddClassificationRequestBodyFieldKeyField.BOX__SECURITY__CLASSIFICATION__KEY);
     }
 
     public Builder op(AddClassificationRequestBodyOpField op) {
@@ -143,6 +137,16 @@ public class AddClassificationRequestBody extends SerializableObject {
     }
 
     public AddClassificationRequestBody build() {
+      if (this.op == null) {
+        this.op =
+            new EnumWrapper<AddClassificationRequestBodyOpField>(
+                AddClassificationRequestBodyOpField.ADDENUMOPTION);
+      }
+      if (this.fieldKey == null) {
+        this.fieldKey =
+            new EnumWrapper<AddClassificationRequestBodyFieldKeyField>(
+                AddClassificationRequestBodyFieldKeyField.BOX__SECURITY__CLASSIFICATION__KEY);
+      }
       return new AddClassificationRequestBody(this);
     }
   }

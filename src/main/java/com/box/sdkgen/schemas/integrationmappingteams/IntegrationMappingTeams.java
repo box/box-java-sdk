@@ -232,6 +232,11 @@ public class IntegrationMappingTeams extends IntegrationMappingBase {
     }
 
     public IntegrationMappingTeams build() {
+      if (this.type == null) {
+        this.type =
+            new EnumWrapper<IntegrationMappingBaseTypeField>(
+                IntegrationMappingBaseTypeField.INTEGRATION_MAPPING);
+      }
       return new IntegrationMappingTeams(this);
     }
   }

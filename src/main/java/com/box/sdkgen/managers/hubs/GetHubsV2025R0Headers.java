@@ -38,10 +38,7 @@ public class GetHubsV2025R0Headers {
 
     protected Map<String, String> extraHeaders;
 
-    public Builder() {
-      this.boxVersion = new EnumWrapper<BoxVersionHeaderV2025R0>(BoxVersionHeaderV2025R0._2025_0);
-      this.extraHeaders = mapOf();
-    }
+    public Builder() {}
 
     public Builder boxVersion(BoxVersionHeaderV2025R0 boxVersion) {
       this.boxVersion = new EnumWrapper<BoxVersionHeaderV2025R0>(boxVersion);
@@ -59,6 +56,12 @@ public class GetHubsV2025R0Headers {
     }
 
     public GetHubsV2025R0Headers build() {
+      if (this.boxVersion == null) {
+        this.boxVersion = new EnumWrapper<BoxVersionHeaderV2025R0>(BoxVersionHeaderV2025R0._2025_0);
+      }
+      if (this.extraHeaders == null) {
+        this.extraHeaders = mapOf();
+      }
       return new GetHubsV2025R0Headers(this);
     }
   }

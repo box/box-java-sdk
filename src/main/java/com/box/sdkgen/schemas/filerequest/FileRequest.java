@@ -367,7 +367,6 @@ public class FileRequest extends SerializableObject {
       this.folder = folder;
       this.createdAt = createdAt;
       this.updatedAt = updatedAt;
-      this.type = new EnumWrapper<FileRequestTypeField>(FileRequestTypeField.FILE_REQUEST);
     }
 
     public Builder type(FileRequestTypeField type) {
@@ -438,6 +437,9 @@ public class FileRequest extends SerializableObject {
     }
 
     public FileRequest build() {
+      if (this.type == null) {
+        this.type = new EnumWrapper<FileRequestTypeField>(FileRequestTypeField.FILE_REQUEST);
+      }
       return new FileRequest(this);
     }
   }

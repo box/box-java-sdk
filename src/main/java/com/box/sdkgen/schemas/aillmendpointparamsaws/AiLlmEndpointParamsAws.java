@@ -111,9 +111,6 @@ public class AiLlmEndpointParamsAws extends SerializableObject {
 
     public Builder() {
       super();
-      this.type =
-          new EnumWrapper<AiLlmEndpointParamsAwsTypeField>(
-              AiLlmEndpointParamsAwsTypeField.AWS_PARAMS);
     }
 
     public Builder type(AiLlmEndpointParamsAwsTypeField type) {
@@ -139,6 +136,11 @@ public class AiLlmEndpointParamsAws extends SerializableObject {
     }
 
     public AiLlmEndpointParamsAws build() {
+      if (this.type == null) {
+        this.type =
+            new EnumWrapper<AiLlmEndpointParamsAwsTypeField>(
+                AiLlmEndpointParamsAwsTypeField.AWS_PARAMS);
+      }
       return new AiLlmEndpointParamsAws(this);
     }
   }

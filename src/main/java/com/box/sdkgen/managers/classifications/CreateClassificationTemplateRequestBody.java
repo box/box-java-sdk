@@ -180,16 +180,6 @@ public class CreateClassificationTemplateRequestBody extends SerializableObject 
     public Builder(List<CreateClassificationTemplateRequestBodyFieldsField> fields) {
       super();
       this.fields = fields;
-      this.scope =
-          new EnumWrapper<CreateClassificationTemplateRequestBodyScopeField>(
-              CreateClassificationTemplateRequestBodyScopeField.ENTERPRISE);
-      this.templateKey =
-          new EnumWrapper<CreateClassificationTemplateRequestBodyTemplateKeyField>(
-              CreateClassificationTemplateRequestBodyTemplateKeyField
-                  .SECURITYCLASSIFICATION_6VMVOCHWUWO);
-      this.displayName =
-          new EnumWrapper<CreateClassificationTemplateRequestBodyDisplayNameField>(
-              CreateClassificationTemplateRequestBodyDisplayNameField.CLASSIFICATION);
     }
 
     public Builder scope(CreateClassificationTemplateRequestBodyScopeField scope) {
@@ -239,6 +229,22 @@ public class CreateClassificationTemplateRequestBody extends SerializableObject 
     }
 
     public CreateClassificationTemplateRequestBody build() {
+      if (this.scope == null) {
+        this.scope =
+            new EnumWrapper<CreateClassificationTemplateRequestBodyScopeField>(
+                CreateClassificationTemplateRequestBodyScopeField.ENTERPRISE);
+      }
+      if (this.templateKey == null) {
+        this.templateKey =
+            new EnumWrapper<CreateClassificationTemplateRequestBodyTemplateKeyField>(
+                CreateClassificationTemplateRequestBodyTemplateKeyField
+                    .SECURITYCLASSIFICATION_6VMVOCHWUWO);
+      }
+      if (this.displayName == null) {
+        this.displayName =
+            new EnumWrapper<CreateClassificationTemplateRequestBodyDisplayNameField>(
+                CreateClassificationTemplateRequestBodyDisplayNameField.CLASSIFICATION);
+      }
       return new CreateClassificationTemplateRequestBody(this);
     }
   }

@@ -25,9 +25,7 @@ public class UpdateMetadataTaxonomyNodeHeaders {
 
     protected Map<String, String> extraHeaders;
 
-    public Builder() {
-      this.extraHeaders = mapOf();
-    }
+    public Builder() {}
 
     public Builder extraHeaders(Map<String, String> extraHeaders) {
       this.extraHeaders = extraHeaders;
@@ -35,6 +33,9 @@ public class UpdateMetadataTaxonomyNodeHeaders {
     }
 
     public UpdateMetadataTaxonomyNodeHeaders build() {
+      if (this.extraHeaders == null) {
+        this.extraHeaders = mapOf();
+      }
       return new UpdateMetadataTaxonomyNodeHeaders(this);
     }
   }

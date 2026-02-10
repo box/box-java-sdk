@@ -137,6 +137,9 @@ public class UserCollaborations extends UserBase {
     }
 
     public UserCollaborations build() {
+      if (this.type == null) {
+        this.type = new EnumWrapper<UserBaseTypeField>(UserBaseTypeField.USER);
+      }
       return new UserCollaborations(this);
     }
   }

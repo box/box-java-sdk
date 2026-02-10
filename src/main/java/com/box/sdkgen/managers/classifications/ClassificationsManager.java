@@ -223,9 +223,7 @@ public class ClassificationsManager {
 
     protected NetworkSession networkSession;
 
-    public Builder() {
-      this.networkSession = new NetworkSession();
-    }
+    public Builder() {}
 
     public Builder auth(Authentication auth) {
       this.auth = auth;
@@ -238,6 +236,9 @@ public class ClassificationsManager {
     }
 
     public ClassificationsManager build() {
+      if (this.networkSession == null) {
+        this.networkSession = new NetworkSession();
+      }
       return new ClassificationsManager(this);
     }
   }

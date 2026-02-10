@@ -111,7 +111,6 @@ public class FolderBase extends SerializableObject {
     public Builder(String id) {
       super();
       this.id = id;
-      this.type = new EnumWrapper<FolderBaseTypeField>(FolderBaseTypeField.FOLDER);
     }
 
     public Builder etag(String etag) {
@@ -131,6 +130,9 @@ public class FolderBase extends SerializableObject {
     }
 
     public FolderBase build() {
+      if (this.type == null) {
+        this.type = new EnumWrapper<FolderBaseTypeField>(FolderBaseTypeField.FOLDER);
+      }
       return new FolderBase(this);
     }
   }

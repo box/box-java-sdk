@@ -116,9 +116,6 @@ public class SignRequestSignerInputCustomValidation extends SerializableObject {
 
     public Builder() {
       super();
-      this.validationType =
-          new EnumWrapper<SignRequestSignerInputCustomValidationValidationTypeField>(
-              SignRequestSignerInputCustomValidationValidationTypeField.CUSTOM);
     }
 
     public Builder validationType(
@@ -148,6 +145,11 @@ public class SignRequestSignerInputCustomValidation extends SerializableObject {
     }
 
     public SignRequestSignerInputCustomValidation build() {
+      if (this.validationType == null) {
+        this.validationType =
+            new EnumWrapper<SignRequestSignerInputCustomValidationValidationTypeField>(
+                SignRequestSignerInputCustomValidationValidationTypeField.CUSTOM);
+      }
       return new SignRequestSignerInputCustomValidation(this);
     }
   }

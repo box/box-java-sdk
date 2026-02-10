@@ -972,9 +972,7 @@ public class MetadataTaxonomiesManager {
 
     protected NetworkSession networkSession;
 
-    public Builder() {
-      this.networkSession = new NetworkSession();
-    }
+    public Builder() {}
 
     public Builder auth(Authentication auth) {
       this.auth = auth;
@@ -987,6 +985,9 @@ public class MetadataTaxonomiesManager {
     }
 
     public MetadataTaxonomiesManager build() {
+      if (this.networkSession == null) {
+        this.networkSession = new NetworkSession();
+      }
       return new MetadataTaxonomiesManager(this);
     }
   }

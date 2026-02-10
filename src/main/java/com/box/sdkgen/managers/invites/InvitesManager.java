@@ -196,9 +196,7 @@ public class InvitesManager {
 
     protected NetworkSession networkSession;
 
-    public Builder() {
-      this.networkSession = new NetworkSession();
-    }
+    public Builder() {}
 
     public Builder auth(Authentication auth) {
       this.auth = auth;
@@ -211,6 +209,9 @@ public class InvitesManager {
     }
 
     public InvitesManager build() {
+      if (this.networkSession == null) {
+        this.networkSession = new NetworkSession();
+      }
       return new InvitesManager(this);
     }
   }

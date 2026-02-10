@@ -131,9 +131,6 @@ public class AiLlmEndpointParamsGoogle extends SerializableObject {
 
     public Builder() {
       super();
-      this.type =
-          new EnumWrapper<AiLlmEndpointParamsGoogleTypeField>(
-              AiLlmEndpointParamsGoogleTypeField.GOOGLE_PARAMS);
     }
 
     public Builder type(AiLlmEndpointParamsGoogleTypeField type) {
@@ -165,6 +162,11 @@ public class AiLlmEndpointParamsGoogle extends SerializableObject {
     }
 
     public AiLlmEndpointParamsGoogle build() {
+      if (this.type == null) {
+        this.type =
+            new EnumWrapper<AiLlmEndpointParamsGoogleTypeField>(
+                AiLlmEndpointParamsGoogleTypeField.GOOGLE_PARAMS);
+      }
       return new AiLlmEndpointParamsGoogle(this);
     }
   }

@@ -298,9 +298,7 @@ public class ShieldInformationBarrierSegmentsManager {
 
     protected NetworkSession networkSession;
 
-    public Builder() {
-      this.networkSession = new NetworkSession();
-    }
+    public Builder() {}
 
     public Builder auth(Authentication auth) {
       this.auth = auth;
@@ -313,6 +311,9 @@ public class ShieldInformationBarrierSegmentsManager {
     }
 
     public ShieldInformationBarrierSegmentsManager build() {
+      if (this.networkSession == null) {
+        this.networkSession = new NetworkSession();
+      }
       return new ShieldInformationBarrierSegmentsManager(this);
     }
   }

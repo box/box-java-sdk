@@ -348,6 +348,11 @@ public class LegalHoldPolicy extends LegalHoldPolicyMini {
     }
 
     public LegalHoldPolicy build() {
+      if (this.type == null) {
+        this.type =
+            new EnumWrapper<LegalHoldPolicyMiniTypeField>(
+                LegalHoldPolicyMiniTypeField.LEGAL_HOLD_POLICY);
+      }
       return new LegalHoldPolicy(this);
     }
   }

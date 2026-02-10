@@ -118,11 +118,6 @@ public class CollaboratorVariable extends SerializableObject {
     public Builder(List<CollaboratorVariableVariableValueField> variableValue) {
       super();
       this.variableValue = variableValue;
-      this.type =
-          new EnumWrapper<CollaboratorVariableTypeField>(CollaboratorVariableTypeField.VARIABLE);
-      this.variableType =
-          new EnumWrapper<CollaboratorVariableVariableTypeField>(
-              CollaboratorVariableVariableTypeField.USER_LIST);
     }
 
     public Builder type(CollaboratorVariableTypeField type) {
@@ -146,6 +141,15 @@ public class CollaboratorVariable extends SerializableObject {
     }
 
     public CollaboratorVariable build() {
+      if (this.type == null) {
+        this.type =
+            new EnumWrapper<CollaboratorVariableTypeField>(CollaboratorVariableTypeField.VARIABLE);
+      }
+      if (this.variableType == null) {
+        this.variableType =
+            new EnumWrapper<CollaboratorVariableVariableTypeField>(
+                CollaboratorVariableVariableTypeField.USER_LIST);
+      }
       return new CollaboratorVariable(this);
     }
   }

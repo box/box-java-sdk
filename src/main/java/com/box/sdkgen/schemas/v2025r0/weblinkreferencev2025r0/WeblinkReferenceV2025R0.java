@@ -77,9 +77,6 @@ public class WeblinkReferenceV2025R0 extends SerializableObject {
     public Builder(String id) {
       super();
       this.id = id;
-      this.type =
-          new EnumWrapper<WeblinkReferenceV2025R0TypeField>(
-              WeblinkReferenceV2025R0TypeField.WEB_LINK);
     }
 
     public Builder type(WeblinkReferenceV2025R0TypeField type) {
@@ -93,6 +90,11 @@ public class WeblinkReferenceV2025R0 extends SerializableObject {
     }
 
     public WeblinkReferenceV2025R0 build() {
+      if (this.type == null) {
+        this.type =
+            new EnumWrapper<WeblinkReferenceV2025R0TypeField>(
+                WeblinkReferenceV2025R0TypeField.WEB_LINK);
+      }
       return new WeblinkReferenceV2025R0(this);
     }
   }

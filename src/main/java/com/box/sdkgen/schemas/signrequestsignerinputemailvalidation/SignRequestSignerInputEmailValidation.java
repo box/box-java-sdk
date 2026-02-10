@@ -77,9 +77,6 @@ public class SignRequestSignerInputEmailValidation extends SerializableObject {
 
     public Builder() {
       super();
-      this.validationType =
-          new EnumWrapper<SignRequestSignerInputEmailValidationValidationTypeField>(
-              SignRequestSignerInputEmailValidationValidationTypeField.EMAIL);
     }
 
     public Builder validationType(
@@ -96,6 +93,11 @@ public class SignRequestSignerInputEmailValidation extends SerializableObject {
     }
 
     public SignRequestSignerInputEmailValidation build() {
+      if (this.validationType == null) {
+        this.validationType =
+            new EnumWrapper<SignRequestSignerInputEmailValidationValidationTypeField>(
+                SignRequestSignerInputEmailValidationValidationTypeField.EMAIL);
+      }
       return new SignRequestSignerInputEmailValidation(this);
     }
   }

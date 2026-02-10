@@ -38,9 +38,7 @@ public class UploadWithPreflightCheckHeaders {
 
     protected Map<String, String> extraHeaders;
 
-    public Builder() {
-      this.extraHeaders = mapOf();
-    }
+    public Builder() {}
 
     public Builder contentMd5(String contentMd5) {
       this.contentMd5 = contentMd5;
@@ -53,6 +51,9 @@ public class UploadWithPreflightCheckHeaders {
     }
 
     public UploadWithPreflightCheckHeaders build() {
+      if (this.extraHeaders == null) {
+        this.extraHeaders = mapOf();
+      }
       return new UploadWithPreflightCheckHeaders(this);
     }
   }

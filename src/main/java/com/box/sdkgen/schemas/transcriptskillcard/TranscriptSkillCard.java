@@ -212,11 +212,6 @@ public class TranscriptSkillCard extends SerializableObject {
       this.skill = skill;
       this.invocation = invocation;
       this.entries = entries;
-      this.type =
-          new EnumWrapper<TranscriptSkillCardTypeField>(TranscriptSkillCardTypeField.SKILL_CARD);
-      this.skillCardType =
-          new EnumWrapper<TranscriptSkillCardSkillCardTypeField>(
-              TranscriptSkillCardSkillCardTypeField.TRANSCRIPT);
     }
 
     public Builder createdAt(OffsetDateTime createdAt) {
@@ -255,6 +250,15 @@ public class TranscriptSkillCard extends SerializableObject {
     }
 
     public TranscriptSkillCard build() {
+      if (this.type == null) {
+        this.type =
+            new EnumWrapper<TranscriptSkillCardTypeField>(TranscriptSkillCardTypeField.SKILL_CARD);
+      }
+      if (this.skillCardType == null) {
+        this.skillCardType =
+            new EnumWrapper<TranscriptSkillCardSkillCardTypeField>(
+                TranscriptSkillCardSkillCardTypeField.TRANSCRIPT);
+      }
       return new TranscriptSkillCard(this);
     }
   }

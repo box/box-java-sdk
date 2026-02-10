@@ -92,9 +92,6 @@ public class ShieldListContentIntegrationV2025R0 extends SerializableObject {
     public Builder(List<ShieldListContentIntegrationV2025R0IntegrationsField> integrations) {
       super();
       this.integrations = integrations;
-      this.type =
-          new EnumWrapper<ShieldListContentIntegrationV2025R0TypeField>(
-              ShieldListContentIntegrationV2025R0TypeField.INTEGRATION);
     }
 
     public Builder type(ShieldListContentIntegrationV2025R0TypeField type) {
@@ -108,6 +105,11 @@ public class ShieldListContentIntegrationV2025R0 extends SerializableObject {
     }
 
     public ShieldListContentIntegrationV2025R0 build() {
+      if (this.type == null) {
+        this.type =
+            new EnumWrapper<ShieldListContentIntegrationV2025R0TypeField>(
+                ShieldListContentIntegrationV2025R0TypeField.INTEGRATION);
+      }
       return new ShieldListContentIntegrationV2025R0(this);
     }
   }

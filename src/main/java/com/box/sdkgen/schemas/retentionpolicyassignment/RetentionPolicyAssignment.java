@@ -211,9 +211,6 @@ public class RetentionPolicyAssignment extends SerializableObject {
     public Builder(String id) {
       super();
       this.id = id;
-      this.type =
-          new EnumWrapper<RetentionPolicyAssignmentTypeField>(
-              RetentionPolicyAssignmentTypeField.RETENTION_POLICY_ASSIGNMENT);
     }
 
     public Builder type(RetentionPolicyAssignmentTypeField type) {
@@ -258,6 +255,11 @@ public class RetentionPolicyAssignment extends SerializableObject {
     }
 
     public RetentionPolicyAssignment build() {
+      if (this.type == null) {
+        this.type =
+            new EnumWrapper<RetentionPolicyAssignmentTypeField>(
+                RetentionPolicyAssignmentTypeField.RETENTION_POLICY_ASSIGNMENT);
+      }
       return new RetentionPolicyAssignment(this);
     }
   }
