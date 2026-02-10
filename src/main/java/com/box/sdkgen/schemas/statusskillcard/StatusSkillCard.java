@@ -186,10 +186,6 @@ public class StatusSkillCard extends SerializableObject {
       this.status = status;
       this.skill = skill;
       this.invocation = invocation;
-      this.type = new EnumWrapper<StatusSkillCardTypeField>(StatusSkillCardTypeField.SKILL_CARD);
-      this.skillCardType =
-          new EnumWrapper<StatusSkillCardSkillCardTypeField>(
-              StatusSkillCardSkillCardTypeField.STATUS);
     }
 
     public Builder createdAt(OffsetDateTime createdAt) {
@@ -223,6 +219,14 @@ public class StatusSkillCard extends SerializableObject {
     }
 
     public StatusSkillCard build() {
+      if (this.type == null) {
+        this.type = new EnumWrapper<StatusSkillCardTypeField>(StatusSkillCardTypeField.SKILL_CARD);
+      }
+      if (this.skillCardType == null) {
+        this.skillCardType =
+            new EnumWrapper<StatusSkillCardSkillCardTypeField>(
+                StatusSkillCardSkillCardTypeField.STATUS);
+      }
       return new StatusSkillCard(this);
     }
   }

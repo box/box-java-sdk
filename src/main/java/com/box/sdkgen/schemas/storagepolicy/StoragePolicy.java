@@ -90,6 +90,10 @@ public class StoragePolicy extends StoragePolicyMini {
     }
 
     public StoragePolicy build() {
+      if (this.type == null) {
+        this.type =
+            new EnumWrapper<StoragePolicyMiniTypeField>(StoragePolicyMiniTypeField.STORAGE_POLICY);
+      }
       return new StoragePolicy(this);
     }
   }

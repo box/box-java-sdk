@@ -202,11 +202,6 @@ public class TimelineSkillCard extends SerializableObject {
       this.skill = skill;
       this.invocation = invocation;
       this.entries = entries;
-      this.type =
-          new EnumWrapper<TimelineSkillCardTypeField>(TimelineSkillCardTypeField.SKILL_CARD);
-      this.skillCardType =
-          new EnumWrapper<TimelineSkillCardSkillCardTypeField>(
-              TimelineSkillCardSkillCardTypeField.TIMELINE);
     }
 
     public Builder createdAt(OffsetDateTime createdAt) {
@@ -245,6 +240,15 @@ public class TimelineSkillCard extends SerializableObject {
     }
 
     public TimelineSkillCard build() {
+      if (this.type == null) {
+        this.type =
+            new EnumWrapper<TimelineSkillCardTypeField>(TimelineSkillCardTypeField.SKILL_CARD);
+      }
+      if (this.skillCardType == null) {
+        this.skillCardType =
+            new EnumWrapper<TimelineSkillCardSkillCardTypeField>(
+                TimelineSkillCardSkillCardTypeField.TIMELINE);
+      }
       return new TimelineSkillCard(this);
     }
   }

@@ -121,9 +121,6 @@ public class ShieldListMiniV2025R0 extends SerializableObject {
       this.id = id;
       this.name = name;
       this.content = content;
-      this.type =
-          new EnumWrapper<ShieldListMiniV2025R0TypeField>(
-              ShieldListMiniV2025R0TypeField.SHIELD_LIST);
     }
 
     public Builder type(ShieldListMiniV2025R0TypeField type) {
@@ -137,6 +134,11 @@ public class ShieldListMiniV2025R0 extends SerializableObject {
     }
 
     public ShieldListMiniV2025R0 build() {
+      if (this.type == null) {
+        this.type =
+            new EnumWrapper<ShieldListMiniV2025R0TypeField>(
+                ShieldListMiniV2025R0TypeField.SHIELD_LIST);
+      }
       return new ShieldListMiniV2025R0(this);
     }
   }

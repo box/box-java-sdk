@@ -96,7 +96,6 @@ public class AiTextGenItemsField extends SerializableObject {
     public Builder(String id) {
       super();
       this.id = id;
-      this.type = new EnumWrapper<AiTextGenItemsTypeField>(AiTextGenItemsTypeField.FILE);
     }
 
     public Builder type(AiTextGenItemsTypeField type) {
@@ -115,6 +114,9 @@ public class AiTextGenItemsField extends SerializableObject {
     }
 
     public AiTextGenItemsField build() {
+      if (this.type == null) {
+        this.type = new EnumWrapper<AiTextGenItemsTypeField>(AiTextGenItemsTypeField.FILE);
+      }
       return new AiTextGenItemsField(this);
     }
   }

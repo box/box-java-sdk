@@ -42,7 +42,6 @@ public class FindAppItemForSharedLinkHeaders {
 
     public Builder(String boxapi) {
       this.boxapi = boxapi;
-      this.extraHeaders = mapOf();
     }
 
     public Builder extraHeaders(Map<String, String> extraHeaders) {
@@ -51,6 +50,9 @@ public class FindAppItemForSharedLinkHeaders {
     }
 
     public FindAppItemForSharedLinkHeaders build() {
+      if (this.extraHeaders == null) {
+        this.extraHeaders = mapOf();
+      }
       return new FindAppItemForSharedLinkHeaders(this);
     }
   }

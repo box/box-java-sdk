@@ -78,9 +78,6 @@ public class TermsOfServiceBaseV2025R0 extends SerializableObject {
     public Builder(String id) {
       super();
       this.id = id;
-      this.type =
-          new EnumWrapper<TermsOfServiceBaseV2025R0TypeField>(
-              TermsOfServiceBaseV2025R0TypeField.TERMS_OF_SERVICE);
     }
 
     public Builder type(TermsOfServiceBaseV2025R0TypeField type) {
@@ -94,6 +91,11 @@ public class TermsOfServiceBaseV2025R0 extends SerializableObject {
     }
 
     public TermsOfServiceBaseV2025R0 build() {
+      if (this.type == null) {
+        this.type =
+            new EnumWrapper<TermsOfServiceBaseV2025R0TypeField>(
+                TermsOfServiceBaseV2025R0TypeField.TERMS_OF_SERVICE);
+      }
       return new TermsOfServiceBaseV2025R0(this);
     }
   }

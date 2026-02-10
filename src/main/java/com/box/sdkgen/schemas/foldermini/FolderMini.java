@@ -122,6 +122,9 @@ public class FolderMini extends FolderBase {
     }
 
     public FolderMini build() {
+      if (this.type == null) {
+        this.type = new EnumWrapper<FolderBaseTypeField>(FolderBaseTypeField.FOLDER);
+      }
       return new FolderMini(this);
     }
   }

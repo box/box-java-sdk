@@ -190,8 +190,6 @@ public class MetadataTemplate extends SerializableObject {
     public Builder(String id) {
       super();
       this.id = id;
-      this.type =
-          new EnumWrapper<MetadataTemplateTypeField>(MetadataTemplateTypeField.METADATA_TEMPLATE);
     }
 
     public Builder type(MetadataTemplateTypeField type) {
@@ -235,6 +233,10 @@ public class MetadataTemplate extends SerializableObject {
     }
 
     public MetadataTemplate build() {
+      if (this.type == null) {
+        this.type =
+            new EnumWrapper<MetadataTemplateTypeField>(MetadataTemplateTypeField.METADATA_TEMPLATE);
+      }
       return new MetadataTemplate(this);
     }
   }

@@ -75,8 +75,6 @@ public class KeywordSkillCardSkillField extends SerializableObject {
     public Builder(String id) {
       super();
       this.id = id;
-      this.type =
-          new EnumWrapper<KeywordSkillCardSkillTypeField>(KeywordSkillCardSkillTypeField.SERVICE);
     }
 
     public Builder type(KeywordSkillCardSkillTypeField type) {
@@ -90,6 +88,10 @@ public class KeywordSkillCardSkillField extends SerializableObject {
     }
 
     public KeywordSkillCardSkillField build() {
+      if (this.type == null) {
+        this.type =
+            new EnumWrapper<KeywordSkillCardSkillTypeField>(KeywordSkillCardSkillTypeField.SERVICE);
+      }
       return new KeywordSkillCardSkillField(this);
     }
   }

@@ -163,16 +163,6 @@ public class CreateClassificationTemplateRequestBodyFieldsField extends Serializ
     public Builder(List<CreateClassificationTemplateRequestBodyFieldsOptionsField> options) {
       super();
       this.options = options;
-      this.type =
-          new EnumWrapper<CreateClassificationTemplateRequestBodyFieldsTypeField>(
-              CreateClassificationTemplateRequestBodyFieldsTypeField.ENUM);
-      this.key =
-          new EnumWrapper<CreateClassificationTemplateRequestBodyFieldsKeyField>(
-              CreateClassificationTemplateRequestBodyFieldsKeyField
-                  .BOX__SECURITY__CLASSIFICATION__KEY);
-      this.displayName =
-          new EnumWrapper<CreateClassificationTemplateRequestBodyFieldsDisplayNameField>(
-              CreateClassificationTemplateRequestBodyFieldsDisplayNameField.CLASSIFICATION);
     }
 
     public Builder type(CreateClassificationTemplateRequestBodyFieldsTypeField type) {
@@ -215,6 +205,22 @@ public class CreateClassificationTemplateRequestBodyFieldsField extends Serializ
     }
 
     public CreateClassificationTemplateRequestBodyFieldsField build() {
+      if (this.type == null) {
+        this.type =
+            new EnumWrapper<CreateClassificationTemplateRequestBodyFieldsTypeField>(
+                CreateClassificationTemplateRequestBodyFieldsTypeField.ENUM);
+      }
+      if (this.key == null) {
+        this.key =
+            new EnumWrapper<CreateClassificationTemplateRequestBodyFieldsKeyField>(
+                CreateClassificationTemplateRequestBodyFieldsKeyField
+                    .BOX__SECURITY__CLASSIFICATION__KEY);
+      }
+      if (this.displayName == null) {
+        this.displayName =
+            new EnumWrapper<CreateClassificationTemplateRequestBodyFieldsDisplayNameField>(
+                CreateClassificationTemplateRequestBodyFieldsDisplayNameField.CLASSIFICATION);
+      }
       return new CreateClassificationTemplateRequestBodyFieldsField(this);
     }
   }

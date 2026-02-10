@@ -542,9 +542,7 @@ public class IntegrationMappingsManager {
 
     protected NetworkSession networkSession;
 
-    public Builder() {
-      this.networkSession = new NetworkSession();
-    }
+    public Builder() {}
 
     public Builder auth(Authentication auth) {
       this.auth = auth;
@@ -557,6 +555,9 @@ public class IntegrationMappingsManager {
     }
 
     public IntegrationMappingsManager build() {
+      if (this.networkSession == null) {
+        this.networkSession = new NetworkSession();
+      }
       return new IntegrationMappingsManager(this);
     }
   }

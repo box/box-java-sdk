@@ -246,6 +246,10 @@ public class FileVersionFull extends FileVersion {
     }
 
     public FileVersionFull build() {
+      if (this.type == null) {
+        this.type =
+            new EnumWrapper<FileVersionBaseTypeField>(FileVersionBaseTypeField.FILE_VERSION);
+      }
       return new FileVersionFull(this);
     }
   }

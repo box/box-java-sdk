@@ -398,9 +398,7 @@ public class FolderMetadataManager {
 
     protected NetworkSession networkSession;
 
-    public Builder() {
-      this.networkSession = new NetworkSession();
-    }
+    public Builder() {}
 
     public Builder auth(Authentication auth) {
       this.auth = auth;
@@ -413,6 +411,9 @@ public class FolderMetadataManager {
     }
 
     public FolderMetadataManager build() {
+      if (this.networkSession == null) {
+        this.networkSession = new NetworkSession();
+      }
       return new FolderMetadataManager(this);
     }
   }

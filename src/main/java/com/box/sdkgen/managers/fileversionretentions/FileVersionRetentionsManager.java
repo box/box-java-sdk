@@ -191,9 +191,7 @@ public class FileVersionRetentionsManager {
 
     protected NetworkSession networkSession;
 
-    public Builder() {
-      this.networkSession = new NetworkSession();
-    }
+    public Builder() {}
 
     public Builder auth(Authentication auth) {
       this.auth = auth;
@@ -206,6 +204,9 @@ public class FileVersionRetentionsManager {
     }
 
     public FileVersionRetentionsManager build() {
+      if (this.networkSession == null) {
+        this.networkSession = new NetworkSession();
+      }
       return new FileVersionRetentionsManager(this);
     }
   }

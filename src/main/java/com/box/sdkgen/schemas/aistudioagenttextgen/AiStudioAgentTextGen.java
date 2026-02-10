@@ -161,9 +161,6 @@ public class AiStudioAgentTextGen extends SerializableObject {
       super();
       this.accessState = accessState;
       this.description = description;
-      this.type =
-          new EnumWrapper<AiStudioAgentTextGenTypeField>(
-              AiStudioAgentTextGenTypeField.AI_AGENT_TEXT_GEN);
     }
 
     public Builder type(AiStudioAgentTextGenTypeField type) {
@@ -193,6 +190,11 @@ public class AiStudioAgentTextGen extends SerializableObject {
     }
 
     public AiStudioAgentTextGen build() {
+      if (this.type == null) {
+        this.type =
+            new EnumWrapper<AiStudioAgentTextGenTypeField>(
+                AiStudioAgentTextGenTypeField.AI_AGENT_TEXT_GEN);
+      }
       return new AiStudioAgentTextGen(this);
     }
   }

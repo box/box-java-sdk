@@ -136,9 +136,6 @@ public class IntegrationMappingPartnerItemSlack extends SerializableObject {
     public Builder(String id) {
       super();
       this.id = id;
-      this.type =
-          new EnumWrapper<IntegrationMappingPartnerItemSlackTypeField>(
-              IntegrationMappingPartnerItemSlackTypeField.CHANNEL);
     }
 
     public Builder type(IntegrationMappingPartnerItemSlackTypeField type) {
@@ -164,6 +161,11 @@ public class IntegrationMappingPartnerItemSlack extends SerializableObject {
     }
 
     public IntegrationMappingPartnerItemSlack build() {
+      if (this.type == null) {
+        this.type =
+            new EnumWrapper<IntegrationMappingPartnerItemSlackTypeField>(
+                IntegrationMappingPartnerItemSlackTypeField.CHANNEL);
+      }
       return new IntegrationMappingPartnerItemSlack(this);
     }
   }

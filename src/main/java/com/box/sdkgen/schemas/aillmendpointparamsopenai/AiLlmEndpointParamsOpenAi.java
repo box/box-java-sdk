@@ -168,9 +168,6 @@ public class AiLlmEndpointParamsOpenAi extends SerializableObject {
 
     public Builder() {
       super();
-      this.type =
-          new EnumWrapper<AiLlmEndpointParamsOpenAiTypeField>(
-              AiLlmEndpointParamsOpenAiTypeField.OPENAI_PARAMS);
     }
 
     public Builder type(AiLlmEndpointParamsOpenAiTypeField type) {
@@ -214,6 +211,11 @@ public class AiLlmEndpointParamsOpenAi extends SerializableObject {
     }
 
     public AiLlmEndpointParamsOpenAi build() {
+      if (this.type == null) {
+        this.type =
+            new EnumWrapper<AiLlmEndpointParamsOpenAiTypeField>(
+                AiLlmEndpointParamsOpenAiTypeField.OPENAI_PARAMS);
+      }
       return new AiLlmEndpointParamsOpenAi(this);
     }
   }

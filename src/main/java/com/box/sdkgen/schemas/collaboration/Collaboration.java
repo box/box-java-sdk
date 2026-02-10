@@ -337,7 +337,6 @@ public class Collaboration extends SerializableObject {
     public Builder(String id) {
       super();
       this.id = id;
-      this.type = new EnumWrapper<CollaborationTypeField>(CollaborationTypeField.COLLABORATION);
     }
 
     public Builder type(CollaborationTypeField type) {
@@ -459,6 +458,9 @@ public class Collaboration extends SerializableObject {
     }
 
     public Collaboration build() {
+      if (this.type == null) {
+        this.type = new EnumWrapper<CollaborationTypeField>(CollaborationTypeField.COLLABORATION);
+      }
       return new Collaboration(this);
     }
   }

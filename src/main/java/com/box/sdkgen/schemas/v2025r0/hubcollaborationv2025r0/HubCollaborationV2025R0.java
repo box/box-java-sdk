@@ -179,9 +179,6 @@ public class HubCollaborationV2025R0 extends SerializableObject {
     public Builder(String id) {
       super();
       this.id = id;
-      this.type =
-          new EnumWrapper<HubCollaborationV2025R0TypeField>(
-              HubCollaborationV2025R0TypeField.HUB_COLLABORATION);
     }
 
     public Builder type(HubCollaborationV2025R0TypeField type) {
@@ -236,6 +233,11 @@ public class HubCollaborationV2025R0 extends SerializableObject {
     }
 
     public HubCollaborationV2025R0 build() {
+      if (this.type == null) {
+        this.type =
+            new EnumWrapper<HubCollaborationV2025R0TypeField>(
+                HubCollaborationV2025R0TypeField.HUB_COLLABORATION);
+      }
       return new HubCollaborationV2025R0(this);
     }
   }

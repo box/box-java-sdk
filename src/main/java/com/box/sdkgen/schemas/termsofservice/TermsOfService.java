@@ -217,6 +217,11 @@ public class TermsOfService extends TermsOfServiceBase {
     }
 
     public TermsOfService build() {
+      if (this.type == null) {
+        this.type =
+            new EnumWrapper<TermsOfServiceBaseTypeField>(
+                TermsOfServiceBaseTypeField.TERMS_OF_SERVICE);
+      }
       return new TermsOfService(this);
     }
   }

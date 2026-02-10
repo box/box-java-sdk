@@ -59,7 +59,6 @@ public class FindWebLinkForSharedLinkHeaders {
 
     public Builder(String boxapi) {
       this.boxapi = boxapi;
-      this.extraHeaders = mapOf();
     }
 
     public Builder ifNoneMatch(String ifNoneMatch) {
@@ -73,6 +72,9 @@ public class FindWebLinkForSharedLinkHeaders {
     }
 
     public FindWebLinkForSharedLinkHeaders build() {
+      if (this.extraHeaders == null) {
+        this.extraHeaders = mapOf();
+      }
       return new FindWebLinkForSharedLinkHeaders(this);
     }
   }

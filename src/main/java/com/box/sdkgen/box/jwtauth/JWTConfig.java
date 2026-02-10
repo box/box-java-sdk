@@ -265,9 +265,6 @@ public class JWTConfig {
       this.jwtKeyId = jwtKeyId;
       this.privateKey = privateKey;
       this.privateKeyPassphrase = privateKeyPassphrase;
-      this.algorithm = new EnumWrapper<JwtAlgorithm>(JwtAlgorithm.RS256);
-      this.tokenStorage = new InMemoryTokenStorage();
-      this.privateKeyDecryptor = new DefaultPrivateKeyDecryptor();
     }
 
     public Builder enterpriseId(String enterpriseId) {
@@ -301,6 +298,15 @@ public class JWTConfig {
     }
 
     public JWTConfig build() {
+      if (this.algorithm == null) {
+        this.algorithm = new EnumWrapper<JwtAlgorithm>(JwtAlgorithm.RS256);
+      }
+      if (this.tokenStorage == null) {
+        this.tokenStorage = new InMemoryTokenStorage();
+      }
+      if (this.privateKeyDecryptor == null) {
+        this.privateKeyDecryptor = new DefaultPrivateKeyDecryptor();
+      }
       return new JWTConfig(this);
     }
   }

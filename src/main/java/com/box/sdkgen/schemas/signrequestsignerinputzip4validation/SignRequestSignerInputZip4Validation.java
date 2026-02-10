@@ -77,9 +77,6 @@ public class SignRequestSignerInputZip4Validation extends SerializableObject {
 
     public Builder() {
       super();
-      this.validationType =
-          new EnumWrapper<SignRequestSignerInputZip4ValidationValidationTypeField>(
-              SignRequestSignerInputZip4ValidationValidationTypeField.ZIP_4);
     }
 
     public Builder validationType(
@@ -96,6 +93,11 @@ public class SignRequestSignerInputZip4Validation extends SerializableObject {
     }
 
     public SignRequestSignerInputZip4Validation build() {
+      if (this.validationType == null) {
+        this.validationType =
+            new EnumWrapper<SignRequestSignerInputZip4ValidationValidationTypeField>(
+                SignRequestSignerInputZip4ValidationValidationTypeField.ZIP_4);
+      }
       return new SignRequestSignerInputZip4Validation(this);
     }
   }

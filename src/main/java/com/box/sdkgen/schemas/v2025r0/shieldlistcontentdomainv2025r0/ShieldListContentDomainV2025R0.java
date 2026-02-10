@@ -90,9 +90,6 @@ public class ShieldListContentDomainV2025R0 extends SerializableObject {
     public Builder(List<String> domains) {
       super();
       this.domains = domains;
-      this.type =
-          new EnumWrapper<ShieldListContentDomainV2025R0TypeField>(
-              ShieldListContentDomainV2025R0TypeField.DOMAIN);
     }
 
     public Builder type(ShieldListContentDomainV2025R0TypeField type) {
@@ -106,6 +103,11 @@ public class ShieldListContentDomainV2025R0 extends SerializableObject {
     }
 
     public ShieldListContentDomainV2025R0 build() {
+      if (this.type == null) {
+        this.type =
+            new EnumWrapper<ShieldListContentDomainV2025R0TypeField>(
+                ShieldListContentDomainV2025R0TypeField.DOMAIN);
+      }
       return new ShieldListContentDomainV2025R0(this);
     }
   }

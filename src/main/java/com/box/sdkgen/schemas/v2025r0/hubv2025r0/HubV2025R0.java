@@ -326,6 +326,9 @@ public class HubV2025R0 extends HubBaseV2025R0 {
     }
 
     public HubV2025R0 build() {
+      if (this.type == null) {
+        this.type = new EnumWrapper<HubBaseV2025R0TypeField>(HubBaseV2025R0TypeField.HUBS);
+      }
       return new HubV2025R0(this);
     }
   }
