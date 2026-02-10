@@ -84,9 +84,6 @@ public class TranscriptSkillCardSkillField extends SerializableObject {
     public Builder(String id) {
       super();
       this.id = id;
-      this.type =
-          new EnumWrapper<TranscriptSkillCardSkillTypeField>(
-              TranscriptSkillCardSkillTypeField.SERVICE);
     }
 
     public Builder type(TranscriptSkillCardSkillTypeField type) {
@@ -100,6 +97,11 @@ public class TranscriptSkillCardSkillField extends SerializableObject {
     }
 
     public TranscriptSkillCardSkillField build() {
+      if (this.type == null) {
+        this.type =
+            new EnumWrapper<TranscriptSkillCardSkillTypeField>(
+                TranscriptSkillCardSkillTypeField.SERVICE);
+      }
       return new TranscriptSkillCardSkillField(this);
     }
   }

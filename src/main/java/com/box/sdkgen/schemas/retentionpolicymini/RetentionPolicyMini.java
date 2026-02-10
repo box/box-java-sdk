@@ -159,6 +159,11 @@ public class RetentionPolicyMini extends RetentionPolicyBase {
     }
 
     public RetentionPolicyMini build() {
+      if (this.type == null) {
+        this.type =
+            new EnumWrapper<RetentionPolicyBaseTypeField>(
+                RetentionPolicyBaseTypeField.RETENTION_POLICY);
+      }
       return new RetentionPolicyMini(this);
     }
   }

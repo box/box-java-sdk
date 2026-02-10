@@ -161,7 +161,6 @@ public class ArchiveV2025R0 extends SerializableObject {
       this.id = id;
       this.name = name;
       this.size = size;
-      this.type = new EnumWrapper<ArchiveV2025R0TypeField>(ArchiveV2025R0TypeField.ARCHIVE);
     }
 
     public Builder type(ArchiveV2025R0TypeField type) {
@@ -186,6 +185,9 @@ public class ArchiveV2025R0 extends SerializableObject {
     }
 
     public ArchiveV2025R0 build() {
+      if (this.type == null) {
+        this.type = new EnumWrapper<ArchiveV2025R0TypeField>(ArchiveV2025R0TypeField.ARCHIVE);
+      }
       return new ArchiveV2025R0(this);
     }
   }

@@ -76,9 +76,6 @@ public class RetentionPolicyBase extends SerializableObject {
     public Builder(String id) {
       super();
       this.id = id;
-      this.type =
-          new EnumWrapper<RetentionPolicyBaseTypeField>(
-              RetentionPolicyBaseTypeField.RETENTION_POLICY);
     }
 
     public Builder type(RetentionPolicyBaseTypeField type) {
@@ -92,6 +89,11 @@ public class RetentionPolicyBase extends SerializableObject {
     }
 
     public RetentionPolicyBase build() {
+      if (this.type == null) {
+        this.type =
+            new EnumWrapper<RetentionPolicyBaseTypeField>(
+                RetentionPolicyBaseTypeField.RETENTION_POLICY);
+      }
       return new RetentionPolicyBase(this);
     }
   }

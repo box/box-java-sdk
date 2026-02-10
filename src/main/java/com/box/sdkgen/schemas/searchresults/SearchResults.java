@@ -138,8 +138,6 @@ public class SearchResults extends SerializableObject {
 
     public Builder() {
       super();
-      this.type =
-          new EnumWrapper<SearchResultsTypeField>(SearchResultsTypeField.SEARCH_RESULTS_ITEMS);
     }
 
     public Builder totalCount(Long totalCount) {
@@ -173,6 +171,10 @@ public class SearchResults extends SerializableObject {
     }
 
     public SearchResults build() {
+      if (this.type == null) {
+        this.type =
+            new EnumWrapper<SearchResultsTypeField>(SearchResultsTypeField.SEARCH_RESULTS_ITEMS);
+      }
       return new SearchResults(this);
     }
   }

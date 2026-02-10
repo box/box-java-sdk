@@ -89,9 +89,6 @@ public class CreateTermsOfServiceStatusForUserRequestBodyUserField extends Seria
     public Builder(String id) {
       super();
       this.id = id;
-      this.type =
-          new EnumWrapper<CreateTermsOfServiceStatusForUserRequestBodyUserTypeField>(
-              CreateTermsOfServiceStatusForUserRequestBodyUserTypeField.USER);
     }
 
     public Builder type(CreateTermsOfServiceStatusForUserRequestBodyUserTypeField type) {
@@ -106,6 +103,11 @@ public class CreateTermsOfServiceStatusForUserRequestBodyUserField extends Seria
     }
 
     public CreateTermsOfServiceStatusForUserRequestBodyUserField build() {
+      if (this.type == null) {
+        this.type =
+            new EnumWrapper<CreateTermsOfServiceStatusForUserRequestBodyUserTypeField>(
+                CreateTermsOfServiceStatusForUserRequestBodyUserTypeField.USER);
+      }
       return new CreateTermsOfServiceStatusForUserRequestBodyUserField(this);
     }
   }

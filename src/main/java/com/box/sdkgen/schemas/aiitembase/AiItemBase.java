@@ -97,7 +97,6 @@ public class AiItemBase extends SerializableObject {
     public Builder(String id) {
       super();
       this.id = id;
-      this.type = new EnumWrapper<AiItemBaseTypeField>(AiItemBaseTypeField.FILE);
     }
 
     public Builder type(AiItemBaseTypeField type) {
@@ -116,6 +115,9 @@ public class AiItemBase extends SerializableObject {
     }
 
     public AiItemBase build() {
+      if (this.type == null) {
+        this.type = new EnumWrapper<AiItemBaseTypeField>(AiItemBaseTypeField.FILE);
+      }
       return new AiItemBase(this);
     }
   }

@@ -40,9 +40,7 @@ public class UpdateFileByIdHeaders {
 
     protected Map<String, String> extraHeaders;
 
-    public Builder() {
-      this.extraHeaders = mapOf();
-    }
+    public Builder() {}
 
     public Builder ifMatch(String ifMatch) {
       this.ifMatch = ifMatch;
@@ -55,6 +53,9 @@ public class UpdateFileByIdHeaders {
     }
 
     public UpdateFileByIdHeaders build() {
+      if (this.extraHeaders == null) {
+        this.extraHeaders = mapOf();
+      }
       return new UpdateFileByIdHeaders(this);
     }
   }

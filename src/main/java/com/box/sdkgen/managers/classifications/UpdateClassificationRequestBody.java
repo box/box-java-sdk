@@ -134,12 +134,6 @@ public class UpdateClassificationRequestBody extends SerializableObject {
       super();
       this.enumOptionKey = enumOptionKey;
       this.data = data;
-      this.op =
-          new EnumWrapper<UpdateClassificationRequestBodyOpField>(
-              UpdateClassificationRequestBodyOpField.EDITENUMOPTION);
-      this.fieldKey =
-          new EnumWrapper<UpdateClassificationRequestBodyFieldKeyField>(
-              UpdateClassificationRequestBodyFieldKeyField.BOX__SECURITY__CLASSIFICATION__KEY);
     }
 
     public Builder op(UpdateClassificationRequestBodyOpField op) {
@@ -163,6 +157,16 @@ public class UpdateClassificationRequestBody extends SerializableObject {
     }
 
     public UpdateClassificationRequestBody build() {
+      if (this.op == null) {
+        this.op =
+            new EnumWrapper<UpdateClassificationRequestBodyOpField>(
+                UpdateClassificationRequestBodyOpField.EDITENUMOPTION);
+      }
+      if (this.fieldKey == null) {
+        this.fieldKey =
+            new EnumWrapper<UpdateClassificationRequestBodyFieldKeyField>(
+                UpdateClassificationRequestBodyFieldKeyField.BOX__SECURITY__CLASSIFICATION__KEY);
+      }
       return new UpdateClassificationRequestBody(this);
     }
   }

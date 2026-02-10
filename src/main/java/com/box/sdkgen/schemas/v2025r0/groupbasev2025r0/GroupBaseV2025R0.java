@@ -73,7 +73,6 @@ public class GroupBaseV2025R0 extends SerializableObject {
     public Builder(String id) {
       super();
       this.id = id;
-      this.type = new EnumWrapper<GroupBaseV2025R0TypeField>(GroupBaseV2025R0TypeField.GROUP);
     }
 
     public Builder type(GroupBaseV2025R0TypeField type) {
@@ -87,6 +86,9 @@ public class GroupBaseV2025R0 extends SerializableObject {
     }
 
     public GroupBaseV2025R0 build() {
+      if (this.type == null) {
+        this.type = new EnumWrapper<GroupBaseV2025R0TypeField>(GroupBaseV2025R0TypeField.GROUP);
+      }
       return new GroupBaseV2025R0(this);
     }
   }

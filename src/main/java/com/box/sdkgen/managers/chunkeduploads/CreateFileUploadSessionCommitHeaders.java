@@ -75,7 +75,6 @@ public class CreateFileUploadSessionCommitHeaders {
 
     public Builder(String digest) {
       this.digest = digest;
-      this.extraHeaders = mapOf();
     }
 
     public Builder ifMatch(String ifMatch) {
@@ -94,6 +93,9 @@ public class CreateFileUploadSessionCommitHeaders {
     }
 
     public CreateFileUploadSessionCommitHeaders build() {
+      if (this.extraHeaders == null) {
+        this.extraHeaders = mapOf();
+      }
       return new CreateFileUploadSessionCommitHeaders(this);
     }
   }

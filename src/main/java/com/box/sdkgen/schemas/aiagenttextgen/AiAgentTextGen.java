@@ -72,8 +72,6 @@ public class AiAgentTextGen extends SerializableObject {
 
     public Builder() {
       super();
-      this.type =
-          new EnumWrapper<AiAgentTextGenTypeField>(AiAgentTextGenTypeField.AI_AGENT_TEXT_GEN);
     }
 
     public Builder type(AiAgentTextGenTypeField type) {
@@ -92,6 +90,10 @@ public class AiAgentTextGen extends SerializableObject {
     }
 
     public AiAgentTextGen build() {
+      if (this.type == null) {
+        this.type =
+            new EnumWrapper<AiAgentTextGenTypeField>(AiAgentTextGenTypeField.AI_AGENT_TEXT_GEN);
+      }
       return new AiAgentTextGen(this);
     }
   }

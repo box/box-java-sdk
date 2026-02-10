@@ -543,6 +543,9 @@ public class UserFull extends User {
     }
 
     public UserFull build() {
+      if (this.type == null) {
+        this.type = new EnumWrapper<UserBaseTypeField>(UserBaseTypeField.USER);
+      }
       return new UserFull(this);
     }
   }

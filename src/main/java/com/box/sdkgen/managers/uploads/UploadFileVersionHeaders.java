@@ -53,9 +53,7 @@ public class UploadFileVersionHeaders {
 
     protected Map<String, String> extraHeaders;
 
-    public Builder() {
-      this.extraHeaders = mapOf();
-    }
+    public Builder() {}
 
     public Builder ifMatch(String ifMatch) {
       this.ifMatch = ifMatch;
@@ -73,6 +71,9 @@ public class UploadFileVersionHeaders {
     }
 
     public UploadFileVersionHeaders build() {
+      if (this.extraHeaders == null) {
+        this.extraHeaders = mapOf();
+      }
       return new UploadFileVersionHeaders(this);
     }
   }

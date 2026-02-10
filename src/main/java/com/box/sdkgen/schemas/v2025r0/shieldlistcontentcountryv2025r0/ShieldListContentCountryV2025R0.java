@@ -91,9 +91,6 @@ public class ShieldListContentCountryV2025R0 extends SerializableObject {
     public Builder(List<String> countryCodes) {
       super();
       this.countryCodes = countryCodes;
-      this.type =
-          new EnumWrapper<ShieldListContentCountryV2025R0TypeField>(
-              ShieldListContentCountryV2025R0TypeField.COUNTRY);
     }
 
     public Builder type(ShieldListContentCountryV2025R0TypeField type) {
@@ -107,6 +104,11 @@ public class ShieldListContentCountryV2025R0 extends SerializableObject {
     }
 
     public ShieldListContentCountryV2025R0 build() {
+      if (this.type == null) {
+        this.type =
+            new EnumWrapper<ShieldListContentCountryV2025R0TypeField>(
+                ShieldListContentCountryV2025R0TypeField.COUNTRY);
+      }
       return new ShieldListContentCountryV2025R0(this);
     }
   }

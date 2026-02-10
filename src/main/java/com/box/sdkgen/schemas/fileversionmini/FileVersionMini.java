@@ -90,6 +90,10 @@ public class FileVersionMini extends FileVersionBase {
     }
 
     public FileVersionMini build() {
+      if (this.type == null) {
+        this.type =
+            new EnumWrapper<FileVersionBaseTypeField>(FileVersionBaseTypeField.FILE_VERSION);
+      }
       return new FileVersionMini(this);
     }
   }

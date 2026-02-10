@@ -86,9 +86,7 @@ public class GetFileByIdHeaders {
 
     protected Map<String, String> extraHeaders;
 
-    public Builder() {
-      this.extraHeaders = mapOf();
-    }
+    public Builder() {}
 
     public Builder ifNoneMatch(String ifNoneMatch) {
       this.ifNoneMatch = ifNoneMatch;
@@ -111,6 +109,9 @@ public class GetFileByIdHeaders {
     }
 
     public GetFileByIdHeaders build() {
+      if (this.extraHeaders == null) {
+        this.extraHeaders = mapOf();
+      }
       return new GetFileByIdHeaders(this);
     }
   }

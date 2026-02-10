@@ -535,7 +535,6 @@ public class TrashFileRestored extends SerializableObject {
       this.modifiedBy = modifiedBy;
       this.ownedBy = ownedBy;
       this.itemStatus = new EnumWrapper<TrashFileRestoredItemStatusField>(itemStatus);
-      this.type = new EnumWrapper<TrashFileRestoredTypeField>(TrashFileRestoredTypeField.FILE);
     }
 
     public Builder(
@@ -562,7 +561,6 @@ public class TrashFileRestored extends SerializableObject {
       this.modifiedBy = modifiedBy;
       this.ownedBy = ownedBy;
       this.itemStatus = itemStatus;
-      this.type = new EnumWrapper<TrashFileRestoredTypeField>(TrashFileRestoredTypeField.FILE);
     }
 
     public Builder etag(String etag) {
@@ -632,6 +630,9 @@ public class TrashFileRestored extends SerializableObject {
     }
 
     public TrashFileRestored build() {
+      if (this.type == null) {
+        this.type = new EnumWrapper<TrashFileRestoredTypeField>(TrashFileRestoredTypeField.FILE);
+      }
       return new TrashFileRestored(this);
     }
   }

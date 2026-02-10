@@ -45,9 +45,7 @@ public class GetFolderItemsHeaders {
 
     protected Map<String, String> extraHeaders;
 
-    public Builder() {
-      this.extraHeaders = mapOf();
-    }
+    public Builder() {}
 
     public Builder boxapi(String boxapi) {
       this.boxapi = boxapi;
@@ -60,6 +58,9 @@ public class GetFolderItemsHeaders {
     }
 
     public GetFolderItemsHeaders build() {
+      if (this.extraHeaders == null) {
+        this.extraHeaders = mapOf();
+      }
       return new GetFolderItemsHeaders(this);
     }
   }

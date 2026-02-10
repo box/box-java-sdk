@@ -119,19 +119,11 @@ public class RoleVariable extends SerializableObject {
     public Builder(RoleVariableVariableValueField variableValue) {
       super();
       this.variableValue = new EnumWrapper<RoleVariableVariableValueField>(variableValue);
-      this.type = new EnumWrapper<RoleVariableTypeField>(RoleVariableTypeField.VARIABLE);
-      this.variableType =
-          new EnumWrapper<RoleVariableVariableTypeField>(
-              RoleVariableVariableTypeField.COLLABORATOR_ROLE);
     }
 
     public Builder(EnumWrapper<RoleVariableVariableValueField> variableValue) {
       super();
       this.variableValue = variableValue;
-      this.type = new EnumWrapper<RoleVariableTypeField>(RoleVariableTypeField.VARIABLE);
-      this.variableType =
-          new EnumWrapper<RoleVariableVariableTypeField>(
-              RoleVariableVariableTypeField.COLLABORATOR_ROLE);
     }
 
     public Builder type(RoleVariableTypeField type) {
@@ -155,6 +147,14 @@ public class RoleVariable extends SerializableObject {
     }
 
     public RoleVariable build() {
+      if (this.type == null) {
+        this.type = new EnumWrapper<RoleVariableTypeField>(RoleVariableTypeField.VARIABLE);
+      }
+      if (this.variableType == null) {
+        this.variableType =
+            new EnumWrapper<RoleVariableVariableTypeField>(
+                RoleVariableVariableTypeField.COLLABORATOR_ROLE);
+      }
       return new RoleVariable(this);
     }
   }

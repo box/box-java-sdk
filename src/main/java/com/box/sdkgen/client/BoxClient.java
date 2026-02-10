@@ -1402,7 +1402,6 @@ public class BoxClient {
 
     public Builder(Authentication auth) {
       this.auth = auth;
-      this.networkSession = new NetworkSession.Builder().baseUrls(new BaseUrls()).build();
     }
 
     public Builder networkSession(NetworkSession networkSession) {
@@ -1411,6 +1410,9 @@ public class BoxClient {
     }
 
     public BoxClient build() {
+      if (this.networkSession == null) {
+        this.networkSession = new NetworkSession.Builder().baseUrls(new BaseUrls()).build();
+      }
       return new BoxClient(this);
     }
   }

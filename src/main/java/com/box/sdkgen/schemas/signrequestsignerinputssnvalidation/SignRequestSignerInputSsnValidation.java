@@ -77,9 +77,6 @@ public class SignRequestSignerInputSsnValidation extends SerializableObject {
 
     public Builder() {
       super();
-      this.validationType =
-          new EnumWrapper<SignRequestSignerInputSsnValidationValidationTypeField>(
-              SignRequestSignerInputSsnValidationValidationTypeField.SSN);
     }
 
     public Builder validationType(
@@ -96,6 +93,11 @@ public class SignRequestSignerInputSsnValidation extends SerializableObject {
     }
 
     public SignRequestSignerInputSsnValidation build() {
+      if (this.validationType == null) {
+        this.validationType =
+            new EnumWrapper<SignRequestSignerInputSsnValidationValidationTypeField>(
+                SignRequestSignerInputSsnValidationValidationTypeField.SSN);
+      }
       return new SignRequestSignerInputSsnValidation(this);
     }
   }

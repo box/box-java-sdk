@@ -169,9 +169,7 @@ public class FolderLocksManager {
 
     protected NetworkSession networkSession;
 
-    public Builder() {
-      this.networkSession = new NetworkSession();
-    }
+    public Builder() {}
 
     public Builder auth(Authentication auth) {
       this.auth = auth;
@@ -184,6 +182,9 @@ public class FolderLocksManager {
     }
 
     public FolderLocksManager build() {
+      if (this.networkSession == null) {
+        this.networkSession = new NetworkSession();
+      }
       return new FolderLocksManager(this);
     }
   }

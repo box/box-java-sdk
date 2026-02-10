@@ -110,7 +110,6 @@ public class FileBase extends SerializableObject {
     public Builder(String id) {
       super();
       this.id = id;
-      this.type = new EnumWrapper<FileBaseTypeField>(FileBaseTypeField.FILE);
     }
 
     public Builder etag(String etag) {
@@ -130,6 +129,9 @@ public class FileBase extends SerializableObject {
     }
 
     public FileBase build() {
+      if (this.type == null) {
+        this.type = new EnumWrapper<FileBaseTypeField>(FileBaseTypeField.FILE);
+      }
       return new FileBase(this);
     }
   }
