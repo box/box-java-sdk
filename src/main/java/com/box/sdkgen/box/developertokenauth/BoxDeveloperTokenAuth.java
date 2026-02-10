@@ -171,7 +171,6 @@ public class BoxDeveloperTokenAuth implements Authentication {
 
     public Builder(String token) {
       this.token = token;
-      this.config = new DeveloperTokenConfig();
     }
 
     public Builder config(DeveloperTokenConfig config) {
@@ -180,6 +179,9 @@ public class BoxDeveloperTokenAuth implements Authentication {
     }
 
     public BoxDeveloperTokenAuth build() {
+      if (this.config == null) {
+        this.config = new DeveloperTokenConfig();
+      }
       return new BoxDeveloperTokenAuth(this);
     }
   }

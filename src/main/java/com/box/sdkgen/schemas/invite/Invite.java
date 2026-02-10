@@ -183,7 +183,6 @@ public class Invite extends SerializableObject {
     public Builder(String id) {
       super();
       this.id = id;
-      this.type = new EnumWrapper<InviteTypeField>(InviteTypeField.INVITE);
     }
 
     public Builder type(InviteTypeField type) {
@@ -227,6 +226,9 @@ public class Invite extends SerializableObject {
     }
 
     public Invite build() {
+      if (this.type == null) {
+        this.type = new EnumWrapper<InviteTypeField>(InviteTypeField.INVITE);
+      }
       return new Invite(this);
     }
   }

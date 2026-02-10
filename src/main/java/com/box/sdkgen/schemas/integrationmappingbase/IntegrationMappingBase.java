@@ -80,9 +80,6 @@ public class IntegrationMappingBase extends SerializableObject {
     public Builder(String id) {
       super();
       this.id = id;
-      this.type =
-          new EnumWrapper<IntegrationMappingBaseTypeField>(
-              IntegrationMappingBaseTypeField.INTEGRATION_MAPPING);
     }
 
     public Builder type(IntegrationMappingBaseTypeField type) {
@@ -96,6 +93,11 @@ public class IntegrationMappingBase extends SerializableObject {
     }
 
     public IntegrationMappingBase build() {
+      if (this.type == null) {
+        this.type =
+            new EnumWrapper<IntegrationMappingBaseTypeField>(
+                IntegrationMappingBaseTypeField.INTEGRATION_MAPPING);
+      }
       return new IntegrationMappingBase(this);
     }
   }

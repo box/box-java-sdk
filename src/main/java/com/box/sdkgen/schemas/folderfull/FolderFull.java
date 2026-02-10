@@ -707,6 +707,9 @@ public class FolderFull extends Folder {
     }
 
     public FolderFull build() {
+      if (this.type == null) {
+        this.type = new EnumWrapper<FolderBaseTypeField>(FolderBaseTypeField.FOLDER);
+      }
       return new FolderFull(this);
     }
   }

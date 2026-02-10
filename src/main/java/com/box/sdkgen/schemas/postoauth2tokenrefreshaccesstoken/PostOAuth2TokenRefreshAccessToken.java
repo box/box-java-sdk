@@ -134,9 +134,6 @@ public class PostOAuth2TokenRefreshAccessToken extends SerializableObject {
       this.clientId = clientId;
       this.clientSecret = clientSecret;
       this.refreshToken = refreshToken;
-      this.grantType =
-          new EnumWrapper<PostOAuth2TokenRefreshAccessTokenGrantTypeField>(
-              PostOAuth2TokenRefreshAccessTokenGrantTypeField.REFRESH_TOKEN);
     }
 
     public Builder grantType(PostOAuth2TokenRefreshAccessTokenGrantTypeField grantType) {
@@ -151,6 +148,11 @@ public class PostOAuth2TokenRefreshAccessToken extends SerializableObject {
     }
 
     public PostOAuth2TokenRefreshAccessToken build() {
+      if (this.grantType == null) {
+        this.grantType =
+            new EnumWrapper<PostOAuth2TokenRefreshAccessTokenGrantTypeField>(
+                PostOAuth2TokenRefreshAccessTokenGrantTypeField.REFRESH_TOKEN);
+      }
       return new PostOAuth2TokenRefreshAccessToken(this);
     }
   }

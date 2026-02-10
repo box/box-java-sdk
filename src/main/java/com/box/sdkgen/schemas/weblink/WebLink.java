@@ -411,6 +411,9 @@ public class WebLink extends WebLinkMini {
     }
 
     public WebLink build() {
+      if (this.type == null) {
+        this.type = new EnumWrapper<WebLinkBaseTypeField>(WebLinkBaseTypeField.WEB_LINK);
+      }
       return new WebLink(this);
     }
   }

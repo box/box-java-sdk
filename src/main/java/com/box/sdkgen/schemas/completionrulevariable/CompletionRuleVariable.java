@@ -135,23 +135,11 @@ public class CompletionRuleVariable extends SerializableObject {
     public Builder(CompletionRuleVariableVariableValueField variableValue) {
       super();
       this.variableValue = new EnumWrapper<CompletionRuleVariableVariableValueField>(variableValue);
-      this.type =
-          new EnumWrapper<CompletionRuleVariableTypeField>(
-              CompletionRuleVariableTypeField.VARIABLE);
-      this.variableType =
-          new EnumWrapper<CompletionRuleVariableVariableTypeField>(
-              CompletionRuleVariableVariableTypeField.TASK_COMPLETION_RULE);
     }
 
     public Builder(EnumWrapper<CompletionRuleVariableVariableValueField> variableValue) {
       super();
       this.variableValue = variableValue;
-      this.type =
-          new EnumWrapper<CompletionRuleVariableTypeField>(
-              CompletionRuleVariableTypeField.VARIABLE);
-      this.variableType =
-          new EnumWrapper<CompletionRuleVariableVariableTypeField>(
-              CompletionRuleVariableVariableTypeField.TASK_COMPLETION_RULE);
     }
 
     public Builder type(CompletionRuleVariableTypeField type) {
@@ -175,6 +163,16 @@ public class CompletionRuleVariable extends SerializableObject {
     }
 
     public CompletionRuleVariable build() {
+      if (this.type == null) {
+        this.type =
+            new EnumWrapper<CompletionRuleVariableTypeField>(
+                CompletionRuleVariableTypeField.VARIABLE);
+      }
+      if (this.variableType == null) {
+        this.variableType =
+            new EnumWrapper<CompletionRuleVariableVariableTypeField>(
+                CompletionRuleVariableVariableTypeField.TASK_COMPLETION_RULE);
+      }
       return new CompletionRuleVariable(this);
     }
   }

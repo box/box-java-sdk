@@ -149,9 +149,6 @@ public class FetchOptions {
     public Builder(String url, String method) {
       this.url = url;
       this.method = method;
-      this.contentType = "application/json";
-      this.responseFormat = new EnumWrapper<ResponseFormat>(ResponseFormat.JSON);
-      this.followRedirects = true;
     }
 
     public Builder params(Map<String, String> params) {
@@ -210,6 +207,15 @@ public class FetchOptions {
     }
 
     public FetchOptions build() {
+      if (this.contentType == null) {
+        this.contentType = "application/json";
+      }
+      if (this.responseFormat == null) {
+        this.responseFormat = new EnumWrapper<ResponseFormat>(ResponseFormat.JSON);
+      }
+      if (this.followRedirects == null) {
+        this.followRedirects = true;
+      }
       return new FetchOptions(this);
     }
   }

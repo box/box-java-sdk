@@ -93,9 +93,6 @@ public class ShieldListContentEmailV2025R0 extends SerializableObject {
     public Builder(List<String> emailAddresses) {
       super();
       this.emailAddresses = emailAddresses;
-      this.type =
-          new EnumWrapper<ShieldListContentEmailV2025R0TypeField>(
-              ShieldListContentEmailV2025R0TypeField.EMAIL);
     }
 
     public Builder type(ShieldListContentEmailV2025R0TypeField type) {
@@ -109,6 +106,11 @@ public class ShieldListContentEmailV2025R0 extends SerializableObject {
     }
 
     public ShieldListContentEmailV2025R0 build() {
+      if (this.type == null) {
+        this.type =
+            new EnumWrapper<ShieldListContentEmailV2025R0TypeField>(
+                ShieldListContentEmailV2025R0TypeField.EMAIL);
+      }
       return new ShieldListContentEmailV2025R0(this);
     }
   }

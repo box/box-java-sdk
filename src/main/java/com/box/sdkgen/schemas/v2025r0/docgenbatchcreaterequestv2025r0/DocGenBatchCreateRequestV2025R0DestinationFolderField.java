@@ -89,9 +89,6 @@ public class DocGenBatchCreateRequestV2025R0DestinationFolderField extends Seria
     public Builder(String id) {
       super();
       this.id = id;
-      this.type =
-          new EnumWrapper<DocGenBatchCreateRequestV2025R0DestinationFolderTypeField>(
-              DocGenBatchCreateRequestV2025R0DestinationFolderTypeField.FOLDER);
     }
 
     public Builder type(DocGenBatchCreateRequestV2025R0DestinationFolderTypeField type) {
@@ -106,6 +103,11 @@ public class DocGenBatchCreateRequestV2025R0DestinationFolderField extends Seria
     }
 
     public DocGenBatchCreateRequestV2025R0DestinationFolderField build() {
+      if (this.type == null) {
+        this.type =
+            new EnumWrapper<DocGenBatchCreateRequestV2025R0DestinationFolderTypeField>(
+                DocGenBatchCreateRequestV2025R0DestinationFolderTypeField.FOLDER);
+      }
       return new DocGenBatchCreateRequestV2025R0DestinationFolderField(this);
     }
   }

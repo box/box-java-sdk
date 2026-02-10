@@ -112,8 +112,6 @@ public class AiAgentExtract extends SerializableObject {
 
     public Builder() {
       super();
-      this.type =
-          new EnumWrapper<AiAgentExtractTypeField>(AiAgentExtractTypeField.AI_AGENT_EXTRACT);
     }
 
     public Builder type(AiAgentExtractTypeField type) {
@@ -142,6 +140,10 @@ public class AiAgentExtract extends SerializableObject {
     }
 
     public AiAgentExtract build() {
+      if (this.type == null) {
+        this.type =
+            new EnumWrapper<AiAgentExtractTypeField>(AiAgentExtractTypeField.AI_AGENT_EXTRACT);
+      }
       return new AiAgentExtract(this);
     }
   }

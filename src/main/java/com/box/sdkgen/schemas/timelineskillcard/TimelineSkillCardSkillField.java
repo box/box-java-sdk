@@ -83,8 +83,6 @@ public class TimelineSkillCardSkillField extends SerializableObject {
     public Builder(String id) {
       super();
       this.id = id;
-      this.type =
-          new EnumWrapper<TimelineSkillCardSkillTypeField>(TimelineSkillCardSkillTypeField.SERVICE);
     }
 
     public Builder type(TimelineSkillCardSkillTypeField type) {
@@ -98,6 +96,11 @@ public class TimelineSkillCardSkillField extends SerializableObject {
     }
 
     public TimelineSkillCardSkillField build() {
+      if (this.type == null) {
+        this.type =
+            new EnumWrapper<TimelineSkillCardSkillTypeField>(
+                TimelineSkillCardSkillTypeField.SERVICE);
+      }
       return new TimelineSkillCardSkillField(this);
     }
   }

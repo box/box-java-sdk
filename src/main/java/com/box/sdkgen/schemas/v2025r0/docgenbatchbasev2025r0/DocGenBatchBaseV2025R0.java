@@ -80,9 +80,6 @@ public class DocGenBatchBaseV2025R0 extends SerializableObject {
     public Builder(String id) {
       super();
       this.id = id;
-      this.type =
-          new EnumWrapper<DocGenBatchBaseV2025R0TypeField>(
-              DocGenBatchBaseV2025R0TypeField.DOCGEN_BATCH);
     }
 
     public Builder type(DocGenBatchBaseV2025R0TypeField type) {
@@ -96,6 +93,11 @@ public class DocGenBatchBaseV2025R0 extends SerializableObject {
     }
 
     public DocGenBatchBaseV2025R0 build() {
+      if (this.type == null) {
+        this.type =
+            new EnumWrapper<DocGenBatchBaseV2025R0TypeField>(
+                DocGenBatchBaseV2025R0TypeField.DOCGEN_BATCH);
+      }
       return new DocGenBatchBaseV2025R0(this);
     }
   }

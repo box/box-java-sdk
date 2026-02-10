@@ -312,6 +312,9 @@ public class GroupFull extends Group {
     }
 
     public GroupFull build() {
+      if (this.type == null) {
+        this.type = new EnumWrapper<GroupBaseTypeField>(GroupBaseTypeField.GROUP);
+      }
       return new GroupFull(this);
     }
   }

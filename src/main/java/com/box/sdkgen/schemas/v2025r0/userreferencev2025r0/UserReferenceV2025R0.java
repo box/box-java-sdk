@@ -75,8 +75,6 @@ public class UserReferenceV2025R0 extends SerializableObject {
     public Builder(String id) {
       super();
       this.id = id;
-      this.type =
-          new EnumWrapper<UserReferenceV2025R0TypeField>(UserReferenceV2025R0TypeField.USER);
     }
 
     public Builder type(UserReferenceV2025R0TypeField type) {
@@ -90,6 +88,10 @@ public class UserReferenceV2025R0 extends SerializableObject {
     }
 
     public UserReferenceV2025R0 build() {
+      if (this.type == null) {
+        this.type =
+            new EnumWrapper<UserReferenceV2025R0TypeField>(UserReferenceV2025R0TypeField.USER);
+      }
       return new UserReferenceV2025R0(this);
     }
   }

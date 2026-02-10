@@ -154,9 +154,6 @@ public class SearchResultsWithSharedLinks extends SerializableObject {
 
     public Builder() {
       super();
-      this.type =
-          new EnumWrapper<SearchResultsWithSharedLinksTypeField>(
-              SearchResultsWithSharedLinksTypeField.SEARCH_RESULTS_WITH_SHARED_LINKS);
     }
 
     public Builder totalCount(Long totalCount) {
@@ -190,6 +187,11 @@ public class SearchResultsWithSharedLinks extends SerializableObject {
     }
 
     public SearchResultsWithSharedLinks build() {
+      if (this.type == null) {
+        this.type =
+            new EnumWrapper<SearchResultsWithSharedLinksTypeField>(
+                SearchResultsWithSharedLinksTypeField.SEARCH_RESULTS_WITH_SHARED_LINKS);
+      }
       return new SearchResultsWithSharedLinks(this);
     }
   }

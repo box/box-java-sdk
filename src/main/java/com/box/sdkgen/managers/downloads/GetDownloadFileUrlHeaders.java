@@ -60,9 +60,7 @@ public class GetDownloadFileUrlHeaders {
 
     protected Map<String, String> extraHeaders;
 
-    public Builder() {
-      this.extraHeaders = mapOf();
-    }
+    public Builder() {}
 
     public Builder range(String range) {
       this.range = range;
@@ -80,6 +78,9 @@ public class GetDownloadFileUrlHeaders {
     }
 
     public GetDownloadFileUrlHeaders build() {
+      if (this.extraHeaders == null) {
+        this.extraHeaders = mapOf();
+      }
       return new GetDownloadFileUrlHeaders(this);
     }
   }

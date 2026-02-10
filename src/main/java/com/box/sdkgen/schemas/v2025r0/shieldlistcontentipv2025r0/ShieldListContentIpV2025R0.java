@@ -89,9 +89,6 @@ public class ShieldListContentIpV2025R0 extends SerializableObject {
     public Builder(List<String> ipAddresses) {
       super();
       this.ipAddresses = ipAddresses;
-      this.type =
-          new EnumWrapper<ShieldListContentIpV2025R0TypeField>(
-              ShieldListContentIpV2025R0TypeField.IP);
     }
 
     public Builder type(ShieldListContentIpV2025R0TypeField type) {
@@ -105,6 +102,11 @@ public class ShieldListContentIpV2025R0 extends SerializableObject {
     }
 
     public ShieldListContentIpV2025R0 build() {
+      if (this.type == null) {
+        this.type =
+            new EnumWrapper<ShieldListContentIpV2025R0TypeField>(
+                ShieldListContentIpV2025R0TypeField.IP);
+      }
       return new ShieldListContentIpV2025R0(this);
     }
   }

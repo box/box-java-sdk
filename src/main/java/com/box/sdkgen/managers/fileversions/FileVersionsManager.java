@@ -623,9 +623,7 @@ public class FileVersionsManager {
 
     protected NetworkSession networkSession;
 
-    public Builder() {
-      this.networkSession = new NetworkSession();
-    }
+    public Builder() {}
 
     public Builder auth(Authentication auth) {
       this.auth = auth;
@@ -638,6 +636,9 @@ public class FileVersionsManager {
     }
 
     public FileVersionsManager build() {
+      if (this.networkSession == null) {
+        this.networkSession = new NetworkSession();
+      }
       return new FileVersionsManager(this);
     }
   }

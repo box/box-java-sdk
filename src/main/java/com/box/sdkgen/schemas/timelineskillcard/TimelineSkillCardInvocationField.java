@@ -91,9 +91,6 @@ public class TimelineSkillCardInvocationField extends SerializableObject {
     public Builder(String id) {
       super();
       this.id = id;
-      this.type =
-          new EnumWrapper<TimelineSkillCardInvocationTypeField>(
-              TimelineSkillCardInvocationTypeField.SKILL_INVOCATION);
     }
 
     public Builder type(TimelineSkillCardInvocationTypeField type) {
@@ -107,6 +104,11 @@ public class TimelineSkillCardInvocationField extends SerializableObject {
     }
 
     public TimelineSkillCardInvocationField build() {
+      if (this.type == null) {
+        this.type =
+            new EnumWrapper<TimelineSkillCardInvocationTypeField>(
+                TimelineSkillCardInvocationTypeField.SKILL_INVOCATION);
+      }
       return new TimelineSkillCardInvocationField(this);
     }
   }

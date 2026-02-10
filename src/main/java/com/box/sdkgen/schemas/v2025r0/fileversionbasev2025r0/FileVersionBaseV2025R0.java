@@ -80,9 +80,6 @@ public class FileVersionBaseV2025R0 extends SerializableObject {
     public Builder(String id) {
       super();
       this.id = id;
-      this.type =
-          new EnumWrapper<FileVersionBaseV2025R0TypeField>(
-              FileVersionBaseV2025R0TypeField.FILE_VERSION);
     }
 
     public Builder type(FileVersionBaseV2025R0TypeField type) {
@@ -96,6 +93,11 @@ public class FileVersionBaseV2025R0 extends SerializableObject {
     }
 
     public FileVersionBaseV2025R0 build() {
+      if (this.type == null) {
+        this.type =
+            new EnumWrapper<FileVersionBaseV2025R0TypeField>(
+                FileVersionBaseV2025R0TypeField.FILE_VERSION);
+      }
       return new FileVersionBaseV2025R0(this);
     }
   }

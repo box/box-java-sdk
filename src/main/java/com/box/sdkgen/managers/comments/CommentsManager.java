@@ -413,9 +413,7 @@ public class CommentsManager {
 
     protected NetworkSession networkSession;
 
-    public Builder() {
-      this.networkSession = new NetworkSession();
-    }
+    public Builder() {}
 
     public Builder auth(Authentication auth) {
       this.auth = auth;
@@ -428,6 +426,9 @@ public class CommentsManager {
     }
 
     public CommentsManager build() {
+      if (this.networkSession == null) {
+        this.networkSession = new NetworkSession();
+      }
       return new CommentsManager(this);
     }
   }

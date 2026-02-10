@@ -90,9 +90,6 @@ public class KeywordSkillCardInvocationField extends SerializableObject {
     public Builder(String id) {
       super();
       this.id = id;
-      this.type =
-          new EnumWrapper<KeywordSkillCardInvocationTypeField>(
-              KeywordSkillCardInvocationTypeField.SKILL_INVOCATION);
     }
 
     public Builder type(KeywordSkillCardInvocationTypeField type) {
@@ -106,6 +103,11 @@ public class KeywordSkillCardInvocationField extends SerializableObject {
     }
 
     public KeywordSkillCardInvocationField build() {
+      if (this.type == null) {
+        this.type =
+            new EnumWrapper<KeywordSkillCardInvocationTypeField>(
+                KeywordSkillCardInvocationTypeField.SKILL_INVOCATION);
+      }
       return new KeywordSkillCardInvocationField(this);
     }
   }

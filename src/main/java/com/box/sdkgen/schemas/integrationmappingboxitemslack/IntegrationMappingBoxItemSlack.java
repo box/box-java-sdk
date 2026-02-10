@@ -89,9 +89,6 @@ public class IntegrationMappingBoxItemSlack extends SerializableObject {
     public Builder(String id) {
       super();
       this.id = id;
-      this.type =
-          new EnumWrapper<IntegrationMappingBoxItemSlackTypeField>(
-              IntegrationMappingBoxItemSlackTypeField.FOLDER);
     }
 
     public Builder type(IntegrationMappingBoxItemSlackTypeField type) {
@@ -105,6 +102,11 @@ public class IntegrationMappingBoxItemSlack extends SerializableObject {
     }
 
     public IntegrationMappingBoxItemSlack build() {
+      if (this.type == null) {
+        this.type =
+            new EnumWrapper<IntegrationMappingBoxItemSlackTypeField>(
+                IntegrationMappingBoxItemSlackTypeField.FOLDER);
+      }
       return new IntegrationMappingBoxItemSlack(this);
     }
   }

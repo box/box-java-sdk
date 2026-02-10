@@ -521,9 +521,7 @@ public class MembershipsManager {
 
     protected NetworkSession networkSession;
 
-    public Builder() {
-      this.networkSession = new NetworkSession();
-    }
+    public Builder() {}
 
     public Builder auth(Authentication auth) {
       this.auth = auth;
@@ -536,6 +534,9 @@ public class MembershipsManager {
     }
 
     public MembershipsManager build() {
+      if (this.networkSession == null) {
+        this.networkSession = new NetworkSession();
+      }
       return new MembershipsManager(this);
     }
   }

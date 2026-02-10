@@ -226,9 +226,7 @@ public class ShieldInformationBarrierSegmentRestrictionsManager {
 
     protected NetworkSession networkSession;
 
-    public Builder() {
-      this.networkSession = new NetworkSession();
-    }
+    public Builder() {}
 
     public Builder auth(Authentication auth) {
       this.auth = auth;
@@ -241,6 +239,9 @@ public class ShieldInformationBarrierSegmentRestrictionsManager {
     }
 
     public ShieldInformationBarrierSegmentRestrictionsManager build() {
+      if (this.networkSession == null) {
+        this.networkSession = new NetworkSession();
+      }
       return new ShieldInformationBarrierSegmentRestrictionsManager(this);
     }
   }

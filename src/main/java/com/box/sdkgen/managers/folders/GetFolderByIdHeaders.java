@@ -60,9 +60,7 @@ public class GetFolderByIdHeaders {
 
     protected Map<String, String> extraHeaders;
 
-    public Builder() {
-      this.extraHeaders = mapOf();
-    }
+    public Builder() {}
 
     public Builder ifNoneMatch(String ifNoneMatch) {
       this.ifNoneMatch = ifNoneMatch;
@@ -80,6 +78,9 @@ public class GetFolderByIdHeaders {
     }
 
     public GetFolderByIdHeaders build() {
+      if (this.extraHeaders == null) {
+        this.extraHeaders = mapOf();
+      }
       return new GetFolderByIdHeaders(this);
     }
   }
