@@ -89,9 +89,6 @@ public class HubCollaborationCreateRequestV2025R0HubField extends SerializableOb
     public Builder(String id) {
       super();
       this.id = id;
-      this.type =
-          new EnumWrapper<HubCollaborationCreateRequestV2025R0HubTypeField>(
-              HubCollaborationCreateRequestV2025R0HubTypeField.HUBS);
     }
 
     public Builder type(HubCollaborationCreateRequestV2025R0HubTypeField type) {
@@ -105,6 +102,11 @@ public class HubCollaborationCreateRequestV2025R0HubField extends SerializableOb
     }
 
     public HubCollaborationCreateRequestV2025R0HubField build() {
+      if (this.type == null) {
+        this.type =
+            new EnumWrapper<HubCollaborationCreateRequestV2025R0HubTypeField>(
+                HubCollaborationCreateRequestV2025R0HubTypeField.HUBS);
+      }
       return new HubCollaborationCreateRequestV2025R0HubField(this);
     }
   }

@@ -117,9 +117,6 @@ public class StoragePolicyAssignment extends SerializableObject {
     public Builder(String id) {
       super();
       this.id = id;
-      this.type =
-          new EnumWrapper<StoragePolicyAssignmentTypeField>(
-              StoragePolicyAssignmentTypeField.STORAGE_POLICY_ASSIGNMENT);
     }
 
     public Builder type(StoragePolicyAssignmentTypeField type) {
@@ -143,6 +140,11 @@ public class StoragePolicyAssignment extends SerializableObject {
     }
 
     public StoragePolicyAssignment build() {
+      if (this.type == null) {
+        this.type =
+            new EnumWrapper<StoragePolicyAssignmentTypeField>(
+                StoragePolicyAssignmentTypeField.STORAGE_POLICY_ASSIGNMENT);
+      }
       return new StoragePolicyAssignment(this);
     }
   }

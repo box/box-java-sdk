@@ -88,9 +88,6 @@ public class CreateTaskAssignmentRequestBodyTaskField extends SerializableObject
     public Builder(String id) {
       super();
       this.id = id;
-      this.type =
-          new EnumWrapper<CreateTaskAssignmentRequestBodyTaskTypeField>(
-              CreateTaskAssignmentRequestBodyTaskTypeField.TASK);
     }
 
     public Builder type(CreateTaskAssignmentRequestBodyTaskTypeField type) {
@@ -104,6 +101,11 @@ public class CreateTaskAssignmentRequestBodyTaskField extends SerializableObject
     }
 
     public CreateTaskAssignmentRequestBodyTaskField build() {
+      if (this.type == null) {
+        this.type =
+            new EnumWrapper<CreateTaskAssignmentRequestBodyTaskTypeField>(
+                CreateTaskAssignmentRequestBodyTaskTypeField.TASK);
+      }
       return new CreateTaskAssignmentRequestBodyTaskField(this);
     }
   }

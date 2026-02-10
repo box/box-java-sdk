@@ -180,7 +180,6 @@ public class AiAgentAsk extends SerializableObject {
 
     public Builder() {
       super();
-      this.type = new EnumWrapper<AiAgentAskTypeField>(AiAgentAskTypeField.AI_AGENT_ASK);
     }
 
     public Builder type(AiAgentAskTypeField type) {
@@ -229,6 +228,9 @@ public class AiAgentAsk extends SerializableObject {
     }
 
     public AiAgentAsk build() {
+      if (this.type == null) {
+        this.type = new EnumWrapper<AiAgentAskTypeField>(AiAgentAskTypeField.AI_AGENT_ASK);
+      }
       return new AiAgentAsk(this);
     }
   }

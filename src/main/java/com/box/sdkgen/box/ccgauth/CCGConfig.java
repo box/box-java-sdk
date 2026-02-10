@@ -75,7 +75,6 @@ public class CCGConfig {
     public Builder(String clientId, String clientSecret) {
       this.clientId = clientId;
       this.clientSecret = clientSecret;
-      this.tokenStorage = new InMemoryTokenStorage();
     }
 
     public Builder enterpriseId(String enterpriseId) {
@@ -94,6 +93,9 @@ public class CCGConfig {
     }
 
     public CCGConfig build() {
+      if (this.tokenStorage == null) {
+        this.tokenStorage = new InMemoryTokenStorage();
+      }
       return new CCGConfig(this);
     }
   }

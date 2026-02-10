@@ -110,6 +110,9 @@ public class UserMiniV2025R0 extends UserBaseV2025R0 {
     }
 
     public UserMiniV2025R0 build() {
+      if (this.type == null) {
+        this.type = new EnumWrapper<UserBaseV2025R0TypeField>(UserBaseV2025R0TypeField.USER);
+      }
       return new UserMiniV2025R0(this);
     }
   }

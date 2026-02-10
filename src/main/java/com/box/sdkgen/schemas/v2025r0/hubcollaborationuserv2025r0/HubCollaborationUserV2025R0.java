@@ -116,6 +116,9 @@ public class HubCollaborationUserV2025R0 extends UserBaseV2025R0 {
     }
 
     public HubCollaborationUserV2025R0 build() {
+      if (this.type == null) {
+        this.type = new EnumWrapper<UserBaseV2025R0TypeField>(UserBaseV2025R0TypeField.USER);
+      }
       return new HubCollaborationUserV2025R0(this);
     }
   }

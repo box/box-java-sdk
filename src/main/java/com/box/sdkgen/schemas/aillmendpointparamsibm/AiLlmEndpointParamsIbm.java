@@ -133,9 +133,6 @@ public class AiLlmEndpointParamsIbm extends SerializableObject {
 
     public Builder() {
       super();
-      this.type =
-          new EnumWrapper<AiLlmEndpointParamsIbmTypeField>(
-              AiLlmEndpointParamsIbmTypeField.IBM_PARAMS);
     }
 
     public Builder type(AiLlmEndpointParamsIbmTypeField type) {
@@ -167,6 +164,11 @@ public class AiLlmEndpointParamsIbm extends SerializableObject {
     }
 
     public AiLlmEndpointParamsIbm build() {
+      if (this.type == null) {
+        this.type =
+            new EnumWrapper<AiLlmEndpointParamsIbmTypeField>(
+                AiLlmEndpointParamsIbmTypeField.IBM_PARAMS);
+      }
       return new AiLlmEndpointParamsIbm(this);
     }
   }

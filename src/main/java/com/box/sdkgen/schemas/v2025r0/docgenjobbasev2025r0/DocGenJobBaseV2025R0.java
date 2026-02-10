@@ -76,8 +76,6 @@ public class DocGenJobBaseV2025R0 extends SerializableObject {
     public Builder(String id) {
       super();
       this.id = id;
-      this.type =
-          new EnumWrapper<DocGenJobBaseV2025R0TypeField>(DocGenJobBaseV2025R0TypeField.DOCGEN_JOB);
     }
 
     public Builder type(DocGenJobBaseV2025R0TypeField type) {
@@ -91,6 +89,11 @@ public class DocGenJobBaseV2025R0 extends SerializableObject {
     }
 
     public DocGenJobBaseV2025R0 build() {
+      if (this.type == null) {
+        this.type =
+            new EnumWrapper<DocGenJobBaseV2025R0TypeField>(
+                DocGenJobBaseV2025R0TypeField.DOCGEN_JOB);
+      }
       return new DocGenJobBaseV2025R0(this);
     }
   }

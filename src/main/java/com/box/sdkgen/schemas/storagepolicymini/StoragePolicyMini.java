@@ -74,8 +74,6 @@ public class StoragePolicyMini extends SerializableObject {
     public Builder(String id) {
       super();
       this.id = id;
-      this.type =
-          new EnumWrapper<StoragePolicyMiniTypeField>(StoragePolicyMiniTypeField.STORAGE_POLICY);
     }
 
     public Builder type(StoragePolicyMiniTypeField type) {
@@ -89,6 +87,10 @@ public class StoragePolicyMini extends SerializableObject {
     }
 
     public StoragePolicyMini build() {
+      if (this.type == null) {
+        this.type =
+            new EnumWrapper<StoragePolicyMiniTypeField>(StoragePolicyMiniTypeField.STORAGE_POLICY);
+      }
       return new StoragePolicyMini(this);
     }
   }

@@ -510,7 +510,6 @@ public class TrashFolder extends SerializableObject {
       this.modifiedBy = modifiedBy;
       this.ownedBy = ownedBy;
       this.itemStatus = new EnumWrapper<TrashFolderItemStatusField>(itemStatus);
-      this.type = new EnumWrapper<TrashFolderTypeField>(TrashFolderTypeField.FOLDER);
     }
 
     public Builder(
@@ -533,7 +532,6 @@ public class TrashFolder extends SerializableObject {
       this.modifiedBy = modifiedBy;
       this.ownedBy = ownedBy;
       this.itemStatus = itemStatus;
-      this.type = new EnumWrapper<TrashFolderTypeField>(TrashFolderTypeField.FOLDER);
     }
 
     public Builder etag(String etag) {
@@ -611,6 +609,9 @@ public class TrashFolder extends SerializableObject {
     }
 
     public TrashFolder build() {
+      if (this.type == null) {
+        this.type = new EnumWrapper<TrashFolderTypeField>(TrashFolderTypeField.FOLDER);
+      }
       return new TrashFolder(this);
     }
   }

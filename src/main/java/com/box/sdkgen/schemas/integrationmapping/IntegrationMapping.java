@@ -301,6 +301,11 @@ public class IntegrationMapping extends IntegrationMappingBase {
     }
 
     public IntegrationMapping build() {
+      if (this.type == null) {
+        this.type =
+            new EnumWrapper<IntegrationMappingBaseTypeField>(
+                IntegrationMappingBaseTypeField.INTEGRATION_MAPPING);
+      }
       return new IntegrationMapping(this);
     }
   }

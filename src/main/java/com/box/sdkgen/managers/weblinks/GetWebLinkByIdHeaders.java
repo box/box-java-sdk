@@ -45,9 +45,7 @@ public class GetWebLinkByIdHeaders {
 
     protected Map<String, String> extraHeaders;
 
-    public Builder() {
-      this.extraHeaders = mapOf();
-    }
+    public Builder() {}
 
     public Builder boxapi(String boxapi) {
       this.boxapi = boxapi;
@@ -60,6 +58,9 @@ public class GetWebLinkByIdHeaders {
     }
 
     public GetWebLinkByIdHeaders build() {
+      if (this.extraHeaders == null) {
+        this.extraHeaders = mapOf();
+      }
       return new GetWebLinkByIdHeaders(this);
     }
   }

@@ -25,9 +25,7 @@ public class GetTermsOfServiceHeaders {
 
     protected Map<String, String> extraHeaders;
 
-    public Builder() {
-      this.extraHeaders = mapOf();
-    }
+    public Builder() {}
 
     public Builder extraHeaders(Map<String, String> extraHeaders) {
       this.extraHeaders = extraHeaders;
@@ -35,6 +33,9 @@ public class GetTermsOfServiceHeaders {
     }
 
     public GetTermsOfServiceHeaders build() {
+      if (this.extraHeaders == null) {
+        this.extraHeaders = mapOf();
+      }
       return new GetTermsOfServiceHeaders(this);
     }
   }

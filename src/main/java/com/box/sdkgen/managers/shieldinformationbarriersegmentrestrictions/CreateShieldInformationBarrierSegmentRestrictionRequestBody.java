@@ -151,10 +151,6 @@ public class CreateShieldInformationBarrierSegmentRestrictionRequestBody
       super();
       this.shieldInformationBarrierSegment = shieldInformationBarrierSegment;
       this.restrictedSegment = restrictedSegment;
-      this.type =
-          new EnumWrapper<CreateShieldInformationBarrierSegmentRestrictionRequestBodyTypeField>(
-              CreateShieldInformationBarrierSegmentRestrictionRequestBodyTypeField
-                  .SHIELD_INFORMATION_BARRIER_SEGMENT_RESTRICTION);
     }
 
     public Builder type(CreateShieldInformationBarrierSegmentRestrictionRequestBodyTypeField type) {
@@ -176,6 +172,12 @@ public class CreateShieldInformationBarrierSegmentRestrictionRequestBody
     }
 
     public CreateShieldInformationBarrierSegmentRestrictionRequestBody build() {
+      if (this.type == null) {
+        this.type =
+            new EnumWrapper<CreateShieldInformationBarrierSegmentRestrictionRequestBodyTypeField>(
+                CreateShieldInformationBarrierSegmentRestrictionRequestBodyTypeField
+                    .SHIELD_INFORMATION_BARRIER_SEGMENT_RESTRICTION);
+      }
       return new CreateShieldInformationBarrierSegmentRestrictionRequestBody(this);
     }
   }

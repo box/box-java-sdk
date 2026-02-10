@@ -149,6 +149,9 @@ public class Group extends GroupMini {
     }
 
     public Group build() {
+      if (this.type == null) {
+        this.type = new EnumWrapper<GroupBaseTypeField>(GroupBaseTypeField.GROUP);
+      }
       return new Group(this);
     }
   }

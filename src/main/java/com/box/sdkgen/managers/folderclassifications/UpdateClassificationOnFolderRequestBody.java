@@ -122,12 +122,6 @@ public class UpdateClassificationOnFolderRequestBody extends SerializableObject 
     public Builder(String value) {
       super();
       this.value = value;
-      this.op =
-          new EnumWrapper<UpdateClassificationOnFolderRequestBodyOpField>(
-              UpdateClassificationOnFolderRequestBodyOpField.REPLACE);
-      this.path =
-          new EnumWrapper<UpdateClassificationOnFolderRequestBodyPathField>(
-              UpdateClassificationOnFolderRequestBodyPathField._BOX__SECURITY__CLASSIFICATION__KEY);
     }
 
     public Builder op(UpdateClassificationOnFolderRequestBodyOpField op) {
@@ -151,6 +145,17 @@ public class UpdateClassificationOnFolderRequestBody extends SerializableObject 
     }
 
     public UpdateClassificationOnFolderRequestBody build() {
+      if (this.op == null) {
+        this.op =
+            new EnumWrapper<UpdateClassificationOnFolderRequestBodyOpField>(
+                UpdateClassificationOnFolderRequestBodyOpField.REPLACE);
+      }
+      if (this.path == null) {
+        this.path =
+            new EnumWrapper<UpdateClassificationOnFolderRequestBodyPathField>(
+                UpdateClassificationOnFolderRequestBodyPathField
+                    ._BOX__SECURITY__CLASSIFICATION__KEY);
+      }
       return new UpdateClassificationOnFolderRequestBody(this);
     }
   }

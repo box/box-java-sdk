@@ -73,7 +73,6 @@ public class UserBase extends SerializableObject {
     public Builder(String id) {
       super();
       this.id = id;
-      this.type = new EnumWrapper<UserBaseTypeField>(UserBaseTypeField.USER);
     }
 
     public Builder type(UserBaseTypeField type) {
@@ -87,6 +86,9 @@ public class UserBase extends SerializableObject {
     }
 
     public UserBase build() {
+      if (this.type == null) {
+        this.type = new EnumWrapper<UserBaseTypeField>(UserBaseTypeField.USER);
+      }
       return new UserBase(this);
     }
   }

@@ -75,8 +75,6 @@ public class FileReferenceV2025R0 extends SerializableObject {
     public Builder(String id) {
       super();
       this.id = id;
-      this.type =
-          new EnumWrapper<FileReferenceV2025R0TypeField>(FileReferenceV2025R0TypeField.FILE);
     }
 
     public Builder type(FileReferenceV2025R0TypeField type) {
@@ -90,6 +88,10 @@ public class FileReferenceV2025R0 extends SerializableObject {
     }
 
     public FileReferenceV2025R0 build() {
+      if (this.type == null) {
+        this.type =
+            new EnumWrapper<FileReferenceV2025R0TypeField>(FileReferenceV2025R0TypeField.FILE);
+      }
       return new FileReferenceV2025R0(this);
     }
   }

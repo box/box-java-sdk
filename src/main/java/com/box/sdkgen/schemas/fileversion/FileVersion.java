@@ -342,6 +342,10 @@ public class FileVersion extends FileVersionMini {
     }
 
     public FileVersion build() {
+      if (this.type == null) {
+        this.type =
+            new EnumWrapper<FileVersionBaseTypeField>(FileVersionBaseTypeField.FILE_VERSION);
+      }
       return new FileVersion(this);
     }
   }

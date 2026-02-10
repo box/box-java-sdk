@@ -17,8 +17,8 @@ public class BoxRetryStrategy implements RetryStrategy {
 
   public BoxRetryStrategy() {
     this.maxAttempts = 5;
-    this.retryRandomizationFactor = 0.5;
-    this.retryBaseInterval = 1;
+    this.retryRandomizationFactor = 0.5d;
+    this.retryBaseInterval = 1d;
     this.maxRetriesOnException = 2;
   }
 
@@ -98,20 +98,15 @@ public class BoxRetryStrategy implements RetryStrategy {
 
   public static class Builder {
 
-    protected int maxAttempts;
+    protected Integer maxAttempts;
 
-    protected double retryRandomizationFactor;
+    protected Double retryRandomizationFactor;
 
-    protected double retryBaseInterval;
+    protected Double retryBaseInterval;
 
-    protected int maxRetriesOnException;
+    protected Integer maxRetriesOnException;
 
-    public Builder() {
-      this.maxAttempts = 5;
-      this.retryRandomizationFactor = 0.5;
-      this.retryBaseInterval = 1;
-      this.maxRetriesOnException = 2;
-    }
+    public Builder() {}
 
     public Builder maxAttempts(int maxAttempts) {
       this.maxAttempts = maxAttempts;
@@ -134,6 +129,18 @@ public class BoxRetryStrategy implements RetryStrategy {
     }
 
     public BoxRetryStrategy build() {
+      if (this.maxAttempts == null) {
+        this.maxAttempts = 5;
+      }
+      if (this.retryRandomizationFactor == null) {
+        this.retryRandomizationFactor = 0.5d;
+      }
+      if (this.retryBaseInterval == null) {
+        this.retryBaseInterval = 1d;
+      }
+      if (this.maxRetriesOnException == null) {
+        this.maxRetriesOnException = 2;
+      }
       return new BoxRetryStrategy(this);
     }
   }

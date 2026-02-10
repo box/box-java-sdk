@@ -89,9 +89,6 @@ public class CreateStoragePolicyAssignmentRequestBodyStoragePolicyField extends 
     public Builder(String id) {
       super();
       this.id = id;
-      this.type =
-          new EnumWrapper<CreateStoragePolicyAssignmentRequestBodyStoragePolicyTypeField>(
-              CreateStoragePolicyAssignmentRequestBodyStoragePolicyTypeField.STORAGE_POLICY);
     }
 
     public Builder type(CreateStoragePolicyAssignmentRequestBodyStoragePolicyTypeField type) {
@@ -107,6 +104,11 @@ public class CreateStoragePolicyAssignmentRequestBodyStoragePolicyField extends 
     }
 
     public CreateStoragePolicyAssignmentRequestBodyStoragePolicyField build() {
+      if (this.type == null) {
+        this.type =
+            new EnumWrapper<CreateStoragePolicyAssignmentRequestBodyStoragePolicyTypeField>(
+                CreateStoragePolicyAssignmentRequestBodyStoragePolicyTypeField.STORAGE_POLICY);
+      }
       return new CreateStoragePolicyAssignmentRequestBodyStoragePolicyField(this);
     }
   }

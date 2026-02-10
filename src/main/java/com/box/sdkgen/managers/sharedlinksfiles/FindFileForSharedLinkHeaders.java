@@ -59,7 +59,6 @@ public class FindFileForSharedLinkHeaders {
 
     public Builder(String boxapi) {
       this.boxapi = boxapi;
-      this.extraHeaders = mapOf();
     }
 
     public Builder ifNoneMatch(String ifNoneMatch) {
@@ -73,6 +72,9 @@ public class FindFileForSharedLinkHeaders {
     }
 
     public FindFileForSharedLinkHeaders build() {
+      if (this.extraHeaders == null) {
+        this.extraHeaders = mapOf();
+      }
       return new FindFileForSharedLinkHeaders(this);
     }
   }

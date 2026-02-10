@@ -170,9 +170,6 @@ public class TermsOfServiceUserStatus extends SerializableObject {
     public Builder(String id) {
       super();
       this.id = id;
-      this.type =
-          new EnumWrapper<TermsOfServiceUserStatusTypeField>(
-              TermsOfServiceUserStatusTypeField.TERMS_OF_SERVICE_USER_STATUS);
     }
 
     public Builder type(TermsOfServiceUserStatusTypeField type) {
@@ -211,6 +208,11 @@ public class TermsOfServiceUserStatus extends SerializableObject {
     }
 
     public TermsOfServiceUserStatus build() {
+      if (this.type == null) {
+        this.type =
+            new EnumWrapper<TermsOfServiceUserStatusTypeField>(
+                TermsOfServiceUserStatusTypeField.TERMS_OF_SERVICE_USER_STATUS);
+      }
       return new TermsOfServiceUserStatus(this);
     }
   }

@@ -103,7 +103,6 @@ public class WebLinkBase extends SerializableObject {
     public Builder(String id) {
       super();
       this.id = id;
-      this.type = new EnumWrapper<WebLinkBaseTypeField>(WebLinkBaseTypeField.WEB_LINK);
     }
 
     public Builder type(WebLinkBaseTypeField type) {
@@ -122,6 +121,9 @@ public class WebLinkBase extends SerializableObject {
     }
 
     public WebLinkBase build() {
+      if (this.type == null) {
+        this.type = new EnumWrapper<WebLinkBaseTypeField>(WebLinkBaseTypeField.WEB_LINK);
+      }
       return new WebLinkBase(this);
     }
   }

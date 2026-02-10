@@ -89,9 +89,6 @@ public class StatusSkillCardInvocationField extends SerializableObject {
     public Builder(String id) {
       super();
       this.id = id;
-      this.type =
-          new EnumWrapper<StatusSkillCardInvocationTypeField>(
-              StatusSkillCardInvocationTypeField.SKILL_INVOCATION);
     }
 
     public Builder type(StatusSkillCardInvocationTypeField type) {
@@ -105,6 +102,11 @@ public class StatusSkillCardInvocationField extends SerializableObject {
     }
 
     public StatusSkillCardInvocationField build() {
+      if (this.type == null) {
+        this.type =
+            new EnumWrapper<StatusSkillCardInvocationTypeField>(
+                StatusSkillCardInvocationTypeField.SKILL_INVOCATION);
+      }
       return new StatusSkillCardInvocationField(this);
     }
   }

@@ -76,8 +76,6 @@ public class FolderReferenceV2025R0 extends SerializableObject {
     public Builder(String id) {
       super();
       this.id = id;
-      this.type =
-          new EnumWrapper<FolderReferenceV2025R0TypeField>(FolderReferenceV2025R0TypeField.FOLDER);
     }
 
     public Builder type(FolderReferenceV2025R0TypeField type) {
@@ -91,6 +89,11 @@ public class FolderReferenceV2025R0 extends SerializableObject {
     }
 
     public FolderReferenceV2025R0 build() {
+      if (this.type == null) {
+        this.type =
+            new EnumWrapper<FolderReferenceV2025R0TypeField>(
+                FolderReferenceV2025R0TypeField.FOLDER);
+      }
       return new FolderReferenceV2025R0(this);
     }
   }

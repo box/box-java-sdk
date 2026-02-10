@@ -257,6 +257,11 @@ public class DocGenJobFullV2025R0 extends DocGenJobV2025R0 {
     }
 
     public DocGenJobFullV2025R0 build() {
+      if (this.type == null) {
+        this.type =
+            new EnumWrapper<DocGenJobBaseV2025R0TypeField>(
+                DocGenJobBaseV2025R0TypeField.DOCGEN_JOB);
+      }
       return new DocGenJobFullV2025R0(this);
     }
   }

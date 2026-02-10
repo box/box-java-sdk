@@ -75,7 +75,6 @@ public class AiAgentReference extends SerializableObject {
 
     public Builder() {
       super();
-      this.type = new EnumWrapper<AiAgentReferenceTypeField>(AiAgentReferenceTypeField.AI_AGENT_ID);
     }
 
     public Builder type(AiAgentReferenceTypeField type) {
@@ -94,6 +93,10 @@ public class AiAgentReference extends SerializableObject {
     }
 
     public AiAgentReference build() {
+      if (this.type == null) {
+        this.type =
+            new EnumWrapper<AiAgentReferenceTypeField>(AiAgentReferenceTypeField.AI_AGENT_ID);
+      }
       return new AiAgentReference(this);
     }
   }
