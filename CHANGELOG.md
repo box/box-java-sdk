@@ -2,6 +2,21 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [5.4.0](https://github.com/box/box-java-sdk/compare/v5.3.0...v5.4.0) (2026-02-11)
+
+
+### Bug Fixes:
+
+* **boxsdkgen:** Correct enum value for legal hold policy changes (box/box-openapi[#581](https://github.com/box/box-java-sdk/issues/581)) ([#1694](https://github.com/box/box-java-sdk/issues/1694)) ([4620812](https://github.com/box/box-java-sdk/commit/46208121ea5db23562b0b3c2875a0e24d12bff97))
+* **boxsdkgen:** Move assigning default values from builder constructor to `build()` method (box/box-codegen[#922](https://github.com/box/box-java-sdk/issues/922)) ([#1712](https://github.com/box/box-java-sdk/issues/1712)) ([aa962a0](https://github.com/box/box-java-sdk/commit/aa962a07fda8847b4beb3a0d4bac504bd13f3cb5))
+
+
+### New Features and Enhancements:
+
+* **boxsdkgen:** add confidence scores for structured extract (box/box-openapi[#582](https://github.com/box/box-java-sdk/issues/582)) ([#1696](https://github.com/box/box-java-sdk/issues/1696)) ([241b5f2](https://github.com/box/box-java-sdk/commit/241b5f22ee2b62cc8bda6166cc8c47f98bfd5eca))
+* **boxsdkgen:** add signer language, cancel sign request reason (box/box-openapi[#584](https://github.com/box/box-java-sdk/issues/584)) ([#1720](https://github.com/box/box-java-sdk/issues/1720)) ([f838a35](https://github.com/box/box-java-sdk/commit/f838a35286768d7a551b5053780b245a4bfb85c4))
+* **boxsdkgen:** Add watermarking permissions and sources information (box/box-openapi[#579](https://github.com/box/box-java-sdk/issues/579)) ([#1686](https://github.com/box/box-java-sdk/issues/1686)) ([d13c98b](https://github.com/box/box-java-sdk/commit/d13c98bb5caaada6fc819e964538edb9c79986e8))
+
 ## [5.3.0](https://github.com/box/box-java-sdk/compare/v5.2.0...v5.3.0) (2025-12-19)
 
 
