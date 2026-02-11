@@ -47,7 +47,9 @@ public class GetFolderByIdQueryParams {
   /**
    * The offset of the item at which to begin the response.
    *
-   * <p>Queries with offset parameter value exceeding 10000 will be rejected with a 400 response.
+   * <p>Offset-based pagination is not guaranteed to work reliably for high offset values and may
+   * fail for large datasets. In those cases, reduce the number of items in the folder (for example,
+   * by restructuring the folder into smaller subfolders) before retrying the request.
    */
   public Long offset;
 
