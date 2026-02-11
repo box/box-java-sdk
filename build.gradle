@@ -10,7 +10,7 @@ plugins {
 }
 group = "com.box"
 archivesBaseName = "box-java-sdk"
-version = "10.4.0"
+version = "10.5.0"
 java {
   sourceCompatibility = JavaVersion.toVersion(libraryJavaVersion)
   targetCompatibility = JavaVersion.toVersion(libraryJavaVersion)
