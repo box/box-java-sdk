@@ -103,6 +103,7 @@ public class SignRequestSigner extends SignRequestCreateSigner {
         && Objects.equals(password, casted.password)
         && Objects.equals(signerGroupId, casted.signerGroupId)
         && Objects.equals(suppressNotifications, casted.suppressNotifications)
+        && Objects.equals(language, casted.language)
         && Objects.equals(hasViewedDocument, casted.hasViewedDocument)
         && Objects.equals(signerDecision, casted.signerDecision)
         && Objects.equals(inputs, casted.inputs)
@@ -126,6 +127,7 @@ public class SignRequestSigner extends SignRequestCreateSigner {
         password,
         signerGroupId,
         suppressNotifications,
+        language,
         hasViewedDocument,
         signerDecision,
         inputs,
@@ -183,6 +185,10 @@ public class SignRequestSigner extends SignRequestCreateSigner {
         + ", "
         + "suppressNotifications='"
         + suppressNotifications
+        + '\''
+        + ", "
+        + "language='"
+        + language
         + '\''
         + ", "
         + "hasViewedDocument='"
@@ -343,6 +349,13 @@ public class SignRequestSigner extends SignRequestCreateSigner {
     public Builder suppressNotifications(Boolean suppressNotifications) {
       this.suppressNotifications = suppressNotifications;
       this.markNullableFieldAsSet("suppress_notifications");
+      return this;
+    }
+
+    @Override
+    public Builder language(String language) {
+      this.language = language;
+      this.markNullableFieldAsSet("language");
       return this;
     }
 

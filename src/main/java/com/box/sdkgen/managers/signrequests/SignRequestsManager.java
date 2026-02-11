@@ -12,6 +12,7 @@ import com.box.sdkgen.networking.fetchoptions.ResponseFormat;
 import com.box.sdkgen.networking.fetchresponse.FetchResponse;
 import com.box.sdkgen.networking.network.NetworkSession;
 import com.box.sdkgen.schemas.signrequest.SignRequest;
+import com.box.sdkgen.schemas.signrequestcancelrequest.SignRequestCancelRequest;
 import com.box.sdkgen.schemas.signrequestcreaterequest.SignRequestCreateRequest;
 import com.box.sdkgen.schemas.signrequests.SignRequests;
 import com.box.sdkgen.serialization.json.JsonManager;
@@ -38,7 +39,17 @@ public class SignRequestsManager {
    * @param signRequestId The ID of the signature request. Example: "33243242"
    */
   public SignRequest cancelSignRequest(String signRequestId) {
-    return cancelSignRequest(signRequestId, new CancelSignRequestHeaders());
+    return cancelSignRequest(signRequestId, null, new CancelSignRequestHeaders());
+  }
+
+  /**
+   * Cancels a sign request.
+   *
+   * @param signRequestId The ID of the signature request. Example: "33243242"
+   * @param requestBody Request body of cancelSignRequest method
+   */
+  public SignRequest cancelSignRequest(String signRequestId, SignRequestCancelRequest requestBody) {
+    return cancelSignRequest(signRequestId, requestBody, new CancelSignRequestHeaders());
   }
 
   /**
@@ -48,6 +59,20 @@ public class SignRequestsManager {
    * @param headers Headers of cancelSignRequest method
    */
   public SignRequest cancelSignRequest(String signRequestId, CancelSignRequestHeaders headers) {
+    return cancelSignRequest(signRequestId, null, headers);
+  }
+
+  /**
+   * Cancels a sign request.
+   *
+   * @param signRequestId The ID of the signature request. Example: "33243242"
+   * @param requestBody Request body of cancelSignRequest method
+   * @param headers Headers of cancelSignRequest method
+   */
+  public SignRequest cancelSignRequest(
+      String signRequestId,
+      SignRequestCancelRequest requestBody,
+      CancelSignRequestHeaders headers) {
     Map<String, String> headersMap = prepareParams(mergeMaps(mapOf(), headers.getExtraHeaders()));
     FetchResponse response =
         this.networkSession
@@ -62,6 +87,8 @@ public class SignRequestsManager {
                             "/cancel"),
                         "POST")
                     .headers(headersMap)
+                    .data((!(requestBody == null) ? JsonManager.serialize(requestBody) : null))
+                    .contentType("application/json")
                     .responseFormat(ResponseFormat.JSON)
                     .auth(this.auth)
                     .networkSession(this.networkSession)

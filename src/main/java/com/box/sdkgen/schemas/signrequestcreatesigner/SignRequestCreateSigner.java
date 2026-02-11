@@ -108,6 +108,12 @@ public class SignRequestCreateSigner extends SerializableObject {
   @Nullable
   protected Boolean suppressNotifications;
 
+  /**
+   * The language of the user, formatted in modified version of the [ISO
+   * 639-1](https://developer.box.com/guides/api-calls/language-codes) format.
+   */
+  @Nullable protected String language;
+
   public SignRequestCreateSigner() {
     super();
   }
@@ -126,6 +132,7 @@ public class SignRequestCreateSigner extends SerializableObject {
     this.password = builder.password;
     this.signerGroupId = builder.signerGroupId;
     this.suppressNotifications = builder.suppressNotifications;
+    this.language = builder.language;
     markNullableFieldsAsSet(builder.getExplicitlySetNullableFields());
   }
 
@@ -177,6 +184,10 @@ public class SignRequestCreateSigner extends SerializableObject {
     return suppressNotifications;
   }
 
+  public String getLanguage() {
+    return language;
+  }
+
   @Override
   public boolean equals(Object o) {
     if (this == o) {
@@ -197,7 +208,8 @@ public class SignRequestCreateSigner extends SerializableObject {
         && Objects.equals(verificationPhoneNumber, casted.verificationPhoneNumber)
         && Objects.equals(password, casted.password)
         && Objects.equals(signerGroupId, casted.signerGroupId)
-        && Objects.equals(suppressNotifications, casted.suppressNotifications);
+        && Objects.equals(suppressNotifications, casted.suppressNotifications)
+        && Objects.equals(language, casted.language);
   }
 
   @Override
@@ -214,7 +226,8 @@ public class SignRequestCreateSigner extends SerializableObject {
         verificationPhoneNumber,
         password,
         signerGroupId,
-        suppressNotifications);
+        suppressNotifications,
+        language);
   }
 
   @Override
@@ -267,6 +280,10 @@ public class SignRequestCreateSigner extends SerializableObject {
         + "suppressNotifications='"
         + suppressNotifications
         + '\''
+        + ", "
+        + "language='"
+        + language
+        + '\''
         + "}";
   }
 
@@ -295,6 +312,8 @@ public class SignRequestCreateSigner extends SerializableObject {
     protected String signerGroupId;
 
     protected Boolean suppressNotifications;
+
+    protected String language;
 
     public Builder email(String email) {
       this.email = email;
@@ -367,6 +386,12 @@ public class SignRequestCreateSigner extends SerializableObject {
     public Builder suppressNotifications(Boolean suppressNotifications) {
       this.suppressNotifications = suppressNotifications;
       this.markNullableFieldAsSet("suppress_notifications");
+      return this;
+    }
+
+    public Builder language(String language) {
+      this.language = language;
+      this.markNullableFieldAsSet("language");
       return this;
     }
 
