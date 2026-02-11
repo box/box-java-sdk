@@ -29,8 +29,8 @@ public class AiExtractStructuredResponse extends SerializableObject {
   protected String completionReason;
 
   /**
-   * The confidence score numeric values for each extracted field as a JSON dictionary. This can be
-   * empty if no field could be extracted.
+   * The confidence score levels and numeric values for each extracted field as a JSON dictionary.
+   * This can be empty if no field could be extracted.
    */
   @JsonProperty("confidence_score")
   protected Map<String, Object> confidenceScore;
