@@ -52,7 +52,6 @@ public class ArchivesITest {
             .getArchives()
             .getArchivesV2025R0(new GetArchivesV2025R0QueryParams.Builder().limit(100L).build());
     assert archives.getEntries().size() > 0;
-    client.getArchives().deleteArchiveByIdV2025R0(archive.getId());
     assertThrows(
         RuntimeException.class,
         () -> client.getArchives().deleteArchiveByIdV2025R0(archive.getId()));
