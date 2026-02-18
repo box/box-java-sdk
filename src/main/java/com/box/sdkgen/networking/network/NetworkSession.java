@@ -9,6 +9,7 @@ import com.box.sdkgen.networking.networkclient.NetworkClient;
 import com.box.sdkgen.networking.proxyconfig.ProxyConfig;
 import com.box.sdkgen.networking.retries.BoxRetryStrategy;
 import com.box.sdkgen.networking.retries.RetryStrategy;
+import com.box.sdkgen.networking.timeoutconfig.TimeoutConfig;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -31,6 +32,8 @@ public class NetworkSession {
 
   protected ProxyConfig proxyConfig;
 
+  protected TimeoutConfig timeoutConfig;
+
   public NetworkSession() {
     networkClient = new BoxNetworkClient();
     retryStrategy = new BoxRetryStrategy();
@@ -45,6 +48,7 @@ public class NetworkSession {
     this.retryStrategy = builder.retryStrategy;
     this.dataSanitizer = builder.dataSanitizer;
     this.proxyConfig = builder.proxyConfig;
+    this.timeoutConfig = builder.timeoutConfig;
   }
 
   public NetworkSession withAdditionalHeaders() {
@@ -63,6 +67,7 @@ public class NetworkSession {
         .retryStrategy(this.retryStrategy)
         .dataSanitizer(this.dataSanitizer)
         .proxyConfig(this.proxyConfig)
+        .timeoutConfig(this.timeoutConfig)
         .build();
   }
 
@@ -75,6 +80,7 @@ public class NetworkSession {
         .retryStrategy(this.retryStrategy)
         .dataSanitizer(this.dataSanitizer)
         .proxyConfig(this.proxyConfig)
+        .timeoutConfig(this.timeoutConfig)
         .build();
   }
 
@@ -90,6 +96,7 @@ public class NetworkSession {
         .retryStrategy(this.retryStrategy)
         .dataSanitizer(this.dataSanitizer)
         .proxyConfig(this.proxyConfig)
+        .timeoutConfig(this.timeoutConfig)
         .build();
   }
 
@@ -102,6 +109,7 @@ public class NetworkSession {
         .retryStrategy(this.retryStrategy)
         .dataSanitizer(this.dataSanitizer)
         .proxyConfig(this.proxyConfig)
+        .timeoutConfig(this.timeoutConfig)
         .build();
   }
 
@@ -114,6 +122,7 @@ public class NetworkSession {
         .retryStrategy(retryStrategy)
         .dataSanitizer(this.dataSanitizer)
         .proxyConfig(this.proxyConfig)
+        .timeoutConfig(this.timeoutConfig)
         .build();
   }
 
@@ -126,6 +135,7 @@ public class NetworkSession {
         .retryStrategy(this.retryStrategy)
         .dataSanitizer(dataSanitizer)
         .proxyConfig(this.proxyConfig)
+        .timeoutConfig(this.timeoutConfig)
         .build();
   }
 
@@ -145,6 +155,30 @@ public class NetworkSession {
         .retryStrategy(this.retryStrategy)
         .dataSanitizer(this.dataSanitizer)
         .proxyConfig(config)
+        .timeoutConfig(this.timeoutConfig)
+        .build();
+  }
+
+  public NetworkSession withTimeoutConfig(TimeoutConfig timeoutConfig) {
+    if (timeoutConfig == null) {
+      throw new IllegalArgumentException("TimeoutConfig cannot be null");
+    }
+
+    if (!(this.networkClient instanceof BoxNetworkClient)) {
+      throw new BoxSDKError("Timeouts are only supported for BoxNetworkClient");
+    }
+
+    BoxNetworkClient newClient =
+        ((BoxNetworkClient) this.networkClient).withTimeoutConfig(timeoutConfig);
+    return new Builder()
+        .additionalHeaders(this.additionalHeaders)
+        .baseUrls(this.baseUrls)
+        .interceptors(this.interceptors)
+        .networkClient(newClient)
+        .retryStrategy(this.retryStrategy)
+        .dataSanitizer(this.dataSanitizer)
+        .proxyConfig(this.proxyConfig)
+        .timeoutConfig(timeoutConfig)
         .build();
   }
 
@@ -176,6 +210,10 @@ public class NetworkSession {
     return proxyConfig;
   }
 
+  public TimeoutConfig getTimeoutConfig() {
+    return timeoutConfig;
+  }
+
   public static class Builder {
 
     protected Map<String, String> additionalHeaders = new HashMap<>();
@@ -191,6 +229,8 @@ public class NetworkSession {
     protected DataSanitizer dataSanitizer;
 
     protected ProxyConfig proxyConfig;
+
+    protected TimeoutConfig timeoutConfig;
 
     public Builder() {
       networkClient = new BoxNetworkClient();
@@ -230,6 +270,11 @@ public class NetworkSession {
 
     public Builder proxyConfig(ProxyConfig proxyConfig) {
       this.proxyConfig = proxyConfig;
+      return this;
+    }
+
+    public Builder timeoutConfig(TimeoutConfig timeoutConfig) {
+      this.timeoutConfig = timeoutConfig;
       return this;
     }
 
