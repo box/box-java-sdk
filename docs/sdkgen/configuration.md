@@ -13,6 +13,7 @@
   - [Network Exception Handling](#network-exception-handling)
   - [Customizing Retry Parameters](#customizing-retry-parameters)
   - [Custom Retry Strategy](#custom-retry-strategy)
+- [Timeouts](#timeouts)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
@@ -173,3 +174,34 @@ BoxClient client = new BoxClient.Builder(auth)
     .networkSession(session)
     .build();
 ```
+
+## Timeouts
+
+You can configure network timeouts with `TimeoutConfig` on `NetworkSession`.
+Java SDK supports separate values for connection and read timeouts, both in milliseconds.
+
+```java
+BoxDeveloperTokenAuth auth = new BoxDeveloperTokenAuth("DEVELOPER_TOKEN");
+TimeoutConfig timeoutConfig = new TimeoutConfig.Builder()
+    .connectionTimeoutMs(10000L)
+    .readTimeoutMs(30000L)
+    .build();
+
+NetworkSession session = new NetworkSession()
+    .withTimeoutConfig(timeoutConfig);
+
+BoxClient client = new BoxClient.Builder(auth)
+    .networkSession(session)
+    .build();
+```
+
+How timeout handling works:
+
+- `connectionTimeoutMs` controls how long the client waits to establish a connection.
+- `readTimeoutMs` controls how long the client waits for data while reading the response.
+- Each timeout is optional. If a value is not provided, the client keeps its existing timeout for that setting.
+- To disable both timeouts, set `connectionTimeoutMs(0L)` and `readTimeoutMs(0L)`.
+- You can also disable only one timeout by setting just one of them to `0L` and leaving the other configured.
+- Timeout failures are handled as request exceptions, then retry behavior is controlled by the configured retry strategy
+- If retries are exhausted after timeout failures, the SDK throws `BoxSDKError` with the underlying timeout exception as the cause.
+- Timeout applies to a single HTTP request attempt to the Box API (not the total time across all retries).

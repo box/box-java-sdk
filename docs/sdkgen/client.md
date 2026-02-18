@@ -17,6 +17,7 @@ divided across resource managers.
   - [Custom headers](#custom-headers)
 - [Custom Base URLs](#custom-base-urls)
 - [Interceptors](#interceptors)
+- [Use Timeouts for API calls](#use-timeouts-for-api-calls)
 - [Use Proxy for API calls](#use-proxy-for-api-calls)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
@@ -176,6 +177,18 @@ List<Interceptor> interceptors = new ArrayList<>() {
     }
 };
 BoxClient clientWithInterceptor = client.withInterceptors(interceptors);
+```
+
+# Use Timeouts for API calls
+
+In order to configure timeout for API calls, calling the `client.withTimeouts(config)` method creates a new client with timeout settings, leaving the original client unmodified.
+
+```java
+TimeoutConfig timeoutConfig = new TimeoutConfig.Builder()
+    .connectionTimeoutMs(10000L)
+    .readTimeoutMs(30000L)
+    .build();
+BoxClient newClient = client.withTimeouts(timeoutConfig);
 ```
 
 # Use Proxy for API calls

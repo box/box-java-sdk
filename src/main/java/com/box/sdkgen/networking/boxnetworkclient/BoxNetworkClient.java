@@ -19,6 +19,7 @@ import com.box.sdkgen.networking.fetchresponse.FetchResponse;
 import com.box.sdkgen.networking.network.NetworkSession;
 import com.box.sdkgen.networking.networkclient.NetworkClient;
 import com.box.sdkgen.networking.proxyconfig.ProxyConfig;
+import com.box.sdkgen.networking.timeoutconfig.TimeoutConfig;
 import com.fasterxml.jackson.databind.JsonNode;
 import java.io.IOException;
 import java.net.InetSocketAddress;
@@ -93,6 +94,31 @@ public class BoxNetworkClient implements NetworkClient {
       clientBuilder.proxyAuthenticator(
           (route, resp) ->
               resp.request().newBuilder().header("Proxy-Authorization", basic).build());
+    }
+    return new BoxNetworkClient(clientBuilder.build());
+  }
+
+  public BoxNetworkClient withTimeoutConfig(TimeoutConfig config) {
+    if (config == null) {
+      throw new IllegalArgumentException("TimeoutConfig cannot be null");
+    }
+
+    OkHttpClient.Builder clientBuilder = httpClient.newBuilder();
+
+    Long connectionTimeoutMs = config.getConnectionTimeoutMs();
+    if (connectionTimeoutMs != null) {
+      if (connectionTimeoutMs < 0) {
+        throw new IllegalArgumentException("connectionTimeoutMs cannot be negative");
+      }
+      clientBuilder.connectTimeout(connectionTimeoutMs.longValue(), TimeUnit.MILLISECONDS);
+    }
+
+    Long readTimeoutMs = config.getReadTimeoutMs();
+    if (readTimeoutMs != null) {
+      if (readTimeoutMs < 0) {
+        throw new IllegalArgumentException("readTimeoutMs cannot be negative");
+      }
+      clientBuilder.readTimeout(readTimeoutMs.longValue(), TimeUnit.MILLISECONDS);
     }
     return new BoxNetworkClient(clientBuilder.build());
   }
