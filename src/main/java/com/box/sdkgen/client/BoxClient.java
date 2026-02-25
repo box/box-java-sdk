@@ -92,6 +92,7 @@ import com.box.sdkgen.networking.fetchresponse.FetchResponse;
 import com.box.sdkgen.networking.interceptors.Interceptor;
 import com.box.sdkgen.networking.network.NetworkSession;
 import com.box.sdkgen.networking.proxyconfig.ProxyConfig;
+import com.box.sdkgen.networking.timeoutconfig.TimeoutConfig;
 import java.util.List;
 import java.util.Map;
 
@@ -1043,6 +1044,17 @@ public class BoxClient {
   public BoxClient withProxy(ProxyConfig config) {
     return new BoxClient.Builder(this.auth)
         .networkSession(this.networkSession.withProxy(config))
+        .build();
+  }
+
+  /**
+   * Create a new client with custom timeouts that will be used for every API call
+   *
+   * @param config Timeout configuration.
+   */
+  public BoxClient withTimeouts(TimeoutConfig config) {
+    return new BoxClient.Builder(this.auth)
+        .networkSession(this.networkSession.withTimeoutConfig(config))
         .build();
   }
 
