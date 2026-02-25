@@ -26,6 +26,7 @@ import com.box.sdkgen.networking.fetchoptions.FetchOptions;
 import com.box.sdkgen.networking.fetchoptions.MultipartItem;
 import com.box.sdkgen.networking.fetchoptions.ResponseFormat;
 import com.box.sdkgen.networking.fetchresponse.FetchResponse;
+import com.box.sdkgen.networking.timeoutconfig.TimeoutConfig;
 import com.box.sdkgen.schemas.filefull.FileFull;
 import com.box.sdkgen.schemas.files.Files;
 import com.box.sdkgen.schemas.folderfull.FolderFull;
@@ -197,6 +198,22 @@ public class ClientITest {
             .build();
     BoxClient customBaseClient = client.withCustomBaseUrls(newBaseUrls);
     assertThrows(RuntimeException.class, () -> customBaseClient.getUsers().getUserMe());
+  }
+
+  @Test
+  public void testWithTimeoutWhenTimeoutOccurs() {
+    long readTimeoutMs = 1;
+    BoxClient clientWithTimeout =
+        client.withTimeouts(new TimeoutConfig.Builder().readTimeoutMs(readTimeoutMs).build());
+    assertThrows(RuntimeException.class, () -> clientWithTimeout.getUsers().getUserMe());
+  }
+
+  @Test
+  public void testWithTimeoutWhenTimeoutDoesNotOccur() {
+    long readTimeoutMs = 10000;
+    BoxClient clientWithTimeout =
+        client.withTimeouts(new TimeoutConfig.Builder().readTimeoutMs(readTimeoutMs).build());
+    clientWithTimeout.getUsers().getUserMe();
   }
 
   @Test
