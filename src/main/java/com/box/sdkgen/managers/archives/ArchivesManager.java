@@ -155,6 +155,9 @@ public class ArchivesManager {
    * <p>To learn more about the archive APIs, see the [Archive API
    * Guide](https://developer.box.com/guides/archives).
    *
+   * <p>&lt;Danger&gt; This endpoint is currently unavailable. Please contact support for
+   * assistance. &lt;/Danger&gt;
+   *
    * @param archiveId The ID of the archive. Example: "982312"
    */
   public void deleteArchiveByIdV2025R0(String archiveId) {
@@ -166,6 +169,9 @@ public class ArchivesManager {
    *
    * <p>To learn more about the archive APIs, see the [Archive API
    * Guide](https://developer.box.com/guides/archives).
+   *
+   * <p>&lt;Danger&gt; This endpoint is currently unavailable. Please contact support for
+   * assistance. &lt;/Danger&gt;
    *
    * @param archiveId The ID of the archive. Example: "982312"
    * @param headers Headers of deleteArchiveByIdV2025R0 method
