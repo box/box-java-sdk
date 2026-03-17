@@ -65,6 +65,10 @@ public class HubV2025R0 extends HubBaseV2025R0 {
   @JsonProperty("can_shared_link_be_created")
   protected Boolean canSharedLinkBeCreated;
 
+  /** Indicates if a public shared link can be created for the Box Hub. */
+  @JsonProperty("can_public_shared_link_be_created")
+  protected Boolean canPublicSharedLinkBeCreated;
+
   public HubV2025R0(@JsonProperty("id") String id) {
     super(id);
   }
@@ -82,6 +86,7 @@ public class HubV2025R0 extends HubBaseV2025R0 {
     this.isCollaborationRestrictedToEnterprise = builder.isCollaborationRestrictedToEnterprise;
     this.canNonOwnersInvite = builder.canNonOwnersInvite;
     this.canSharedLinkBeCreated = builder.canSharedLinkBeCreated;
+    this.canPublicSharedLinkBeCreated = builder.canPublicSharedLinkBeCreated;
     markNullableFieldsAsSet(builder.getExplicitlySetNullableFields());
   }
 
@@ -129,6 +134,10 @@ public class HubV2025R0 extends HubBaseV2025R0 {
     return canSharedLinkBeCreated;
   }
 
+  public Boolean getCanPublicSharedLinkBeCreated() {
+    return canPublicSharedLinkBeCreated;
+  }
+
   @Override
   public boolean equals(Object o) {
     if (this == o) {
@@ -151,7 +160,8 @@ public class HubV2025R0 extends HubBaseV2025R0 {
         && Objects.equals(
             isCollaborationRestrictedToEnterprise, casted.isCollaborationRestrictedToEnterprise)
         && Objects.equals(canNonOwnersInvite, casted.canNonOwnersInvite)
-        && Objects.equals(canSharedLinkBeCreated, casted.canSharedLinkBeCreated);
+        && Objects.equals(canSharedLinkBeCreated, casted.canSharedLinkBeCreated)
+        && Objects.equals(canPublicSharedLinkBeCreated, casted.canPublicSharedLinkBeCreated);
   }
 
   @Override
@@ -169,7 +179,8 @@ public class HubV2025R0 extends HubBaseV2025R0 {
         isAiEnabled,
         isCollaborationRestrictedToEnterprise,
         canNonOwnersInvite,
-        canSharedLinkBeCreated);
+        canSharedLinkBeCreated,
+        canPublicSharedLinkBeCreated);
   }
 
   @Override
@@ -226,6 +237,10 @@ public class HubV2025R0 extends HubBaseV2025R0 {
         + "canSharedLinkBeCreated='"
         + canSharedLinkBeCreated
         + '\''
+        + ", "
+        + "canPublicSharedLinkBeCreated='"
+        + canPublicSharedLinkBeCreated
+        + '\''
         + "}";
   }
 
@@ -252,6 +267,8 @@ public class HubV2025R0 extends HubBaseV2025R0 {
     protected Boolean canNonOwnersInvite;
 
     protected Boolean canSharedLinkBeCreated;
+
+    protected Boolean canPublicSharedLinkBeCreated;
 
     public Builder(String id) {
       super(id);
@@ -310,6 +327,11 @@ public class HubV2025R0 extends HubBaseV2025R0 {
 
     public Builder canSharedLinkBeCreated(Boolean canSharedLinkBeCreated) {
       this.canSharedLinkBeCreated = canSharedLinkBeCreated;
+      return this;
+    }
+
+    public Builder canPublicSharedLinkBeCreated(Boolean canPublicSharedLinkBeCreated) {
+      this.canPublicSharedLinkBeCreated = canPublicSharedLinkBeCreated;
       return this;
     }
 
