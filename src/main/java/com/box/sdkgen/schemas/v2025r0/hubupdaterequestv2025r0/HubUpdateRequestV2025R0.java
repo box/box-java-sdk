@@ -32,6 +32,10 @@ public class HubUpdateRequestV2025R0 extends SerializableObject {
   @JsonProperty("can_shared_link_be_created")
   protected Boolean canSharedLinkBeCreated;
 
+  /** Indicates if a public shared link can be created for the Box Hub. */
+  @JsonProperty("can_public_shared_link_be_created")
+  protected Boolean canPublicSharedLinkBeCreated;
+
   public HubUpdateRequestV2025R0() {
     super();
   }
@@ -44,6 +48,7 @@ public class HubUpdateRequestV2025R0 extends SerializableObject {
     this.isCollaborationRestrictedToEnterprise = builder.isCollaborationRestrictedToEnterprise;
     this.canNonOwnersInvite = builder.canNonOwnersInvite;
     this.canSharedLinkBeCreated = builder.canSharedLinkBeCreated;
+    this.canPublicSharedLinkBeCreated = builder.canPublicSharedLinkBeCreated;
     markNullableFieldsAsSet(builder.getExplicitlySetNullableFields());
   }
 
@@ -71,6 +76,10 @@ public class HubUpdateRequestV2025R0 extends SerializableObject {
     return canSharedLinkBeCreated;
   }
 
+  public Boolean getCanPublicSharedLinkBeCreated() {
+    return canPublicSharedLinkBeCreated;
+  }
+
   @Override
   public boolean equals(Object o) {
     if (this == o) {
@@ -86,7 +95,8 @@ public class HubUpdateRequestV2025R0 extends SerializableObject {
         && Objects.equals(
             isCollaborationRestrictedToEnterprise, casted.isCollaborationRestrictedToEnterprise)
         && Objects.equals(canNonOwnersInvite, casted.canNonOwnersInvite)
-        && Objects.equals(canSharedLinkBeCreated, casted.canSharedLinkBeCreated);
+        && Objects.equals(canSharedLinkBeCreated, casted.canSharedLinkBeCreated)
+        && Objects.equals(canPublicSharedLinkBeCreated, casted.canPublicSharedLinkBeCreated);
   }
 
   @Override
@@ -97,7 +107,8 @@ public class HubUpdateRequestV2025R0 extends SerializableObject {
         isAiEnabled,
         isCollaborationRestrictedToEnterprise,
         canNonOwnersInvite,
-        canSharedLinkBeCreated);
+        canSharedLinkBeCreated,
+        canPublicSharedLinkBeCreated);
   }
 
   @Override
@@ -126,6 +137,10 @@ public class HubUpdateRequestV2025R0 extends SerializableObject {
         + "canSharedLinkBeCreated='"
         + canSharedLinkBeCreated
         + '\''
+        + ", "
+        + "canPublicSharedLinkBeCreated='"
+        + canPublicSharedLinkBeCreated
+        + '\''
         + "}";
   }
 
@@ -142,6 +157,8 @@ public class HubUpdateRequestV2025R0 extends SerializableObject {
     protected Boolean canNonOwnersInvite;
 
     protected Boolean canSharedLinkBeCreated;
+
+    protected Boolean canPublicSharedLinkBeCreated;
 
     public Builder title(String title) {
       this.title = title;
@@ -171,6 +188,11 @@ public class HubUpdateRequestV2025R0 extends SerializableObject {
 
     public Builder canSharedLinkBeCreated(Boolean canSharedLinkBeCreated) {
       this.canSharedLinkBeCreated = canSharedLinkBeCreated;
+      return this;
+    }
+
+    public Builder canPublicSharedLinkBeCreated(Boolean canPublicSharedLinkBeCreated) {
+      this.canPublicSharedLinkBeCreated = canPublicSharedLinkBeCreated;
       return this;
     }
 
