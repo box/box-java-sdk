@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [5.5.0](https://github.com/box/box-java-sdk/compare/v5.4.0...v5.5.0) (2026-03-18)
+
+
+### New Features and Enhancements:
+
+* **boxsdkgen:** add `canPublicSharedLinkBeCreated` to `Hubs` (box/box-codegen[#928](https://github.com/box/box-java-sdk/issues/928)) ([#1736](https://github.com/box/box-java-sdk/issues/1736)) ([41decd7](https://github.com/box/box-java-sdk/commit/41decd7171874d82ad1567c010380724111e5f98))
+* **boxsdkgen:** Add customizable timeouts for SDKs (box/box-codegen[#924](https://github.com/box/box-java-sdk/issues/924)) ([#1731](https://github.com/box/box-java-sdk/issues/1731)) ([1630c2d](https://github.com/box/box-java-sdk/commit/1630c2d30efc988d0fc776279e905df9900fe9a4))
+
 ## [5.4.0](https://github.com/box/box-java-sdk/compare/v5.3.0...v5.4.0) (2026-02-11)
 
 
