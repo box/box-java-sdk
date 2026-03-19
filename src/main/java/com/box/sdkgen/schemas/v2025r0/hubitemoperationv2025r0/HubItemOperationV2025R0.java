@@ -1,5 +1,6 @@
 package com.box.sdkgen.schemas.v2025r0.hubitemoperationv2025r0;
 
+import com.box.sdkgen.internal.NullableFieldTracker;
 import com.box.sdkgen.internal.SerializableObject;
 import com.box.sdkgen.schemas.v2025r0.filereferencev2025r0.FileReferenceV2025R0;
 import com.box.sdkgen.schemas.v2025r0.folderreferencev2025r0.FolderReferenceV2025R0;
@@ -25,6 +26,13 @@ public class HubItemOperationV2025R0 extends SerializableObject {
   protected final EnumWrapper<HubItemOperationV2025R0ActionField> action;
 
   protected final HubItemReferenceV2025R0 item;
+
+  /**
+   * The ID of the parent block to add the item to. Must be an Item List block. If not provided, the
+   * item will be added to the first page's first Item List block.
+   */
+  @JsonProperty("parent_id")
+  protected String parentId;
 
   public HubItemOperationV2025R0(
       HubItemOperationV2025R0ActionField action, FileReferenceV2025R0 item) {
@@ -83,12 +91,24 @@ public class HubItemOperationV2025R0 extends SerializableObject {
     this.item = item;
   }
 
+  protected HubItemOperationV2025R0(Builder builder) {
+    super();
+    this.action = builder.action;
+    this.item = builder.item;
+    this.parentId = builder.parentId;
+    markNullableFieldsAsSet(builder.getExplicitlySetNullableFields());
+  }
+
   public EnumWrapper<HubItemOperationV2025R0ActionField> getAction() {
     return action;
   }
 
   public HubItemReferenceV2025R0 getItem() {
     return item;
+  }
+
+  public String getParentId() {
+    return parentId;
   }
 
   @Override
@@ -100,12 +120,14 @@ public class HubItemOperationV2025R0 extends SerializableObject {
       return false;
     }
     HubItemOperationV2025R0 casted = (HubItemOperationV2025R0) o;
-    return Objects.equals(action, casted.action) && Objects.equals(item, casted.item);
+    return Objects.equals(action, casted.action)
+        && Objects.equals(item, casted.item)
+        && Objects.equals(parentId, casted.parentId);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(action, item);
+    return Objects.hash(action, item, parentId);
   }
 
   @Override
@@ -118,6 +140,80 @@ public class HubItemOperationV2025R0 extends SerializableObject {
         + "item='"
         + item
         + '\''
+        + ", "
+        + "parentId='"
+        + parentId
+        + '\''
         + "}";
+  }
+
+  public static class Builder extends NullableFieldTracker {
+
+    protected final EnumWrapper<HubItemOperationV2025R0ActionField> action;
+
+    protected final HubItemReferenceV2025R0 item;
+
+    protected String parentId;
+
+    public Builder(HubItemOperationV2025R0ActionField action, FileReferenceV2025R0 item) {
+      super();
+      this.action = new EnumWrapper<HubItemOperationV2025R0ActionField>(action);
+      this.item = new HubItemReferenceV2025R0(item);
+    }
+
+    public Builder(HubItemOperationV2025R0ActionField action, FolderReferenceV2025R0 item) {
+      super();
+      this.action = new EnumWrapper<HubItemOperationV2025R0ActionField>(action);
+      this.item = new HubItemReferenceV2025R0(item);
+    }
+
+    public Builder(HubItemOperationV2025R0ActionField action, WeblinkReferenceV2025R0 item) {
+      super();
+      this.action = new EnumWrapper<HubItemOperationV2025R0ActionField>(action);
+      this.item = new HubItemReferenceV2025R0(item);
+    }
+
+    public Builder(HubItemOperationV2025R0ActionField action, HubItemReferenceV2025R0 item) {
+      super();
+      this.action = new EnumWrapper<HubItemOperationV2025R0ActionField>(action);
+      this.item = item;
+    }
+
+    public Builder(
+        EnumWrapper<HubItemOperationV2025R0ActionField> action, FileReferenceV2025R0 item) {
+      super();
+      this.action = action;
+      this.item = new HubItemReferenceV2025R0(item);
+    }
+
+    public Builder(
+        EnumWrapper<HubItemOperationV2025R0ActionField> action, FolderReferenceV2025R0 item) {
+      super();
+      this.action = action;
+      this.item = new HubItemReferenceV2025R0(item);
+    }
+
+    public Builder(
+        EnumWrapper<HubItemOperationV2025R0ActionField> action, WeblinkReferenceV2025R0 item) {
+      super();
+      this.action = action;
+      this.item = new HubItemReferenceV2025R0(item);
+    }
+
+    public Builder(
+        EnumWrapper<HubItemOperationV2025R0ActionField> action, HubItemReferenceV2025R0 item) {
+      super();
+      this.action = action;
+      this.item = item;
+    }
+
+    public Builder parentId(String parentId) {
+      this.parentId = parentId;
+      return this;
+    }
+
+    public HubItemOperationV2025R0 build() {
+      return new HubItemOperationV2025R0(this);
+    }
   }
 }
