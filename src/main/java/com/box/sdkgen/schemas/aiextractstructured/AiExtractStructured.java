@@ -35,6 +35,10 @@ public class AiExtractStructured extends SerializableObject {
   @JsonProperty("include_confidence_score")
   protected Boolean includeConfidenceScore;
 
+  /** A flag to indicate whether references for every extracted field should be returned. */
+  @JsonProperty("include_reference")
+  protected Boolean includeReference;
+
   @JsonProperty("ai_agent")
   protected AiExtractStructuredAgent aiAgent;
 
@@ -49,6 +53,7 @@ public class AiExtractStructured extends SerializableObject {
     this.metadataTemplate = builder.metadataTemplate;
     this.fields = builder.fields;
     this.includeConfidenceScore = builder.includeConfidenceScore;
+    this.includeReference = builder.includeReference;
     this.aiAgent = builder.aiAgent;
     markNullableFieldsAsSet(builder.getExplicitlySetNullableFields());
   }
@@ -69,6 +74,10 @@ public class AiExtractStructured extends SerializableObject {
     return includeConfidenceScore;
   }
 
+  public Boolean getIncludeReference() {
+    return includeReference;
+  }
+
   public AiExtractStructuredAgent getAiAgent() {
     return aiAgent;
   }
@@ -86,12 +95,14 @@ public class AiExtractStructured extends SerializableObject {
         && Objects.equals(metadataTemplate, casted.metadataTemplate)
         && Objects.equals(fields, casted.fields)
         && Objects.equals(includeConfidenceScore, casted.includeConfidenceScore)
+        && Objects.equals(includeReference, casted.includeReference)
         && Objects.equals(aiAgent, casted.aiAgent);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(items, metadataTemplate, fields, includeConfidenceScore, aiAgent);
+    return Objects.hash(
+        items, metadataTemplate, fields, includeConfidenceScore, includeReference, aiAgent);
   }
 
   @Override
@@ -113,6 +124,10 @@ public class AiExtractStructured extends SerializableObject {
         + includeConfidenceScore
         + '\''
         + ", "
+        + "includeReference='"
+        + includeReference
+        + '\''
+        + ", "
         + "aiAgent='"
         + aiAgent
         + '\''
@@ -128,6 +143,8 @@ public class AiExtractStructured extends SerializableObject {
     protected List<AiExtractStructuredFieldsField> fields;
 
     protected Boolean includeConfidenceScore;
+
+    protected Boolean includeReference;
 
     protected AiExtractStructuredAgent aiAgent;
 
@@ -148,6 +165,11 @@ public class AiExtractStructured extends SerializableObject {
 
     public Builder includeConfidenceScore(Boolean includeConfidenceScore) {
       this.includeConfidenceScore = includeConfidenceScore;
+      return this;
+    }
+
+    public Builder includeReference(Boolean includeReference) {
+      this.includeReference = includeReference;
       return this;
     }
 

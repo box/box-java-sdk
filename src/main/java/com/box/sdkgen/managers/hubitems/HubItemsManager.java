@@ -53,6 +53,7 @@ public class HubItemsManager {
         prepareParams(
             mapOf(
                 entryOf("hub_id", convertToString(queryParams.getHubId())),
+                entryOf("parent_id", convertToString(queryParams.getParentId())),
                 entryOf("marker", convertToString(queryParams.getMarker())),
                 entryOf("limit", convertToString(queryParams.getLimit()))));
     Map<String, String> headersMap =
