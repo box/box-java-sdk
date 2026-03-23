@@ -35,6 +35,12 @@ public class AiExtractStructuredResponse extends SerializableObject {
   @JsonProperty("confidence_score")
   protected Map<String, Object> confidenceScore;
 
+  /**
+   * The reference for each extracted field as a JSON dictionary. This can be empty if no field
+   * could be extracted.
+   */
+  protected Map<String, Object> reference;
+
   @JsonProperty("ai_agent_info")
   protected AiAgentInfo aiAgentInfo;
 
@@ -52,6 +58,7 @@ public class AiExtractStructuredResponse extends SerializableObject {
     this.createdAt = builder.createdAt;
     this.completionReason = builder.completionReason;
     this.confidenceScore = builder.confidenceScore;
+    this.reference = builder.reference;
     this.aiAgentInfo = builder.aiAgentInfo;
     markNullableFieldsAsSet(builder.getExplicitlySetNullableFields());
   }
@@ -72,6 +79,10 @@ public class AiExtractStructuredResponse extends SerializableObject {
     return confidenceScore;
   }
 
+  public Map<String, Object> getReference() {
+    return reference;
+  }
+
   public AiAgentInfo getAiAgentInfo() {
     return aiAgentInfo;
   }
@@ -89,12 +100,14 @@ public class AiExtractStructuredResponse extends SerializableObject {
         && Objects.equals(createdAt, casted.createdAt)
         && Objects.equals(completionReason, casted.completionReason)
         && Objects.equals(confidenceScore, casted.confidenceScore)
+        && Objects.equals(reference, casted.reference)
         && Objects.equals(aiAgentInfo, casted.aiAgentInfo);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(answer, createdAt, completionReason, confidenceScore, aiAgentInfo);
+    return Objects.hash(
+        answer, createdAt, completionReason, confidenceScore, reference, aiAgentInfo);
   }
 
   @Override
@@ -116,6 +129,10 @@ public class AiExtractStructuredResponse extends SerializableObject {
         + confidenceScore
         + '\''
         + ", "
+        + "reference='"
+        + reference
+        + '\''
+        + ", "
         + "aiAgentInfo='"
         + aiAgentInfo
         + '\''
@@ -132,6 +149,8 @@ public class AiExtractStructuredResponse extends SerializableObject {
 
     protected Map<String, Object> confidenceScore;
 
+    protected Map<String, Object> reference;
+
     protected AiAgentInfo aiAgentInfo;
 
     public Builder(Map<String, Object> answer, OffsetDateTime createdAt) {
@@ -147,6 +166,11 @@ public class AiExtractStructuredResponse extends SerializableObject {
 
     public Builder confidenceScore(Map<String, Object> confidenceScore) {
       this.confidenceScore = confidenceScore;
+      return this;
+    }
+
+    public Builder reference(Map<String, Object> reference) {
+      this.reference = reference;
       return this;
     }
 
