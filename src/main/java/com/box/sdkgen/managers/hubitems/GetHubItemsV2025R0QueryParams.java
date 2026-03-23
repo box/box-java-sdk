@@ -12,6 +12,14 @@ public class GetHubItemsV2025R0QueryParams {
   public final String hubId;
 
   /**
+   * The unique identifier of an item list block within the Box Hub.
+   *
+   * <p>When provided, the response will only include items that belong to the specified item list,
+   * allowing you to filter results to items on a specific page or section.
+   */
+  public String parentId;
+
+  /**
    * Defines the position marker at which to begin returning results. This is used when paginating
    * using marker-based pagination.
    *
@@ -28,12 +36,17 @@ public class GetHubItemsV2025R0QueryParams {
 
   protected GetHubItemsV2025R0QueryParams(Builder builder) {
     this.hubId = builder.hubId;
+    this.parentId = builder.parentId;
     this.marker = builder.marker;
     this.limit = builder.limit;
   }
 
   public String getHubId() {
     return hubId;
+  }
+
+  public String getParentId() {
+    return parentId;
   }
 
   public String getMarker() {
@@ -48,12 +61,19 @@ public class GetHubItemsV2025R0QueryParams {
 
     protected final String hubId;
 
+    protected String parentId;
+
     protected String marker;
 
     protected Long limit;
 
     public Builder(String hubId) {
       this.hubId = hubId;
+    }
+
+    public Builder parentId(String parentId) {
+      this.parentId = parentId;
+      return this;
     }
 
     public Builder marker(String marker) {
