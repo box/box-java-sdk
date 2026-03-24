@@ -38,6 +38,11 @@ public class TrashedItemsManager {
    *
    * <p>This endpoint defaults to use offset-based pagination, yet also supports marker-based
    * pagination using the `marker` parameter.
+   *
+   * <p>The number of entries returned may be less than `total_count`. For example, if a user
+   * deletes items from a shared folder and is later removed as a collaborator, those deleted items
+   * will no longer appear in this endpoint’s results, even though they are still included in
+   * `total_count`.
    */
   public Items getTrashedItems() {
     return getTrashedItems(new GetTrashedItemsQueryParams(), new GetTrashedItemsHeaders());
@@ -51,6 +56,11 @@ public class TrashedItemsManager {
    *
    * <p>This endpoint defaults to use offset-based pagination, yet also supports marker-based
    * pagination using the `marker` parameter.
+   *
+   * <p>The number of entries returned may be less than `total_count`. For example, if a user
+   * deletes items from a shared folder and is later removed as a collaborator, those deleted items
+   * will no longer appear in this endpoint’s results, even though they are still included in
+   * `total_count`.
    *
    * @param queryParams Query parameters of getTrashedItems method
    */
@@ -67,6 +77,11 @@ public class TrashedItemsManager {
    * <p>This endpoint defaults to use offset-based pagination, yet also supports marker-based
    * pagination using the `marker` parameter.
    *
+   * <p>The number of entries returned may be less than `total_count`. For example, if a user
+   * deletes items from a shared folder and is later removed as a collaborator, those deleted items
+   * will no longer appear in this endpoint’s results, even though they are still included in
+   * `total_count`.
+   *
    * @param headers Headers of getTrashedItems method
    */
   public Items getTrashedItems(GetTrashedItemsHeaders headers) {
@@ -81,6 +96,11 @@ public class TrashedItemsManager {
    *
    * <p>This endpoint defaults to use offset-based pagination, yet also supports marker-based
    * pagination using the `marker` parameter.
+   *
+   * <p>The number of entries returned may be less than `total_count`. For example, if a user
+   * deletes items from a shared folder and is later removed as a collaborator, those deleted items
+   * will no longer appear in this endpoint’s results, even though they are still included in
+   * `total_count`.
    *
    * @param queryParams Query parameters of getTrashedItems method
    * @param headers Headers of getTrashedItems method
