@@ -7,6 +7,7 @@ import com.box.sdkgen.schemas.v2025r0.folderreferencev2025r0.FolderReferenceV202
 import com.box.sdkgen.schemas.v2025r0.hubitemreferencev2025r0.HubItemReferenceV2025R0;
 import com.box.sdkgen.schemas.v2025r0.weblinkreferencev2025r0.WeblinkReferenceV2025R0;
 import com.fasterxml.jackson.annotation.JsonFilter;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.Objects;
 
 /** Result of a Box Hub item operation. */
@@ -17,6 +18,10 @@ public class HubItemOperationResultV2025R0 extends SerializableObject {
   protected String action;
 
   protected HubItemReferenceV2025R0 item;
+
+  /** The ID of the parent block the item was added to. */
+  @JsonProperty("parent_id")
+  protected String parentId;
 
   /** The HTTP status code of the operation. */
   protected Long status;
@@ -32,6 +37,7 @@ public class HubItemOperationResultV2025R0 extends SerializableObject {
     super();
     this.action = builder.action;
     this.item = builder.item;
+    this.parentId = builder.parentId;
     this.status = builder.status;
     this.error = builder.error;
     markNullableFieldsAsSet(builder.getExplicitlySetNullableFields());
@@ -43,6 +49,10 @@ public class HubItemOperationResultV2025R0 extends SerializableObject {
 
   public HubItemReferenceV2025R0 getItem() {
     return item;
+  }
+
+  public String getParentId() {
+    return parentId;
   }
 
   public Long getStatus() {
@@ -64,13 +74,14 @@ public class HubItemOperationResultV2025R0 extends SerializableObject {
     HubItemOperationResultV2025R0 casted = (HubItemOperationResultV2025R0) o;
     return Objects.equals(action, casted.action)
         && Objects.equals(item, casted.item)
+        && Objects.equals(parentId, casted.parentId)
         && Objects.equals(status, casted.status)
         && Objects.equals(error, casted.error);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(action, item, status, error);
+    return Objects.hash(action, item, parentId, status, error);
   }
 
   @Override
@@ -82,6 +93,10 @@ public class HubItemOperationResultV2025R0 extends SerializableObject {
         + ", "
         + "item='"
         + item
+        + '\''
+        + ", "
+        + "parentId='"
+        + parentId
         + '\''
         + ", "
         + "status='"
@@ -99,6 +114,8 @@ public class HubItemOperationResultV2025R0 extends SerializableObject {
     protected String action;
 
     protected HubItemReferenceV2025R0 item;
+
+    protected String parentId;
 
     protected Long status;
 
@@ -126,6 +143,11 @@ public class HubItemOperationResultV2025R0 extends SerializableObject {
 
     public Builder item(HubItemReferenceV2025R0 item) {
       this.item = item;
+      return this;
+    }
+
+    public Builder parentId(String parentId) {
+      this.parentId = parentId;
       return this;
     }
 
