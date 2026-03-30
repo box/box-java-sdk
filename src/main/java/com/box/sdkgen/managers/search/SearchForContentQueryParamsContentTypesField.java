@@ -16,7 +16,7 @@ public enum SearchForContentQueryParamsContentTypesField implements Valuable {
   DESCRIPTION("description"),
   FILE_CONTENT("file_content"),
   COMMENTS("comments"),
-  TAG("tag");
+  TAGS("tags");
 
   private final String value;
 
