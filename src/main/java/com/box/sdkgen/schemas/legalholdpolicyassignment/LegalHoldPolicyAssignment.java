@@ -1,14 +1,11 @@
 package com.box.sdkgen.schemas.legalholdpolicyassignment;
 
 import com.box.sdkgen.internal.utils.DateTimeUtils;
-import com.box.sdkgen.schemas.file.File;
-import com.box.sdkgen.schemas.folder.Folder;
 import com.box.sdkgen.schemas.legalholdpolicyassigneditem.LegalHoldPolicyAssignedItem;
 import com.box.sdkgen.schemas.legalholdpolicyassignmentbase.LegalHoldPolicyAssignmentBase;
 import com.box.sdkgen.schemas.legalholdpolicyassignmentbase.LegalHoldPolicyAssignmentBaseTypeField;
 import com.box.sdkgen.schemas.legalholdpolicymini.LegalHoldPolicyMini;
 import com.box.sdkgen.schemas.usermini.UserMini;
-import com.box.sdkgen.schemas.weblink.WebLink;
 import com.box.sdkgen.serialization.json.EnumWrapper;
 import com.fasterxml.jackson.annotation.JsonFilter;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -18,8 +15,8 @@ import java.time.OffsetDateTime;
 import java.util.Objects;
 
 /**
- * Legal Hold Assignments are used to assign Legal Hold Policies to Users, Folders, Files, or File
- * Versions.
+ * Legal Hold Assignments are used to assign Legal Hold Policies to an item type of: Users, Folders,
+ * Files, File Versions, Ownership, or Interactions.
  *
  * <p>Creating a Legal Hold Assignment puts a hold on the File-Versions that belong to the
  * Assignment's 'apply-to' entity.
@@ -156,21 +153,6 @@ public class LegalHoldPolicyAssignment extends LegalHoldPolicyAssignmentBase {
 
     public Builder legalHoldPolicy(LegalHoldPolicyMini legalHoldPolicy) {
       this.legalHoldPolicy = legalHoldPolicy;
-      return this;
-    }
-
-    public Builder assignedTo(File assignedTo) {
-      this.assignedTo = new LegalHoldPolicyAssignedItem(assignedTo);
-      return this;
-    }
-
-    public Builder assignedTo(Folder assignedTo) {
-      this.assignedTo = new LegalHoldPolicyAssignedItem(assignedTo);
-      return this;
-    }
-
-    public Builder assignedTo(WebLink assignedTo) {
-      this.assignedTo = new LegalHoldPolicyAssignedItem(assignedTo);
       return this;
     }
 
