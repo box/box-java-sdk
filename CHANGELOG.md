@@ -2,6 +2,23 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [5.6.0](https://github.com/box/box-java-sdk/compare/v5.5.0...v5.6.0) (2026-04-01)
+
+
+### ⚠ BREAKING CHANGES
+
+* **boxsdkgen:** Correct search content type 'tags' to match API (box/box-openapi#591) (#1761)
+
+### Bug Fixes:
+
+* **boxsdkgen:** Correct search content type 'tags' to match API (box/box-openapi[#591](https://github.com/box/box-java-sdk/issues/591)) ([#1761](https://github.com/box/box-java-sdk/issues/1761)) ([1fff919](https://github.com/box/box-java-sdk/commit/1fff919577062ac54338f53f87d3c910312283f5))
+
+
+### New Features and Enhancements:
+
+* **boxsdkgen:** Add `reference` to `AI` and `parent_id` to `HubsItems` (box/box-openapi[#588](https://github.com/box/box-java-sdk/issues/588)) ([#1740](https://github.com/box/box-java-sdk/issues/1740)) ([92289cb](https://github.com/box/box-java-sdk/commit/92289cbd9cb0765c742229767be70d63cd220f19))
+* **boxsdkgen:** Support Hub Document API (box/box-codegen[#930](https://github.com/box/box-java-sdk/issues/930)) ([#1763](https://github.com/box/box-java-sdk/issues/1763)) ([2f17efe](https://github.com/box/box-java-sdk/commit/2f17efe105a1a732d4f3bb6815fe18f360a8cb9c))
+
 ## [5.5.0](https://github.com/box/box-java-sdk/compare/v5.4.0...v5.5.0) (2026-03-18)
 
 
