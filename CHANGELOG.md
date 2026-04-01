@@ -2,6 +2,25 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [10.7.0](https://github.com/box/box-java-sdk/compare/v10.6.0...v10.7.0) (2026-04-01)
+
+
+### ⚠ BREAKING CHANGES
+
+* Correct search content type 'tags' to match API (box/box-openapi#591) (#1766)
+* Align `LegalHoldPolicyAssignedItem` with API (box/box-openapi#1554) (box/box-openapi#590) (#1762)
+
+### Bug Fixes
+
+* Align `LegalHoldPolicyAssignedItem` with API (box/box-openapi[#1554](https://github.com/box/box-java-sdk/issues/1554)) (box/box-openapi[#590](https://github.com/box/box-java-sdk/issues/590)) ([#1762](https://github.com/box/box-java-sdk/issues/1762)) ([8f82b46](https://github.com/box/box-java-sdk/commit/8f82b46afe978342fb93af6ad31006342a1f5b5a))
+* Correct search content type 'tags' to match API (box/box-openapi[#591](https://github.com/box/box-java-sdk/issues/591)) ([#1766](https://github.com/box/box-java-sdk/issues/1766)) ([52b408e](https://github.com/box/box-java-sdk/commit/52b408ec649dd7d36d3ecc6f2506f34afde644bd))
+
+
+### New Features and Enhancements
+
+* Add `reference` to `AI` and `parent_id` to `HubsItems` (box/box-openapi[#588](https://github.com/box/box-java-sdk/issues/588)) ([#1741](https://github.com/box/box-java-sdk/issues/1741)) ([fccccb7](https://github.com/box/box-java-sdk/commit/fccccb766d961e9badd1cde274595e07ba88b7a2))
+* Support Hub Document API (box/box-codegen[#930](https://github.com/box/box-java-sdk/issues/930)) ([#1767](https://github.com/box/box-java-sdk/issues/1767)) ([8b2ef9f](https://github.com/box/box-java-sdk/commit/8b2ef9f003b76f88ea0481a0539efad38ae63a3b))
+
 ## [10.6.0](https://github.com/box/box-java-sdk/compare/v10.5.0...v10.6.0) (2026-03-18)
 
 
