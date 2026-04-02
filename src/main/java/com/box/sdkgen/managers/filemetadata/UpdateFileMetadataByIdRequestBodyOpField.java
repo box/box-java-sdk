@@ -2,6 +2,7 @@ package com.box.sdkgen.managers.filemetadata;
 
 import com.box.sdkgen.serialization.json.EnumWrapper;
 import com.box.sdkgen.serialization.json.Valuable;
+import com.fasterxml.jackson.annotation.JsonValue;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.DeserializationContext;
@@ -25,6 +26,7 @@ public enum UpdateFileMetadataByIdRequestBodyOpField implements Valuable {
     this.value = value;
   }
 
+  @JsonValue
   public String getValue() {
     return value;
   }

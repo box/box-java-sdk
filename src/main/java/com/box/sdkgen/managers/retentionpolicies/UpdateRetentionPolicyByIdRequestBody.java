@@ -54,7 +54,7 @@ public class UpdateRetentionPolicyByIdRequestBody extends SerializableObject {
    * `policy_type` of `indefinite`, the `retention_length` will also be `indefinite`.
    */
   @JsonProperty("retention_length")
-  protected String retentionLength;
+  protected UpdateRetentionPolicyByIdRequestBodyRetentionLengthField retentionLength;
 
   /**
    * Used to retire a retention policy.
@@ -118,7 +118,7 @@ public class UpdateRetentionPolicyByIdRequestBody extends SerializableObject {
     return retentionType;
   }
 
-  public String getRetentionLength() {
+  public UpdateRetentionPolicyByIdRequestBodyRetentionLengthField getRetentionLength() {
     return retentionLength;
   }
 
@@ -223,7 +223,7 @@ public class UpdateRetentionPolicyByIdRequestBody extends SerializableObject {
 
     protected String retentionType;
 
-    protected String retentionLength;
+    protected UpdateRetentionPolicyByIdRequestBodyRetentionLengthField retentionLength;
 
     protected String status;
 
@@ -257,6 +257,19 @@ public class UpdateRetentionPolicyByIdRequestBody extends SerializableObject {
     }
 
     public Builder retentionLength(String retentionLength) {
+      this.retentionLength =
+          new UpdateRetentionPolicyByIdRequestBodyRetentionLengthField(retentionLength);
+      return this;
+    }
+
+    public Builder retentionLength(int retentionLength) {
+      this.retentionLength =
+          new UpdateRetentionPolicyByIdRequestBodyRetentionLengthField(retentionLength);
+      return this;
+    }
+
+    public Builder retentionLength(
+        UpdateRetentionPolicyByIdRequestBodyRetentionLengthField retentionLength) {
       this.retentionLength = retentionLength;
       return this;
     }
