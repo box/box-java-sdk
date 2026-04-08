@@ -2,6 +2,7 @@ package com.box.sdkgen.schemas.v2025r0.shieldruleitemv2025r0;
 
 import com.box.sdkgen.serialization.json.EnumWrapper;
 import com.box.sdkgen.serialization.json.Valuable;
+import com.fasterxml.jackson.annotation.JsonValue;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.DeserializationContext;
@@ -24,6 +25,7 @@ public enum ShieldRuleItemV2025R0PriorityField implements Valuable {
     this.value = value;
   }
 
+  @JsonValue
   public String getValue() {
     return value;
   }
