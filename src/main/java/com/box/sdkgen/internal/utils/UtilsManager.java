@@ -26,6 +26,7 @@ import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeFormatterBuilder;
 import java.time.format.DateTimeParseException;
 import java.time.temporal.ChronoField;
+import java.time.temporal.ChronoUnit;
 import java.util.Arrays;
 import java.util.Base64;
 import java.util.HashMap;
@@ -56,8 +57,6 @@ public class UtilsManager {
           .optionalEnd()
           .appendOffsetId()
           .toFormatter();
-  private static final DateTimeFormatter OFFSET_DATE_TIME_FORMAT_WITH_MILLIS =
-      DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSXXX");
   private static final DateTimeFormatter OFFSET_DATE_FORMAT =
       DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
@@ -395,7 +394,7 @@ public class UtilsManager {
   }
 
   public static String dateTimeToString(OffsetDateTime dateTime) {
-    return dateTime.format(OFFSET_DATE_TIME_FORMAT_WITH_MILLIS);
+    return dateTime.truncatedTo(ChronoUnit.SECONDS).format(OFFSET_DATE_TIME_FORMAT);
   }
 
   public static OffsetDateTime dateFromString(String dateString) {
