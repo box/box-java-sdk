@@ -113,12 +113,10 @@ public class DefaultNetworkClient implements NetworkClient {
         exceptionThrown = e;
         numberOfRetriesOnException++;
         attemptForRetry = numberOfRetriesOnException;
+        fetchResponse = new FetchResponse.Builder(0, new TreeMap<>()).build();
         if (response != null) {
           response.close();
         }
-
-        fetchResponse =
-            new FetchResponse.Builder(0, new TreeMap<>(String.CASE_INSENSITIVE_ORDER)).build();
       }
 
       shouldRetry =

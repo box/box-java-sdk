@@ -215,8 +215,9 @@ browser or web view) in order to obtain an auth code.
 <!-- sample get_authorize -->
 
 ```java
-BoxOAuth oauth = new OAuthConfig("CLIENT_ID", "CLIENT_SECRET");
-String authorizationUrl = auoauthth.getAuthorizeUrl();
+OAuthConfig oauthConfig = new OAuthConfig("CLIENT_ID", "CLIENT_SECRET");
+BoxOAuth oauth = new BoxOAuth(oauthConfig);
+String authorizationUrl = oauth.getAuthorizeUrl();
 ```
 
 After a user logs in and grants your application access to their Box account,
