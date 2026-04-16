@@ -196,6 +196,8 @@ public class BoxNetworkClient implements NetworkClient {
         exceptionThrown = e;
         numberOfRetriesOnException++;
         attemptForRetry = numberOfRetriesOnException;
+        fetchResponse = new FetchResponse.Builder(0, new TreeMap<>()).build();
+        rawResponseBody = null;
         if (response != null) {
           response.close();
         }
