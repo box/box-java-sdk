@@ -5,7 +5,7 @@ All notable changes to this project will be documented in this file. See [standa
 ## [10.8.0](https://github.com/box/box-java-sdk/compare/v10.7.0...v10.8.0) (2026-04-16)
 
 
-### ⚠ BREAKING CHANGES
+### New Features and Enhancements
 
 * **boxsdkgen:** Update `retentionLength` field to accept both string and integer (box/box-codegen#932) (#1776)
 
