@@ -2,6 +2,19 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [6.0.0](https://github.com/box/box-java-sdk/compare/v5.6.0...v6.0.0) (2026-04-16)
+
+
+### ⚠ BREAKING CHANGES
+
+* **boxsdkgen:** Update `retentionLength` field to accept both string and integer (box/box-codegen#932) (#1775)
+
+### Bug Fixes:
+
+* **boxsdkgen:** Fix error propagation in Java (box/box-codegen[#936](https://github.com/box/box-java-sdk/issues/936)) ([#1779](https://github.com/box/box-java-sdk/issues/1779)) ([1725293](https://github.com/box/box-java-sdk/commit/1725293c4d9a84cca56ca683b717a4df2915c7d7))
+* **boxsdkgen:** Fix serialization of `OffsetDateTime` (box/box-codegen[#935](https://github.com/box/box-java-sdk/issues/935)) ([#1777](https://github.com/box/box-java-sdk/issues/1777)) ([2c17bb2](https://github.com/box/box-java-sdk/commit/2c17bb242d05d2b982d03bf6d6dfd7c584523ca9))
+* **boxsdkgen:** Update `retentionLength` field to accept both string and integer (box/box-codegen[#932](https://github.com/box/box-java-sdk/issues/932)) ([#1775](https://github.com/box/box-java-sdk/issues/1775)) ([9eb6755](https://github.com/box/box-java-sdk/commit/9eb675591cfada8b8a37c799aa3303065d65b39c))
+
 ## [5.6.0](https://github.com/box/box-java-sdk/compare/v5.5.0...v5.6.0) (2026-04-01)
 
 
