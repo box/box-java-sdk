@@ -2,6 +2,8 @@ package com.box.sdkgen.schemas.retentionpolicymini;
 
 import com.box.sdkgen.schemas.retentionpolicybase.RetentionPolicyBase;
 import com.box.sdkgen.schemas.retentionpolicybase.RetentionPolicyBaseTypeField;
+import com.box.sdkgen.schemas.retentionpolicymaxextensionlengthresponse.RetentionPolicyMaxExtensionLengthResponse;
+import com.box.sdkgen.schemas.retentionpolicymaxextensionlengthresponse.RetentionPolicyMaxExtensionLengthResponseEnum;
 import com.box.sdkgen.serialization.json.EnumWrapper;
 import com.fasterxml.jackson.annotation.JsonFilter;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -42,6 +44,9 @@ public class RetentionPolicyMini extends RetentionPolicyBase {
   @JsonProperty("disposition_action")
   protected EnumWrapper<RetentionPolicyMiniDispositionActionField> dispositionAction;
 
+  @JsonProperty("max_extension_length")
+  protected RetentionPolicyMaxExtensionLengthResponse maxExtensionLength;
+
   public RetentionPolicyMini(@JsonProperty("id") String id) {
     super(id);
   }
@@ -51,6 +56,7 @@ public class RetentionPolicyMini extends RetentionPolicyBase {
     this.policyName = builder.policyName;
     this.retentionLength = builder.retentionLength;
     this.dispositionAction = builder.dispositionAction;
+    this.maxExtensionLength = builder.maxExtensionLength;
     markNullableFieldsAsSet(builder.getExplicitlySetNullableFields());
   }
 
@@ -66,6 +72,10 @@ public class RetentionPolicyMini extends RetentionPolicyBase {
     return dispositionAction;
   }
 
+  public RetentionPolicyMaxExtensionLengthResponse getMaxExtensionLength() {
+    return maxExtensionLength;
+  }
+
   @Override
   public boolean equals(Object o) {
     if (this == o) {
@@ -79,12 +89,14 @@ public class RetentionPolicyMini extends RetentionPolicyBase {
         && Objects.equals(type, casted.type)
         && Objects.equals(policyName, casted.policyName)
         && Objects.equals(retentionLength, casted.retentionLength)
-        && Objects.equals(dispositionAction, casted.dispositionAction);
+        && Objects.equals(dispositionAction, casted.dispositionAction)
+        && Objects.equals(maxExtensionLength, casted.maxExtensionLength);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(id, type, policyName, retentionLength, dispositionAction);
+    return Objects.hash(
+        id, type, policyName, retentionLength, dispositionAction, maxExtensionLength);
   }
 
   @Override
@@ -109,6 +121,10 @@ public class RetentionPolicyMini extends RetentionPolicyBase {
         + "dispositionAction='"
         + dispositionAction
         + '\''
+        + ", "
+        + "maxExtensionLength='"
+        + maxExtensionLength
+        + '\''
         + "}";
   }
 
@@ -119,6 +135,8 @@ public class RetentionPolicyMini extends RetentionPolicyBase {
     protected String retentionLength;
 
     protected EnumWrapper<RetentionPolicyMiniDispositionActionField> dispositionAction;
+
+    protected RetentionPolicyMaxExtensionLengthResponse maxExtensionLength;
 
     public Builder(String id) {
       super(id);
@@ -143,6 +161,23 @@ public class RetentionPolicyMini extends RetentionPolicyBase {
     public Builder dispositionAction(
         EnumWrapper<RetentionPolicyMiniDispositionActionField> dispositionAction) {
       this.dispositionAction = dispositionAction;
+      return this;
+    }
+
+    public Builder maxExtensionLength(
+        RetentionPolicyMaxExtensionLengthResponseEnum maxExtensionLength) {
+      this.maxExtensionLength = new RetentionPolicyMaxExtensionLengthResponse(maxExtensionLength);
+      return this;
+    }
+
+    public Builder maxExtensionLength(String maxExtensionLength) {
+      this.maxExtensionLength = new RetentionPolicyMaxExtensionLengthResponse(maxExtensionLength);
+      return this;
+    }
+
+    public Builder maxExtensionLength(
+        RetentionPolicyMaxExtensionLengthResponse maxExtensionLength) {
+      this.maxExtensionLength = maxExtensionLength;
       return this;
     }
 

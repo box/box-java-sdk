@@ -2,6 +2,8 @@ package com.box.sdkgen.managers.retentionpolicies;
 
 import com.box.sdkgen.internal.NullableFieldTracker;
 import com.box.sdkgen.internal.SerializableObject;
+import com.box.sdkgen.schemas.retentionpolicymaxextensionlengthrequest.RetentionPolicyMaxExtensionLengthRequest;
+import com.box.sdkgen.schemas.retentionpolicymaxextensionlengthrequest.RetentionPolicyMaxExtensionLengthRequestEnum;
 import com.box.sdkgen.schemas.usermini.UserMini;
 import com.box.sdkgen.serialization.json.EnumWrapper;
 import com.fasterxml.jackson.annotation.JsonFilter;
@@ -89,6 +91,9 @@ public class CreateRetentionPolicyRequestBody extends SerializableObject {
   @JsonProperty("can_owner_extend_retention")
   protected Boolean canOwnerExtendRetention;
 
+  @JsonProperty("max_extension_length")
+  protected RetentionPolicyMaxExtensionLengthRequest maxExtensionLength;
+
   /** Whether owner and co-owners of a file are notified when the policy nears expiration. */
   @JsonProperty("are_owners_notified")
   protected Boolean areOwnersNotified;
@@ -150,6 +155,7 @@ public class CreateRetentionPolicyRequestBody extends SerializableObject {
     this.retentionLength = builder.retentionLength;
     this.retentionType = builder.retentionType;
     this.canOwnerExtendRetention = builder.canOwnerExtendRetention;
+    this.maxExtensionLength = builder.maxExtensionLength;
     this.areOwnersNotified = builder.areOwnersNotified;
     this.customNotificationRecipients = builder.customNotificationRecipients;
     markNullableFieldsAsSet(builder.getExplicitlySetNullableFields());
@@ -184,6 +190,10 @@ public class CreateRetentionPolicyRequestBody extends SerializableObject {
     return canOwnerExtendRetention;
   }
 
+  public RetentionPolicyMaxExtensionLengthRequest getMaxExtensionLength() {
+    return maxExtensionLength;
+  }
+
   public Boolean getAreOwnersNotified() {
     return areOwnersNotified;
   }
@@ -208,6 +218,7 @@ public class CreateRetentionPolicyRequestBody extends SerializableObject {
         && Objects.equals(retentionLength, casted.retentionLength)
         && Objects.equals(retentionType, casted.retentionType)
         && Objects.equals(canOwnerExtendRetention, casted.canOwnerExtendRetention)
+        && Objects.equals(maxExtensionLength, casted.maxExtensionLength)
         && Objects.equals(areOwnersNotified, casted.areOwnersNotified)
         && Objects.equals(customNotificationRecipients, casted.customNotificationRecipients);
   }
@@ -222,6 +233,7 @@ public class CreateRetentionPolicyRequestBody extends SerializableObject {
         retentionLength,
         retentionType,
         canOwnerExtendRetention,
+        maxExtensionLength,
         areOwnersNotified,
         customNotificationRecipients);
   }
@@ -257,6 +269,10 @@ public class CreateRetentionPolicyRequestBody extends SerializableObject {
         + canOwnerExtendRetention
         + '\''
         + ", "
+        + "maxExtensionLength='"
+        + maxExtensionLength
+        + '\''
+        + ", "
         + "areOwnersNotified='"
         + areOwnersNotified
         + '\''
@@ -283,6 +299,8 @@ public class CreateRetentionPolicyRequestBody extends SerializableObject {
     protected EnumWrapper<CreateRetentionPolicyRequestBodyRetentionTypeField> retentionType;
 
     protected Boolean canOwnerExtendRetention;
+
+    protected RetentionPolicyMaxExtensionLengthRequest maxExtensionLength;
 
     protected Boolean areOwnersNotified;
 
@@ -371,6 +389,27 @@ public class CreateRetentionPolicyRequestBody extends SerializableObject {
 
     public Builder canOwnerExtendRetention(Boolean canOwnerExtendRetention) {
       this.canOwnerExtendRetention = canOwnerExtendRetention;
+      return this;
+    }
+
+    public Builder maxExtensionLength(
+        RetentionPolicyMaxExtensionLengthRequestEnum maxExtensionLength) {
+      this.maxExtensionLength = new RetentionPolicyMaxExtensionLengthRequest(maxExtensionLength);
+      return this;
+    }
+
+    public Builder maxExtensionLength(String maxExtensionLength) {
+      this.maxExtensionLength = new RetentionPolicyMaxExtensionLengthRequest(maxExtensionLength);
+      return this;
+    }
+
+    public Builder maxExtensionLength(int maxExtensionLength) {
+      this.maxExtensionLength = new RetentionPolicyMaxExtensionLengthRequest(maxExtensionLength);
+      return this;
+    }
+
+    public Builder maxExtensionLength(RetentionPolicyMaxExtensionLengthRequest maxExtensionLength) {
+      this.maxExtensionLength = maxExtensionLength;
       return this;
     }
 
