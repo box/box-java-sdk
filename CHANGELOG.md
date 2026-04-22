@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [10.9.0](https://github.com/box/box-java-sdk/compare/v10.8.0...v10.9.0) (2026-04-22)
+
+
+### New Features and Enhancements
+
+* Add `max_extension_length` field to Retention Policies (box/box-openapi[#593](https://github.com/box/box-java-sdk/issues/593)) ([#1799](https://github.com/box/box-java-sdk/issues/1799)) ([fc91872](https://github.com/box/box-java-sdk/commit/fc91872b19e16d919fd641e1a6b461639ebbdc54))
+
 ## [10.8.0](https://github.com/box/box-java-sdk/compare/v10.7.0...v10.8.0) (2026-04-16)
 
 
