@@ -2,6 +2,8 @@ package com.box.sdkgen.schemas.retentionpolicy;
 
 import com.box.sdkgen.internal.utils.DateTimeUtils;
 import com.box.sdkgen.schemas.retentionpolicybase.RetentionPolicyBaseTypeField;
+import com.box.sdkgen.schemas.retentionpolicymaxextensionlengthresponse.RetentionPolicyMaxExtensionLengthResponse;
+import com.box.sdkgen.schemas.retentionpolicymaxextensionlengthresponse.RetentionPolicyMaxExtensionLengthResponseEnum;
 import com.box.sdkgen.schemas.retentionpolicymini.RetentionPolicyMini;
 import com.box.sdkgen.schemas.retentionpolicymini.RetentionPolicyMiniDispositionActionField;
 import com.box.sdkgen.schemas.usermini.UserMini;
@@ -181,6 +183,7 @@ public class RetentionPolicy extends RetentionPolicyMini {
         && Objects.equals(policyName, casted.policyName)
         && Objects.equals(retentionLength, casted.retentionLength)
         && Objects.equals(dispositionAction, casted.dispositionAction)
+        && Objects.equals(maxExtensionLength, casted.maxExtensionLength)
         && Objects.equals(description, casted.description)
         && Objects.equals(policyType, casted.policyType)
         && Objects.equals(retentionType, casted.retentionType)
@@ -202,6 +205,7 @@ public class RetentionPolicy extends RetentionPolicyMini {
         policyName,
         retentionLength,
         dispositionAction,
+        maxExtensionLength,
         description,
         policyType,
         retentionType,
@@ -236,6 +240,10 @@ public class RetentionPolicy extends RetentionPolicyMini {
         + ", "
         + "dispositionAction='"
         + dispositionAction
+        + '\''
+        + ", "
+        + "maxExtensionLength='"
+        + maxExtensionLength
         + '\''
         + ", "
         + "description='"
@@ -417,6 +425,26 @@ public class RetentionPolicy extends RetentionPolicyMini {
     public Builder dispositionAction(
         EnumWrapper<RetentionPolicyMiniDispositionActionField> dispositionAction) {
       this.dispositionAction = dispositionAction;
+      return this;
+    }
+
+    @Override
+    public Builder maxExtensionLength(
+        RetentionPolicyMaxExtensionLengthResponseEnum maxExtensionLength) {
+      this.maxExtensionLength = new RetentionPolicyMaxExtensionLengthResponse(maxExtensionLength);
+      return this;
+    }
+
+    @Override
+    public Builder maxExtensionLength(String maxExtensionLength) {
+      this.maxExtensionLength = new RetentionPolicyMaxExtensionLengthResponse(maxExtensionLength);
+      return this;
+    }
+
+    @Override
+    public Builder maxExtensionLength(
+        RetentionPolicyMaxExtensionLengthResponse maxExtensionLength) {
+      this.maxExtensionLength = maxExtensionLength;
       return this;
     }
 

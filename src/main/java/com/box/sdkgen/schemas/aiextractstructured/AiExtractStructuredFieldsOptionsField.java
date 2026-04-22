@@ -8,7 +8,7 @@ import java.util.Objects;
 @JsonFilter("nullablePropertyFilter")
 public class AiExtractStructuredFieldsOptionsField extends SerializableObject {
 
-  /** A unique identifier for the field. */
+  /** A unique identifier for the option. */
   protected final String key;
 
   public AiExtractStructuredFieldsOptionsField(@JsonProperty("key") String key) {

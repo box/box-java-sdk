@@ -23,14 +23,14 @@ public class AiExtractStructuredFieldsField extends SerializableObject {
   protected String prompt;
 
   /**
-   * The type of the field. It include but is not limited to string, float, date, enum, and
-   * multiSelect.
+   * The type of the field. It can include but is not limited to `string`, `float`, `date`, `enum`,
+   * and `multiSelect`.
    */
   protected String type;
 
   /**
-   * A list of options for this field. This is most often used in combination with the enum and
-   * multiSelect field types.
+   * A list of options for this field. This is most often used in combination with the `enum` and
+   * `multiSelect` field types.
    */
   protected List<AiExtractStructuredFieldsOptionsField> options;
 
