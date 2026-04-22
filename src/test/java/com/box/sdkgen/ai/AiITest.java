@@ -308,8 +308,8 @@ public class AiITest {
                                         new AiExtractStructuredFieldsOptionsField("guitar"),
                                         new AiExtractStructuredFieldsOptionsField("books")))
                                 .build()))
-                    .includeConfidenceScore(true)
                     .aiAgent(aiExtractStructuredAgentBasicTextConfig)
+                    .includeConfidenceScore(true)
                     .build());
     assert !(response.getConfidenceScore() == null);
     assert convertToString(response.getAnswer().get("hobby"))
