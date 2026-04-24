@@ -7,7 +7,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializerProvider;
 import java.io.IOException;
 
-public class OneOfTwo<T0, T1> extends SerializableObject {
+public class OneOfTwo<T0, T1> extends SerializableObject implements OneOfUnion {
   protected static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
   protected T0 value0;
   protected T1 value1;
@@ -15,6 +15,11 @@ public class OneOfTwo<T0, T1> extends SerializableObject {
   public OneOfTwo(T0 value0, T1 value1) {
     this.value0 = value0;
     this.value1 = value1;
+  }
+
+  @Override
+  public boolean hasAnyNonNullValue() {
+    return value0 != null || value1 != null;
   }
 
   public static class OneOfTwoSerializer extends JsonSerializer<OneOfTwo<?, ?>> {
@@ -29,10 +34,13 @@ public class OneOfTwo<T0, T1> extends SerializableObject {
         throws IOException {
       if (itemEntryField.value0 != null) {
         JsonManager.WRITER.writeValue(gen, itemEntryField.value0);
+        return;
       }
       if (itemEntryField.value1 != null) {
         JsonManager.WRITER.writeValue(gen, itemEntryField.value1);
+        return;
       }
+      gen.writeNull();
     }
   }
 }
