@@ -199,6 +199,7 @@ How timeout handling works:
 
 - `connectionTimeoutMs` controls how long the client waits to establish a connection.
 - `readTimeoutMs` controls how long the client waits for data while reading the response.
+- If timeout config is not provided, the SDK uses the OkHttp default timeout settings: connect timeout of 10 seconds, read timeout of 10 seconds, and write timeout of 10 seconds.
 - Each timeout is optional. If a value is not provided, the client keeps its existing timeout for that setting.
 - To disable both timeouts, set `connectionTimeoutMs(0L)` and `readTimeoutMs(0L)`.
 - You can also disable only one timeout by setting just one of them to `0L` and leaving the other configured.
