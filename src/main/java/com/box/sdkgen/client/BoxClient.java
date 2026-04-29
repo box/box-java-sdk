@@ -8,6 +8,7 @@ import com.box.sdkgen.managers.aistudio.AiStudioManager;
 import com.box.sdkgen.managers.appitemassociations.AppItemAssociationsManager;
 import com.box.sdkgen.managers.archives.ArchivesManager;
 import com.box.sdkgen.managers.authorization.AuthorizationManager;
+import com.box.sdkgen.managers.automateworkflows.AutomateWorkflowsManager;
 import com.box.sdkgen.managers.avatars.AvatarsManager;
 import com.box.sdkgen.managers.chunkeduploads.ChunkedUploadsManager;
 import com.box.sdkgen.managers.classifications.ClassificationsManager;
@@ -269,6 +270,8 @@ public class BoxClient {
   public final ArchivesManager archives;
 
   public final ExternalUsersManager externalUsers;
+
+  public final AutomateWorkflowsManager automateWorkflows;
 
   public BoxClient(Authentication auth) {
     this.auth = auth;
@@ -615,6 +618,11 @@ public class BoxClient {
         new ArchivesManager.Builder().auth(this.auth).networkSession(this.networkSession).build();
     this.externalUsers =
         new ExternalUsersManager.Builder()
+            .auth(this.auth)
+            .networkSession(this.networkSession)
+            .build();
+    this.automateWorkflows =
+        new AutomateWorkflowsManager.Builder()
             .auth(this.auth)
             .networkSession(this.networkSession)
             .build();
@@ -965,6 +973,11 @@ public class BoxClient {
         new ArchivesManager.Builder().auth(this.auth).networkSession(this.networkSession).build();
     this.externalUsers =
         new ExternalUsersManager.Builder()
+            .auth(this.auth)
+            .networkSession(this.networkSession)
+            .build();
+    this.automateWorkflows =
+        new AutomateWorkflowsManager.Builder()
             .auth(this.auth)
             .networkSession(this.networkSession)
             .build();
@@ -1421,6 +1434,10 @@ public class BoxClient {
 
   public ExternalUsersManager getExternalUsers() {
     return externalUsers;
+  }
+
+  public AutomateWorkflowsManager getAutomateWorkflows() {
+    return automateWorkflows;
   }
 
   public static class Builder {
