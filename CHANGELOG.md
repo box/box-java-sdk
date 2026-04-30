@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [10.10.0](https://github.com/box/box-java-sdk/compare/v10.9.0...v10.10.0) (2026-04-30)
+
+
+### Bug Fixes
+
+* Fix java `oneOf` serialization (box/box-codegen[#942](https://github.com/box/box-java-sdk/issues/942)) ([#1806](https://github.com/box/box-java-sdk/issues/1806)) ([dcd5df6](https://github.com/box/box-java-sdk/commit/dcd5df60f3545983209e58c50ab1648a6d5fb167))
+
+
+### New Features and Enhancements
+
+* Automate Public API (box/box-openapi[#594](https://github.com/box/box-java-sdk/issues/594)) ([#1820](https://github.com/box/box-java-sdk/issues/1820)) ([41e859a](https://github.com/box/box-java-sdk/commit/41e859acf78844b0a2e28d3d14ca721b88e2a108))
+
 ## [10.9.0](https://github.com/box/box-java-sdk/compare/v10.8.0...v10.9.0) (2026-04-22)
 
 
