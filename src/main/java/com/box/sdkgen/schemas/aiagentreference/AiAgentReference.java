@@ -4,6 +4,7 @@ import com.box.sdkgen.internal.NullableFieldTracker;
 import com.box.sdkgen.internal.SerializableObject;
 import com.box.sdkgen.serialization.json.EnumWrapper;
 import com.fasterxml.jackson.annotation.JsonFilter;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import java.util.Objects;
@@ -23,10 +24,11 @@ public class AiAgentReference extends SerializableObject {
    * Extract
    * Agent](https://developer.box.com/guides/box-ai/ai-tutorials/extract-metadata-structured#enhanced-extract-agent)).
    */
-  protected String id;
+  protected final String id;
 
-  public AiAgentReference() {
+  public AiAgentReference(@JsonProperty("id") String id) {
     super();
+    this.id = id;
     this.type = new EnumWrapper<AiAgentReferenceTypeField>(AiAgentReferenceTypeField.AI_AGENT_ID);
   }
 
@@ -71,10 +73,11 @@ public class AiAgentReference extends SerializableObject {
 
     protected EnumWrapper<AiAgentReferenceTypeField> type;
 
-    protected String id;
+    protected final String id;
 
-    public Builder() {
+    public Builder(String id) {
       super();
+      this.id = id;
     }
 
     public Builder type(AiAgentReferenceTypeField type) {
@@ -84,11 +87,6 @@ public class AiAgentReference extends SerializableObject {
 
     public Builder type(EnumWrapper<AiAgentReferenceTypeField> type) {
       this.type = type;
-      return this;
-    }
-
-    public Builder id(String id) {
-      this.id = id;
       return this;
     }
 
