@@ -17,8 +17,8 @@ public class CreateMetadataTemplateRequestBodyFieldsField extends SerializableOb
    * The type of field. The basic fields are a `string` field for text, a `float` field for numbers,
    * and a `date` field to present the user with a date-time picker.
    *
-   * <p>Additionally, metadata templates support an `enum` field for a basic list of items, and `
-   * multiSelect` field for a similar list of items where the user can select more than one value.
+   * <p>Additionally, metadata templates support an `enum` field for a basic list of items, and
+   * `multiSelect` field for a similar list of items where the user can select more than one value.
    *
    * <p>Metadata taxonomies are also supported as a `taxonomy` field type with a specific set of
    * additional properties, which describe its structure.
@@ -64,6 +64,12 @@ public class CreateMetadataTemplateRequestBodyFieldsField extends SerializableOb
   protected String taxonomyKey;
 
   /**
+   * The unique ID of the metadata taxonomy to use for this taxonomy field. This property is
+   * required when the field `type` is set to `taxonomy`.
+   */
+  protected String taxonomyId;
+
+  /**
    * The namespace of the metadata taxonomy to use for this taxonomy field. This property is
    * required when the field `type` is set to `taxonomy`.
    */
@@ -102,6 +108,7 @@ public class CreateMetadataTemplateRequestBodyFieldsField extends SerializableOb
     this.hidden = builder.hidden;
     this.options = builder.options;
     this.taxonomyKey = builder.taxonomyKey;
+    this.taxonomyId = builder.taxonomyId;
     this.namespace = builder.namespace;
     this.optionsRules = builder.optionsRules;
     markNullableFieldsAsSet(builder.getExplicitlySetNullableFields());
@@ -135,6 +142,10 @@ public class CreateMetadataTemplateRequestBodyFieldsField extends SerializableOb
     return taxonomyKey;
   }
 
+  public String getTaxonomyId() {
+    return taxonomyId;
+  }
+
   public String getNamespace() {
     return namespace;
   }
@@ -160,6 +171,7 @@ public class CreateMetadataTemplateRequestBodyFieldsField extends SerializableOb
         && Objects.equals(hidden, casted.hidden)
         && Objects.equals(options, casted.options)
         && Objects.equals(taxonomyKey, casted.taxonomyKey)
+        && Objects.equals(taxonomyId, casted.taxonomyId)
         && Objects.equals(namespace, casted.namespace)
         && Objects.equals(optionsRules, casted.optionsRules);
   }
@@ -167,7 +179,16 @@ public class CreateMetadataTemplateRequestBodyFieldsField extends SerializableOb
   @Override
   public int hashCode() {
     return Objects.hash(
-        type, key, displayName, description, hidden, options, taxonomyKey, namespace, optionsRules);
+        type,
+        key,
+        displayName,
+        description,
+        hidden,
+        options,
+        taxonomyKey,
+        taxonomyId,
+        namespace,
+        optionsRules);
   }
 
   @Override
@@ -201,6 +222,10 @@ public class CreateMetadataTemplateRequestBodyFieldsField extends SerializableOb
         + taxonomyKey
         + '\''
         + ", "
+        + "taxonomyId='"
+        + taxonomyId
+        + '\''
+        + ", "
         + "namespace='"
         + namespace
         + '\''
@@ -226,6 +251,8 @@ public class CreateMetadataTemplateRequestBodyFieldsField extends SerializableOb
     protected List<CreateMetadataTemplateRequestBodyFieldsOptionsField> options;
 
     protected String taxonomyKey;
+
+    protected String taxonomyId;
 
     protected String namespace;
 
@@ -266,6 +293,11 @@ public class CreateMetadataTemplateRequestBodyFieldsField extends SerializableOb
 
     public Builder taxonomyKey(String taxonomyKey) {
       this.taxonomyKey = taxonomyKey;
+      return this;
+    }
+
+    public Builder taxonomyId(String taxonomyId) {
+      this.taxonomyId = taxonomyId;
       return this;
     }
 
