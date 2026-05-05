@@ -17,8 +17,11 @@ public class MetadataTemplateFieldsField extends SerializableObject {
    * The type of field. The basic fields are a `string` field for text, a `float` field for numbers,
    * and a `date` fields to present the user with a date-time picker.
    *
-   * <p>Additionally, metadata templates support an `enum` field for a basic list of items, and `
-   * multiSelect` field for a similar list of items where the user can select more than one value.
+   * <p>Additionally, metadata templates support an `enum` field for a basic list of items, and
+   * `multiSelect` field for a similar list of items where the user can select more than one value.
+   *
+   * <p>Metadata taxonomies are also supported as a `taxonomy` field type with a specific set of
+   * additional properties, which describe its structure.
    *
    * <p>**Note**: The `integer` value is deprecated. It is still present in the response, but cannot
    * be used in the POST request.
@@ -53,6 +56,30 @@ public class MetadataTemplateFieldsField extends SerializableObject {
    */
   protected List<MetadataTemplateFieldsOptionsField> options;
 
+  /**
+   * The unique key of the metadata taxonomy to use for this taxonomy field. This property is
+   * required when the field `type` is set to `taxonomy`.
+   */
+  protected String taxonomyKey;
+
+  /**
+   * The unique ID of the metadata taxonomy to use for this taxonomy field. This property is
+   * required when the field `type` is set to `taxonomy`.
+   */
+  protected String taxonomyId;
+
+  /**
+   * The namespace of the metadata taxonomy to use for this taxonomy field. This property is
+   * required when the field `type` is set to `taxonomy`.
+   */
+  protected String namespace;
+
+  /**
+   * An object defining additional rules for the options of the taxonomy field. This property is
+   * required when the field `type` is set to `taxonomy`.
+   */
+  protected MetadataTemplateFieldsOptionsRulesField optionsRules;
+
   /** The unique ID of the metadata template field. */
   protected String id;
 
@@ -82,6 +109,10 @@ public class MetadataTemplateFieldsField extends SerializableObject {
     this.description = builder.description;
     this.hidden = builder.hidden;
     this.options = builder.options;
+    this.taxonomyKey = builder.taxonomyKey;
+    this.taxonomyId = builder.taxonomyId;
+    this.namespace = builder.namespace;
+    this.optionsRules = builder.optionsRules;
     this.id = builder.id;
     markNullableFieldsAsSet(builder.getExplicitlySetNullableFields());
   }
@@ -110,6 +141,22 @@ public class MetadataTemplateFieldsField extends SerializableObject {
     return options;
   }
 
+  public String getTaxonomyKey() {
+    return taxonomyKey;
+  }
+
+  public String getTaxonomyId() {
+    return taxonomyId;
+  }
+
+  public String getNamespace() {
+    return namespace;
+  }
+
+  public MetadataTemplateFieldsOptionsRulesField getOptionsRules() {
+    return optionsRules;
+  }
+
   public String getId() {
     return id;
   }
@@ -129,12 +176,27 @@ public class MetadataTemplateFieldsField extends SerializableObject {
         && Objects.equals(description, casted.description)
         && Objects.equals(hidden, casted.hidden)
         && Objects.equals(options, casted.options)
+        && Objects.equals(taxonomyKey, casted.taxonomyKey)
+        && Objects.equals(taxonomyId, casted.taxonomyId)
+        && Objects.equals(namespace, casted.namespace)
+        && Objects.equals(optionsRules, casted.optionsRules)
         && Objects.equals(id, casted.id);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(type, key, displayName, description, hidden, options, id);
+    return Objects.hash(
+        type,
+        key,
+        displayName,
+        description,
+        hidden,
+        options,
+        taxonomyKey,
+        taxonomyId,
+        namespace,
+        optionsRules,
+        id);
   }
 
   @Override
@@ -164,6 +226,22 @@ public class MetadataTemplateFieldsField extends SerializableObject {
         + options
         + '\''
         + ", "
+        + "taxonomyKey='"
+        + taxonomyKey
+        + '\''
+        + ", "
+        + "taxonomyId='"
+        + taxonomyId
+        + '\''
+        + ", "
+        + "namespace='"
+        + namespace
+        + '\''
+        + ", "
+        + "optionsRules='"
+        + optionsRules
+        + '\''
+        + ", "
         + "id='"
         + id
         + '\''
@@ -183,6 +261,14 @@ public class MetadataTemplateFieldsField extends SerializableObject {
     protected Boolean hidden;
 
     protected List<MetadataTemplateFieldsOptionsField> options;
+
+    protected String taxonomyKey;
+
+    protected String taxonomyId;
+
+    protected String namespace;
+
+    protected MetadataTemplateFieldsOptionsRulesField optionsRules;
 
     protected String id;
 
@@ -213,6 +299,26 @@ public class MetadataTemplateFieldsField extends SerializableObject {
 
     public Builder options(List<MetadataTemplateFieldsOptionsField> options) {
       this.options = options;
+      return this;
+    }
+
+    public Builder taxonomyKey(String taxonomyKey) {
+      this.taxonomyKey = taxonomyKey;
+      return this;
+    }
+
+    public Builder taxonomyId(String taxonomyId) {
+      this.taxonomyId = taxonomyId;
+      return this;
+    }
+
+    public Builder namespace(String namespace) {
+      this.namespace = namespace;
+      return this;
+    }
+
+    public Builder optionsRules(MetadataTemplateFieldsOptionsRulesField optionsRules) {
+      this.optionsRules = optionsRules;
       return this;
     }
 
