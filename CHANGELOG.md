@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [10.11.0](https://github.com/box/box-java-sdk/compare/v10.10.0...v10.11.0) (2026-05-06)
+
+
+### ⚠ BREAKING CHANGES
+
+* Mark `id` field of `AIAgentReference` required (box/box-openapi[#1629](https://github.com/box/box-java-sdk/issues/1629)) (box/box-openapi[#595](https://github.com/box/box-java-sdk/issues/595)) ([#1827](https://github.com/box/box-java-sdk/issues/1827)) ([1c59b46](https://github.com/box/box-java-sdk/commit/1c59b46e90ef5d33ff85eff45125cefe00e5e950))
+
+### Bug Fixes
+
+* Fix metadata template schema (box/box-openapi[#596](https://github.com/box/box-java-sdk/issues/596)) ([#1828](https://github.com/box/box-java-sdk/issues/1828)) ([193718a](https://github.com/box/box-java-sdk/commit/193718a5eb07e0816f7fc23daad3ebbe5cba993b))
+* Mark `id` field of `AIAgentReference` required (box/box-openapi[#1629](https://github.com/box/box-java-sdk/issues/1629)) (box/box-openapi[#595](https://github.com/box/box-java-sdk/issues/595)) ([#1827](https://github.com/box/box-java-sdk/issues/1827)) ([1c59b46](https://github.com/box/box-java-sdk/commit/1c59b46e90ef5d33ff85eff45125cefe00e5e950))
+
 ## [10.10.0](https://github.com/box/box-java-sdk/compare/v10.9.0...v10.10.0) (2026-04-30)
 
 
