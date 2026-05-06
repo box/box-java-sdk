@@ -7,7 +7,7 @@ All notable changes to this project will be documented in this file. See [standa
 
 ### ⚠ BREAKING CHANGES
 
-* **boxsdkgen:** Mark `id` field of `AIAgentReference` required (box/box-openapi#1629) (box/box-openapi#595) (#1826)
+* **boxsdkgen:** Mark `id` field of `AIAgentReference` required (box/box-openapi[#1629](https://github.com/box/box-java-sdk/issues/1629)) (box/box-openapi[#595](https://github.com/box/box-java-sdk/issues/595)) ([#1826](https://github.com/box/box-java-sdk/issues/1826)) ([7109d88](https://github.com/box/box-java-sdk/commit/7109d8810b8ca916d50cf00a5ac024d9d28f9f31))
 
 ### Bug Fixes:
 
