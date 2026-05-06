@@ -181,6 +181,8 @@ public class MetadataTaxonomiesITest {
     assert getCountryNode.getDisplayName().equals("Poland UPDATED");
     assert getCountryNode.getId().equals(countryNode.getId());
     String metadataTemplateKey = String.join("", "templateKey", getUuid());
+    String fieldDisplayName = "testTaxonomy123";
+    String fieldKey = "testTaxonomy321";
     MetadataTemplate metadataTemplate =
         client
             .getMetadataTemplates()
@@ -191,8 +193,8 @@ public class MetadataTaxonomiesITest {
                         Arrays.asList(
                             new CreateMetadataTemplateRequestBodyFieldsField.Builder(
                                     CreateMetadataTemplateRequestBodyFieldsTypeField.TAXONOMY,
-                                    "taxonomy",
-                                    "taxonomy")
+                                    fieldKey,
+                                    fieldDisplayName)
                                 .taxonomyKey(taxonomyKey)
                                 .namespace(namespace)
                                 .optionsRules(
@@ -206,11 +208,20 @@ public class MetadataTaxonomiesITest {
     assert metadataTemplate.getTemplateKey().equals(metadataTemplateKey);
     assert metadataTemplate.getDisplayName().equals(metadataTemplateKey);
     assert metadataTemplate.getFields().size() == 1;
+    assert metadataTemplate.getFields().get(0).getDisplayName().equals(fieldDisplayName);
+    assert metadataTemplate.getFields().get(0).getHidden() == false;
+    assert !(metadataTemplate.getFields().get(0).getId().equals(""));
+    assert metadataTemplate.getFields().get(0).getKey().equals(fieldKey);
+    assert metadataTemplate.getFields().get(0).getNamespace().equals(namespace);
+    assert metadataTemplate.getFields().get(0).getOptionsRules().getMultiSelect() == true;
+    assert metadataTemplate.getFields().get(0).getOptionsRules().getSelectableLevels().get(0) == 1;
+    assert !(metadataTemplate.getFields().get(0).getTaxonomyId().equals(""));
+    assert metadataTemplate.getFields().get(0).getTaxonomyKey().equals(taxonomyKey);
     assert convertToString(metadataTemplate.getFields().get(0).getType()).equals("taxonomy");
     MetadataTaxonomyNodes options =
         client
             .getMetadataTaxonomies()
-            .getMetadataTemplateFieldOptions(namespace, metadataTemplateKey, "taxonomy");
+            .getMetadataTemplateFieldOptions(namespace, metadataTemplateKey, fieldKey);
     assert options.getEntries().size() == 1;
     client
         .getMetadataTemplates()
