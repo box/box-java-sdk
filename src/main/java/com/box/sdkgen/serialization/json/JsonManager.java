@@ -113,4 +113,35 @@ public class JsonManager {
 
     return new ObjectMapper().valueToTree(sanitizedDictionary);
   }
+
+  public static String sanitizeFormEncodedBodyFromString(
+      String body, Map<String, String> keysToSanitize) {
+    if (body == null) {
+      return null;
+    }
+
+    String[] parameters = body.split("&", -1);
+    StringBuilder sanitizedBodyBuilder = new StringBuilder();
+    for (int i = 0; i < parameters.length; i++) {
+      if (i > 0) {
+        sanitizedBodyBuilder.append("&");
+      }
+      sanitizedBodyBuilder.append(sanitizeFormEncodedParameter(parameters[i], keysToSanitize));
+    }
+    return sanitizedBodyBuilder.toString();
+  }
+
+  private static String sanitizeFormEncodedParameter(
+      String parameter, Map<String, String> keysToSanitize) {
+    int separatorIndex = parameter.indexOf("=");
+    if (separatorIndex < 0) {
+      return parameter;
+    }
+
+    String key = parameter.substring(0, separatorIndex);
+    String value = parameter.substring(separatorIndex + 1);
+    String sanitizedValue =
+        keysToSanitize.containsKey(key.toLowerCase(Locale.ROOT)) ? sanitizedValue() : value;
+    return key + "=" + sanitizedValue;
+  }
 }

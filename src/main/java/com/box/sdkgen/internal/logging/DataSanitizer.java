@@ -3,7 +3,10 @@ package com.box.sdkgen.internal.logging;
 import static com.box.sdkgen.internal.utils.UtilsManager.entryOf;
 import static com.box.sdkgen.internal.utils.UtilsManager.mapOf;
 import static com.box.sdkgen.internal.utils.UtilsManager.sanitizeMap;
+import static com.box.sdkgen.serialization.json.JsonManager.jsonToSerializedData;
+import static com.box.sdkgen.serialization.json.JsonManager.sanitizeFormEncodedBodyFromString;
 import static com.box.sdkgen.serialization.json.JsonManager.sanitizeSerializedData;
+import static com.box.sdkgen.serialization.json.JsonManager.sdToJson;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import java.util.Map;
@@ -35,5 +38,28 @@ public class DataSanitizer {
 
   public JsonNode sanitizeBody(JsonNode body) {
     return sanitizeSerializedData(body, this.keysToSanitize);
+  }
+
+  public String sanitizeFormEncodedBody(String body) {
+    return sanitizeFormEncodedBodyFromString(body, this.keysToSanitize);
+  }
+
+  public String sanitizeStringBody(String body) {
+    return sanitizeStringBody(body, null);
+  }
+
+  public String sanitizeStringBody(String body, String contentType) {
+    if (contentType.equals("application/json")
+        || contentType.equals("application/json-patch+json")) {
+      try {
+        return sdToJson(this.sanitizeBody(jsonToSerializedData(body)));
+      } catch (Exception exception) {
+        return body;
+      }
+    }
+    if (contentType.equals("application/x-www-form-urlencoded")) {
+      return this.sanitizeFormEncodedBody(body);
+    }
+    return body;
   }
 }
