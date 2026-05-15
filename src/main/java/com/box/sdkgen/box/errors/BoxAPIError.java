@@ -27,7 +27,16 @@ public class BoxAPIError extends BoxSDKError {
       FetchResponse fetchResponse,
       String rawResponseBody,
       DataSanitizer dataSanitizer) {
-    RequestInfo requestInfo = RequestInfo.fromRequest(request);
+    return fromAPICall(request, fetchResponse, rawResponseBody, dataSanitizer, null);
+  }
+
+  public static BoxAPIError fromAPICall(
+      Request request,
+      FetchResponse fetchResponse,
+      String rawResponseBody,
+      DataSanitizer dataSanitizer,
+      String contentType) {
+    RequestInfo requestInfo = RequestInfo.fromRequest(request, contentType);
     ResponseInfo responseInfo = ResponseInfo.fromResponse(fetchResponse, rawResponseBody);
 
     String requestId =
