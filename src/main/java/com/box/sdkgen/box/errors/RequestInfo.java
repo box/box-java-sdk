@@ -19,6 +19,8 @@ public class RequestInfo {
 
   public String body;
 
+  public String contentType;
+
   public RequestInfo(
       String method, String url, Map<String, String> queryParams, Map<String, String> headers) {
     this.method = method;
@@ -33,6 +35,7 @@ public class RequestInfo {
     this.queryParams = builder.queryParams;
     this.headers = builder.headers;
     this.body = builder.body;
+    this.contentType = builder.contentType;
   }
 
   public String getMethod() {
@@ -55,6 +58,10 @@ public class RequestInfo {
     return body;
   }
 
+  public String getContentType() {
+    return contentType;
+  }
+
   public static class Builder {
 
     protected final String method;
@@ -66,6 +73,8 @@ public class RequestInfo {
     protected final Map<String, String> headers;
 
     protected String body;
+
+    protected String contentType;
 
     public Builder(
         String method, String url, Map<String, String> queryParams, Map<String, String> headers) {
@@ -80,12 +89,21 @@ public class RequestInfo {
       return this;
     }
 
+    public Builder contentType(String contentType) {
+      this.contentType = contentType;
+      return this;
+    }
+
     public RequestInfo build() {
       return new RequestInfo(this);
     }
   }
 
   public static RequestInfo fromRequest(Request request) {
+    return fromRequest(request, null);
+  }
+
+  public static RequestInfo fromRequest(Request request, String contentType) {
     Builder requestInfoBuilder =
         new Builder(
                 request.method(),
@@ -95,7 +113,8 @@ public class RequestInfo {
                         Collectors.toMap(name -> name, name -> request.url().queryParameter(name))),
                 request.headers().toMultimap().entrySet().stream()
                     .collect(Collectors.toMap(Map.Entry::getKey, e -> e.getValue().get(0))))
-            .body(getRequestBodyAsString(request.body()));
+            .body(getRequestBodyAsString(request.body()))
+            .contentType(contentType);
 
     return new RequestInfo(requestInfoBuilder);
   }
@@ -116,6 +135,12 @@ public class RequestInfo {
   String print(DataSanitizer dataSanitizer) {
     Map<String, String> sanitizedHeaders =
         dataSanitizer == null ? headers : dataSanitizer.sanitizeHeaders(headers);
+    String sanitizedBody;
+    if (dataSanitizer == null || body == null) {
+      sanitizedBody = body;
+    } else {
+      sanitizedBody = dataSanitizer.sanitizeStringBody(body, contentType);
+    }
     return "RequestInfo{"
         + "\n\tmethod='"
         + method
@@ -128,7 +153,7 @@ public class RequestInfo {
         + ", \n\theaders="
         + sanitizedHeaders
         + ", \n\tbody='"
-        + body
+        + sanitizedBody
         + '\''
         + '}';
   }

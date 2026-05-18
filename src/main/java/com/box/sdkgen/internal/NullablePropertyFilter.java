@@ -30,8 +30,9 @@ public class NullablePropertyFilter extends SimpleBeanPropertyFilter {
       return;
     }
 
-    // For non-nullable fields, serialize only if the value is not null
-    if (value != null) {
+    boolean isOneOfWithNoNonNullValue =
+        value instanceof OneOfUnion && !((OneOfUnion) value).hasAnyNonNullValue();
+    if (value != null && !isOneOfWithNoNonNullValue) {
       writer.serializeAsField(pojo, jgen, provider);
     }
   }

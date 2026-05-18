@@ -7,7 +7,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializerProvider;
 import java.io.IOException;
 
-public class OneOfNine<T0, T1, T2, T3, T4, T5, T6, T7, T8> extends SerializableObject {
+public class OneOfNine<T0, T1, T2, T3, T4, T5, T6, T7, T8> extends SerializableObject
+    implements OneOfUnion {
   protected static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
   protected T0 value0;
   protected T1 value1;
@@ -40,6 +41,19 @@ public class OneOfNine<T0, T1, T2, T3, T4, T5, T6, T7, T8> extends SerializableO
     this.value8 = value8;
   }
 
+  @Override
+  public boolean hasAnyNonNullValue() {
+    return value0 != null
+        || value1 != null
+        || value2 != null
+        || value3 != null
+        || value4 != null
+        || value5 != null
+        || value6 != null
+        || value7 != null
+        || value8 != null;
+  }
+
   public static class OneOfNineSerializer
       extends JsonSerializer<OneOfNine<?, ?, ?, ?, ?, ?, ?, ?, ?>> {
 
@@ -55,31 +69,41 @@ public class OneOfNine<T0, T1, T2, T3, T4, T5, T6, T7, T8> extends SerializableO
         throws IOException {
       if (itemEntryField.value0 != null) {
         JsonManager.WRITER.writeValue(gen, itemEntryField.value0);
+        return;
       }
       if (itemEntryField.value1 != null) {
         JsonManager.WRITER.writeValue(gen, itemEntryField.value1);
+        return;
       }
       if (itemEntryField.value2 != null) {
         JsonManager.WRITER.writeValue(gen, itemEntryField.value2);
+        return;
       }
       if (itemEntryField.value3 != null) {
         JsonManager.WRITER.writeValue(gen, itemEntryField.value3);
+        return;
       }
       if (itemEntryField.value4 != null) {
         JsonManager.WRITER.writeValue(gen, itemEntryField.value4);
+        return;
       }
       if (itemEntryField.value5 != null) {
         JsonManager.WRITER.writeValue(gen, itemEntryField.value5);
+        return;
       }
       if (itemEntryField.value6 != null) {
         JsonManager.WRITER.writeValue(gen, itemEntryField.value6);
+        return;
       }
       if (itemEntryField.value7 != null) {
         JsonManager.WRITER.writeValue(gen, itemEntryField.value7);
+        return;
       }
       if (itemEntryField.value8 != null) {
         JsonManager.WRITER.writeValue(gen, itemEntryField.value8);
+        return;
       }
+      gen.writeNull();
     }
   }
 }

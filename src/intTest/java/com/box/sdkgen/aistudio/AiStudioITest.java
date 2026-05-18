@@ -87,7 +87,7 @@ public class AiStudioITest {
                             new AiItemAsk.Builder(fileToAsk.getId(), AiItemAskTypeField.FILE)
                                 .content("The Sun rises in the east.")
                                 .build()))
-                    .aiAgent(new AiAgentReference.Builder().id(createdAgent.getId()).build())
+                    .aiAgent(new AiAgentReference(createdAgent.getId()))
                     .build());
     assert response.getAnswer().contains("east");
     assert response.getCompletionReason().equals("done");

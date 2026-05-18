@@ -255,6 +255,7 @@ public class BoxNetworkClient implements NetworkClient {
           fetchResponse,
           rawResponseBody,
           exceptionThrown,
+          fetchOptions.getContentType(),
           networkSession.getDataSanitizer());
     }
   }
@@ -367,12 +368,14 @@ public class BoxNetworkClient implements NetworkClient {
       FetchResponse fetchResponse,
       String rawResponseBody,
       Exception exceptionThrown,
+      String contentType,
       DataSanitizer dataSanitizer) {
     if (fetchResponse.getStatus() == 0 && exceptionThrown != null) {
       throw new BoxSDKError(exceptionThrown.getMessage(), exceptionThrown);
     }
     try {
-      throw BoxAPIError.fromAPICall(request, fetchResponse, rawResponseBody, dataSanitizer);
+      throw BoxAPIError.fromAPICall(
+          request, fetchResponse, rawResponseBody, dataSanitizer, contentType);
     } finally {
       try {
         if (fetchResponse.getContent() != null) {

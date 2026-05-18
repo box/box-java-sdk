@@ -2,6 +2,30 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [5.10.0](https://github.com/box/box-java-sdk/compare/v5.9.0...v5.10.0) (2026-05-06)
+
+
+### ⚠ BREAKING CHANGES
+
+* **boxsdkgen:** Mark `id` field of `AIAgentReference` required (box/box-openapi[#1629](https://github.com/box/box-java-sdk/issues/1629)) (box/box-openapi[#595](https://github.com/box/box-java-sdk/issues/595)) ([#1826](https://github.com/box/box-java-sdk/issues/1826)) ([7109d88](https://github.com/box/box-java-sdk/commit/7109d8810b8ca916d50cf00a5ac024d9d28f9f31))
+
+### Bug Fixes:
+
+* **boxsdkgen:** Fix metadata template schema (box/box-openapi[#596](https://github.com/box/box-java-sdk/issues/596)) ([#1829](https://github.com/box/box-java-sdk/issues/1829)) ([9b51193](https://github.com/box/box-java-sdk/commit/9b511934e70e93beeb0b5c5d4c66d4aba43077c0))
+* **boxsdkgen:** Mark `id` field of `AIAgentReference` required (box/box-openapi[#1629](https://github.com/box/box-java-sdk/issues/1629)) (box/box-openapi[#595](https://github.com/box/box-java-sdk/issues/595)) ([#1826](https://github.com/box/box-java-sdk/issues/1826)) ([7109d88](https://github.com/box/box-java-sdk/commit/7109d8810b8ca916d50cf00a5ac024d9d28f9f31))
+
+## [5.9.0](https://github.com/box/box-java-sdk/compare/v5.8.0...v5.9.0) (2026-04-30)
+
+
+### Bug Fixes:
+
+* **boxsdkgen:** Fix java `oneOf` serialization (box/box-codegen[#942](https://github.com/box/box-java-sdk/issues/942)) ([#1805](https://github.com/box/box-java-sdk/issues/1805)) ([cf0d67f](https://github.com/box/box-java-sdk/commit/cf0d67fa25af2ef4b9458362e9e896ce50674e62))
+
+
+### New Features and Enhancements:
+
+* **boxsdkgen:** Automate Public API (box/box-openapi[#594](https://github.com/box/box-java-sdk/issues/594)) ([#1816](https://github.com/box/box-java-sdk/issues/1816)) ([4369d9c](https://github.com/box/box-java-sdk/commit/4369d9c45ca6ff5d3045e7e193335560eb886b6f))
+
 ## [5.8.0](https://github.com/box/box-java-sdk/compare/v5.7.0...v5.8.0) (2026-04-22)
 
 
