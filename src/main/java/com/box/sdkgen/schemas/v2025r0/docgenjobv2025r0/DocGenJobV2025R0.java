@@ -1,5 +1,6 @@
 package com.box.sdkgen.schemas.v2025r0.docgenjobv2025r0;
 
+import com.box.sdkgen.internal.Nullable;
 import com.box.sdkgen.schemas.v2025r0.docgenbatchbasev2025r0.DocGenBatchBaseV2025R0;
 import com.box.sdkgen.schemas.v2025r0.docgenjobbasev2025r0.DocGenJobBaseV2025R0;
 import com.box.sdkgen.schemas.v2025r0.docgenjobbasev2025r0.DocGenJobBaseV2025R0TypeField;
@@ -40,6 +41,9 @@ public class DocGenJobV2025R0 extends DocGenJobBaseV2025R0 {
   @JsonProperty("output_type")
   protected final String outputType;
 
+  /** Errors and warnings that occurred during document generation. */
+  @Nullable protected DocGenJobV2025R0FailuresField failures;
+
   public DocGenJobV2025R0(
       String id,
       DocGenBatchBaseV2025R0 batch,
@@ -79,6 +83,7 @@ public class DocGenJobV2025R0 extends DocGenJobBaseV2025R0 {
     this.outputFileVersion = builder.outputFileVersion;
     this.status = builder.status;
     this.outputType = builder.outputType;
+    this.failures = builder.failures;
     markNullableFieldsAsSet(builder.getExplicitlySetNullableFields());
   }
 
@@ -110,6 +115,10 @@ public class DocGenJobV2025R0 extends DocGenJobBaseV2025R0 {
     return outputType;
   }
 
+  public DocGenJobV2025R0FailuresField getFailures() {
+    return failures;
+  }
+
   @Override
   public boolean equals(Object o) {
     if (this == o) {
@@ -127,7 +136,8 @@ public class DocGenJobV2025R0 extends DocGenJobBaseV2025R0 {
         && Objects.equals(outputFile, casted.outputFile)
         && Objects.equals(outputFileVersion, casted.outputFileVersion)
         && Objects.equals(status, casted.status)
-        && Objects.equals(outputType, casted.outputType);
+        && Objects.equals(outputType, casted.outputType)
+        && Objects.equals(failures, casted.failures);
   }
 
   @Override
@@ -141,7 +151,8 @@ public class DocGenJobV2025R0 extends DocGenJobBaseV2025R0 {
         outputFile,
         outputFileVersion,
         status,
-        outputType);
+        outputType,
+        failures);
   }
 
   @Override
@@ -182,6 +193,10 @@ public class DocGenJobV2025R0 extends DocGenJobBaseV2025R0 {
         + "outputType='"
         + outputType
         + '\''
+        + ", "
+        + "failures='"
+        + failures
+        + '\''
         + "}";
   }
 
@@ -200,6 +215,8 @@ public class DocGenJobV2025R0 extends DocGenJobBaseV2025R0 {
     protected final EnumWrapper<DocGenJobV2025R0StatusField> status;
 
     protected final String outputType;
+
+    protected DocGenJobV2025R0FailuresField failures;
 
     public Builder(
         String id,
@@ -238,6 +255,12 @@ public class DocGenJobV2025R0 extends DocGenJobBaseV2025R0 {
 
     public Builder outputFileVersion(FileVersionBaseV2025R0 outputFileVersion) {
       this.outputFileVersion = outputFileVersion;
+      return this;
+    }
+
+    public Builder failures(DocGenJobV2025R0FailuresField failures) {
+      this.failures = failures;
+      this.markNullableFieldAsSet("failures");
       return this;
     }
 
