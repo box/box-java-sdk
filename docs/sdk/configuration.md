@@ -3,10 +3,13 @@
 - [Proxy configuration](#proxy-configuration)
     - [Custom proxy authenticator](#custom-proxy-authenticator)
         - [Example: NTLM authenticator](#example-ntlm-authenticator) 
-- [Configure retries of calls and timeouts](#configure-retries-of-calls-and-timeouts)
-    - [Maximum retries](#maximum-retries)
+- [Network timeouts](#network-timeouts)
+    - [Default behavior](#default-behavior)
     - [Connection timeout](#connection-timeout)
     - [Read timeout](#read-timeout)
+    - [Complete example](#complete-example)
+- [Configure retries of calls](#configure-retries-of-calls)
+    - [Maximum retries](#maximum-retries)
 - [URLs configuration](#urls-configuration)
     - [Base URL](#base-url)
     - [Base Upload URL](#base-upload-url)
@@ -133,7 +136,78 @@ api.setProxyAuthenticator(new NTLMAuthenticator("some proxy username", "some pro
 [set-basic-proxy-auth]: https://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxAPIConnection.html#setProxyBasicAuthentication-java.lang.String-java.lang.String-
 [set-proxy-authenticator]: https://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxAPIConnection.html#setProxyAuthenticator-okhttp3.Authenticator-
 
-# Configure retries of calls and timeouts
+# Network timeouts
+
+The legacy **`com.box.sdk`** package uses OkHttp for HTTP calls. Connect and read timeouts are controlled through [`BoxAPIConnection`](https://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxAPIConnection.html) and [`BoxGlobalSettings`](https://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxGlobalSettings.html).
+
+## Default behavior
+
+> **Important:** The legacy SDK does **not** apply default connection or read timeouts. Unless you configure them, connection and read timeout values are **`0` milliseconds**, which means the client does not enforce a limit while establishing a connection or while reading the response body.
+
+If your application needs bounded network behavior (recommended for production workloads), you **must** set connect and read timeouts explicitly using the options below.
+
+## Connection timeout
+
+Controls how long the client waits to establish a connection, in milliseconds.
+
+There is **no default** connection timeout until you set one.
+
+**Per connection** — [`BoxAPIConnection#setConnectTimeout`](https://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxAPIConnection.html#setConnectTimeout-int-) rebuilds the internal HTTP client when called:
+
+```java
+BoxAPIConnection api = new BoxAPIConnection("access_token");
+api.setConnectTimeout(30_000); // milliseconds
+```
+
+**All new connections** — [`BoxGlobalSettings#setConnectTimeout`](https://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxGlobalSettings.html#setConnectTimeout-int-) applies to connections created after it is set. Configure globals **before** constructing `BoxAPIConnection`:
+
+```java
+BoxGlobalSettings.setConnectTimeout(30_000);
+BoxAPIConnection api = new BoxAPIConnection("access_token");
+```
+
+## Read timeout
+
+Controls how long the client waits for response data while reading from the connection, in milliseconds.
+
+There is **no default** read timeout until you set one.
+
+**Per connection** — [`BoxAPIConnection#setReadTimeout`](https://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxAPIConnection.html#setReadTimeout-int-):
+
+```java
+BoxAPIConnection api = new BoxAPIConnection("access_token");
+api.setReadTimeout(60_000); // milliseconds
+```
+
+**All new connections** — [`BoxGlobalSettings#setReadTimeout`](https://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxGlobalSettings.html#setReadTimeout-int-):
+
+```java
+BoxGlobalSettings.setReadTimeout(60_000);
+BoxAPIConnection api = new BoxAPIConnection("access_token");
+```
+
+## Complete example
+
+Set both timeouts globally before creating a connection:
+
+```java
+BoxGlobalSettings.setConnectTimeout(30_000);
+BoxGlobalSettings.setReadTimeout(60_000);
+
+BoxAPIConnection api = new BoxAPIConnection("access_token");
+// api uses 30s connect timeout and 60s read timeout
+```
+
+Or set both on a single connection:
+
+```java
+BoxAPIConnection api = new BoxAPIConnection("access_token");
+api.setConnectTimeout(30_000);
+api.setReadTimeout(60_000);
+```
+
+# Configure retries of calls
+
 SDK can retry failed calls when:
  - failed writting request body
  - when recieved HTTP response code:
@@ -156,32 +230,6 @@ api.setMaxRetryAttempts(10);
 ```
 
 default value for retry attempts is `5`.
-
-## Connection timeout
-
-To set up how log (in milliseconds) API waits to establish connection
-use [BoxApiConnection.setConnectTimeout](https://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxAPIConnection.html#setConnectTimeout-int-):
-
-```java
-// You can use any subclass of BoxAPIConnection
-int connectionTimeout = 100; // timeout in milliseconds
-api.setConnectTimeout(connectionTimeout);
-```
-
-default value is `0` which mean API waits forever to establish connection.
-
-## Read timeout
-
-To set up how log (in milliseconds) API waits to read data from connection
-use [BoxApiConnection.setReadTimeout](https://opensource.box.com/box-java-sdk/javadoc/com/box/sdk/BoxAPIConnection.html#setReadTimeout-int-):
-
-```java
-// You can use any subclass of BoxAPIConnection
-int readTimeout = 100; // timeout in milliseconds
-api.setReadTimeout(readTimeout);
-```
-
-default value is `0` which mean API waits forever to read data from connection.
 
 # URLs configuration
 

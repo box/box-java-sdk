@@ -158,6 +158,10 @@ for (BoxItem.Info itemInfo : rootFolder) {
 }
 ```
 
+> **Important:** `The com.box.sdk package` does **not** apply default connection or read timeouts. Unless you configure them, connection and read timeout values are **`0` milliseconds**, which means the client does not enforce a limit while establishing a connection or while reading the response body.
+
+To set connect and read timeouts, follow the instructions in [configuration.md](./docs/sdk/configuration.md#network-timeouts).
+
 # Authentication
 
 Both the `com.box.sdkgen` and `com.box.sdk` packages support multiple authentication methods, including
