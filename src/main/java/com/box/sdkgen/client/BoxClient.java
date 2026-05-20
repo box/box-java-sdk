@@ -16,6 +16,7 @@ import com.box.sdkgen.managers.collaborationallowlistentries.CollaborationAllowl
 import com.box.sdkgen.managers.collaborationallowlistexempttargets.CollaborationAllowlistExemptTargetsManager;
 import com.box.sdkgen.managers.collections.CollectionsManager;
 import com.box.sdkgen.managers.comments.CommentsManager;
+import com.box.sdkgen.managers.convertmarkdowntoboxnote.ConvertMarkdownToBoxNoteManager;
 import com.box.sdkgen.managers.devicepinners.DevicePinnersManager;
 import com.box.sdkgen.managers.docgen.DocgenManager;
 import com.box.sdkgen.managers.docgentemplate.DocgenTemplateManager;
@@ -272,6 +273,8 @@ public class BoxClient {
   public final ExternalUsersManager externalUsers;
 
   public final AutomateWorkflowsManager automateWorkflows;
+
+  public final ConvertMarkdownToBoxNoteManager convertMarkdownToBoxNote;
 
   public BoxClient(Authentication auth) {
     this.auth = auth;
@@ -623,6 +626,11 @@ public class BoxClient {
             .build();
     this.automateWorkflows =
         new AutomateWorkflowsManager.Builder()
+            .auth(this.auth)
+            .networkSession(this.networkSession)
+            .build();
+    this.convertMarkdownToBoxNote =
+        new ConvertMarkdownToBoxNoteManager.Builder()
             .auth(this.auth)
             .networkSession(this.networkSession)
             .build();
@@ -978,6 +986,11 @@ public class BoxClient {
             .build();
     this.automateWorkflows =
         new AutomateWorkflowsManager.Builder()
+            .auth(this.auth)
+            .networkSession(this.networkSession)
+            .build();
+    this.convertMarkdownToBoxNote =
+        new ConvertMarkdownToBoxNoteManager.Builder()
             .auth(this.auth)
             .networkSession(this.networkSession)
             .build();
@@ -1438,6 +1451,10 @@ public class BoxClient {
 
   public AutomateWorkflowsManager getAutomateWorkflows() {
     return automateWorkflows;
+  }
+
+  public ConvertMarkdownToBoxNoteManager getConvertMarkdownToBoxNote() {
+    return convertMarkdownToBoxNote;
   }
 
   public static class Builder {
