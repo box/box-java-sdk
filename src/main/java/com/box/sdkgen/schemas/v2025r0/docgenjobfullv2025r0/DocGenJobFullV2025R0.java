@@ -3,6 +3,7 @@ package com.box.sdkgen.schemas.v2025r0.docgenjobfullv2025r0;
 import com.box.sdkgen.schemas.v2025r0.docgenbatchbasev2025r0.DocGenBatchBaseV2025R0;
 import com.box.sdkgen.schemas.v2025r0.docgenjobbasev2025r0.DocGenJobBaseV2025R0TypeField;
 import com.box.sdkgen.schemas.v2025r0.docgenjobv2025r0.DocGenJobV2025R0;
+import com.box.sdkgen.schemas.v2025r0.docgenjobv2025r0.DocGenJobV2025R0FailuresField;
 import com.box.sdkgen.schemas.v2025r0.docgenjobv2025r0.DocGenJobV2025R0StatusField;
 import com.box.sdkgen.schemas.v2025r0.enterprisereferencev2025r0.EnterpriseReferenceV2025R0;
 import com.box.sdkgen.schemas.v2025r0.filereferencev2025r0.FileReferenceV2025R0;
@@ -104,6 +105,7 @@ public class DocGenJobFullV2025R0 extends DocGenJobV2025R0 {
         && Objects.equals(outputFileVersion, casted.outputFileVersion)
         && Objects.equals(status, casted.status)
         && Objects.equals(outputType, casted.outputType)
+        && Objects.equals(failures, casted.failures)
         && Objects.equals(createdAt, casted.createdAt)
         && Objects.equals(createdBy, casted.createdBy)
         && Objects.equals(enterprise, casted.enterprise)
@@ -122,6 +124,7 @@ public class DocGenJobFullV2025R0 extends DocGenJobV2025R0 {
         outputFileVersion,
         status,
         outputType,
+        failures,
         createdAt,
         createdBy,
         enterprise,
@@ -165,6 +168,10 @@ public class DocGenJobFullV2025R0 extends DocGenJobV2025R0 {
         + ", "
         + "outputType='"
         + outputType
+        + '\''
+        + ", "
+        + "failures='"
+        + failures
         + '\''
         + ", "
         + "createdAt='"
@@ -253,6 +260,13 @@ public class DocGenJobFullV2025R0 extends DocGenJobV2025R0 {
     @Override
     public Builder outputFileVersion(FileVersionBaseV2025R0 outputFileVersion) {
       this.outputFileVersion = outputFileVersion;
+      return this;
+    }
+
+    @Override
+    public Builder failures(DocGenJobV2025R0FailuresField failures) {
+      this.failures = failures;
+      this.markNullableFieldAsSet("failures");
       return this;
     }
 
