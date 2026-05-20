@@ -2,6 +2,15 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [10.12.0](https://github.com/box/box-java-sdk/compare/v10.11.0...v10.12.0) (2026-05-20)
+
+
+### New Features and Enhancements
+
+* add failure related fields to `DocGenJob` (box/box-openapi[#598](https://github.com/box/box-java-sdk/issues/598)) ([#1849](https://github.com/box/box-java-sdk/issues/1849)) ([8d72727](https://github.com/box/box-java-sdk/commit/8d72727367cb0b1643db9488d0659264ad7aa45e))
+* Add new event types (box/box-openapi[#597](https://github.com/box/box-java-sdk/issues/597)) ([#1840](https://github.com/box/box-java-sdk/issues/1840)) ([aa439b4](https://github.com/box/box-java-sdk/commit/aa439b475e26f761f7f3aca8e6b5eec55d472838))
+* Sanitize request body in `BoxAPIError` (box/box-codegen[#948](https://github.com/box/box-java-sdk/issues/948)) ([#1844](https://github.com/box/box-java-sdk/issues/1844)) ([39b6fcc](https://github.com/box/box-java-sdk/commit/39b6fccb3067364d9f4eaa3a0f9627eabd526b13))
+
 ## [10.11.0](https://github.com/box/box-java-sdk/compare/v10.10.0...v10.11.0) (2026-05-06)
 
 
