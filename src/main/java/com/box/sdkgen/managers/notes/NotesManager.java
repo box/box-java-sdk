@@ -1,4 +1,4 @@
-package com.box.sdkgen.managers.convertmarkdowntoboxnote;
+package com.box.sdkgen.managers.notes;
 
 import static com.box.sdkgen.internal.utils.UtilsManager.convertToString;
 import static com.box.sdkgen.internal.utils.UtilsManager.entryOf;
@@ -16,17 +16,17 @@ import com.box.sdkgen.schemas.v2026r0.notesconvertresponsev2026r0.NotesConvertRe
 import com.box.sdkgen.serialization.json.JsonManager;
 import java.util.Map;
 
-public class ConvertMarkdownToBoxNoteManager {
+public class NotesManager {
 
   public Authentication auth;
 
   public NetworkSession networkSession;
 
-  public ConvertMarkdownToBoxNoteManager() {
+  public NotesManager() {
     this.networkSession = new NetworkSession();
   }
 
-  protected ConvertMarkdownToBoxNoteManager(Builder builder) {
+  protected NotesManager(Builder builder) {
     this.auth = builder.auth;
     this.networkSession = builder.networkSession;
   }
@@ -102,11 +102,11 @@ public class ConvertMarkdownToBoxNoteManager {
       return this;
     }
 
-    public ConvertMarkdownToBoxNoteManager build() {
+    public NotesManager build() {
       if (this.networkSession == null) {
         this.networkSession = new NetworkSession();
       }
-      return new ConvertMarkdownToBoxNoteManager(this);
+      return new NotesManager(this);
     }
   }
 }

@@ -1,4 +1,4 @@
-package com.box.sdkgen.managers.convertmarkdowntoboxnote;
+package com.box.sdkgen.managers.notes;
 
 import static com.box.sdkgen.internal.utils.UtilsManager.mapOf;
 
