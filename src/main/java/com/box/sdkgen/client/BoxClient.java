@@ -16,7 +16,6 @@ import com.box.sdkgen.managers.collaborationallowlistentries.CollaborationAllowl
 import com.box.sdkgen.managers.collaborationallowlistexempttargets.CollaborationAllowlistExemptTargetsManager;
 import com.box.sdkgen.managers.collections.CollectionsManager;
 import com.box.sdkgen.managers.comments.CommentsManager;
-import com.box.sdkgen.managers.convertmarkdowntoboxnote.ConvertMarkdownToBoxNoteManager;
 import com.box.sdkgen.managers.devicepinners.DevicePinnersManager;
 import com.box.sdkgen.managers.docgen.DocgenManager;
 import com.box.sdkgen.managers.docgentemplate.DocgenTemplateManager;
@@ -52,6 +51,7 @@ import com.box.sdkgen.managers.memberships.MembershipsManager;
 import com.box.sdkgen.managers.metadatacascadepolicies.MetadataCascadePoliciesManager;
 import com.box.sdkgen.managers.metadatataxonomies.MetadataTaxonomiesManager;
 import com.box.sdkgen.managers.metadatatemplates.MetadataTemplatesManager;
+import com.box.sdkgen.managers.notes.NotesManager;
 import com.box.sdkgen.managers.recentitems.RecentItemsManager;
 import com.box.sdkgen.managers.retentionpolicies.RetentionPoliciesManager;
 import com.box.sdkgen.managers.retentionpolicyassignments.RetentionPolicyAssignmentsManager;
@@ -274,7 +274,7 @@ public class BoxClient {
 
   public final AutomateWorkflowsManager automateWorkflows;
 
-  public final ConvertMarkdownToBoxNoteManager convertMarkdownToBoxNote;
+  public final NotesManager notes;
 
   public BoxClient(Authentication auth) {
     this.auth = auth;
@@ -629,11 +629,8 @@ public class BoxClient {
             .auth(this.auth)
             .networkSession(this.networkSession)
             .build();
-    this.convertMarkdownToBoxNote =
-        new ConvertMarkdownToBoxNoteManager.Builder()
-            .auth(this.auth)
-            .networkSession(this.networkSession)
-            .build();
+    this.notes =
+        new NotesManager.Builder().auth(this.auth).networkSession(this.networkSession).build();
   }
 
   protected BoxClient(Builder builder) {
@@ -989,11 +986,8 @@ public class BoxClient {
             .auth(this.auth)
             .networkSession(this.networkSession)
             .build();
-    this.convertMarkdownToBoxNote =
-        new ConvertMarkdownToBoxNoteManager.Builder()
-            .auth(this.auth)
-            .networkSession(this.networkSession)
-            .build();
+    this.notes =
+        new NotesManager.Builder().auth(this.auth).networkSession(this.networkSession).build();
   }
 
   /**
@@ -1453,8 +1447,8 @@ public class BoxClient {
     return automateWorkflows;
   }
 
-  public ConvertMarkdownToBoxNoteManager getConvertMarkdownToBoxNote() {
-    return convertMarkdownToBoxNote;
+  public NotesManager getNotes() {
+    return notes;
   }
 
   public static class Builder {
