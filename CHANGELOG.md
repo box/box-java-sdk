@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [5.12.0](https://github.com/box/box-java-sdk/compare/v5.11.0...v5.12.0) (2026-05-27)
+
+
+### New Features and Enhancements:
+
+* **boxsdkgen:** Convert Note Public API (box/box-openapi[#599](https://github.com/box/box-java-sdk/issues/599)) ([#1853](https://github.com/box/box-java-sdk/issues/1853)) ([e07dff3](https://github.com/box/box-java-sdk/commit/e07dff3cc7d73ca7ea68644e16c5d82ef05689e3))
+
 ## [5.11.0](https://github.com/box/box-java-sdk/compare/v5.10.0...v5.11.0) (2026-05-20)
 
 
