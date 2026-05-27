@@ -14,7 +14,7 @@ See the endpoint docs at
 
 <!-- sample post_notes_convert_v2026.0 -->
 ```
-downscopedClient.getNotes().createNoteConvertV2026R0(new NotesConvertRequestBodyV2026R0.Builder(markdownContent, new FolderReferenceV2026R0("0"), noteName).contentFormat(NotesConvertRequestBodyV2026R0ContentFormatField.MARKDOWN).build())
+client.getNotes().createNoteConvertV2026R0(new NotesConvertRequestBodyV2026R0.Builder(markdownContent, new FolderReferenceV2026R0("0"), noteName).contentFormat(NotesConvertRequestBodyV2026R0ContentFormatField.MARKDOWN).build())
 ```
 
 ### Arguments
