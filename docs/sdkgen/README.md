@@ -26,6 +26,7 @@ the SDK are available by topic:
 * [Collaborationallowlistexempttargets](collaborationallowlistexempttargets.md)
 * [Collections](collections.md)
 * [Comments](comments.md)
+* [Convertmarkdowntoboxnote](convertmarkdowntoboxnote.md)
 * [Devicepinners](devicepinners.md)
 * [Docgen](docgen.md)
 * [Docgentemplate](docgentemplate.md)
