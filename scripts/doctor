@@ -1,0 +1,8 @@
+#!/usr/bin/env bash
+# Doctor launcher. Run from the target repo root.
+#
+# Forwards all args to setup/doctor.py. Read-only; safe to run anytime.
+
+set -euo pipefail
+cd "$(dirname "$0")/.."
+exec python3 -m setup.doctor "$@"

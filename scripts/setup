@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+# Setup wizard launcher. Run from the target repo root.
+#
+# Forwards all args to setup/wizard.py. Adjust PYTHONPATH if your
+# setup package lives somewhere other than the repo root.
+
+set -euo pipefail
+cd "$(dirname "$0")/.."
+exec python3 -m setup.wizard "$@"

@@ -14,3 +14,9 @@ out/
 *.secret
 #Sdkman
 .sdkmanrc
+
+# setup wizard outputs (gitignored to protect credentials)
+box-config.properties
+box-jwt-config.json
+__pycache__/
+*.py[cod]
