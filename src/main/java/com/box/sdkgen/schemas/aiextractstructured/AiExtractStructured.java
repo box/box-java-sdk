@@ -6,6 +6,7 @@ import com.box.sdkgen.schemas.aiagentextractstructured.AiAgentExtractStructured;
 import com.box.sdkgen.schemas.aiagentreference.AiAgentReference;
 import com.box.sdkgen.schemas.aiextractstructuredagent.AiExtractStructuredAgent;
 import com.box.sdkgen.schemas.aiitembase.AiItemBase;
+import com.box.sdkgen.schemas.aitaxonomysource.AiTaxonomySource;
 import com.fasterxml.jackson.annotation.JsonFilter;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.List;
@@ -42,6 +43,14 @@ public class AiExtractStructured extends SerializableObject {
   @JsonProperty("include_reference")
   protected Boolean includeReference;
 
+  /**
+   * The taxonomy sources to be used for the structured extraction. They can either be an existing
+   * file or a taxonomy. For your request to work, `fields` must also be provided.
+   * `taxonomy_sources` is not supported with `metadata_template`.
+   */
+  @JsonProperty("taxonomy_sources")
+  protected List<AiTaxonomySource> taxonomySources;
+
   public AiExtractStructured(@JsonProperty("items") List<AiItemBase> items) {
     super();
     this.items = items;
@@ -55,6 +64,7 @@ public class AiExtractStructured extends SerializableObject {
     this.aiAgent = builder.aiAgent;
     this.includeConfidenceScore = builder.includeConfidenceScore;
     this.includeReference = builder.includeReference;
+    this.taxonomySources = builder.taxonomySources;
     markNullableFieldsAsSet(builder.getExplicitlySetNullableFields());
   }
 
@@ -82,6 +92,10 @@ public class AiExtractStructured extends SerializableObject {
     return includeReference;
   }
 
+  public List<AiTaxonomySource> getTaxonomySources() {
+    return taxonomySources;
+  }
+
   @Override
   public boolean equals(Object o) {
     if (this == o) {
@@ -96,13 +110,20 @@ public class AiExtractStructured extends SerializableObject {
         && Objects.equals(fields, casted.fields)
         && Objects.equals(aiAgent, casted.aiAgent)
         && Objects.equals(includeConfidenceScore, casted.includeConfidenceScore)
-        && Objects.equals(includeReference, casted.includeReference);
+        && Objects.equals(includeReference, casted.includeReference)
+        && Objects.equals(taxonomySources, casted.taxonomySources);
   }
 
   @Override
   public int hashCode() {
     return Objects.hash(
-        items, metadataTemplate, fields, aiAgent, includeConfidenceScore, includeReference);
+        items,
+        metadataTemplate,
+        fields,
+        aiAgent,
+        includeConfidenceScore,
+        includeReference,
+        taxonomySources);
   }
 
   @Override
@@ -131,6 +152,10 @@ public class AiExtractStructured extends SerializableObject {
         + "includeReference='"
         + includeReference
         + '\''
+        + ", "
+        + "taxonomySources='"
+        + taxonomySources
+        + '\''
         + "}";
   }
 
@@ -147,6 +172,8 @@ public class AiExtractStructured extends SerializableObject {
     protected Boolean includeConfidenceScore;
 
     protected Boolean includeReference;
+
+    protected List<AiTaxonomySource> taxonomySources;
 
     public Builder(List<AiItemBase> items) {
       super();
@@ -185,6 +212,11 @@ public class AiExtractStructured extends SerializableObject {
 
     public Builder includeReference(Boolean includeReference) {
       this.includeReference = includeReference;
+      return this;
+    }
+
+    public Builder taxonomySources(List<AiTaxonomySource> taxonomySources) {
+      this.taxonomySources = taxonomySources;
       return this;
     }
 
