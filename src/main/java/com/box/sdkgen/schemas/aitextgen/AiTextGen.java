@@ -25,8 +25,8 @@ public class AiTextGen extends SerializableObject {
    * The items to be processed by the LLM, often files. The array can include **exactly one**
    * element.
    *
-   * <p>**Note**: Box AI handles documents with text representations up to 1MB in size. If the file
-   * size exceeds 1MB, the first 1MB of text representation will be processed.
+   * <p>**Note**: Box AI handles documents with text representations up to 2MB in size. If the file
+   * size exceeds 2MB, the first 2MB of text representation will be processed.
    */
   protected final List<AiTextGenItemsField> items;
 
