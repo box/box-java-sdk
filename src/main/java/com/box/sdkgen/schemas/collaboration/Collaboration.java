@@ -74,8 +74,8 @@ public class Collaboration extends SerializableObject {
   protected Boolean isAccessOnly;
 
   /**
-   * The status of the collaboration invitation. If the status is `pending`, `login` and `name`
-   * return an empty string.
+   * The status of the collaboration invitation. If the status is `pending`, `name` returns an empty
+   * string.
    */
   @JsonDeserialize(using = CollaborationStatusField.CollaborationStatusFieldDeserializer.class)
   @JsonSerialize(using = CollaborationStatusField.CollaborationStatusFieldSerializer.class)
