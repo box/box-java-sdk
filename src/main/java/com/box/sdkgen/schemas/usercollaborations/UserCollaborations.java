@@ -18,8 +18,8 @@ public class UserCollaborations extends UserBase {
   protected String name;
 
   /**
-   * The primary email address of this user. If the collaboration status is `pending`, an empty
-   * string is returned.
+   * The primary email address of this user. If the collaboration status is `pending`, a login value
+   * is returned.
    */
   protected String login;
 
