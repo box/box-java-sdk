@@ -107,6 +107,14 @@ public class SignRequest extends SignRequestBase {
   @Nullable
   protected OffsetDateTime finishedAt;
 
+  /**
+   * When the sign request is in an error state, identifies the specific reason. Null when no error
+   * code applies.
+   */
+  @JsonProperty("error_code")
+  @Nullable
+  protected String errorCode;
+
   /** The email address of the sender of the sign request. */
   @JsonProperty("sender_email")
   @Nullable
@@ -138,6 +146,7 @@ public class SignRequest extends SignRequestBase {
     this.shortId = builder.shortId;
     this.createdAt = builder.createdAt;
     this.finishedAt = builder.finishedAt;
+    this.errorCode = builder.errorCode;
     this.senderEmail = builder.senderEmail;
     this.senderId = builder.senderId;
     markNullableFieldsAsSet(builder.getExplicitlySetNullableFields());
@@ -203,6 +212,10 @@ public class SignRequest extends SignRequestBase {
     return finishedAt;
   }
 
+  public String getErrorCode() {
+    return errorCode;
+  }
+
   public String getSenderEmail() {
     return senderEmail;
   }
@@ -248,6 +261,7 @@ public class SignRequest extends SignRequestBase {
         && Objects.equals(shortId, casted.shortId)
         && Objects.equals(createdAt, casted.createdAt)
         && Objects.equals(finishedAt, casted.finishedAt)
+        && Objects.equals(errorCode, casted.errorCode)
         && Objects.equals(senderEmail, casted.senderEmail)
         && Objects.equals(senderId, casted.senderId);
   }
@@ -283,6 +297,7 @@ public class SignRequest extends SignRequestBase {
         shortId,
         createdAt,
         finishedAt,
+        errorCode,
         senderEmail,
         senderId);
   }
@@ -402,6 +417,10 @@ public class SignRequest extends SignRequestBase {
         + finishedAt
         + '\''
         + ", "
+        + "errorCode='"
+        + errorCode
+        + '\''
+        + ", "
         + "senderEmail='"
         + senderEmail
         + '\''
@@ -443,6 +462,8 @@ public class SignRequest extends SignRequestBase {
     protected OffsetDateTime createdAt;
 
     protected OffsetDateTime finishedAt;
+
+    protected String errorCode;
 
     protected String senderEmail;
 
@@ -535,6 +556,12 @@ public class SignRequest extends SignRequestBase {
     public Builder finishedAt(OffsetDateTime finishedAt) {
       this.finishedAt = finishedAt;
       this.markNullableFieldAsSet("finished_at");
+      return this;
+    }
+
+    public Builder errorCode(String errorCode) {
+      this.errorCode = errorCode;
+      this.markNullableFieldAsSet("error_code");
       return this;
     }
 
