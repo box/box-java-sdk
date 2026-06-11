@@ -33,6 +33,7 @@ import com.box.sdkgen.schemas.aiextractstructured.AiExtractStructuredFieldsField
 import com.box.sdkgen.schemas.aiextractstructured.AiExtractStructuredFieldsOptionsField;
 import com.box.sdkgen.schemas.aiextractstructured.AiExtractStructuredMetadataTemplateField;
 import com.box.sdkgen.schemas.aiextractstructuredresponse.AiExtractStructuredResponse;
+import com.box.sdkgen.schemas.aiextractsubfield.AiExtractSubField;
 import com.box.sdkgen.schemas.aiitemask.AiItemAsk;
 import com.box.sdkgen.schemas.aiitemask.AiItemAskTypeField;
 import com.box.sdkgen.schemas.aiitembase.AiItemBase;
@@ -263,7 +264,7 @@ public class AiITest {
                     stringToByteStream(
                         String.join(
                             "",
-                            "My name is John Doe. I was born in 4th July 1990. I am 34 years old. My hobby is guitar. My UUID is ",
+                            "My name is John Doe. I was born in 4th July 1990. I am 34 years old. My hobby is guitar. I live at 900 Jefferson Ave, Redwood City, CA 94063, US. My work history: Software Engineer at Box from 2020 to 2024. My UUID is ",
                             getUuid()))));
     FileFull file = uploadedFiles.getEntries().get(0);
     delayInSeconds(5);
@@ -307,17 +308,76 @@ public class AiITest {
                                     Arrays.asList(
                                         new AiExtractStructuredFieldsOptionsField("guitar"),
                                         new AiExtractStructuredFieldsOptionsField("books")))
+                                .build(),
+                            new AiExtractStructuredFieldsField.Builder("address")
+                                .description("Person address")
+                                .displayName("Address")
+                                .prompt("Extract the full mailing address.")
+                                .type("struct")
+                                .fields(
+                                    Arrays.asList(
+                                        new AiExtractSubField.Builder("street")
+                                            .displayName("Street")
+                                            .type("string")
+                                            .build(),
+                                        new AiExtractSubField.Builder("city")
+                                            .displayName("City")
+                                            .type("string")
+                                            .build(),
+                                        new AiExtractSubField.Builder("state")
+                                            .displayName("State")
+                                            .type("string")
+                                            .build(),
+                                        new AiExtractSubField.Builder("zip")
+                                            .displayName("Zip")
+                                            .type("string")
+                                            .build(),
+                                        new AiExtractSubField.Builder("country")
+                                            .displayName("Country")
+                                            .type("string")
+                                            .build()))
+                                .build(),
+                            new AiExtractStructuredFieldsField.Builder("work_history")
+                                .description("Person work history")
+                                .displayName("Work history")
+                                .prompt("Extract each job as a row.")
+                                .type("table")
+                                .fields(
+                                    Arrays.asList(
+                                        new AiExtractSubField.Builder("job_title")
+                                            .displayName("Job title")
+                                            .type("string")
+                                            .build(),
+                                        new AiExtractSubField.Builder("company")
+                                            .displayName("Company")
+                                            .type("string")
+                                            .build(),
+                                        new AiExtractSubField.Builder("start_year")
+                                            .displayName("Start year")
+                                            .type("string")
+                                            .build(),
+                                        new AiExtractSubField.Builder("end_year")
+                                            .displayName("End year")
+                                            .type("string")
+                                            .build()))
                                 .build()))
                     .aiAgent(aiExtractStructuredAgentBasicTextConfig)
                     .includeConfidenceScore(true)
+                    .includeReference(true)
                     .build());
     assert !(response.getConfidenceScore() == null);
+    assert !(response.getReference() == null);
+    assert !(response.getAiAgentInfo() == null);
     assert convertToString(response.getAnswer().get("hobby"))
         .equals(convertToString(Arrays.asList("guitar")));
     assert convertToString(response.getAnswer().get("firstName")).equals("John");
     assert convertToString(response.getAnswer().get("lastName")).equals("Doe");
     assert convertToString(response.getAnswer().get("dateOfBirth")).equals("1990-07-04");
     assert convertToString(response.getAnswer().get("age")).equals("34");
+    assert convertToString(response.getAnswer().get("address")).contains("Redwood City");
+    assert convertToString(response.getAnswer().get("address")).contains("CA");
+    assert convertToString(response.getAnswer().get("address")).contains("94063");
+    assert convertToString(response.getAnswer().get("work_history")).contains("Box");
     assert response.getCompletionReason().equals("done");
     client.getFiles().deleteFileById(file.getId());
   }
