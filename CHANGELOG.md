@@ -2,6 +2,15 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [10.14.0](https://github.com/box/box-java-sdk/compare/v10.13.0...v10.14.0) (2026-06-11)
+
+
+### New Features and Enhancements
+
+* Add new event types (box/box-openapi[#1703](https://github.com/box/box-java-sdk/issues/1703)) (box/box-openapi[#605](https://github.com/box/box-java-sdk/issues/605)) ([#1889](https://github.com/box/box-java-sdk/issues/1889)) ([1747b14](https://github.com/box/box-java-sdk/commit/1747b14eac8ae1b4a96e1da2602d9e6894d6b4ee))
+* Add new parameters to ai extract structured method (box/box-openapi[#604](https://github.com/box/box-java-sdk/issues/604)) ([#1888](https://github.com/box/box-java-sdk/issues/1888)) ([09c342f](https://github.com/box/box-java-sdk/commit/09c342f5979f0bdb1a93c822273638aa0e60dbdf))
+* Expose `errorCode` in sign request schemas (box/box-openapi[#601](https://github.com/box/box-java-sdk/issues/601)) ([#1887](https://github.com/box/box-java-sdk/issues/1887)) ([70dc787](https://github.com/box/box-java-sdk/commit/70dc787c16f096070428af8e2caa02be3ba6fcc0))
+
 ## [10.13.0](https://github.com/box/box-java-sdk/compare/v10.12.0...v10.13.0) (2026-06-03)
 
 
