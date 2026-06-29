@@ -69,6 +69,18 @@ public class HubV2025R0 extends HubBaseV2025R0 {
   @JsonProperty("can_public_shared_link_be_created")
   protected Boolean canPublicSharedLinkBeCreated;
 
+  /**
+   * Specifies who is allowed to copy the Box Hub.
+   *
+   * <p>* `all` - Any user with access to the Hub can copy it. * `company` - Only users within the
+   * same enterprise as the Hub can copy it. * `none` - No one can copy the Hub.
+   */
+  @JsonDeserialize(
+      using = HubV2025R0CopyHubAccessField.HubV2025R0CopyHubAccessFieldDeserializer.class)
+  @JsonSerialize(using = HubV2025R0CopyHubAccessField.HubV2025R0CopyHubAccessFieldSerializer.class)
+  @JsonProperty("copy_hub_access")
+  protected EnumWrapper<HubV2025R0CopyHubAccessField> copyHubAccess;
+
   public HubV2025R0(@JsonProperty("id") String id) {
     super(id);
   }
@@ -87,6 +99,7 @@ public class HubV2025R0 extends HubBaseV2025R0 {
     this.canNonOwnersInvite = builder.canNonOwnersInvite;
     this.canSharedLinkBeCreated = builder.canSharedLinkBeCreated;
     this.canPublicSharedLinkBeCreated = builder.canPublicSharedLinkBeCreated;
+    this.copyHubAccess = builder.copyHubAccess;
     markNullableFieldsAsSet(builder.getExplicitlySetNullableFields());
   }
 
@@ -138,6 +151,10 @@ public class HubV2025R0 extends HubBaseV2025R0 {
     return canPublicSharedLinkBeCreated;
   }
 
+  public EnumWrapper<HubV2025R0CopyHubAccessField> getCopyHubAccess() {
+    return copyHubAccess;
+  }
+
   @Override
   public boolean equals(Object o) {
     if (this == o) {
@@ -161,7 +178,8 @@ public class HubV2025R0 extends HubBaseV2025R0 {
             isCollaborationRestrictedToEnterprise, casted.isCollaborationRestrictedToEnterprise)
         && Objects.equals(canNonOwnersInvite, casted.canNonOwnersInvite)
         && Objects.equals(canSharedLinkBeCreated, casted.canSharedLinkBeCreated)
-        && Objects.equals(canPublicSharedLinkBeCreated, casted.canPublicSharedLinkBeCreated);
+        && Objects.equals(canPublicSharedLinkBeCreated, casted.canPublicSharedLinkBeCreated)
+        && Objects.equals(copyHubAccess, casted.copyHubAccess);
   }
 
   @Override
@@ -180,7 +198,8 @@ public class HubV2025R0 extends HubBaseV2025R0 {
         isCollaborationRestrictedToEnterprise,
         canNonOwnersInvite,
         canSharedLinkBeCreated,
-        canPublicSharedLinkBeCreated);
+        canPublicSharedLinkBeCreated,
+        copyHubAccess);
   }
 
   @Override
@@ -241,6 +260,10 @@ public class HubV2025R0 extends HubBaseV2025R0 {
         + "canPublicSharedLinkBeCreated='"
         + canPublicSharedLinkBeCreated
         + '\''
+        + ", "
+        + "copyHubAccess='"
+        + copyHubAccess
+        + '\''
         + "}";
   }
 
@@ -269,6 +292,8 @@ public class HubV2025R0 extends HubBaseV2025R0 {
     protected Boolean canSharedLinkBeCreated;
 
     protected Boolean canPublicSharedLinkBeCreated;
+
+    protected EnumWrapper<HubV2025R0CopyHubAccessField> copyHubAccess;
 
     public Builder(String id) {
       super(id);
@@ -332,6 +357,16 @@ public class HubV2025R0 extends HubBaseV2025R0 {
 
     public Builder canPublicSharedLinkBeCreated(Boolean canPublicSharedLinkBeCreated) {
       this.canPublicSharedLinkBeCreated = canPublicSharedLinkBeCreated;
+      return this;
+    }
+
+    public Builder copyHubAccess(HubV2025R0CopyHubAccessField copyHubAccess) {
+      this.copyHubAccess = new EnumWrapper<HubV2025R0CopyHubAccessField>(copyHubAccess);
+      return this;
+    }
+
+    public Builder copyHubAccess(EnumWrapper<HubV2025R0CopyHubAccessField> copyHubAccess) {
+      this.copyHubAccess = copyHubAccess;
       return this;
     }
 

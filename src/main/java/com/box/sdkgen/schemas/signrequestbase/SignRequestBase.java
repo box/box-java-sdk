@@ -107,6 +107,14 @@ public class SignRequestBase extends SerializableObject {
   @Nullable
   protected String externalSystemName;
 
+  /**
+   * The flow type of the sign request. Values can include `standard` or `cfr11`. When not specified
+   * during creation, a default is chosen based on admin settings.
+   */
+  @JsonProperty("request_flow")
+  @Nullable
+  protected String requestFlow;
+
   public SignRequestBase() {
     super();
   }
@@ -126,6 +134,7 @@ public class SignRequestBase extends SerializableObject {
     this.externalId = builder.externalId;
     this.templateId = builder.templateId;
     this.externalSystemName = builder.externalSystemName;
+    this.requestFlow = builder.requestFlow;
     markNullableFieldsAsSet(builder.getExplicitlySetNullableFields());
   }
 
@@ -181,6 +190,10 @@ public class SignRequestBase extends SerializableObject {
     return externalSystemName;
   }
 
+  public String getRequestFlow() {
+    return requestFlow;
+  }
+
   @Override
   public boolean equals(Object o) {
     if (this == o) {
@@ -202,7 +215,8 @@ public class SignRequestBase extends SerializableObject {
         && Objects.equals(daysValid, casted.daysValid)
         && Objects.equals(externalId, casted.externalId)
         && Objects.equals(templateId, casted.templateId)
-        && Objects.equals(externalSystemName, casted.externalSystemName);
+        && Objects.equals(externalSystemName, casted.externalSystemName)
+        && Objects.equals(requestFlow, casted.requestFlow);
   }
 
   @Override
@@ -220,7 +234,8 @@ public class SignRequestBase extends SerializableObject {
         daysValid,
         externalId,
         templateId,
-        externalSystemName);
+        externalSystemName,
+        requestFlow);
   }
 
   @Override
@@ -277,6 +292,10 @@ public class SignRequestBase extends SerializableObject {
         + "externalSystemName='"
         + externalSystemName
         + '\''
+        + ", "
+        + "requestFlow='"
+        + requestFlow
+        + '\''
         + "}";
   }
 
@@ -307,6 +326,8 @@ public class SignRequestBase extends SerializableObject {
     protected String templateId;
 
     protected String externalSystemName;
+
+    protected String requestFlow;
 
     public Builder isDocumentPreparationNeeded(Boolean isDocumentPreparationNeeded) {
       this.isDocumentPreparationNeeded = isDocumentPreparationNeeded;
@@ -378,6 +399,12 @@ public class SignRequestBase extends SerializableObject {
     public Builder externalSystemName(String externalSystemName) {
       this.externalSystemName = externalSystemName;
       this.markNullableFieldAsSet("external_system_name");
+      return this;
+    }
+
+    public Builder requestFlow(String requestFlow) {
+      this.requestFlow = requestFlow;
+      this.markNullableFieldAsSet("request_flow");
       return this;
     }
 
