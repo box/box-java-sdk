@@ -39,7 +39,11 @@ public class AiAsk extends SerializableObject {
    */
   protected final String prompt;
 
-  /** The items to be processed by the LLM, often files. */
+  /**
+   * The items to be processed by the LLM, often files. To search across and ask questions about the
+   * contents of a Box Hub, pass a single item with `type` set to `hubs`. See the item `type`
+   * property for details.
+   */
   protected final List<AiItemAsk> items;
 
   /**

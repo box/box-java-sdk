@@ -1,5 +1,6 @@
 package com.box.sdkgen.schemas.signrequestsignerinput;
 
+import com.box.sdkgen.internal.Nullable;
 import com.box.sdkgen.schemas.signrequestprefilltag.SignRequestPrefillTag;
 import com.box.sdkgen.schemas.signrequestsignerinputcustomvalidation.SignRequestSignerInputCustomValidation;
 import com.box.sdkgen.schemas.signrequestsignerinputdateasiavalidation.SignRequestSignerInputDateAsiaValidation;
@@ -58,6 +59,21 @@ public class SignRequestSignerInput extends SignRequestPrefillTag {
    */
   protected SignRequestSignerInputValidation validation;
 
+  /**
+   * The reason for the signer's input, applicable to signature or initial content types in a
+   * `cfr11` request flow. The value is `null` when not applicable.
+   */
+  @Nullable protected String reason;
+
+  /**
+   * Indicates whether the signer's input has been validated through re-authentication. Applicable
+   * only for signature or initial content types in a `cfr11` request flow. The value is `null` for
+   * standard request flows or non-applicable input types.
+   */
+  @JsonProperty("is_validated")
+  @Nullable
+  protected Boolean isValidated;
+
   public SignRequestSignerInput(@JsonProperty("page_index") long pageIndex) {
     super();
     this.pageIndex = pageIndex;
@@ -70,6 +86,8 @@ public class SignRequestSignerInput extends SignRequestPrefillTag {
     this.pageIndex = builder.pageIndex;
     this.readOnly = builder.readOnly;
     this.validation = builder.validation;
+    this.reason = builder.reason;
+    this.isValidated = builder.isValidated;
     markNullableFieldsAsSet(builder.getExplicitlySetNullableFields());
   }
 
@@ -93,6 +111,14 @@ public class SignRequestSignerInput extends SignRequestPrefillTag {
     return validation;
   }
 
+  public String getReason() {
+    return reason;
+  }
+
+  public Boolean getIsValidated() {
+    return isValidated;
+  }
+
   @Override
   public boolean equals(Object o) {
     if (this == o) {
@@ -110,7 +136,9 @@ public class SignRequestSignerInput extends SignRequestPrefillTag {
         && Objects.equals(contentType, casted.contentType)
         && Objects.equals(pageIndex, casted.pageIndex)
         && Objects.equals(readOnly, casted.readOnly)
-        && Objects.equals(validation, casted.validation);
+        && Objects.equals(validation, casted.validation)
+        && Objects.equals(reason, casted.reason)
+        && Objects.equals(isValidated, casted.isValidated);
   }
 
   @Override
@@ -124,7 +152,9 @@ public class SignRequestSignerInput extends SignRequestPrefillTag {
         contentType,
         pageIndex,
         readOnly,
-        validation);
+        validation,
+        reason,
+        isValidated);
   }
 
   @Override
@@ -165,6 +195,14 @@ public class SignRequestSignerInput extends SignRequestPrefillTag {
         + "validation='"
         + validation
         + '\''
+        + ", "
+        + "reason='"
+        + reason
+        + '\''
+        + ", "
+        + "isValidated='"
+        + isValidated
+        + '\''
         + "}";
   }
 
@@ -179,6 +217,10 @@ public class SignRequestSignerInput extends SignRequestPrefillTag {
     protected Boolean readOnly;
 
     protected SignRequestSignerInputValidation validation;
+
+    protected String reason;
+
+    protected Boolean isValidated;
 
     public Builder(long pageIndex) {
       super();
@@ -267,6 +309,18 @@ public class SignRequestSignerInput extends SignRequestPrefillTag {
 
     public Builder validation(SignRequestSignerInputValidation validation) {
       this.validation = validation;
+      return this;
+    }
+
+    public Builder reason(String reason) {
+      this.reason = reason;
+      this.markNullableFieldAsSet("reason");
+      return this;
+    }
+
+    public Builder isValidated(Boolean isValidated) {
+      this.isValidated = isValidated;
+      this.markNullableFieldAsSet("is_validated");
       return this;
     }
 

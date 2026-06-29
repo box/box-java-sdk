@@ -108,6 +108,7 @@ public class SignRequestCreateRequest extends SignRequestBase {
         && Objects.equals(externalId, casted.externalId)
         && Objects.equals(templateId, casted.templateId)
         && Objects.equals(externalSystemName, casted.externalSystemName)
+        && Objects.equals(requestFlow, casted.requestFlow)
         && Objects.equals(sourceFiles, casted.sourceFiles)
         && Objects.equals(signatureColor, casted.signatureColor)
         && Objects.equals(signers, casted.signers)
@@ -130,6 +131,7 @@ public class SignRequestCreateRequest extends SignRequestBase {
         externalId,
         templateId,
         externalSystemName,
+        requestFlow,
         sourceFiles,
         signatureColor,
         signers,
@@ -189,6 +191,10 @@ public class SignRequestCreateRequest extends SignRequestBase {
         + ", "
         + "externalSystemName='"
         + externalSystemName
+        + '\''
+        + ", "
+        + "requestFlow='"
+        + requestFlow
         + '\''
         + ", "
         + "sourceFiles='"
@@ -332,6 +338,13 @@ public class SignRequestCreateRequest extends SignRequestBase {
     public Builder externalSystemName(String externalSystemName) {
       this.externalSystemName = externalSystemName;
       this.markNullableFieldAsSet("external_system_name");
+      return this;
+    }
+
+    @Override
+    public Builder requestFlow(String requestFlow) {
+      this.requestFlow = requestFlow;
+      this.markNullableFieldAsSet("request_flow");
       return this;
     }
 
