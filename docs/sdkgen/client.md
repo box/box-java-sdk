@@ -183,10 +183,13 @@ BoxClient clientWithInterceptor = client.withInterceptors(interceptors);
 
 In order to configure timeout for API calls, calling the `client.withTimeouts(config)` method creates a new client with timeout settings, leaving the original client unmodified.
 
+All timeout values are in milliseconds.
+
 ```java
 TimeoutConfig timeoutConfig = new TimeoutConfig.Builder()
-    .connectionTimeoutMs(10000L)
+    .connectionTimeoutMs(5000L)
     .readTimeoutMs(30000L)
+    .requestTimeoutMs(60000L)
     .build();
 BoxClient newClient = client.withTimeouts(timeoutConfig);
 ```
