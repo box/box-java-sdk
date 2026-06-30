@@ -130,6 +130,14 @@ public class SignTemplate extends SerializableObject {
   @Nullable
   protected SignTemplateCustomBrandingField customBranding;
 
+  /**
+   * The sign flow of sign requests created from the template. Values can include `standard` or
+   * `cfr11`.
+   */
+  @JsonProperty("request_flow")
+  @Nullable
+  protected String requestFlow;
+
   public SignTemplate() {
     super();
   }
@@ -153,6 +161,7 @@ public class SignTemplate extends SerializableObject {
     this.additionalInfo = builder.additionalInfo;
     this.readySignLink = builder.readySignLink;
     this.customBranding = builder.customBranding;
+    this.requestFlow = builder.requestFlow;
     markNullableFieldsAsSet(builder.getExplicitlySetNullableFields());
   }
 
@@ -224,6 +233,10 @@ public class SignTemplate extends SerializableObject {
     return customBranding;
   }
 
+  public String getRequestFlow() {
+    return requestFlow;
+  }
+
   @Override
   public boolean equals(Object o) {
     if (this == o) {
@@ -249,7 +262,8 @@ public class SignTemplate extends SerializableObject {
         && Objects.equals(signers, casted.signers)
         && Objects.equals(additionalInfo, casted.additionalInfo)
         && Objects.equals(readySignLink, casted.readySignLink)
-        && Objects.equals(customBranding, casted.customBranding);
+        && Objects.equals(customBranding, casted.customBranding)
+        && Objects.equals(requestFlow, casted.requestFlow);
   }
 
   @Override
@@ -271,7 +285,8 @@ public class SignTemplate extends SerializableObject {
         signers,
         additionalInfo,
         readySignLink,
-        customBranding);
+        customBranding,
+        requestFlow);
   }
 
   @Override
@@ -344,6 +359,10 @@ public class SignTemplate extends SerializableObject {
         + "customBranding='"
         + customBranding
         + '\''
+        + ", "
+        + "requestFlow='"
+        + requestFlow
+        + '\''
         + "}";
   }
 
@@ -382,6 +401,8 @@ public class SignTemplate extends SerializableObject {
     protected SignTemplateReadySignLinkField readySignLink;
 
     protected SignTemplateCustomBrandingField customBranding;
+
+    protected String requestFlow;
 
     public Builder type(SignTemplateTypeField type) {
       this.type = new EnumWrapper<SignTemplateTypeField>(type);
@@ -476,6 +497,12 @@ public class SignTemplate extends SerializableObject {
     public Builder customBranding(SignTemplateCustomBrandingField customBranding) {
       this.customBranding = customBranding;
       this.markNullableFieldAsSet("custom_branding");
+      return this;
+    }
+
+    public Builder requestFlow(String requestFlow) {
+      this.requestFlow = requestFlow;
+      this.markNullableFieldAsSet("request_flow");
       return this;
     }
 

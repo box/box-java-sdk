@@ -2,8 +2,11 @@ package com.box.sdkgen.schemas.v2025r0.hubupdaterequestv2025r0;
 
 import com.box.sdkgen.internal.NullableFieldTracker;
 import com.box.sdkgen.internal.SerializableObject;
+import com.box.sdkgen.serialization.json.EnumWrapper;
 import com.fasterxml.jackson.annotation.JsonFilter;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import java.util.Objects;
 
 /** Request schema for updating an existing Box Hub. */
@@ -36,6 +39,23 @@ public class HubUpdateRequestV2025R0 extends SerializableObject {
   @JsonProperty("can_public_shared_link_be_created")
   protected Boolean canPublicSharedLinkBeCreated;
 
+  /**
+   * Specifies who is allowed to copy the Box Hub.
+   *
+   * <p>* `all` - Any user with access to the Hub can copy it. * `company` - Only users within the
+   * same enterprise as the Hub can copy it. * `none` - No one can copy the Hub.
+   */
+  @JsonDeserialize(
+      using =
+          HubUpdateRequestV2025R0CopyHubAccessField
+              .HubUpdateRequestV2025R0CopyHubAccessFieldDeserializer.class)
+  @JsonSerialize(
+      using =
+          HubUpdateRequestV2025R0CopyHubAccessField
+              .HubUpdateRequestV2025R0CopyHubAccessFieldSerializer.class)
+  @JsonProperty("copy_hub_access")
+  protected EnumWrapper<HubUpdateRequestV2025R0CopyHubAccessField> copyHubAccess;
+
   public HubUpdateRequestV2025R0() {
     super();
   }
@@ -49,6 +69,7 @@ public class HubUpdateRequestV2025R0 extends SerializableObject {
     this.canNonOwnersInvite = builder.canNonOwnersInvite;
     this.canSharedLinkBeCreated = builder.canSharedLinkBeCreated;
     this.canPublicSharedLinkBeCreated = builder.canPublicSharedLinkBeCreated;
+    this.copyHubAccess = builder.copyHubAccess;
     markNullableFieldsAsSet(builder.getExplicitlySetNullableFields());
   }
 
@@ -80,6 +101,10 @@ public class HubUpdateRequestV2025R0 extends SerializableObject {
     return canPublicSharedLinkBeCreated;
   }
 
+  public EnumWrapper<HubUpdateRequestV2025R0CopyHubAccessField> getCopyHubAccess() {
+    return copyHubAccess;
+  }
+
   @Override
   public boolean equals(Object o) {
     if (this == o) {
@@ -96,7 +121,8 @@ public class HubUpdateRequestV2025R0 extends SerializableObject {
             isCollaborationRestrictedToEnterprise, casted.isCollaborationRestrictedToEnterprise)
         && Objects.equals(canNonOwnersInvite, casted.canNonOwnersInvite)
         && Objects.equals(canSharedLinkBeCreated, casted.canSharedLinkBeCreated)
-        && Objects.equals(canPublicSharedLinkBeCreated, casted.canPublicSharedLinkBeCreated);
+        && Objects.equals(canPublicSharedLinkBeCreated, casted.canPublicSharedLinkBeCreated)
+        && Objects.equals(copyHubAccess, casted.copyHubAccess);
   }
 
   @Override
@@ -108,7 +134,8 @@ public class HubUpdateRequestV2025R0 extends SerializableObject {
         isCollaborationRestrictedToEnterprise,
         canNonOwnersInvite,
         canSharedLinkBeCreated,
-        canPublicSharedLinkBeCreated);
+        canPublicSharedLinkBeCreated,
+        copyHubAccess);
   }
 
   @Override
@@ -141,6 +168,10 @@ public class HubUpdateRequestV2025R0 extends SerializableObject {
         + "canPublicSharedLinkBeCreated='"
         + canPublicSharedLinkBeCreated
         + '\''
+        + ", "
+        + "copyHubAccess='"
+        + copyHubAccess
+        + '\''
         + "}";
   }
 
@@ -159,6 +190,8 @@ public class HubUpdateRequestV2025R0 extends SerializableObject {
     protected Boolean canSharedLinkBeCreated;
 
     protected Boolean canPublicSharedLinkBeCreated;
+
+    protected EnumWrapper<HubUpdateRequestV2025R0CopyHubAccessField> copyHubAccess;
 
     public Builder title(String title) {
       this.title = title;
@@ -193,6 +226,18 @@ public class HubUpdateRequestV2025R0 extends SerializableObject {
 
     public Builder canPublicSharedLinkBeCreated(Boolean canPublicSharedLinkBeCreated) {
       this.canPublicSharedLinkBeCreated = canPublicSharedLinkBeCreated;
+      return this;
+    }
+
+    public Builder copyHubAccess(HubUpdateRequestV2025R0CopyHubAccessField copyHubAccess) {
+      this.copyHubAccess =
+          new EnumWrapper<HubUpdateRequestV2025R0CopyHubAccessField>(copyHubAccess);
+      return this;
+    }
+
+    public Builder copyHubAccess(
+        EnumWrapper<HubUpdateRequestV2025R0CopyHubAccessField> copyHubAccess) {
+      this.copyHubAccess = copyHubAccess;
       return this;
     }
 
