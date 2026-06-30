@@ -178,13 +178,20 @@ BoxClient client = new BoxClient.Builder(auth)
 ## Timeouts
 
 You can configure network timeouts with `TimeoutConfig` on `NetworkSession`.
-Java SDK supports separate values for connection and read timeouts, both in milliseconds.
+The SDK supports three timeout values, all in milliseconds:
+
+| Parameter             | Description                                                                                              |
+| --------------------- | -------------------------------------------------------------------------------------------------------- |
+| `connectionTimeoutMs` | Maximum time to wait for the TCP connection to be established. Maps to OkHttp `connectTimeout`.          |
+| `readTimeoutMs`       | Maximum idle time between data packets while reading the response. Maps to OkHttp `readTimeout`.         |
+| `requestTimeoutMs`    | Maximum total time for the entire HTTP request (connect + send + receive). Maps to OkHttp `callTimeout`. |
 
 ```java
 BoxDeveloperTokenAuth auth = new BoxDeveloperTokenAuth("DEVELOPER_TOKEN");
 TimeoutConfig timeoutConfig = new TimeoutConfig.Builder()
-    .connectionTimeoutMs(10000L)
+    .connectionTimeoutMs(5000L)
     .readTimeoutMs(30000L)
+    .requestTimeoutMs(60000L)
     .build();
 
 NetworkSession session = new NetworkSession()
@@ -199,10 +206,10 @@ How timeout handling works:
 
 - `connectionTimeoutMs` controls how long the client waits to establish a connection.
 - `readTimeoutMs` controls how long the client waits for data while reading the response.
-- If timeout config is not provided, the SDK uses the OkHttp default timeout settings: connect timeout of 10 seconds, read timeout of 10 seconds, and write timeout of 10 seconds.
+- `requestTimeoutMs` controls the maximum total time for the entire request lifecycle, including connection, sending the request body, and reading the response.
+- If timeout config is not provided, the SDK uses default timeouts: `connectionTimeoutMs: 10000` (10 seconds), `readTimeoutMs: 60000` (60 seconds), and `requestTimeoutMs: 21600000` (6 hours).
 - Each timeout is optional. If a value is not provided, the client keeps its existing timeout for that setting.
-- To disable both timeouts, set `connectionTimeoutMs(0L)` and `readTimeoutMs(0L)`.
-- You can also disable only one timeout by setting just one of them to `0L` and leaving the other configured.
-- Timeout failures are handled as request exceptions, then retry behavior is controlled by the configured retry strategy
+- To disable a timeout, set its value to `0L`.
+- Timeout failures are handled as request exceptions, then retry behavior is controlled by the configured retry strategy.
 - If retries are exhausted after timeout failures, the SDK throws `BoxSDKError` with the underlying timeout exception as the cause.
 - Timeout applies to a single HTTP request attempt to the Box API (not the total time across all retries).
