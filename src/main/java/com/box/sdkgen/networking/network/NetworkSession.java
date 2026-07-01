@@ -38,6 +38,13 @@ public class NetworkSession {
     networkClient = new BoxNetworkClient();
     retryStrategy = new BoxRetryStrategy();
     dataSanitizer = new DataSanitizer();
+    timeoutConfig =
+        new TimeoutConfig.Builder()
+            .connectionTimeoutMs(10000L)
+            .readTimeoutMs(60000L)
+            .requestTimeoutMs(21600000L)
+            .build();
+    networkClient = ((BoxNetworkClient) networkClient).withTimeoutConfig(timeoutConfig);
   }
 
   protected NetworkSession(Builder builder) {

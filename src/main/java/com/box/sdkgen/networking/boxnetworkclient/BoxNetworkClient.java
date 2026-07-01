@@ -120,6 +120,14 @@ public class BoxNetworkClient implements NetworkClient {
       }
       clientBuilder.readTimeout(readTimeoutMs.longValue(), TimeUnit.MILLISECONDS);
     }
+
+    Long requestTimeoutMs = config.getRequestTimeoutMs();
+    if (requestTimeoutMs != null) {
+      if (requestTimeoutMs < 0) {
+        throw new IllegalArgumentException("requestTimeoutMs cannot be negative");
+      }
+      clientBuilder.callTimeout(requestTimeoutMs.longValue(), TimeUnit.MILLISECONDS);
+    }
     return new BoxNetworkClient(clientBuilder.build());
   }
 
