@@ -6,11 +6,14 @@ public class TimeoutConfig {
 
   public Long readTimeoutMs;
 
+  public Long requestTimeoutMs;
+
   public TimeoutConfig() {}
 
   protected TimeoutConfig(Builder builder) {
     this.connectionTimeoutMs = builder.connectionTimeoutMs;
     this.readTimeoutMs = builder.readTimeoutMs;
+    this.requestTimeoutMs = builder.requestTimeoutMs;
   }
 
   public Long getConnectionTimeoutMs() {
@@ -21,11 +24,17 @@ public class TimeoutConfig {
     return readTimeoutMs;
   }
 
+  public Long getRequestTimeoutMs() {
+    return requestTimeoutMs;
+  }
+
   public static class Builder {
 
     protected Long connectionTimeoutMs;
 
     protected Long readTimeoutMs;
+
+    protected Long requestTimeoutMs;
 
     public Builder connectionTimeoutMs(Long connectionTimeoutMs) {
       this.connectionTimeoutMs = connectionTimeoutMs;
@@ -34,6 +43,11 @@ public class TimeoutConfig {
 
     public Builder readTimeoutMs(Long readTimeoutMs) {
       this.readTimeoutMs = readTimeoutMs;
+      return this;
+    }
+
+    public Builder requestTimeoutMs(Long requestTimeoutMs) {
+      this.requestTimeoutMs = requestTimeoutMs;
       return this;
     }
 
