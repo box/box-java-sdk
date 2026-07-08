@@ -29,8 +29,12 @@ jobs:
       - name: Build and test
         run: ./gradlew check --stacktrace
       - name: Generate JaCoCo report
+        if: ${{ matrix.java == '17' && matrix.distribution == 'temurin' }}
         run: ./gradlew jacocoTestReport --stacktrace
       - name: Upload coverage to Coveralls
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: ./gradlew coverallsJacoco --stacktrace
+        if: ${{ matrix.java == '17' && matrix.distribution == 'temurin' }}
+        uses: coverallsapp/github-action@v2
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          file: build/reports/jacoco/test/jacocoTestReport.xml
+          format: jacoco
