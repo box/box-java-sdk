@@ -52,9 +52,9 @@ configurations {
 
 dependencies {
     implementation "com.eclipsesource.minimal-json:minimal-json:0.9.5"
-    implementation "com.fasterxml.jackson.core:jackson-annotations:2.18.2"
-    implementation "com.fasterxml.jackson.core:jackson-core:2.18.2"
-    implementation "com.fasterxml.jackson.core:jackson-databind:2.18.2"
+    implementation "com.fasterxml.jackson.core:jackson-annotations:2.21"
+    implementation "com.fasterxml.jackson.core:jackson-core:2.21.4"
+    implementation "com.fasterxml.jackson.core:jackson-databind:2.21.4"
     implementation "org.bitbucket.b_c:jose4j:0.9.6"
     implementation "org.bouncycastle:bcprov-jdk18on:1.82"
     implementation "org.bouncycastle:bcpkix-jdk18on:1.82"
