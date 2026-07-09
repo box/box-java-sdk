@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [5.14.0](https://github.com/box/box-java-sdk/compare/v5.13.0...v5.14.0) (2026-07-09)
+
+
+### New Features and Enhancements:
+
+* **boxsdkgen:** Add new fields to Hubs (box/box-openapi[#606](https://github.com/box/box-java-sdk/issues/606)) ([#1900](https://github.com/box/box-java-sdk/issues/1900)) ([ce54ef6](https://github.com/box/box-java-sdk/commit/ce54ef6fa9e7c20dbea41d3d2d5cb74a27ce7e32))
+* **boxsdkgen:** Setup common default timeout (box/box-codegen[#965](https://github.com/box/box-java-sdk/issues/965)) ([#1904](https://github.com/box/box-java-sdk/issues/1904)) ([2a2e44e](https://github.com/box/box-java-sdk/commit/2a2e44ee33a3134f1a1de5b34d11b48bb4201e7d))
+
 ## [5.13.0](https://github.com/box/box-java-sdk/compare/v5.12.0...v5.13.0) (2026-06-11)
 
 
