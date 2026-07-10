@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [5.14.1](https://github.com/box/box-java-sdk/compare/v5.14.0...v5.14.1) (2026-07-10)
+
+
+### Bug Fixes:
+
+* Bump `Bouncy Castle` to 1.84 ([#1917](https://github.com/box/box-java-sdk/issues/1917)) ([a88c283](https://github.com/box/box-java-sdk/commit/a88c283c39fc36805962a5981eb2c4e10d34b87e))
+
 ## [5.14.0](https://github.com/box/box-java-sdk/compare/v5.13.0...v5.14.0) (2026-07-09)
 
 
