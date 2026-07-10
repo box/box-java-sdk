@@ -3,6 +3,6 @@ package com.box.sdkgen.networking.version;
 public class Version {
 
   public static String getVersion() {
-    return "10.15.0";
+    return "10.15.1";
   }
 }
