@@ -191,11 +191,11 @@ The Java SDK uses third-party libraries that are required for usage. Their licen
 6. [jose4j v0.9.6](https://mvnrepository.com/artifact/org.bitbucket.b_c/jose4j/0.9.6)
    Maven: `org.bitbucket.b_c:jose4j:0.9.6`
    Licence: [Apache 2.0](https://www.apache.org/licenses/LICENSE-2.0)
-7. [bcprov-jdk18on v1.82](https://mvnrepository.com/artifact/org.bouncycastle/bcprov-jdk18on/1.82)
-   Maven: `org.bouncycastle:bcprov-jdk18on:1.82`
+7. [bcprov-jdk18on v1.84](https://mvnrepository.com/artifact/org.bouncycastle/bcprov-jdk18on/1.84)
+   Maven: `org.bouncycastle:bcprov-jdk18on:1.84`
    Licence: [MIT](https://opensource.org/licenses/MIT)
-8. [bcpkix-jdk18on v1.82](https://mvnrepository.com/artifact/org.bouncycastle/bcpkix-jdk18on/1.82)
-   Maven: `org.bouncycastle:bcpkix-jdk18on:1.82`
+8. [bcpkix-jdk18on v1.84](https://mvnrepository.com/artifact/org.bouncycastle/bcpkix-jdk18on/1.84)
+   Maven: `org.bouncycastle:bcpkix-jdk18on:1.84`
    Licence: [MIT](https://opensource.org/licenses/MIT)
 
 The following libraries are required for running tests:
@@ -210,7 +210,7 @@ The following libraries are required for running tests:
 # FIPS 140-2 Compliance
 
 To generate a Json Web Signature used for retrieving tokens in the JWT authentication method, the Box Java SDK decrypts an encrypted private key.
-For this purpose, Box Java SDK uses libraries (`org.bouncycastle:bcpkix-jdk18on:1.82` and `org.bouncycastle:bcprov-jdk18on:1.82`)
+For this purpose, Box Java SDK uses libraries (`org.bouncycastle:bcpkix-jdk18on:1.84` and `org.bouncycastle:bcprov-jdk18on:1.84`)
 that are NOT compatible with FIPS 140-2 validated cryptographic library (`org.bouncycastle:bc-fips`).
 
 There are two ways of ensuring that decryption operation is FIPS-compiant.
