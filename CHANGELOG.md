@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [10.15.2](https://github.com/box/box-java-sdk/compare/v10.15.1...v10.15.2) (2026-07-15)
+
+
+### Bug Fixes
+
+* Fix broken readme link (box/box-codegen[#974](https://github.com/box/box-java-sdk/issues/974)) ([#1929](https://github.com/box/box-java-sdk/issues/1929)) ([f216711](https://github.com/box/box-java-sdk/commit/f2167116cc3a84782b89984abbbd9d75fc7cfc91))
+
 ### [10.15.1](https://github.com/box/box-java-sdk/compare/v10.15.0...v10.15.1) (2026-07-10)
 
 
