@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [5.14.2](https://github.com/box/box-java-sdk/compare/v5.14.1...v5.14.2) (2026-07-15)
+
+
+### Bug Fixes:
+
+* **boxsdkgen:** Fix broken link in Readme ([#1931](https://github.com/box/box-java-sdk/issues/1931)) ([6a88eaf](https://github.com/box/box-java-sdk/commit/6a88eaf6dce2b6e8ca343f42557a927c5744b75d))
+
 ### [5.14.1](https://github.com/box/box-java-sdk/compare/v5.14.0...v5.14.1) (2026-07-10)
 
 
