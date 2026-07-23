@@ -52,6 +52,7 @@ import com.box.sdkgen.managers.metadatacascadepolicies.MetadataCascadePoliciesMa
 import com.box.sdkgen.managers.metadatataxonomies.MetadataTaxonomiesManager;
 import com.box.sdkgen.managers.metadatatemplates.MetadataTemplatesManager;
 import com.box.sdkgen.managers.notes.NotesManager;
+import com.box.sdkgen.managers.query.QueryManager;
 import com.box.sdkgen.managers.recentitems.RecentItemsManager;
 import com.box.sdkgen.managers.retentionpolicies.RetentionPoliciesManager;
 import com.box.sdkgen.managers.retentionpolicyassignments.RetentionPolicyAssignmentsManager;
@@ -275,6 +276,8 @@ public class BoxClient {
   public final AutomateWorkflowsManager automateWorkflows;
 
   public final NotesManager notes;
+
+  public final QueryManager query;
 
   public BoxClient(Authentication auth) {
     this.auth = auth;
@@ -631,6 +634,8 @@ public class BoxClient {
             .build();
     this.notes =
         new NotesManager.Builder().auth(this.auth).networkSession(this.networkSession).build();
+    this.query =
+        new QueryManager.Builder().auth(this.auth).networkSession(this.networkSession).build();
   }
 
   protected BoxClient(Builder builder) {
@@ -988,6 +993,8 @@ public class BoxClient {
             .build();
     this.notes =
         new NotesManager.Builder().auth(this.auth).networkSession(this.networkSession).build();
+    this.query =
+        new QueryManager.Builder().auth(this.auth).networkSession(this.networkSession).build();
   }
 
   /**
@@ -1449,6 +1456,10 @@ public class BoxClient {
 
   public NotesManager getNotes() {
     return notes;
+  }
+
+  public QueryManager getQuery() {
+    return query;
   }
 
   public static class Builder {

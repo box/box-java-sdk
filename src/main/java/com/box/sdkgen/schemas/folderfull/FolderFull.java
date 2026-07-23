@@ -1,5 +1,6 @@
 package com.box.sdkgen.schemas.folderfull;
 
+import com.box.sdkgen.schemas.collection.Collection;
 import com.box.sdkgen.schemas.folder.Folder;
 import com.box.sdkgen.schemas.folder.FolderFolderUploadEmailField;
 import com.box.sdkgen.schemas.folder.FolderItemStatusField;
@@ -60,10 +61,11 @@ public class FolderFull extends Folder {
   protected Boolean isCollaborationRestrictedToEnterprise;
 
   /**
-   * A list of access levels that are available for this folder.
+   * The shared link access levels the authenticated user is allowed to use when creating or
+   * updating a shared link for this folder.
    *
-   * <p>For some folders, like the root folder, this will always be an empty list as sharing is not
-   * allowed at that level.
+   * <p>The list depends on item policy and user authorization. For some folders, like the root
+   * folder, this is always empty as sharing is not allowed at that level.
    */
   @JsonDeserialize(using = AllowedSharedLinkAccessLevelsDeserializer.class)
   @JsonSerialize(using = AllowedSharedLinkAccessLevelsSerializer.class)
@@ -106,6 +108,14 @@ public class FolderFull extends Folder {
   @JsonProperty("is_associated_with_app_item")
   protected Boolean isAssociatedWithAppItem;
 
+  /**
+   * The collections that this folder belongs to.
+   *
+   * <p>For more information, see the [collections
+   * guide](https://developer.box.com/guides/collections).
+   */
+  protected List<Collection> collections;
+
   public FolderFull(@JsonProperty("id") String id) {
     super(id);
   }
@@ -127,6 +137,7 @@ public class FolderFull extends Folder {
     this.canNonOwnersViewCollaborators = builder.canNonOwnersViewCollaborators;
     this.classification = builder.classification;
     this.isAssociatedWithAppItem = builder.isAssociatedWithAppItem;
+    this.collections = builder.collections;
     markNullableFieldsAsSet(builder.getExplicitlySetNullableFields());
   }
 
@@ -191,6 +202,10 @@ public class FolderFull extends Folder {
     return isAssociatedWithAppItem;
   }
 
+  public List<Collection> getCollections() {
+    return collections;
+  }
+
   @Override
   public boolean equals(Object o) {
     if (this == o) {
@@ -237,7 +252,8 @@ public class FolderFull extends Folder {
         && Objects.equals(isAccessibleViaSharedLink, casted.isAccessibleViaSharedLink)
         && Objects.equals(canNonOwnersViewCollaborators, casted.canNonOwnersViewCollaborators)
         && Objects.equals(classification, casted.classification)
-        && Objects.equals(isAssociatedWithAppItem, casted.isAssociatedWithAppItem);
+        && Objects.equals(isAssociatedWithAppItem, casted.isAssociatedWithAppItem)
+        && Objects.equals(collections, casted.collections);
   }
 
   @Override
@@ -279,7 +295,8 @@ public class FolderFull extends Folder {
         isAccessibleViaSharedLink,
         canNonOwnersViewCollaborators,
         classification,
-        isAssociatedWithAppItem);
+        isAssociatedWithAppItem,
+        collections);
   }
 
   @Override
@@ -432,6 +449,10 @@ public class FolderFull extends Folder {
         + "isAssociatedWithAppItem='"
         + isAssociatedWithAppItem
         + '\''
+        + ", "
+        + "collections='"
+        + collections
+        + '\''
         + "}";
   }
 
@@ -467,6 +488,8 @@ public class FolderFull extends Folder {
     protected FolderFullClassificationField classification;
 
     protected Boolean isAssociatedWithAppItem;
+
+    protected List<Collection> collections;
 
     public Builder(String id) {
       super(id);
@@ -555,6 +578,11 @@ public class FolderFull extends Folder {
 
     public Builder isAssociatedWithAppItem(Boolean isAssociatedWithAppItem) {
       this.isAssociatedWithAppItem = isAssociatedWithAppItem;
+      return this;
+    }
+
+    public Builder collections(List<Collection> collections) {
+      this.collections = collections;
       return this;
     }
 
