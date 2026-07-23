@@ -2,16 +2,28 @@ package com.box.sdkgen.schemas.weblink;
 
 import com.box.sdkgen.internal.Nullable;
 import com.box.sdkgen.internal.utils.DateTimeUtils;
+import com.box.sdkgen.schemas.collection.Collection;
 import com.box.sdkgen.schemas.foldermini.FolderMini;
 import com.box.sdkgen.schemas.usermini.UserMini;
 import com.box.sdkgen.schemas.weblinkbase.WebLinkBaseTypeField;
 import com.box.sdkgen.schemas.weblinkmini.WebLinkMini;
 import com.box.sdkgen.serialization.json.EnumWrapper;
+import com.box.sdkgen.serialization.json.Valuable;
 import com.fasterxml.jackson.annotation.JsonFilter;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.core.JsonGenerator;
+import com.fasterxml.jackson.core.JsonParser;
+import com.fasterxml.jackson.databind.DeserializationContext;
+import com.fasterxml.jackson.databind.JsonDeserializer;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.JsonSerializer;
+import com.fasterxml.jackson.databind.SerializerProvider;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import java.io.IOException;
 import java.time.OffsetDateTime;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 /**
@@ -79,6 +91,27 @@ public class WebLink extends WebLinkMini {
   @JsonProperty("item_status")
   protected EnumWrapper<WebLinkItemStatusField> itemStatus;
 
+  /**
+   * The collections that this web link belongs to.
+   *
+   * <p>For more information, see the [collections
+   * guide](https://developer.box.com/guides/collections).
+   */
+  protected List<Collection> collections;
+
+  /**
+   * The shared link access levels the authenticated user is allowed to use when creating or
+   * updating a shared link for this web link.
+   *
+   * <p>The list depends on item policy and user authorization, so it may be narrower than the
+   * levels available to the owner. An empty array means no access level is available to this user.
+   */
+  @JsonDeserialize(using = AllowedSharedLinkAccessLevelsDeserializer.class)
+  @JsonSerialize(using = AllowedSharedLinkAccessLevelsSerializer.class)
+  @JsonProperty("allowed_shared_link_access_levels")
+  protected List<EnumWrapper<WebLinkAllowedSharedLinkAccessLevelsField>>
+      allowedSharedLinkAccessLevels;
+
   public WebLink(@JsonProperty("id") String id) {
     super(id);
   }
@@ -97,6 +130,8 @@ public class WebLink extends WebLinkMini {
     this.ownedBy = builder.ownedBy;
     this.sharedLink = builder.sharedLink;
     this.itemStatus = builder.itemStatus;
+    this.collections = builder.collections;
+    this.allowedSharedLinkAccessLevels = builder.allowedSharedLinkAccessLevels;
     markNullableFieldsAsSet(builder.getExplicitlySetNullableFields());
   }
 
@@ -148,6 +183,15 @@ public class WebLink extends WebLinkMini {
     return itemStatus;
   }
 
+  public List<Collection> getCollections() {
+    return collections;
+  }
+
+  public List<EnumWrapper<WebLinkAllowedSharedLinkAccessLevelsField>>
+      getAllowedSharedLinkAccessLevels() {
+    return allowedSharedLinkAccessLevels;
+  }
+
   @Override
   public boolean equals(Object o) {
     if (this == o) {
@@ -174,7 +218,9 @@ public class WebLink extends WebLinkMini {
         && Objects.equals(modifiedBy, casted.modifiedBy)
         && Objects.equals(ownedBy, casted.ownedBy)
         && Objects.equals(sharedLink, casted.sharedLink)
-        && Objects.equals(itemStatus, casted.itemStatus);
+        && Objects.equals(itemStatus, casted.itemStatus)
+        && Objects.equals(collections, casted.collections)
+        && Objects.equals(allowedSharedLinkAccessLevels, casted.allowedSharedLinkAccessLevels);
   }
 
   @Override
@@ -197,7 +243,9 @@ public class WebLink extends WebLinkMini {
         modifiedBy,
         ownedBy,
         sharedLink,
-        itemStatus);
+        itemStatus,
+        collections,
+        allowedSharedLinkAccessLevels);
   }
 
   @Override
@@ -274,6 +322,14 @@ public class WebLink extends WebLinkMini {
         + "itemStatus='"
         + itemStatus
         + '\''
+        + ", "
+        + "collections='"
+        + collections
+        + '\''
+        + ", "
+        + "allowedSharedLinkAccessLevels='"
+        + allowedSharedLinkAccessLevels
+        + '\''
         + "}";
   }
 
@@ -302,6 +358,11 @@ public class WebLink extends WebLinkMini {
     protected WebLinkSharedLinkField sharedLink;
 
     protected EnumWrapper<WebLinkItemStatusField> itemStatus;
+
+    protected List<Collection> collections;
+
+    protected List<EnumWrapper<WebLinkAllowedSharedLinkAccessLevelsField>>
+        allowedSharedLinkAccessLevels;
 
     public Builder(String id) {
       super(id);
@@ -374,6 +435,19 @@ public class WebLink extends WebLinkMini {
       return this;
     }
 
+    public Builder collections(List<Collection> collections) {
+      this.collections = collections;
+      return this;
+    }
+
+    public Builder allowedSharedLinkAccessLevels(
+        List<? extends Valuable> allowedSharedLinkAccessLevels) {
+      this.allowedSharedLinkAccessLevels =
+          EnumWrapper.wrapValuableEnumList(
+              allowedSharedLinkAccessLevels, WebLinkAllowedSharedLinkAccessLevelsField.class);
+      return this;
+    }
+
     @Override
     public Builder type(WebLinkBaseTypeField type) {
       this.type = new EnumWrapper<WebLinkBaseTypeField>(type);
@@ -415,6 +489,60 @@ public class WebLink extends WebLinkMini {
         this.type = new EnumWrapper<WebLinkBaseTypeField>(WebLinkBaseTypeField.WEB_LINK);
       }
       return new WebLink(this);
+    }
+  }
+
+  public static class AllowedSharedLinkAccessLevelsDeserializer
+      extends JsonDeserializer<List<EnumWrapper<WebLinkAllowedSharedLinkAccessLevelsField>>> {
+
+    public final JsonDeserializer<EnumWrapper<WebLinkAllowedSharedLinkAccessLevelsField>>
+        elementDeserializer;
+
+    public AllowedSharedLinkAccessLevelsDeserializer() {
+      super();
+      this.elementDeserializer =
+          new WebLinkAllowedSharedLinkAccessLevelsField
+              .WebLinkAllowedSharedLinkAccessLevelsFieldDeserializer();
+    }
+
+    @Override
+    public List<EnumWrapper<WebLinkAllowedSharedLinkAccessLevelsField>> deserialize(
+        JsonParser p, DeserializationContext ctxt) throws IOException {
+      JsonNode node = p.getCodec().readTree(p);
+      List<EnumWrapper<WebLinkAllowedSharedLinkAccessLevelsField>> elements = new ArrayList<>();
+      for (JsonNode item : node) {
+        JsonParser pa = item.traverse(p.getCodec());
+        pa.nextToken();
+        elements.add(elementDeserializer.deserialize(pa, ctxt));
+      }
+      return elements;
+    }
+  }
+
+  public static class AllowedSharedLinkAccessLevelsSerializer
+      extends JsonSerializer<List<EnumWrapper<WebLinkAllowedSharedLinkAccessLevelsField>>> {
+
+    public final JsonSerializer<EnumWrapper<WebLinkAllowedSharedLinkAccessLevelsField>>
+        elementSerializer;
+
+    public AllowedSharedLinkAccessLevelsSerializer() {
+      super();
+      this.elementSerializer =
+          new WebLinkAllowedSharedLinkAccessLevelsField
+              .WebLinkAllowedSharedLinkAccessLevelsFieldSerializer();
+    }
+
+    @Override
+    public void serialize(
+        List<EnumWrapper<WebLinkAllowedSharedLinkAccessLevelsField>> value,
+        JsonGenerator gen,
+        SerializerProvider serializers)
+        throws IOException {
+      gen.writeStartArray();
+      for (EnumWrapper<WebLinkAllowedSharedLinkAccessLevelsField> item : value) {
+        elementSerializer.serialize(item, gen, serializers);
+      }
+      gen.writeEndArray();
     }
   }
 }
