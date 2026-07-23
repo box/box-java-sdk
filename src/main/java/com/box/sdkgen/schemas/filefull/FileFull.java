@@ -2,6 +2,7 @@ package com.box.sdkgen.schemas.filefull;
 
 import com.box.sdkgen.internal.Nullable;
 import com.box.sdkgen.internal.utils.DateTimeUtils;
+import com.box.sdkgen.schemas.collection.Collection;
 import com.box.sdkgen.schemas.file.File;
 import com.box.sdkgen.schemas.file.FileItemStatusField;
 import com.box.sdkgen.schemas.file.FilePathCollectionField;
@@ -125,6 +126,54 @@ public class FileFull extends File {
   @JsonProperty("is_associated_with_app_item")
   protected Boolean isAssociatedWithAppItem;
 
+  /**
+   * The collections that this file belongs to.
+   *
+   * <p>For more information, see the [collections
+   * guide](https://developer.box.com/guides/collections).
+   */
+  protected List<Collection> collections;
+
+  /**
+   * Whether the file's binary content is eligible to be downloaded.
+   *
+   * <p>This is a content-level flag and does not reflect whether the current user is authorized to
+   * download the file. Use `permissions.can_download`, when available, for that.
+   */
+  @JsonProperty("is_download_available")
+  protected Boolean isDownloadAvailable;
+
+  /**
+   * A pre-authorized, expiring URL for directly downloading the file's content. Requires
+   * authentication and is valid only for the current session.
+   *
+   * <p>This field is only returned for files, not folders or web links.
+   */
+  @JsonProperty("download_url")
+  protected String downloadUrl;
+
+  /**
+   * A stable API URL for the file content endpoint, `/2.0/files/{id}/content`. Unlike
+   * `download_url`, authorization is evaluated when the URL is requested with a valid access token.
+   *
+   * <p>This field is only returned for files, not folders or web links.
+   */
+  @JsonProperty("authenticated_download_url")
+  protected String authenticatedDownloadUrl;
+
+  /**
+   * The shared link access levels the authenticated user is allowed to use when creating or
+   * updating a shared link for this file.
+   *
+   * <p>The list depends on item policy and user authorization, so it may be narrower than the
+   * levels available to the owner. An empty array means no access level is available to this user.
+   */
+  @JsonDeserialize(using = AllowedSharedLinkAccessLevelsDeserializer.class)
+  @JsonSerialize(using = AllowedSharedLinkAccessLevelsSerializer.class)
+  @JsonProperty("allowed_shared_link_access_levels")
+  protected List<EnumWrapper<FileFullAllowedSharedLinkAccessLevelsField>>
+      allowedSharedLinkAccessLevels;
+
   public FileFull(@JsonProperty("id") String id) {
     super(id);
   }
@@ -152,6 +201,11 @@ public class FileFull extends File {
     this.dispositionAt = builder.dispositionAt;
     this.sharedLinkPermissionOptions = builder.sharedLinkPermissionOptions;
     this.isAssociatedWithAppItem = builder.isAssociatedWithAppItem;
+    this.collections = builder.collections;
+    this.isDownloadAvailable = builder.isDownloadAvailable;
+    this.downloadUrl = builder.downloadUrl;
+    this.authenticatedDownloadUrl = builder.authenticatedDownloadUrl;
+    this.allowedSharedLinkAccessLevels = builder.allowedSharedLinkAccessLevels;
     markNullableFieldsAsSet(builder.getExplicitlySetNullableFields());
   }
 
@@ -240,6 +294,27 @@ public class FileFull extends File {
     return isAssociatedWithAppItem;
   }
 
+  public List<Collection> getCollections() {
+    return collections;
+  }
+
+  public Boolean getIsDownloadAvailable() {
+    return isDownloadAvailable;
+  }
+
+  public String getDownloadUrl() {
+    return downloadUrl;
+  }
+
+  public String getAuthenticatedDownloadUrl() {
+    return authenticatedDownloadUrl;
+  }
+
+  public List<EnumWrapper<FileFullAllowedSharedLinkAccessLevelsField>>
+      getAllowedSharedLinkAccessLevels() {
+    return allowedSharedLinkAccessLevels;
+  }
+
   @Override
   public boolean equals(Object o) {
     if (this == o) {
@@ -291,7 +366,12 @@ public class FileFull extends File {
         && Objects.equals(uploaderDisplayName, casted.uploaderDisplayName)
         && Objects.equals(dispositionAt, casted.dispositionAt)
         && Objects.equals(sharedLinkPermissionOptions, casted.sharedLinkPermissionOptions)
-        && Objects.equals(isAssociatedWithAppItem, casted.isAssociatedWithAppItem);
+        && Objects.equals(isAssociatedWithAppItem, casted.isAssociatedWithAppItem)
+        && Objects.equals(collections, casted.collections)
+        && Objects.equals(isDownloadAvailable, casted.isDownloadAvailable)
+        && Objects.equals(downloadUrl, casted.downloadUrl)
+        && Objects.equals(authenticatedDownloadUrl, casted.authenticatedDownloadUrl)
+        && Objects.equals(allowedSharedLinkAccessLevels, casted.allowedSharedLinkAccessLevels);
   }
 
   @Override
@@ -339,7 +419,12 @@ public class FileFull extends File {
         uploaderDisplayName,
         dispositionAt,
         sharedLinkPermissionOptions,
-        isAssociatedWithAppItem);
+        isAssociatedWithAppItem,
+        collections,
+        isDownloadAvailable,
+        downloadUrl,
+        authenticatedDownloadUrl,
+        allowedSharedLinkAccessLevels);
   }
 
   @Override
@@ -516,6 +601,26 @@ public class FileFull extends File {
         + "isAssociatedWithAppItem='"
         + isAssociatedWithAppItem
         + '\''
+        + ", "
+        + "collections='"
+        + collections
+        + '\''
+        + ", "
+        + "isDownloadAvailable='"
+        + isDownloadAvailable
+        + '\''
+        + ", "
+        + "downloadUrl='"
+        + downloadUrl
+        + '\''
+        + ", "
+        + "authenticatedDownloadUrl='"
+        + authenticatedDownloadUrl
+        + '\''
+        + ", "
+        + "allowedSharedLinkAccessLevels='"
+        + allowedSharedLinkAccessLevels
+        + '\''
         + "}";
   }
 
@@ -563,6 +668,17 @@ public class FileFull extends File {
         sharedLinkPermissionOptions;
 
     protected Boolean isAssociatedWithAppItem;
+
+    protected List<Collection> collections;
+
+    protected Boolean isDownloadAvailable;
+
+    protected String downloadUrl;
+
+    protected String authenticatedDownloadUrl;
+
+    protected List<EnumWrapper<FileFullAllowedSharedLinkAccessLevelsField>>
+        allowedSharedLinkAccessLevels;
 
     public Builder(String id) {
       super(id);
@@ -679,6 +795,34 @@ public class FileFull extends File {
 
     public Builder isAssociatedWithAppItem(Boolean isAssociatedWithAppItem) {
       this.isAssociatedWithAppItem = isAssociatedWithAppItem;
+      return this;
+    }
+
+    public Builder collections(List<Collection> collections) {
+      this.collections = collections;
+      return this;
+    }
+
+    public Builder isDownloadAvailable(Boolean isDownloadAvailable) {
+      this.isDownloadAvailable = isDownloadAvailable;
+      return this;
+    }
+
+    public Builder downloadUrl(String downloadUrl) {
+      this.downloadUrl = downloadUrl;
+      return this;
+    }
+
+    public Builder authenticatedDownloadUrl(String authenticatedDownloadUrl) {
+      this.authenticatedDownloadUrl = authenticatedDownloadUrl;
+      return this;
+    }
+
+    public Builder allowedSharedLinkAccessLevels(
+        List<? extends Valuable> allowedSharedLinkAccessLevels) {
+      this.allowedSharedLinkAccessLevels =
+          EnumWrapper.wrapValuableEnumList(
+              allowedSharedLinkAccessLevels, FileFullAllowedSharedLinkAccessLevelsField.class);
       return this;
     }
 
@@ -933,6 +1077,60 @@ public class FileFull extends File {
         throws IOException {
       gen.writeStartArray();
       for (EnumWrapper<FileFullSharedLinkPermissionOptionsField> item : value) {
+        elementSerializer.serialize(item, gen, serializers);
+      }
+      gen.writeEndArray();
+    }
+  }
+
+  public static class AllowedSharedLinkAccessLevelsDeserializer
+      extends JsonDeserializer<List<EnumWrapper<FileFullAllowedSharedLinkAccessLevelsField>>> {
+
+    public final JsonDeserializer<EnumWrapper<FileFullAllowedSharedLinkAccessLevelsField>>
+        elementDeserializer;
+
+    public AllowedSharedLinkAccessLevelsDeserializer() {
+      super();
+      this.elementDeserializer =
+          new FileFullAllowedSharedLinkAccessLevelsField
+              .FileFullAllowedSharedLinkAccessLevelsFieldDeserializer();
+    }
+
+    @Override
+    public List<EnumWrapper<FileFullAllowedSharedLinkAccessLevelsField>> deserialize(
+        JsonParser p, DeserializationContext ctxt) throws IOException {
+      JsonNode node = p.getCodec().readTree(p);
+      List<EnumWrapper<FileFullAllowedSharedLinkAccessLevelsField>> elements = new ArrayList<>();
+      for (JsonNode item : node) {
+        JsonParser pa = item.traverse(p.getCodec());
+        pa.nextToken();
+        elements.add(elementDeserializer.deserialize(pa, ctxt));
+      }
+      return elements;
+    }
+  }
+
+  public static class AllowedSharedLinkAccessLevelsSerializer
+      extends JsonSerializer<List<EnumWrapper<FileFullAllowedSharedLinkAccessLevelsField>>> {
+
+    public final JsonSerializer<EnumWrapper<FileFullAllowedSharedLinkAccessLevelsField>>
+        elementSerializer;
+
+    public AllowedSharedLinkAccessLevelsSerializer() {
+      super();
+      this.elementSerializer =
+          new FileFullAllowedSharedLinkAccessLevelsField
+              .FileFullAllowedSharedLinkAccessLevelsFieldSerializer();
+    }
+
+    @Override
+    public void serialize(
+        List<EnumWrapper<FileFullAllowedSharedLinkAccessLevelsField>> value,
+        JsonGenerator gen,
+        SerializerProvider serializers)
+        throws IOException {
+      gen.writeStartArray();
+      for (EnumWrapper<FileFullAllowedSharedLinkAccessLevelsField> item : value) {
         elementSerializer.serialize(item, gen, serializers);
       }
       gen.writeEndArray();
