@@ -51,6 +51,13 @@ public class UserFull extends User {
   @JsonProperty("is_exempt_from_login_verification")
   protected Boolean isExemptFromLoginVerification;
 
+  /**
+   * Whether collaborators can access content owned by the user when the user is inactive. This
+   * setting preserves existing collaborator access and does not grant new permissions.
+   */
+  @JsonProperty("is_collaborated_content_available_when_owner_inactive")
+  protected Boolean isCollaboratedContentAvailableWhenOwnerInactive;
+
   protected UserFullEnterpriseField enterprise;
 
   /**
@@ -87,6 +94,8 @@ public class UserFull extends User {
     this.isExternalCollabRestricted = builder.isExternalCollabRestricted;
     this.isExemptFromDeviceLimits = builder.isExemptFromDeviceLimits;
     this.isExemptFromLoginVerification = builder.isExemptFromLoginVerification;
+    this.isCollaboratedContentAvailableWhenOwnerInactive =
+        builder.isCollaboratedContentAvailableWhenOwnerInactive;
     this.enterprise = builder.enterprise;
     this.myTags = builder.myTags;
     this.hostname = builder.hostname;
@@ -121,6 +130,10 @@ public class UserFull extends User {
 
   public Boolean getIsExemptFromLoginVerification() {
     return isExemptFromLoginVerification;
+  }
+
+  public Boolean getIsCollaboratedContentAvailableWhenOwnerInactive() {
+    return isCollaboratedContentAvailableWhenOwnerInactive;
   }
 
   public UserFullEnterpriseField getEnterprise() {
@@ -176,6 +189,9 @@ public class UserFull extends User {
         && Objects.equals(isExternalCollabRestricted, casted.isExternalCollabRestricted)
         && Objects.equals(isExemptFromDeviceLimits, casted.isExemptFromDeviceLimits)
         && Objects.equals(isExemptFromLoginVerification, casted.isExemptFromLoginVerification)
+        && Objects.equals(
+            isCollaboratedContentAvailableWhenOwnerInactive,
+            casted.isCollaboratedContentAvailableWhenOwnerInactive)
         && Objects.equals(enterprise, casted.enterprise)
         && Objects.equals(myTags, casted.myTags)
         && Objects.equals(hostname, casted.hostname)
@@ -210,6 +226,7 @@ public class UserFull extends User {
         isExternalCollabRestricted,
         isExemptFromDeviceLimits,
         isExemptFromLoginVerification,
+        isCollaboratedContentAvailableWhenOwnerInactive,
         enterprise,
         myTags,
         hostname,
@@ -316,6 +333,10 @@ public class UserFull extends User {
         + isExemptFromLoginVerification
         + '\''
         + ", "
+        + "isCollaboratedContentAvailableWhenOwnerInactive='"
+        + isCollaboratedContentAvailableWhenOwnerInactive
+        + '\''
+        + ", "
         + "enterprise='"
         + enterprise
         + '\''
@@ -353,6 +374,8 @@ public class UserFull extends User {
     protected Boolean isExemptFromDeviceLimits;
 
     protected Boolean isExemptFromLoginVerification;
+
+    protected Boolean isCollaboratedContentAvailableWhenOwnerInactive;
 
     protected UserFullEnterpriseField enterprise;
 
@@ -405,6 +428,13 @@ public class UserFull extends User {
 
     public Builder isExemptFromLoginVerification(Boolean isExemptFromLoginVerification) {
       this.isExemptFromLoginVerification = isExemptFromLoginVerification;
+      return this;
+    }
+
+    public Builder isCollaboratedContentAvailableWhenOwnerInactive(
+        Boolean isCollaboratedContentAvailableWhenOwnerInactive) {
+      this.isCollaboratedContentAvailableWhenOwnerInactive =
+          isCollaboratedContentAvailableWhenOwnerInactive;
       return this;
     }
 

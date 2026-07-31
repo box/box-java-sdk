@@ -91,6 +91,13 @@ public class UpdateUserByIdRequestBody extends SerializableObject {
   @JsonProperty("is_password_reset_required")
   protected Boolean isPasswordResetRequired;
 
+  /**
+   * Whether collaborators can access content owned by the user when the user is inactive. This
+   * setting preserves existing collaborator access and does not grant new permissions.
+   */
+  @JsonProperty("is_collaborated_content_available_when_owner_inactive")
+  protected Boolean isCollaboratedContentAvailableWhenOwnerInactive;
+
   /** The user's account status. */
   @JsonDeserialize(
       using =
@@ -149,6 +156,8 @@ public class UpdateUserByIdRequestBody extends SerializableObject {
     this.isExemptFromDeviceLimits = builder.isExemptFromDeviceLimits;
     this.isExemptFromLoginVerification = builder.isExemptFromLoginVerification;
     this.isPasswordResetRequired = builder.isPasswordResetRequired;
+    this.isCollaboratedContentAvailableWhenOwnerInactive =
+        builder.isCollaboratedContentAvailableWhenOwnerInactive;
     this.status = builder.status;
     this.spaceAmount = builder.spaceAmount;
     this.notificationEmail = builder.notificationEmail;
@@ -224,6 +233,10 @@ public class UpdateUserByIdRequestBody extends SerializableObject {
     return isPasswordResetRequired;
   }
 
+  public Boolean getIsCollaboratedContentAvailableWhenOwnerInactive() {
+    return isCollaboratedContentAvailableWhenOwnerInactive;
+  }
+
   public EnumWrapper<UpdateUserByIdRequestBodyStatusField> getStatus() {
     return status;
   }
@@ -266,6 +279,9 @@ public class UpdateUserByIdRequestBody extends SerializableObject {
         && Objects.equals(isExemptFromDeviceLimits, casted.isExemptFromDeviceLimits)
         && Objects.equals(isExemptFromLoginVerification, casted.isExemptFromLoginVerification)
         && Objects.equals(isPasswordResetRequired, casted.isPasswordResetRequired)
+        && Objects.equals(
+            isCollaboratedContentAvailableWhenOwnerInactive,
+            casted.isCollaboratedContentAvailableWhenOwnerInactive)
         && Objects.equals(status, casted.status)
         && Objects.equals(spaceAmount, casted.spaceAmount)
         && Objects.equals(notificationEmail, casted.notificationEmail)
@@ -292,6 +308,7 @@ public class UpdateUserByIdRequestBody extends SerializableObject {
         isExemptFromDeviceLimits,
         isExemptFromLoginVerification,
         isPasswordResetRequired,
+        isCollaboratedContentAvailableWhenOwnerInactive,
         status,
         spaceAmount,
         notificationEmail,
@@ -369,6 +386,10 @@ public class UpdateUserByIdRequestBody extends SerializableObject {
         + isPasswordResetRequired
         + '\''
         + ", "
+        + "isCollaboratedContentAvailableWhenOwnerInactive='"
+        + isCollaboratedContentAvailableWhenOwnerInactive
+        + '\''
+        + ", "
         + "status='"
         + status
         + '\''
@@ -422,6 +443,8 @@ public class UpdateUserByIdRequestBody extends SerializableObject {
     protected Boolean isExemptFromLoginVerification;
 
     protected Boolean isPasswordResetRequired;
+
+    protected Boolean isCollaboratedContentAvailableWhenOwnerInactive;
 
     protected EnumWrapper<UpdateUserByIdRequestBodyStatusField> status;
 
@@ -519,6 +542,13 @@ public class UpdateUserByIdRequestBody extends SerializableObject {
 
     public Builder isPasswordResetRequired(Boolean isPasswordResetRequired) {
       this.isPasswordResetRequired = isPasswordResetRequired;
+      return this;
+    }
+
+    public Builder isCollaboratedContentAvailableWhenOwnerInactive(
+        Boolean isCollaboratedContentAvailableWhenOwnerInactive) {
+      this.isCollaboratedContentAvailableWhenOwnerInactive =
+          isCollaboratedContentAvailableWhenOwnerInactive;
       return this;
     }
 
