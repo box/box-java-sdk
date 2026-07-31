@@ -1,6 +1,7 @@
 package com.box.sdkgen.schemas.searchresultwithsharedlinkitem;
 
 import com.box.sdkgen.internal.OneOfThree;
+import com.box.sdkgen.schemas.collection.Collection;
 import com.box.sdkgen.schemas.filefull.FileFull;
 import com.box.sdkgen.schemas.folderfull.FolderFull;
 import com.box.sdkgen.schemas.foldermini.FolderMini;
@@ -17,11 +18,16 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import java.io.IOException;
 import java.time.OffsetDateTime;
+import java.util.List;
 
 @JsonDeserialize(
     using = SearchResultWithSharedLinkItem.SearchResultWithSharedLinkItemDeserializer.class)
 @JsonSerialize(using = OneOfThree.OneOfThreeSerializer.class)
 public class SearchResultWithSharedLinkItem extends OneOfThree<FileFull, FolderFull, WebLink> {
+
+  protected final List<Collection> collections;
+
+  protected final List<String> allowedSharedLinkAccessLevels;
 
   protected final String description;
 
@@ -55,6 +61,9 @@ public class SearchResultWithSharedLinkItem extends OneOfThree<FileFull, FolderF
 
   public SearchResultWithSharedLinkItem(FileFull fileFull) {
     super(fileFull, null, null);
+    this.collections = fileFull.getCollections();
+    this.allowedSharedLinkAccessLevels =
+        EnumWrapper.convertToString(fileFull.getAllowedSharedLinkAccessLevels());
     this.description = fileFull.getDescription();
     this.createdAt = fileFull.getCreatedAt();
     this.modifiedAt = fileFull.getModifiedAt();
@@ -74,6 +83,9 @@ public class SearchResultWithSharedLinkItem extends OneOfThree<FileFull, FolderF
 
   public SearchResultWithSharedLinkItem(FolderFull folderFull) {
     super(null, folderFull, null);
+    this.collections = folderFull.getCollections();
+    this.allowedSharedLinkAccessLevels =
+        EnumWrapper.convertToString(folderFull.getAllowedSharedLinkAccessLevels());
     this.description = folderFull.getDescription();
     this.createdAt = folderFull.getCreatedAt();
     this.modifiedAt = folderFull.getModifiedAt();
@@ -93,6 +105,9 @@ public class SearchResultWithSharedLinkItem extends OneOfThree<FileFull, FolderF
 
   public SearchResultWithSharedLinkItem(WebLink webLink) {
     super(null, null, webLink);
+    this.collections = webLink.getCollections();
+    this.allowedSharedLinkAccessLevels =
+        EnumWrapper.convertToString(webLink.getAllowedSharedLinkAccessLevels());
     this.description = webLink.getDescription();
     this.createdAt = webLink.getCreatedAt();
     this.modifiedAt = webLink.getModifiedAt();
@@ -132,6 +147,14 @@ public class SearchResultWithSharedLinkItem extends OneOfThree<FileFull, FolderF
 
   public WebLink getWebLink() {
     return value2;
+  }
+
+  public List<Collection> getCollections() {
+    return collections;
+  }
+
+  public List<String> getAllowedSharedLinkAccessLevels() {
+    return allowedSharedLinkAccessLevels;
   }
 
   public String getDescription() {

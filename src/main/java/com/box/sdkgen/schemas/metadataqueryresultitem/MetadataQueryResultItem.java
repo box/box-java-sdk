@@ -1,6 +1,7 @@
 package com.box.sdkgen.schemas.metadataqueryresultitem;
 
 import com.box.sdkgen.internal.OneOfTwo;
+import com.box.sdkgen.schemas.collection.Collection;
 import com.box.sdkgen.schemas.filefull.FileFull;
 import com.box.sdkgen.schemas.folderfull.FolderFull;
 import com.box.sdkgen.schemas.foldermini.FolderMini;
@@ -33,6 +34,10 @@ public class MetadataQueryResultItem extends OneOfTwo<FileFull, FolderFull> {
   protected final Boolean hasCollaborations;
 
   protected final Boolean isAssociatedWithAppItem;
+
+  protected final List<Collection> collections;
+
+  protected final List<String> allowedSharedLinkAccessLevels;
 
   protected final String description;
 
@@ -78,6 +83,9 @@ public class MetadataQueryResultItem extends OneOfTwo<FileFull, FolderFull> {
     this.isExternallyOwned = fileFull.getIsExternallyOwned();
     this.hasCollaborations = fileFull.getHasCollaborations();
     this.isAssociatedWithAppItem = fileFull.getIsAssociatedWithAppItem();
+    this.collections = fileFull.getCollections();
+    this.allowedSharedLinkAccessLevels =
+        EnumWrapper.convertToString(fileFull.getAllowedSharedLinkAccessLevels());
     this.description = fileFull.getDescription();
     this.size = fileFull.getSize();
     this.createdAt = fileFull.getCreatedAt();
@@ -106,6 +114,9 @@ public class MetadataQueryResultItem extends OneOfTwo<FileFull, FolderFull> {
     this.isExternallyOwned = folderFull.getIsExternallyOwned();
     this.hasCollaborations = folderFull.getHasCollaborations();
     this.isAssociatedWithAppItem = folderFull.getIsAssociatedWithAppItem();
+    this.collections = folderFull.getCollections();
+    this.allowedSharedLinkAccessLevels =
+        EnumWrapper.convertToString(folderFull.getAllowedSharedLinkAccessLevels());
     this.description = folderFull.getDescription();
     this.size = folderFull.getSize();
     this.createdAt = folderFull.getCreatedAt();
@@ -164,6 +175,14 @@ public class MetadataQueryResultItem extends OneOfTwo<FileFull, FolderFull> {
 
   public boolean getIsAssociatedWithAppItem() {
     return isAssociatedWithAppItem;
+  }
+
+  public List<Collection> getCollections() {
+    return collections;
+  }
+
+  public List<String> getAllowedSharedLinkAccessLevels() {
+    return allowedSharedLinkAccessLevels;
   }
 
   public String getDescription() {
