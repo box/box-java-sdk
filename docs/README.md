@@ -62,6 +62,7 @@ the SDK are available by topic:
 * [Metadatataxonomies](metadatataxonomies.md)
 * [Metadatatemplates](metadatatemplates.md)
 * [Notes](notes.md)
+* [Query](query.md)
 * [Recentitems](recentitems.md)
 * [Retentionpolicies](retentionpolicies.md)
 * [Retentionpolicyassignments](retentionpolicyassignments.md)
