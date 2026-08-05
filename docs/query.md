@@ -15,7 +15,10 @@ This operation is performed by calling function `createQueryV2026R0`.
 See the endpoint docs at
 [API Reference](https://developer.box.com/reference/v2026.0/post-query/).
 
-*Currently we don't have an example for calling `createQueryV2026R0` in integration tests*
+<!-- sample post_query_v2026.0 -->
+```
+client.getQuery().createQueryV2026R0(new QueryRequestBodyV2026R0.Builder(new QueryRequestBodyV2026R0QueryField.Builder(predicate).params(mapOf(entryOf("name", "John"), entryOf("age", 50))).ancestors(Arrays.asList(new QueryAncestorReferenceV2026R0("0", "folder"))).build()).limit(10).fields(Arrays.asList("box:item:name", searchFrom)).build())
+```
 
 ### Arguments
 
@@ -44,7 +47,10 @@ This operation is performed by calling function `createQueryInsightV2026R0`.
 See the endpoint docs at
 [API Reference](https://developer.box.com/reference/v2026.0/post-query-insights/).
 
-*Currently we don't have an example for calling `createQueryInsightV2026R0` in integration tests*
+<!-- sample post_query_insights_v2026.0 -->
+```
+client.getQuery().createQueryInsightV2026R0(new QueryInsightsRequestBodyV2026R0(new QueryInsightsRequestBodyV2026R0QueryField.Builder(predicate).params(mapOf(entryOf("minAmount", 0))).ancestors(Arrays.asList(new QueryAncestorReferenceV2026R0("0", "folder"))).groupBy(Arrays.asList(new QueryInsightsGroupByV2026R0.Builder(String.join("", mdPrefix, ".category")).bucketLimit(5).build())).build(), metrics))
+```
 
 ### Arguments
 
