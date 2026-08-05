@@ -2,6 +2,15 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [10.16.0](https://github.com/box/box-java-sdk/compare/v10.15.2...v10.16.0) (2026-08-05)
+
+
+### New Features and Enhancements
+
+* add `is_collaborated_content_available_when_owner_inactive` property (box/box-openapi[#613](https://github.com/box/box-java-sdk/issues/613)) ([#1946](https://github.com/box/box-java-sdk/issues/1946)) ([3a67096](https://github.com/box/box-java-sdk/commit/3a67096b0ab31836ef597daf0f2d8a25ef94013d))
+* Added two missing event types (box/box-openapi[#611](https://github.com/box/box-java-sdk/issues/611)) ([#1940](https://github.com/box/box-java-sdk/issues/1940)) ([a37b296](https://github.com/box/box-java-sdk/commit/a37b2964ab71ab789c359680e6f09ad19a310cf9))
+* Support query APIs (box/box-openapi[#610](https://github.com/box/box-java-sdk/issues/610))  ([#1938](https://github.com/box/box-java-sdk/issues/1938)) ([bf8aaaa](https://github.com/box/box-java-sdk/commit/bf8aaaab213b85d704a2735e6ef65a91f5225386))
+
 ### [10.15.2](https://github.com/box/box-java-sdk/compare/v10.15.1...v10.15.2) (2026-07-15)
 
 
