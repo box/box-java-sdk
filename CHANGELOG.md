@@ -2,6 +2,20 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [5.15.0](https://github.com/box/box-java-sdk/compare/v5.14.1...v5.15.0) (2026-08-05)
+
+
+### Bug Fixes:
+
+* **boxsdkgen:** Fix broken link in Readme ([#1931](https://github.com/box/box-java-sdk/issues/1931)) ([6a88eaf](https://github.com/box/box-java-sdk/commit/6a88eaf6dce2b6e8ca343f42557a927c5744b75d))
+
+
+### New Features and Enhancements:
+
+* **boxsdkgen:** add `is_collaborated_content_available_when_owner_inactive` property (box/box-openapi[#613](https://github.com/box/box-java-sdk/issues/613)) ([#1945](https://github.com/box/box-java-sdk/issues/1945)) ([e02e6f6](https://github.com/box/box-java-sdk/commit/e02e6f6f3ed112a19a90048aa87354539cecd2b9))
+* **boxsdkgen:** Added two missing event types (box/box-openapi[#611](https://github.com/box/box-java-sdk/issues/611)) ([#1939](https://github.com/box/box-java-sdk/issues/1939)) ([dfc3e67](https://github.com/box/box-java-sdk/commit/dfc3e67f9df97dcc065a27ca5bb9adfb7a434044))
+* **boxsdkgen:** Support query APIs (box/box-openapi[#610](https://github.com/box/box-java-sdk/issues/610))  ([#1937](https://github.com/box/box-java-sdk/issues/1937)) ([102e966](https://github.com/box/box-java-sdk/commit/102e966fdedaf95ea1abeb0060918676d84ffee3))
+
 ### [5.14.1](https://github.com/box/box-java-sdk/compare/v5.14.0...v5.14.1) (2026-07-10)
 
 
