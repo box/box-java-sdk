@@ -12,13 +12,14 @@ The MAJOR version is used to indicate the family of technology represented by th
 ## Support lifecycle
 
 Each Box SDK README publishes a **[Version schedule](README.md#version-schedule)** table. That table is the source of truth for which **major versions** are **Supported**, when each was first released, and when each reaches **end of life (EOL)**.
-* Deprecation warnings are added to the SDKs, outlining the path to end-of-support and linking to the SDK documentation.
 
 After a major version reaches EOL it no longer receives new features, bug fixes, or security patches. Existing applications that pin that version continue to run, but you should plan to upgrade. The version is then marked `EOL` in the README schedule.
 
 Major version releases, breaking changes, and EOL dates are announced through public channels via:
 
-Box developer documentation, such as the API reference, user guides, and GitHub READMEs.
+- Box developer documentation, such as the API reference, user guides, and GitHub READMEs.
+
+- Deprecation warnings are added to the SDKs, outlining the path to end-of-support and linking to the SDK documentation.
 
 Deprecations are introduced in minor releases. We will not introduce new deprecations in patch releases. These deprecations will preserve the existing behaviour while emitting a warning that provide guidance on:
 
