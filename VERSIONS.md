@@ -18,7 +18,6 @@ After a major version reaches EOL it no longer receives new features, bug fixes,
 Major version releases, breaking changes, and EOL dates are announced through public channels via:
 
 - Box developer documentation, such as the API reference, user guides, and GitHub READMEs.
-
 - Deprecation warnings are added to the SDKs, outlining the path to end-of-support and linking to the SDK documentation.
 
 Deprecations are introduced in minor releases. We will not introduce new deprecations in patch releases. These deprecations will preserve the existing behaviour while emitting a warning that provide guidance on:
