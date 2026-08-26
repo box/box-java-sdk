@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [5.15.1](https://github.com/box/box-java-sdk/compare/v5.15.0...v5.15.1) (2026-08-26)
+
+
+### Bug Fixes:
+
+* **boxsdkgen:** avoid null chunk when file size is a multiple of part size (box/box-codegen[#980](https://github.com/box/box-java-sdk/issues/980)) ([#1966](https://github.com/box/box-java-sdk/issues/1966)) ([d737c81](https://github.com/box/box-java-sdk/commit/d737c810ef04781738537c77060a720452ce53ba))
+
 ## [5.15.0](https://github.com/box/box-java-sdk/compare/v5.14.1...v5.15.0) (2026-08-05)
 
 
