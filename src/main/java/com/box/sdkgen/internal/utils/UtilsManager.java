@@ -34,6 +34,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.NoSuchElementException;
 import java.util.Objects;
 import java.util.Set;
 import java.util.UUID;
@@ -311,15 +312,14 @@ public class UtilsManager {
   public static Iterator<InputStream> iterateChunks(
       InputStream stream, long chunkSize, long fileSize) {
     return new Iterator<InputStream>() {
-      private boolean streamIsFinished = false;
+      private InputStream nextChunk;
+      private boolean isNextChunkPrepared = false;
 
-      @Override
-      public boolean hasNext() {
-        return !streamIsFinished;
-      }
-
-      @Override
-      public InputStream next() {
+      private void prepareNext() {
+        if (isNextChunkPrepared) {
+          return;
+        }
+        isNextChunkPrepared = true;
         try {
           byte[] buffer = new byte[(int) chunkSize];
           int bytesRead = 0;
@@ -327,24 +327,38 @@ public class UtilsManager {
           while (bytesRead < chunkSize) {
             int read = stream.read(buffer, bytesRead, (int) (chunkSize - bytesRead));
             if (read == -1) {
-              // End of stream
-              streamIsFinished = true;
               break;
             }
             bytesRead += read;
           }
 
           if (bytesRead == 0) {
-            // No more data to yield
-            streamIsFinished = true;
-            return null;
+            nextChunk = null;
+            return;
           }
 
-          // Return the chunk as a ByteArrayInputStream
-          return new ByteArrayInputStream(buffer, 0, bytesRead);
-        } catch (Exception e) {
+          nextChunk = new ByteArrayInputStream(buffer, 0, bytesRead);
+        } catch (IOException e) {
           throw new RuntimeException("Error reading from stream", e);
         }
+      }
+
+      @Override
+      public boolean hasNext() {
+        prepareNext();
+        return nextChunk != null;
+      }
+
+      @Override
+      public InputStream next() {
+        prepareNext();
+        if (nextChunk == null) {
+          throw new NoSuchElementException();
+        }
+        InputStream result = nextChunk;
+        nextChunk = null;
+        isNextChunkPrepared = false;
+        return result;
       }
     };
   }
