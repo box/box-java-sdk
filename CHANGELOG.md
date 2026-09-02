@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [10.16.2](https://github.com/box/box-java-sdk/compare/v10.16.1...v10.16.2) (2026-09-02)
+
+
+### Bug Fixes
+
+* bump `bouncyCastle` version (box/box-codegen[#982](https://github.com/box/box-java-sdk/issues/982)) ([#1972](https://github.com/box/box-java-sdk/issues/1972)) ([6c9877b](https://github.com/box/box-java-sdk/commit/6c9877b15a1ad0449c117bdbe3e5e141bd33635b))
+
 ### [10.16.1](https://github.com/box/box-java-sdk/compare/v10.16.0...v10.16.1) (2026-08-26)
 
 
