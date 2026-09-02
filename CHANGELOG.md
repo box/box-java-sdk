@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [5.15.2](https://github.com/box/box-java-sdk/compare/v5.15.1...v5.15.2) (2026-09-02)
+
+
+### Bug Fixes:
+
+* **boxsdkgen:** bump bouncyCastle version (box/box-codegen[#982](https://github.com/box/box-java-sdk/issues/982))  ([#1971](https://github.com/box/box-java-sdk/issues/1971)) ([c6cc5d6](https://github.com/box/box-java-sdk/commit/c6cc5d6a1f2c933616dbbf2601ca44a10724f8c6))
+
 ### [5.15.1](https://github.com/box/box-java-sdk/compare/v5.15.0...v5.15.1) (2026-08-26)
 
 
