@@ -9,6 +9,11 @@ import java.util.Objects;
 @JsonFilter("nullablePropertyFilter")
 public class UploadSessionSessionEndpointsField extends SerializableObject {
 
+  /**
+   * The URL used to plan the upload session by checking which parts already exist on the server.
+   */
+  protected String plan;
+
   /** The URL to upload parts to. */
   @JsonProperty("upload_part")
   protected String uploadPart;
@@ -36,6 +41,7 @@ public class UploadSessionSessionEndpointsField extends SerializableObject {
 
   protected UploadSessionSessionEndpointsField(Builder builder) {
     super();
+    this.plan = builder.plan;
     this.uploadPart = builder.uploadPart;
     this.commit = builder.commit;
     this.abort = builder.abort;
@@ -43,6 +49,10 @@ public class UploadSessionSessionEndpointsField extends SerializableObject {
     this.status = builder.status;
     this.logEvent = builder.logEvent;
     markNullableFieldsAsSet(builder.getExplicitlySetNullableFields());
+  }
+
+  public String getPlan() {
+    return plan;
   }
 
   public String getUploadPart() {
@@ -78,7 +88,8 @@ public class UploadSessionSessionEndpointsField extends SerializableObject {
       return false;
     }
     UploadSessionSessionEndpointsField casted = (UploadSessionSessionEndpointsField) o;
-    return Objects.equals(uploadPart, casted.uploadPart)
+    return Objects.equals(plan, casted.plan)
+        && Objects.equals(uploadPart, casted.uploadPart)
         && Objects.equals(commit, casted.commit)
         && Objects.equals(abort, casted.abort)
         && Objects.equals(listParts, casted.listParts)
@@ -88,12 +99,16 @@ public class UploadSessionSessionEndpointsField extends SerializableObject {
 
   @Override
   public int hashCode() {
-    return Objects.hash(uploadPart, commit, abort, listParts, status, logEvent);
+    return Objects.hash(plan, uploadPart, commit, abort, listParts, status, logEvent);
   }
 
   @Override
   public String toString() {
     return "UploadSessionSessionEndpointsField{"
+        + "plan='"
+        + plan
+        + '\''
+        + ", "
         + "uploadPart='"
         + uploadPart
         + '\''
@@ -122,6 +137,8 @@ public class UploadSessionSessionEndpointsField extends SerializableObject {
 
   public static class Builder extends NullableFieldTracker {
 
+    protected String plan;
+
     protected String uploadPart;
 
     protected String commit;
@@ -133,6 +150,11 @@ public class UploadSessionSessionEndpointsField extends SerializableObject {
     protected String status;
 
     protected String logEvent;
+
+    public Builder plan(String plan) {
+      this.plan = plan;
+      return this;
+    }
 
     public Builder uploadPart(String uploadPart) {
       this.uploadPart = uploadPart;

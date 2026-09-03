@@ -25,6 +25,8 @@ import com.box.sdkgen.schemas.uploadedpart.UploadedPart;
 import com.box.sdkgen.schemas.uploadpart.UploadPart;
 import com.box.sdkgen.schemas.uploadparts.UploadParts;
 import com.box.sdkgen.schemas.uploadsession.UploadSession;
+import com.box.sdkgen.schemas.uploadsessionplanrequest.UploadSessionPlanRequest;
+import com.box.sdkgen.schemas.uploadsessionplanresponse.UploadSessionPlanResponse;
 import com.box.sdkgen.serialization.json.JsonManager;
 import java.io.InputStream;
 import java.util.Arrays;
@@ -584,6 +586,121 @@ public class ChunkedUploadsManager {
                     .networkSession(this.networkSession)
                     .build());
     return JsonManager.deserialize(response.getData(), UploadParts.class);
+  }
+
+  /**
+   * Using this method with urls provided in response when creating a new upload session is
+   * preferred to use over CreateFileUploadSessionPlan method. This allows to always upload your
+   * content to the closest Box data center and can significantly improve upload speed. Plan an
+   * upload session by checking which parts already exist on the server. This endpoint allows
+   * clients to optimize uploads by skipping parts that have already been uploaded (cache hits) and
+   * only uploading missing parts.
+   *
+   * <p>The actual endpoint URL is returned by the [`Create upload
+   * session`](e://post-files-upload-sessions) and [`Get upload
+   * session`](e://get-files-upload-sessions-id) endpoints.
+   *
+   * @param url URL of createFileUploadSessionPlan method
+   * @param requestBody Request body of createFileUploadSessionPlan method
+   */
+  public UploadSessionPlanResponse createFileUploadSessionPlanByUrl(
+      String url, UploadSessionPlanRequest requestBody) {
+    return createFileUploadSessionPlanByUrl(
+        url, requestBody, new CreateFileUploadSessionPlanByUrlHeaders());
+  }
+
+  /**
+   * Using this method with urls provided in response when creating a new upload session is
+   * preferred to use over CreateFileUploadSessionPlan method. This allows to always upload your
+   * content to the closest Box data center and can significantly improve upload speed. Plan an
+   * upload session by checking which parts already exist on the server. This endpoint allows
+   * clients to optimize uploads by skipping parts that have already been uploaded (cache hits) and
+   * only uploading missing parts.
+   *
+   * <p>The actual endpoint URL is returned by the [`Create upload
+   * session`](e://post-files-upload-sessions) and [`Get upload
+   * session`](e://get-files-upload-sessions-id) endpoints.
+   *
+   * @param url URL of createFileUploadSessionPlan method
+   * @param requestBody Request body of createFileUploadSessionPlan method
+   * @param headers Headers of createFileUploadSessionPlan method
+   */
+  public UploadSessionPlanResponse createFileUploadSessionPlanByUrl(
+      String url,
+      UploadSessionPlanRequest requestBody,
+      CreateFileUploadSessionPlanByUrlHeaders headers) {
+    Map<String, String> headersMap = prepareParams(mergeMaps(mapOf(), headers.getExtraHeaders()));
+    FetchResponse response =
+        this.networkSession
+            .getNetworkClient()
+            .fetch(
+                new FetchOptions.Builder(url, "POST")
+                    .headers(headersMap)
+                    .data(JsonManager.serialize(requestBody))
+                    .contentType("application/json")
+                    .responseFormat(ResponseFormat.JSON)
+                    .auth(this.auth)
+                    .networkSession(this.networkSession)
+                    .build());
+    return JsonManager.deserialize(response.getData(), UploadSessionPlanResponse.class);
+  }
+
+  /**
+   * Plan an upload session by checking which parts already exist on the server. This endpoint
+   * allows clients to optimize uploads by skipping parts that have already been uploaded (cache
+   * hits) and only uploading missing parts.
+   *
+   * <p>The actual endpoint URL is returned by the [`Create upload
+   * session`](e://post-files-upload-sessions) and [`Get upload
+   * session`](e://get-files-upload-sessions-id) endpoints.
+   *
+   * @param uploadSessionId The ID of the upload session. Example: "D5E3F7A"
+   * @param requestBody Request body of createFileUploadSessionPlan method
+   */
+  public UploadSessionPlanResponse createFileUploadSessionPlan(
+      String uploadSessionId, UploadSessionPlanRequest requestBody) {
+    return createFileUploadSessionPlan(
+        uploadSessionId, requestBody, new CreateFileUploadSessionPlanHeaders());
+  }
+
+  /**
+   * Plan an upload session by checking which parts already exist on the server. This endpoint
+   * allows clients to optimize uploads by skipping parts that have already been uploaded (cache
+   * hits) and only uploading missing parts.
+   *
+   * <p>The actual endpoint URL is returned by the [`Create upload
+   * session`](e://post-files-upload-sessions) and [`Get upload
+   * session`](e://get-files-upload-sessions-id) endpoints.
+   *
+   * @param uploadSessionId The ID of the upload session. Example: "D5E3F7A"
+   * @param requestBody Request body of createFileUploadSessionPlan method
+   * @param headers Headers of createFileUploadSessionPlan method
+   */
+  public UploadSessionPlanResponse createFileUploadSessionPlan(
+      String uploadSessionId,
+      UploadSessionPlanRequest requestBody,
+      CreateFileUploadSessionPlanHeaders headers) {
+    Map<String, String> headersMap = prepareParams(mergeMaps(mapOf(), headers.getExtraHeaders()));
+    FetchResponse response =
+        this.networkSession
+            .getNetworkClient()
+            .fetch(
+                new FetchOptions.Builder(
+                        String.join(
+                            "",
+                            this.networkSession.getBaseUrls().getUploadUrl(),
+                            "/2.0/files/upload_sessions/",
+                            convertToString(uploadSessionId),
+                            "/plan"),
+                        "POST")
+                    .headers(headersMap)
+                    .data(JsonManager.serialize(requestBody))
+                    .contentType("application/json")
+                    .responseFormat(ResponseFormat.JSON)
+                    .auth(this.auth)
+                    .networkSession(this.networkSession)
+                    .build());
+    return JsonManager.deserialize(response.getData(), UploadSessionPlanResponse.class);
   }
 
   /**
