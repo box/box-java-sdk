@@ -13,6 +13,7 @@ import com.box.sdkgen.schemas.signrequestsignerinputnumberwithperiodvalidation.S
 import com.box.sdkgen.schemas.signrequestsignerinputssnvalidation.SignRequestSignerInputSsnValidation;
 import com.box.sdkgen.schemas.signrequestsignerinputvalidation.SignRequestSignerInputValidation;
 import com.box.sdkgen.schemas.signrequestsignerinputzip4validation.SignRequestSignerInputZip4Validation;
+import com.box.sdkgen.schemas.signrequestsignerinputzipjpvalidation.SignRequestSignerInputZipjpValidation;
 import com.box.sdkgen.schemas.signrequestsignerinputzipvalidation.SignRequestSignerInputZipValidation;
 import com.box.sdkgen.serialization.json.EnumWrapper;
 import com.fasterxml.jackson.annotation.JsonFilter;
@@ -268,6 +269,11 @@ public class SignRequestSignerInput extends SignRequestPrefillTag {
     }
 
     public Builder validation(SignRequestSignerInputZip4Validation validation) {
+      this.validation = new SignRequestSignerInputValidation(validation);
+      return this;
+    }
+
+    public Builder validation(SignRequestSignerInputZipjpValidation validation) {
       this.validation = new SignRequestSignerInputValidation(validation);
       return this;
     }
