@@ -60,6 +60,7 @@ dependencies {
     implementation "org.bouncycastle:bcpkix-jdk18on:1.85"
     implementation "com.squareup.okhttp3:okhttp:4.12.0"
     implementation "com.github.luben:zstd-jni:1.5.7-2"
+    implementation "commons-codec:commons-codec:1.22.0"
     testsCommonImplementation "junit:junit:4.13.2"
     testsCommonImplementation "org.junit.jupiter:junit-jupiter-api:5.10.0"
     testsCommonImplementation "org.hamcrest:hamcrest-library:2.2"
