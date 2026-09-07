@@ -15,11 +15,11 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.math.BigInteger;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.security.MessageDigest;
+import java.security.SecureRandom;
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
@@ -42,6 +42,8 @@ import java.util.function.BiFunction;
 import java.util.stream.Collectors;
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
+import org.apache.commons.codec.DecoderException;
+import org.apache.commons.codec.binary.Hex;
 import org.jose4j.jws.JsonWebSignature;
 import org.jose4j.jwt.JwtClaims;
 import org.jose4j.jwt.NumericDate;
@@ -150,7 +152,7 @@ public class UtilsManager {
 
   public static byte[] generateByteBuffer(int size) {
     byte[] bytes = new byte[size];
-    Arrays.fill(bytes, (byte) 0);
+    new SecureRandom().nextBytes(bytes);
     return bytes;
   }
 
@@ -306,7 +308,11 @@ public class UtilsManager {
   }
 
   public static String hexToBase64(String hex) {
-    return Base64.getEncoder().encodeToString(new BigInteger(hex, 16).toByteArray());
+    try {
+      return Base64.getEncoder().encodeToString(Hex.decodeHex(hex));
+    } catch (DecoderException e) {
+      throw new BoxSDKError("Error decoding hex string.", e);
+    }
   }
 
   public static Iterator<InputStream> iterateChunks(

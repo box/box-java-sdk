@@ -3,7 +3,8 @@ package com.box.sdkgen.internal.utils;
 import com.box.sdkgen.serialization.json.Valuable;
 
 public enum HashName implements Valuable {
-  SHA1("sha1");
+  SHA1("sha1"),
+  SHA512("sha512");
 
   private final String value;
 
