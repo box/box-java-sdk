@@ -238,7 +238,7 @@ We highly recommend upgrading to the latest SDK major release at the earliest co
 | Version | Supported Environments | State     | First Release | EOL/Terminated         |
 |---------|------------------------|-----------|---------------|------------------------|
 | 10      | Java 8 and up          | Supported | 17 Sep 2025   | TBD                    |
-| 5       | Java 8 and up          | Supported | 23 Oct 2025   | 2027 or v6 is released |
+| 5       | Java 8 and up          | Supported | 23 Oct 2025   | TBD                    |
 | 4       | Java 8 and up          | EOL       | 17 Jan 2023   | 23 Oct 2025            |
 | 3       | Java 8 and up          | EOL       | 17 Jan 2022   | 17 Jan 2023            |
 | 2       |                        | EOL       | 07 Jan 2016   | 17 Jan 2022            |
