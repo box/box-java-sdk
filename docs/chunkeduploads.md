@@ -56,7 +56,10 @@ This operation is performed by calling function `createFileUploadSessionForExist
 See the endpoint docs at
 [API Reference](https://developer.box.com/reference/post-files-id-upload-sessions/).
 
-*Currently we don't have an example for calling `createFileUploadSessionForExistingFile` in integration tests*
+<!-- sample post_files_id_upload_sessions -->
+```
+client.getChunkedUploads().createFileUploadSessionForExistingFile(uploadedFile.getId(), new CreateFileUploadSessionForExistingFileRequestBody(fileSize))
+```
 
 ### Arguments
 
@@ -357,7 +360,10 @@ This operation is performed by calling function `createFileUploadSessionPlanByUr
 See the endpoint docs at
 [API Reference](https://developer.box.com/reference/post-files-upload-sessions-id-plan/).
 
-*Currently we don't have an example for calling `createFileUploadSessionPlanByUrl` in integration tests*
+<!-- sample post_files_upload_sessions_id_plan -->
+```
+client.getChunkedUploads().createFileUploadSessionPlanByUrl(planUrl, new UploadSessionPlanRequest(parts))
+```
 
 ### Arguments
 
@@ -496,7 +502,7 @@ This operation is performed by calling function `uploadBigFile`.
 
 
 ```
-client.getChunkedUploads().uploadBigFile(fileByteStream, fileName, fileSize, parentFolderId)
+client.getChunkedUploads().uploadBigFile(generateByteStreamFromBuffer(fileBuffer), fileName, fileSize, parentFolderId)
 ```
 
 ### Arguments

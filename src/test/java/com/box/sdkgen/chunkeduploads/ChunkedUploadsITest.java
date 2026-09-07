@@ -3,6 +3,7 @@ package com.box.sdkgen.chunkeduploads;
 import static com.box.sdkgen.commons.CommonsManager.getDefaultClient;
 import static com.box.sdkgen.internal.utils.UtilsManager.bufferLength;
 import static com.box.sdkgen.internal.utils.UtilsManager.convertToString;
+import static com.box.sdkgen.internal.utils.UtilsManager.delayInSeconds;
 import static com.box.sdkgen.internal.utils.UtilsManager.generateByteStream;
 import static com.box.sdkgen.internal.utils.UtilsManager.generateByteStreamFromBuffer;
 import static com.box.sdkgen.internal.utils.UtilsManager.getUuid;
@@ -18,6 +19,7 @@ import com.box.sdkgen.managers.chunkeduploads.CreateFileUploadSessionCommitByUrl
 import com.box.sdkgen.managers.chunkeduploads.CreateFileUploadSessionCommitByUrlRequestBody;
 import com.box.sdkgen.managers.chunkeduploads.CreateFileUploadSessionCommitHeaders;
 import com.box.sdkgen.managers.chunkeduploads.CreateFileUploadSessionCommitRequestBody;
+import com.box.sdkgen.managers.chunkeduploads.CreateFileUploadSessionForExistingFileRequestBody;
 import com.box.sdkgen.managers.chunkeduploads.CreateFileUploadSessionRequestBody;
 import com.box.sdkgen.managers.chunkeduploads.UploadFilePartByUrlHeaders;
 import com.box.sdkgen.managers.chunkeduploads.UploadFilePartHeaders;
@@ -25,8 +27,12 @@ import com.box.sdkgen.schemas.file.File;
 import com.box.sdkgen.schemas.files.Files;
 import com.box.sdkgen.schemas.uploadedpart.UploadedPart;
 import com.box.sdkgen.schemas.uploadpart.UploadPart;
+import com.box.sdkgen.schemas.uploadpartplan.UploadPartPlan;
+import com.box.sdkgen.schemas.uploadpartplanhit.UploadPartPlanHit;
 import com.box.sdkgen.schemas.uploadparts.UploadParts;
 import com.box.sdkgen.schemas.uploadsession.UploadSession;
+import com.box.sdkgen.schemas.uploadsessionplanrequest.UploadSessionPlanRequest;
+import com.box.sdkgen.schemas.uploadsessionplanresponse.UploadSessionPlanResponse;
 import java.io.InputStream;
 import java.util.Arrays;
 import java.util.Collections;
@@ -126,6 +132,24 @@ public class ChunkedUploadsITest {
         .build();
   }
 
+  public static TestPartPlanAccumulator reducerForUploadSessionPlan(
+      TestPartPlanAccumulator acc, InputStream chunk) {
+    int lastIndex = acc.getLastIndex();
+    List<UploadPartPlan> parts = acc.getParts();
+    byte[] chunkBuffer = readByteStream(chunk);
+    Hash hash = new Hash(HashName.SHA512);
+    hash.updateHash(chunkBuffer);
+    String sha512 = hash.digestHash("hex");
+    int chunkSize = bufferLength(chunkBuffer);
+    int bytesStart = lastIndex + 1;
+    int bytesEnd = lastIndex + chunkSize;
+    UploadPartPlan part = new UploadPartPlan(bytesStart, chunkSize, sha512);
+    return new TestPartPlanAccumulator(
+        bytesEnd,
+        Stream.concat(parts.stream(), Arrays.asList(part).stream()).collect(Collectors.toList()),
+        acc.getFileSize());
+  }
+
   @Test
   public void testChunkedManualProcessById() {
     int fileSize = 20 * 1024 * 1024;
@@ -219,6 +243,55 @@ public class ChunkedUploadsITest {
                 new CreateFileUploadSessionCommitByUrlHeaders(digest));
     assert committedSession.getEntries().get(0).getName().equals(fileName);
     client.getChunkedUploads().deleteFileUploadSessionByUrl(abortUrl);
+  }
+
+  @Test
+  public void testUploadSessionPlan() {
+    int fileSize = 20 * 1024 * 1024;
+    String fileName = getUuid();
+    String parentFolderId = "0";
+    InputStream fileContentStream = generateByteStream(fileSize);
+    byte[] fileBuffer = readByteStream(fileContentStream);
+    File uploadedFile =
+        client
+            .getChunkedUploads()
+            .uploadBigFile(
+                generateByteStreamFromBuffer(fileBuffer), fileName, fileSize, parentFolderId);
+    delayInSeconds(5);
+    UploadSession uploadSession =
+        client
+            .getChunkedUploads()
+            .createFileUploadSessionForExistingFile(
+                uploadedFile.getId(),
+                new CreateFileUploadSessionForExistingFileRequestBody(fileSize));
+    String uploadSessionId = uploadSession.getId();
+    String planUrl = uploadSession.getSessionEndpoints().getPlan();
+    long partSize = uploadSession.getPartSize();
+    int totalParts = uploadSession.getTotalParts();
+    Iterator<InputStream> chunksIterator =
+        iterateChunks(generateByteStreamFromBuffer(fileBuffer), partSize, fileSize);
+    TestPartPlanAccumulator results =
+        reduceIterator(
+            chunksIterator,
+            (TestPartPlanAccumulator acc, InputStream chunk) ->
+                reducerForUploadSessionPlan(acc, chunk),
+            new TestPartPlanAccumulator(-1, Collections.emptyList(), fileSize));
+    List<UploadPartPlan> parts = results.getParts();
+    UploadSessionPlanResponse plan =
+        client
+            .getChunkedUploads()
+            .createFileUploadSessionPlanByUrl(planUrl, new UploadSessionPlanRequest(parts));
+    assert plan.getUploadSessionId().equals(uploadSessionId);
+    assert plan.getHits().size() == totalParts;
+    assert plan.getMisses().size() == 0;
+    UploadPartPlan firstPart = parts.get(0);
+    UploadPartPlanHit firstHit = plan.getHits().get(0);
+    assert firstHit.getOffset() == firstPart.getOffset();
+    assert firstHit.getSize() == firstPart.getSize();
+    assert firstHit.getSha512().equals(firstPart.getSha512());
+    assert !(firstHit.getPartId().equals(""));
+    client.getChunkedUploads().deleteFileUploadSessionById(uploadSessionId);
+    client.getFiles().deleteFileById(uploadedFile.getId());
   }
 
   @Test
