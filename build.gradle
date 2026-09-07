@@ -27,6 +27,7 @@ dependencies {
   implementation "com.squareup.okhttp3:okhttp:${okhttpVersion}"
   implementation "com.squareup.okio:okio:${okioVersion}"
   implementation "org.bitbucket.b_c:jose4j:${jose4jVersion}"
+  implementation "commons-codec:commons-codec:${commonsCodecVersion}"
   implementation "org.bouncycastle:bcprov-jdk18on:${bouncyCastleBcprovJdk18onVersion}"
   implementation "org.bouncycastle:bcpkix-jdk18on:${bouncyCastleBcpkixJdk18onVersion}"
   testImplementation "org.junit.jupiter:junit-jupiter-api:${junitApiVersion}"
