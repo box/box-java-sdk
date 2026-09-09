@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [10.17.0](https://github.com/box/box-java-sdk/compare/v10.16.2...v10.17.0) (2026-09-09)
+
+
+### New Features and Enhancements
+
+* add Japanese ZIP code validation to sign request (box/box-openapi[#615](https://github.com/box/box-java-sdk/issues/615)) ([#1976](https://github.com/box/box-java-sdk/issues/1976)) ([7312c51](https://github.com/box/box-java-sdk/commit/7312c51263f4c62efb1f6072a4f165b5919419ba))
+* Support chunk upload session plan API (box/box-openapi[#616](https://github.com/box/box-java-sdk/issues/616)) ([#1979](https://github.com/box/box-java-sdk/issues/1979)) ([6eb78be](https://github.com/box/box-java-sdk/commit/6eb78beffbee2c2d400a04f12215cfd8d4d1727e))
+
 ### [10.16.2](https://github.com/box/box-java-sdk/compare/v10.16.1...v10.16.2) (2026-09-02)
 
 
