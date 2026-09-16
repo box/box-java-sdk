@@ -695,7 +695,7 @@ public class BoxFileIT {
   }
 
   @Test
-  public void canListVersionsWithAllFields() {
+  public void canListVersionsWithAllFields() throws InterruptedException {
     BoxFile uploadedFile = null;
     String fileName = "[canListVersionsWithAllFields] Multi-version File.txt";
     try {
@@ -707,27 +707,32 @@ public class BoxFileIT {
       version1.promote();
       version1.delete();
 
-      // when
-      Collection<BoxFileVersion> versions = uploadedFile.getVersions(ALL_VERSION_FIELDS);
+      // when/then - trashed fields may not be populated immediately after deletion
+      BoxFile fileRef = uploadedFile;
+      Retry.retry(
+          () -> {
+            Collection<BoxFileVersion> versions = fileRef.getVersions(ALL_VERSION_FIELDS);
 
-      // then
-      assertThat(versions.size(), is(2));
-      Iterator<BoxFileVersion> iterator = versions.iterator();
-      iterator.next();
-      BoxFileVersion version = iterator.next();
-      assertThat(version.getID(), is(notNullValue()));
-      assertThat(version.getSha1(), is(notNullValue()));
-      assertThat(version.getName(), is(notNullValue()));
-      assertThat(version.getSize(), is(notNullValue()));
-      assertThat(version.getUploaderDisplayName(), is(notNullValue()));
-      assertThat(version.getCreatedAt(), is(notNullValue()));
-      assertThat(version.getModifiedAt(), is(notNullValue()));
-      assertThat(version.getModifiedBy(), is(notNullValue()));
-      assertThat(version.getTrashedAt(), is(notNullValue()));
-      assertThat(version.getTrashedBy(), is(notNullValue()));
-      assertThat(version.getPurgedAt(), is(notNullValue()));
-      assertThat(version.getFileID(), is(uploadedFile.getID()));
-      assertThat(version.getVersionNumber(), is(notNullValue()));
+            assertThat(versions.size(), is(2));
+            Iterator<BoxFileVersion> iterator = versions.iterator();
+            iterator.next();
+            BoxFileVersion version = iterator.next();
+            assertThat(version.getID(), is(notNullValue()));
+            assertThat(version.getSha1(), is(notNullValue()));
+            assertThat(version.getName(), is(notNullValue()));
+            assertThat(version.getSize(), is(notNullValue()));
+            assertThat(version.getUploaderDisplayName(), is(notNullValue()));
+            assertThat(version.getCreatedAt(), is(notNullValue()));
+            assertThat(version.getModifiedAt(), is(notNullValue()));
+            assertThat(version.getModifiedBy(), is(notNullValue()));
+            assertThat(version.getTrashedAt(), is(notNullValue()));
+            assertThat(version.getTrashedBy(), is(notNullValue()));
+            assertThat(version.getPurgedAt(), is(notNullValue()));
+            assertThat(version.getFileID(), is(fileRef.getID()));
+            assertThat(version.getVersionNumber(), is(notNullValue()));
+          },
+          5,
+          5000);
     } finally {
       deleteFile(uploadedFile);
     }

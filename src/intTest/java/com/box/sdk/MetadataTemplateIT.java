@@ -281,8 +281,8 @@ public class MetadataTemplateIT {
             assertThat(foundFolder1.getName(), is("one"));
             assertThat(iterator.hasNext(), is(false));
           },
-          5,
-          5000);
+          10,
+          10000);
     } finally {
       deleteMetadataTemplate(api, template);
       deleteFolder(one);
