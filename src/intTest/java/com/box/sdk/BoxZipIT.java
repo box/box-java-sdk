@@ -56,8 +56,7 @@ public class BoxZipIT {
           new BoxZip(api).download("zip_test", items, downloadStream);
       byte[] downloadedFileContent = downloadStream.toByteArray();
 
-      Assert.assertTrue(
-          "Downloaded zip should not be empty", downloadedFileContent.length > 0);
+      Assert.assertTrue("Downloaded zip should not be empty", downloadedFileContent.length > 0);
       assertThat(zipDownloadStatus.getState(), anyOf(is(SUCCEEDED), is(IN_PROGRESS)));
     } finally {
       deleteFile(uploadedFile);
