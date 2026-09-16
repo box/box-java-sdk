@@ -270,6 +270,7 @@ public class MetadataTemplateIT {
           new MetadataQuery(format("enterprise_%s.MyTemplate", TestConfig.getEnterpriseID()))
               .setQuery("myField > :val")
               .addParameter("val", 100)
+              .setAncestorFolderId(rootFolder.getID())
               .setOrderBy(ascending("myField"));
       Retry.retry(
           () -> {
