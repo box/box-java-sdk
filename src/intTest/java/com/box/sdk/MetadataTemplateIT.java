@@ -277,7 +277,9 @@ public class MetadataTemplateIT {
             BoxResourceIterable<BoxItem.Info> result =
                 MetadataTemplate.executeMetadataQuery(api, query);
             Iterator<BoxItem.Info> iterator = result.iterator();
-            assertTrue("Metadata query should return at least one result", iterator.hasNext());
+            if (!iterator.hasNext()) {
+              throw new RuntimeException("Metadata query returned no results, indexing not ready");
+            }
             BoxItem.Info foundFolder1 = iterator.next();
             assertThat(foundFolder1.getName(), is("one"));
             assertThat(iterator.hasNext(), is(false));
