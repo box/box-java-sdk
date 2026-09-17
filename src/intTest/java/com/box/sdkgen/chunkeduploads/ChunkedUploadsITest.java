@@ -24,6 +24,7 @@ import com.box.sdkgen.managers.chunkeduploads.CreateFileUploadSessionRequestBody
 import com.box.sdkgen.managers.chunkeduploads.UploadFilePartByUrlHeaders;
 import com.box.sdkgen.managers.chunkeduploads.UploadFilePartHeaders;
 import com.box.sdkgen.schemas.file.File;
+import com.box.sdkgen.schemas.filefull.FileFull;
 import com.box.sdkgen.schemas.files.Files;
 import com.box.sdkgen.schemas.uploadedpart.UploadedPart;
 import com.box.sdkgen.schemas.uploadpart.UploadPart;
@@ -307,6 +308,36 @@ public class ChunkedUploadsITest {
     assert uploadedFile.getName().equals(fileName);
     assert uploadedFile.getSize() == fileSize;
     assert uploadedFile.getParent().getId().equals(parentFolderId);
+    client.getFiles().deleteFileById(uploadedFile.getId());
+  }
+
+  @Test
+  public void testChunkedUploadFileVersionConvenienceMethod() {
+    String fileName = getUuid();
+    int fileSize = 20 * 1024 * 1024;
+    String parentFolderId = "0";
+    File uploadedFile =
+        client
+            .getChunkedUploads()
+            .uploadBigFile(generateByteStream(fileSize), fileName, fileSize, parentFolderId);
+    assert uploadedFile.getName().equals(fileName);
+    assert uploadedFile.getSize() == fileSize;
+    int versionFileSize = 21 * 1024 * 1024;
+    String versionName = getUuid();
+    FileFull uploadedFileVersion =
+        client
+            .getChunkedUploads()
+            .uploadBigFileVersion(
+                uploadedFile.getId(),
+                generateByteStream(versionFileSize),
+                versionFileSize,
+                versionName);
+    assert !(uploadedFileVersion == null);
+    assert uploadedFileVersion.getId().equals(uploadedFile.getId());
+    assert uploadedFileVersion.getName().equals(versionName);
+    assert uploadedFileVersion.getSize() == versionFileSize;
+    assert !(uploadedFileVersion.getName().equals(fileName));
+    assert !(uploadedFileVersion.getSize() == uploadedFile.getSize());
     client.getFiles().deleteFileById(uploadedFile.getId());
   }
 }
