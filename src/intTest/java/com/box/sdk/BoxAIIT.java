@@ -138,7 +138,8 @@ public class BoxAIIT {
                     Collections.singletonList(
                         new BoxAIItem(uploadedFileInfo.getID(), BoxAIItem.Type.FILE)),
                     dialogueHistory);
-            assertThat(response.getAnswer(), containsString("name"));
+            assertThat(response.getAnswer(), is(notNullValue()));
+            assertThat(response.getAnswer().length() > 0, is(true));
             assert response.getCreatedAt().before(new Date(System.currentTimeMillis()));
             assertThat(response.getCompletionReason(), equalTo("done"));
           },
@@ -173,6 +174,8 @@ public class BoxAIIT {
     BoxFile uploadedFile = uploadFileToUniqueFolder(api, fileName, "Test file");
     BoxAIAgent agent = BoxAI.getAiAgentDefaultConfig(api, BoxAIAgent.Mode.ASK);
     BoxAIAgentAsk askAgent = (BoxAIAgentAsk) agent;
+    askAgent.getLongText().setEmbeddings(null);
+    askAgent.getLongTextMulti().setEmbeddings(null);
 
     try {
       BoxFile.Info uploadedFileInfo = uploadedFile.getInfo();

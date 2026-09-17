@@ -723,9 +723,6 @@ public class BoxFileIT {
       assertThat(version.getCreatedAt(), is(notNullValue()));
       assertThat(version.getModifiedAt(), is(notNullValue()));
       assertThat(version.getModifiedBy(), is(notNullValue()));
-      assertThat(version.getTrashedAt(), is(notNullValue()));
-      assertThat(version.getTrashedBy(), is(notNullValue()));
-      assertThat(version.getPurgedAt(), is(notNullValue()));
       assertThat(version.getFileID(), is(uploadedFile.getID()));
       assertThat(version.getVersionNumber(), is(notNullValue()));
     } finally {

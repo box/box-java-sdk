@@ -243,7 +243,7 @@ public class MetadataTemplateIT {
   }
 
   @Test
-  public void executeMetadataTemplateQuery() {
+  public void executeMetadataTemplateQuery() throws InterruptedException {
     BoxAPIConnection api = jwtApiForServiceAccount();
     String templateKey = "MyTemplate";
     BoxFolder one = null;
@@ -270,12 +270,22 @@ public class MetadataTemplateIT {
           new MetadataQuery(format("enterprise_%s.MyTemplate", TestConfig.getEnterpriseID()))
               .setQuery("myField > :val")
               .addParameter("val", 100)
+              .setAncestorFolderId(rootFolder.getID())
               .setOrderBy(ascending("myField"));
-      BoxResourceIterable<BoxItem.Info> result = MetadataTemplate.executeMetadataQuery(api, query);
-      Iterator<BoxItem.Info> iterator = result.iterator();
-      BoxItem.Info foundFolder = iterator.next();
-      assertThat(foundFolder.getName(), is("one"));
-      assertThat(iterator.hasNext(), is(false));
+      Retry.retry(
+          () -> {
+            BoxResourceIterable<BoxItem.Info> result =
+                MetadataTemplate.executeMetadataQuery(api, query);
+            Iterator<BoxItem.Info> iterator = result.iterator();
+            if (!iterator.hasNext()) {
+              throw new RuntimeException("Metadata query returned no results, indexing not ready");
+            }
+            BoxItem.Info foundFolder1 = iterator.next();
+            assertThat(foundFolder1.getName(), is("one"));
+            assertThat(iterator.hasNext(), is(false));
+          },
+          20,
+          15000);
     } finally {
       deleteMetadataTemplate(api, template);
       deleteFolder(one);

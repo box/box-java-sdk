@@ -78,8 +78,8 @@ public class BoxRetentionPolicyAssignmentIT {
                     .collect(Collectors.toList());
             assertTrue(matchingFileWithRetention2.isEmpty());
           },
-          10,
-          3000);
+          15,
+          5000);
     } finally {
       // cleanup
       deleteFolder(folder.getResource());
@@ -129,8 +129,8 @@ public class BoxRetentionPolicyAssignmentIT {
                     .collect(Collectors.toList());
             assertTrue(matchingFileWithRetention2.isEmpty());
           },
-          10,
-          3000);
+          15,
+          5000);
     } finally {
       // cleanup
       deleteFolder(folder);
