@@ -23,6 +23,8 @@ import com.box.sdkgen.schemas.filefull.FileFull;
 import com.box.sdkgen.schemas.files.Files;
 import com.box.sdkgen.schemas.uploadedpart.UploadedPart;
 import com.box.sdkgen.schemas.uploadpart.UploadPart;
+import com.box.sdkgen.schemas.uploadpartplan.UploadPartPlan;
+import com.box.sdkgen.schemas.uploadpartplanhit.UploadPartPlanHit;
 import com.box.sdkgen.schemas.uploadparts.UploadParts;
 import com.box.sdkgen.schemas.uploadsession.UploadSession;
 import com.box.sdkgen.schemas.uploadsessionplanrequest.UploadSessionPlanRequest;
@@ -826,12 +828,15 @@ public class ChunkedUploadsManager {
     assert part.getSize() == chunkSize;
     assert part.getOffset() == bytesStart;
     acc.getFileHash().updateHash(chunkBuffer);
-    return new PartAccumulator(
-        bytesEnd,
-        Stream.concat(parts.stream(), Arrays.asList(part).stream()).collect(Collectors.toList()),
-        acc.getFileSize(),
-        acc.getUploadPartUrl(),
-        acc.getFileHash());
+    return new PartAccumulator.Builder(
+            bytesEnd,
+            Stream.concat(parts.stream(), Arrays.asList(part).stream())
+                .collect(Collectors.toList()),
+            acc.getFileSize(),
+            acc.getUploadPartUrl(),
+            acc.getFileHash())
+        .planUrl(acc.getPlanUrl())
+        .build();
   }
 
   /**
@@ -872,6 +877,143 @@ public class ChunkedUploadsManager {
             commitUrl,
             new CreateFileUploadSessionCommitByUrlRequestBody(parts),
             new CreateFileUploadSessionCommitByUrlHeaders(digest));
+    return committedSession.getEntries().get(0);
+  }
+
+  public UploadPart getCachedUploadPart(String planUrl, long offset, long size, String sha512) {
+    UploadSessionPlanResponse plan =
+        this.createFileUploadSessionPlanByUrl(
+            planUrl,
+            new UploadSessionPlanRequest(Arrays.asList(new UploadPartPlan(offset, size, sha512))));
+    if (plan.getHits().size() > 0) {
+      UploadPartPlanHit hit = plan.getHits().get(0);
+      return new UploadPart.Builder()
+          .partId(hit.getPartId())
+          .offset(hit.getOffset())
+          .size(hit.getSize())
+          .build();
+    }
+    return null;
+  }
+
+  public PartAccumulator reducerForFileVersion(PartAccumulator acc, InputStream chunk) {
+    long lastIndex = acc.getLastIndex();
+    List<UploadPart> parts = acc.getParts();
+    byte[] chunkBuffer = readByteStream(chunk);
+    Hash hash = new Hash(HashName.SHA1);
+    hash.updateHash(chunkBuffer);
+    String sha1 = hash.digestHash("base64");
+    String digest = String.join("", "sha=", sha1);
+    int chunkSize = bufferLength(chunkBuffer);
+    long bytesStart = lastIndex + 1;
+    long bytesEnd = lastIndex + chunkSize;
+    String contentRange =
+        String.join(
+            "",
+            "bytes ",
+            convertToString(bytesStart),
+            "-",
+            convertToString(bytesEnd),
+            "/",
+            convertToString(acc.getFileSize()));
+    Hash sha512Hash = new Hash(HashName.SHA512);
+    sha512Hash.updateHash(chunkBuffer);
+    String sha512 = sha512Hash.digestHash("hex");
+    UploadPart cachedPart =
+        this.getCachedUploadPart(acc.getPlanUrl(), bytesStart, chunkSize, sha512);
+    if (!(cachedPart == null)) {
+      acc.getFileHash().updateHash(chunkBuffer);
+      return new PartAccumulator.Builder(
+              bytesEnd,
+              Stream.concat(parts.stream(), Arrays.asList(cachedPart).stream())
+                  .collect(Collectors.toList()),
+              acc.getFileSize(),
+              acc.getUploadPartUrl(),
+              acc.getFileHash())
+          .planUrl(acc.getPlanUrl())
+          .build();
+    }
+    UploadedPart uploadedPart =
+        this.uploadFilePartByUrl(
+            acc.getUploadPartUrl(),
+            generateByteStreamFromBuffer(chunkBuffer),
+            new UploadFilePartByUrlHeaders(digest, contentRange));
+    UploadPart part = uploadedPart.getPart();
+    String partSha1 = hexToBase64(part.getSha1());
+    assert partSha1.equals(sha1);
+    assert part.getSize() == chunkSize;
+    assert part.getOffset() == bytesStart;
+    acc.getFileHash().updateHash(chunkBuffer);
+    return new PartAccumulator.Builder(
+            bytesEnd,
+            Stream.concat(parts.stream(), Arrays.asList(part).stream())
+                .collect(Collectors.toList()),
+            acc.getFileSize(),
+            acc.getUploadPartUrl(),
+            acc.getFileHash())
+        .planUrl(acc.getPlanUrl())
+        .build();
+  }
+
+  /**
+   * Starts the process of chunk uploading a new version of a big file. Should return a File object
+   * representing the uploaded file version. Returns nothing when commit responds with 202 because
+   * the file did not change.
+   *
+   * @param fileId The ID of the file to upload a new version of.
+   * @param file The stream of the file to upload.
+   * @param fileSize The total size of the file for the chunked upload in bytes.
+   */
+  public FileFull uploadBigFileVersion(String fileId, InputStream file, long fileSize) {
+    return uploadBigFileVersion(fileId, file, fileSize, null);
+  }
+
+  /**
+   * Starts the process of chunk uploading a new version of a big file. Should return a File object
+   * representing the uploaded file version. Returns nothing when commit responds with 202 because
+   * the file did not change.
+   *
+   * @param fileId The ID of the file to upload a new version of.
+   * @param file The stream of the file to upload.
+   * @param fileSize The total size of the file for the chunked upload in bytes.
+   * @param fileName The optional new name of the file.
+   */
+  public FileFull uploadBigFileVersion(
+      String fileId, InputStream file, long fileSize, String fileName) {
+    UploadSession uploadSession =
+        this.createFileUploadSessionForExistingFile(
+            fileId,
+            new CreateFileUploadSessionForExistingFileRequestBody.Builder(fileSize)
+                .fileName(fileName)
+                .build());
+    String uploadPartUrl = uploadSession.getSessionEndpoints().getUploadPart();
+    String commitUrl = uploadSession.getSessionEndpoints().getCommit();
+    String planUrl = uploadSession.getSessionEndpoints().getPlan();
+    long partSize = uploadSession.getPartSize();
+    int totalParts = uploadSession.getTotalParts();
+    assert partSize * totalParts >= fileSize;
+    assert uploadSession.getNumPartsProcessed() == 0;
+    Hash fileHash = new Hash(HashName.SHA1);
+    Iterator<InputStream> chunksIterator = iterateChunks(file, partSize, fileSize);
+    PartAccumulator results =
+        reduceIterator(
+            chunksIterator,
+            this::reducerForFileVersion,
+            new PartAccumulator.Builder(
+                    -1, Collections.emptyList(), fileSize, uploadPartUrl, fileHash)
+                .planUrl(planUrl)
+                .build());
+    List<UploadPart> parts = results.getParts();
+    String sha1 = fileHash.digestHash("base64");
+    String digest = String.join("", "sha=", sha1);
+    Files committedSession =
+        this.createFileUploadSessionCommitByUrl(
+            commitUrl,
+            new CreateFileUploadSessionCommitByUrlRequestBody(parts),
+            new CreateFileUploadSessionCommitByUrlHeaders(digest));
+    if (committedSession == null) {
+      return null;
+    }
     return committedSession.getEntries().get(0);
   }
 
