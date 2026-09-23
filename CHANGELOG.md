@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [10.18.0](https://github.com/box/box-java-sdk/compare/v10.17.0...v10.18.0) (2026-09-23)
+
+
+### New Features and Enhancements
+
+* Support upload big file version convenience method (box/box-codegen[#988](https://github.com/box/box-java-sdk/issues/988)) ([92042fb](https://github.com/box/box-java-sdk/commit/92042fb239a73484f0b0e3fdd3c9cd11ec04eedb))
+
 ## [10.17.0](https://github.com/box/box-java-sdk/compare/v10.16.2...v10.17.0) (2026-09-09)
 
 
