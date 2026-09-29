@@ -35,11 +35,22 @@ public class AiExtractStructured extends SerializableObject {
   @JsonProperty("ai_agent")
   protected AiExtractStructuredAgent aiAgent;
 
-  /** A flag to indicate whether confidence scores for every extracted field should be returned. */
+  /**
+   * A flag to indicate whether confidence scores for every extracted field should be returned.
+   * Estimates the likelihood that an extracted metadata field value is accurate and correct.
+   * Displays a numerical and categorical confidence score to help users and automated systems
+   * quickly determine extraction reliability.
+   */
   @JsonProperty("include_confidence_score")
   protected Boolean includeConfidenceScore;
 
-  /** A flag to indicate whether references for every extracted field should be returned. */
+  /**
+   * A flag to indicate whether references for every extracted field should be returned. References
+   * and bounding boxes show where the agent extracted the metadata from. They help you check for
+   * accuracy and fix any mistakes. References are short, exact quotes from the original document
+   * used to verify results. Bounding boxes highlight the specific areas on the page where that text
+   * is found.
+   */
   @JsonProperty("include_reference")
   protected Boolean includeReference;
 

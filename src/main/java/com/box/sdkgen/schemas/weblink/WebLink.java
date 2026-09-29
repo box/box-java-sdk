@@ -80,6 +80,7 @@ public class WebLink extends WebLinkMini {
   protected UserMini ownedBy;
 
   @JsonProperty("shared_link")
+  @Nullable
   protected WebLinkSharedLinkField sharedLink;
 
   /**
@@ -422,6 +423,7 @@ public class WebLink extends WebLinkMini {
 
     public Builder sharedLink(WebLinkSharedLinkField sharedLink) {
       this.sharedLink = sharedLink;
+      this.markNullableFieldAsSet("shared_link");
       return this;
     }
 

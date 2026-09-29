@@ -90,6 +90,7 @@ public class File extends FileMini {
   protected UserMini ownedBy;
 
   @JsonProperty("shared_link")
+  @Nullable
   protected FileSharedLinkField sharedLink;
 
   @Nullable protected FolderMini parent;
@@ -444,6 +445,7 @@ public class File extends FileMini {
 
     public Builder sharedLink(FileSharedLinkField sharedLink) {
       this.sharedLink = sharedLink;
+      this.markNullableFieldAsSet("shared_link");
       return this;
     }
 
