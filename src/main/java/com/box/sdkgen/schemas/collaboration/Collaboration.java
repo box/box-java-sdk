@@ -7,11 +7,11 @@ import com.box.sdkgen.internal.utils.DateTimeUtils;
 import com.box.sdkgen.schemas.appitem.AppItem;
 import com.box.sdkgen.schemas.collaborationaccessgrantee.CollaborationAccessGrantee;
 import com.box.sdkgen.schemas.collaborationitem.CollaborationItem;
-import com.box.sdkgen.schemas.file.File;
-import com.box.sdkgen.schemas.folder.Folder;
+import com.box.sdkgen.schemas.filemini.FileMini;
+import com.box.sdkgen.schemas.foldermini.FolderMini;
 import com.box.sdkgen.schemas.groupmini.GroupMini;
 import com.box.sdkgen.schemas.usercollaborations.UserCollaborations;
-import com.box.sdkgen.schemas.weblink.WebLink;
+import com.box.sdkgen.schemas.weblinkmini.WebLinkMini;
 import com.box.sdkgen.serialization.json.EnumWrapper;
 import com.fasterxml.jackson.annotation.JsonFilter;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -349,19 +349,19 @@ public class Collaboration extends SerializableObject {
       return this;
     }
 
-    public Builder item(File item) {
+    public Builder item(FileMini item) {
       this.item = new CollaborationItem(item);
       this.markNullableFieldAsSet("item");
       return this;
     }
 
-    public Builder item(Folder item) {
+    public Builder item(FolderMini item) {
       this.item = new CollaborationItem(item);
       this.markNullableFieldAsSet("item");
       return this;
     }
 
-    public Builder item(WebLink item) {
+    public Builder item(WebLinkMini item) {
       this.item = new CollaborationItem(item);
       this.markNullableFieldAsSet("item");
       return this;
