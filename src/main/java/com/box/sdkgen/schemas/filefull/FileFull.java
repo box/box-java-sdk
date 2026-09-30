@@ -99,7 +99,7 @@ public class FileFull extends File {
 
   protected FileFullRepresentationsField representations;
 
-  protected FileFullClassificationField classification;
+  @Nullable protected FileFullClassificationField classification;
 
   @JsonProperty("uploader_display_name")
   protected String uploaderDisplayName;
@@ -770,6 +770,7 @@ public class FileFull extends File {
 
     public Builder classification(FileFullClassificationField classification) {
       this.classification = classification;
+      this.markNullableFieldAsSet("classification");
       return this;
     }
 
@@ -948,6 +949,7 @@ public class FileFull extends File {
     @Override
     public Builder sharedLink(FileSharedLinkField sharedLink) {
       this.sharedLink = sharedLink;
+      this.markNullableFieldAsSet("shared_link");
       return this;
     }
 
