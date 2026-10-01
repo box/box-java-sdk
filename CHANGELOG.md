@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [5.18.0](https://github.com/box/box-java-sdk/compare/v5.17.0...v5.18.0) (2026-10-01)
+
+### ⚠ BREAKING CHANGES
+
+* **boxsdkgen:** use `FileMini`/`FolderMini`/`WebLinkMini` in `CollaborationItem` (box/box-openapi[#619](https://github.com/box/box-openapi/pull/619)) ([28640c7](https://github.com/box/box-java-sdk/commit/28640c7d6e3efe2314bc21a6b816c6c4e3bdacae))
+
+### Bug Fixes:
+
+* **boxsdkgen:** use `FileMini`/`FolderMini`/`WebLinkMini` in `CollaborationItem` (box/box-openapi[#619](https://github.com/box/box-openapi/pull/619)) ([28640c7](https://github.com/box/box-java-sdk/commit/28640c7d6e3efe2314bc21a6b816c6c4e3bdacae))
+
 ## [5.17.0](https://github.com/box/box-java-sdk/compare/v5.16.0...v5.17.0) (2026-09-23)
 
 
