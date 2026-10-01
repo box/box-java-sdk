@@ -4,6 +4,14 @@ All notable changes to this project will be documented in this file. See [standa
 
 ## [10.19.0](https://github.com/box/box-java-sdk/compare/v10.18.0...v10.19.0) (2026-10-01)
 
+### ⚠ BREAKING CHANGES
+
+* use `FileMini`/`FolderMini`/`WebLinkMini` in `CollaborationItem` (box/box-openapi[#619](https://github.com/box/box-openapi/pull/619)) ([c6b93be](https://github.com/box/box-java-sdk/commit/c6b93bee255b7358421cbf786891cff551aef807))
+
+### Bug Fixes
+
+* use `FileMini`/`FolderMini`/`WebLinkMini` in `CollaborationItem` (box/box-openapi[#619](https://github.com/box/box-openapi/pull/619)) ([c6b93be](https://github.com/box/box-java-sdk/commit/c6b93bee255b7358421cbf786891cff551aef807))
+
 ## [10.18.0](https://github.com/box/box-java-sdk/compare/v10.17.0...v10.18.0) (2026-09-23)
 
 
