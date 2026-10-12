@@ -98,6 +98,7 @@ public class DocGenJobFullV2025R0 extends DocGenJobV2025R0 {
     DocGenJobFullV2025R0 casted = (DocGenJobFullV2025R0) o;
     return Objects.equals(id, casted.id)
         && Objects.equals(type, casted.type)
+        && Objects.equals(externalId, casted.externalId)
         && Objects.equals(batch, casted.batch)
         && Objects.equals(templateFile, casted.templateFile)
         && Objects.equals(templateFileVersion, casted.templateFileVersion)
@@ -117,6 +118,7 @@ public class DocGenJobFullV2025R0 extends DocGenJobV2025R0 {
     return Objects.hash(
         id,
         type,
+        externalId,
         batch,
         templateFile,
         templateFileVersion,
@@ -140,6 +142,10 @@ public class DocGenJobFullV2025R0 extends DocGenJobV2025R0 {
         + ", "
         + "type='"
         + type
+        + '\''
+        + ", "
+        + "externalId='"
+        + externalId
         + '\''
         + ", "
         + "batch='"
@@ -248,6 +254,12 @@ public class DocGenJobFullV2025R0 extends DocGenJobV2025R0 {
     @Override
     public Builder type(EnumWrapper<DocGenJobBaseV2025R0TypeField> type) {
       this.type = type;
+      return this;
+    }
+
+    @Override
+    public Builder externalId(String externalId) {
+      this.externalId = externalId;
       return this;
     }
 

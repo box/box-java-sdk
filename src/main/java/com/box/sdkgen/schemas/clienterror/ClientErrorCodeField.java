@@ -25,6 +25,7 @@ public enum ClientErrorCodeField implements Valuable {
   METHOD_NOT_ALLOWED("method_not_allowed"),
   CONFLICT("conflict"),
   PRECONDITION_FAILED("precondition_failed"),
+  UNPROCESSABLE_ENTITY("unprocessable_entity"),
   TOO_MANY_REQUESTS("too_many_requests"),
   INTERNAL_SERVER_ERROR("internal_server_error"),
   UNAVAILABLE("unavailable"),

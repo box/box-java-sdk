@@ -599,8 +599,8 @@ public class ChunkedUploadsManager {
    * only uploading missing parts.
    *
    * <p>The actual endpoint URL is returned by the [`Create upload
-   * session`](e://post-files-upload-sessions) and [`Get upload
-   * session`](e://get-files-upload-sessions-id) endpoints.
+   * session`](https://developer.box.com/reference/post-files-upload-sessions) and [`Get upload
+   * session`](https://developer.box.com/reference/get-files-upload-sessions-id) endpoints.
    *
    * @param url URL of createFileUploadSessionPlan method
    * @param requestBody Request body of createFileUploadSessionPlan method
@@ -620,8 +620,8 @@ public class ChunkedUploadsManager {
    * only uploading missing parts.
    *
    * <p>The actual endpoint URL is returned by the [`Create upload
-   * session`](e://post-files-upload-sessions) and [`Get upload
-   * session`](e://get-files-upload-sessions-id) endpoints.
+   * session`](https://developer.box.com/reference/post-files-upload-sessions) and [`Get upload
+   * session`](https://developer.box.com/reference/get-files-upload-sessions-id) endpoints.
    *
    * @param url URL of createFileUploadSessionPlan method
    * @param requestBody Request body of createFileUploadSessionPlan method
@@ -653,8 +653,8 @@ public class ChunkedUploadsManager {
    * hits) and only uploading missing parts.
    *
    * <p>The actual endpoint URL is returned by the [`Create upload
-   * session`](e://post-files-upload-sessions) and [`Get upload
-   * session`](e://get-files-upload-sessions-id) endpoints.
+   * session`](https://developer.box.com/reference/post-files-upload-sessions) and [`Get upload
+   * session`](https://developer.box.com/reference/get-files-upload-sessions-id) endpoints.
    *
    * @param uploadSessionId The ID of the upload session. Example: "D5E3F7A"
    * @param requestBody Request body of createFileUploadSessionPlan method
@@ -671,8 +671,8 @@ public class ChunkedUploadsManager {
    * hits) and only uploading missing parts.
    *
    * <p>The actual endpoint URL is returned by the [`Create upload
-   * session`](e://post-files-upload-sessions) and [`Get upload
-   * session`](e://get-files-upload-sessions-id) endpoints.
+   * session`](https://developer.box.com/reference/post-files-upload-sessions) and [`Get upload
+   * session`](https://developer.box.com/reference/get-files-upload-sessions-id) endpoints.
    *
    * @param uploadSessionId The ID of the upload session. Example: "D5E3F7A"
    * @param requestBody Request body of createFileUploadSessionPlan method
