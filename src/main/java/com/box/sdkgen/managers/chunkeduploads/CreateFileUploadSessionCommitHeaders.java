@@ -12,6 +12,9 @@ public class CreateFileUploadSessionCommitHeaders {
    * <p>Only SHA1 is supported. The SHA1 digest must be Base64 encoded. The format of this header is
    * as `sha=BASE64_ENCODED_DIGEST`.
    *
+   * <p>`SHA-512` is not supported for the whole-file digest, even if the parts were uploaded with
+   * `SHA-512` digests.
+   *
    * <p>[1]: https://tools.ietf.org/html/rfc3230
    */
   public final String digest;

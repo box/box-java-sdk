@@ -33,7 +33,12 @@ public class SearchManager {
   }
 
   /**
-   * Create a search using SQL-like syntax to return items that match specific metadata.
+   * For new integrations, use the [v2026.0 Query
+   * API](https://developer.box.com/reference/v2026.0/query-resources). This is the latest version
+   * of the Query API, with advanced capabilities including multi-template queries and Query
+   * Insights, and is the API we will continue to enhance with new Query capabilities.
+   *
+   * <p>Create a search using SQL-like syntax to return items that match specific metadata.
    *
    * <p>By default, this endpoint returns only the most basic info about the items for which the
    * query matches. To get additional fields for each item, including any of the metadata, use the
@@ -46,7 +51,12 @@ public class SearchManager {
   }
 
   /**
-   * Create a search using SQL-like syntax to return items that match specific metadata.
+   * For new integrations, use the [v2026.0 Query
+   * API](https://developer.box.com/reference/v2026.0/query-resources). This is the latest version
+   * of the Query API, with advanced capabilities including multi-template queries and Query
+   * Insights, and is the API we will continue to enhance with new Query capabilities.
+   *
+   * <p>Create a search using SQL-like syntax to return items that match specific metadata.
    *
    * <p>By default, this endpoint returns only the most basic info about the items for which the
    * query matches. To get additional fields for each item, including any of the metadata, use the
