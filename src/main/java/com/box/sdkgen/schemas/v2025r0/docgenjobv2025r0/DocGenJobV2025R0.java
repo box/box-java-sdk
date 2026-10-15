@@ -17,6 +17,14 @@ import java.util.Objects;
 @JsonFilter("nullablePropertyFilter")
 public class DocGenJobV2025R0 extends DocGenJobBaseV2025R0 {
 
+  /**
+   * An optional identifier supplied by the caller when the Box Doc Gen job was created. Returned
+   * for correlation only. It is not a Box resource ID, is not required to be unique, and cannot be
+   * used to look up the job.
+   */
+  @JsonProperty("external_id")
+  protected String externalId;
+
   protected final DocGenBatchBaseV2025R0 batch;
 
   @JsonProperty("template_file")
@@ -76,6 +84,7 @@ public class DocGenJobV2025R0 extends DocGenJobBaseV2025R0 {
 
   protected DocGenJobV2025R0(Builder builder) {
     super(builder);
+    this.externalId = builder.externalId;
     this.batch = builder.batch;
     this.templateFile = builder.templateFile;
     this.templateFileVersion = builder.templateFileVersion;
@@ -85,6 +94,10 @@ public class DocGenJobV2025R0 extends DocGenJobBaseV2025R0 {
     this.outputType = builder.outputType;
     this.failures = builder.failures;
     markNullableFieldsAsSet(builder.getExplicitlySetNullableFields());
+  }
+
+  public String getExternalId() {
+    return externalId;
   }
 
   public DocGenBatchBaseV2025R0 getBatch() {
@@ -130,6 +143,7 @@ public class DocGenJobV2025R0 extends DocGenJobBaseV2025R0 {
     DocGenJobV2025R0 casted = (DocGenJobV2025R0) o;
     return Objects.equals(id, casted.id)
         && Objects.equals(type, casted.type)
+        && Objects.equals(externalId, casted.externalId)
         && Objects.equals(batch, casted.batch)
         && Objects.equals(templateFile, casted.templateFile)
         && Objects.equals(templateFileVersion, casted.templateFileVersion)
@@ -145,6 +159,7 @@ public class DocGenJobV2025R0 extends DocGenJobBaseV2025R0 {
     return Objects.hash(
         id,
         type,
+        externalId,
         batch,
         templateFile,
         templateFileVersion,
@@ -164,6 +179,10 @@ public class DocGenJobV2025R0 extends DocGenJobBaseV2025R0 {
         + ", "
         + "type='"
         + type
+        + '\''
+        + ", "
+        + "externalId='"
+        + externalId
         + '\''
         + ", "
         + "batch='"
@@ -201,6 +220,8 @@ public class DocGenJobV2025R0 extends DocGenJobBaseV2025R0 {
   }
 
   public static class Builder extends DocGenJobBaseV2025R0.Builder {
+
+    protected String externalId;
 
     protected final DocGenBatchBaseV2025R0 batch;
 
@@ -246,6 +267,11 @@ public class DocGenJobV2025R0 extends DocGenJobBaseV2025R0 {
       this.templateFileVersion = templateFileVersion;
       this.status = status;
       this.outputType = outputType;
+    }
+
+    public Builder externalId(String externalId) {
+      this.externalId = externalId;
+      return this;
     }
 
     public Builder outputFile(FileReferenceV2025R0 outputFile) {
