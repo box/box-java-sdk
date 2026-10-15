@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [5.19.0](https://github.com/box/box-java-sdk/compare/v5.18.0...v5.19.0) (2026-10-15)
+
+
+### New Features and Enhancements:
+
+* **boxsdkgen:** support `sha512` for chunked uploads and add `external_id` (box/box-openapi[#620](https://github.com/box/box-java-sdk/issues/620)) ([69ca1a8](https://github.com/box/box-java-sdk/commit/69ca1a8bdc5ca646c2ce171ce4ffe05ef91ee844))
+
 ## [5.18.0](https://github.com/box/box-java-sdk/compare/v5.17.0...v5.18.0) (2026-10-01)
 
 ### ⚠ BREAKING CHANGES
