@@ -10,7 +10,18 @@ import java.util.Objects;
 @JsonFilter("nullablePropertyFilter")
 public class CreateFileUploadSessionCommitByUrlRequestBody extends SerializableObject {
 
-  /** The list details for the uploaded parts. */
+  /**
+   * The list details for the uploaded parts.
+   *
+   * <p>Each entry can include `sha1` or `sha512`. Include `sha512` on every entry or on none of
+   * them. A request where only some entries include `sha512` is rejected.
+   *
+   * <p>Include parts that the server already has, returned as `hits` by the [`Plan upload
+   * session`](https://developer.box.com/reference/post-files-upload-sessions-id-plan) endpoint. Use
+   * the `part_id`, `offset`, and `size` from the plan response. If the other entries include
+   * `sha512`, include the `sha512` value from the plan response. Otherwise, leave the hash out of
+   * these entries.
+   */
   protected final List<UploadPart> parts;
 
   public CreateFileUploadSessionCommitByUrlRequestBody(
