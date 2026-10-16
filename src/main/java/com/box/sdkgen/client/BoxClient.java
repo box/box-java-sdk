@@ -19,6 +19,7 @@ import com.box.sdkgen.managers.comments.CommentsManager;
 import com.box.sdkgen.managers.devicepinners.DevicePinnersManager;
 import com.box.sdkgen.managers.docgen.DocgenManager;
 import com.box.sdkgen.managers.docgentemplate.DocgenTemplateManager;
+import com.box.sdkgen.managers.documentsplit.DocumentSplitManager;
 import com.box.sdkgen.managers.downloads.DownloadsManager;
 import com.box.sdkgen.managers.emailaliases.EmailAliasesManager;
 import com.box.sdkgen.managers.enterpriseconfigurations.EnterpriseConfigurationsManager;
@@ -276,6 +277,8 @@ public class BoxClient {
   public final AutomateWorkflowsManager automateWorkflows;
 
   public final NotesManager notes;
+
+  public final DocumentSplitManager documentSplit;
 
   public final QueryManager query;
 
@@ -634,6 +637,11 @@ public class BoxClient {
             .build();
     this.notes =
         new NotesManager.Builder().auth(this.auth).networkSession(this.networkSession).build();
+    this.documentSplit =
+        new DocumentSplitManager.Builder()
+            .auth(this.auth)
+            .networkSession(this.networkSession)
+            .build();
     this.query =
         new QueryManager.Builder().auth(this.auth).networkSession(this.networkSession).build();
   }
@@ -993,6 +1001,11 @@ public class BoxClient {
             .build();
     this.notes =
         new NotesManager.Builder().auth(this.auth).networkSession(this.networkSession).build();
+    this.documentSplit =
+        new DocumentSplitManager.Builder()
+            .auth(this.auth)
+            .networkSession(this.networkSession)
+            .build();
     this.query =
         new QueryManager.Builder().auth(this.auth).networkSession(this.networkSession).build();
   }
@@ -1456,6 +1469,10 @@ public class BoxClient {
 
   public NotesManager getNotes() {
     return notes;
+  }
+
+  public DocumentSplitManager getDocumentSplit() {
+    return documentSplit;
   }
 
   public QueryManager getQuery() {
