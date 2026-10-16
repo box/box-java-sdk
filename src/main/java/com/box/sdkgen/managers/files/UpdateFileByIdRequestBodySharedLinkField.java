@@ -4,6 +4,10 @@ import com.box.sdkgen.internal.Nullable;
 import com.box.sdkgen.internal.NullableFieldTracker;
 import com.box.sdkgen.internal.SerializableObject;
 import com.box.sdkgen.internal.utils.DateTimeUtils;
+import com.box.sdkgen.schemas.sharedlinkotpwritable.SharedLinkOtpWritable;
+import com.box.sdkgen.schemas.sharedlinkotpwritableallowlist.SharedLinkOtpWritableAllowlist;
+import com.box.sdkgen.schemas.sharedlinkotpwritablenone.SharedLinkOtpWritableNone;
+import com.box.sdkgen.schemas.sharedlinkotpwritableopen.SharedLinkOtpWritableOpen;
 import com.box.sdkgen.serialization.json.EnumWrapper;
 import com.fasterxml.jackson.annotation.JsonFilter;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -65,6 +69,9 @@ public class UpdateFileByIdRequestBodySharedLinkField extends SerializableObject
 
   protected UpdateFileByIdRequestBodySharedLinkPermissionsField permissions;
 
+  @JsonProperty("one_time_passcode")
+  protected SharedLinkOtpWritable oneTimePasscode;
+
   public UpdateFileByIdRequestBodySharedLinkField() {
     super();
   }
@@ -76,6 +83,7 @@ public class UpdateFileByIdRequestBodySharedLinkField extends SerializableObject
     this.vanityName = builder.vanityName;
     this.unsharedAt = builder.unsharedAt;
     this.permissions = builder.permissions;
+    this.oneTimePasscode = builder.oneTimePasscode;
     markNullableFieldsAsSet(builder.getExplicitlySetNullableFields());
   }
 
@@ -99,6 +107,10 @@ public class UpdateFileByIdRequestBodySharedLinkField extends SerializableObject
     return permissions;
   }
 
+  public SharedLinkOtpWritable getOneTimePasscode() {
+    return oneTimePasscode;
+  }
+
   @Override
   public boolean equals(Object o) {
     if (this == o) {
@@ -112,12 +124,13 @@ public class UpdateFileByIdRequestBodySharedLinkField extends SerializableObject
         && Objects.equals(password, casted.password)
         && Objects.equals(vanityName, casted.vanityName)
         && Objects.equals(unsharedAt, casted.unsharedAt)
-        && Objects.equals(permissions, casted.permissions);
+        && Objects.equals(permissions, casted.permissions)
+        && Objects.equals(oneTimePasscode, casted.oneTimePasscode);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(access, password, vanityName, unsharedAt, permissions);
+    return Objects.hash(access, password, vanityName, unsharedAt, permissions, oneTimePasscode);
   }
 
   @Override
@@ -142,6 +155,10 @@ public class UpdateFileByIdRequestBodySharedLinkField extends SerializableObject
         + "permissions='"
         + permissions
         + '\''
+        + ", "
+        + "oneTimePasscode='"
+        + oneTimePasscode
+        + '\''
         + "}";
   }
 
@@ -156,6 +173,8 @@ public class UpdateFileByIdRequestBodySharedLinkField extends SerializableObject
     protected OffsetDateTime unsharedAt;
 
     protected UpdateFileByIdRequestBodySharedLinkPermissionsField permissions;
+
+    protected SharedLinkOtpWritable oneTimePasscode;
 
     public Builder access(UpdateFileByIdRequestBodySharedLinkAccessField access) {
       this.access = new EnumWrapper<UpdateFileByIdRequestBodySharedLinkAccessField>(access);
@@ -185,6 +204,26 @@ public class UpdateFileByIdRequestBodySharedLinkField extends SerializableObject
 
     public Builder permissions(UpdateFileByIdRequestBodySharedLinkPermissionsField permissions) {
       this.permissions = permissions;
+      return this;
+    }
+
+    public Builder oneTimePasscode(SharedLinkOtpWritableNone oneTimePasscode) {
+      this.oneTimePasscode = new SharedLinkOtpWritable(oneTimePasscode);
+      return this;
+    }
+
+    public Builder oneTimePasscode(SharedLinkOtpWritableOpen oneTimePasscode) {
+      this.oneTimePasscode = new SharedLinkOtpWritable(oneTimePasscode);
+      return this;
+    }
+
+    public Builder oneTimePasscode(SharedLinkOtpWritableAllowlist oneTimePasscode) {
+      this.oneTimePasscode = new SharedLinkOtpWritable(oneTimePasscode);
+      return this;
+    }
+
+    public Builder oneTimePasscode(SharedLinkOtpWritable oneTimePasscode) {
+      this.oneTimePasscode = oneTimePasscode;
       return this;
     }
 
