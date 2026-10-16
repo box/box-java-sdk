@@ -60,7 +60,7 @@ public class TranscriptSkillCard extends SerializableObject {
   protected Long duration;
 
   /**
-   * An list of entries for the card. This represents the individual entries of the transcription.
+   * A list of entries for the card. This represents the individual entries of the transcription.
    */
   protected final List<TranscriptSkillCardEntriesField> entries;
 

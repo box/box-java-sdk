@@ -4,6 +4,10 @@ import com.box.sdkgen.internal.Nullable;
 import com.box.sdkgen.internal.NullableFieldTracker;
 import com.box.sdkgen.internal.SerializableObject;
 import com.box.sdkgen.internal.utils.DateTimeUtils;
+import com.box.sdkgen.schemas.sharedlinkotpwritable.SharedLinkOtpWritable;
+import com.box.sdkgen.schemas.sharedlinkotpwritableallowlist.SharedLinkOtpWritableAllowlist;
+import com.box.sdkgen.schemas.sharedlinkotpwritablenone.SharedLinkOtpWritableNone;
+import com.box.sdkgen.schemas.sharedlinkotpwritableopen.SharedLinkOtpWritableOpen;
 import com.box.sdkgen.serialization.json.EnumWrapper;
 import com.fasterxml.jackson.annotation.JsonFilter;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -63,6 +67,9 @@ public class UpdateWebLinkByIdRequestBodySharedLinkField extends SerializableObj
   @JsonDeserialize(using = DateTimeUtils.DateTimeDeserializer.class)
   protected OffsetDateTime unsharedAt;
 
+  @JsonProperty("one_time_passcode")
+  protected SharedLinkOtpWritable oneTimePasscode;
+
   public UpdateWebLinkByIdRequestBodySharedLinkField() {
     super();
   }
@@ -73,6 +80,7 @@ public class UpdateWebLinkByIdRequestBodySharedLinkField extends SerializableObj
     this.password = builder.password;
     this.vanityName = builder.vanityName;
     this.unsharedAt = builder.unsharedAt;
+    this.oneTimePasscode = builder.oneTimePasscode;
     markNullableFieldsAsSet(builder.getExplicitlySetNullableFields());
   }
 
@@ -92,6 +100,10 @@ public class UpdateWebLinkByIdRequestBodySharedLinkField extends SerializableObj
     return unsharedAt;
   }
 
+  public SharedLinkOtpWritable getOneTimePasscode() {
+    return oneTimePasscode;
+  }
+
   @Override
   public boolean equals(Object o) {
     if (this == o) {
@@ -105,12 +117,13 @@ public class UpdateWebLinkByIdRequestBodySharedLinkField extends SerializableObj
     return Objects.equals(access, casted.access)
         && Objects.equals(password, casted.password)
         && Objects.equals(vanityName, casted.vanityName)
-        && Objects.equals(unsharedAt, casted.unsharedAt);
+        && Objects.equals(unsharedAt, casted.unsharedAt)
+        && Objects.equals(oneTimePasscode, casted.oneTimePasscode);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(access, password, vanityName, unsharedAt);
+    return Objects.hash(access, password, vanityName, unsharedAt, oneTimePasscode);
   }
 
   @Override
@@ -131,6 +144,10 @@ public class UpdateWebLinkByIdRequestBodySharedLinkField extends SerializableObj
         + "unsharedAt='"
         + unsharedAt
         + '\''
+        + ", "
+        + "oneTimePasscode='"
+        + oneTimePasscode
+        + '\''
         + "}";
   }
 
@@ -143,6 +160,8 @@ public class UpdateWebLinkByIdRequestBodySharedLinkField extends SerializableObj
     protected String vanityName;
 
     protected OffsetDateTime unsharedAt;
+
+    protected SharedLinkOtpWritable oneTimePasscode;
 
     public Builder access(UpdateWebLinkByIdRequestBodySharedLinkAccessField access) {
       this.access = new EnumWrapper<UpdateWebLinkByIdRequestBodySharedLinkAccessField>(access);
@@ -167,6 +186,26 @@ public class UpdateWebLinkByIdRequestBodySharedLinkField extends SerializableObj
 
     public Builder unsharedAt(OffsetDateTime unsharedAt) {
       this.unsharedAt = unsharedAt;
+      return this;
+    }
+
+    public Builder oneTimePasscode(SharedLinkOtpWritableNone oneTimePasscode) {
+      this.oneTimePasscode = new SharedLinkOtpWritable(oneTimePasscode);
+      return this;
+    }
+
+    public Builder oneTimePasscode(SharedLinkOtpWritableOpen oneTimePasscode) {
+      this.oneTimePasscode = new SharedLinkOtpWritable(oneTimePasscode);
+      return this;
+    }
+
+    public Builder oneTimePasscode(SharedLinkOtpWritableAllowlist oneTimePasscode) {
+      this.oneTimePasscode = new SharedLinkOtpWritable(oneTimePasscode);
+      return this;
+    }
+
+    public Builder oneTimePasscode(SharedLinkOtpWritable oneTimePasscode) {
+      this.oneTimePasscode = oneTimePasscode;
       return this;
     }
 

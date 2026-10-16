@@ -121,13 +121,17 @@ public class FileSharedLinkField extends SerializableObject {
   @JsonProperty("preview_count")
   protected final long previewCount;
 
+  @JsonProperty("one_time_passcode")
+  protected final FileSharedLinkOneTimePasscodeField oneTimePasscode;
+
   public FileSharedLinkField(
       String url,
       FileSharedLinkEffectiveAccessField effectiveAccess,
       FileSharedLinkEffectivePermissionField effectivePermission,
       boolean isPasswordEnabled,
       long downloadCount,
-      long previewCount) {
+      long previewCount,
+      FileSharedLinkOneTimePasscodeField oneTimePasscode) {
     super();
     this.url = url;
     this.effectiveAccess = new EnumWrapper<FileSharedLinkEffectiveAccessField>(effectiveAccess);
@@ -136,6 +140,7 @@ public class FileSharedLinkField extends SerializableObject {
     this.isPasswordEnabled = isPasswordEnabled;
     this.downloadCount = downloadCount;
     this.previewCount = previewCount;
+    this.oneTimePasscode = oneTimePasscode;
   }
 
   public FileSharedLinkField(
@@ -144,7 +149,8 @@ public class FileSharedLinkField extends SerializableObject {
       EnumWrapper<FileSharedLinkEffectivePermissionField> effectivePermission,
       boolean isPasswordEnabled,
       long downloadCount,
-      long previewCount) {
+      long previewCount,
+      FileSharedLinkOneTimePasscodeField oneTimePasscode) {
     super();
     this.url = url;
     this.effectiveAccess = new EnumWrapper<FileSharedLinkEffectiveAccessField>(effectiveAccess);
@@ -152,6 +158,7 @@ public class FileSharedLinkField extends SerializableObject {
     this.isPasswordEnabled = isPasswordEnabled;
     this.downloadCount = downloadCount;
     this.previewCount = previewCount;
+    this.oneTimePasscode = oneTimePasscode;
   }
 
   public FileSharedLinkField(
@@ -160,7 +167,8 @@ public class FileSharedLinkField extends SerializableObject {
       FileSharedLinkEffectivePermissionField effectivePermission,
       boolean isPasswordEnabled,
       long downloadCount,
-      long previewCount) {
+      long previewCount,
+      FileSharedLinkOneTimePasscodeField oneTimePasscode) {
     super();
     this.url = url;
     this.effectiveAccess = effectiveAccess;
@@ -169,6 +177,7 @@ public class FileSharedLinkField extends SerializableObject {
     this.isPasswordEnabled = isPasswordEnabled;
     this.downloadCount = downloadCount;
     this.previewCount = previewCount;
+    this.oneTimePasscode = oneTimePasscode;
   }
 
   public FileSharedLinkField(
@@ -179,7 +188,8 @@ public class FileSharedLinkField extends SerializableObject {
           EnumWrapper<FileSharedLinkEffectivePermissionField> effectivePermission,
       @JsonProperty("is_password_enabled") boolean isPasswordEnabled,
       @JsonProperty("download_count") long downloadCount,
-      @JsonProperty("preview_count") long previewCount) {
+      @JsonProperty("preview_count") long previewCount,
+      @JsonProperty("one_time_passcode") FileSharedLinkOneTimePasscodeField oneTimePasscode) {
     super();
     this.url = url;
     this.effectiveAccess = effectiveAccess;
@@ -187,6 +197,7 @@ public class FileSharedLinkField extends SerializableObject {
     this.isPasswordEnabled = isPasswordEnabled;
     this.downloadCount = downloadCount;
     this.previewCount = previewCount;
+    this.oneTimePasscode = oneTimePasscode;
   }
 
   protected FileSharedLinkField(Builder builder) {
@@ -203,6 +214,7 @@ public class FileSharedLinkField extends SerializableObject {
     this.permissions = builder.permissions;
     this.downloadCount = builder.downloadCount;
     this.previewCount = builder.previewCount;
+    this.oneTimePasscode = builder.oneTimePasscode;
     markNullableFieldsAsSet(builder.getExplicitlySetNullableFields());
   }
 
@@ -254,6 +266,10 @@ public class FileSharedLinkField extends SerializableObject {
     return previewCount;
   }
 
+  public FileSharedLinkOneTimePasscodeField getOneTimePasscode() {
+    return oneTimePasscode;
+  }
+
   @Override
   public boolean equals(Object o) {
     if (this == o) {
@@ -274,7 +290,8 @@ public class FileSharedLinkField extends SerializableObject {
         && Objects.equals(isPasswordEnabled, casted.isPasswordEnabled)
         && Objects.equals(permissions, casted.permissions)
         && Objects.equals(downloadCount, casted.downloadCount)
-        && Objects.equals(previewCount, casted.previewCount);
+        && Objects.equals(previewCount, casted.previewCount)
+        && Objects.equals(oneTimePasscode, casted.oneTimePasscode);
   }
 
   @Override
@@ -291,7 +308,8 @@ public class FileSharedLinkField extends SerializableObject {
         isPasswordEnabled,
         permissions,
         downloadCount,
-        previewCount);
+        previewCount,
+        oneTimePasscode);
   }
 
   @Override
@@ -344,6 +362,10 @@ public class FileSharedLinkField extends SerializableObject {
         + "previewCount='"
         + previewCount
         + '\''
+        + ", "
+        + "oneTimePasscode='"
+        + oneTimePasscode
+        + '\''
         + "}";
   }
 
@@ -373,13 +395,16 @@ public class FileSharedLinkField extends SerializableObject {
 
     protected final long previewCount;
 
+    protected final FileSharedLinkOneTimePasscodeField oneTimePasscode;
+
     public Builder(
         String url,
         FileSharedLinkEffectiveAccessField effectiveAccess,
         FileSharedLinkEffectivePermissionField effectivePermission,
         boolean isPasswordEnabled,
         long downloadCount,
-        long previewCount) {
+        long previewCount,
+        FileSharedLinkOneTimePasscodeField oneTimePasscode) {
       super();
       this.url = url;
       this.effectiveAccess = new EnumWrapper<FileSharedLinkEffectiveAccessField>(effectiveAccess);
@@ -388,6 +413,7 @@ public class FileSharedLinkField extends SerializableObject {
       this.isPasswordEnabled = isPasswordEnabled;
       this.downloadCount = downloadCount;
       this.previewCount = previewCount;
+      this.oneTimePasscode = oneTimePasscode;
     }
 
     public Builder(
@@ -396,7 +422,8 @@ public class FileSharedLinkField extends SerializableObject {
         EnumWrapper<FileSharedLinkEffectivePermissionField> effectivePermission,
         boolean isPasswordEnabled,
         long downloadCount,
-        long previewCount) {
+        long previewCount,
+        FileSharedLinkOneTimePasscodeField oneTimePasscode) {
       super();
       this.url = url;
       this.effectiveAccess = new EnumWrapper<FileSharedLinkEffectiveAccessField>(effectiveAccess);
@@ -404,6 +431,7 @@ public class FileSharedLinkField extends SerializableObject {
       this.isPasswordEnabled = isPasswordEnabled;
       this.downloadCount = downloadCount;
       this.previewCount = previewCount;
+      this.oneTimePasscode = oneTimePasscode;
     }
 
     public Builder(
@@ -412,7 +440,8 @@ public class FileSharedLinkField extends SerializableObject {
         FileSharedLinkEffectivePermissionField effectivePermission,
         boolean isPasswordEnabled,
         long downloadCount,
-        long previewCount) {
+        long previewCount,
+        FileSharedLinkOneTimePasscodeField oneTimePasscode) {
       super();
       this.url = url;
       this.effectiveAccess = effectiveAccess;
@@ -421,6 +450,7 @@ public class FileSharedLinkField extends SerializableObject {
       this.isPasswordEnabled = isPasswordEnabled;
       this.downloadCount = downloadCount;
       this.previewCount = previewCount;
+      this.oneTimePasscode = oneTimePasscode;
     }
 
     public Builder(
@@ -429,7 +459,8 @@ public class FileSharedLinkField extends SerializableObject {
         EnumWrapper<FileSharedLinkEffectivePermissionField> effectivePermission,
         boolean isPasswordEnabled,
         long downloadCount,
-        long previewCount) {
+        long previewCount,
+        FileSharedLinkOneTimePasscodeField oneTimePasscode) {
       super();
       this.url = url;
       this.effectiveAccess = effectiveAccess;
@@ -437,6 +468,7 @@ public class FileSharedLinkField extends SerializableObject {
       this.isPasswordEnabled = isPasswordEnabled;
       this.downloadCount = downloadCount;
       this.previewCount = previewCount;
+      this.oneTimePasscode = oneTimePasscode;
     }
 
     public Builder downloadUrl(String downloadUrl) {
