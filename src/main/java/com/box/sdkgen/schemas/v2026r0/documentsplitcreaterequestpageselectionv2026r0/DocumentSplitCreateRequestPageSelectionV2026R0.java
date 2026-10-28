@@ -2,6 +2,7 @@ package com.box.sdkgen.schemas.v2026r0.documentsplitcreaterequestpageselectionv2
 
 import com.box.sdkgen.internal.NullableFieldTracker;
 import com.box.sdkgen.internal.SerializableObject;
+import com.box.sdkgen.schemas.v2026r0.documentsplitpageselectionitemv2026r0.DocumentSplitPageSelectionItemV2026R0;
 import com.box.sdkgen.serialization.json.EnumWrapper;
 import com.fasterxml.jackson.annotation.JsonFilter;
 import com.fasterxml.jackson.annotation.JsonProperty;
