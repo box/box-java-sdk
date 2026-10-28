@@ -30,7 +30,7 @@ public class UploadSession extends SerializableObject {
   protected OffsetDateTime sessionExpiresAt;
 
   /**
-   * The size in bytes that must be used for all parts of of the upload.
+   * The size in bytes that must be used for all parts of the upload.
    *
    * <p>Only the last part is allowed to be of a smaller size.
    */
@@ -47,8 +47,8 @@ public class UploadSession extends SerializableObject {
   /**
    * The number of parts that have been uploaded and processed by the server. This starts at `0`.
    *
-   * <p>When committing a file files, inspecting this property can provide insight if all parts have
-   * been uploaded correctly.
+   * <p>When committing a file, inspecting this property can provide insight if all parts have been
+   * uploaded correctly.
    */
   @JsonProperty("num_parts_processed")
   protected Integer numPartsProcessed;
