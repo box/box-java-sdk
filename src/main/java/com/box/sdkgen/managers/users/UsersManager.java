@@ -481,6 +481,11 @@ public class UsersManager {
    * proceed, move their owned content first, or use the `force` parameter to delete the user and
    * their files.
    *
+   * <p>If the enterprise has a retention policy, including a retired one, or a legal hold that is
+   * not fully released, you can't delete a user who owns content, even with `force`. Transfer the
+   * user's content first by using the [Transfer owned
+   * folders](https://developer.box.com/reference/put-users-id-folders-0) endpoint.
+   *
    * @param userId The ID of the user. Example: "12345"
    */
   public void deleteUserById(String userId) {
@@ -491,6 +496,11 @@ public class UsersManager {
    * Deletes a user. By default, this operation fails if the user still owns any content. To
    * proceed, move their owned content first, or use the `force` parameter to delete the user and
    * their files.
+   *
+   * <p>If the enterprise has a retention policy, including a retired one, or a legal hold that is
+   * not fully released, you can't delete a user who owns content, even with `force`. Transfer the
+   * user's content first by using the [Transfer owned
+   * folders](https://developer.box.com/reference/put-users-id-folders-0) endpoint.
    *
    * @param userId The ID of the user. Example: "12345"
    * @param queryParams Query parameters of deleteUserById method
@@ -504,6 +514,11 @@ public class UsersManager {
    * proceed, move their owned content first, or use the `force` parameter to delete the user and
    * their files.
    *
+   * <p>If the enterprise has a retention policy, including a retired one, or a legal hold that is
+   * not fully released, you can't delete a user who owns content, even with `force`. Transfer the
+   * user's content first by using the [Transfer owned
+   * folders](https://developer.box.com/reference/put-users-id-folders-0) endpoint.
+   *
    * @param userId The ID of the user. Example: "12345"
    * @param headers Headers of deleteUserById method
    */
@@ -515,6 +530,11 @@ public class UsersManager {
    * Deletes a user. By default, this operation fails if the user still owns any content. To
    * proceed, move their owned content first, or use the `force` parameter to delete the user and
    * their files.
+   *
+   * <p>If the enterprise has a retention policy, including a retired one, or a legal hold that is
+   * not fully released, you can't delete a user who owns content, even with `force`. Transfer the
+   * user's content first by using the [Transfer owned
+   * folders](https://developer.box.com/reference/put-users-id-folders-0) endpoint.
    *
    * @param userId The ID of the user. Example: "12345"
    * @param queryParams Query parameters of deleteUserById method
