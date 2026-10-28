@@ -69,6 +69,7 @@ import com.box.sdkgen.managers.shieldinformationbarriersegmentmembers.ShieldInfo
 import com.box.sdkgen.managers.shieldinformationbarriersegmentrestrictions.ShieldInformationBarrierSegmentRestrictionsManager;
 import com.box.sdkgen.managers.shieldinformationbarriersegments.ShieldInformationBarrierSegmentsManager;
 import com.box.sdkgen.managers.shieldlists.ShieldListsManager;
+import com.box.sdkgen.managers.shuttle.ShuttleManager;
 import com.box.sdkgen.managers.signrequests.SignRequestsManager;
 import com.box.sdkgen.managers.signtemplates.SignTemplatesManager;
 import com.box.sdkgen.managers.skills.SkillsManager;
@@ -281,6 +282,8 @@ public class BoxClient {
   public final DocumentSplitManager documentSplit;
 
   public final QueryManager query;
+
+  public final ShuttleManager shuttle;
 
   public BoxClient(Authentication auth) {
     this.auth = auth;
@@ -644,6 +647,8 @@ public class BoxClient {
             .build();
     this.query =
         new QueryManager.Builder().auth(this.auth).networkSession(this.networkSession).build();
+    this.shuttle =
+        new ShuttleManager.Builder().auth(this.auth).networkSession(this.networkSession).build();
   }
 
   protected BoxClient(Builder builder) {
@@ -1008,6 +1013,8 @@ public class BoxClient {
             .build();
     this.query =
         new QueryManager.Builder().auth(this.auth).networkSession(this.networkSession).build();
+    this.shuttle =
+        new ShuttleManager.Builder().auth(this.auth).networkSession(this.networkSession).build();
   }
 
   /**
@@ -1477,6 +1484,10 @@ public class BoxClient {
 
   public QueryManager getQuery() {
     return query;
+  }
+
+  public ShuttleManager getShuttle() {
+    return shuttle;
   }
 
   public static class Builder {
