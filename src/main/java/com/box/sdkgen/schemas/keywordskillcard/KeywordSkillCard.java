@@ -48,7 +48,7 @@ public class KeywordSkillCard extends SerializableObject {
    */
   protected final KeywordSkillCardInvocationField invocation;
 
-  /** An list of entries in the metadata card. */
+  /** A list of entries in the metadata card. */
   protected final List<KeywordSkillCardEntriesField> entries;
 
   public KeywordSkillCard(
