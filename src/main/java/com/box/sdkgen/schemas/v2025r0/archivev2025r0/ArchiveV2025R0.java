@@ -43,16 +43,18 @@ public class ArchiveV2025R0 extends SerializableObject {
 
   /** The part of an archive API response that describes the user who owns the archive. */
   @JsonProperty("owned_by")
-  protected ArchiveV2025R0OwnedByField ownedBy;
+  protected final ArchiveV2025R0OwnedByField ownedBy;
 
   public ArchiveV2025R0(
       @JsonProperty("id") String id,
       @JsonProperty("name") String name,
-      @JsonProperty("size") long size) {
+      @JsonProperty("size") long size,
+      @JsonProperty("owned_by") ArchiveV2025R0OwnedByField ownedBy) {
     super();
     this.id = id;
     this.name = name;
     this.size = size;
+    this.ownedBy = ownedBy;
     this.type = new EnumWrapper<ArchiveV2025R0TypeField>(ArchiveV2025R0TypeField.ARCHIVE);
   }
 
@@ -154,13 +156,14 @@ public class ArchiveV2025R0 extends SerializableObject {
 
     protected String description;
 
-    protected ArchiveV2025R0OwnedByField ownedBy;
+    protected final ArchiveV2025R0OwnedByField ownedBy;
 
-    public Builder(String id, String name, long size) {
+    public Builder(String id, String name, long size, ArchiveV2025R0OwnedByField ownedBy) {
       super();
       this.id = id;
       this.name = name;
       this.size = size;
+      this.ownedBy = ownedBy;
     }
 
     public Builder type(ArchiveV2025R0TypeField type) {
@@ -176,11 +179,6 @@ public class ArchiveV2025R0 extends SerializableObject {
     public Builder description(String description) {
       this.description = description;
       this.markNullableFieldAsSet("description");
-      return this;
-    }
-
-    public Builder ownedBy(ArchiveV2025R0OwnedByField ownedBy) {
-      this.ownedBy = ownedBy;
       return this;
     }
 
