@@ -103,7 +103,10 @@ public class SignRequestCreateSigner extends SerializableObject {
   @Nullable
   protected String signerGroupId;
 
-  /** If true, no emails about the sign request will be sent. */
+  /**
+   * If true, no emails about the sign request are sent. The `embed_url_external_user_id` parameter
+   * is required when using `suppress_notifications` for a signer.
+   */
   @JsonProperty("suppress_notifications")
   @Nullable
   protected Boolean suppressNotifications;
