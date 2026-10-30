@@ -26,7 +26,10 @@ This operation is performed by calling function `createDocumentSplitV2026R0`.
 See the endpoint docs at
 [API Reference](https://developer.box.com/reference/v2026.0/post-document-splits/).
 
-*Currently we don't have an example for calling `createDocumentSplitV2026R0` in integration tests*
+<!-- sample post_document_splits_v2026.0 -->
+```
+client.getDocumentSplit().createDocumentSplitV2026R0(new DocumentSplitCreateRequestV2026R0.Builder(file.getId(), folder.getId(), DocumentSplitCreateRequestV2026R0InputSourceField.API, new DocumentSplitCreateRequestManualV2026R0.Builder(Arrays.asList(new DocumentSplitPageRangeV2026R0(1, 1))).splitType(DocumentSplitCreateRequestManualV2026R0SplitTypeField.MANUAL).build()).externalId(externalId).build())
+```
 
 ### Arguments
 
@@ -54,7 +57,10 @@ This operation is performed by calling function `getDocumentSplitsV2026R0`.
 See the endpoint docs at
 [API Reference](https://developer.box.com/reference/v2026.0/get-document-splits/).
 
-*Currently we don't have an example for calling `getDocumentSplitsV2026R0` in integration tests*
+<!-- sample get_document_splits_v2026.0 -->
+```
+client.getDocumentSplit().getDocumentSplitsV2026R0(new GetDocumentSplitsV2026R0QueryParams.Builder().limit(10L).build())
+```
 
 ### Arguments
 
@@ -82,7 +88,10 @@ This operation is performed by calling function `getDocumentSplitByIdV2026R0`.
 See the endpoint docs at
 [API Reference](https://developer.box.com/reference/v2026.0/get-document-splits-id/).
 
-*Currently we don't have an example for calling `getDocumentSplitByIdV2026R0` in integration tests*
+<!-- sample get_document_splits_id_v2026.0 -->
+```
+client.getDocumentSplit().getDocumentSplitByIdV2026R0(createdDocumentSplit.getId())
+```
 
 ### Arguments
 
