@@ -4,6 +4,7 @@ import com.box.sdkgen.internal.utils.DateTimeUtils;
 import com.box.sdkgen.schemas.legalholdpolicyassigneditem.LegalHoldPolicyAssignedItem;
 import com.box.sdkgen.schemas.legalholdpolicyassignmentbase.LegalHoldPolicyAssignmentBase;
 import com.box.sdkgen.schemas.legalholdpolicyassignmentbase.LegalHoldPolicyAssignmentBaseTypeField;
+import com.box.sdkgen.schemas.legalholdpolicyassignmentfilterfield.LegalHoldPolicyAssignmentFilterField;
 import com.box.sdkgen.schemas.legalholdpolicymini.LegalHoldPolicyMini;
 import com.box.sdkgen.schemas.usermini.UserMini;
 import com.box.sdkgen.serialization.json.EnumWrapper;
@@ -12,11 +13,12 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import java.time.OffsetDateTime;
+import java.util.List;
 import java.util.Objects;
 
 /**
  * Legal Hold Assignments are used to assign Legal Hold Policies to an item type of: Users, Folders,
- * Files, File Versions, Ownership, or Interactions.
+ * Files, File Versions, Ownership, Interactions, or Metadata Templates.
  *
  * <p>Creating a Legal Hold Assignment puts a hold on the File-Versions that belong to the
  * Assignment's 'apply-to' entity.
@@ -49,6 +51,13 @@ public class LegalHoldPolicyAssignment extends LegalHoldPolicyAssignmentBase {
   @JsonDeserialize(using = DateTimeUtils.DateTimeDeserializer.class)
   protected OffsetDateTime deletedAt;
 
+  /**
+   * List of metadata template field filters. Only present when `assigned_to.type` is
+   * `metadata_template`.
+   */
+  @JsonProperty("filter_fields")
+  protected List<LegalHoldPolicyAssignmentFilterField> filterFields;
+
   public LegalHoldPolicyAssignment() {
     super();
   }
@@ -60,6 +69,7 @@ public class LegalHoldPolicyAssignment extends LegalHoldPolicyAssignmentBase {
     this.assignedBy = builder.assignedBy;
     this.assignedAt = builder.assignedAt;
     this.deletedAt = builder.deletedAt;
+    this.filterFields = builder.filterFields;
     markNullableFieldsAsSet(builder.getExplicitlySetNullableFields());
   }
 
@@ -83,6 +93,10 @@ public class LegalHoldPolicyAssignment extends LegalHoldPolicyAssignmentBase {
     return deletedAt;
   }
 
+  public List<LegalHoldPolicyAssignmentFilterField> getFilterFields() {
+    return filterFields;
+  }
+
   @Override
   public boolean equals(Object o) {
     if (this == o) {
@@ -98,12 +112,14 @@ public class LegalHoldPolicyAssignment extends LegalHoldPolicyAssignmentBase {
         && Objects.equals(assignedTo, casted.assignedTo)
         && Objects.equals(assignedBy, casted.assignedBy)
         && Objects.equals(assignedAt, casted.assignedAt)
-        && Objects.equals(deletedAt, casted.deletedAt);
+        && Objects.equals(deletedAt, casted.deletedAt)
+        && Objects.equals(filterFields, casted.filterFields);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(id, type, legalHoldPolicy, assignedTo, assignedBy, assignedAt, deletedAt);
+    return Objects.hash(
+        id, type, legalHoldPolicy, assignedTo, assignedBy, assignedAt, deletedAt, filterFields);
   }
 
   @Override
@@ -136,6 +152,10 @@ public class LegalHoldPolicyAssignment extends LegalHoldPolicyAssignmentBase {
         + "deletedAt='"
         + deletedAt
         + '\''
+        + ", "
+        + "filterFields='"
+        + filterFields
+        + '\''
         + "}";
   }
 
@@ -150,6 +170,8 @@ public class LegalHoldPolicyAssignment extends LegalHoldPolicyAssignmentBase {
     protected OffsetDateTime assignedAt;
 
     protected OffsetDateTime deletedAt;
+
+    protected List<LegalHoldPolicyAssignmentFilterField> filterFields;
 
     public Builder legalHoldPolicy(LegalHoldPolicyMini legalHoldPolicy) {
       this.legalHoldPolicy = legalHoldPolicy;
@@ -173,6 +195,11 @@ public class LegalHoldPolicyAssignment extends LegalHoldPolicyAssignmentBase {
 
     public Builder deletedAt(OffsetDateTime deletedAt) {
       this.deletedAt = deletedAt;
+      return this;
+    }
+
+    public Builder filterFields(List<LegalHoldPolicyAssignmentFilterField> filterFields) {
+      this.filterFields = filterFields;
       return this;
     }
 
