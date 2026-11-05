@@ -18,7 +18,8 @@ public enum GetLegalHoldPolicyAssignmentsQueryParamsAssignToTypeField implements
   FOLDER("folder"),
   USER("user"),
   OWNERSHIP("ownership"),
-  INTERACTIONS("interactions");
+  INTERACTIONS("interactions"),
+  METADATA_TEMPLATE("metadata_template");
 
   private final String value;
 
