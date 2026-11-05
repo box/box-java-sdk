@@ -28,6 +28,10 @@ public class LegalHoldPolicyAssignmentCountsField extends SerializableObject {
   /** The number of users this policy is applied to with the `interactions` type assignment. */
   protected Long interactions;
 
+  /** The number of metadata templates this policy is applied to. */
+  @JsonProperty("metadata_template")
+  protected Long metadataTemplate;
+
   public LegalHoldPolicyAssignmentCountsField() {
     super();
   }
@@ -40,6 +44,7 @@ public class LegalHoldPolicyAssignmentCountsField extends SerializableObject {
     this.fileVersion = builder.fileVersion;
     this.ownership = builder.ownership;
     this.interactions = builder.interactions;
+    this.metadataTemplate = builder.metadataTemplate;
     markNullableFieldsAsSet(builder.getExplicitlySetNullableFields());
   }
 
@@ -67,6 +72,10 @@ public class LegalHoldPolicyAssignmentCountsField extends SerializableObject {
     return interactions;
   }
 
+  public Long getMetadataTemplate() {
+    return metadataTemplate;
+  }
+
   @Override
   public boolean equals(Object o) {
     if (this == o) {
@@ -81,12 +90,13 @@ public class LegalHoldPolicyAssignmentCountsField extends SerializableObject {
         && Objects.equals(file, casted.file)
         && Objects.equals(fileVersion, casted.fileVersion)
         && Objects.equals(ownership, casted.ownership)
-        && Objects.equals(interactions, casted.interactions);
+        && Objects.equals(interactions, casted.interactions)
+        && Objects.equals(metadataTemplate, casted.metadataTemplate);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(user, folder, file, fileVersion, ownership, interactions);
+    return Objects.hash(user, folder, file, fileVersion, ownership, interactions, metadataTemplate);
   }
 
   @Override
@@ -115,6 +125,10 @@ public class LegalHoldPolicyAssignmentCountsField extends SerializableObject {
         + "interactions='"
         + interactions
         + '\''
+        + ", "
+        + "metadataTemplate='"
+        + metadataTemplate
+        + '\''
         + "}";
   }
 
@@ -131,6 +145,8 @@ public class LegalHoldPolicyAssignmentCountsField extends SerializableObject {
     protected Long ownership;
 
     protected Long interactions;
+
+    protected Long metadataTemplate;
 
     public Builder user(Long user) {
       this.user = user;
@@ -159,6 +175,11 @@ public class LegalHoldPolicyAssignmentCountsField extends SerializableObject {
 
     public Builder interactions(Long interactions) {
       this.interactions = interactions;
+      return this;
+    }
+
+    public Builder metadataTemplate(Long metadataTemplate) {
+      this.metadataTemplate = metadataTemplate;
       return this;
     }
 
