@@ -18,7 +18,8 @@ public enum LegalHoldPolicyAssignedItemTypeField implements Valuable {
   FOLDER("folder"),
   USER("user"),
   OWNERSHIP("ownership"),
-  INTERACTIONS("interactions");
+  INTERACTIONS("interactions"),
+  METADATA_TEMPLATE("metadata_template");
 
   private final String value;
 
