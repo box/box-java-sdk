@@ -5,6 +5,10 @@ import com.box.sdkgen.schemas.signrequestcreatesigner.SignRequestCreateSigner;
 import com.box.sdkgen.schemas.signrequestcreatesigner.SignRequestCreateSignerRoleField;
 import com.box.sdkgen.schemas.signrequestsignerattachment.SignRequestSignerAttachment;
 import com.box.sdkgen.schemas.signrequestsignerinput.SignRequestSignerInput;
+import com.box.sdkgen.schemas.signrequestsignerverificationmethod.SignRequestSignerVerificationMethod;
+import com.box.sdkgen.schemas.signrequestsignerverificationmethodcacpiv.SignRequestSignerVerificationMethodCacPiv;
+import com.box.sdkgen.schemas.signrequestsignerverificationmethodlogin.SignRequestSignerVerificationMethodLogin;
+import com.box.sdkgen.schemas.signrequestsignerverificationmethodphonesms.SignRequestSignerVerificationMethodPhoneSms;
 import com.box.sdkgen.serialization.json.EnumWrapper;
 import com.fasterxml.jackson.annotation.JsonFilter;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -104,6 +108,7 @@ public class SignRequestSigner extends SignRequestCreateSigner {
         && Objects.equals(signerGroupId, casted.signerGroupId)
         && Objects.equals(suppressNotifications, casted.suppressNotifications)
         && Objects.equals(language, casted.language)
+        && Objects.equals(verificationMethod, casted.verificationMethod)
         && Objects.equals(hasViewedDocument, casted.hasViewedDocument)
         && Objects.equals(signerDecision, casted.signerDecision)
         && Objects.equals(inputs, casted.inputs)
@@ -128,6 +133,7 @@ public class SignRequestSigner extends SignRequestCreateSigner {
         signerGroupId,
         suppressNotifications,
         language,
+        verificationMethod,
         hasViewedDocument,
         signerDecision,
         inputs,
@@ -189,6 +195,10 @@ public class SignRequestSigner extends SignRequestCreateSigner {
         + ", "
         + "language='"
         + language
+        + '\''
+        + ", "
+        + "verificationMethod='"
+        + verificationMethod
         + '\''
         + ", "
         + "hasViewedDocument='"
@@ -356,6 +366,32 @@ public class SignRequestSigner extends SignRequestCreateSigner {
     public Builder language(String language) {
       this.language = language;
       this.markNullableFieldAsSet("language");
+      return this;
+    }
+
+    @Override
+    public Builder verificationMethod(SignRequestSignerVerificationMethodLogin verificationMethod) {
+      this.verificationMethod = new SignRequestSignerVerificationMethod(verificationMethod);
+      return this;
+    }
+
+    @Override
+    public Builder verificationMethod(
+        SignRequestSignerVerificationMethodPhoneSms verificationMethod) {
+      this.verificationMethod = new SignRequestSignerVerificationMethod(verificationMethod);
+      return this;
+    }
+
+    @Override
+    public Builder verificationMethod(
+        SignRequestSignerVerificationMethodCacPiv verificationMethod) {
+      this.verificationMethod = new SignRequestSignerVerificationMethod(verificationMethod);
+      return this;
+    }
+
+    @Override
+    public Builder verificationMethod(SignRequestSignerVerificationMethod verificationMethod) {
+      this.verificationMethod = verificationMethod;
       return this;
     }
 
