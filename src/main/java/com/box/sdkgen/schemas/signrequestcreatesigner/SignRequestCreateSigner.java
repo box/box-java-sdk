@@ -3,6 +3,10 @@ package com.box.sdkgen.schemas.signrequestcreatesigner;
 import com.box.sdkgen.internal.Nullable;
 import com.box.sdkgen.internal.NullableFieldTracker;
 import com.box.sdkgen.internal.SerializableObject;
+import com.box.sdkgen.schemas.signrequestsignerverificationmethod.SignRequestSignerVerificationMethod;
+import com.box.sdkgen.schemas.signrequestsignerverificationmethodcacpiv.SignRequestSignerVerificationMethodCacPiv;
+import com.box.sdkgen.schemas.signrequestsignerverificationmethodlogin.SignRequestSignerVerificationMethodLogin;
+import com.box.sdkgen.schemas.signrequestsignerverificationmethodphonesms.SignRequestSignerVerificationMethodPhoneSms;
 import com.box.sdkgen.serialization.json.EnumWrapper;
 import com.fasterxml.jackson.annotation.JsonFilter;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -117,6 +121,10 @@ public class SignRequestCreateSigner extends SerializableObject {
    */
   @Nullable protected String language;
 
+  /** The verification method for the signer. */
+  @JsonProperty("verification_method")
+  protected SignRequestSignerVerificationMethod verificationMethod;
+
   public SignRequestCreateSigner() {
     super();
   }
@@ -136,6 +144,7 @@ public class SignRequestCreateSigner extends SerializableObject {
     this.signerGroupId = builder.signerGroupId;
     this.suppressNotifications = builder.suppressNotifications;
     this.language = builder.language;
+    this.verificationMethod = builder.verificationMethod;
     markNullableFieldsAsSet(builder.getExplicitlySetNullableFields());
   }
 
@@ -191,6 +200,10 @@ public class SignRequestCreateSigner extends SerializableObject {
     return language;
   }
 
+  public SignRequestSignerVerificationMethod getVerificationMethod() {
+    return verificationMethod;
+  }
+
   @Override
   public boolean equals(Object o) {
     if (this == o) {
@@ -212,7 +225,8 @@ public class SignRequestCreateSigner extends SerializableObject {
         && Objects.equals(password, casted.password)
         && Objects.equals(signerGroupId, casted.signerGroupId)
         && Objects.equals(suppressNotifications, casted.suppressNotifications)
-        && Objects.equals(language, casted.language);
+        && Objects.equals(language, casted.language)
+        && Objects.equals(verificationMethod, casted.verificationMethod);
   }
 
   @Override
@@ -230,7 +244,8 @@ public class SignRequestCreateSigner extends SerializableObject {
         password,
         signerGroupId,
         suppressNotifications,
-        language);
+        language,
+        verificationMethod);
   }
 
   @Override
@@ -287,6 +302,10 @@ public class SignRequestCreateSigner extends SerializableObject {
         + "language='"
         + language
         + '\''
+        + ", "
+        + "verificationMethod='"
+        + verificationMethod
+        + '\''
         + "}";
   }
 
@@ -317,6 +336,8 @@ public class SignRequestCreateSigner extends SerializableObject {
     protected Boolean suppressNotifications;
 
     protected String language;
+
+    protected SignRequestSignerVerificationMethod verificationMethod;
 
     public Builder email(String email) {
       this.email = email;
@@ -395,6 +416,28 @@ public class SignRequestCreateSigner extends SerializableObject {
     public Builder language(String language) {
       this.language = language;
       this.markNullableFieldAsSet("language");
+      return this;
+    }
+
+    public Builder verificationMethod(SignRequestSignerVerificationMethodLogin verificationMethod) {
+      this.verificationMethod = new SignRequestSignerVerificationMethod(verificationMethod);
+      return this;
+    }
+
+    public Builder verificationMethod(
+        SignRequestSignerVerificationMethodPhoneSms verificationMethod) {
+      this.verificationMethod = new SignRequestSignerVerificationMethod(verificationMethod);
+      return this;
+    }
+
+    public Builder verificationMethod(
+        SignRequestSignerVerificationMethodCacPiv verificationMethod) {
+      this.verificationMethod = new SignRequestSignerVerificationMethod(verificationMethod);
+      return this;
+    }
+
+    public Builder verificationMethod(SignRequestSignerVerificationMethod verificationMethod) {
+      this.verificationMethod = verificationMethod;
       return this;
     }
 

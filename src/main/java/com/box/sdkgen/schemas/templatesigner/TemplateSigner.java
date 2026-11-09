@@ -4,6 +4,10 @@ import com.box.sdkgen.internal.Nullable;
 import com.box.sdkgen.internal.NullableFieldTracker;
 import com.box.sdkgen.internal.SerializableObject;
 import com.box.sdkgen.schemas.templatesignerinput.TemplateSignerInput;
+import com.box.sdkgen.schemas.templatesignerverificationmethod.TemplateSignerVerificationMethod;
+import com.box.sdkgen.schemas.templatesignerverificationmethodcacpiv.TemplateSignerVerificationMethodCacPiv;
+import com.box.sdkgen.schemas.templatesignerverificationmethodlogin.TemplateSignerVerificationMethodLogin;
+import com.box.sdkgen.schemas.templatesignerverificationmethodphonesms.TemplateSignerVerificationMethodPhoneSms;
 import com.box.sdkgen.serialization.json.EnumWrapper;
 import com.fasterxml.jackson.annotation.JsonFilter;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -82,6 +86,10 @@ public class TemplateSigner extends SerializableObject {
   @Nullable
   protected Boolean loginRequired;
 
+  /** The verification method for the signer. */
+  @JsonProperty("verification_method")
+  protected TemplateSignerVerificationMethod verificationMethod;
+
   public TemplateSigner() {
     super();
   }
@@ -99,6 +107,7 @@ public class TemplateSigner extends SerializableObject {
     this.isPasswordRequired = builder.isPasswordRequired;
     this.isPhoneNumberRequired = builder.isPhoneNumberRequired;
     this.loginRequired = builder.loginRequired;
+    this.verificationMethod = builder.verificationMethod;
     markNullableFieldsAsSet(builder.getExplicitlySetNullableFields());
   }
 
@@ -146,6 +155,10 @@ public class TemplateSigner extends SerializableObject {
     return loginRequired;
   }
 
+  public TemplateSignerVerificationMethod getVerificationMethod() {
+    return verificationMethod;
+  }
+
   @Override
   public boolean equals(Object o) {
     if (this == o) {
@@ -165,7 +178,8 @@ public class TemplateSigner extends SerializableObject {
         && Objects.equals(publicId, casted.publicId)
         && Objects.equals(isPasswordRequired, casted.isPasswordRequired)
         && Objects.equals(isPhoneNumberRequired, casted.isPhoneNumberRequired)
-        && Objects.equals(loginRequired, casted.loginRequired);
+        && Objects.equals(loginRequired, casted.loginRequired)
+        && Objects.equals(verificationMethod, casted.verificationMethod);
   }
 
   @Override
@@ -181,7 +195,8 @@ public class TemplateSigner extends SerializableObject {
         publicId,
         isPasswordRequired,
         isPhoneNumberRequired,
-        loginRequired);
+        loginRequired,
+        verificationMethod);
   }
 
   @Override
@@ -230,6 +245,10 @@ public class TemplateSigner extends SerializableObject {
         + "loginRequired='"
         + loginRequired
         + '\''
+        + ", "
+        + "verificationMethod='"
+        + verificationMethod
+        + '\''
         + "}";
   }
 
@@ -256,6 +275,8 @@ public class TemplateSigner extends SerializableObject {
     protected Boolean isPhoneNumberRequired;
 
     protected Boolean loginRequired;
+
+    protected TemplateSignerVerificationMethod verificationMethod;
 
     public Builder inputs(List<TemplateSignerInput> inputs) {
       this.inputs = inputs;
@@ -320,6 +341,26 @@ public class TemplateSigner extends SerializableObject {
     public Builder loginRequired(Boolean loginRequired) {
       this.loginRequired = loginRequired;
       this.markNullableFieldAsSet("login_required");
+      return this;
+    }
+
+    public Builder verificationMethod(TemplateSignerVerificationMethodLogin verificationMethod) {
+      this.verificationMethod = new TemplateSignerVerificationMethod(verificationMethod);
+      return this;
+    }
+
+    public Builder verificationMethod(TemplateSignerVerificationMethodPhoneSms verificationMethod) {
+      this.verificationMethod = new TemplateSignerVerificationMethod(verificationMethod);
+      return this;
+    }
+
+    public Builder verificationMethod(TemplateSignerVerificationMethodCacPiv verificationMethod) {
+      this.verificationMethod = new TemplateSignerVerificationMethod(verificationMethod);
+      return this;
+    }
+
+    public Builder verificationMethod(TemplateSignerVerificationMethod verificationMethod) {
+      this.verificationMethod = verificationMethod;
       return this;
     }
 
