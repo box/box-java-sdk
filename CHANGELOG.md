@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [10.21.0](https://github.com/box/box-java-sdk/compare/v10.20.0...v10.21.0) (2026-11-10)
+
+
+### New Features and Enhancements
+
+* add `DocumentSplitManager` and document split APIs + OTP for shared links (box/box-openapi[#621](https://github.com/box/box-java-sdk/issues/621)) ([e7a110e](https://github.com/box/box-java-sdk/commit/e7a110e7c235ef27eef1c48a5230d0ad970d7539))
+* add `metadata_template` support and `filter_fields` to legal hold assignments (box/box-openapi[#625](https://github.com/box/box-java-sdk/issues/625)) ([e563e7c](https://github.com/box/box-java-sdk/commit/e563e7ccb4cf77d5d238aaa12bc50e7276ffaa45))
+* add `ShuttleManager`, shuttle schemas, endpoints, and docs (box/box-openapi[#622](https://github.com/box/box-java-sdk/issues/622)) ([c17ead1](https://github.com/box/box-java-sdk/commit/c17ead1eedd86e86cdaf9842ee88d4b5d51df1b5))
+* add `verification_method` one-of union for signers and templates (box/box-openapi[#626](https://github.com/box/box-java-sdk/issues/626)) ([ffb2605](https://github.com/box/box-java-sdk/commit/ffb260552b065aab65df779ced9cd68023415ce6))
+
 ## [10.20.0](https://github.com/box/box-java-sdk/compare/v10.19.0...v10.20.0) (2026-10-15)
 
 
