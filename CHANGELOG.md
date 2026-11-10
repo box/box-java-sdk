@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [5.20.0](https://github.com/box/box-java-sdk/compare/v5.19.0...v5.20.0) (2026-11-10)
+
+
+### New Features and Enhancements:
+
+* **boxsdkgen:** add `DocumentSplitManager` and document split APIs/docs (box/box-openapi[#621](https://github.com/box/box-java-sdk/issues/621)) ([98de64e](https://github.com/box/box-java-sdk/commit/98de64ef6ad5008f7f72d1c3a5806e092555c21b))
+* **boxsdkgen:** add `metadata_template` target and `filter_fields` to legal hold assignments (box/box-openapi[#625](https://github.com/box/box-java-sdk/issues/625)) ([cc979c2](https://github.com/box/box-java-sdk/commit/cc979c2aadd9d45fe8af593ff3d4305f2140ff25))
+* **boxsdkgen:** add `ShuttleManager` and generate shuttle API models/docs (box/box-openapi[#622](https://github.com/box/box-java-sdk/issues/622)) ([159e0ed](https://github.com/box/box-java-sdk/commit/159e0ed454814bd786ab133f1ad3ff5f9d9e4c72))
+* **boxsdkgen:** add `verification_method` one-of type to signer schemas (box/box-openapi[#626](https://github.com/box/box-java-sdk/issues/626)) ([f8e2be7](https://github.com/box/box-java-sdk/commit/f8e2be725496a5d5539e3321db7846a7e6eff528))
+
 ## [5.19.0](https://github.com/box/box-java-sdk/compare/v5.18.0...v5.19.0) (2026-10-15)
 
 
