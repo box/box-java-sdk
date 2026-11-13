@@ -171,14 +171,14 @@ See [CONTRIBUTING.md](./CONTRIBUTING.md).
 
 The Java SDK uses third-party libraries that are required for usage. Their licenses are listed below:
 
-1. [jackson-annotations v2.21](https://mvnrepository.com/artifact/com.fasterxml.jackson.core/jackson-annotations/2.21)
-   Maven: `com.fasterxml.jackson.core:jackson-annotations:2.21`
+1. [jackson-annotations v2.22](https://mvnrepository.com/artifact/com.fasterxml.jackson.core/jackson-annotations/2.22)
+   Maven: `com.fasterxml.jackson.core:jackson-annotations:2.22`
    Licence: [Apache 2.0](https://www.apache.org/licenses/LICENSE-2.0)
-2. [jackson-core v2.21.4](https://mvnrepository.com/artifact/com.fasterxml.jackson.core/jackson-core/2.21.4)
-   Maven: `com.fasterxml.jackson.core:jackson-core:2.21.4`
+2. [jackson-core v2.22.4](https://mvnrepository.com/artifact/com.fasterxml.jackson.core/jackson-core/2.22.4)
+   Maven: `com.fasterxml.jackson.core:jackson-core:2.22.4`
    Licence: [Apache 2.0](https://www.apache.org/licenses/LICENSE-2.0)
-3. [jackson-databind v2.21.4](https://mvnrepository.com/artifact/com.fasterxml.jackson.core/jackson-databind/2.21.4)
-   Maven: `com.fasterxml.jackson.core:jackson-databind:2.21.4`
+3. [jackson-databind v2.22.4](https://mvnrepository.com/artifact/com.fasterxml.jackson.core/jackson-databind/2.22.4)
+   Maven: `com.fasterxml.jackson.core:jackson-databind:2.22.4`
    Licence: [Apache 2.0](https://www.apache.org/licenses/LICENSE-2.0)
 4. [okhttp v4.12.0](https://mvnrepository.com/artifact/com.squareup.okhttp3/okhttp/4.12.0)
    Maven: `com.squareup.okhttp3:okhttp:4.12.0`
