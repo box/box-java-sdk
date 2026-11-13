@@ -1,5 +1,6 @@
 package com.box.sdkgen.schemas.invite;
 
+import com.box.sdkgen.internal.Nullable;
 import com.box.sdkgen.internal.NullableFieldTracker;
 import com.box.sdkgen.internal.SerializableObject;
 import com.box.sdkgen.internal.utils.DateTimeUtils;
@@ -49,6 +50,23 @@ public class Invite extends SerializableObject {
   @JsonDeserialize(using = DateTimeUtils.DateTimeDeserializer.class)
   protected OffsetDateTime modifiedAt;
 
+  /**
+   * The date and time when the user is added to the enterprise automatically, or `null` if the user
+   * has to accept the invite.
+   */
+  @JsonProperty("auto_roll_in_at")
+  @JsonSerialize(using = DateTimeUtils.DateTimeSerializer.class)
+  @JsonDeserialize(using = DateTimeUtils.DateTimeDeserializer.class)
+  @Nullable
+  protected OffsetDateTime autoRollInAt;
+
+  /**
+   * Whether the user is added to the enterprise automatically, without having to accept the invite.
+   * When `true`, `auto_roll_in_at` contains the date and time of the roll-in.
+   */
+  @JsonProperty("is_auto_roll_in")
+  protected Boolean isAutoRollIn;
+
   public Invite(@JsonProperty("id") String id) {
     super();
     this.id = id;
@@ -65,6 +83,8 @@ public class Invite extends SerializableObject {
     this.status = builder.status;
     this.createdAt = builder.createdAt;
     this.modifiedAt = builder.modifiedAt;
+    this.autoRollInAt = builder.autoRollInAt;
+    this.isAutoRollIn = builder.isAutoRollIn;
     markNullableFieldsAsSet(builder.getExplicitlySetNullableFields());
   }
 
@@ -100,6 +120,14 @@ public class Invite extends SerializableObject {
     return modifiedAt;
   }
 
+  public OffsetDateTime getAutoRollInAt() {
+    return autoRollInAt;
+  }
+
+  public Boolean getIsAutoRollIn() {
+    return isAutoRollIn;
+  }
+
   @Override
   public boolean equals(Object o) {
     if (this == o) {
@@ -116,13 +144,24 @@ public class Invite extends SerializableObject {
         && Objects.equals(invitedBy, casted.invitedBy)
         && Objects.equals(status, casted.status)
         && Objects.equals(createdAt, casted.createdAt)
-        && Objects.equals(modifiedAt, casted.modifiedAt);
+        && Objects.equals(modifiedAt, casted.modifiedAt)
+        && Objects.equals(autoRollInAt, casted.autoRollInAt)
+        && Objects.equals(isAutoRollIn, casted.isAutoRollIn);
   }
 
   @Override
   public int hashCode() {
     return Objects.hash(
-        id, type, invitedTo, actionableBy, invitedBy, status, createdAt, modifiedAt);
+        id,
+        type,
+        invitedTo,
+        actionableBy,
+        invitedBy,
+        status,
+        createdAt,
+        modifiedAt,
+        autoRollInAt,
+        isAutoRollIn);
   }
 
   @Override
@@ -159,6 +198,14 @@ public class Invite extends SerializableObject {
         + "modifiedAt='"
         + modifiedAt
         + '\''
+        + ", "
+        + "autoRollInAt='"
+        + autoRollInAt
+        + '\''
+        + ", "
+        + "isAutoRollIn='"
+        + isAutoRollIn
+        + '\''
         + "}";
   }
 
@@ -179,6 +226,10 @@ public class Invite extends SerializableObject {
     protected OffsetDateTime createdAt;
 
     protected OffsetDateTime modifiedAt;
+
+    protected OffsetDateTime autoRollInAt;
+
+    protected Boolean isAutoRollIn;
 
     public Builder(String id) {
       super();
@@ -222,6 +273,17 @@ public class Invite extends SerializableObject {
 
     public Builder modifiedAt(OffsetDateTime modifiedAt) {
       this.modifiedAt = modifiedAt;
+      return this;
+    }
+
+    public Builder autoRollInAt(OffsetDateTime autoRollInAt) {
+      this.autoRollInAt = autoRollInAt;
+      this.markNullableFieldAsSet("auto_roll_in_at");
+      return this;
+    }
+
+    public Builder isAutoRollIn(Boolean isAutoRollIn) {
+      this.isAutoRollIn = isAutoRollIn;
       return this;
     }
 
