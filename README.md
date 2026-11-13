@@ -281,14 +281,14 @@ The Java SDK uses third-party libraries that are required for usage. Their licen
 9. [kotlin-stdlib-common v1.6.20](https://mvnrepository.com/artifact/org.jetbrains.kotlin/kotlin-stdlib-common/1.6.20)
    Maven: `org.jetbrains.kotlin:kotlin-stdlib-common:1.6.20`
    Licence: [Apache 2.0](https://www.apache.org/licenses/LICENSE-2.0)
-10. [jackson-annotations v2.21](https://mvnrepository.com/artifact/com.fasterxml.jackson.core/jackson-annotations/2.21)
-    Maven: `com.fasterxml.jackson.core:jackson-annotations:2.21`
+10. [jackson-annotations v2.22](https://mvnrepository.com/artifact/com.fasterxml.jackson.core/jackson-annotations/2.22)
+    Maven: `com.fasterxml.jackson.core:jackson-annotations:2.22`
     Licence: [Apache 2.0](https://www.apache.org/licenses/LICENSE-2.0)
-11. [jackson-core v2.21.4](https://mvnrepository.com/artifact/com.fasterxml.jackson.core/jackson-core/2.21.4)
-    Maven: `com.fasterxml.jackson.core:jackson-core:2.21.4`
+11. [jackson-core v2.22.4](https://mvnrepository.com/artifact/com.fasterxml.jackson.core/jackson-core/2.22.4)
+    Maven: `com.fasterxml.jackson.core:jackson-core:2.22.4`
     Licence: [Apache 2.0](https://www.apache.org/licenses/LICENSE-2.0)
-12. [jackson-databind v2.21.4](https://mvnrepository.com/artifact/com.fasterxml.jackson.core/jackson-databind/2.21.4)
-    Maven: `com.fasterxml.jackson.core:jackson-databind:2.21.4`
+12. [jackson-databind v2.22.4](https://mvnrepository.com/artifact/com.fasterxml.jackson.core/jackson-databind/2.22.4)
+    Maven: `com.fasterxml.jackson.core:jackson-databind:2.22.4`
     Licence: [Apache 2.0](https://www.apache.org/licenses/LICENSE-2.0)
 13. [okio v3.5.0](https://mvnrepository.com/artifact/com.squareup.okio/okio/3.5.0)
     Maven: `com.squareup.okio:okio:3.5.0`
