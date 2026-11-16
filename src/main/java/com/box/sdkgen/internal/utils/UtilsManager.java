@@ -268,7 +268,7 @@ public class UtilsManager {
 
     jwtClaims.setSubject(jwtOptions.getSubject());
     jwtClaims.setClaim("box_sub_type", claims.get("box_sub_type"));
-    jwtClaims.setGeneratedJwtId(64);
+    jwtClaims.setJwtId(jwtOptions.getJwtid());
 
     JsonWebSignature jws = new JsonWebSignature();
     jws.setPayload(jwtClaims.toJson());
