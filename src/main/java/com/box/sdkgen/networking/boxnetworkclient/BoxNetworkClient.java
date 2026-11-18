@@ -16,12 +16,14 @@ import com.box.sdkgen.networking.fetchoptions.FetchOptions;
 import com.box.sdkgen.networking.fetchoptions.MultipartItem;
 import com.box.sdkgen.networking.fetchoptions.ResponseFormat;
 import com.box.sdkgen.networking.fetchresponse.FetchResponse;
+import com.box.sdkgen.networking.inputstreamrequestbody.InputStreamRequestBody;
 import com.box.sdkgen.networking.network.NetworkSession;
 import com.box.sdkgen.networking.networkclient.NetworkClient;
 import com.box.sdkgen.networking.proxyconfig.ProxyConfig;
 import com.box.sdkgen.networking.timeoutconfig.TimeoutConfig;
 import com.fasterxml.jackson.databind.JsonNode;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.InetSocketAddress;
 import java.net.Proxy;
 import java.net.URI;
@@ -43,9 +45,6 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
-import okio.BufferedSink;
-import okio.Okio;
-import okio.Source;
 
 public class BoxNetworkClient implements NetworkClient {
 
@@ -132,11 +131,20 @@ public class BoxNetworkClient implements NetworkClient {
   }
 
   public FetchResponse fetch(FetchOptions options) {
+    try {
+      return fetchWithRetries(options);
+    } finally {
+      closeFileStreams(options);
+    }
+  }
+
+  private FetchResponse fetchWithRetries(FetchOptions options) {
     NetworkSession networkSession =
         options.getNetworkSession() == null ? new NetworkSession() : options.getNetworkSession();
 
     boolean authenticationNeeded = false;
     Request request;
+    RequestBody body = null;
     FetchResponse fetchResponse = new FetchResponse.Builder(0, new TreeMap<>()).build();
     Exception exceptionThrown = null;
 
@@ -146,21 +154,17 @@ public class BoxNetworkClient implements NetworkClient {
     boolean shouldRetry = false;
 
     while (true) {
-      FetchOptions attemptOptions =
-          (attemptNumber > 1 || numberOfRetriesOnException > 0 || options.getData() == null)
-                  && options.getDataFactory() != null
-              ? withData(options, options.getDataFactory().create())
-              : options;
-      FetchOptions fetchOptions = applyInterceptors(attemptOptions, networkSession);
+      boolean isFirstAttempt = attemptNumber == 1 && numberOfRetriesOnException == 0;
+      FetchOptions fetchOptions = applyInterceptors(options, networkSession);
       if (fetchOptions.getDataFactory() != null
-          && options.getDataFactory() == null
-          && (attemptNumber > 1
-              || numberOfRetriesOnException > 0
-              || fetchOptions.getData() == null)) {
+          && (!isFirstAttempt || fetchOptions.getData() == null)) {
         fetchOptions = withData(fetchOptions, fetchOptions.getDataFactory().create());
       }
 
-      request = prepareRequest(fetchOptions, authenticationNeeded, networkSession);
+      if (isFirstAttempt || !containsFileStream(fetchOptions)) {
+        body = prepareRequestBody(fetchOptions);
+      }
+      request = prepareRequest(fetchOptions, body, authenticationNeeded, networkSession);
 
       Response response = null;
       String rawResponseBody = null;
@@ -222,8 +226,9 @@ public class BoxNetworkClient implements NetworkClient {
           networkSession
               .getRetryStrategy()
               .shouldRetry(fetchOptions, fetchResponse, attemptForRetry);
+      boolean isRetryable = canBeResent(body);
 
-      if (shouldRetry) {
+      if (shouldRetry && isRetryable) {
         double retryDelay =
             networkSession
                 .getRetryStrategy()
@@ -301,11 +306,13 @@ public class BoxNetworkClient implements NetworkClient {
   }
 
   private static Request prepareRequest(
-      FetchOptions options, boolean reauthenticate, NetworkSession networkSession) {
+      FetchOptions options,
+      RequestBody body,
+      boolean reauthenticate,
+      NetworkSession networkSession) {
     Request.Builder requestBuilder = new Request.Builder().url(options.getUrl());
     Headers headers = prepareHeaders(options, reauthenticate, networkSession);
     HttpUrl url = prepareUrl(options);
-    RequestBody body = prepareRequestBody(options);
 
     requestBuilder.headers(headers);
     requestBuilder.url(url);
@@ -438,23 +445,48 @@ public class BoxNetworkClient implements NetworkClient {
     return (int) (Math.pow(2, attemptNumber) * BASE_TIMEOUT * jitter);
   }
 
-  public static RequestBody createMultipartRequestBody(MultipartItem part) {
-    return new RequestBody() {
-      @Override
-      public MediaType contentType() {
-        if (part.contentType != null) {
-          return MediaType.parse(part.contentType);
-        }
-        return MediaType.parse("application/octet-stream");
-      }
+  /**
+   * Returns whether the request body reads a file stream. Such a body is built once and reused on
+   * retries, because rebuilding it would read the stream from where the previous attempt stopped.
+   */
+  private static boolean containsFileStream(FetchOptions options) {
+    return options.getFileStream() != null
+        || (options.getMultipartData() != null
+            && options.getMultipartData().stream().anyMatch(part -> part.getFileStream() != null));
+  }
 
-      @Override
-      public void writeTo(BufferedSink sink) throws IOException {
-        try (Source source = Okio.source(part.getFileStream())) {
-          sink.writeAll(source);
-        }
-      }
-    };
+  private static void closeFileStreams(FetchOptions options) {
+    if (options.getFileStream() != null) {
+      closeQuietly(options.getFileStream());
+    }
+    if (options.getMultipartData() != null) {
+      options.getMultipartData().stream()
+          .map(MultipartItem::getFileStream)
+          .filter(Objects::nonNull)
+          .forEach(BoxNetworkClient::closeQuietly);
+    }
+  }
+
+  /** A failure to close a stream must not replace the result or the error of the request. */
+  private static void closeQuietly(InputStream stream) {
+    try {
+      stream.close();
+    } catch (IOException ignored) {
+    }
+  }
+
+  private static boolean canBeResent(RequestBody body) {
+    if (body instanceof MultipartBody) {
+      return ((MultipartBody) body).parts().stream().allMatch(part -> canBeResent(part.body()));
+    }
+    return !(body instanceof InputStreamRequestBody)
+        || ((InputStreamRequestBody) body).canBeResent();
+  }
+
+  public static RequestBody createMultipartRequestBody(MultipartItem part) {
+    MediaType contentType =
+        MediaType.parse(part.contentType != null ? part.contentType : "application/octet-stream");
+    return new InputStreamRequestBody(part.getFileStream(), contentType);
   }
 
   public static OkHttpClient.Builder getDefaultOkHttpClientBuilder() {
