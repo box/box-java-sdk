@@ -11,6 +11,9 @@
     - [Example Delays (with default settings)](#example-delays-with-default-settings)
   - [Retry-After Header](#retry-after-header)
   - [Network Exception Handling](#network-exception-handling)
+  - [Retrying Uploads](#retrying-uploads)
+    - [Streams That Can Be Retried](#streams-that-can-be-retried)
+    - [Handling Errors for Streams That Cannot Be Retried](#handling-errors-for-streams-that-cannot-be-retried)
   - [Customizing Retry Parameters](#customizing-retry-parameters)
   - [Custom Retry Strategy](#custom-retry-strategy)
 - [Timeouts](#timeouts)
@@ -128,6 +131,70 @@ This means:
 
 - Network exception retries are tracked independently from HTTP error retries, each with their own counter and backoff progression.
 - A request can fail up to `maxRetriesOnException` times due to network exceptions, but each exception retry also increments the overall attempt counter, so the total number of retries across both exception and HTTP error types is bounded by `maxAttempts`.
+
+### Retrying Uploads
+
+To retry a request that uploads content, the SDK has to send the content again. The SDK does not copy the content into memory to do that. Instead, it rewinds the `InputStream` you passed to the position it had when the upload started. Whether the request can be retried therefore depends on the type of the stream.
+
+| Stream type                                                                                             | Retried automatically | How the content is sent again                                              |
+| ------------------------------------------------------------------------------------------------------- | --------------------- | -------------------------------------------------------------------------- |
+| `FileInputStream`                                                                                       | Yes                   | The file position is moved back to where it was when the upload started.   |
+| `ByteArrayInputStream`                                                                                  | Yes                   | The stream is reset to where it was when the upload started.               |
+| Any other stream, for example from `Files.newInputStream`, `BufferedInputStream`, or a network response | No                    | The content is sent once. If that attempt fails, the SDK throws the error. |
+
+If a request with a stream that cannot be rewound fails with a retryable error, such as `429 Too Many Requests` or a `5xx` status, the SDK does not retry it. It throws the original `BoxAPIError` instead, which keeps the response status and headers, including `Retry-After`. For a `401` response, the SDK still refreshes the access token, so your next request uses a valid token.
+
+Uploads to an upload session, such as `uploadBigFile` and `uploadFilePart`, are always retried. Each part is read into memory before it is sent, so it can be sent again regardless of the stream type.
+
+The SDK closes the stream you pass after the request finishes, including all retries, whether it succeeds or fails. Closing it yourself as well, for example with try-with-resources, is safe.
+
+Interceptors run before every attempt, but a request body that reads a stream is built on the first attempt and reused on retries. Changes an interceptor makes to the upload stream on a retry are therefore not applied.
+
+#### Streams That Can Be Retried
+
+To let the SDK retry uploads automatically, pass a `FileInputStream` when uploading from a file:
+
+```java
+try (FileInputStream fileStream = new FileInputStream(new File("report.pdf"))) {
+    client.getUploads().uploadFile(
+        new UploadFileRequestBody(
+            new UploadFileRequestBodyAttributesField(
+                "report.pdf", new UploadFileRequestBodyAttributesParentField("0")),
+            fileStream));
+}
+```
+
+If you open files with `Files.newInputStream(path)`, use `new FileInputStream(path.toFile())` instead. The stream returned by `Files.newInputStream` cannot be rewound.
+
+For content that is already in memory, wrap it in a `ByteArrayInputStream`. Do not copy large files into memory only to make them retryable; use a `FileInputStream` instead.
+
+#### Handling Errors for Streams That Cannot Be Retried
+
+If you upload from a stream that cannot be rewound, handle retryable errors in your code and send a new stream on each attempt:
+
+```java
+BoxAPIError lastError = null;
+for (int attempt = 0; attempt < 3; attempt++) {
+    try (InputStream stream = openContentStream()) {
+        return client.getUploads().uploadFile(
+            new UploadFileRequestBody(
+                new UploadFileRequestBodyAttributesField(
+                    "report.pdf", new UploadFileRequestBodyAttributesParentField("0")),
+                stream));
+    } catch (BoxAPIError error) {
+        int status = error.getResponseInfo().getStatusCode();
+        if (status != 429 && status < 500) {
+            throw error;
+        }
+        lastError = error;
+        String retryAfter = error.getResponseInfo().getHeaders().get("Retry-After");
+        Thread.sleep(retryAfter != null ? (long) (Double.parseDouble(retryAfter) * 1000) : 1000L);
+    }
+}
+throw lastError;
+```
+
+`openContentStream()` stands for your own code that opens the content from the beginning, for example a new request to the system the content comes from.
 
 ### Customizing Retry Parameters
 

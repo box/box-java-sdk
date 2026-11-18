@@ -1,8 +1,10 @@
 package com.box.sdkgen.box.errors;
 
 import com.box.sdkgen.internal.logging.DataSanitizer;
+import com.box.sdkgen.networking.inputstreamrequestbody.InputStreamRequestBody;
 import java.util.Map;
 import java.util.stream.Collectors;
+import okhttp3.MultipartBody;
 import okhttp3.Request;
 import okhttp3.RequestBody;
 import okio.Buffer;
@@ -120,6 +122,10 @@ public class RequestInfo {
   }
 
   private static String getRequestBodyAsString(RequestBody requestBody) {
+    // Writing a stream body here would read the whole file content into memory.
+    if (containsStream(requestBody)) {
+      return null;
+    }
     try {
       if (requestBody != null) {
         Buffer buffer = new Buffer();
@@ -130,6 +136,14 @@ public class RequestInfo {
       return null;
     }
     return null;
+  }
+
+  private static boolean containsStream(RequestBody requestBody) {
+    if (requestBody instanceof MultipartBody) {
+      return ((MultipartBody) requestBody)
+          .parts().stream().anyMatch(part -> containsStream(part.body()));
+    }
+    return requestBody instanceof InputStreamRequestBody;
   }
 
   String print(DataSanitizer dataSanitizer) {
