@@ -4,6 +4,7 @@ import static com.box.sdkgen.internal.utils.UtilsManager.entryOf;
 import static com.box.sdkgen.internal.utils.UtilsManager.mapOf;
 
 import com.box.sdkgen.managers.ai.AiManager;
+import com.box.sdkgen.managers.aisessions.AiSessionsManager;
 import com.box.sdkgen.managers.aistudio.AiStudioManager;
 import com.box.sdkgen.managers.appitemassociations.AppItemAssociationsManager;
 import com.box.sdkgen.managers.archives.ArchivesManager;
@@ -284,6 +285,8 @@ public class BoxClient {
   public final QueryManager query;
 
   public final ShuttleManager shuttle;
+
+  public final AiSessionsManager aiSessions;
 
   public BoxClient(Authentication auth) {
     this.auth = auth;
@@ -649,6 +652,8 @@ public class BoxClient {
         new QueryManager.Builder().auth(this.auth).networkSession(this.networkSession).build();
     this.shuttle =
         new ShuttleManager.Builder().auth(this.auth).networkSession(this.networkSession).build();
+    this.aiSessions =
+        new AiSessionsManager.Builder().auth(this.auth).networkSession(this.networkSession).build();
   }
 
   protected BoxClient(Builder builder) {
@@ -1015,6 +1020,8 @@ public class BoxClient {
         new QueryManager.Builder().auth(this.auth).networkSession(this.networkSession).build();
     this.shuttle =
         new ShuttleManager.Builder().auth(this.auth).networkSession(this.networkSession).build();
+    this.aiSessions =
+        new AiSessionsManager.Builder().auth(this.auth).networkSession(this.networkSession).build();
   }
 
   /**
@@ -1488,6 +1495,10 @@ public class BoxClient {
 
   public ShuttleManager getShuttle() {
     return shuttle;
+  }
+
+  public AiSessionsManager getAiSessions() {
+    return aiSessions;
   }
 
   public static class Builder {
