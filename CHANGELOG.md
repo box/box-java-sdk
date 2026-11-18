@@ -2,6 +2,20 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [10.22.0](https://github.com/box/box-java-sdk/compare/v10.21.0...v10.22.0) (2026-11-18)
+
+
+### Bug Fixes
+
+* Prevent retries from reusing consumed upload streams (box/box-codegen[#1009](https://github.com/box/box-java-sdk/issues/1009)) ([179c8cf](https://github.com/box/box-java-sdk/commit/179c8cf76791afc7ce30d90279d46b963d48dbef))
+* Regenerate JWT assertions on token request retries (box/box-codegen[#1001](https://github.com/box/box-java-sdk/issues/1001)) ([290e3b2](https://github.com/box/box-java-sdk/commit/290e3b278961fc82270a59b1a813e92016a2c3f2))
+* Upgrade Jackson libraries to 2.22.4 (box/box-codegen[#1008](https://github.com/box/box-java-sdk/issues/1008)) ([70edd89](https://github.com/box/box-java-sdk/commit/70edd895ad73c8a5d02b7837b051dd49cb32c665))
+
+
+### New Features and Enhancements
+
+* add `is_auto_roll_in_enabled` invite option and expose `auto_roll_in` fields (box/box-openapi[#627](https://github.com/box/box-java-sdk/issues/627)) ([68ee726](https://github.com/box/box-java-sdk/commit/68ee726588752602085867762928858a88ebeb94))
+
 ## [10.21.0](https://github.com/box/box-java-sdk/compare/v10.20.0...v10.21.0) (2026-11-10)
 
 
