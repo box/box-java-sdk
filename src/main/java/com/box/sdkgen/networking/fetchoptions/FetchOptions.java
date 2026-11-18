@@ -25,6 +25,11 @@ public class FetchOptions {
   /** Request body of the request */
   public JsonNode data;
 
+  /**
+   * Factory that builds a request body when `data` is not provided and rebuilds it for each retry.
+   */
+  public RequestDataFactory dataFactory;
+
   /** Stream data of the request */
   public InputStream fileStream;
 
@@ -63,6 +68,7 @@ public class FetchOptions {
     this.params = builder.params;
     this.headers = builder.headers;
     this.data = builder.data;
+    this.dataFactory = builder.dataFactory;
     this.fileStream = builder.fileStream;
     this.multipartData = builder.multipartData;
     this.contentType = builder.contentType;
@@ -90,6 +96,10 @@ public class FetchOptions {
 
   public JsonNode getData() {
     return data;
+  }
+
+  public RequestDataFactory getDataFactory() {
+    return dataFactory;
   }
 
   public InputStream getFileStream() {
@@ -132,6 +142,8 @@ public class FetchOptions {
 
     protected JsonNode data;
 
+    protected RequestDataFactory dataFactory;
+
     protected InputStream fileStream;
 
     protected List<MultipartItem> multipartData;
@@ -163,6 +175,11 @@ public class FetchOptions {
 
     public Builder data(JsonNode data) {
       this.data = data;
+      return this;
+    }
+
+    public Builder dataFactory(RequestDataFactory dataFactory) {
+      this.dataFactory = dataFactory;
       return this;
     }
 

@@ -1,27 +1,23 @@
 package com.box.sdkgen.box.jwtauth;
 
-import static com.box.sdkgen.internal.utils.UtilsManager.createJwtAssertion;
-import static com.box.sdkgen.internal.utils.UtilsManager.entryOf;
-import static com.box.sdkgen.internal.utils.UtilsManager.getEpochTimeInSeconds;
-import static com.box.sdkgen.internal.utils.UtilsManager.getUuid;
 import static com.box.sdkgen.internal.utils.UtilsManager.isBrowser;
-import static com.box.sdkgen.internal.utils.UtilsManager.mapOf;
 
 import com.box.sdkgen.box.errors.BoxSDKError;
 import com.box.sdkgen.box.tokenstorage.InMemoryTokenStorage;
 import com.box.sdkgen.box.tokenstorage.TokenStorage;
-import com.box.sdkgen.internal.utils.JwtKey;
-import com.box.sdkgen.internal.utils.JwtSignOptions;
 import com.box.sdkgen.managers.authorization.AuthorizationManager;
 import com.box.sdkgen.networking.auth.Authentication;
+import com.box.sdkgen.networking.fetchoptions.FetchOptions;
+import com.box.sdkgen.networking.fetchoptions.ResponseFormat;
+import com.box.sdkgen.networking.fetchresponse.FetchResponse;
 import com.box.sdkgen.networking.network.NetworkSession;
 import com.box.sdkgen.schemas.accesstoken.AccessToken;
 import com.box.sdkgen.schemas.postoauth2revoke.PostOAuth2Revoke;
 import com.box.sdkgen.schemas.postoauth2token.PostOAuth2Token;
 import com.box.sdkgen.schemas.postoauth2token.PostOAuth2TokenGrantTypeField;
 import com.box.sdkgen.schemas.postoauth2token.PostOAuth2TokenSubjectTokenTypeField;
+import com.box.sdkgen.serialization.json.JsonManager;
 import java.util.List;
-import java.util.Map;
 
 public class BoxJWTAuth implements Authentication {
 
@@ -68,33 +64,27 @@ public class BoxJWTAuth implements Authentication {
     if (isBrowser()) {
       throw new BoxSDKError("JWT auth is not supported in browser environment.");
     }
-    Map<String, Object> claims =
-        mapOf(
-            entryOf("exp", getEpochTimeInSeconds() + 30),
-            entryOf("box_sub_type", this.subjectType));
-    JwtSignOptions jwtOptions =
-        new JwtSignOptions(
-            this.config.getAlgorithm(),
-            "https://api.box.com/oauth2/token",
-            this.config.getClientId(),
-            this.subjectId,
-            getUuid(),
-            this.config.getJwtKeyId(),
-            this.config.getPrivateKeyDecryptor());
-    JwtKey jwtKey = new JwtKey(this.config.getPrivateKey(), this.config.getPrivateKeyPassphrase());
-    String assertion = createJwtAssertion(claims, jwtKey, jwtOptions);
-    AuthorizationManager authManager =
-        new AuthorizationManager.Builder()
-            .networkSession((!(networkSession == null) ? networkSession : new NetworkSession()))
+    NetworkSession networkSessionToUse =
+        (!(networkSession == null) ? networkSession : new NetworkSession());
+    JwtAccessTokenDataFactory dataFactory =
+        new JwtAccessTokenDataFactory.Builder(this.config)
+            .subjectId(this.subjectId)
+            .subjectType(this.subjectType)
             .build();
-    AccessToken token =
-        authManager.requestAccessToken(
-            new PostOAuth2Token.Builder(
-                    PostOAuth2TokenGrantTypeField.URN_IETF_PARAMS_OAUTH_GRANT_TYPE_JWT_BEARER)
-                .assertion(assertion)
-                .clientId(this.config.getClientId())
-                .clientSecret(this.config.getClientSecret())
-                .build());
+    FetchResponse response =
+        networkSessionToUse
+            .getNetworkClient()
+            .fetch(
+                new FetchOptions.Builder(
+                        String.join(
+                            "", networkSessionToUse.getBaseUrls().getBaseUrl(), "/oauth2/token"),
+                        "POST")
+                    .dataFactory(dataFactory)
+                    .contentType("application/x-www-form-urlencoded")
+                    .responseFormat(ResponseFormat.JSON)
+                    .networkSession(networkSessionToUse)
+                    .build());
+    AccessToken token = JsonManager.deserialize(response.getData(), AccessToken.class);
     this.tokenStorage.store(token);
     return token;
   }
