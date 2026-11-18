@@ -14,6 +14,7 @@ General explanations of the available functionality and examples of how to use
 the SDK are available by topic:
 
 * [Ai](ai.md)
+* [Aisessions](aisessions.md)
 * [Aistudio](aistudio.md)
 * [Appitemassociations](appitemassociations.md)
 * [Archives](archives.md)
