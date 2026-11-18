@@ -124,7 +124,7 @@ public class BoxNetworkClientRetryTest {
   }
 
   @Test
-  public void testInterceptorRunsOnEachRetryWithRebuiltData() throws Exception {
+  public void testInterceptorRunsOnEachRetryBeforeDataIsRebuilt() throws Exception {
     try (MockWebServer server = new MockWebServer()) {
       server.enqueue(jsonResponse(500, "{\"error\":\"retry\"}"));
       server.enqueue(jsonResponse(200, "{\"ok\":true}"));
@@ -158,7 +158,74 @@ public class BoxNetworkClientRetryTest {
                   .networkSession(networkSession)
                   .build());
 
-      assertEquals(Arrays.asList("D1", "D2"), interceptorData);
+      assertEquals(Arrays.asList("D1", "D1"), interceptorData);
+      assertEquals("attempt=D1", takeBody(server));
+      assertEquals("attempt=D2", takeBody(server));
+      assertEquals(1, dataFactory.calls);
+    }
+  }
+
+  @Test
+  public void testDataFactoryRemovedByInterceptorIsNotUsed() throws Exception {
+    try (MockWebServer server = new MockWebServer()) {
+      server.enqueue(jsonResponse(500, "{\"error\":\"retry\"}"));
+      server.enqueue(jsonResponse(200, "{\"ok\":true}"));
+      server.start();
+
+      NetworkSession networkSession =
+          new NetworkSession()
+              .withInterceptors(
+                  Arrays.asList(
+                      interceptorReplacingOptions(
+                          options ->
+                              baseOptions(
+                                      options.getUrl(), jsonToSerializedData("{\"attempt\":\"I\"}"))
+                                  .build())))
+              .withRetryStrategy(
+                  retryWhen((options, response, attempt) -> response.getStatus() == 500));
+
+      CountingDataFactory dataFactory = new CountingDataFactory();
+      testNetworkClient()
+          .fetch(
+              baseOptions(server.url("/").toString(), jsonToSerializedData("{\"attempt\":\"D1\"}"))
+                  .dataFactory(dataFactory)
+                  .networkSession(networkSession)
+                  .build());
+
+      assertEquals("attempt=I", takeBody(server));
+      assertEquals("attempt=I", takeBody(server));
+      assertEquals(0, dataFactory.calls);
+    }
+  }
+
+  @Test
+  public void testDataFactoryAddedByInterceptorIsUsedOnRetry() throws Exception {
+    try (MockWebServer server = new MockWebServer()) {
+      server.enqueue(jsonResponse(500, "{\"error\":\"retry\"}"));
+      server.enqueue(jsonResponse(200, "{\"ok\":true}"));
+      server.start();
+
+      CountingDataFactory dataFactory = new CountingDataFactory();
+      NetworkSession networkSession =
+          new NetworkSession()
+              .withInterceptors(
+                  Arrays.asList(
+                      interceptorReplacingOptions(
+                          options ->
+                              baseOptions(options.getUrl(), options.getData())
+                                  .dataFactory(dataFactory)
+                                  .build())))
+              .withRetryStrategy(
+                  retryWhen((options, response, attempt) -> response.getStatus() == 500));
+
+      testNetworkClient()
+          .fetch(
+              baseOptions(server.url("/").toString(), jsonToSerializedData("{\"attempt\":\"D1\"}"))
+                  .networkSession(networkSession)
+                  .build());
+
+      assertEquals("attempt=D1", takeBody(server));
+      assertEquals("attempt=D2", takeBody(server));
       assertEquals(1, dataFactory.calls);
     }
   }
@@ -351,6 +418,21 @@ public class BoxNetworkClientRetryTest {
     assertEquals(3, parts.length);
     byte[] payload = Base64.getUrlDecoder().decode(parts[1]);
     return objectMapper.readValue(payload, JwtPayload.class);
+  }
+
+  private Interceptor interceptorReplacingOptions(
+      java.util.function.UnaryOperator<FetchOptions> replace) {
+    return new Interceptor() {
+      @Override
+      public FetchOptions beforeRequest(FetchOptions options) {
+        return replace.apply(options);
+      }
+
+      @Override
+      public FetchResponse afterRequest(FetchResponse response) {
+        return response;
+      }
+    };
   }
 
   private interface RetryPredicate {
