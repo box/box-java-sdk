@@ -135,13 +135,6 @@ public class BoxNetworkClient implements NetworkClient {
     NetworkSession networkSession =
         options.getNetworkSession() == null ? new NetworkSession() : options.getNetworkSession();
 
-    FetchOptions fetchOptions =
-        networkSession.getInterceptors().stream()
-            .reduce(
-                options,
-                (modifiedOptions, interceptor) -> interceptor.beforeRequest(modifiedOptions),
-                (o1, o2) -> o2);
-
     boolean authenticationNeeded = false;
     Request request;
     FetchResponse fetchResponse = new FetchResponse.Builder(0, new TreeMap<>()).build();
@@ -153,6 +146,20 @@ public class BoxNetworkClient implements NetworkClient {
     boolean shouldRetry = false;
 
     while (true) {
+      FetchOptions attemptOptions =
+          (attemptNumber > 1 || numberOfRetriesOnException > 0 || options.getData() == null)
+                  && options.getDataFactory() != null
+              ? withData(options, options.getDataFactory().create())
+              : options;
+      FetchOptions fetchOptions = applyInterceptors(attemptOptions, networkSession);
+      if (fetchOptions.getDataFactory() != null
+          && options.getDataFactory() == null
+          && (attemptNumber > 1
+              || numberOfRetriesOnException > 0
+              || fetchOptions.getData() == null)) {
+        fetchOptions = withData(fetchOptions, fetchOptions.getDataFactory().create());
+      }
+
       request = prepareRequest(fetchOptions, authenticationNeeded, networkSession);
 
       Response response = null;
@@ -266,6 +273,31 @@ public class BoxNetworkClient implements NetworkClient {
           fetchOptions.getContentType(),
           networkSession.getDataSanitizer());
     }
+  }
+
+  private static FetchOptions applyInterceptors(
+      FetchOptions options, NetworkSession networkSession) {
+    return networkSession.getInterceptors().stream()
+        .reduce(
+            options,
+            (modifiedOptions, interceptor) -> interceptor.beforeRequest(modifiedOptions),
+            (o1, o2) -> o2);
+  }
+
+  private static FetchOptions withData(FetchOptions options, JsonNode data) {
+    return new FetchOptions.Builder(options.getUrl(), options.getMethod())
+        .params(options.getParams())
+        .headers(options.getHeaders())
+        .data(data)
+        .dataFactory(options.getDataFactory())
+        .fileStream(options.getFileStream())
+        .multipartData(options.getMultipartData())
+        .contentType(options.getContentType())
+        .responseFormat(options.getResponseFormat())
+        .auth(options.getAuth())
+        .networkSession(options.getNetworkSession())
+        .followRedirects(options.getFollowRedirects())
+        .build();
   }
 
   private static Request prepareRequest(

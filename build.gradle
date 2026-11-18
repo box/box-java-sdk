@@ -31,6 +31,7 @@ dependencies {
   implementation "org.bouncycastle:bcprov-jdk18on:${bouncyCastleBcprovJdk18onVersion}"
   implementation "org.bouncycastle:bcpkix-jdk18on:${bouncyCastleBcpkixJdk18onVersion}"
   testImplementation "org.junit.jupiter:junit-jupiter-api:${junitApiVersion}"
+  testImplementation "com.squareup.okhttp3:mockwebserver:${okhttpVersion}"
   testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:${junitEngineVersion}"
 }
 spotless {
