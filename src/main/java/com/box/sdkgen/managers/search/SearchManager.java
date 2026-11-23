@@ -151,7 +151,7 @@ public class SearchManager {
                     convertToString(queryParams.getIncludeRecentSharedLinks())),
                 entryOf("fields", convertToString(queryParams.getFields())),
                 entryOf("offset", convertToString(queryParams.getOffset())),
-                entryOf("deleted_user_ids", convertToString(queryParams.getDeletedUserIds())),
+                entryOf("deleter_user_ids", convertToString(queryParams.getDeleterUserIds())),
                 entryOf("deleted_at_range", convertToString(queryParams.getDeletedAtRange()))));
     Map<String, String> headersMap = prepareParams(mergeMaps(mapOf(), headers.getExtraHeaders()));
     FetchResponse response =

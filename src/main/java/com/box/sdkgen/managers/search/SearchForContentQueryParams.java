@@ -247,7 +247,7 @@ public class SearchForContentQueryParams {
    *
    * <p>Data available from 2023-02-01 onwards.
    */
-  public List<String> deletedUserIds;
+  public List<String> deleterUserIds;
 
   /**
    * Limits the search results to any items deleted within a given date range.
@@ -290,7 +290,7 @@ public class SearchForContentQueryParams {
     this.includeRecentSharedLinks = builder.includeRecentSharedLinks;
     this.fields = builder.fields;
     this.offset = builder.offset;
-    this.deletedUserIds = builder.deletedUserIds;
+    this.deleterUserIds = builder.deleterUserIds;
     this.deletedAtRange = builder.deletedAtRange;
   }
 
@@ -370,8 +370,8 @@ public class SearchForContentQueryParams {
     return offset;
   }
 
-  public List<String> getDeletedUserIds() {
-    return deletedUserIds;
+  public List<String> getDeleterUserIds() {
+    return deleterUserIds;
   }
 
   public List<String> getDeletedAtRange() {
@@ -418,7 +418,7 @@ public class SearchForContentQueryParams {
 
     protected Long offset;
 
-    protected List<String> deletedUserIds;
+    protected List<String> deleterUserIds;
 
     protected List<String> deletedAtRange;
 
@@ -546,8 +546,8 @@ public class SearchForContentQueryParams {
       return this;
     }
 
-    public Builder deletedUserIds(List<String> deletedUserIds) {
-      this.deletedUserIds = deletedUserIds;
+    public Builder deleterUserIds(List<String> deleterUserIds) {
+      this.deleterUserIds = deleterUserIds;
       return this;
     }
 
